@@ -1,0 +1,18 @@
+- Map has cache of MarkerId to ListingIds at that Marker
+- Marker has knowledge of whether it has been clicked or not (@Clicked field)
+if (@Clicked)
+
+
+1)
+Pull all listing information for listings that match current filters.
+
+2)
+If marker has been clicked
+	Filter all Listings in cache for current marker_id using JS.
+else
+	Check realtor cache to see if need to pull realtor data.
+	If realtor in realtor cache
+		Pull all listing and realtor data for the current marker_id.
+	else
+		Pull all listing data for the current marker_id.
+		

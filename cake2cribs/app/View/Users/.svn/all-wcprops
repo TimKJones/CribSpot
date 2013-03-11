@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/ubid/!svn/ver/230/cake2cribs/app/View/Users
+END
+account.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/ubid/!svn/ver/228/cake2cribs/app/View/Users/account.ctp
+END
+edit.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/ubid/!svn/ver/214/cake2cribs/app/View/Users/edit.ctp
+END
+resetpassword.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/229/cake2cribs/app/View/Users/resetpassword.ctp
+END
+index.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/227/cake2cribs/app/View/Users/index.ctp
+END
+add.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/ubid/!svn/ver/227/cake2cribs/app/View/Users/add.ctp
+END
+login.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/230/cake2cribs/app/View/Users/login.ctp
+END

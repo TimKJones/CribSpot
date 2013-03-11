@@ -1,0 +1,160 @@
+#filterBox
+{
+	position:absolute;
+	z-index:2;
+	right:10px;
+	top:10px;
+	height:133px;
+	width:330px;
+	background-color: white;
+  	-moz-box-shadow: inset 0px 0px 6px gray;
+   	-webkit-box-shadow: inset 0px 0px 6px gray;
+   	box-shadow: inset 0px 0px 6px gray;
+   	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+#filterBoxBackground
+{
+	position: absolute;
+	z-index: 1;
+	right: 30px;
+	top: 90px;
+	height: 156px;
+	width: 350px;
+	background-color:#EEEEEE;
+  	-moz-box-shadow: 10px 10px 20px gray;
+   	-webkit-box-shadow: 10px 10px 20px gray;
+   	box-shadow: 10px 10px 20px gray;
+   	border-radius: 4px;
+}
+#filterBox #priceIcon
+{
+	position: absolute;
+	background-image: url('../images/filter/price_icon.png');
+	background-size: 100%;
+	height: 30px;
+	width: 30px;
+	top: 4px;
+	left: 8px;
+	background-repeat: no-repeat;
+	display: inline-block;
+}
+#filterBox #bedIcon
+{
+	position: absolute;
+	background-image: url('../images/filter/bed_icon.png');
+	background-size: 100%;
+	height: 30px;
+	width: 30px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	top: 36px;
+	left: 8px;
+}
+#filterBox #bathIcon
+{
+	position: absolute;
+	background-image: url('../images/filter/toilet_icon.png');
+	background-size: 100%;
+	height: 30px;
+	width: 30px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	top: 68px;
+	left: 8px;
+}
+#filterBox #leaseIcon
+{
+	position: absolute;
+	background-image: url('../images/filter/lease_icon.png');
+	background-size: 100%;
+	height: 30px;
+	width: 30px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	top: 68px;
+	left: 8px;
+}
+#filterBox #houseIcon
+{
+	position: absolute;
+	background-image: url('../images/filter/house_icon.png');
+	background-size: 100%;
+	height: 30px;
+	width: 30px;
+	background-repeat: no-repeat;
+	display: inline-block;
+	top: 100px;
+	left: 8px;
+}
+.bar
+{
+	display: inline-block;
+	height: 6px;
+	width:100%;
+	color:blue;
+	background-color: #686868;
+	z-index:2;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+  	-moz-box-shadow: inset 0px 0px 3px black;
+   	-webkit-box-shadow: inset 0px 0px 3px black;
+   	box-shadow: inset 0px 0px 3px black;
+}
+.sliderDiv
+{
+	width:165px;
+	display: inline-block;	
+}
+.filterRangeInputMin
+{
+	margin-top: 6px;
+	margin-left: 47px;
+	width: 50px;
+	text-align: center;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+.filterRangeInputMax
+{
+	width: 50px;
+	text-align: center;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+.filterOptionsText
+{
+	font-size: 14px;
+	display: inline-block;
+	font-weight: bold;
+}
+.filterOptions
+{
+	margin-left: 50px;
+}
+#rentTermFilter
+{
+	margin-top:15px;
+}
+#houseTypeFilter
+{
+	margin-top:8px;
+}
+.box
+{
+	position: absolute;
+	border-color: gray;
+	border-style: solid;
+	border-width: 1px;
+	background-color: white;
+	width:12px;
+	height:12px;
+	z-index:2;
+	text-align:center;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-moz-box-shadow: 0px 2px 3px gray;
+   	-webkit-box-shadow: 0px 2px 3px gray;
+   	box-shadow: 0px 2px 3px gray;
+}
+.box:hover
+{
+	cursor:hand;
+}

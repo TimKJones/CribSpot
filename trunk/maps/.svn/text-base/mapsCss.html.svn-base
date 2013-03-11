@@ -1,0 +1,87 @@
+<style type="text/css">
+#waste{}
+
+#logout_link
+{
+	visibility:hidden;
+	display:inline-block;
+}
+#auth_logoutlink
+{
+	text-decoration:none;
+}
+body
+{
+	margin: 0px;
+}
+.topBarButton
+{
+	width:90px;
+	height:35px;
+	float:right;
+	margin-right:5px;
+	margin-top:5px;
+}
+#topBarButtonsDiv
+{
+	position: absolute;
+	display:inline;
+	height:50px;
+}
+#logo
+{
+	margin-left:50px;	
+	height:100%;
+	width: 150px;
+	vertical-align:top;
+}
+#logo:hover
+{
+	cursor:hand;
+}
+#slogan
+{
+	height:50px;
+}
+#addressText
+{
+	height:25px;
+	width:190px;
+	vertical-align:middle;
+}
+#bottomBar
+{
+	width:100%;
+	height:125px;
+	position:absolute;
+	background-color:green;
+}
+#map_canvas 
+{
+	position: absolute;
+	top: 50px;
+	bottom: 0;
+	width: 100%;
+}
+#addressSubmit
+{
+	width:45px;
+	height:45px;
+	vertical-align:middle;
+}
+#streetviewDivMap
+{
+	width:0px;
+	height:0px;
+	display:none;
+}
+#streetviewDiv
+{
+	display:none;
+	position:absolute;
+	z-index:0;
+	height:400px;
+	width:400px;
+}
+
+</style>

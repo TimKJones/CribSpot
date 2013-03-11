@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model
+END
+ConnectionManagerTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ConnectionManagerTest.php
+END
+ModelTestBase.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelTestBase.php
+END
+BehaviorCollectionTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/BehaviorCollectionTest.php
+END
+ModelValidationTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelValidationTest.php
+END
+ModelWriteTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelWriteTest.php
+END
+ModelReadTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelReadTest.php
+END
+ModelTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelTest.php
+END
+ModelDeleteTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelDeleteTest.php
+END
+models.php
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/models.php
+END
+ModelIntegrationTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelIntegrationTest.php
+END
+CakeSchemaTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/CakeSchemaTest.php
+END
+AclNodeTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/AclNodeTest.php
+END
+ModelCrossSchemaHabtmTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Model/ModelCrossSchemaHabtmTest.php
+END

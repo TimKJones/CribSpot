@@ -1,0 +1,179 @@
+.markerTooltip { height: 100%; }
+
+.tooltip a
+{
+	text-decoration: none;
+}
+
+.tooltip
+{
+	height: 100%;
+	width: 100%;
+	background-color: white;
+	-moz-box-shadow: inset -0 0 4px black;
+   	-webkit-box-shadow: inset 0 0 4px black;
+   	box-shadow: inset 0 0 4px black;
+   	position: relative;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	overflow: hidden;
+}
+#addFavoriteImg:hover
+{
+	cursor:pointer;
+}
+#tooltipWrapper
+{
+	display:none;
+	position:absolute;
+	z-index:0;
+}	
+#tooltipAddress
+{
+	position: absolute;
+	font-weight: bolder;
+	color: black;
+	text-decoration: none;
+	top: 7px;
+	left: 3px;
+}
+#addressRow
+{
+  position:relative;
+  width:100%;
+  height:30px;
+  border-bottom-style:solid;
+  border-bottom-width: 2px;
+  border-bottom-color:gray;
+  z-index:1;
+}
+#addressRowButtons
+{
+	position: absolute;
+	top: 4px;
+	right: 3px;
+}	
+#addFavoriteImg
+{
+	height:25px;
+	width:25px;
+	vertical-align:middle;
+}
+.starFavorite
+{
+	background-image: url(/img/tooltip/star_pushed.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+.starNotFavorite
+{
+	background-image: url(/img/tooltip/star.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+#shareButton
+{
+	vertical-align:middle;
+}
+.tooltipLabel
+{
+	margin-left:5px;
+}
+
+#tooltipPic
+{
+	float: left;
+	height:100%;
+	width: 100%;
+	display:inline;	
+	text-align:center;
+}
+#houseDataDiv
+{
+	position: absolute;
+	top: 30px;
+	bottom: 0px;
+	width:100%;
+	font-size: 13px;
+	white-space: nowrap;
+}
+#dataLeftColumn
+{
+	position: absolute;
+	top: 0;
+	right: 175px;
+	left: 0;
+	bottom: 0;
+	padding-top: 4px;
+	padding-left: 3px;
+	font-weight: bold;
+	line-height: 16px;
+}
+#dataRightColumn
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 90px;
+	bottom: 0;
+	padding-top: 4px;
+	padding-left: 5px;
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: gray;
+	line-height: 16px;
+}
+.multiBubble
+{
+	position: relative;
+	background-color: white;
+	width: 90%;
+	height: 36px;
+	margin: 0 auto 4px auto;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-moz-box-shadow: 0 0 4px gray;
+   	-webkit-box-shadow: 0 0 4px gray;
+   	box-shadow: 0 0 4px gray;
+   	overflow: hidden;
+	white-space: nowrap;
+	font-size: 12px;
+	padding: 7px;
+	line-height: 145%;
+}
+.multiBubble:hover
+{
+	cursor: pointer;
+	background-color:#CED8F6;
+}
+#multiBubbleContainer
+{
+	overflow-y: auto;
+	position: absolute;
+	top: 30px;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	padding-top: 6px;
+	background-color: #D0D0D0;
+}
+.backToMultipleListings
+{
+	background-image: url('../img/back.png');
+	right: 30px;
+	top: 6px;
+	position: absolute;
+	background-size: 100%;
+	height: 20px;
+	width: 42px;
+	background-repeat: no-repeat;
+}
+.backToMultipleListings:hover
+{
+	cursor:pointer;
+}
+#property_link
+{
+	text-decoration: none;
+	color: #4A7CDA;
+	font-weight: bold;
+}

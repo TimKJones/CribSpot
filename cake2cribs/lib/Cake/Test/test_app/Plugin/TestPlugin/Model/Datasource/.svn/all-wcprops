@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/Model/Datasource
+END
+TestSource.php
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/Model/Datasource/TestSource.php
+END
+TestOtherSource.php
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/Model/Datasource/TestOtherSource.php
+END

@@ -1,0 +1,1 @@
+<?php echo $this->element('Messages/messages_list', array('messages'=>$messages)); ?>

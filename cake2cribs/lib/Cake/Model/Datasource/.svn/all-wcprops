@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Datasource
+END
+DataSource.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Datasource/DataSource.php
+END
+DboSource.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Datasource/DboSource.php
+END
+CakeSession.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Datasource/CakeSession.php
+END

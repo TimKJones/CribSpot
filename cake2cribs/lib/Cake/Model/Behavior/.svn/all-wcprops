@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Behavior
+END
+TranslateBehavior.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Behavior/TranslateBehavior.php
+END
+AclBehavior.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Behavior/AclBehavior.php
+END
+ContainableBehavior.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Behavior/ContainableBehavior.php
+END
+TreeBehavior.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Model/Behavior/TreeBehavior.php
+END

@@ -1,0 +1,69 @@
+<style type="text/css">
+#waste{}
+
+.friendDiv
+{
+	border: 1px solid;
+	padding:3px;		
+	width:200px;
+	text-align:left;
+}
+
+.friendDivContent
+{
+	padding:1px;
+}
+
+.friendName
+{
+	vertical-align:middle;
+}
+
+.friendRow
+{
+	height:40px;
+}
+
+.friendPic
+{
+	width:50px;
+}
+
+.friendDiv:hover
+{
+	background-color:#A9A9F5;
+	cursor:pointer;
+}
+
+#createGroupDiv
+{
+	margin-top:20px;
+	position:relative;
+	text-align:center;
+}
+#grayBackground
+{
+	position:absolute;
+	background-color:gray;
+	opacity:0.5;
+	width:100%;
+	height:100%;
+	z-index:1;
+	visibility:hidden;
+}
+#groupMenu
+{
+	background-color:white;
+	position:absolute;
+	width:70%;
+	height:70%;
+	left:15%;
+	top:15%;
+	z-index:2;
+	visibility:hidden
+}
+#selectFriendsBtn
+{
+	visibility:hidden;
+}
+</style>

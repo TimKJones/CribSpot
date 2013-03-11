@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email
+END
+CakeEmail.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email/CakeEmail.php
+END
+MailTransport.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email/MailTransport.php
+END
+AbstractTransport.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email/AbstractTransport.php
+END
+SmtpTransport.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email/SmtpTransport.php
+END
+DebugTransport.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Email/DebugTransport.php
+END

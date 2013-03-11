@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Log/Engine
+END
+BaseLog.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Log/Engine/BaseLog.php
+END
+FileLog.php
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Log/Engine/FileLog.php
+END
+ConsoleLog.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Log/Engine/ConsoleLog.php
+END

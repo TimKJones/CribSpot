@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/default/classes
+END
+test.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/default/classes/test.ctp
+END
+model.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/default/classes/model.ctp
+END
+controller.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/default/classes/controller.ctp
+END
+fixture.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/default/classes/fixture.ctp
+END

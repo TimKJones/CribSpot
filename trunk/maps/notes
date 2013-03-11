@@ -1,0 +1,20 @@
+Street Address
+Ann Arbor, MI
+
+
+
+
+- Get street address
+- Ignore Ann Arbor, MI 48104
+- Count number of fields before date
+    - if num_fields == 3
+        - parse first field as property_type
+- parse next field as num_bedrooms
+    - this can include words such as Sutdio, Duplex, the '-' character
+- parse the next field as num_units
+    - first part is total_num_units
+    - second part (in parentheses) is num_units_available
+- parse next field as rent
+    - if listed, this will start with $
+    - Also could be words saying "leased through ***" or "Waitlist Open"
+

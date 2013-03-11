@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/skel/View/Errors
+END
+error400.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/skel/View/Errors/error400.ctp
+END
+error500.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Templates/skel/View/Errors/error500.ctp
+END

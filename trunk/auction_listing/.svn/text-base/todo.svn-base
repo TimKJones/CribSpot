@@ -1,0 +1,3 @@
+- when auction has less than a minute left, time should countdown by second
+
+- IDEA - make auction listings page be scrollable like the facebook news feed - user wouldn't have to click on listing to see page - wouldn't have to only see one listing at a time.  This could be an optional view - user could also see a more traditional view

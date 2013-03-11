@@ -1,0 +1,394 @@
+#favoritesBar
+{
+	width:350px;
+	background-color:#EEEEEE;	
+	float:left;
+	z-index:2;
+	position:absolute;
+	top: 50px;
+	bottom: 0;
+	visibility:hidden;
+	overflow:auto;
+  	-moz-box-shadow: 0 0 10px black;
+   	-webkit-box-shadow: 0 0 10px black;
+   	box-shadow: 0 0 10px black;
+   	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+#hideFavoritesDiv
+{
+	background-image: url('../images/favoritesBar/minimize.png');
+	background-repeat: no-repeat;
+	background-size: 100%;
+	position: absolute;
+	right: 0;
+	top: 10px;
+	height: 25px;
+	width:25px;
+}
+#favoritesTab:hover
+{
+	cursor:pointer;
+}
+#hideFavoritesDiv:hover
+{
+	cursor:pointer;
+}
+#favoritesTab
+{
+	background-color:white;
+	-moz-box-shadow: -0px 0px 3px gray;
+   	-webkit-box-shadow: 0px 0px 3px gray;
+   	box-shadow: 0px 0px 3px gray;
+	height:128px;
+	width:31px;
+	top:45%;
+	z-index:3;
+	position:absolute;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+#favoritesTab span
+{
+	display: block;
+	-webkit-transform: rotate(-90deg); 
+	-moz-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	text-transform: uppercase;
+	position: absolute;
+	left: -26px;
+	bottom: 36px;
+	font-weight: bold;
+}
+#favoritesTab #favoritesIcon
+{
+	background-image: url('../images/favoritesBar/favorites_counter.png');
+	background-size: 100%;
+	height: 24px;
+	width: 24px;
+	position: absolute;
+	top: 4px;
+	left: 3px;
+}
+#favoritesTab #favoritesText
+{
+	margin-left:-3px;
+	margin-bottom:5px;
+}
+#favoritesTab #numFavorites
+{
+	position: absolute;
+	top: 11px;
+	left: 11px;
+	color: blue;
+}
+#groupTabButton
+{
+	position: relative;
+	background-color:white;
+	height: 30px;
+	width: 90px;
+	display: inline-block;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-bottom: 0;
+	border-top-style: solid;
+	border-left-style: solid;
+	border-right-style: solid;
+	border-width: 1px; 
+}
+#groupTabButton #groupIcon
+{
+	background-image: url('../images/favoritesBar/group_favorites_icon.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	height: 30px;
+	width: 30px;
+	margin-left: 3px;
+	margin-top: 3px;
+}
+#groupTabButton #groupTabTitle
+{
+	position: absolute;
+	top: 6px;
+	left: 40px;
+	font-size: 13px;
+	font-weight: bold;
+}
+#personalTabButton
+{
+	position: relative;
+	background-color:white;
+	height: 30px;
+	width: 90px;
+	display: inline-block;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 10px;
+	margin-bottom: 0;
+	border-top-style: solid;
+	border-left-style: solid;
+	border-right-style: solid;
+	border-width: 1px; 
+}
+#personalTabButton #personalIcon
+{
+	background-image: url('../images/favoritesBar/personal_favorites_icon.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	height: 30px;
+	width: 30px;
+	margin-left: 3px;
+	margin-top: 3px;
+}
+#personalTabButton #personalTabTitle
+{
+	position: absolute;
+	top: 6px;
+	left: 32px;
+	font-size: 13px;
+	font-weight: bold;
+}
+#favoriteActionsButton
+{
+	background-color:blue;
+}
+#personalFavoritesList
+{
+	position: absolute;
+	width: 100%;
+	top: 0;
+	bottom: 0;
+	background: white;
+	margin-top: 40px;
+	border-top-style: solid;
+	border-top-width: 2px;
+	border-color: #B2B2B2;
+}
+.optionGrid
+{
+	height: 50px;
+	width: 310px;
+	margin: auto;
+	margin-left: 20px;
+	margin-bottom: 10px;
+	background: #F6F6F6;
+  	-moz-box-shadow: inset -1px 1px 3px gray;
+   	-webkit-box-shadow: inset -1px 1px 3px gray;
+   	box-shadow: inset -1px 1px 3px gray;
+   	font-size: 14px;
+   	line-height: 24px;
+}
+
+.optionGrid div
+{
+	display: inline-block;
+	height: 50%;
+	text-align: center;
+	border-color: #C3C3C3;
+	float: left;
+	margin-left: -1px;
+}
+
+.optionGrid #price
+{
+	width: 25%;
+	border-bottom-style: solid;
+	border-bottom-width: 1px; 
+}
+
+.optionGrid #beds
+{
+	width: 25%;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px; 
+}
+
+.optionGrid #baths
+{
+	width: 25%;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px; 
+}
+
+.optionGrid #payMonth
+{
+	width: 25%;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+.optionGrid #aptType
+{
+	width: 25%;
+}
+
+.optionGrid .smallIcon
+{
+	background-size: 100%;
+	height: 100%;
+	width: 70%;
+	background-repeat: no-repeat;
+	margin-left: 17%;
+}
+
+.optionGrid #parking
+{
+	width: 12.5%;
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.optionGrid .parking_selected
+{
+	background-image:url('../images/favoritesBar/parking_icon.png');
+}
+
+.optionGrid .parking_unselected
+{
+	background-image:url('../images/favoritesBar/parking_excluded_icon.png');
+}
+
+.optionGrid #electric
+{
+	width: 12.5%;
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.optionGrid .electric_selected
+{
+	background-image:url('../images/favoritesBar/electric_icon.png');
+}
+
+.optionGrid .electric_unselected
+{
+	background-image:url('../images/favoritesBar/electric_excluded_icon.png');
+}
+
+.optionGrid #furnished
+{
+	width: 12.5%;
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.optionGrid .furnished_selected
+{
+	background-image:url('../images/favoritesBar/furnished_icon.png');
+}
+
+.optionGrid .furnished_unselected
+{
+	background-image:url('../images/favoritesBar/furnished_excluded_icon.png');
+}
+
+.optionGrid #ac
+{
+	width: 12.5%;
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.optionGrid .ac_selected
+{
+	background-image:url('../images/favoritesBar/air_icon.png');
+}
+
+.optionGrid .ac_unselected
+{
+	background-image:url('../images/favoritesBar/air_excluded_icon.png');
+}
+
+.optionGrid #contact
+{
+	width: 25%;
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.favoriteDiv
+{
+	padding-top: 10px;
+	padding-bottom: 15px;
+	border-bottom-style: solid;
+	border-width: 2px;
+	border-color: #B2B2B2;
+	position: relative;
+}
+
+.favoriteDiv .favoritesAddress 
+{
+	display: inline-block;
+	padding-left: 20px;
+	padding-bottom: 10px;
+}
+
+.favoriteDiv .removeButton
+{
+	background-image: url('../images/favoritesBar/remove_button.png');
+	background-repeat: no-repeat;
+	background-size: 100%;
+	width: 80px;
+	height: 23px;
+	display: inline-block;
+	position: absolute;
+	left: 250px;
+	top: 10px;
+}
+
+.favoritesAddress:hover
+{
+	cursor:pointer;	
+}
+
+.favoriteDiv .removeButton:hover
+{
+	cursor:pointer;
+}
+
+.selected #parking
+{
+	background-image:url('../images/favoritesBar/parking_icon.png');
+}
+
+.optionGrid .unselected #parking
+{
+	background-image: url('../images/favoritesBar/parking_excluded_icon.png');
+}
+
+.selected #electric
+{
+	background-image:url('../images/favoritesBar/electric_icon.png');
+}
+
+.unselected #electric
+{
+	background-image:url('../images/favoritesBar/electric_excluded_icon.png');
+}
+
+.selected #furnished
+{
+	background-image:url('../images/favoritesBar/furnished_icon.png');
+}
+
+.unselected #furnished
+{
+	background-image:url('../images/favoritesBar/furnished_excluded_icon.png');
+}
+
+.selected #ac
+{
+	background-image:url('../images/favoritesBar/air_icon.png');
+}
+
+.unselected #ac
+{
+	background-image:url('../images/favoritesBar/air_excluded_icon.png');
+}

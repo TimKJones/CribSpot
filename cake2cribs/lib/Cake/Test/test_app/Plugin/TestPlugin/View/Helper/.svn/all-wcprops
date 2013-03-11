@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/View/Helper
+END
+TestPluginAppHelper.php
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/View/Helper/TestPluginAppHelper.php
+END
+OtherHelperHelper.php
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/View/Helper/OtherHelperHelper.php
+END
+PluggedHelperHelper.php
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/Plugin/TestPlugin/View/Helper/PluggedHelperHelper.php
+END

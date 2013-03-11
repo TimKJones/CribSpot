@@ -1,0 +1,236 @@
+<html>
+ 	<LINK href="index.css" title="compact" rel="stylesheet" type="text/css">
+	<head>
+    <title>UBid</title>
+  </head>
+  <body onload="init();">
+    <div id="fb-root"></div>
+    <script>
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
+
+      // Init the SDK upon load
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '303685486372971', // App ID
+          channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+
+        // listen for and handle auth.statusChange events
+        FB.Event.subscribe('auth.statusChange', function(response) {
+          if (response.authResponse) {
+            // user has auth'd your app and is logged into Facebook
+            
+						FB.api('/me', function(me){ 
+						/* This function retrieves the user account information */
+						var prof_pic = document.getElementById('prof_pic');
+         		prof_pic.src = 'http://graph.facebook.com/' + me.id + '/picture';
+						prof_pic.style.display="inline";
+						
+						document.getElementById('welcome_msg').innerHTML = me.name;
+	
+						var welcome_space = document.getElementById('welcome_space');
+						welcome_space.innerHTML = " ";
+	
+						var fb_login = document.getElementById('fb_login');
+						fb_login.style.visibility="hidden";
+	
+            document.getElementById('logout_link').style.visibility = 'visible';
+            })
+          } 
+					else 
+					{
+            // user has not auth'd your app, or is not logged into Facebook
+ 						document.getElementById('welcome_space').innerHTML = "";
+						document.getElementById('welcome_msg').innerHTML = "";
+						
+						document.getElementById('prof_pic').style.display = 'none';
+						
+						document.getElementById('logout_link').style.visibility="hidden";
+						document.getElementById('fb_login').style.visibility="visible";
+          }
+
+					/* This line may not do anything useful */	
+					document.getElementById('welcome_text').style.visibility="visible";
+        });
+
+        // respond to clicks on the login and logout links
+        document.getElementById('fb_login').addEventListener('click', function(){
+          FB.login();
+        });
+        document.getElementById('auth-logoutlink').addEventListener('click', function(){
+          FB.logout();
+			//		location.reload();
+        }); 
+      }
+    
+</script>
+
+<div id="container">
+	<div id="top_section">
+		<div id="logo_wrap">
+			<img src="images/logo.png" alt="UBid" id="logo"/>
+		</div>
+
+		<div id="welcome_wrap">
+			<div class="nav_bar_text">Welcome<span class="nav_bar_text" id="welcome_space"></span><span class="nav_bar_text" id="welcome_msg"></span>!&nbsp<span class="nav_bar_text" id="logout_link">(<a href="#" class="nav_bar_text" id="auth-logoutlink">logout</a>)</span>	
+				<div class="fb-login-button nav_bar_text" scope="email,user_checkins" id="fb_login">Login with Facebook</div>
+			</div>
+		</div>
+
+		<div id="nav_bar_wrap">
+			<ul"">
+				<li class="top_nav mid"><a href="#">My UBid</a>&nbsp<img id="prof_pic"/>&nbsp</li>
+				<li class="top_nav mid"><a href="#">Help</a>&nbsp&nbsp</li>
+				<li class="top_nav"><a href="#">About</a>&nbsp&nbsp</li>
+			</ul>
+		</div>
+	</div>
+	<div id="search_bar">		
+		<div id="search_box_wrap">
+			<form action="#" id="home_search">	
+			<input type="text" name="q" class="search_bar_align" id="search_input"/>
+			<select class="search_bar_align" id="search_cat">
+				<option>All Categories</option>
+				<option>Tickets</option>
+				<option>Textbooks</option>
+				<option>Subletting</option>
+			</select>		
+			<div>
+				<input type="submit" class="search_bar_align" id="search_submit" value="Search!"/>
+			</div>
+		</div>	
+	</div>
+	<div id="mid_section">
+		<div id="category_bar_wrap">
+			<ul id="navigation">	
+      	<li class="menu_title">Shop By Category</li>
+      	<li class="menu_item_li"><a class="menu_item" href="#">All Categories</a></li>
+      	<li class="menu_item_li"><a class="menu_item"href="#">Tickets</a></li>
+      	<li class="menu_item_li"><a class="menu_item"href="#">Textbooks</a></li>
+      	<li class="menu_item_li"><a class="menu_item"href="#">Subletting</a></li>
+    	</ul>	
+		</div>			
+		<div id="slideshow_wrap">
+			<img id="slideshow_img" class="outgoing" src="images/banner.jpg" alt=""/>
+			<div class="slideshow_num" id="slideshow_4" onclick="slideshow_but_click(event);">
+				4	
+			</div>
+			<div class="slideshow_num" id="slideshow_3" onclick="slideshow_but_click(event);">
+				3	
+			</div>
+			<div class="slideshow_num" id="slideshow_2" onclick="slideshow_but_click(event);">
+				2
+			</div>
+			<div class="slideshow_num" id="slideshow_1" onclick="slideshow_but_click(event);">
+				1
+			</div>
+		</div>	
+	<div id="ad_wrap">
+		Advertisement or Featured Auction here?
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+var cur_ind = 0;
+var images, images_urls;
+var image1, image2, image3, image4;
+var timer;
+var labels;
+function init()
+{
+	images = new Array();
+	images_urls = new Array();
+	labels = new Array();
+	labels[0] = document.getElementById("slideshow_1");
+	labels[1] = document.getElementById("slideshow_2");
+	labels[2] = document.getElementById("slideshow_3");
+	labels[3] = document.getElementById("slideshow_4");
+
+	image1 = new Image();
+	image1.src = 	"images/banner.jpg";
+	images_urls[0] = 	"images/banner.jpg";
+	image2 = new Image();
+	image2.src = 	"images/denard.jpg";
+	images_urls[1] = 	"images/denard.jpg";
+	image3 = new Image();
+	image3.src = 	"images/desmond.jpg";
+	images_urls[2] = 	"images/desmond.jpg";
+	image4 = new Image();
+	image4.src = 	"images/mich_logo.jpg";
+	images_urls[3] = 	"images/mich_logo.jpg";
+
+	images[0] = image1;
+	images[1] = image2;
+	images[2] = image3;
+	images[3] = image4;
+	document.getElementById('slideshow_img').src = images_urls[cur_ind];
+
+	start_timer();
+}
+
+function start_timer()
+{
+	document.getElementById('slideshow_img').src = images_urls[cur_ind];
+	var cur_num_id = 'slideshow_' + cur_ind;
+	var prev_ind = cur_ind - 1;
+	if (prev_ind < 0)
+		prev_ind = 3;
+	labels[cur_ind].style.background="#000000";
+	labels[prev_ind].style.background="blue";
+	
+	cur_ind ++;
+	if(cur_ind == 4)
+		cur_ind = 0;	
+	timer = setTimeout("start_timer()", 2000);
+}
+
+function slideshow_but_click(ev)
+{
+	var target = ev.target;
+	var div_obj = document.getElementById("slideshow_img");
+	
+	if (target.id == "slideshow_1")
+	{
+		div_obj.src = images_urls[0];
+		clearTimeout(timer);
+		timer = setTimeout("start_timer()", 4000);
+		cur_ind = 1;
+		
+	}	
+	else if (target.id == "slideshow_2")
+	{
+		document.getElementById("slideshow_img").src=images_urls[1];
+		clearTimeout(timer);
+		timer = setTimeout("start_timer()", 4000);
+		cur_ind = 2;
+	}
+	else if (target.id == "slideshow_3")
+	{
+		document.getElementById("slideshow_img").src=images_urls[2];
+		clearTimeout(timer);
+		timer = setTimeout("start_timer()", 4000);
+		cur_ind = 3;
+	}
+	else if (target.id == "slideshow_4")
+	{
+		document.getElementById("slideshow_img").src=images_urls[3];
+		clearTimeout(timer);
+		timer = setTimeout("start_timer()", 4000);
+		cur_ind = 0;
+	}
+
+}
+</script>
+

@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility
+END
+ValidationTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/ValidationTest.php
+END
+SetTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/SetTest.php
+END
+ClassRegistryTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/ClassRegistryTest.php
+END
+XmlTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/XmlTest.php
+END
+StringTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/StringTest.php
+END
+SecurityTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/SecurityTest.php
+END
+FolderTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/FolderTest.php
+END
+CakeNumberTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/CakeNumberTest.php
+END
+FileTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/FileTest.php
+END
+ObjectCollectionTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/ObjectCollectionTest.php
+END
+CakeTimeTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/CakeTimeTest.php
+END
+HashTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/HashTest.php
+END
+DebuggerTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/DebuggerTest.php
+END
+InflectorTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/InflectorTest.php
+END
+SanitizeTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Utility/SanitizeTest.php
+END

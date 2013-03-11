@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command
+END
+BakeShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/BakeShellTest.php
+END
+ApiShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/ApiShellTest.php
+END
+CommandListShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/CommandListShellTest.php
+END
+AclShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/AclShellTest.php
+END
+TestShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/TestShellTest.php
+END
+SchemaShellTest.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/Case/Console/Command/SchemaShellTest.php
+END

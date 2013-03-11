@@ -1,0 +1,2 @@
+somehow got the rentboxmin to show 3+ with the rent max textbox saying $3.
+	- look at this URL: http://localhost/ubid/ubid/trunk/maps/index.php?minRent=0&maxRent=12%2C600&minBeds=3&maxBeds=3

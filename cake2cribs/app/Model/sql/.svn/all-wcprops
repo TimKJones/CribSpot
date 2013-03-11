@@ -1,0 +1,149 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/ubid/!svn/ver/222/cake2cribs/app/Model/sql
+END
+insertListings.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/148/cake2cribs/app/Model/sql/insertListings.sql
+END
+createFilterAnalytics.sql
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/118/cake2cribs/app/Model/sql/createFilterAnalytics.sql
+END
+createConversations.sql
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ubid/!svn/ver/222/cake2cribs/app/Model/sql/createConversations.sql
+END
+createClickAnalytics.sql
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/118/cake2cribs/app/Model/sql/createClickAnalytics.sql
+END
+createFavorites.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/89/cake2cribs/app/Model/sql/createFavorites.sql
+END
+Sublet.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/194/cake2cribs/app/Model/sql/Sublet.php
+END
+insertFavorites.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/83/cake2cribs/app/Model/sql/insertFavorites.sql
+END
+createMarkers.sql
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/ubid/!svn/ver/186/cake2cribs/app/Model/sql/createMarkers.sql
+END
+createImages.sql
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/ubid/!svn/ver/185/cake2cribs/app/Model/sql/createImages.sql
+END
+insertMarkers.sql
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/ubid/!svn/ver/148/cake2cribs/app/Model/sql/insertMarkers.sql
+END
+createUnreadMessages.sql
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/222/cake2cribs/app/Model/sql/createUnreadMessages.sql
+END
+createMessages.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/222/cake2cribs/app/Model/sql/createMessages.sql
+END
+createDevTables.sql
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ubid/!svn/ver/189/cake2cribs/app/Model/sql/createDevTables.sql
+END
+realtors
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/ubid/!svn/ver/135/cake2cribs/app/Model/sql/realtors
+END
+createSchools.sql
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/ubid/!svn/ver/213/cake2cribs/app/Model/sql/createSchools.sql
+END
+listings
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/ubid/!svn/ver/144/cake2cribs/app/Model/sql/listings
+END
+Thread.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/206/cake2cribs/app/Model/sql/Thread.php
+END
+insertSchools.sql
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/ubid/!svn/ver/212/cake2cribs/app/Model/sql/insertSchools.sql
+END
+table_reorganization.sql
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/144/cake2cribs/app/Model/sql/table_reorganization.sql
+END
+markers
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/ubid/!svn/ver/144/cake2cribs/app/Model/sql/markers
+END
+portOverUtilities.sql
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/ubid/!svn/ver/189/cake2cribs/app/Model/sql/portOverUtilities.sql
+END
+createRealtors.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/186/cake2cribs/app/Model/sql/createRealtors.sql
+END
+createListings.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/186/cake2cribs/app/Model/sql/createListings.sql
+END
+insertRealtors.sql
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/137/cake2cribs/app/Model/sql/insertRealtors.sql
+END

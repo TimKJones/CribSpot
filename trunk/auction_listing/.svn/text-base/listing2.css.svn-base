@@ -1,0 +1,117 @@
+<style type="text/css">
+#waste{}
+
+#container
+{
+	margin-left:20px;
+	margin-right:20px;
+}
+
+#item_pic
+{
+	float:left;
+	width:220px;
+	border:dotted 1px #000000;
+	padding: 15px;	
+	margin-right:20px;		
+}
+
+#title_div
+{
+	margin-left:275px;
+	margin-bottom:0px;
+}
+
+#time_div
+{
+	
+}
+
+#listing_time
+{
+	float:left;
+}
+
+#mid_column
+{
+	width:410px;
+	height:285px;
+	float:left;
+	margin-top: .5em;
+	margin-left:0px;
+}
+
+#mid_column_inner
+{
+	width:410px;
+	background-color:#E0F8F7;
+	float:left;
+	margin-top: .5em;
+	margin-left:0px;
+}
+
+.bid_box_label
+{
+	float:left;
+	display:block;
+	padding:.3em;
+	border: 1px solid blue;
+	width:400px;
+	text-align:center;
+	color:#FFFF00;
+	background-color:#0000FF;
+}
+
+.bid_first_col
+{
+	width:100px;
+}
+
+#bid_mid_col
+{
+	width:300px;
+}
+
+#buy_it_now_label
+{
+	margin-top:.5em;
+}
+
+#bid_entry_box
+{
+	width:75px;
+}
+
+
+#seller_column
+{
+	width;400px;
+	height:285px;
+	float:left;
+}
+
+
+#seller_left
+{
+	width:170px;
+	height:285px;
+	float:left;
+}
+
+#seller_right
+{
+	height:285px;
+	float:left;
+}
+
+#seller_pic
+{
+	width:150px;
+}
+
+#seller_name_label_wrap
+{
+	margin-top: .5em;
+}
+
+</style>

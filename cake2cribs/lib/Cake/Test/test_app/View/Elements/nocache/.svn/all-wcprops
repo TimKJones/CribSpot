@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/View/Elements/nocache
+END
+sub1.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/View/Elements/nocache/sub1.ctp
+END
+sub2.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/View/Elements/nocache/sub2.ctp
+END
+contains_nocache.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/View/Elements/nocache/contains_nocache.ctp
+END
+plain.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Test/test_app/View/Elements/nocache/plain.ctp
+END

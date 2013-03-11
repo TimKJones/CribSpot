@@ -1,0 +1,17 @@
+--- 
+applications: 
+  .: 
+    url: ${name}.${target-base}
+    framework: 
+      info: 
+        description: PHP Application
+        mem: 128M
+        exec: 
+      name: php
+    services: 
+      mysql-dev: 
+        type: mysql
+    name: dev2cribs
+    instances: 1
+    mem: 128M
+    infra: aws

@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console
+END
+ConsoleErrorHandler.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleErrorHandler.php
+END
+ConsoleInputSubcommand.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleInputSubcommand.php
+END
+ConsoleInputOption.php
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleInputOption.php
+END
+HelpFormatter.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/HelpFormatter.php
+END
+cake
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/cake
+END
+ShellDispatcher.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ShellDispatcher.php
+END
+TaskCollection.php
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/TaskCollection.php
+END
+ConsoleInput.php
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleInput.php
+END
+cake.bat
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/cake.bat
+END
+cake.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/cake.php
+END
+ConsoleOutput.php
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleOutput.php
+END
+ConsoleInputArgument.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleInputArgument.php
+END
+Shell.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/Shell.php
+END
+ConsoleOptionParser.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Console/ConsoleOptionParser.php
+END

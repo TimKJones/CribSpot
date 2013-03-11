@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Http
+END
+HttpResponse.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Http/HttpResponse.php
+END
+DigestAuthentication.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Http/DigestAuthentication.php
+END
+BasicAuthentication.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Http/BasicAuthentication.php
+END
+HttpSocket.php
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/ubid/!svn/ver/73/cake2cribs/lib/Cake/Network/Http/HttpSocket.php
+END

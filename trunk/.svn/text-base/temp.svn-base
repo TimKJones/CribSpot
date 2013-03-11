@@ -1,0 +1,10 @@
+<div id="main">
+		<ul id="navigation">	
+      <li class="menu_title">Shop By Category</li>
+      <li class="menu_item_li"><a class="menu_item" href="#">All Categories</a></li>
+      <li class="menu_item_li"><a class="menu_item"href="#">Tickets</a></li>
+      <li class="menu_item_li"><a class="menu_item"href="#">Textbooks</a></li>
+      <li class="menu_item_li"><a class="menu_item"href="#">Subletting</a></li>
+    </ul>	
+	</div>
+
