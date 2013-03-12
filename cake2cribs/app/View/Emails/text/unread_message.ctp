@@ -1,0 +1,1 @@
+<?php "You have a new message from $participant[first_name]"; ?>

@@ -16,11 +16,13 @@
 	
 	//Shows the base messages page
  	public function index(){
+ 		// die(debug($_SERVER['HTTP_HOST']));
  		$view_conversation = -1;
  		if(array_key_exists('view_conversation', $this->request->query)){
  			$view_conversation = intval($this->request->query['view_conversation']);
  		}
- 		$this->set('view_conversation', $view_conversation);
+ 		$this->set(array('view_conversation'=>$view_conversation));
+
  	}
 
  	//Create a new conversation and the first message thats in the conversation
@@ -52,32 +54,33 @@
  		$conversation = $this->Conversation->find('first', $options);
  		$participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
 
- 		// //send unread message email
-   //      $this->Email->smtpOptions = array(
-   //        'port'=>'587',
-   //        'timeout'=>'30',
-   //        'host' => 'smtp.sendgrid.net',
-   //        'username'=>'cribsadmin',
-   //        'password'=>'lancPA*travMInj',
-   //        'client' => 'a2cribs.com'
-   //      );
+ 		//send unread message email
+        $this->Email->smtpOptions = array(
+          'port'=>'587',
+          'timeout'=>'30',
+          'host' => 'smtp.sendgrid.net',
+          'username'=>'cribsadmin',
+          'password'=>'lancPA*travMInj',
+          'client' => 'a2cribs.com'
+        );
 
 
-   //      $this->Email->delivery = 'smtp';
-   //      $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
-   //      $this->Email->to = $participant['email'];
+        $this->Email->delivery = 'smtp';
+        $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
+        $this->Email->to = $participant['email'];
         
-   //      $this->Email->subject = 'New message received from ' . $user['first_name'];
-   //      $this->Email->template = 'unread_message';
-   //      $this->Email->sendAs = 'html';
-   //      $this->set(array(
-   //      	'participant'=> $user,
-   //      	'conv_id'=>  $conversation['Conversation']['conversation_id']
-   //      	)
-   //      );
+        $this->Email->subject = 'New message received from ' . $user['first_name'];
+        $this->Email->template = 'unread_message';
+        $this->Email->sendAs = 'html';
+        $this->set(array(
+        	'participant'=> $user,
+        	'conv_id'=>  $conversation['Conversation']['conversation_id'],
+        	'host_name' => $_SERVER['HTTP_HOST'],
+        	)
+        );
         
 
-   //      $this->Email->send();
+        $this->Email->send();
 
 
  		$json = json_encode(array('success'=>$msg_id > 0));
