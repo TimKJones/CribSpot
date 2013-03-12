@@ -281,7 +281,7 @@ class UsersController extends AppController {
     }
 
     public function verifyUniversity() {
-        
+
          if ($this->request->data['User']['email']!= '')
          {
             //finding user by email
@@ -306,7 +306,7 @@ class UsersController extends AppController {
                 $this->Email->delivery = 'smtp';
                 $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
                 $this->Email->to = $this->Auth->user('email');
-                $this->set('name', $this->Auth->user('first_name');
+                $this->set('name', $this->Auth->user('first_name'));
                 $this->Email->subject = 'Please verify your CribSpot account\'s university association!';
                 $this->Email->template = 'university_verification';
                 $this->Email->sendAs = 'both';
