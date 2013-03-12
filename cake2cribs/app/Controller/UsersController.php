@@ -346,7 +346,7 @@ class UsersController extends AppController {
                 }
                 else
                 {
-                    this->Session->setFlash('The university you are trying to associate with is not in our database. Please contact support.');
+                    $this->Session->setFlash('The university you are trying to associate with is not in our database. Please contact support.');
                 }
             } else {
                 $this->Session->setFlash(__('There was a problem associating your account.'));
