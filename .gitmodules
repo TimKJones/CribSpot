@@ -1,0 +1,3 @@
+[submodule "Plugin/TwitterBootstrap"]
+	path = Plugin/TwitterBootstrap
+	url = git://github.com/slywalker/TwitterBootstrap.git
