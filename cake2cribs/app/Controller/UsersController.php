@@ -285,7 +285,7 @@ class UsersController extends AppController {
         if ($this->User->field('university_verified') == 1)
         {
             $university = $this->User->University->findById($this->User->field('university_id'));
-            $this->Session->setFlash(__('You are already verified with '. $university['name']));
+            $this->Session->setFlash(__('You are already verified with '. $university['University']['name']));
             $this->redirect('/users');
         }
          if ($this->request->data['User']['email']!= '')
