@@ -40,8 +40,7 @@ class UsersController extends AppController {
                 //redirects to user page
 				//$this->redirect($this->Auth->redirect(''));
                 if ($this->Auth->user('verified') == 0) {
-                    $this->Auth->logout();
-                    $this->Session->setFlash(__('You need to verify your account before you can login. Please check your email'));
+                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
                 }
                 else {
                     $this->Session->setFlash(__('You were successfully logged in.'));
@@ -94,10 +93,10 @@ class UsersController extends AppController {
                   'client' => 'a2cribs.com'
                 );
                 $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
+                $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
                 $this->Email->to = $this->request->data['User']['email'];
                 $this->set('name', $this->request->data['User']['first_name']);
-                $this->Email->subject = 'Please verify your A2Cribs account';
+                $this->Email->subject = 'Please verify your CribSpot account';
                 $this->Email->template = 'registration';
                 $this->Email->sendAs = 'both';
                 $this->set('vericode', $this->request->data['User']['vericode']);
@@ -111,7 +110,7 @@ class UsersController extends AppController {
 		}
 	}
 
-    public function delete($id = null) {
+    /*public function delete($id = null) {
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
         }
@@ -126,6 +125,7 @@ class UsersController extends AppController {
         $this->Session->setFlash(__('User was not deleted'));
         $this->redirect(array('action' => 'index'));
     }
+    */
 
     public function resetpassword() {
 
@@ -264,7 +264,6 @@ class UsersController extends AppController {
     public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));
         $this->set('last_name', $this->Auth->user('last_name'));
-        $this->set('email', $this->Auth->user('email'));
 
          $id = $this->Auth->user('id');
         $this->User->id = $id;
@@ -315,18 +314,17 @@ class UsersController extends AppController {
                unset($this->request->data['User']);
                 $this->set('first_name', $this->Auth->user('first_name'));
                 $this->set('last_name', $this->Auth->user('last_name'));
-                $this->set('email', $this->Auth->user('email'));
+                
                
             }
             else if ($this->request->data['User']['password']!= '' )
             {
-                $this->User->save($this->request->data, true, array('first_name','last_name','email','password'));
+                $this->User->save($this->request->data, true, array('first_name','last_name','password'));
                 $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
                 $this->Session->setFlash('Your information was saved.');
                 unset($this->request->data['User']);
                 $this->set('first_name', $this->Auth->user('first_name'));
                 $this->set('last_name', $this->Auth->user('last_name'));
-                $this->set('email', $this->Auth->user('email'));
 
             }
 
