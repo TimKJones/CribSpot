@@ -35,7 +35,8 @@
         echo $this->Form->input('first_name', array('label' => 'First name', 'placeholder'=>$first_name));
         echo $this->Form->input('last_name', array('label' => 'Last name', 'placeholder'=>$last_name));
         echo $this->Form->input('password', array('label' => 'Change your password', 'placeholder' => 'Please enter a new password...', 'type' => 'password'));
-        echo $this->Form->input('email', array('label' => 'Email address', 'placeholder' =>$email));
+        //insert option for secondary email address
+        //echo $this->Form->input('email', array('label' => 'Email address', 'placeholder' =>$email));
     ?>
     </fieldset>
     <br />

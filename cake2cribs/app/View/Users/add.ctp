@@ -11,11 +11,11 @@
     <fieldset>
         <h3><?php echo __('Join Cribspot today.'); ?></h3>
         <br />
-        <?php echo $this->Form->input('username', array('label' => 'Choose your username'));
+        <?php 
+        echo $this->Form->input('email', array('label' => 'Email address'));
         echo $this->Form->input('password', array('label' => 'Create your password'));
         echo $this->Form->input('first_name', array('label' => 'First name'));
         echo $this->Form->input('last_name', array('label' => 'Last name'));
-        echo $this->Form->input('email', array('label' => 'Email address'));
         echo $this->Form->input('university_id', array('label' => 'Your university'));
     ?>
     </fieldset>

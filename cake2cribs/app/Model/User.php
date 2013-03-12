@@ -7,24 +7,6 @@ class User extends AppModel {
 
 	public $validate = array (
 		'user_id' => 'alphaNumeric', 
-		'username' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A username is required'
-				),
-			'between' => array(
-				'rule' => array('between',5,15),
-				'message' => 'Must be between 5 and 15 characters'
-				),
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric',
-				'message' => 'Usernames must only contain letters and numbers.'
-				),
-			'unique' => array(
-				'rule' => 'isUnique',
-				'message' => 'Username already taken. Please try another.'
-				)
-			),
 
 		'password' => array(
 			'required' => array(

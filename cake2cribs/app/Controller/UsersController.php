@@ -3,7 +3,16 @@
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-	public $components= array('Session','Auth','Email');
+	public $components= array('Session','Auth' => array(
+        'authenticate' => array(
+            'Form' => array(
+                'fields' => array('username' => 'email')
+                )
+            )
+        )
+
+
+        ,'Email');
 
 
 	public function beforeFilter() {
@@ -102,26 +111,6 @@ class UsersController extends AppController {
 		}
 	}
 
-	public function edit($id = null) {
-        $id = $this->Auth->user('id');
-        $this->User->id = $id;
-        $this->set('username', $this->Auth->user('username'));
-        if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
-        }
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'));
-                $this->redirect(array('action' => 'index'));
-            } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            }
-        } else {
-            $this->request->data = $this->User->read(null, $id);
-            unset($this->request->data['User']['password']);
-        }
-    }
-
     public function delete($id = null) {
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
@@ -219,7 +208,7 @@ class UsersController extends AppController {
                 $this->Session->write('User.group_id', $this->User->group_id);
                 */
                 //redirects to user page
-                $this->Session->setFlash(__('You rock.'));
+                $this->Session->setFlash(__('Password reset.'));
                 $this->redirect($this->Auth->redirect());
             } else {
                 $this->Session->setFlash(__('Invalid login, try again'));
@@ -273,7 +262,6 @@ class UsersController extends AppController {
     }
 
     public function account() {
-        $this->set('username', $this->Auth->user('username'));
         $this->set('first_name', $this->Auth->user('first_name'));
         $this->set('last_name', $this->Auth->user('last_name'));
         $this->set('email', $this->Auth->user('email'));
@@ -321,11 +309,10 @@ class UsersController extends AppController {
             //execute save based on this field
             if($this->request->data['User']['password'] == '')
             {
-                $this->User->save($this->request->data, true, array('first_name','last_name','username','email'));
+                $this->User->save($this->request->data, true, array('first_name','last_name','email'));
                $this->Session->setFlash('Your information was saved.');
                $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
                unset($this->request->data['User']);
-               $this->set('username', $this->Auth->user('username'));
                 $this->set('first_name', $this->Auth->user('first_name'));
                 $this->set('last_name', $this->Auth->user('last_name'));
                 $this->set('email', $this->Auth->user('email'));
@@ -333,11 +320,10 @@ class UsersController extends AppController {
             }
             else if ($this->request->data['User']['password']!= '' )
             {
-                $this->User->save($this->request->data, true, array('first_name','last_name','username','email','password'));
+                $this->User->save($this->request->data, true, array('first_name','last_name','email','password'));
                 $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
                 $this->Session->setFlash('Your information was saved.');
                 unset($this->request->data['User']);
-                $this->set('username', $this->Auth->user('username'));
                 $this->set('first_name', $this->Auth->user('first_name'));
                 $this->set('last_name', $this->Auth->user('last_name'));
                 $this->set('email', $this->Auth->user('email'));
