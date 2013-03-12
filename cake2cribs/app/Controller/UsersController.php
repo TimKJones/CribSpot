@@ -289,6 +289,7 @@ class UsersController extends AppController {
      
             //set password reset token to a unique and random string
             $this->request->data['User']['vericode'] = uniqid(rand(),true);
+
             //save the password reset token to the request data
             $this->User->saveField('vericode', $this->request->data['User']['vericode']);
          
@@ -321,7 +322,7 @@ class UsersController extends AppController {
         if ($this->request->query['id']!='')
         {
             $email = $this->request->query['email'];
-
+            $this->User->id = $this->request->query['id'];
             if ($this->User->field('id') != $this->request->query['id']) {
                 throw new NotFoundException(__('There was an error verifying your account.'));
                 //$this->redirect('login');
