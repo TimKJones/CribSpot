@@ -87,6 +87,7 @@ class User extends AppModel {
 
 			),
 		'verified' => 'boolean',
+		'university_verified' => 'boolean',
 		'vericode' => 'alphaNumeric',
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',

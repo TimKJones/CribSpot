@@ -245,6 +245,20 @@ class UsersController extends AppController {
     	{
         // Update the active flag in the database
         $this->User->saveField('verified', 1);
+        //check if their registration email is also a university associated email
+        preg_match('@(.*)$', $this->User->field('email'),$matches);
+
+        $userEmailDomainString = $matches[0];
+        $universities = $this->User->University->findByDomain($userEmailDomainString);
+        if ($universities)
+        {
+            $this->User->saveField('university_verified',1);
+            $this->User->saveField('university_id', $universities['University']['id']);
+        }
+        else
+        {
+            $this->User->saveField('university_verified',0);
+        }
 
         // Let the user know they can now log in!
         $this->Session->setFlash('Your account has been activated, please log in.');
