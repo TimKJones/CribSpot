@@ -281,7 +281,12 @@ class UsersController extends AppController {
     }
 
     public function verifyUniversity() {
-
+        $this->User->id = $this->Auth->user('id');
+        if ($this->User->field('university_verified') == 1)
+        {
+            $this->Session->setFlash(__('You are already verified with a university.'));
+            $this->redirect('/users');
+        }
          if ($this->request->data['User']['email']!= '')
          {
             //finding user by email
@@ -289,10 +294,10 @@ class UsersController extends AppController {
      
             //set password reset token to a unique and random string
             $this->request->data['User']['vericode'] = uniqid(rand(),true);
-            $this->User->id = $this->Auth->user('id');
+
             //save the password reset token to the request data
             $this->User->saveField('vericode', $this->request->data['User']['vericode']);
-         
+            $this->User->id = $this->Auth->user('id');
             
             
                 //send verification email
