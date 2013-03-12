@@ -261,6 +261,35 @@ class UsersController extends AppController {
     	}
     }
 
+    public function verifyUniversity() {
+        $this->User->id = $this->request->query['id'];
+        $vericode = $this->request->query['vericode'];
+        if (!$this->User->exists()) {
+            throw new NotFoundException(__('There was an error verifying your university'));
+            $this->redirect('login');
+        }
+        
+        if ($this->User->exists() && ($vericode == $this->User->field('vericode')))
+        {
+        // Update the active flag in the database
+        $this->User->saveField('verified', 1);
+
+        // Let the user know they can now log in!
+        $this->Session->setFlash('Your account has been activated, please log in.');
+        $this->redirect('login');
+        }
+        else if ($this->User->exists() && $this->User->field('verified') == 1)
+        {
+            $this->Session->setFlash('Your user account is already confirmed.');
+            $this->redirect('login');
+        }
+        else {
+            $this->Session->setFlash('There was an error verifying your account.');
+            $this->redirect('login');
+        }
+
+
+    }
     public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));
         $this->set('last_name', $this->Auth->user('last_name'));
