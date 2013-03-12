@@ -245,9 +245,9 @@ class UsersController extends AppController {
         // Update the active flag in the database
         $this->User->saveField('verified', 1);
         //check if their registration email is also a university associated email
-        preg_match('@(.*)$', $this->User->field('email'),$matches);
+        preg_match('/@(.*)/', $this->User->field('email'),$matches);
 
-        $userEmailDomainString = $matches[0];
+        $userEmailDomainString = $matches[1];
         $universities = $this->User->University->findByDomain($userEmailDomainString);
         if ($universities)
         {
