@@ -24,6 +24,10 @@ class UsersController extends AppController {
 	}
 
 	public function login() {
+        if ($this->Auth->loggedIn())
+        {
+            $this->redirect('/users');
+        }
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
                 /*
@@ -41,6 +45,7 @@ class UsersController extends AppController {
 				//$this->redirect($this->Auth->redirect(''));
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
+                    $this->redirect('/users');
                 }
                 else {
                     $this->Session->setFlash(__('You were successfully logged in.'));
@@ -141,8 +146,9 @@ class UsersController extends AppController {
 
 
                 if (!$this->User->exists()) {
-                    throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
-                    $this->redirect('resetpassword');
+                    //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
+                    $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
+                    $this->redirect('/users/resetpassword');
                 }
                 //set password reset token to a unique and random string
                 $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
@@ -275,33 +281,91 @@ class UsersController extends AppController {
     }
 
     public function verifyUniversity() {
-        $this->User->id = $this->request->query['id'];
-        $vericode = $this->request->query['vericode'];
-        if (!$this->User->exists()) {
-            throw new NotFoundException(__('There was an error verifying your university'));
-            $this->redirect('login');
-        }
         
-        if ($this->User->exists() && ($vericode == $this->User->field('vericode')))
+         if ($this->request->data['User']['email']!= '')
+         {
+            //finding user by email
+                //$this->User->read(null, $this->request->data['User']['email']);
+     
+            //set password reset token to a unique and random string
+            $this->request->data['User']['vericode'] = uniqid(rand(),true);
+            //save the password reset token to the request data
+            $this->User->saveField('vericode', $this->request->data['User']['vericode']);
+         
+            
+            
+                //send verification email
+                $this->Email->smtpOptions = array(
+                  'port'=>'587',
+                  'timeout'=>'30',
+                  'host' => 'smtp.sendgrid.net',
+                  'username'=>'cribsadmin',
+                  'password'=>'lancPA*travMInj',
+                  'client' => 'a2cribs.com'
+                );
+                $this->Email->delivery = 'smtp';
+                $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
+                $this->Email->to = $this->Auth->user('email');
+                $this->set('name', $this->Auth->user('first_name');
+                $this->Email->subject = 'Please verify your CribSpot account\'s university association!';
+                $this->Email->template = 'university_verification';
+                $this->Email->sendAs = 'both';
+                $this->set('vericode', $this->request->data['User']['vericode']);
+                $this->set('email', $this->request->data['User']['email']);
+                $this->set('id',$this->Auth->user('id'));
+                $this->Email->send();
+                $this->Session->setFlash(__('Please check your email for a verification link to verify your university.'));
+                $this->redirect('/users');
+         }
+        
+        if ($this->request->query['id']!='')
         {
-        // Update the active flag in the database
-        $this->User->saveField('verified', 1);
+            $email = $this->request->query['email'];
 
-        // Let the user know they can now log in!
-        $this->Session->setFlash('Your account has been activated, please log in.');
-        $this->redirect('login');
-        }
-        else if ($this->User->exists() && $this->User->field('verified') == 1)
-        {
-            $this->Session->setFlash('Your user account is already confirmed.');
-            $this->redirect('login');
+            if ($this->User->field('id') != $this->request->query['id']) {
+                throw new NotFoundException(__('There was an error verifying your account.'));
+                //$this->redirect('login');
+                $this->redirect('/users');
+            }
+             else if ($this->Auth->user('university_verified') == 1)
+            {
+                $this->Session->setFlash('You cannot associate yourself with more than one university. Please contact support.');
+                $this->redirect('/users');
+            }
+            else if( $this->request->query['vericode'] == $this->User->field('vericode'))
+            {
+                preg_match('/@(.*)/', $this->request->query['email'],$matches);
+
+                $userEmailDomainString = $matches[1];
+                $universities = $this->User->University->findByDomain($userEmailDomainString);
+                if ($universities)
+                {
+                    $this->User->saveField('university_verified',1);
+                    $this->User->saveField('university_id', $universities['University']['id']);
+                    $this->Session->setFlash('You have been associated with '. $universities['University']['name'].'.');
+                }
+                else
+                {
+                    this->Session->setFlash('The university you are trying to associate with is not in our database. Please contact support.');
+                }
+            } else {
+                $this->Session->setFlash(__('There was a problem associating your account.'));
+            }
+
+                
+                //$this->Auth->autoRedirect = false;
+                //$this->request->data['User']['username'] = $this->User->username;
+                //$this->request->data['User']['password'] = $this->User->password;
+                //$this->Auth->login();
+                //$this->redirect('account');
+                //$this->redirect(array('action' => 'index'));
+
         }
         else {
-            $this->Session->setFlash('There was an error verifying your account.');
-            $this->redirect('login');
+            $this->Session->setFlash('There was a problem verifying the account.');
         }
 
-
+        
     }
     public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));
