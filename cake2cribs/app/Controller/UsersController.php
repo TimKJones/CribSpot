@@ -208,8 +208,8 @@ class UsersController extends AppController {
                 $this->Session->write('User.group_id', $this->User->group_id);
                 */
                 //redirects to user page
-                $this->Session->setFlash(__('Password reset.'));
-                $this->redirect($this->Auth->redirect());
+                $this->Session->setFlash(__('Please change your password.'));
+                $this->redirect('/users/account');
             } else {
                 $this->Session->setFlash(__('Invalid login, try again'));
             }
@@ -224,7 +224,7 @@ class UsersController extends AppController {
 
             }
             else {
-                $this->Session->setFlash('Invalid authentication token.');
+                $this->Session->setFlash('There was a problem verifying the account.');
             }
         }
         
