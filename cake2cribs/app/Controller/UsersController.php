@@ -73,8 +73,7 @@ class UsersController extends AppController {
 	}
 
 	public function add() {
-        $universities = $this->User->University->find('list');
-        $this->set(compact('universities'));
+
 		if ($this->request->is('post')) {
 			$this->User->create();
 			$this->request->data['User']['verified'] = 0;

@@ -16,7 +16,6 @@
         echo $this->Form->input('password', array('label' => 'Create your password'));
         echo $this->Form->input('first_name', array('label' => 'First name'));
         echo $this->Form->input('last_name', array('label' => 'Last name'));
-        echo $this->Form->input('university_id', array('label' => 'Your university'));
     ?>
     </fieldset>
 <?php echo $this->Form->end(__('Create my account')); ?>
