@@ -1,4 +1,4 @@
-<div id = 'messaging_window' class = 'messages'>
+<div id = 'messaging_window'>
 
 	<div class = 'row-fluid' id = 'participant_info_short'>
 		<div class ='span8'>

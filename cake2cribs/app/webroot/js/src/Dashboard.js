@@ -18,16 +18,15 @@
         content = $('.' + class_name + '-content');
         $(element).click(function(event) {
           var show_content;
-          if ($(event.target).hasClass('toggle-drop-down')) {
+          if (content_header.next('.drop-down').length > 0) {
             show_content = content_header.next('.drop-down').is(':hidden');
             return _this.SlideDropDown(content_header, show_content);
           } else {
-            _this.SlideDropDown(content_header, true);
-            return _this.ShowHideContent(content, true);
+            return _this.ShowContent(content, true);
           }
         });
         return typeof content_header.next === "function" ? content_header.next('.drop-down').find('.drop-down-list').click(function() {
-          return _this.ShowHideContent(content, true);
+          return _this.ShowContent(content);
         }) : void 0;
       });
     };
@@ -42,6 +41,9 @@
     Dashboard.SlideDropDown = function(content_header, show_content) {
       var dropdown, toggle_icon;
       dropdown = content_header.next('.drop-down');
+      if (dropdown.length === 0) {
+        return;
+      }
       toggle_icon = content_header.children('i')[0];
       $(toggle_icon).toggleClass('icon-caret-right', !show_content).toggleClass('icon-caret-down', show_content);
       $(content_header).toggleClass('shadowed', show_content).toggleClass('expanded', show_content).toggleClass('minimized', !show_content);
@@ -52,8 +54,9 @@
       }
     };
 
-    Dashboard.ShowHideContent = function(content, show) {
-      return content.toggleClass('hidden', !show);
+    Dashboard.ShowContent = function(content) {
+      content.siblings().addClass('hidden');
+      return content.removeClass('hidden');
     };
 
     return Dashboard;

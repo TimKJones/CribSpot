@@ -1,5 +1,5 @@
 <?php
-	class DashboardController extends AppController {
+	class AccountController extends AppController {
 		public $helpers = array('Html');
 		public $uses = array('User');
 		public $components= array('Session','Auth');
@@ -13,6 +13,5 @@
 	    	}
 		}
 		
-		//Shows the base dashboard page
 	 	public function index(){}
 	}

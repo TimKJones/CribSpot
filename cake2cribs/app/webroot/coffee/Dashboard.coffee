@@ -12,22 +12,16 @@ class A2Cribs.Dashboard
 			content = $('.' + class_name + '-content')
 			
 			$(element).click (event)=>
-				if $(event.target).hasClass 'toggle-drop-down'
-					# the drop down toggle was clicked
-					# Just toggle the dropdown for this header
+				if content_header.next('.drop-down').length > 0
+					#Toggle Drop down
 					show_content = content_header.next('.drop-down').is ':hidden'
-					@SlideDropDown content_header, show_content
+					@SlideDropDown content_header, show_content	
 				else
-					# Some other part of the header was clicked so
-					# if that headers middle/right content is not visible 
-					# display it as well as expand the drop down
-
-					@SlideDropDown content_header, true
-					@ShowHideContent content, true
+					@ShowContent content, true
 
 			content_header.next?('.drop-down')
 				.find('.drop-down-list').click =>
-					@ShowHideContent content, true				
+					@ShowContent content			
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window
@@ -40,7 +34,7 @@ class A2Cribs.Dashboard
 	@SlideDropDown:(content_header, show_content)->
 		
 		dropdown = content_header.next('.drop-down')
-		if not dropdown?
+		if dropdown.length == 0
 			return
 
 		toggle_icon = content_header.children('i')[0] #arrow icon
@@ -59,5 +53,7 @@ class A2Cribs.Dashboard
 		else
 			dropdown.slideUp 'fast'
 
-	@ShowHideContent:(content, show)->
-		content.toggleClass 'hidden', !show
+	@ShowContent:(content)->
+		content.siblings().addClass 'hidden'
+		content.removeClass 'hidden'
+
