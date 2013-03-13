@@ -9,7 +9,7 @@
 
 		/* Hidden Elements */
 		//echo $this->element('tooltips');
-		//echo $this->element('popups');
+		echo $this->element('popups');
 	echo '</div>';
 
 	/* Create and initialize the map */
