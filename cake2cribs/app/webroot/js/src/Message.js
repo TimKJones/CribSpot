@@ -43,8 +43,6 @@
       return $('.messages-content').toggleClass('hidden', !this.DropDownVisible);
     };
 
-    Messages.toggleMessageContent = function() {};
-
     Messages.MessageScrollingHandler = function(event) {
       if ($("#current_conversation").scrollTop() > 20 || this.NumMessagePages === 0) {
         return;

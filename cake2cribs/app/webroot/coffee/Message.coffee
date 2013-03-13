@@ -44,12 +44,6 @@ class A2Cribs.Messages
 		$('#conversations_list_header').toggleClass 'minimized', !@DropDownVisible
 		$('.messages-content').toggleClass 'hidden', !@DropDownVisible
 
-		
-
-	@toggleMessageContent:()->
-
-
-
 
 	@MessageScrollingHandler:(event)->
 		#  Note: There is a race condition here where loadMessages will fail out a couple times
