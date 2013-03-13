@@ -18,6 +18,11 @@ class School extends AppModel {
 		'ne_lat' => 'decimal',
 		'ne_long' => 'decimal'
 	);
+
+	public function getSchools()
+	{
+		return $this->find('all');
+	}
 }
 
 ?> 

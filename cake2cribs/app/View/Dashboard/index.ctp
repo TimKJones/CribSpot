@@ -1,7 +1,9 @@
 <?php echo $this->element('header'); ?>
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
+<?php echo $this->Html->script('src/Message'); ?>
 <?php echo $this->Html->script('bootstrap'); ?>
+
 <?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account'); ?>
