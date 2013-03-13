@@ -3,10 +3,10 @@
 	/* Eventually switch to css */
 	echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/popover.less?','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false));
 
 	/* Datepicker and slider css */
 	echo $this->Html->css('datepicker');
-	echo $this->Html->css('slider');
 
 	/* Datepicker and slider javascript */
 	echo $this->Html->script('bootstrap-datepicker');
@@ -51,7 +51,7 @@
 							&nbsp;to&nbsp;
 							<input id="endDate" class="date-picker" title="End Date" rel="tooltip" data-placement="bottom" type="text" placeholder="End Date" readonly></td>
 						<td>&nbsp;&nbsp;Price: 
-							<input id="price-filter" rel="popover" data-placement="bottom" type="text" value="$0-$2000+" data-content="slider-div" data-html="true" readonly></td>
+							<div id="slider-div"><input id="price-filter" rel="popover" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
 						<td>
 							&nbsp;&nbsp;Beds: <select>
 								<option>1</option>
@@ -127,9 +127,7 @@
 		<label class="checkbox"><input type="checkbox">Utilities Included</label>
 		<label class="checkbox"><input type="checkbox">No Security Deposit</label>
 	</div>
-	<div id="slider-div">
-		<input type="text" data-slider-min="0" data-slider-max="2000" data-slider-step="100" data-slider-value="[0,2000]" id="slider">
-	</div>
+	<?= $this->element('slider'); ?>
 </div>
 
 <?php
@@ -137,6 +135,5 @@
 		$("[rel=\'tooltip\']").tooltip();
 		$("[rel=\'popover\']").popover();	
 		$(".date-picker").datepicker();
-		$("#slider").slider();
 	');
 ?>
