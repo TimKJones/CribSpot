@@ -11,8 +11,8 @@ class A2Cribs.Messages
 		$('#refresh_content').click =>
 			@refresh()
 
-		$('#conversations_list_header').click =>
-			@toggleDropdown()
+		# $('#conversations_list_header').click =>
+		# 	@toggleDropdown()
 
 		$('#current_conversation').scroll (event) =>
 			@MessageScrollingHandler(event)
@@ -20,29 +20,11 @@ class A2Cribs.Messages
 		$('#meaning').click =>
 			$('#hidden-meaning').fadeToggle()
 
-		$(window).resize =>
-			@SizeWidget()			
-
-		@SizeWidget()
-
 		# Refresh (Load) all the ajax content
 		@refresh()
 
-	@SizeWidget:()->
-		# Strech the widget to the bottom of the window
-		# if(window.innerHeight < 600)
-			# Minimum height the widget should be
-			# return
 
-		messages_widget = $('#messages_widget')
-		message_reply = $('#message_reply')
-		main_content = $('#main_content')
-		middle_content = $('#middle_content')
-		participant_info_short = $('#participant_info_short')
-
-		main_content.css 'height', (window.innerHeight - main_content.offset().top) + 'px'
 		
-	
 
 	#Alligns the bottom of the message list item provided to the bottom of the message window
 	@ScrollMessagesTo:(mli)->
@@ -54,10 +36,19 @@ class A2Cribs.Messages
 
 	@toggleDropdown:()->
 		@DropDownVisible = !@DropDownVisible
-		$('#conversation_drop_down').slideToggle('fast')
+		$('#conversation_drop_down').slideToggle 'fast'
 		$('#toggle-conversations i').toggleClass 'icon-caret-right', !@DropDownVisible
 		$('#toggle-conversations i').toggleClass 'icon-caret-down', @DropDownVisible
 		$('#conversations_list_header').toggleClass 'shadowed', @DropDownVisible
+		$('#conversations_list_header').toggleClass 'expanded', @DropDownVisible
+		$('#conversations_list_header').toggleClass 'minimized', !@DropDownVisible
+		$('.messages-content').toggleClass 'hidden', !@DropDownVisible
+
+		
+
+	@toggleMessageContent:()->
+
+
 
 
 	@MessageScrollingHandler:(event)->
@@ -164,6 +155,7 @@ class A2Cribs.Messages
 
 		# @CurrentConversation = parseInt SelectedConversationDiv.attr 'convid'
 		@refreshParticipantInfo()
+		@refreshUnreadCount()
 		@refreshMessages()
 
 	@loadMessages:(page, align_bottom=false)->

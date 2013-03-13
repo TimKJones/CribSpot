@@ -48,6 +48,7 @@
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/Message');
 		echo $this->Html->script('knockout.js');
+
 		//echo $this->Html->script('src/Message');
 
 		echo '<title>A2 Cribs | Ann Arbor Student Housing, Apartments, and Subleases</title>';
@@ -70,6 +71,7 @@
 		echo $this->Html->css('popup');
 		echo $this->Html->css('tooltip');
 		echo $this->Html->css('jquery-ui');
+		echo $this->Html->css('font-awesome'); // Used for the icons
 		/* Fetch data */
 		echo $this->fetch('meta');
 		echo $this->fetch('css');

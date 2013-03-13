@@ -177,7 +177,5 @@
  		// Do we want to actually delete the messages or just hide them?
 
  	}
-
- }
-
+}
  ?>
