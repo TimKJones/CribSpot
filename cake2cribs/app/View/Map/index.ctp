@@ -2,13 +2,14 @@
 	echo '<div id="container">';
 		echo $this->element('header');
 		echo $this->element('map');
-		echo $this->element('filter');
-		echo $this->element('legend');
-		echo $this->element('favorites');
+		echo $this->element('sidebar');
+		echo $this->element('login');
+		//echo $this->element('legend');
+		//echo $this->element('favorites');
 
 		/* Hidden Elements */
-		echo $this->element('tooltips');
-		echo $this->element('popups');
+		//echo $this->element('tooltips');
+		//echo $this->element('popups');
 	echo '</div>';
 
 	/* Create and initialize the map */
