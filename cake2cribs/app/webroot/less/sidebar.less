@@ -1,0 +1,235 @@
+@soft-gray: #F8F8F8;
+@soft-blue: #499bea;
+@vib-green: #00BB00;
+@border-gray: #D8D8D8;
+@dark-gray: gray;
+@fb-blue: #0066FF;
+
+.side-bar
+{
+	position: absolute;
+	max-height: 80%;
+	top: 100px;
+	right: 20px;
+	width: 325px; 
+	.rounded-corners(3px);
+	border-width: 1px;
+	border-color: #303030;
+	border-style: solid;
+	background-color: white;
+	padding: 10px;
+
+	-webkit-box-shadow: 10px 10px 20px gray;
+	-moz-box-shadow: 10px 10px 20px gray;
+	box-shadow: 10px 10px 20px gray;
+}
+
+.rounded-corners (@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	-ms-border-radius: @radius;
+	-o-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.list-border (@bcolor: @border-gray)
+{
+	border-top: 1px solid @bcolor;
+	border-right: 1px solid @bcolor;
+	border-left: 1px solid @bcolor;
+}
+
+.featured-listings-container
+{
+	.rounded-corners;
+	box-shadow: 2px 2px 10px #D0D0D0;
+	-webkit-box-shadow: 2px 2px 10px #D0D0D0;
+	-moz-box-shadow: 2px 2px 10px #D0D0D0;
+	@descrip-width: 175px;
+	li
+	{
+		height: 80px;
+		.thumbnail
+		{
+			float: left;
+			height: 70px;
+			width: 70px;
+			img
+			{
+				height:100%;
+			}
+		}
+		.feat-middle
+		{
+			display: inline-block;
+			margin-top: 8px;
+			margin-left: 8px;
+		}
+		.feat-description
+		{
+			font-size: 13px;
+			line-height: 16px;
+			max-width: @descrip-width;
+		}
+		.feat-right
+		{
+			display: inline-block;
+			float: right;
+			margin-top: 8px;
+			margin-right: 8px;
+		}
+		.feat-name
+		{
+			font-size: 16px;
+			color: @soft-blue;
+			font-weight: bolder;
+			margin-bottom: 2px;
+			max-width: @descrip-width;
+		}
+		.feat-price
+		{
+			font-size: 16px;
+			color: @vib-green;
+			font-weight: bolder;
+			float: right;
+			margin-bottom: 2px;
+		}
+		.feat-friends
+		{
+			display: inline;
+			font-weight: bold;
+		}
+		.icon-facebook-sign
+		{
+			color:@fb-blue;
+			margin-left: 2px;
+		}
+	}
+}
+
+.side-bar
+{
+	@radius: 5px;
+	li
+	{
+		background-color: @soft-gray;
+		padding: 2px;
+		.list-border;
+		&:first-child
+		{
+			-webkit-border-top-left-radius: @radius;
+			-moz-border-top-left-radius: @radius;
+			-ms-border-top-left-radius: @radius;
+			-o-border-top-left-radius: @radius;
+			border-top-left-radius: @radius;
+
+			-webkit-border-top-right-radius: @radius;
+			-moz-border-top-right-radius: @radius;
+			-ms-border-top-right-radius: @radius;
+			-o-border-top-right-radius: @radius;
+			border-top-right-radius: @radius;
+		}
+		&:last-child
+		{
+			-webkit-border-bottom-left-radius: @radius;
+			-moz-border-bottom-left-radius: @radius;
+			-ms-border-bottom-left-radius: @radius;
+			-o-border-bottom-left-radius: @radius;
+			border-bottom-left-radius: @radius;
+
+			-webkit-border-bottom-right-radius: @radius;
+			-moz-border-bottom-right-radius: @radius;
+			-ms-border-bottom-right-radius: @radius;
+			-o-border-bottom-right-radius: @radius;
+			border-bottom-right-radius: @radius;
+
+			border-bottom: 1px solid @border-gray;			
+		}
+	}
+}
+
+.filtered-listings-container
+{
+	li
+	{
+		padding: 0;
+		height: 45px;
+		background-color: #F0F0F0;
+		.filt-left
+		{
+			height: 100%;
+			width: 60px;
+			display: inline-block;
+			border-right: 1px solid @border-gray;
+			float: left;
+			position: relative;
+			.filt-type
+			{
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				text-align: center;
+				background-color: gray;
+				font-size: 12px;
+				line-height: 16px;
+				height: 16px;
+			}
+			.filt-price
+			{
+				margin-top: 6px;
+				text-align: center;
+				font-size: 16px;
+				font-weight: bold;
+			}
+		}
+		.filt-middle
+		{
+			display: inline-block;
+			line-height: 16px;
+			margin-top: 8px;
+			margin-left: 8px;
+			.filt-name
+			{
+				font-size: 13px;
+			}
+			.filt-desc
+			{
+				font-size: 12px;
+			}
+		}
+		.filt-right
+		{
+			display: inline-block;
+			float: right;
+			margin-top: 12px;
+			margin-right: 10px;
+			.filt-friends
+			{
+				display: inline-block;
+				margin-right: 2px;
+				font-weight: bold;
+			}
+		}
+		&:hover
+		{
+			background-color: white;
+			box-shadow: 2px 2px 10px gray;
+			-webkit-box-shadow: 2px 2px 10px gray;
+			-moz-box-shadow: 2px 2px 10px gray;
+			.filt-price
+			{
+				color: @vib-green;
+			}
+			.icon-facebook-sign
+			{
+				color: @fb-blue;
+			}
+			.filt-type
+			{
+				color: white;
+				background-color: #303030;
+			}
+		}
+	}
+}

@@ -102,10 +102,38 @@ class A2Cribs.Map
 		@AddressToMarkerIdMap = [] #Used to determine if searched address is property in database
 
 		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
+		style = [
+			{
+				"featureType": "landscape",
+				"stylers": [
+					{ "hue": "#005eff" }
+				]
+			},{
+				"featureType": "road",
+				"stylers": [
+					{ "hue": "#00ff19" }
+				]
+			},{
+				"featureType": "water",
+				"stylers": [
+					{ "saturation": 99 }
+				]
+			},{
+				"featureType": "poi",
+				"stylers": [
+					{ "hue": "#0044ff" },
+					{ "lightness": 32 }
+				]
+			}
+		]
 		@MapOptions =
   			zoom: 15
   			center: A2Cribs.Map.AnnArborCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
+  			styles: style
+  			panControl: false
+  			streetViewControl: false
+  			mapTypeControl: false
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
 		mcOptions =

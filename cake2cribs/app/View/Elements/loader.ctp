@@ -1,3 +1,7 @@
+<?php
+	echo $this->Html->css('/less/loader.less?','stylesheet/less', array('inline' => false));
+?>
+
 <div id="loader">
 	<img src="/img/popup/loader.gif">
 </div>
