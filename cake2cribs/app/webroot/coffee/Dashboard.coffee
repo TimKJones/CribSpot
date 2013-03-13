@@ -40,6 +40,9 @@ class A2Cribs.Dashboard
 	@SlideDropDown:(content_header, show_content)->
 		
 		dropdown = content_header.next('.drop-down')
+		if not dropdown?
+			return
+
 		toggle_icon = content_header.children('i')[0] #arrow icon
 		$(toggle_icon)
 			.toggleClass('icon-caret-right', !show_content)
