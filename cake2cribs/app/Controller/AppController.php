@@ -68,7 +68,8 @@ class AppController extends Controller {
 		//$this->Auth->allow('Landing', 'index2');
 		//$this->Auth->allow('Landing', 'index3');
 		//$this->Auth->allow('Landing', 'index4');
-		//$this->Auth->allow('verify', 'index');
+		$this->Auth->allow('verify', 'index');
+		$this->Auth->allow('verify', 'TwitterVerify');
 		//$this->Auth->allow('verify', 'Callback');
 		//$this->Auth->allow('user','resetpassword');
 		//$this->Auth->allow('sublet', 'ajax_add');

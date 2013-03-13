@@ -66,9 +66,6 @@ class A2Cribs.PhotoManager
 			$("#add" + (i + 2)).css("visibility", "hidden")
 			$("#" + (i + 2)).css("visibility", "visible")
 
-	@SubmitPhoto: ->
-		$("#ImageAddForm").submit()
-
 	@PreviewImage: (obj)->
 		file = $("#" + obj.id)[0]
 		if obj.id == "0"
@@ -77,12 +74,15 @@ class A2Cribs.PhotoManager
 			A2Cribs.PhotoManager.CurrentPhotoTarget = "secondary"
 		if file.files
 			file = file.files[0]
+			if !A2Cribs.PhotoManager.IsAcceptableFileType(file.name)
+				return
 			fr = new FileReader
-			A2Cribs.PhotoManager.CurrentFileNumber = parseInt obj.id.substring(obj.id.length - 1)
 			fr.onloadend = A2Cribs.PhotoManager.SetImage
 			fr.readAsDataURL(file)
-		else 
+		else
 			file = file.value
+			if !A2Cribs.PhotoManager.IsAcceptableFileType(file)
+				return
 			A2Cribs.PhotoManager.SetImage(file)
 
 	@SetImage: (img) ->
@@ -147,6 +147,18 @@ class A2Cribs.PhotoManager
 	@SubmitCaption: ->
 		caption = $("#captionInput").val()
 		alert "submitting " + caption
+
+	@IsAcceptableFileType: (fileName) ->
+		indexOfDot = fileName.indexOf ".", fileName.length - 4
+		if indexOfDot == -1
+			return false
+
+		fileType = fileName.substring(indexOfDot + 1)
+		if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
+			return true
+
+		alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
+		return false
 	###
 	if statusText == 'success'
 		if data.img != ''
@@ -156,4 +168,7 @@ class A2Cribs.PhotoManager
 			document.getElementById('message').innerHTML = data.error;
 	else
 		document.getElementById('message').innerHTML = 'Unknown error!';###
+
+	@testfunc: (data) ->
+		x = 5
 

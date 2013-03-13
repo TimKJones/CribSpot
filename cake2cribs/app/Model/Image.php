@@ -21,34 +21,43 @@ class Image extends AppModel {
 	Move image to new location in img/sublets/[sublet_id]_img#
 	returns true on success, false on failure
 	*/
-	public function AddImage($listing_id, $files, $user_id)
+	public function AddImage($listing_id, $file, $user_id)
 	{
+		CakeLog::write("fileDebug", "file data: " . print_r($file, true));
 		$relative_path = 'img/sublets/' . $listing_id;
 		$folder = WWW_ROOT . $relative_path;
 		$errors = array();
 
 		// handle primary image
-		if ($files[0] != null)
+		if ($file != null)
 		{
-			if ($files[0]['size'] > $this->MAX_FILE_SIZE)
+			if ($file['size'][0] > $this->MAX_FILE_SIZE)
 			{
 				array_push($errors, array("primary" => "FILE_TOO_LARGE"));
 			}
 			else
 			{
-				$fileType = substr($files[0]['name'], strrpos($files[0]['name'], '.') + 1);
-				$name = "primary." . $fileType;
+				$fileType = substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
+				CakeLog::write('imageDebug', $fileType);
+				if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
+					array_push($errors, "INVALID_FILE_TYPE");
+
+				$name = uniqid() . "." . $fileType;
 				$filePath = $relative_path . "/" . $name;
 
 				// create the folder if it does not exist
+				CakeLog::write("imageDebug", "folder: " . $folder);
 				if(!is_dir($folder)) {
-					mkdir($folder);
+					$temp = mkdir($folder);
+					CakeLog::write("imageDebug", "folder return value: " . $temp == false);
 				}
+				else
+					CakeLog::write("imageDebug", "directory exists");
 
 				if ($this->AddImageEntry($listing_id, $user_id, $filePath))
 				{
 					// move file to folder named by its listing_id
-					if (!move_uploaded_file($files[0]["tmp_name"], $filePath))
+					if (!move_uploaded_file($file["tmp_name"][0], $filePath))
 					{
 						//CakeLog::write('debug', 'failed to move file to ' . $filePath);
 					}
@@ -58,50 +67,17 @@ class Image extends AppModel {
 					}	
 				}
 				else
-					array_push($errors, array("secondary_" . $i => "VALIDATION_FAILED"));
+					array_push($errors, "VALIDATION_FAILED");
 			}
 		}
 
-		// handle secondary images
-		for ($i = 0; $i < count($files[1]); $i++)
-		{
-			if ($files[1][$i] == null)
-				continue;
-			if ($files[1][$i]['size'] > $this->MAX_FILE_SIZE)
-			{
-				array_push($errors, array("secondary_" . $i => "FILE_TOO_LARGE"));
-				continue;
-			}
-			$fileType = substr($files[1][$i]['name'], strrpos($files[1][$i]['name'], '.') + 1);
-			$name = "secondary_" . $i . "." . $fileType;
-
-			$filePath = $relative_path . "/" . $name;
-
-			// create the folder if it does not exist
-			if(!is_dir($folder)) {
-				mkdir($folder);
-			}
-
-			if ($this->AddImageEntry($listing_id, $user_id, $filePath))
-			{
-					// move file to folder named by its listing_id
-				if (!move_uploaded_file($files[1][$i]["tmp_name"], $filePath))
-				{
-					//CakeLog::write('debug', 'failed to move file to ' . $filePath);
-				}
-				else
-				{
-					//CakeLog::write('debug', 'successfully moved file to ' . $filePath);
-				}
-			}
-			else
-				array_push($errors, array("secondary_" . $i => "VALIDATION_FAILED"));
-		}
+		CakeLog::write("fileDebug", "errors: " . print_r($errors, true));
 		return $errors;
 	}
 
 	private function AddImageEntry($listing_id, $user_id, $filePath)
 	{
+
 		$newImage = array(
 			'listing_id' => $listing_id, 
 			'user_id' => $user_id,
@@ -119,6 +95,7 @@ class Image extends AppModel {
 
 			if (!$this->save($newImage))
 			{
+				CakeLog::write("validationErrors", $listing_id . " | " . $user_id . " | " . $filePath);
 				return false;
 			}
 

@@ -14,184 +14,25 @@ class ImagesController extends AppController {
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
 	}
+
 	function add($data = null)
 	{
+		//CakeLog::write('debug', "fileDebug: " . print_r($this->request, true));
+		//CakeLog::write('fileDebug', "params3: " . print_r($this, true));
 		$this->set('errors', null);
 		$from_add_page = false;
 		if (!$data)
 		{
-			$data = $this->data;
-			$from_add_page = true;
-		}
-
-		$listing_id = 5; //TODO: update this
-		$primary = null;
-		$secondary = array();
-		array_push($secondary, null);
-		array_push($secondary, null);
-		array_push($secondary, null);
-
-		if ($this->data)
-		{
-			if (array_key_exists("primary", $this->data["Image"]) and $this->data["Image"]["primary"]["error"] === UPLOAD_ERR_OK)
-				$primary = $this->data["Image"]["primary"];
-			if (array_key_exists("secondary_1", $this->data["Image"]) and $this->data["Image"]["secondary_1"]["error"] === UPLOAD_ERR_OK)
-				$secondary[0] = $this->data["Image"]["secondary_1"];
-			if (array_key_exists("secondary_2", $this->data["Image"]) and $this->data["Image"]["secondary_2"]["error"] === UPLOAD_ERR_OK)
-				$secondary[1] = $this->data["Image"]["secondary_2"];
-			if (array_key_exists("secondary_3", $this->data["Image"]) and $this->data["Image"]["secondary_3"]["error"] === UPLOAD_ERR_OK)
-				$secondary[2] = $this->data["Image"]["secondary_3"];
-		}
-		else
-			return;
-
-		// fill in gaps if this was originated from the 'add' page
-		if ($from_add_page)
-		{
-			for ($i = 0; $i < count($secondary) - 1; $i++)
+			if (array_key_exists('form', $this->request->params) && array_key_exists('files', $this->request->params['form']))
 			{
-				$left = $i;
-				$right = $i+1;
-				if ($secondary[$left] != null)
-					continue;
-				while($right < count($secondary) && $secondary[$left] == null && $secondary[$right] == null)
-					$right ++;
-
-				if ($right < count($secondary))
-				{
-					$secondary[$left] = $secondary[$right];
-					$secondary[$right] = null;
-				}
+				$data = $this->request->params['form']['files'];
+				$from_add_page = true;
 			}
 		}
-
-		$files = array();
-		array_push($files, $primary);
-		array_push($files, $secondary);
-
-    	$errors = $this->Image->AddImage($listing_id, $files, $this->Session->read('user'));
-    	$response = json_encode($errors);
-    	$this->set('errors', $response);
-    	return $response;
-	}
-
-	function add2($data = null)
-	{
-		$this->set('errors', null);
-		$from_add_page = false;
-		if (!$data)
-		{
-			$data = $this->data;
-			$from_add_page = true;
-		}
-
+    	//CakeLog::write('imageDebug', "data: " . print_r($data, true));
 		$listing_id = 5; //TODO: update this
-		$primary = null;
-		$secondary = array();
-		array_push($secondary, null);
-		array_push($secondary, null);
-		array_push($secondary, null);
-
-		if ($this->data)
-		{
-			if (array_key_exists("primary", $this->data["Image"]) and $this->data["Image"]["primary"]["error"] === UPLOAD_ERR_OK)
-				$primary = $this->data["Image"]["primary"];
-			if (array_key_exists("secondary_1", $this->data["Image"]) and $this->data["Image"]["secondary_1"]["error"] === UPLOAD_ERR_OK)
-				$secondary[0] = $this->data["Image"]["secondary_1"];
-			if (array_key_exists("secondary_2", $this->data["Image"]) and $this->data["Image"]["secondary_2"]["error"] === UPLOAD_ERR_OK)
-				$secondary[1] = $this->data["Image"]["secondary_2"];
-			if (array_key_exists("secondary_3", $this->data["Image"]) and $this->data["Image"]["secondary_3"]["error"] === UPLOAD_ERR_OK)
-				$secondary[2] = $this->data["Image"]["secondary_3"];
-		}
-		else
-			return;
-
-		// fill in gaps if this was originated from the 'add' page
-		if ($from_add_page)
-		{
-			for ($i = 0; $i < count($secondary) - 1; $i++)
-			{
-				$left = $i;
-				$right = $i+1;
-				if ($secondary[$left] != null)
-					continue;
-				while($right < count($secondary) && $secondary[$left] == null && $secondary[$right] == null)
-					$right ++;
-
-				if ($right < count($secondary))
-				{
-					$secondary[$left] = $secondary[$right];
-					$secondary[$right] = null;
-				}
-			}
-		}
-
-		$files = array();
-		array_push($files, $primary);
-		array_push($files, $secondary);
-
-    	$errors = $this->Image->AddImage($listing_id, $files, $this->Session->read('user'));
-    	$response = json_encode($errors);
-    	$this->set('errors', $response);
-    	return $response;
-	}
-
-	function add3($data = null)
-	{
-		$this->set('errors', null);
-		$from_add_page = false;
-		if (!$data)
-		{
-			$data = $this->data;
-			$from_add_page = true;
-		}
-
-		$listing_id = 5; //TODO: update this
-		$primary = null;
-		$secondary = array();
-		array_push($secondary, null);
-		array_push($secondary, null);
-		array_push($secondary, null);
-
-		if ($this->data)
-		{
-			if (array_key_exists("primary", $this->data["Image"]) and $this->data["Image"]["primary"]["error"] === UPLOAD_ERR_OK)
-				$primary = $this->data["Image"]["primary"];
-			if (array_key_exists("secondary_1", $this->data["Image"]) and $this->data["Image"]["secondary_1"]["error"] === UPLOAD_ERR_OK)
-				$secondary[0] = $this->data["Image"]["secondary_1"];
-			if (array_key_exists("secondary_2", $this->data["Image"]) and $this->data["Image"]["secondary_2"]["error"] === UPLOAD_ERR_OK)
-				$secondary[1] = $this->data["Image"]["secondary_2"];
-			if (array_key_exists("secondary_3", $this->data["Image"]) and $this->data["Image"]["secondary_3"]["error"] === UPLOAD_ERR_OK)
-				$secondary[2] = $this->data["Image"]["secondary_3"];
-		}
-		else
-			return;
-
-		// fill in gaps if this was originated from the 'add' page
-		if ($from_add_page)
-		{
-			for ($i = 0; $i < count($secondary) - 1; $i++)
-			{
-				$left = $i;
-				$right = $i+1;
-				if ($secondary[$left] != null)
-					continue;
-				while($right < count($secondary) && $secondary[$left] == null && $secondary[$right] == null)
-					$right ++;
-
-				if ($right < count($secondary))
-				{
-					$secondary[$left] = $secondary[$right];
-					$secondary[$right] = null;
-				}
-			}
-		}
-
-		$files = array();
-		array_push($files, $primary);
-		array_push($files, $secondary);
-
-    	$errors = $this->Image->AddImage($listing_id, $files, $this->Session->read('user'));
+		//CakeLog::write("fileDebug", print_r($data, true));
+    	$errors = $this->Image->AddImage($listing_id, $data, $this->Session->read('user'));
     	$response = json_encode($errors);
     	$this->set('errors', $response);
     	return $response;
@@ -241,13 +82,15 @@ class ImagesController extends AppController {
 
 	function DeleteImage()
 	{
+		CakeLog::write('imageDebug', 'deleting');
 		$file = null;
 		$listing_id = $this->params[0]['listing_id'];
 		$path = $this->params[0]['path'];
 		$this->set('path', $path);
 		$this->set('listing_id', $listing_id);
-		CakeLog::write('debug', 'listing_id: ' . $listing_id . "; path: " . $path);
+		CakeLog::write('imageDebug', 'listing_id: ' . $listing_id . "; path: " . $path);
 		$path = $this->Image->DeleteImage($listing_id, $path);
+		CakeLog::write('imageDebug', 'DeleteImageRetVal: ' . $path);
 		$this->set('path', $path);
 	}
 
