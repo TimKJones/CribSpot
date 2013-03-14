@@ -1,0 +1,104 @@
+/******************************************************************************/
+/******************************** Middle Content*******************************/
+/******************************************************************************/
+#edit_account_window{
+	width: 100%;
+	position: absolute;
+	top: 20px;
+	bottom: 20px;
+	border: 2px solid #b7b1b1;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	background-color: #f6f6f6;
+}
+
+
+
+/******************************************************************************/
+/********************************Left Side Content*****************************/
+/******************************************************************************/
+
+#user_info{
+	background: #fbfbfb;
+	margin-top: 20px;
+	border: 2px solid #b7b1b1;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	z-index: 10001;
+}
+#user_pic_large{
+	margin-top: 7px;
+	margin-right: 5px;
+	margin-left: 5px;
+	border-radius: 5px;
+	
+	padding-top: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	background-color: #f7f7f7;
+
+	border: 2px solid #d2d2d2;
+}
+
+#user_pic_large img{
+	border: 2px solid #50574f;
+}
+
+#user_name{
+	font-size: 22px;
+	margin-left: 12px;
+}
+
+#user_university{
+	font-size: 18px;
+	margin-left: 12px;
+}
+
+.tw{
+	color: #9AE4E8;
+}
+
+.fb{
+	color: #3B5998;
+}
+
+#verification-panel{
+	border-left: 1px solid #b7b1b1;
+	border-right: 1px solid #b7b1b1;
+}
+
+#verification-panel > div{
+	position: relative;
+	height: 40px;
+	padding-left: 50px;
+	font-size: 16px;
+	padding-top: 15px;
+	border-bottom: 1px solid #b7b1b1;
+	background: #f6f6f6;
+}
+
+#verification-panel > div > i:first-child{
+	position: absolute;
+	font-size: 20px;
+	left: 12px;
+	top: 15px;
+}
+
+
+.verified{
+	position: absolute;
+	font-size: 20px;
+	right: 12px;
+	color: #68c613;
+}
+
+#meaning{
+	cursor: pointer;
+	width: 100%;
+	text-align: right;
+}
+#hidden-meaning{
+	display: none;
+	width: 100%;
+}
