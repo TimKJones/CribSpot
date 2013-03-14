@@ -33,7 +33,7 @@
 	</ul>
 </div>
 <div id="header" class="container">
-	<div class="main-logo pull-left"></div>
+	<a href="/"><div class="main-logo pull-left"></div></a>
 	<a id="search-button" class="btn middle-btn popover-btn tooltip-btn" title="<strong>Search by Street Address</strong>" href="#" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
 	<div id="compact-filter" class="btn-group">
 		<a class="btn middle-btn" href="#"><i class="icon-calendar icon-large"></i></a>
