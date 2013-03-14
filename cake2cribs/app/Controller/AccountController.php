@@ -2,7 +2,7 @@
 	class AccountController extends AppController {
 		public $helpers = array('Html');
 		public $uses = array('User');
-		public $components= array('Session','Auth');
+		public $components= array('Session','Auth', 'Cookie');
 
 		function beforeFilter(){
 			parent::beforeFilter();
@@ -13,5 +13,10 @@
 	    	}
 		}
 		
-	 	public function index(){}
+	 	public function index(){
+			$directive['classname'] = 'account';
+        	$json = json_encode($directive);
+			$this->Cookie->write('dashboard-directive', $json);
+			$this->redirect('/dashboard');
+	 	}
 	}

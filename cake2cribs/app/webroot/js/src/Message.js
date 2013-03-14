@@ -56,10 +56,7 @@
       this.refreshConversations();
       if (this.CurrentConversation !== -1) {
         this.refreshParticipantInfo();
-        this.refreshMessages();
-        if (!$("#conversation_drop_down").is(":visible")) {
-          return this.toggleDropdown();
-        }
+        return this.refreshMessages();
       }
     };
 
@@ -102,19 +99,19 @@
     };
 
     Messages.refreshParticipantInfo = function() {
-      var participantid, url,
-        _this = this;
-      participantid = $('#cli_' + this.CurrentConversation).find('meta').attr('participantid');
-      if (this.ParticipantInfoCache[participantid] != null) {
-        this.setParticipantInfoUI(this.ParticipantInfoCache[participantid]);
+      var conversation_id, participantid, url;
+      participantid = Messages.CurrentParticipantID;
+      conversation_id = Messages.CurrentConversation;
+      if (Messages.ParticipantInfoCache[participantid] != null) {
+        Messages.setParticipantInfoUI(Messages.ParticipantInfoCache[participantid]);
         return;
       }
-      url = url = myBaseUrl + "messages/getParticipantInfo/" + this.CurrentConversation + "/";
+      url = url = myBaseUrl + "messages/getParticipantInfo/" + conversation_id + "/";
       return $.get(url, function(data) {
         var user_data;
         user_data = JSON.parse(data);
-        _this.ParticipantInfoCache[user_data['id']] = user_data;
-        return _this.setParticipantInfoUI(_this.ParticipantInfoCache[participantid]);
+        Messages.ParticipantInfoCache[user_data['id']] = user_data;
+        return Messages.setParticipantInfoUI(Messages.ParticipantInfoCache[participantid]);
       });
     };
 
@@ -127,7 +124,9 @@
       var title;
       $('#cli_' + this.CurrentConversation).removeClass('selected_conversation');
       $('#cli_' + this.CurrentConversation).addClass('read_conversation');
-      this.CurrentConversation = parseInt($(event.currentTarget).addClass('selected_conversation').removeClass('unread_conversation').attr('convid'));
+      $(event.currentTarget).addClass('selected_conversation').removeClass('unread_conversation');
+      this.CurrentConversation = parseInt($(event.currentTarget).attr('convid'));
+      this.CurrentParticipantID = $('#cli_' + this.CurrentConversation).find('meta').attr('participantid');
       $('#message_reply').show();
       $('#participant_info_short').show();
       title = $('#cli_' + this.CurrentConversation).find('.conversation_title').text();
@@ -191,19 +190,30 @@
       return false;
     };
 
-    Messages.init = function(current_conversation) {
-      if (current_conversation == null) {
-        current_conversation = -1;
-      }
+    Messages.Direct = function(directive) {
+      var conv_id, participant_id;
+      conv_id = parseInt(directive.data.conversation_id);
+      this.CurrentConversation = conv_id;
+      participant_id = parseInt(directive.data.participant_id);
+      this.CurrentParticipantID = participant_id;
+      return $('#listing_title').text(directive.data.title);
+    };
+
+    Messages.init = function() {
       this.ViewOnlyUnread = false;
-      this.CurrentConversation = current_conversation;
+      if (!(this.CurrentConversation != null)) {
+        this.CurrentConversation = -1;
+      }
       this.DropDownVisible = false;
       this.NumMessagePages = -1;
+      if (!(this.CurrentParticipantID != null)) {
+        this.CurrentParticipantID = -1;
+      }
       return this.ParticipantInfoCache = {};
     };
 
     return Messages;
 
-  })();
+  }).call(this);
 
 }).call(this);

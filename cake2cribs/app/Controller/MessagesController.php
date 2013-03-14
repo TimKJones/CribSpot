@@ -2,8 +2,8 @@
 
  class MessagesController extends AppController {
  	public $helpers = array('Html');
-	public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University');
-	public $components= array('Session','Auth','Email');
+	public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing');
+	public $components= array('Session','Auth','Email', 'Cookie');
 
 	function beforeFilter(){
 		parent::beforeFilter();
@@ -15,15 +15,41 @@
 	}
 	
 	//Shows the base messages page
- 	public function index(){
- 		// die(debug($_SERVER['HTTP_HOST']));
- 		$view_conversation = -1;
- 		if(array_key_exists('view_conversation', $this->request->query)){
- 			$view_conversation = intval($this->request->query['view_conversation']);
- 		}
- 		$this->set(array('view_conversation'=>$view_conversation));
-
+ 	public function index($conv_id=null){
+        $directive['classname'] = 'messages';
+        $json = json_encode($directive);
+        $this->Cookie->write('dashboard-directive', $json);
+        $this->redirect('/dashboard');
+        
  	}
+    //Redirects to the dashboard automatically opening the specified
+    //conversation
+    public function view($conv_id){   
+        $user = $this->Auth->User();
+        
+        if(!$this->Conversation->isUserParticipant($conv_id, $this->Auth->User())){
+            throw new NotFoundException();
+        }
+
+        $conversation = $this->Conversation->find('first', array('conditions', 'conversation.conversation_id = $conv_id'));
+
+        if($conversation['Participant1']['id'] = $user['id']){
+            $participant_id = $conversation['Participant2']['id'];
+        }else{
+            $participant_id = $conversation['Participant1']['id'];
+        }
+
+        $directive['classname'] = 'messages';
+        $directive['data'] = array(
+            'conversation_id'=>$conv_id,
+            'participant_id'=>$participant_id,
+            'title' => $conversation['Conversation']['title']
+            );
+
+        $json = json_encode($directive);
+        $this->Cookie->write('dashboard-directive', $json);
+        $this->redirect('/dashboard');
+    }
 
  	//Create a new conversation and the first message thats in the conversation
  	public function newConversation(){

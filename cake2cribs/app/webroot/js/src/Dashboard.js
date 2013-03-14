@@ -59,6 +59,15 @@
       return content.removeClass('hidden');
     };
 
+    Dashboard.Direct = function(directive) {
+      var content_header;
+      content_header = $('#' + directive.classname + "-content-header");
+      content_header.trigger('click');
+      if (directive.data != null) {
+        return this.ShowContent($('.' + directive.classname + "-content"));
+      }
+    };
+
     return Dashboard;
 
   })();

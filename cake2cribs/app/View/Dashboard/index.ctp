@@ -47,11 +47,24 @@
 
 <script>
 	// A2Cribs.Messages.init();
+
 	A2Cribs.Dashboard.SetupUI();
 	A2Cribs.Account.setupUI();
 	var a = A2Cribs.Messages
-	a.init(-1);
+
+	var directive = <?php echo $directive;?>;
+	if(directive.classname != null){
+		A2Cribs.Dashboard.Direct(directive);
+		A2Cribs.Messages.Direct(directive);
+		A2Cribs.Account.Direct(directive);
+		// A2Cribs.MyListings.Direct(directive); for the listings section
+	}else{
+
+	}
+
+	a.init();
 	a.setupUI();
+	
 
 
 </script>

@@ -23,6 +23,8 @@
       });
     };
 
+    Account.Direct = function(directive) {};
+
     return Account;
 
   })();

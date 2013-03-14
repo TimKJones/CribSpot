@@ -1,4 +1,4 @@
-<div id = 'conversations_list_header' class = 'content-header minimized' classname = 'messages'>
+<div id = 'messages-content-header' class = 'content-header minimized' classname = 'messages'>
 	<span>Messages</span>
 	<i id = 'toggle-conversation' class = 'toggle-drop-down icon-caret-right'></i>
 	<div class = 'header-count' id = 'unread_conversations_count'><span>0</span></div>
