@@ -31,7 +31,7 @@
         location = this.schoolList[this.cityList.indexOf(location)];
       } else if (__indexOf.call(this.schoolList, location) < 0) {
         alert(location + " is not a valid location.");
-        return;
+        return false;
       }
       return window.location = "/map/sublet/" + location.split(' ').join('_');
     };

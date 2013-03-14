@@ -17,9 +17,9 @@
 ?>
 
 
-<div class="top-bar angled">
-	<a href="#" class="post-button inline pull-left">POST A SUBLET</a>
-	<ul class="inline unstyled pull-left">
+<div class="top-bar">
+	<a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a>
+	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
@@ -33,8 +33,8 @@
 	</ul>
 </div>
 <div id="header" class="container">
-	<div class="main-logo"></div>
-	<a class="btn middle-btn popover-btn tooltip-btn" title="<strong>Search by Street Address</strong>" href="#" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
+	<div class="main-logo pull-left"></div>
+	<a id="search-button" class="btn middle-btn popover-btn tooltip-btn" title="<strong>Search by Street Address</strong>" href="#" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
 	<div id="compact-filter" class="btn-group">
 		<a class="btn middle-btn" href="#"><i class="icon-calendar icon-large"></i></a>
 		<a class="btn middle-btn" href="#"><strong>$</strong></a>

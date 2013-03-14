@@ -20,7 +20,8 @@ class A2Cribs.Landing
 			location = @schoolList[@cityList.indexOf(location)];
 		else if location not in @schoolList 
 			alert location + " is not a valid location."
-			return
+			return false
 
 		window.location = "/map/sublet/" + location.split(' ').join('_');
+
 

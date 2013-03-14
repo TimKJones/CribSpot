@@ -12,16 +12,8 @@ body
 {
 	background-color: @color;
 	background: @color; /* Old browsers */
-	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ5OWJlYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyMDdjZTUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(top,  @color 0%, @stop-color 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@color), color-stop(100%,@stop-color)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  @color 0%,@stop-color 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  @color 0%,@stop-color 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  @color 0%,@stop-color 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  @color 0%,@stop-color 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@color', endColorstr='@stop-color',GradientType=0 ); /* IE6-8 */
-
+	background-image: url(/img/header/blue_header.jpg);
+	background-repeat: repeat no-repeat;
 	box-shadow: 2px 4px 10px gray;
 	-webkit-box-shadow: 2px 4px 10px gray;
 	-moz-box-shadow: 2px 4px 10px gray;
@@ -91,7 +83,11 @@ body
 .main-logo
 {
 	display: inline-block;
-	width: 155px;
+	width: 140px;
+	height: 100%;
+	margin: 0 15px;
+	background-image: url(/img/header/logo.png);
+	background-size: 100%;
 }
 
 .grey-icons
@@ -208,31 +204,6 @@ body
 	}
 }
 
-.angled {
-	background-size: 50px 50px;
-	background-color: black;
-	background-image: -webkit-gradient(linear, 0 100%, 100% 0,
-		color-stop(.25, rgba(255, 255, 255, .05)), color-stop(.25, transparent),
-		color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .05)),
-		color-stop(.75, rgba(255, 255, 255, .05)), color-stop(.75, transparent),
-			to(transparent));
-	background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-		transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-		transparent 75%, transparent);
-	background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-		transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-		transparent 75%, transparent);
-	background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-		transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-		transparent 75%, transparent);
-	background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-		transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-		transparent 75%, transparent);
-	background-image: linear-gradient(45deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-		transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-		transparent 75%, transparent);
-}
-
 #map_canvas
 {
 	position: absolute;
@@ -245,6 +216,10 @@ body
 .top-bar
 {
 	position: fixed;
+	background-color: black;
+	background: black; /* Old browsers */
+	background-image: url(/img/header/black_header.jpg);
+	background-repeat: repeat no-repeat;
 	top: 0;
 	z-index: 1000;
 	height: 25px;
@@ -270,7 +245,7 @@ body
 		padding:0px 14px;
 		text-decoration:none;
 		text-shadow:1px 1px 0px #cd8a15;
-		margin: 1px 10px 0px 10px;
+		margin: 1px 10px 0px 20px;
 
 		&:hover
 		{

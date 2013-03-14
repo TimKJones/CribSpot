@@ -7,21 +7,11 @@
 <?php 
 	$this->Js->buffer('
 		A2Cribs.Landing.Init(' . json_encode($locations) . ');
-		$("#search-form").submit(function() { A2Cribs.Landing.Submit(); return false; });
+		$("#school-form").submit(function() { A2Cribs.Landing.Submit(); return false; });
 	');
 ?>
 
-<div class="top-bar angled">
-	<ul id="right-options" class="inline unstyled pull-right">
-		<li><a href="about.php">About</a></li>
-		<li><a href="#contact">Contact</a></li>
-		<li><a href="#help">Help</a></li> <!-- email popup to help -->
-		<li><a href="#more">More</a></li> <!-- terms and conditions -->
-	</ul>
-</div>
-<div id="landing-header">
-	<div id="logo">CRIBSPOT</div>
-</div>
+<?= $this->element('header'); ?>
 <div id="photo-background">
 	<table>
 		<tr>
@@ -77,7 +67,7 @@
 <div class="float" id="search-div">
 	<h2>WHERE TO LIVE?</h2>
 	<div id="search" class="input-append">
-		<form id="search-form">
+		<form id="school-form">
 			<input id="search-text" class="typeahead" type="text" autocomplete="off">
 			<a href="" onclick="A2Cribs.Landing.Submit()" id="search-btn" class="btn add-on"><i class="icon-search icon-large"></i></a>
 		</form>
