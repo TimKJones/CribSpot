@@ -2,6 +2,7 @@ class A2Cribs.PhotoManager
 	@CurrentPhotoTarget = "none"
 	@CurrentPreviewId = 0
 	@IdToPathMap = []
+	@NextImageSlot = 0
 	@MAX_CAPTION_LENGTH = 25
 	@BACKSPACE = 8
 
@@ -14,8 +15,8 @@ class A2Cribs.PhotoManager
 	@DeleteImageCallback: (id) ->
 		$('#imageContent' + id).html('');
 		$('#imageContent' + id).css('background-image', '');
-		$("#" + id).css("visibility", "hidden")
-		$("#add" + id).css("visibility", "visible")
+		#$("#" + id).css("visibility", "hidden")
+		#$("#add" + id).css("visibility", "visible")
 		if id == A2Cribs.PhotoManager.CurrentPreviewId
 			$('#imageContent0').html('');
 			$('#imageContent0').css('background-image', '');
@@ -25,7 +26,7 @@ class A2Cribs.PhotoManager
 		$.ajax
 			url: myBaseUrl + "Images/DeleteImage"
 			type: "GET"
-			data: "listing_id=" + jsVars.edit_listing_id + "&path=" + A2Cribs.PhotoManager.IdToPathMap[photoNumber]
+			data: "listing_id=" + jsVars.edit_listing_id + "&image_slot=" + photoNumber
 			success: A2Cribs.PhotoManager.DeleteImageCallback(photoNumber)
 
 	@ConfirmAddImage: (obj) ->
@@ -36,38 +37,33 @@ class A2Cribs.PhotoManager
 
 	@UpdateImageSources: (imageSources) ->
 		imageSources = JSON.parse imageSources
-		for i in [0..imageSources[1].length - 1] by 1
-			A2Cribs.PhotoManager.IdToPathMap[0] = imageSources[0]
+		primary_image_index = 0
 
 		if imageSources[0] != null
-			A2Cribs.PhotoManager.IdToPathMap[0] = imageSources[0]
-			cssSettings = 
-				"background-size":  "256px 256px"
-				"background-image": "url(" + imageSources[0] + ")"
-			imageContentDiv = "#imageContent1"
-			$(imageContentDiv).html("")
-			$(imageContentDiv).css(cssSettings)
-			$("#add1").css("visibility", "hidden")
-			$("#1").css("visibility", "visible")
-		else
-			$("#1").css("visibility", "hidden")
-			$("#add1").css("visibility", "visibile")
+			primary_image_index = imageSources[0]
+			
+			#$("#add1").css("visibility", "hidden")
+		#else
+			#$("#1").css("visibility", "hidden")
+			#$("#add1").css("visibility", "visibile")
 
 		for i in [0..imageSources[1].length - 1] by 1
 			if imageSources[1][i] == null || imageSources[1][i] == undefined
 				continue
 			A2Cribs.PhotoManager.IdToPathMap[i+1] = imageSources[1][i]
 			cssSettings = 
-				"background-size":  "256px 256px"
+				"background-size":  "160px 150px"
 				"background-image": "url(" + imageSources[1][i] + ")"
-			imageContentDiv = "#imageContent" + (i + 2)
+			imageContentDiv = "#imageContent"
+			if i == primary_image_index
+				x=5
+				#Do something different with "set as primary" button
+
+			imageContentDiv = "#imageContent" + (i + 1)
 			$(imageContentDiv).html("")
 			$(imageContentDiv).css(cssSettings)
-			$("#add" + (i + 2)).css("visibility", "hidden")
-			$("#" + (i + 2)).css("visibility", "visible")
-
-	@SubmitPhoto: ->
-		$("#ImageAddForm").submit()
+			#$("#add" + (i + 2)).css("visibility", "hidden")
+			#$("#" + (i + 2)).css("visibility", "visible")
 
 	@PreviewImage: (obj)->
 		file = $("#" + obj.id)[0]
@@ -77,12 +73,15 @@ class A2Cribs.PhotoManager
 			A2Cribs.PhotoManager.CurrentPhotoTarget = "secondary"
 		if file.files
 			file = file.files[0]
+			if !A2Cribs.PhotoManager.IsAcceptableFileType(file.name)
+				return
 			fr = new FileReader
-			A2Cribs.PhotoManager.CurrentFileNumber = parseInt obj.id.substring(obj.id.length - 1)
 			fr.onloadend = A2Cribs.PhotoManager.SetImage
 			fr.readAsDataURL(file)
-		else 
+		else
 			file = file.value
+			if !A2Cribs.PhotoManager.IsAcceptableFileType(file)
+				return
 			A2Cribs.PhotoManager.SetImage(file)
 
 	@SetImage: (img) ->
@@ -92,20 +91,9 @@ class A2Cribs.PhotoManager
 			"background-size":  "160px 150px"
 			"background-image": "url(" + img + ")"
 		imageContentDiv = ""
-		imageDivPrefix = "#imageContent"
-		foundFreeDiv = false
-		freeDivId = 0
 		if A2Cribs.PhotoManager.CurrentPhotoTarget == "secondary"
-			for i in [1..6] by 1
-				candidateDiv = imageDivPrefix + i
-				backgroundImg = $(candidateDiv).css("background-image")
-				if backgroundImg == "none" || backgroundImg == undefined
-					imageContentDiv = candidateDiv
-					foundFreeDiv = true
-					A2Cribs.PhotoManager.IdToPathMap[i] = img
-					freeDivId = i
-					break
-			if !foundFreeDiv
+			imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv()
+			if !imageContentDiv
 				alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
 				return
 		else
@@ -116,6 +104,27 @@ class A2Cribs.PhotoManager
 		$(imageContentDiv).html("")
 		$(imageContentDiv).css(cssSettings)
 
+	###
+	Find the next free div in which to display the selected photo
+	###
+	@FindNextFreeDiv: ->
+		imageDivPrefix = "#imageContent"
+		foundFreeDiv = false
+		freeDivId = 0
+		for i in [1..6] by 1
+				candidateDiv = imageDivPrefix + i
+				backgroundImg = $(candidateDiv).css("background-image")
+				if backgroundImg == "none" || backgroundImg == undefined
+					imageContentDiv = candidateDiv
+					foundFreeDiv = true
+					#A2Cribs.PhotoManager.IdToPathMap[i] = img
+					freeDivId = i
+					A2Cribs.PhotoManager.NextImageSlot = freeDivId
+					break
+		if foundFreeDiv
+			return imageContentDiv
+		else
+			return false
 
 	@ShowRequest: (formData, jqForm, options) ->
 		alert formData
@@ -147,6 +156,18 @@ class A2Cribs.PhotoManager
 	@SubmitCaption: ->
 		caption = $("#captionInput").val()
 		alert "submitting " + caption
+
+	@IsAcceptableFileType: (fileName) ->
+		indexOfDot = fileName.indexOf ".", fileName.length - 4
+		if indexOfDot == -1
+			return false
+
+		fileType = fileName.substring(indexOfDot + 1)
+		if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
+			return true
+
+		alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
+		return false
 	###
 	if statusText == 'success'
 		if data.img != ''
@@ -156,4 +177,13 @@ class A2Cribs.PhotoManager
 			document.getElementById('message').innerHTML = data.error;
 	else
 		document.getElementById('message').innerHTML = 'Unknown error!';###
+
+	@MakePrimary: (obj) ->
+		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
+		$.ajax
+			url: myBaseUrl + "Images/MakePrimary/" + photoNumber 
+			type: "GET"
+
+	@testfunc: (data) ->
+		x = 5
 
