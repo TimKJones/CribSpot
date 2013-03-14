@@ -45,7 +45,6 @@
 		echo $this->Html->script('src/UtilityFunctions');
 		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
-		//echo $this->Html->script('src/Message');
 		echo $this->Html->script('knockout.js');
 
 		/* CSS Data */

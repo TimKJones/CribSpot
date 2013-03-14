@@ -1,0 +1,132 @@
+#main_content{
+	background-color: #eeecec;	
+	margin: 0px;
+	margin-top: 80px;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+   font-weight: 400;
+}
+#main_content > div{
+	height: 100%;
+}
+
+#account-content-wrapper{
+	height: 100%;
+}
+
+.shadowed{
+	box-shadow:  0 2.5px 7px #bdbdbd;
+   	-o-box-shadow:  0 2.5px 7px #bdbdbd;
+   	-webkit-box-shadow:  0 2.5px 7px #bdbdbd;
+   	-moz-box-shadow:  0 2.5px 7px #bdbdbd;
+}
+
+#right_content{
+	height: 100%;
+	position: relative;
+}
+
+a:hover{
+	text-decoration: none;
+}
+
+.hidden{
+	display: none;
+}
+
+/******************************************************************************/
+/********************************Left Side Content*****************************/
+/******************************************************************************/
+
+#left_content{
+	height: 100%;
+	position: relative;
+}
+
+
+.content-header{
+	position: relative;
+	margin-top: 20px;
+	height: 45px;
+	z-index: 10001;
+	background: #f9f9f9;
+	border: 2px solid #b7b1b1;
+	line-height	: 45px;
+
+	/*Disable Text Selection*/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.content-header:hover{
+	cursor: pointer;
+}
+
+.content-header > span{
+	font-size: 16.67px;
+	padding-left: 20px;
+}
+
+.toggle-drop-down{
+	color: #808080;
+	font-size: 20px;
+	padding-left: 5px;
+}
+
+.header-count{
+	position: absolute;
+	height: 25px;
+	top: 8px;
+	right: 20px;
+
+	padding-right: 10px;
+	padding-left: 10px;
+
+
+	background: #6298d4;
+	border-radius: 5px;
+	border: 2px solid #1f4a7d;
+	
+	color: #ffffff;
+
+	font-size: 16.67px;
+	font-weight: bold;
+	line-height: 25px;
+}
+
+.drop-down{
+	display: none;
+	position: relative;
+	top: -5px;
+}
+
+
+/* Toggled Classes used by the content headers */
+.expanded{
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.minimized{
+	border-radius: 10px;	
+}
+
+
+/******************************************************************************/
+/********************************Center Content********************************/
+/******************************************************************************/
+
+
+#middle_content{
+	height: 100%;
+	position: relative;
+	/*margin-bottom: 2%;*/
+	/*margin-bottom: 20px;*/
+}
+
+#middle_content > div{
+	height: 100%
+}

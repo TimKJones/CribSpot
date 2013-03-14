@@ -1,8 +1,6 @@
 <!-- app/View/Messages/index.ctp -->
-<?php echo $this->Html->css('bootstrap'); ?>
-<?php echo $this->Html->css('font-awesome'); ?>
 <?php echo $this->Html->css('messages'); ?>
-<?php echo $this->element('header'); ?>
+
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid' id = 'messages_widget'>
