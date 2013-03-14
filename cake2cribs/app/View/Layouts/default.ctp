@@ -47,8 +47,8 @@
 		echo $this->Html->script('knockout.js');
 
 		/* CSS Data */
-		echo('<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">');
-		echo('<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">');
+		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
+		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
 
 
 
