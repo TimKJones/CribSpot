@@ -31,7 +31,7 @@
 </div>
 <div id="header" class="container">
 	<div class="main-logo"></div>
-	<a class="btn middle-btn" href="#" rel="popover" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
+	<a class="btn middle-btn popover-btn tooltip-btn" title="<strong>Search by Street Address</strong>" href="#" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
 	<div id="compact-filter" class="btn-group">
 		<a class="btn middle-btn" href="#"><i class="icon-calendar icon-large"></i></a>
 		<a class="btn middle-btn" href="#"><strong>$</strong></a>
@@ -47,11 +47,11 @@
 				<table>
 					<tr>
 						<td><b>Filter:</b>&nbsp;&nbsp;&nbsp;From:&nbsp;
-							<input id="startDate" class="date-picker" title="Start Date" rel="tooltip" data-placement="bottom" type="text" placeholder="Start Date" readonly>
+							<input id="startDate" class="date-picker tooltip-btn" title="<strong>Start Date</strong>" data-html="true" data-placement="bottom" type="text" placeholder="Start Date" readonly>
 							&nbsp;to&nbsp;
-							<input id="endDate" class="date-picker" title="End Date" rel="tooltip" data-placement="bottom" type="text" placeholder="End Date" readonly></td>
+							<input id="endDate" class="date-picker tooltip-btn" title="<strong>End Date</strong>" data-html="true" data-placement="bottom" type="text" placeholder="End Date" readonly></td>
 						<td>&nbsp;&nbsp;Price: 
-							<div id="slider-div"><input id="price-filter" rel="popover" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
+							<div id="slider-div"><input id="price-filter" class="popover-btn tooltip-btn" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
 						<td>
 							&nbsp;&nbsp;Beds: <select>
 								<option>1</option>
@@ -62,9 +62,9 @@
 				</table>
 			</form>
 		</div>
-		<a class="btn apttype-icon" href="#" rel="popover" data-placement="bottom" data-html="true" data-content="apttype-popover"><i class="icon-home icon-large"></i></a>
-		<a class="btn housemates-icon" href="#" rel="popover" data-placement="bottom" data-html="true" data-content="housemates-popover"><i class="icon-group icon-large"></i></a>
-		<a class="btn more-icon" href="#" rel="popover" data-placement="bottom" data-html="true" data-content="more-popover"><i class="icon-plus icon-large"></i></a>
+		<a class="btn apttype-icon popover-btn tooltip-btn" href="#" title="<strong>Building Type</strong>" data-placement="bottom" data-html="true" data-content="apttype-popover"><i class="icon-home icon-large"></i></a>
+		<a class="btn housemates-icon popover-btn tooltip-btn" href="#" title="<strong>Housemate Preferences</strong>" data-placement="bottom" data-html="true" data-content="housemates-popover"><i class="icon-group icon-large"></i></a>
+		<a class="btn more-icon popover-btn tooltip-btn" href="#" title="<strong>More Filters</strong>" data-placement="bottom" data-html="true" data-content="more-popover"><i class="icon-plus icon-large"></i></a>
 	</div>
 	<div id="personal-buttons" class="pull-right">
 		<div class="btn-group">
@@ -132,8 +132,8 @@
 
 <?php
 	$this->Js->buffer('
-		$("[rel=\'tooltip\']").tooltip();
-		$("[rel=\'popover\']").popover();	
+		$(".tooltip-btn").tooltip();	
+		$(".popover-btn").popover();
 		$(".date-picker").datepicker();
 	');
 ?>
