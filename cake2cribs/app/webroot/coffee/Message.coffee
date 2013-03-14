@@ -11,9 +11,6 @@ class A2Cribs.Messages
 		$('#refresh_content').click =>
 			@refresh()
 
-		# $('#conversations_list_header').click =>
-		# 	@toggleDropdown()
-
 		$('#current_conversation').scroll (event) =>
 			@MessageScrollingHandler(event)
 
@@ -30,19 +27,7 @@ class A2Cribs.Messages
 	@ScrollMessagesTo:(mli)->
 		cc = $('#current_conversation')
 		dist = (cc.offset().top + cc.innerHeight())-(mli.offset().top+mli.innerHeight() + 10) # 10px for padding
-		cc.scrollTop(cc.scrollTop()-dist);
-
-
-
-	@toggleDropdown:()->
-		@DropDownVisible = !@DropDownVisible
-		$('#conversation_drop_down').slideToggle 'fast'
-		$('#toggle-conversations i').toggleClass 'icon-caret-right', !@DropDownVisible
-		$('#toggle-conversations i').toggleClass 'icon-caret-down', @DropDownVisible
-		$('#conversations_list_header').toggleClass 'shadowed', @DropDownVisible
-		$('#conversations_list_header').toggleClass 'expanded', @DropDownVisible
-		$('#conversations_list_header').toggleClass 'minimized', !@DropDownVisible
-		$('.messages-content').toggleClass 'hidden', !@DropDownVisible
+		cc.scrollTop(cc.scrollTop()-dist)
 
 
 	@MessageScrollingHandler:(event)->
@@ -201,11 +186,13 @@ class A2Cribs.Messages
 		false
 
 	@Direct: (directive)->
-		conv_id = parseInt(directive.data.conversation_id)
-		@CurrentConversation = conv_id
-		participant_id = parseInt(directive.data.participant_id)
-		@CurrentParticipantID = participant_id
-		$('#listing_title').text directive.data.title
+		
+		if directive.data?
+			conv_id = parseInt(directive.data.conversation_id)
+			@CurrentConversation = conv_id
+			participant_id = parseInt(directive.data.participant_id)
+			@CurrentParticipantID = participant_id
+			$('#listing_title').text directive.data.title
 
 	@init:()->
 		@ViewOnlyUnread = false

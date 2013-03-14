@@ -32,17 +32,6 @@
       return cc.scrollTop(cc.scrollTop() - dist);
     };
 
-    Messages.toggleDropdown = function() {
-      this.DropDownVisible = !this.DropDownVisible;
-      $('#conversation_drop_down').slideToggle('fast');
-      $('#toggle-conversations i').toggleClass('icon-caret-right', !this.DropDownVisible);
-      $('#toggle-conversations i').toggleClass('icon-caret-down', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('shadowed', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('expanded', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('minimized', !this.DropDownVisible);
-      return $('.messages-content').toggleClass('hidden', !this.DropDownVisible);
-    };
-
     Messages.MessageScrollingHandler = function(event) {
       if ($("#current_conversation").scrollTop() > 20 || this.NumMessagePages === 0) {
         return;
@@ -192,11 +181,13 @@
 
     Messages.Direct = function(directive) {
       var conv_id, participant_id;
-      conv_id = parseInt(directive.data.conversation_id);
-      this.CurrentConversation = conv_id;
-      participant_id = parseInt(directive.data.participant_id);
-      this.CurrentParticipantID = participant_id;
-      return $('#listing_title').text(directive.data.title);
+      if (directive.data != null) {
+        conv_id = parseInt(directive.data.conversation_id);
+        this.CurrentConversation = conv_id;
+        participant_id = parseInt(directive.data.participant_id);
+        this.CurrentParticipantID = participant_id;
+        return $('#listing_title').text(directive.data.title);
+      }
     };
 
     Messages.init = function() {

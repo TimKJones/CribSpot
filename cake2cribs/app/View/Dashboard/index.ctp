@@ -21,7 +21,7 @@
 		</div>
 		<div class = 'span6' id = 'middle_content'>
 			<div class = 'account-content hidden'>
-				<?php echo $this->element('Account/edit_account_window') ?>
+				<?php echo $this->element('Account/edit_account_window', $user) ?>
 			</div>
 			<div class = 'listings-content hidden'>
 				Listings

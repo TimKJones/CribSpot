@@ -13,7 +13,6 @@
 	    	}
 		}
 		
-		//Shows the base dashboard page and if there is a directive passed in the cookie
 		/*
 		 
 		 Dashboard Directive
@@ -45,6 +44,6 @@
 	 			$directive = array('classname'=>null);
 	 		}
 	 		// die(debug($directive));
-	 		$this->set('directive', json_encode($directive));
+	 		$this->set(array('directive'=> json_encode($directive), 'user' => $this->Auth->User()));
 	 	}
 	}
