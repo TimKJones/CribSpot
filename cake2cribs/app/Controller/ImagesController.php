@@ -14,6 +14,7 @@ class ImagesController extends AppController {
 		$this->Auth->allow('edit');
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
+		$this->Auth->allow('MakePrimary');
 	}
 
 	function add($data = null)
@@ -30,7 +31,7 @@ class ImagesController extends AppController {
 				$from_add_page = true;
 			}
 		}
-    	//CakeLog::write('imageDebug', "data: " . print_r($data, true));
+    	CakeLog::write('imageDebug', "data: " . print_r($data, true));
 		//CakeLog::write("fileDebug", print_r($data, true));
     	$response = $this->Image->AddImage($this->listing_id, $data, $this->Session->read('user'));
     	$errors = $response[0];
@@ -66,12 +67,6 @@ class ImagesController extends AppController {
 		$this->set('errors', $response);
 	}
 
-	function AddFromEditMenu()
-	{
-		CakeLog::write('debug', "params: " . print_r($this));
-		//$listing_id = $this->params;
-	}
-
 	function LoadImages($listing_id)
 	{
 		$files = $this->Image->getImagesForListingId($listing_id);
@@ -79,8 +74,13 @@ class ImagesController extends AppController {
 		$primary_image_index = null;
 		$primary_image_index = 1; // TODO: get this from db
 		$secondary = array();
+		CakeLog::write("makePrimary", print_r($files, true));
 		for ($i = 0; $i < count($files); $i++)
 		{
+			//CakeLog::write("loadingImages", "imageSlot" . $i ).
+			$full_path = $folder_prefix . $files[$i];
+			$full_path = substr($full_path, 1);
+			$this->Session->write('image' . $i, $full_path); // get rid of the first slash
 			array_push($secondary, $folder_prefix . $files[$i]);
 		}
 
@@ -115,7 +115,9 @@ class ImagesController extends AppController {
 
 	function MakePrimary($image_slot)
 	{
+	//	CakeLog::write("makePrimary", print_r($this->Session, true));
 		$path = $this->Session->read('image' . $image_slot);
+		CakeLog::write('makePrimary', "selectedPath: " . $path);
 		$this->Image->MakePrimary($this->listing_id, $path);
 	}
 

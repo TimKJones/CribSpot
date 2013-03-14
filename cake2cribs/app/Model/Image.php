@@ -29,7 +29,6 @@ class Image extends AppModel {
 		$errors = array();
 		$filePath = null;
 
-		// handle primary image
 		if ($file != null)
 		{
 			if ($file['size'][0] > $this->MAX_FILE_SIZE)
@@ -39,7 +38,6 @@ class Image extends AppModel {
 			else
 			{
 				$fileType = substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
-				CakeLog::write('imageDebug', $fileType);
 				if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
 					array_push($errors, "INVALID_FILE_TYPE");
 
@@ -60,11 +58,11 @@ class Image extends AppModel {
 					// move file to folder named by its listing_id
 					if (!move_uploaded_file($file["tmp_name"][0], $filePath))
 					{
-						//CakeLog::write('debug', 'failed to move file to ' . $filePath);
+						CakeLog::write('imageDebug', 'failed to move file to ' . $filePath);
 					}
 					else
 					{
-						//CakeLog::write('debug', 'successfully moved file to ' . $filePath);
+						CakeLog::write('imageDebug', 'successfully moved file to ' . $filePath);
 					}	
 				}
 				else
@@ -80,31 +78,35 @@ class Image extends AppModel {
 
 	private function AddImageEntry($listing_id, $user_id, $filePath)
 	{
-
 		$newImage = array(
-			'listing_id' => $listing_id, 
+			'sublet_id' => $listing_id, 
 			'user_id' => $user_id,
-			'path' => $filePath
+			'image_path' => $filePath,
+			'is_primary' => 0
 		);
 
+		//CakeLog::write("addImageSql", print_r($newImage, true));
+
 		$conditions = array(
-			'Image.listing_id' => $listing_id,
+			'Image.sublet_id' => $listing_id,
 			'Image.user_id' => $user_id,
-			'Image.path' => $filePath);
+			'Image.image_path' => $filePath);
+		$test = $this->hasAny($conditions);
 
 		if (!$this->hasAny($conditions))
 		{
 			$this->create();
-
 			if (!$this->save($newImage))
 			{
-				CakeLog::write("validationErrors", $listing_id . " | " . $user_id . " | " . $filePath);
+				//CakeLog::write("addImageSql", "FAILED TO SAVE IMAGE");
 				return false;
 			}
 
+			//CakeLog::write("addImageSql", "SUCCESSFULLY ADDED IMAGE ENTRY");
 			return true;
 		}
 
+		//CakeLog::write("addImageSql", "IMAGE RECORD ALREADY EXISTS");
 		return false;
 	}
 
@@ -168,6 +170,48 @@ class Image extends AppModel {
 		return "false2 - " . $relative_path;
 	}
 
-	
+	// set the image with image_path = $path as the primary image for the sublet with sublet_id=$listing_id
+	function MakePrimary($listing_id, $path)
+	{
+		CakeLog::write("makePrimary", "listing_id: " . $listing_id . " | path: " . $path);
+
+		// set is_primary to false for previous primary.
+		$this->UnsetPrimaryImage($listing_id);
+
+		// set the image with image_path = $path as the primary image
+		$image_id_query = $this->find('first', array(
+			'conditions' => array('Image.sublet_id' => $listing_id,
+								  'Image.image_path'=> $path),
+			'fields' => 	array('image_id')));
+
+		if ($image_id_query && $image_id_query['Image'] && $image_id_query['Image']['image_id'])
+		{
+			$image_id = $image_id_query['Image']['image_id']; 
+			$this->id = $image_id;
+			CakeLog::write("makePrimary", "image_id: " . $image_id);
+
+			if (!$this->saveField('is_primary', true))
+				CakeLog::write("makePrimary", "FAILED: " . $listing_id . " | " . $path);
+		}
+		else
+			CakeLog::write("makePrimary", "FAILED2: " . print_r($image_id_query, true));
+
+	}
+
+	// unset is_primary for any image with sublet_id = $listing_id
+	function UnsetPrimaryImage($listing_id)
+	{
+		$unset_primary_query = $this->find('first', array(
+			'conditions' => array('Image.is_primary' => true,
+								  'Image.sublet_id' => $listing_id),
+			'fields' => 	array('image_id')));
+
+		if ($unset_primary_query && $unset_primary_query['Image'] && $unset_primary_query['Image']['image_id'])
+		{
+			$image_id = $unset_primary_query['Image']['image_id'];
+			$this->id = $image_id;
+			if (!$this->saveField('is_primary', false))
+				CakeLog::write("makePrimary", "FAILED: " . $listing_id . " | " . $path);
+		}
+	}
 }
-?>
