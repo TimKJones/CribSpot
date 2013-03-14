@@ -33,8 +33,8 @@ class Marker extends AppModel {
 		}
 
 		$markers = Cache::read('markers');
-		//die(debug($markers));
 		$markers = $this->find('all');
+		//die(debug($markers));
 		return json_encode($markers);
 	}
 

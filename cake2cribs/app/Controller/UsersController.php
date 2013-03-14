@@ -58,6 +58,36 @@ class UsersController extends AppController {
 		}
 	}
 
+    public function ajax_login() {
+        
+        if($this->Auth->loggedIn())
+        {
+            $this->Session->setFlash(__('You are already logged in.'));
+            $this->redirect('/dashboard');
+        }
+        if(!this->request->isPost()){
+            echo "This url only accepts post requests";
+            die();
+        }
+        if($this->Auth->login()) {
+            if($this->Auth->user('verified')==0) {
+                $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
+                $this->redirect('/dashboard');
+            }
+            else {
+                $this->Session->setFLash(__('You were successfully logged in.'))
+                $this->redirect('/dashboard');
+            }
+        } else {
+            $json = json_encode(array(
+                'loginStatus' => 0,
+                'error'=>'Invalid login details.'));
+            $this->layout = 'ajax';
+            $this->set('response', $json);
+
+        }
+    }
+
 	public function index() {
 		$this->User->recursive = 0;
         $this->Auth->deny('index');

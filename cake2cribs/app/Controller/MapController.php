@@ -9,11 +9,18 @@ class MapController extends AppController {
     parent::beforeFilter();
     $this->Auth->allow('LoadMarkers');
     $this->Auth->allow('index');
+    $this->Auth->allow('sublet');
     $this->Auth->allow('InitFilterValues');
     $this->Auth->allow('ViewListing');
   }
 
   public function index() {	
+    $this->set('ListingTooltip', $this->Listing->getTooltipVariables());
+    $this->InitFilterValues();
+  }
+
+  public function sublet($school_name = null, $address = null)
+  {
     $this->set('ListingTooltip', $this->Listing->getTooltipVariables());
     $this->InitFilterValues();
   }

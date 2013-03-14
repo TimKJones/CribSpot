@@ -155,14 +155,19 @@
 
 #slider-div
 {
+	@slider-padding: 4px;
 	display: inline-block;
+	#slider-content
+	{
+		padding: (2 * @slider-padding) @slider-padding;;
+	}
 	.popover
 	{
-		max-width: 356px;
-		width: 356px;
+		max-width: 352px + 2 * @slider-padding;
+		width: 352px + 2 * @slider-padding;
 		.slider-value
 		{
-			width: 38px;
+			width: 50px;
 			font-size: 12px;
 			display: inline-block;
 			font-weight: bold;
