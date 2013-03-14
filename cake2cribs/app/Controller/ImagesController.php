@@ -3,6 +3,7 @@
 class ImagesController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Image');
+	var $listing_id = 5;
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -17,12 +18,12 @@ class ImagesController extends AppController {
 
 	function add($data = null)
 	{
-		//CakeLog::write('debug', "fileDebug: " . print_r($this->request, true));
+		//CakeLog::write('debug', "fileuploadDebug: " . print_r($this->request->data['imageSlot'], true));
 		//CakeLog::write('fileDebug', "params3: " . print_r($this, true));
 		$this->set('errors', null);
 		$from_add_page = false;
 		if (!$data)
-		{
+		{ // function is being called from a form submit (rather than from the edit function)
 			if (array_key_exists('form', $this->request->params) && array_key_exists('files', $this->request->params['form']))
 			{
 				$data = $this->request->params['form']['files'];
@@ -30,15 +31,33 @@ class ImagesController extends AppController {
 			}
 		}
     	//CakeLog::write('imageDebug', "data: " . print_r($data, true));
-		$listing_id = 5; //TODO: update this
 		//CakeLog::write("fileDebug", print_r($data, true));
-    	$errors = $this->Image->AddImage($listing_id, $data, $this->Session->read('user'));
-    	$response = json_encode($errors);
-    	$this->set('errors', $response);
-    	return $response;
+    	$response = $this->Image->AddImage($this->listing_id, $data, $this->Session->read('user'));
+    	$errors = $response[0];
+    	$filePath = $response[1];
+
+    	if (count($errors) == 0 && $this->request && $this->request->data && $this->request->data['imageSlot'])
+    	{
+    		$imageSlot = $this->request->data['imageSlot'];
+    		$this->Session->write("image" . $imageSlot, $filePath); 
+    		CakeLog::write('sessionDebug', $imageSlot . ": " . $filePath);
+    	}
+
+    	$errors = json_encode($errors);
+    	$this->set('errors', $errors);
+    	return $errors;
 	}
 
 	function edit($listing_id)
+	{
+		$this->set('errors', null);
+		$this->setJsVar('edit_listing_id', $listing_id);
+		$this->set('listing_id', $listing_id);
+		$response = $this->add($this->data);
+		$this->set('errors', $response);
+	}
+
+	function edit2($listing_id)
 	{
 		$this->set('errors', null);
 		$this->setJsVar('edit_listing_id', $listing_id);
@@ -57,41 +76,47 @@ class ImagesController extends AppController {
 	{
 		$files = $this->Image->getImagesForListingId($listing_id);
 		$folder_prefix = '/img/sublets/' . $listing_id . '/';
-		$primary = null;
+		$primary_image_index = null;
+		$primary_image_index = 1; // TODO: get this from db
 		$secondary = array();
 		for ($i = 0; $i < count($files); $i++)
 		{
-			if (strrpos($files[$i], "primary") !== false)
-				$primary = $folder_prefix . $files[$i];
-			else
-				array_push($secondary, $folder_prefix . $files[$i]);
+			array_push($secondary, $folder_prefix . $files[$i]);
 		}
 
-			sort($secondary);
-			$this->set("primary", $primary);
-			$this->set("secondary", $secondary);
+		$return_files = array();
+		array_push($return_files, $primary_image_index);
+		array_push($return_files, $secondary);
 
-			$return_files = array();
-			array_push($return_files, $primary);
-			array_push($return_files, $secondary);
-
-			$this->layout = 'ajax';
-			$this->set('response', json_encode($return_files));
+		$this->layout = 'ajax';
+		$this->set('response', json_encode($return_files));
 
 		}
 
 	function DeleteImage()
 	{
 		CakeLog::write('imageDebug', 'deleting');
+		CakeLog::write('imageDebug', 'params: ' . print_r($this->params[0], true));
 		$file = null;
-		$listing_id = $this->params[0]['listing_id'];
-		$path = $this->params[0]['path'];
+		$listing_id = $this->listing_id;
+		$image_slot = $this->params[0]['image_slot'];
+		$path = $this->Session->read('image' . $image_slot);
+		CakeLog::write('imageDebug', $path);
 		$this->set('path', $path);
 		$this->set('listing_id', $listing_id);
-		CakeLog::write('imageDebug', 'listing_id: ' . $listing_id . "; path: " . $path);
-		$path = $this->Image->DeleteImage($listing_id, $path);
-		CakeLog::write('imageDebug', 'DeleteImageRetVal: ' . $path);
-		$this->set('path', $path);
+		//CakeLog::write('imageDebug', 'listing_id: ' . $listing_id . "; path: " . $path);
+		$response = $this->Image->DeleteImage($this->Auth->user('id'), $listing_id, $path);
+		if ($response == "DELETE_SUCCESSFUL")
+			$this->Session->write("image" . $image_slot, null);
+
+		CakeLog::write('imageDebug', 'error code: ' . $response);
+		$this->set('error', $response);
+	}
+
+	function MakePrimary($image_slot)
+	{
+		$path = $this->Session->read('image' . $image_slot);
+		$this->Image->MakePrimary($this->listing_id, $path);
 	}
 
 	function uploadFile() 

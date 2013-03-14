@@ -60,7 +60,8 @@ class AppController extends Controller {
 		//$this->Auth->allow('Images','add');
 		//$this->Auth->allow('Images','add2');
 		//$this->Auth->allow('Images','add3');
-		//$this->Auth->allow('Images','edit');
+		$this->Auth->allow('Images','edit');
+		$this->Auth->allow('Images','edit2');
 		//$this->Auth->allow('Images','LoadImages');
 		//$this->Auth->allow('Images','DeleteImage');
 		//$this->Auth->allow('Marker', 'UpdateCache');

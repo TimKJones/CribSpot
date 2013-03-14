@@ -27,6 +27,7 @@ class Image extends AppModel {
 		$relative_path = 'img/sublets/' . $listing_id;
 		$folder = WWW_ROOT . $relative_path;
 		$errors = array();
+		$filePath = null;
 
 		// handle primary image
 		if ($file != null)
@@ -72,7 +73,9 @@ class Image extends AppModel {
 		}
 
 		CakeLog::write("fileDebug", "errors: " . print_r($errors, true));
-		return $errors;
+		$response = array();
+		array_push($response, $errors, $filePath);
+		return $response;
 	}
 
 	private function AddImageEntry($listing_id, $user_id, $filePath)
@@ -121,10 +124,25 @@ class Image extends AppModel {
 		return $files;
 	}
 
-	public function DeleteImage($listing_id, $path)
+	public function DeleteImage($user_id, $listing_id, $path)
 	{
-		$relative_path = substr($path, 1);
-		$path = WWW_ROOT . substr($path, 1);	
+
+		//TODO: TAKE THIS OUT
+		if ($user_id == null)
+			$user_id = 0;
+
+		//make sure the image being deleted is owned by the current user
+		$conditions = array(
+			'Image.user_id' => $user_id,
+			'Image.listing_id' => $listing_id);
+
+		if (!$this->hasAny($conditions)){
+			// User can't delete image from a listing that is not their own.
+			return "IMAGE_NOT_OWNED_BY_USER " . $user_id . " " . $listing_id;
+		}
+
+		$relative_path = $path;
+		$path = WWW_ROOT . $path;
 
 		$conditions = array(
 			'Image.listing_id' => $listing_id,
@@ -140,12 +158,16 @@ class Image extends AppModel {
 
 			// delete the file
 			if (unlink($path))
-				return "true";
+			{
+				return "DELETE_SUCCESSFUL";
+			}
 			else
-				return "false1";
+				return "DELETE_FAILED";
 		}
 
-		return "false2";
+		return "false2 - " . $relative_path;
 	}
+
+	
 }
 ?>
