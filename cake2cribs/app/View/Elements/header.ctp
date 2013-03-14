@@ -11,6 +11,9 @@
 	/* Datepicker and slider javascript */
 	echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
+
+	echo $this->Html->script('src/PageHeader');
+
 ?>
 
 
@@ -82,7 +85,8 @@
 				<li><a href="#"><i class="icon-cogs"></i> Account Settings</a></li>
 			</ul>
 		</div>
-		<a href="#" class="personal-links"><i class="icon-comments icon-large"></i></a>
+		<a href="/dashboard" class="personal-links"><i class="icon-comments icon-large"></i></a>
+		<div id = 'unread-conversation-notification'></div>
 		<a href="#" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>
 	</div>
 </div>
@@ -135,5 +139,6 @@
 		$(".tooltip-btn").tooltip();	
 		$(".popover-btn").popover();
 		$(".date-picker").datepicker();
+		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>

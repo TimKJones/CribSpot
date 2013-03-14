@@ -12,3 +12,6 @@ class A2Cribs.Account
 				@UniversityID[key] = value['University']['id']
 
 			$('#university').typeahead {source: @UniversityNames}
+
+	@Direct: (directive)->
+

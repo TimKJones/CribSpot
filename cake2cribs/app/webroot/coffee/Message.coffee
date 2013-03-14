@@ -44,12 +44,6 @@ class A2Cribs.Messages
 		$('#conversations_list_header').toggleClass 'minimized', !@DropDownVisible
 		$('.messages-content').toggleClass 'hidden', !@DropDownVisible
 
-		
-
-	@toggleMessageContent:()->
-
-
-
 
 	@MessageScrollingHandler:(event)->
 		#  Note: There is a race condition here where loadMessages will fail out a couple times
@@ -72,17 +66,9 @@ class A2Cribs.Messages
 		@refreshConversations()
 		# refresh the currently selected conversation
 
-
-		# BUG on auto loading conversation via direct link via email
-		# The div elements for the conversation are loaded when we try and get the 
-		# Participants information
 		if @CurrentConversation != -1
 			@refreshParticipantInfo()
 			@refreshMessages()
-			if !$("#conversation_drop_down").is ":visible"
-				@toggleDropdown()
-		# A2Cribs.Messages.set
-
 
 	@refreshUnreadCount:()->
 		url = myBaseUrl + "messages/getUnreadCount"
@@ -116,15 +102,16 @@ class A2Cribs.Messages
 
 	# Updates the cache if needbe and updates the visible participant info for the current 
 	# Conversation
-	@refreshParticipantInfo:()->
-		participantid = $('#cli_' + @CurrentConversation).find('meta').attr('participantid')
+	@refreshParticipantInfo:()=>
+		participantid = @CurrentParticipantID
+		conversation_id = @CurrentConversation
 		# Is the participant's info already in the cache?
 		if @ParticipantInfoCache[participantid]?
 			@setParticipantInfoUI @ParticipantInfoCache[participantid]
 			return
 
 		# Not in cache so fetch save and display
-		url = url = myBaseUrl + "messages/getParticipantInfo/" + @CurrentConversation +  "/" 
+		url = url = myBaseUrl + "messages/getParticipantInfo/" + conversation_id +  "/" 
 		$.get url, (data)=>
 			user_data = JSON.parse data
 			@ParticipantInfoCache[user_data['id']] = user_data
@@ -141,10 +128,13 @@ class A2Cribs.Messages
 	@loadConversation:(event)->
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
 		$('#cli_' + @CurrentConversation).addClass 'read_conversation'		
-		@CurrentConversation = parseInt $(event.currentTarget)
+		$(event.currentTarget)
 			.addClass('selected_conversation')
 			.removeClass('unread_conversation')
-			.attr('convid');
+
+		@CurrentConversation = parseInt $(event.currentTarget).attr('convid')
+		@CurrentParticipantID = $('#cli_' + @CurrentConversation).find('meta')
+												.attr('participantid')
 		$('#message_reply').show()
 		$('#participant_info_short').show()
 
@@ -210,9 +200,21 @@ class A2Cribs.Messages
 			$('#send_reply').removeAttr 'disabled'
 		false
 
-	@init:(current_conversation = -1)->
+	@Direct: (directive)->
+		conv_id = parseInt(directive.data.conversation_id)
+		@CurrentConversation = conv_id
+		participant_id = parseInt(directive.data.participant_id)
+		@CurrentParticipantID = participant_id
+		$('#listing_title').text directive.data.title
+
+	@init:()->
 		@ViewOnlyUnread = false
-		@CurrentConversation = current_conversation
+		if not @CurrentConversation?
+			@CurrentConversation = -1
 		@DropDownVisible = false
 		@NumMessagePages = -1
+		if not @CurrentParticipantID?
+			@CurrentParticipantID = -1
 		@ParticipantInfoCache = {}
+
+

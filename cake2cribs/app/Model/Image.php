@@ -21,34 +21,44 @@ class Image extends AppModel {
 	Move image to new location in img/sublets/[sublet_id]_img#
 	returns true on success, false on failure
 	*/
-	public function AddImage($listing_id, $files, $user_id)
+	public function AddImage($listing_id, $file, $user_id)
 	{
+		CakeLog::write("fileDebug", "file data: " . print_r($file, true));
 		$relative_path = 'img/sublets/' . $listing_id;
 		$folder = WWW_ROOT . $relative_path;
 		$errors = array();
+		$filePath = null;
 
 		// handle primary image
-		if ($files[0] != null)
+		if ($file != null)
 		{
-			if ($files[0]['size'] > $this->MAX_FILE_SIZE)
+			if ($file['size'][0] > $this->MAX_FILE_SIZE)
 			{
 				array_push($errors, array("primary" => "FILE_TOO_LARGE"));
 			}
 			else
 			{
-				$fileType = substr($files[0]['name'], strrpos($files[0]['name'], '.') + 1);
-				$name = "primary." . $fileType;
+				$fileType = substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
+				CakeLog::write('imageDebug', $fileType);
+				if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
+					array_push($errors, "INVALID_FILE_TYPE");
+
+				$name = uniqid() . "." . $fileType;
 				$filePath = $relative_path . "/" . $name;
 
 				// create the folder if it does not exist
+				CakeLog::write("imageDebug", "folder: " . $folder);
 				if(!is_dir($folder)) {
-					mkdir($folder);
+					$temp = mkdir($folder);
+					CakeLog::write("imageDebug", "folder return value: " . $temp == false);
 				}
+				else
+					CakeLog::write("imageDebug", "directory exists");
 
 				if ($this->AddImageEntry($listing_id, $user_id, $filePath))
 				{
 					// move file to folder named by its listing_id
-					if (!move_uploaded_file($files[0]["tmp_name"], $filePath))
+					if (!move_uploaded_file($file["tmp_name"][0], $filePath))
 					{
 						//CakeLog::write('debug', 'failed to move file to ' . $filePath);
 					}
@@ -58,50 +68,19 @@ class Image extends AppModel {
 					}	
 				}
 				else
-					array_push($errors, array("secondary_" . $i => "VALIDATION_FAILED"));
+					array_push($errors, "VALIDATION_FAILED");
 			}
 		}
 
-		// handle secondary images
-		for ($i = 0; $i < count($files[1]); $i++)
-		{
-			if ($files[1][$i] == null)
-				continue;
-			if ($files[1][$i]['size'] > $this->MAX_FILE_SIZE)
-			{
-				array_push($errors, array("secondary_" . $i => "FILE_TOO_LARGE"));
-				continue;
-			}
-			$fileType = substr($files[1][$i]['name'], strrpos($files[1][$i]['name'], '.') + 1);
-			$name = "secondary_" . $i . "." . $fileType;
-
-			$filePath = $relative_path . "/" . $name;
-
-			// create the folder if it does not exist
-			if(!is_dir($folder)) {
-				mkdir($folder);
-			}
-
-			if ($this->AddImageEntry($listing_id, $user_id, $filePath))
-			{
-					// move file to folder named by its listing_id
-				if (!move_uploaded_file($files[1][$i]["tmp_name"], $filePath))
-				{
-					//CakeLog::write('debug', 'failed to move file to ' . $filePath);
-				}
-				else
-				{
-					//CakeLog::write('debug', 'successfully moved file to ' . $filePath);
-				}
-			}
-			else
-				array_push($errors, array("secondary_" . $i => "VALIDATION_FAILED"));
-		}
-		return $errors;
+		CakeLog::write("fileDebug", "errors: " . print_r($errors, true));
+		$response = array();
+		array_push($response, $errors, $filePath);
+		return $response;
 	}
 
 	private function AddImageEntry($listing_id, $user_id, $filePath)
 	{
+
 		$newImage = array(
 			'listing_id' => $listing_id, 
 			'user_id' => $user_id,
@@ -119,6 +98,7 @@ class Image extends AppModel {
 
 			if (!$this->save($newImage))
 			{
+				CakeLog::write("validationErrors", $listing_id . " | " . $user_id . " | " . $filePath);
 				return false;
 			}
 
@@ -144,10 +124,25 @@ class Image extends AppModel {
 		return $files;
 	}
 
-	public function DeleteImage($listing_id, $path)
+	public function DeleteImage($user_id, $listing_id, $path)
 	{
-		$relative_path = substr($path, 1);
-		$path = WWW_ROOT . substr($path, 1);	
+
+		//TODO: TAKE THIS OUT
+		if ($user_id == null)
+			$user_id = 0;
+
+		//make sure the image being deleted is owned by the current user
+		$conditions = array(
+			'Image.user_id' => $user_id,
+			'Image.listing_id' => $listing_id);
+
+		if (!$this->hasAny($conditions)){
+			// User can't delete image from a listing that is not their own.
+			return "IMAGE_NOT_OWNED_BY_USER " . $user_id . " " . $listing_id;
+		}
+
+		$relative_path = $path;
+		$path = WWW_ROOT . $path;
 
 		$conditions = array(
 			'Image.listing_id' => $listing_id,
@@ -163,12 +158,16 @@ class Image extends AppModel {
 
 			// delete the file
 			if (unlink($path))
-				return "true";
+			{
+				return "DELETE_SUCCESSFUL";
+			}
 			else
-				return "false1";
+				return "DELETE_FAILED";
 		}
 
-		return "false2";
+		return "false2 - " . $relative_path;
 	}
+
+	
 }
 ?>
