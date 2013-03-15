@@ -46,6 +46,21 @@ fieldset
 	border: 1px solid;	
 }
 
+.unselected
+{
+	box-shadow: 2px 4px 10px gray;
+    -moz-box-shadow: 2px 4px 10px gray;
+    -webkit-box-shadow: 2px 4px 10px gray;
+}
+
+.selected
+{
+	box-shadow: 2px 4px 10px blue;
+    -moz-box-shadow: 2px 4px 10px blue;
+    -webkit-box-shadow: 2px 4px 10px blue;
+}
+
+
 .hide
 {
 	visibility: hidden;

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-  user_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
   username varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   password varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   first_name varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   linkedin_verified boolean,
   created datetime DEFAULT NULL,
   modified datetime DEFAULT NULL,
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=15 ;
 
 --
