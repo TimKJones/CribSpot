@@ -76,7 +76,7 @@
 				<strong>Jason</strong>
 				<span class="caret"></span>
 			</a>
-			<a class="btn btn-link" href="#myModal" data-toggle="modal">SIGN UP</a>
+			<a class="btn btn-link" href="/users/add" data-toggle="modal">SIGN UP</a>
 			<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>
 			<ul class="dropdown-menu">
 				<li><a href="#">Action 1</a></li>
