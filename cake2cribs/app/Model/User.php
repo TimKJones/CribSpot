@@ -2,12 +2,16 @@
 App::uses('AuthComponent', 'Controller/Component');
 class User extends AppModel {
 	public $hasMany = array(
-		'Sublet');
-	public $belongsTo = 'University';
+		'Sublet' => array(
+			'className' => 'Sublet',
+			'foreignKey' => 'sublet_id'
+		)
+	);
+	public $belongsTo = 'University'; 	
+	public $primaryKey = 'id';
 
 	public $validate = array (
-		'user_id' => 'alphaNumeric', 
-
+		'id' => 'alphaNumeric', 
 		'password' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -75,6 +79,7 @@ class User extends AppModel {
 				'message' => 'Someone already registered with that phone number. Try again.'
 				)
 			),
+		'group_id' => 'alphaNumeric', 
 		'university_id' => array(
 			'isNumber' => array(
 				'rule' => array('naturalNumber',true),
@@ -129,28 +134,19 @@ class User extends AppModel {
 
 	public function TwitterVerify($user_id, $auth_token, $auth_token_secret, $twitter_userid)
 	{
-		/*$user_id_query = $this->find('first', array(
-			'conditions' => array('User.user_id' => $listing_id,
-								  'Favorite.user_id'	=> $user_id),
-			'fields' => 	array('favorite_id')));
-		$this->delete($favorite_id_query['Favorite']['favorite_id']);*/
-		//$this->query("update table cake2cribs.users set twitter_userid = '" . $twitter_userid . "' where user_id =" $user_id);
-		$fields = array('twitter_userid' => $twitter_userid
-				  /*'User.twitter_auth_token' => $auth_token,
-				  'User.twitter_auth_token_secret' => $auth_token_secret*/
+		$fields = array('User.twitter_userid' => $twitter_userid,
+				  'User.twitter_auth_token' => $auth_token,
+				  'User.twitter_auth_token_secret' => $auth_token_secret
 				 );
-		$conditions = array('User.user_id' => $user_id);
+
+		$conditions = array('User.id' => $user_id);
 		echo debug($fields);
 		echo debug($conditions);
 		$this->id = $user_id;
+		$this->saveField('twitter_userid', $twitter_userid);
+		$this->saveField('twitter_auth_token', $auth_token);
+		$this->saveField('twitter_auth_token_secret', $auth_token_secret);
 		echo debug(false);
-		$test =$this->query("select count(*) from cake2cribs.users");
-		//$test = $this->read();
-		echo debug($test);	
-		//$this->set($fields);
-		//$this->save();	
-		//$this->saveField('User.twitter_userid', $twitter_userid);
-		//$this->updateAll($fields, $conditions);
 	}
 
 	public function LinkedinVerify($user_id)
