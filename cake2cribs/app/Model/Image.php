@@ -10,9 +10,17 @@ class Image extends AppModel {
 		'image_id' => 'alphaNumeric',
 		'sublet_id' => 'alphaNumeric', // listing to which this image belongs
 		'user_id' => 'alphaNumeric',    // user that uploaded this photo
-		'path'    => array(
+		'image_path'    => array(
 			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
 			'message' => 'Please supply a valid image, either jpeg, jpg, or png'
+		),
+		'is_primary' => 'boolean',
+		'caption' => array(
+			'alphaNumeric' => array(
+				'rule' => 'alphaNumeric'),
+			'maxLength' => array(
+				'rule' => array('maxLength', 25)
+			)
 		)
 	);	
 
@@ -113,16 +121,18 @@ class Image extends AppModel {
 	public function getImagesForListingId($listing_id)
 	{
 		$files = array();
+		$captions = array();
 
 		$primary_image_query = $this->find('all', array(
 			'conditions' => array('Image.sublet_id' => $listing_id),
-			'fields' => 	array('image_path', 'is_primary')));
+			'fields' => 	array('image_path', 'is_primary', 'caption')));
 		$primary_image_index = 0;
 
 		CakeLog::write("loadingImages", print_r($primary_image_query, true));
 		for ($i = 0; $i < count($primary_image_query); $i++)
 		{
 			array_push($files, $primary_image_query[$i]['Image']['image_path']);
+			array_push($captions, $primary_image_query[$i]['Image']['caption']);
 			if ($primary_image_query[$i]['Image']['is_primary'])
 				$primary_image_index = $i;
 		}
@@ -137,7 +147,7 @@ class Image extends AppModel {
 		    }
 		}*/
 		$returnVal = array();
-		array_push($returnVal, $primary_image_index, $files);
+		array_push($returnVal, $primary_image_index, $files, $captions);
 		return $returnVal;
 	}
 
@@ -230,13 +240,16 @@ class Image extends AppModel {
 		}
 	}
 
-	function getPrimaryImagePath($listing_id)
+	function SubmitCaption($caption, $user_id, $path)
 	{
-		$primary_image_query = $this->find('first', array(
-			'conditions' => array('Image.is_primary' => true,
-								  'Image.sublet_id' => $listing_id),
-			'fields' => 	array('image_path')));
-
-		//retu
+		$image_id_query = $this->find('first', array(
+			'conditions' => array('Image.image_path' => $path,
+								  'Image.user_id' => $user_id),
+			'fields' => 	array('image_id')));
+		CakeLog::write("addCaption", print_r($image_id_query, true));
+		$image_id = $image_id_query['Image']['image_id'];
+		$this->id = $image_id;
+		if (!$this->saveField('caption', $caption))
+			CakeLog::write("addCaption", "FAILED: " . $caption . " | " . $path);
 	}
 }
