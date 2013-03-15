@@ -1,6 +1,7 @@
 <?php
 	echo $this->Html->css('/less/landing.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->script('src/Landing');
+	$this->set('title_for_layout', 'Cribspot - Simple and Secure Subletting.');
 ?>
 
 

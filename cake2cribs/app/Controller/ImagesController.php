@@ -14,6 +14,7 @@ class ImagesController extends AppController {
 		$this->Auth->allow('edit');
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
+		$this->Auth->allow('MakePrimary');
 	}
 
 	function add($data = null)
@@ -30,7 +31,7 @@ class ImagesController extends AppController {
 				$from_add_page = true;
 			}
 		}
-    	//CakeLog::write('imageDebug', "data: " . print_r($data, true));
+    	CakeLog::write('imageDebug', "data: " . print_r($data, true));
 		//CakeLog::write("fileDebug", print_r($data, true));
     	$response = $this->Image->AddImage($this->listing_id, $data, $this->Session->read('user'));
     	$errors = $response[0];
@@ -66,22 +67,21 @@ class ImagesController extends AppController {
 		$this->set('errors', $response);
 	}
 
-	function AddFromEditMenu()
-	{
-		CakeLog::write('debug', "params: " . print_r($this));
-		//$listing_id = $this->params;
-	}
-
 	function LoadImages($listing_id)
 	{
-		$files = $this->Image->getImagesForListingId($listing_id);
-		$folder_prefix = '/img/sublets/' . $listing_id . '/';
-		$primary_image_index = null;
-		$primary_image_index = 1; // TODO: get this from db
+		$images = $this->Image->getImagesForListingId($listing_id);
+		$primary_image_index = $images[0] + 1; // in UI, index is offset by 1
+		$files = $images[1];
+
 		$secondary = array();
+		CakeLog::write("makePrimary", print_r($files, true));
 		for ($i = 0; $i < count($files); $i++)
 		{
-			array_push($secondary, $folder_prefix . $files[$i]);
+			//CakeLog::write("loadingImages", "imageSlot" . $i ).
+			$full_path = "/" . $files[$i];
+			$next_slot = $i + 1;
+			$this->Session->write('image' . $next_slot, $files[$i]); // get rid of the first slash
+			array_push($secondary, $full_path);
 		}
 
 		$return_files = array();
@@ -115,7 +115,9 @@ class ImagesController extends AppController {
 
 	function MakePrimary($image_slot)
 	{
+	//	CakeLog::write("makePrimary", print_r($this->Session, true));
 		$path = $this->Session->read('image' . $image_slot);
+		CakeLog::write('makePrimary', "selectedPath: " . $path);
 		$this->Image->MakePrimary($this->listing_id, $path);
 	}
 

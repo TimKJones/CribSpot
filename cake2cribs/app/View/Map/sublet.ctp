@@ -1,4 +1,5 @@
 <?php
+	$this->set('title_for_layout', 'Cribspot Sublet');
 	echo '<div id="container">';
 		echo $this->element('header');
 		echo $this->element('map');

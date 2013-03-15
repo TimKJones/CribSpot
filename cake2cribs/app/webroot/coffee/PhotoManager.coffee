@@ -1,5 +1,6 @@
 class A2Cribs.PhotoManager
 	@CurrentPhotoTarget = "none"
+	@CurrentPrimaryImageIndex = 1
 	@CurrentPreviewId = 0
 	@IdToPathMap = []
 	@NextImageSlot = 0
@@ -23,6 +24,9 @@ class A2Cribs.PhotoManager
 
 	@DeleteImage: (obj) ->
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
+		if photoNumber == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
+			A2Cribs.PhotoManager.MakeNotPrimaryUI photoNumber
+
 		$.ajax
 			url: myBaseUrl + "Images/DeleteImage"
 			type: "GET"
@@ -41,6 +45,7 @@ class A2Cribs.PhotoManager
 
 		if imageSources[0] != null
 			primary_image_index = imageSources[0]
+			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = primary_image_index
 			
 			#$("#add1").css("visibility", "hidden")
 		#else
@@ -50,7 +55,6 @@ class A2Cribs.PhotoManager
 		for i in [0..imageSources[1].length - 1] by 1
 			if imageSources[1][i] == null || imageSources[1][i] == undefined
 				continue
-			A2Cribs.PhotoManager.IdToPathMap[i+1] = imageSources[1][i]
 			cssSettings = 
 				"background-size":  "160px 150px"
 				"background-image": "url(" + imageSources[1][i] + ")"
@@ -62,6 +66,8 @@ class A2Cribs.PhotoManager
 			imageContentDiv = "#imageContent" + (i + 1)
 			$(imageContentDiv).html("")
 			$(imageContentDiv).css(cssSettings)
+			if i == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
+				A2Cribs.PhotoManager.MakePrimaryUI primary_image_index
 			#$("#add" + (i + 2)).css("visibility", "hidden")
 			#$("#" + (i + 2)).css("visibility", "visible")
 
@@ -180,9 +186,28 @@ class A2Cribs.PhotoManager
 
 	@MakePrimary: (obj) ->
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
-		$.ajax
-			url: myBaseUrl + "Images/MakePrimary/" + photoNumber 
-			type: "GET"
+		img = $("#imageContent" + photoNumber).css("background-image")
+		if img != "none" && img != undefined 
+			A2Cribs.PhotoManager.MakeNotPrimaryUI A2Cribs.PhotoManager.CurrentPrimaryImageIndex
+			A2Cribs.PhotoManager.MakePrimaryUI photoNumber
+			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = photoNumber
+			$.ajax
+				url: myBaseUrl + "Images/MakePrimary/" + photoNumber 
+				type: "GET"
+
+	###
+	Update UI for image that is now primary
+	###
+	@MakePrimaryUI: (divId) ->
+		$("#primary" + divId).css("background-color", "yellow")
+		$("#primary" + divId).attr("disabled", "disabled")
+
+	###
+	Update UI for image that is no longer primary
+	###
+	@MakeNotPrimaryUI: (divId) ->
+		$("#primary" + divId).css("background-color", "gray")
+		$("#primary" + divId).removeAttr("disabled")
 
 	@testfunc: (data) ->
 		x = 5
