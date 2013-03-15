@@ -69,19 +69,19 @@ class ImagesController extends AppController {
 
 	function LoadImages($listing_id)
 	{
-		$files = $this->Image->getImagesForListingId($listing_id);
-		$folder_prefix = '/img/sublets/' . $listing_id . '/';
-		$primary_image_index = null;
-		$primary_image_index = 1; // TODO: get this from db
+		$images = $this->Image->getImagesForListingId($listing_id);
+		$primary_image_index = $images[0] + 1; // in UI, index is offset by 1
+		$files = $images[1];
+
 		$secondary = array();
 		CakeLog::write("makePrimary", print_r($files, true));
 		for ($i = 0; $i < count($files); $i++)
 		{
 			//CakeLog::write("loadingImages", "imageSlot" . $i ).
-			$full_path = $folder_prefix . $files[$i];
-			$full_path = substr($full_path, 1);
-			$this->Session->write('image' . $i, $full_path); // get rid of the first slash
-			array_push($secondary, $folder_prefix . $files[$i]);
+			$full_path = "/" . $files[$i];
+			$next_slot = $i + 1;
+			$this->Session->write('image' . $next_slot, $files[$i]); // get rid of the first slash
+			array_push($secondary, $full_path);
 		}
 
 		$return_files = array();

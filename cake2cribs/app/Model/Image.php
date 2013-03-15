@@ -113,7 +113,21 @@ class Image extends AppModel {
 	public function getImagesForListingId($listing_id)
 	{
 		$files = array();
-		$folder = WWW_ROOT . 'img/sublets/' . intval($listing_id);
+
+		$primary_image_query = $this->find('all', array(
+			'conditions' => array('Image.sublet_id' => $listing_id),
+			'fields' => 	array('image_path', 'is_primary')));
+		$primary_image_index = 0;
+
+		CakeLog::write("loadingImages", print_r($primary_image_query, true));
+		for ($i = 0; $i < count($primary_image_query); $i++)
+		{
+			array_push($files, $primary_image_query[$i]['Image']['image_path']);
+			if ($primary_image_query[$i]['Image']['is_primary'])
+				$primary_image_index = $i;
+		}
+
+		/*$folder = WWW_ROOT . 'img/sublets/' . intval($listing_id);
 
 		if ($handle = opendir($folder)) 
 		{
@@ -121,9 +135,10 @@ class Image extends AppModel {
 		    	if (strrpos($entry, "png") != false || strrpos($entry, "jpg") != false || strrpos($entry, "jpeg") != false)
 		        	array_push($files, $entry);
 		    }
-		}
-		
-		return $files;
+		}*/
+		$returnVal = array();
+		array_push($returnVal, $primary_image_index, $files);
+		return $returnVal;
 	}
 
 	public function DeleteImage($user_id, $listing_id, $path)
@@ -136,7 +151,7 @@ class Image extends AppModel {
 		//make sure the image being deleted is owned by the current user
 		$conditions = array(
 			'Image.user_id' => $user_id,
-			'Image.listing_id' => $listing_id);
+			'Image.sublet_id' => $listing_id);
 
 		if (!$this->hasAny($conditions)){
 			// User can't delete image from a listing that is not their own.
@@ -147,8 +162,8 @@ class Image extends AppModel {
 		$path = WWW_ROOT . $path;
 
 		$conditions = array(
-			'Image.listing_id' => $listing_id,
-			'Image.path' => $relative_path);
+			'Image.sublet_id' => $listing_id,
+			'Image.image_path' => $relative_path);
 
 		if ($this->hasAny($conditions))
 		{
@@ -213,5 +228,15 @@ class Image extends AppModel {
 			if (!$this->saveField('is_primary', false))
 				CakeLog::write("makePrimary", "FAILED: " . $listing_id . " | " . $path);
 		}
+	}
+
+	function getPrimaryImagePath($listing_id)
+	{
+		$primary_image_query = $this->find('first', array(
+			'conditions' => array('Image.is_primary' => true,
+								  'Image.sublet_id' => $listing_id),
+			'fields' => 	array('image_path')));
+
+		//retu
 	}
 }
