@@ -52,15 +52,10 @@ class ImagesController extends AppController {
 
 	function edit($listing_id)
 	{
-		$this->set('errors', null);
-		$this->setJsVar('edit_listing_id', $listing_id);
-		$this->set('listing_id', $listing_id);
-		$response = $this->add($this->data);
-		$this->set('errors', $response);
-	}
+		if ($listing_id == null)
+			//TODO: show 404 page
+			return;
 
-	function edit2($listing_id)
-	{
 		$this->set('errors', null);
 		$this->setJsVar('edit_listing_id', $listing_id);
 		$this->set('listing_id', $listing_id);

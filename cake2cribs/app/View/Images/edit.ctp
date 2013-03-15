@@ -1,53 +1,133 @@
-<?php echo $this->Html->css('UploadImage'); ?>
+<!DOCTYPE HTML>
+<?php echo $this->Html->css('UploadImage3'); ?>
+<?php echo $this->Html->script('jquery.fileupload'); ?>
+<?php echo $this->Html->script('jquery.iframe-transport'); ?>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
 <body>
-  <div id="container">
-    <center><h3>Primary Image</h3><center>
-    <div id="primaryImagesContainer" id="imageContainer1">
-      <div class="imageContent" id="imageContent1"></div><br/>
-      <?php echo $this->Form->create("Image", array("id" => "EditPrimaryForm", "type" => "file", "action" => "edit/" . $listing_id));?>
-        <legend><?php __("Edit Image"); ?></legend>
-        <fieldset>
-          <?php echo $this->Form->input("primary", array("id" => "add1", "type" => "file", "onchange" => "A2Cribs.PhotoManager.PreviewImage(this)")); ?>
-          <button type="button" class="deleteButton" id="1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Delete</button>
-          <button type="button" class="confirmButton" id="1confirm" onclick="A2Cribs.PhotoManager.ConfirmAddImage(this)">Confirm</button>
-        </fieldset>
-      </div>
-    <center><h3>Secondary Images</h3><center>
-    <div id="secondaryImagesContainer">
-      <div class="imageContainer" id="imageContainer2">
-        <div class="imageContent secondary" id="imageContent2">No Photo Selected</div>
-        <?php echo $this->Form->create("Image", array("id" => "EditSecondary1Form", "type" => "file", "action" => "edit/" . $listing_id));?>
-          <legend><?php __("Edit Image"); ?></legend>
+<div id="progress">
+    <div id="progressBar" class="bar" style="width: 0%;"></div>
+</div>
+  <div id="imagesWrapper">
+    <div class="imageContainer">
+      <div class="imageContent imageThumb topRow" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    <div class="imageContainer">
+      <div class="imageContent secondary imageThumb topRow" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary2" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    <div class="imageContainer">
+      <div class="imageContent secondary imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary3" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    <div class="imageContainer">
+      <div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary4" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    <div class="imageContainer">
+      <div class="imageContent secondary imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    <div class="imageContainer">
+      <div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+      <button class="delete hide" id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+      <button class="edit hide" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+      <button class="primary hide" id="primary6" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+    </div>
+    </div>
+  </div>
+  <div id="leftColumn">
+    <div id="topSection">
+      <div id="topSectionTop">
+        <?php echo $this->Form->create("Image", array("type" => "file", "action" => "add", "enctype" => "multipart/form-data"));?>
+        <input type="hidden" id="imageSlot">
+          <legend><?php __("Add Image"); ?></legend>
           <fieldset>
-            <?php echo $this->Form->input("secondary_1", array("id" => "add2", "type" => "file", "onchange" => "A2Cribs.PhotoManager.PreviewImage(this)")); ?>
-            <button type="button" class="deleteButton" id="2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Delete</button>
-            <button type="button" class="confirmButton" id="2confirm" onclick="A2Cribs.PhotoManager.ConfirmAddImage(this)">Confirm</button>
+            <input class="fileInput" id="1" type="file" data-url="/Images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="false" data-form-data='{"script": "true"}'>
+            
           </fieldset>
+        </form>
       </div>
-      <div class="imageContainer" id="imageContainer3">
-        <div class="imageContent secondary" id="imageContent3">No Photo Selected</div>
-        <?php echo $this->Form->create("Image", array("id" => "EditSecondary2Form", "type" => "file", "action" => "edit/" . $listing_id));?>
-          <legend><?php __("Edit Image"); ?></legend>
-          <fieldset>
-            <?php echo $this->Form->input("secondary_2", array("id" => "add3", "type" => "file", "onchange" => "A2Cribs.PhotoManager.PreviewImage(this)")); ?>
-            <button type="button" class="deleteButton" id="3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Delete</button>
-            <button type="button" class="confirmButton" id="3confirm" onclick="A2Cribs.PhotoManager.ConfirmAddImage(this)">Confirm</button>
-          </fieldset>
+      <div id="topSectionBottom">
+        Don't have photos at the moment? ....
       </div>
-      <div class="imageContainer" id="imageContainer4">
-        <div class="imageContent secondary" id="imageContent4">No Photo Selected</div>
-        <?php echo $this->Form->create("Image", array("id" => "EditSecondary3Form", "type" => "file", "action" => "edit/" . $listing_id));?>
-          <legend><?php __("Edit Image"); ?></legend>
-          <fieldset>
-            <?php echo $this->Form->input("secondary_3", array("id" => "add4", "type" => "file", "onchange" => "A2Cribs.PhotoManager.PreviewImage(this)")); ?>
-            <button type="button" class="deleteButton" id="4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Delete</button>
-            <button type="button" class="confirmButton" id="4confirm" onclick="A2Cribs.PhotoManager.ConfirmAddImage(this)">Confirm</button>
-          </fieldset>
+    </div>
+    <div id="bottomSection">
+      <div id="imageContent0">
+        
+      </div>
+      <div id="caption">
+        Name: <input type="text" id="captionInput" placeholder="Edit picture name" onkeyup="A2Cribs.PhotoManager.CaptionKeyUp()" maxlength="25">
+        <span id="charactersLeft">25</span>
+        <button id="captionSubmit" onclick="A2Cribs.PhotoManager.SubmitCaption()">GO</button>
       </div>
     </div>
   </div>
-  </div>
-</body>
+<script>
+
+// Initialize file upload plugin
+$(function () {
+  $('#ImageAddForm').fileupload({
+    singleFileUploads: true,
+    url: "/images/add"
+  });
+});
+
+$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
+  //alert("submit event");
+    /*var id = $('.fileInput').attr("id");
+    data.formData = {targetPhoto: "69"};
+    if (!data.formData.example) {
+      input.focus();
+      return false;
+    }*/
+});
+
+$(function () {
+    $('#ImageAddForm').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+        },
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('#progress .bar').css(
+              'width',
+              progress + '%'
+          );
+      },
+      add: function(e, data) {
+        A2Cribs.PhotoManager.FindNextFreeDiv();
+        data.formData = {"imageSlot": A2Cribs.PhotoManager.NextImageSlot};
+      if (!data.formData.imageSlot) 
+          return false;
+
+      data.submit();
+    },
+      submit: function (e, data) {
+        
+      }
+    });
+});
+
+$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
+    
+});
+</script>
+</body> 
+</html>
 
 <?php
 $this->Js->buffer(  
@@ -58,22 +138,6 @@ $this->Js->buffer(
       url:       "Images/Edit/" + jsVars.edit_listing_id,  // your upload script
       dataType:  "json"
     };
-    $("#EditPrimaryForm").submit(function() {
-      $(this).ajaxSubmit(options);
-      return false;
-    });
-    $("#EditSecondary1Form").submit(function() {
-      $(this).ajaxSubmit(options);
-      return false;
-    });
-    $("#EditSecondary2Form").submit(function() {
-      $(this).ajaxSubmit(options);
-      return false;
-    });
-    $("#EditSecondary3Form").submit(function() {
-      $(this).ajaxSubmit(options);
-      return false;
-    });'
-  );
+  ');
 
 ?>

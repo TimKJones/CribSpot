@@ -250,6 +250,11 @@ class Image extends AppModel {
 		$image_id = $image_id_query['Image']['image_id'];
 		$this->id = $image_id;
 		if (!$this->saveField('caption', $caption))
+		{
 			CakeLog::write("addCaption", "FAILED: " . $caption . " | " . $path);
+			return "VALIDATION_FAILED";
+		}
+
+		return "SUCCESS";
 	}
 }

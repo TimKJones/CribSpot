@@ -1,0 +1,124 @@
+fieldset
+{
+	border:none;
+}
+
+.fileInput
+{
+	width:204px;
+	float:left;
+}
+
+#progressBar
+{
+	width:0%;
+	max-width:200px;
+    height: 12px;
+    background: blue;
+}
+
+.imageContent
+{
+	height:130px;
+	width:150px;
+	float:left;
+	background-color:grey;
+}
+.imageContent:hover
+{
+	border:2px solid;
+	cursor:pointer;
+	background-color:#D8D8D8;
+}
+
+.imageThumb
+{
+	float:left;
+}
+
+.imageContainer
+{
+	width:160px;
+	height:150px;
+	float:left;
+	margin-left:10px;
+	margin-top:2px;
+	border: 1px solid;	
+}
+
+.hide
+{
+	visibility: hidden;
+}
+
+#imagesWrapper
+{
+	width:346px;
+	height:600px;
+	max-height:468px;
+	position:absolute;
+	left:310px;
+	z-index:2;
+}
+
+#rightColumn
+{
+	position:absolute;	
+	top:5px;
+	height:500px;
+	width:450px;
+	border:1px solid;
+}
+#topSection
+{
+	height: 95px;
+	width: 291px;
+	margin:5px;
+	border:dotted 1px;
+}
+#topSectionTop
+{
+	height:43px;
+	border:dotted 1px;
+	margin:2px;
+}
+#topSectionBottom
+{
+	height:44px;
+	margin:2px;
+}
+#bottomSection
+{
+	height:328px;	
+	width:291px;
+	margin-left:5px;
+	margin-top:5px;
+	margin-bottom:5px;
+	border: 1px solid;
+}
+#imageContent0
+{
+	height:271px;
+	width:280px;
+	margin-left:5px;
+	margin-top:5px;
+	border:solid 1px;
+}
+#caption
+{
+	height:41px;
+	width:280px;
+	margin-left:5px;
+	margin-top:3px;
+	border:solid 1px;
+}
+
+#captionInput
+{
+	width:159px;
+}
+
+#container
+{
+	z-index:1;
+}

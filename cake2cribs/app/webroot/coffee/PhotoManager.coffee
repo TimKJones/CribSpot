@@ -28,6 +28,7 @@ class A2Cribs.PhotoManager
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
 		if photoNumber == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 			A2Cribs.PhotoManager.MakeNotPrimaryUI photoNumber
+		A2Cribs.PhotoManager.ApplyRemovePhotoUI photoNumber
 
 		$.ajax
 			url: myBaseUrl + "Images/DeleteImage"
@@ -67,6 +68,8 @@ class A2Cribs.PhotoManager
 				A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = imageSources[2][i]
 			else
 				A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = ""
+
+			A2Cribs.PhotoManager.ApplyAddPhotoUI nextSlot
 			imageContentDiv = "#imageContent" + (nextSlot)
 			$(imageContentDiv).html("")
 			$(imageContentDiv).css(cssSettings)
@@ -108,6 +111,7 @@ class A2Cribs.PhotoManager
 			if !imageContentDiv
 				alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
 				return
+			A2Cribs.PhotoManager.ApplyAddPhotoUI num
 		else
 			imageContentDiv = "#imageContent0"
 			cssSettings = 
@@ -220,7 +224,6 @@ class A2Cribs.PhotoManager
 	@SubmitCaption: ->
 		caption = $("#captionInput").val()
 		ind = A2Cribs.PhotoManager.CurrentPreviewImageIndex
-		A2Cribs.PhotoManager.IdToCaptionMap[ind] = caption
 		#TODO: need to set IdToCaptionMap in callback to ensure that caption was accepted
 		$.ajax
 			url: myBaseUrl + "Images/SubmitCaption/" + caption + "/" +  ind
@@ -228,5 +231,23 @@ class A2Cribs.PhotoManager
 			success: A2Cribs.PhotoManager.SubmitCaptionCallback
 
 	@SubmitCaptionCallback: (response) ->
-		x = 5
+		if response == "SUCCESS"
+			A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val()
+		else
+			alert "Error: Please use only numbers and letters."
 
+	###
+	Update visibility of buttons for image after added to slot imageSlot
+	###
+	@ApplyAddPhotoUI: (imageSlot) ->
+		$("#delete" + imageSlot).toggleClass("hide")
+		$("#primary" + imageSlot).toggleClass("hide")
+		$("#edit" + imageSlot).toggleClass("hide")
+
+	###
+	Update visibility of buttons for image after being removed
+	###
+	@ApplyRemovePhotoUI: (imageSlot) ->
+		$("#delete" + imageSlot).toggleClass("hide")
+		$("#primary" + imageSlot).toggleClass("hide")
+		$("#edit" + imageSlot).toggleClass("hide")
