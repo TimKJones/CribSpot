@@ -12,34 +12,40 @@
 </div>
 	<div id="imagesWrapper">
 		<div class="imageContainer">
-			<div class="imageContent primary imageThumb topRow" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<div class="imageContent imageThumb topRow" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		<div class="imageContainer">
 			<div class="imageContent secondary imageThumb topRow" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="delete hide" id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary2" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		<div class="imageContainer">
 			<div class="imageContent secondary imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="delete hide" id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary3" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		<div class="imageContainer">
 			<div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="delete hide" id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary4" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		<div class="imageContainer">
 			<div class="imageContent secondary imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="delete hide" id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		<div class="imageContainer">
 			<div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete" id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="delete hide" id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary6" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
 		</div>
 	</div>
@@ -101,7 +107,6 @@ $(function () {
 	        );
     	},
     	add: function(e, data) {
-    		A2Cribs.PhotoManager.testfunc(data);
     		//alert("adding");
 			data.submit();
 		},

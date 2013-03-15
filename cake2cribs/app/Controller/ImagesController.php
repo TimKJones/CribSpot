@@ -15,6 +15,7 @@ class ImagesController extends AppController {
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
+		$this->Auth->allow('SubmitCaption');
 	}
 
 	function add($data = null)
@@ -51,15 +52,10 @@ class ImagesController extends AppController {
 
 	function edit($listing_id)
 	{
-		$this->set('errors', null);
-		$this->setJsVar('edit_listing_id', $listing_id);
-		$this->set('listing_id', $listing_id);
-		$response = $this->add($this->data);
-		$this->set('errors', $response);
-	}
+		if ($listing_id == null)
+			//TODO: show 404 page
+			return;
 
-	function edit2($listing_id)
-	{
 		$this->set('errors', null);
 		$this->setJsVar('edit_listing_id', $listing_id);
 		$this->set('listing_id', $listing_id);
@@ -72,6 +68,7 @@ class ImagesController extends AppController {
 		$images = $this->Image->getImagesForListingId($listing_id);
 		$primary_image_index = $images[0] + 1; // in UI, index is offset by 1
 		$files = $images[1];
+		$captions = $images[2];
 
 		$secondary = array();
 		CakeLog::write("makePrimary", print_r($files, true));
@@ -87,6 +84,7 @@ class ImagesController extends AppController {
 		$return_files = array();
 		array_push($return_files, $primary_image_index);
 		array_push($return_files, $secondary);
+		array_push($return_files, $captions);
 
 		$this->layout = 'ajax';
 		$this->set('response', json_encode($return_files));
@@ -146,5 +144,24 @@ class ImagesController extends AppController {
 	  	}
 
 	  	return false;
+	}
+
+	function SubmitCaption($caption, $image_slot)
+	{
+		CakeLog::write("addCaption", 'here0');
+		$user_id = $this->Auth->user('id');
+		CakeLog::write("addCaption", 'here1');
+		//TODO: Change this
+		if (!$user_id)
+			$user_id = 0;
+		CakeLog::write("addCaption", 'here2');
+		$path = $this->Session->read('image' . $image_slot);
+		CakeLog::write("addCaption", "adding caption: " . $caption . " | " . $image_slot . " | " . $path . " | " . $user_id);
+		if (!$path)
+			return false; // RETURN ERROR MESSAGE
+
+		$response = $this->Image->SubmitCaption($caption, $user_id, $path);
+		$this->layout = 'ajax';
+		$this->set("response", $response);
 	}
 }
