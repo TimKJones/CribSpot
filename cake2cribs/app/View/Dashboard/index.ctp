@@ -2,6 +2,7 @@
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
 <?php echo $this->Html->script('src/Message'); ?>
+<?php echo $this->Html->script('src/VerifyManager'); ?>
 <?php echo $this->Html->script('bootstrap'); ?>
 
 <?php echo $this->Html->script('underscore'); ?>
@@ -21,7 +22,7 @@
 		</div>
 		<div class = 'span6' id = 'middle_content'>
 			<div class = 'account-content hidden'>
-				<?php echo $this->element('Account/edit_account_window') ?>
+				<?php echo $this->element('Account/edit_account_window', $user) ?>
 			</div>
 			<div class = 'listings-content hidden'>
 				Listings

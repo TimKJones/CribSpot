@@ -22,6 +22,9 @@
       $('#meaning').click(function() {
         return $('#hidden-meaning').fadeToggle();
       });
+      $('#delete_conversation').click(function() {
+        return _this.DeleteConversation();
+      });
       return this.refresh();
     };
 
@@ -30,17 +33,6 @@
       cc = $('#current_conversation');
       dist = (cc.offset().top + cc.innerHeight()) - (mli.offset().top + mli.innerHeight() + 10);
       return cc.scrollTop(cc.scrollTop() - dist);
-    };
-
-    Messages.toggleDropdown = function() {
-      this.DropDownVisible = !this.DropDownVisible;
-      $('#conversation_drop_down').slideToggle('fast');
-      $('#toggle-conversations i').toggleClass('icon-caret-right', !this.DropDownVisible);
-      $('#toggle-conversations i').toggleClass('icon-caret-down', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('shadowed', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('expanded', this.DropDownVisible);
-      $('#conversations_list_header').toggleClass('minimized', !this.DropDownVisible);
-      return $('.messages-content').toggleClass('hidden', !this.DropDownVisible);
     };
 
     Messages.MessageScrollingHandler = function(event) {
@@ -190,13 +182,37 @@
       return false;
     };
 
+    Messages.DeleteConversation = function() {
+      var request_data, url,
+        _this = this;
+      url = myBaseUrl + "messages/deleteConversation/";
+      request_data = {
+        'conv_id': this.CurrentConversation
+      };
+      return $.post(url, request_data, function(response) {
+        var data;
+        data = JSON.parse(response);
+        if (data.success === 1) {
+          Alertify.log.create("success", "Conversation deleted", 2);
+          _this.CurrentConversation = -1;
+          _this.CurrentParticipantID = -1;
+          A2Cribs.Dashboard.HideContent('messages');
+          return _this.refresh();
+        } else {
+          return Alertify.log.create("error", "Failed to delete the conversation", 2);
+        }
+      });
+    };
+
     Messages.Direct = function(directive) {
       var conv_id, participant_id;
-      conv_id = parseInt(directive.data.conversation_id);
-      this.CurrentConversation = conv_id;
-      participant_id = parseInt(directive.data.participant_id);
-      this.CurrentParticipantID = participant_id;
-      return $('#listing_title').text(directive.data.title);
+      if (directive.data != null) {
+        conv_id = parseInt(directive.data.conversation_id);
+        this.CurrentConversation = conv_id;
+        participant_id = parseInt(directive.data.participant_id);
+        this.CurrentParticipantID = participant_id;
+        return $('#listing_title').text(directive.data.title);
+      }
     };
 
     Messages.init = function() {

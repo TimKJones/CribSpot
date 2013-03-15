@@ -1,6 +1,9 @@
 <?php 
-	$partic_link = "$host_name/users/view/$participant[id]/";
-	$view_msg = "$host_name/messages/?view_conversation=$conv_id";
+	// [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
+	// There was issue invalid links while testing on the dev enviorment
+
+	$partic_link = "http://www.cribspot.com/users/view/$participant[id]/";
+	$view_msg = "http://www.cribspot.com/messages/view/$conv_id";
 	// BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
 ?>
 

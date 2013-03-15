@@ -59,6 +59,10 @@
       return content.removeClass('hidden');
     };
 
+    Dashboard.HideContent = function(classname) {
+      return $("." + classname + "-content").addClass('hidden');
+    };
+
     Dashboard.Direct = function(directive) {
       var content_header;
       content_header = $('#' + directive.classname + "-content-header");

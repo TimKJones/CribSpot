@@ -194,13 +194,39 @@
 
  	}
 
- 	public function deleteConversation($conv_id){
+ 	// Ajax function that will "Delete the conversation" basically just hides it from the user
+    // responded with a json object indicating success
+    public function deleteConversation(){
  		if(!$this->request->isPost()){
 			echo "This url only accepts post requests";
  			die();
  		}
+        $user = $this->Auth->User();
+        $data = $this->request->data;
+        $conv_id = $data['conv_id'];
+        if(!$this->Conversation->isUserParticipant($conv_id, $user)){
+             $json = json_encode(array(
+                'success' => 0,
+            ));
+            $this->layout = 'ajax';
+            $this->set('response', $json);
+            return;
+        }
 
- 		// Do we want to actually delete the messages or just hide them?
+        // We are going to hide the conversation from the user
+        // if the other participant ever messages this user again
+        // the post will be come visible again
+
+        $options['condtions'] = array('Conversation.conversation_id'=>$conv_id);
+        $conversation = $this->Conversation->find('first', $options);
+        $this->Conversation->hideConversation($conversation, $user);
+
+        $json = json_encode(array(
+                'success' => 1,
+            ));
+        $this->layout = 'ajax';
+        $this->set('response', $json);
+
 
  	}
 }

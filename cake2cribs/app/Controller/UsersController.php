@@ -43,6 +43,7 @@ class UsersController extends AppController {
                 */
                 //redirects to user page
 				//$this->redirect($this->Auth->redirect(''));
+                
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
                     $this->redirect('/users');
@@ -56,6 +57,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash(__('Invalid login, try again'));
 			}
 		}
+
 	}
 
     public function ajax_login() {
@@ -65,7 +67,7 @@ class UsersController extends AppController {
             $this->Session->setFlash(__('You are already logged in.'));
             $this->redirect('/dashboard');
         }
-        if(!this->request->isPost()){
+        if(!$this->request->isPost()){
             echo "This url only accepts post requests";
             die();
         }
@@ -75,7 +77,7 @@ class UsersController extends AppController {
                 $this->redirect('/dashboard');
             }
             else {
-                $this->Session->setFLash(__('You were successfully logged in.'))
+                $this->Session->setFLash(__('You were successfully logged in.'));
                 $this->redirect('/dashboard');
             }
         } else {

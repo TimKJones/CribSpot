@@ -7,9 +7,13 @@
 
     PhotoManager.CurrentPhotoTarget = "none";
 
+    PhotoManager.CurrentPrimaryImageIndex = 1;
+
     PhotoManager.CurrentPreviewId = 0;
 
     PhotoManager.IdToPathMap = [];
+
+    PhotoManager.NextImageSlot = 0;
 
     PhotoManager.MAX_CAPTION_LENGTH = 25;
 
@@ -26,8 +30,6 @@
     PhotoManager.DeleteImageCallback = function(id) {
       $('#imageContent' + id).html('');
       $('#imageContent' + id).css('background-image', '');
-      $("#" + id).css("visibility", "hidden");
-      $("#add" + id).css("visibility", "visible");
       if (id === A2Cribs.PhotoManager.CurrentPreviewId) {
         $('#imageContent0').html('');
         return $('#imageContent0').css('background-image', '');
@@ -37,10 +39,13 @@
     PhotoManager.DeleteImage = function(obj) {
       var photoNumber;
       photoNumber = parseInt(obj.id.substring(obj.id.length - 1));
+      if (photoNumber === A2Cribs.PhotoManager.CurrentPrimaryImageIndex) {
+        A2Cribs.PhotoManager.MakeNotPrimaryUI(photoNumber);
+      }
       return $.ajax({
         url: myBaseUrl + "Images/DeleteImage",
         type: "GET",
-        data: "listing_id=" + jsVars.edit_listing_id + "&path=" + A2Cribs.PhotoManager.IdToPathMap[photoNumber],
+        data: "listing_id=" + jsVars.edit_listing_id + "&image_slot=" + photoNumber,
         success: A2Cribs.PhotoManager.DeleteImageCallback(photoNumber)
       });
     };
@@ -54,47 +59,36 @@
     };
 
     PhotoManager.UpdateImageSources = function(imageSources) {
-      var cssSettings, i, imageContentDiv, _i, _j, _ref, _ref1, _results;
+      var cssSettings, i, imageContentDiv, primary_image_index, x, _i, _ref, _results;
       imageSources = JSON.parse(imageSources);
-      for (i = _i = 0, _ref = imageSources[1].length - 1; _i <= _ref; i = _i += 1) {
-        A2Cribs.PhotoManager.IdToPathMap[0] = imageSources[0];
-      }
+      primary_image_index = 0;
       if (imageSources[0] !== null) {
-        A2Cribs.PhotoManager.IdToPathMap[0] = imageSources[0];
-        cssSettings = {
-          "background-size": "256px 256px",
-          "background-image": "url(" + imageSources[0] + ")"
-        };
-        imageContentDiv = "#imageContent1";
-        $(imageContentDiv).html("");
-        $(imageContentDiv).css(cssSettings);
-        $("#add1").css("visibility", "hidden");
-        $("#1").css("visibility", "visible");
-      } else {
-        $("#1").css("visibility", "hidden");
-        $("#add1").css("visibility", "visibile");
+        primary_image_index = imageSources[0];
+        A2Cribs.PhotoManager.CurrentPrimaryImageIndex = primary_image_index;
       }
       _results = [];
-      for (i = _j = 0, _ref1 = imageSources[1].length - 1; _j <= _ref1; i = _j += 1) {
+      for (i = _i = 0, _ref = imageSources[1].length - 1; _i <= _ref; i = _i += 1) {
         if (imageSources[1][i] === null || imageSources[1][i] === void 0) {
           continue;
         }
-        A2Cribs.PhotoManager.IdToPathMap[i + 1] = imageSources[1][i];
         cssSettings = {
-          "background-size": "256px 256px",
+          "background-size": "160px 150px",
           "background-image": "url(" + imageSources[1][i] + ")"
         };
-        imageContentDiv = "#imageContent" + (i + 2);
+        imageContentDiv = "#imageContent";
+        if (i === primary_image_index) {
+          x = 5;
+        }
+        imageContentDiv = "#imageContent" + (i + 1);
         $(imageContentDiv).html("");
         $(imageContentDiv).css(cssSettings);
-        $("#add" + (i + 2)).css("visibility", "hidden");
-        _results.push($("#" + (i + 2)).css("visibility", "visible"));
+        if (i === A2Cribs.PhotoManager.CurrentPrimaryImageIndex) {
+          _results.push(A2Cribs.PhotoManager.MakePrimaryUI(primary_image_index));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
-    };
-
-    PhotoManager.SubmitPhoto = function() {
-      return $("#ImageAddForm").submit();
     };
 
     PhotoManager.PreviewImage = function(obj) {
@@ -107,18 +101,23 @@
       }
       if (file.files) {
         file = file.files[0];
+        if (!A2Cribs.PhotoManager.IsAcceptableFileType(file.name)) {
+          return;
+        }
         fr = new FileReader;
-        A2Cribs.PhotoManager.CurrentFileNumber = parseInt(obj.id.substring(obj.id.length - 1));
         fr.onloadend = A2Cribs.PhotoManager.SetImage;
         return fr.readAsDataURL(file);
       } else {
         file = file.value;
+        if (!A2Cribs.PhotoManager.IsAcceptableFileType(file)) {
+          return;
+        }
         return A2Cribs.PhotoManager.SetImage(file);
       }
     };
 
     PhotoManager.SetImage = function(img) {
-      var backgroundImg, candidateDiv, cssSettings, foundFreeDiv, freeDivId, i, imageContentDiv, imageDivPrefix, _i;
+      var cssSettings, imageContentDiv;
       if (typeof img === "object") {
         img = img.target.result;
       }
@@ -127,22 +126,9 @@
         "background-image": "url(" + img + ")"
       };
       imageContentDiv = "";
-      imageDivPrefix = "#imageContent";
-      foundFreeDiv = false;
-      freeDivId = 0;
       if (A2Cribs.PhotoManager.CurrentPhotoTarget === "secondary") {
-        for (i = _i = 1; _i <= 6; i = _i += 1) {
-          candidateDiv = imageDivPrefix + i;
-          backgroundImg = $(candidateDiv).css("background-image");
-          if (backgroundImg === "none" || backgroundImg === void 0) {
-            imageContentDiv = candidateDiv;
-            foundFreeDiv = true;
-            A2Cribs.PhotoManager.IdToPathMap[i] = img;
-            freeDivId = i;
-            break;
-          }
-        }
-        if (!foundFreeDiv) {
+        imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv();
+        if (!imageContentDiv) {
           alert("You have already uploaded a maximum of 6 images. Please delete an image before uploading another.");
           return;
         }
@@ -155,6 +141,34 @@
       }
       $(imageContentDiv).html("");
       return $(imageContentDiv).css(cssSettings);
+    };
+
+    /*
+    	Find the next free div in which to display the selected photo
+    */
+
+
+    PhotoManager.FindNextFreeDiv = function() {
+      var backgroundImg, candidateDiv, foundFreeDiv, freeDivId, i, imageContentDiv, imageDivPrefix, _i;
+      imageDivPrefix = "#imageContent";
+      foundFreeDiv = false;
+      freeDivId = 0;
+      for (i = _i = 1; _i <= 6; i = _i += 1) {
+        candidateDiv = imageDivPrefix + i;
+        backgroundImg = $(candidateDiv).css("background-image");
+        if (backgroundImg === "none" || backgroundImg === void 0) {
+          imageContentDiv = candidateDiv;
+          foundFreeDiv = true;
+          freeDivId = i;
+          A2Cribs.PhotoManager.NextImageSlot = freeDivId;
+          break;
+        }
+      }
+      if (foundFreeDiv) {
+        return imageContentDiv;
+      } else {
+        return false;
+      }
     };
 
     PhotoManager.ShowRequest = function(formData, jqForm, options) {
@@ -197,6 +211,20 @@
       return alert("submitting " + caption);
     };
 
+    PhotoManager.IsAcceptableFileType = function(fileName) {
+      var fileType, indexOfDot;
+      indexOfDot = fileName.indexOf(".", fileName.length - 4);
+      if (indexOfDot === -1) {
+        return false;
+      }
+      fileType = fileName.substring(indexOfDot + 1);
+      if (fileType === "jpg" || fileType === "jpeg" || fileType === "png") {
+        return true;
+      }
+      alert("Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'.");
+      return false;
+    };
+
     /*
     	if statusText == 'success'
     		if data.img != ''
@@ -208,6 +236,46 @@
     		document.getElementById('message').innerHTML = 'Unknown error!';
     */
 
+
+    PhotoManager.MakePrimary = function(obj) {
+      var img, photoNumber;
+      photoNumber = parseInt(obj.id.substring(obj.id.length - 1));
+      img = $("#imageContent" + photoNumber).css("background-image");
+      if (img !== "none" && img !== void 0) {
+        A2Cribs.PhotoManager.MakeNotPrimaryUI(A2Cribs.PhotoManager.CurrentPrimaryImageIndex);
+        A2Cribs.PhotoManager.MakePrimaryUI(photoNumber);
+        A2Cribs.PhotoManager.CurrentPrimaryImageIndex = photoNumber;
+        return $.ajax({
+          url: myBaseUrl + "Images/MakePrimary/" + photoNumber,
+          type: "GET"
+        });
+      }
+    };
+
+    /*
+    	Update UI for image that is now primary
+    */
+
+
+    PhotoManager.MakePrimaryUI = function(divId) {
+      $("#primary" + divId).css("background-color", "yellow");
+      return $("#primary" + divId).attr("disabled", "disabled");
+    };
+
+    /*
+    	Update UI for image that is no longer primary
+    */
+
+
+    PhotoManager.MakeNotPrimaryUI = function(divId) {
+      $("#primary" + divId).css("background-color", "gray");
+      return $("#primary" + divId).removeAttr("disabled");
+    };
+
+    PhotoManager.testfunc = function(data) {
+      var x;
+      return x = 5;
+    };
 
     return PhotoManager;
 

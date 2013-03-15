@@ -82,19 +82,31 @@ class Conversation extends AppModel {
 				"Last_Message.user_id",
 		);
 
-		//Sets a convience key for the other 'Participant'
-		//Sets the participant key in each conversation to the 
-		//the user that does not match the user id provided
+		//  Sets a convience key for the other 'Participant'
+		//  Sets the participant key in each conversation to the 
+		//  the user that does not match the user id provided
+
+		//  We will also go through and remove and conversation from the array where
+		//  the user has marked that they have deleted it. By finding what participant
+		//  they are we can see if this conversation is visible to them and then deal with it
 
 		$conversations = $this->find('all', $options);
-
-		foreach ($conversations as &$conversation){
+		foreach ($conversations as $key => &$conversation){
 			
-			if($conversation['Participant1']['id'] == $user_id)
+			if($conversation['Participant1']['id'] == $user_id){
 				$conversation['Participant'] = $conversation['Participant2'];
-			else
-				$conversation['Participant'] = $conversation['Participant1'];
+				if($conversation['Conversation']['visible1'] == 0){
+					unset($conversations[$key]);
+				}
+			}
 
+			else{
+				$conversation['Participant'] = $conversation['Participant1'];
+				if($conversation['Conversation']['visible2'] == 0){
+					unset($conversations[$key]);
+				}
+
+			}
 			unset($conversation['Participant1']);
 			unset($conversation['Participant2']);
 		}
@@ -139,6 +151,12 @@ class Conversation extends AppModel {
 
 	public function addNewMessage($conversation, $message_id){
 		$conversation['last_message_id'] = $message_id;
+		
+		//  Make the conversation visible for both users again
+		//  in the case of one of the users deleting it.
+		$conversation['visible1'] = 1;
+		$conversation['visible2'] = 1;
+
 		//Unset the modified field so it gets updated
 		unset($conversation['modified']); 
 		$this->save($conversation);
@@ -162,6 +180,16 @@ class Conversation extends AppModel {
 		}
 		//user was not a participant
 		return null;
+	}
+
+	public function hideConversation($conversation, $user){
+		if($conversation['Participant1']['id'] == $user['id']){
+			$conversation['Conversation']['visible1'] = 0;
+		}else if($conversation['Participant2']['id'] == $user['id']){
+			$conversation['Conversation']['visible2'] = 0;
+		}
+
+		$this->save($conversation['Conversation']);
 	}
 
 }

@@ -57,6 +57,9 @@ class A2Cribs.Dashboard
 		content.siblings().addClass 'hidden'
 		content.removeClass 'hidden'
 
+	@HideContent: (classname)->
+		$(".#{ classname }-content").addClass 'hidden'
+
 	@Direct: (directive)->
 		content_header = $('#' + directive.classname + "-content-header")
 		content_header.trigger 'click'
