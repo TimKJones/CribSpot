@@ -151,7 +151,14 @@ class A2Cribs.VerifyManager
 		console.log(fb_data)
 
 
+	@GetTwitterFollowersCount: (user_id) ->
+		$.ajax
+			url: myBaseUrl + "Users/GetTwitterFollowers/" + user_id
+			type:"GET"
+			success: A2Cribs.VerifyManager.GetTwitterFollowersCallback
 
+	@GetTwitterFollowersCallback: (response) ->
+		alert response
 
 
 

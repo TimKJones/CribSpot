@@ -21,6 +21,7 @@ class UsersController extends AppController {
 		$this->Auth->allow('verify');
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
+        $this->Auth->allow('getTwitterFollowers');
 	}
 
 	public function login() {
@@ -491,6 +492,23 @@ class UsersController extends AppController {
        
     }
 
+    public function getTwitterFollowers($user_id)
+    {
+        App::import('Vendor', 'twitter/twitteroauth');
+        App::import('Vendor', 'twitter/twconfig');
+        $twitter_data = $this->User->getTwitterFollowersCount($user_id);
+        $twitter_auth_token = $twitter_data[0];
+        $twitter_auth_token_secret = $twitter_data[1];
+        $connection = new TwitterOAuth(CONSUMER_KEY, 
+                                        CONSUMER_SECRET,
+                                        $twitter_auth_token,
+                                        $twitter_auth_token_secret);
+
+        $content = $connection->get('account/verify_credentials');
+        $follower_count = $content->followers_count;
+        $this->layout = 'ajax';
+        $this->set("response", $follower_count);
+    }
 
 	public function Logout()
 	{

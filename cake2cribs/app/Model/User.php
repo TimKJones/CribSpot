@@ -149,6 +149,26 @@ class User extends AppModel {
 		echo debug(false);
 	}
 
+	public function getTwitterFollowersCount($user_id)
+	{
+		$twitter_data = null;
+		/*$twitter_data = $this->find('first', array(
+			'conditions' => array('User.id' => $user_id),
+			'fields' => 	array('twitter_userid', 'twitter_auth_token', 'twitter_auth_token_secret')));
+*/
+		$twitter_userid = $twitter_data['User']['twitter_userid'];
+		$twitter_auth_token = $twitter_data['User']['twitter_auth_token'];
+		$twitter_auth_token_secret = $twitter_data['User']['twitter_auth_token_secret'];
+
+		$twitter_userid = '381100229';
+		$twitter_auth_token = '381100229-sua9NBNe08ZH3HtdrKb9Ks7MF8xcrUh5ISno88M1';
+		$twitter_auth_token_secret = 'PkjMGkMjyztpqKV3So18EsPZpqBBrw9AF0PQWB0pBs';
+
+		$twitter_data = array();
+		array_push($twitter_data, $twitter_auth_token, $twitter_auth_token_secret);
+		return $twitter_data;
+	}
+
 	public function LinkedinVerify($user_id)
 	{
 		
