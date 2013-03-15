@@ -290,7 +290,25 @@ class Sublet extends AppModel {
 				'rule' => array('naturalNumber',true),
 				'message' => 'Additional fees must be a whole, positive number.'
 				)
-			)
+			),
+		'unit_number' =>array(
+			'between' => array(
+				'rule' => array('between',0,250),
+				'message' => 'Must be between 1 and 250 characters'
+				)),
+		'flexible_dates' => 'boolean',
+		'furnished_type_id' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'You must specify if the sublet is furnished..'
+				),
+			'isNumber' => array(
+				'rule' => array('naturalNumber',true),
+				'message' => 'Invalid furnished value.'
+				)
+			),
+
+
 		//section for galleryID
 		//have to ask Tim about this
 
