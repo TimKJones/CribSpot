@@ -9,6 +9,7 @@
     	Called when a marker is clicked
     */
 
+
     Map.MarkerClicked = function(event) {
       return A2Cribs.Map.IdToMarkerMap[this.id].LoadMarkerData();
     };
@@ -17,13 +18,16 @@
     	Add list of listings to cache
     */
 
+
     Map.CacheListings = function(listings) {
       var l, listing, _i, _len, _results;
       A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = [];
       _results = [];
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
-        if (listing === void 0) continue;
+        if (listing === void 0) {
+          continue;
+        }
         l = listing.Listing;
         l.listing_id = parseInt(l.listing_id);
         _results.push(A2Cribs.Map.IdToListingMap[l.listing_id] = new A2Cribs.Listing(l.listing_id, l.marker_id, l.available, l.lease_range, l.unit_type, l.unit_description, l.beds, l.baths, l.rent, l.electric, l.water, l.heat, l.air, l.parking, l.furnished, l.url, l.realtor_id));
@@ -35,6 +39,7 @@
     	Add a realtor to the cache
     */
 
+
     Map.CacheRealtor = function(realtor) {
       realtor.realtor_id = parseInt(realtor.realtor_id);
       return A2Cribs.Map.IdToRealtorMap[parseInt(realtor.realtor_id)] = new A2Cribs.Realtor(realtor.realtor_id, realtor.company, realtor.email);
@@ -44,13 +49,16 @@
     	Add a list of listingIds to the MarkerIdToListingIds map
     */
 
+
     Map.CacheMarkerIdToListingsList = function(listings) {
       var listing, _i, _len, _results;
       A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = [];
       _results = [];
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
-        if (listing === void 0) continue;
+        if (listing === void 0) {
+          continue;
+        }
         _results.push(A2Cribs.Map.MarkerIdToListingIdsMap[listing.Listing.marker_id].push(parseInt(listing.Listing.listing_id)));
       }
       return _results;
@@ -59,6 +67,7 @@
     /*
     	Add a marker to the map
     */
+
 
     Map.AddMarker = function(m) {
       var id;
@@ -72,6 +81,7 @@
     /*
     	Add all markers in markerList to map
     */
+
 
     Map.InitializeMarkers = function(markerList) {
       var decodedMarkerList, marker, _i, _len, _results;
@@ -88,6 +98,7 @@
     	Load all markers from Markers table
     */
 
+
     Map.LoadMarkers = function() {
       return $.ajax({
         url: myBaseUrl + "Map/LoadMarkers",
@@ -102,12 +113,14 @@
       		@AutoComplete = new google.maps.places.Autocomplete(input, options)
       		@AutoComplete.setBounds(defaultBounds)
       */
+
     };
 
     /*
     	Used to only show markers that are within a certain bounds based on the user's current viewport.
     	https://developers.google.com/maps/articles/toomanymarkers#viewportmarkermanagement
     */
+
 
     Map.ShowMarkers = function() {
       var bounds;

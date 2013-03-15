@@ -5,7 +5,12 @@ class A2Cribs.PageHeader
 	@renderUnreadConversationsCount: ()->
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
-			response_data = JSON.parse data
+			try
+				response_data = JSON.parse data
+			catch error
+				return
+				# console.log "user is not logged in so error occured while checking messages" + error 
+
 			count = response_data.unread_conversations
 			notification = $('#unread-conversation-notification')
 			if count == 0

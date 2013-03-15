@@ -4,7 +4,7 @@
 		<div class ='span8'>
 			<a href = 'view that listing' id = 'listing_title'></a><i class = 'icon-map-marker icon-large'></i>
 			<span id = 'conversation_toolbar'>
-				<i  id = 'refresh_content' class = 'icon-refresh'></i><i class = 'icon-trash'></i>
+				<i  id = 'refresh_content' class = 'icon-refresh'></i><i id = 'delete_conversation' class = 'icon-trash'></i>
 			</span>
 
 		</div>

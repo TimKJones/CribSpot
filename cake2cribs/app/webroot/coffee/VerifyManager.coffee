@@ -75,3 +75,83 @@ class A2Cribs.VerifyManager
 	###
 	@LoadVerificationDataComplete: ->
 		x = 5
+
+
+
+
+	###
+		This function is used to see if the user is verified, and as well get some
+		additional information about the relationship between user1 and user2 (mutual friends & total friends)
+
+		fb_ids is an object that {'user1': int or null, 'user2': int or null}
+		the callback function takes a parameter data that 
+		will have the form {'verified': boolean, 'total_friends': int or null, 'mutual_friends' int or null}
+		
+		Note: that total_friends is the total friends of user2
+
+		In context this structure will be cached client side for getting a users
+		verification state.
+
+
+	###
+	@getFacebookVerification: (fb_ids, callback)->
+		fb_data = {
+			verified: false,
+			mutual_friends: null,
+			total_friends: null,
+		}
+		
+		if not fb_ids.user1?
+			# the users fb id doesn't exist so they have not verified
+			callback(fb_data)
+			return
+
+		$.when(
+			
+			@getMutalFriends(fb_ids), 
+			@getTotalFriends(fb_ids)
+			
+		).then (mut_friends_res, tot_friends_res)=>
+			fb_data = {}
+
+			if not mut_friends_res.error_code?
+				fb_data.mutual_friends = mut_friends_res.length
+			else
+				console.log mut_friends_res
+
+			if not tot_friends_res.error_code?
+				fb_data.total_friends = tot_friends_res[0].friend_count
+			else
+				console.log total_friends
+			callback {
+				verified: true,
+				mutual_friends: mut_friends_res?.length,
+				total_friends: tot_friends_res[0]?.friend_count,
+			}
+
+
+
+	@getMutalFriends: (fb_ids)->
+		query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user1 + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user2 + ')'
+		defered = new $.Deferred();
+		FB.api {method:'fql.query', query: query}, (response)->
+			defered.resolve(response)
+		defered.promise()
+
+	@getTotalFriends: (fb_id)->
+		query = 'SELECT friend_count FROM user WHERE uid = ' + fb_id
+		defered = new $.Deferred()
+		FB.api { method:'fql.query', query: query}, (response)->
+			defered.resolve(response)
+		defered.promise()
+
+
+
+	@samplecallback:(fb_data)->
+		console.log(fb_data)
+
+
+
+
+
+

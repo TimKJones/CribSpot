@@ -1,3 +1,4 @@
+
 class A2Cribs.Messages
 	
 
@@ -16,6 +17,9 @@ class A2Cribs.Messages
 
 		$('#meaning').click =>
 			$('#hidden-meaning').fadeToggle()
+
+		$('#delete_conversation').click =>
+			@DeleteConversation()
 
 		# Refresh (Load) all the ajax content
 		@refresh()
@@ -184,6 +188,23 @@ class A2Cribs.Messages
 			$('#message_text textarea').val('') # Clear the reply text field
 			$('#send_reply').removeAttr 'disabled'
 		false
+
+	@DeleteConversation:()->
+		url = myBaseUrl + "messages/deleteConversation/"
+		request_data = {
+			'conv_id': @CurrentConversation
+		}
+
+		$.post url, request_data, (response)=>			
+			data = JSON.parse response
+			if data.success == 1
+				Alertify.log.create("success", "Conversation deleted", 2);
+				@CurrentConversation = -1
+				@CurrentParticipantID = -1
+				A2Cribs.Dashboard.HideContent('messages')
+				@refresh()
+			else
+				Alertify.log.create("error", "Failed to delete the conversation", 2);
 
 	@Direct: (directive)->
 		

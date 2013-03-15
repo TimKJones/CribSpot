@@ -46,9 +46,11 @@
 		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('knockout.js');
+		echo $this->Html->script('alertify.min.js');
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
+		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.bootstrap.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
 
 

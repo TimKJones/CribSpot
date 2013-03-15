@@ -11,7 +11,11 @@
       url = myBaseUrl + "messages/getUnreadCount";
       return $.get(url, function(data) {
         var count, notification, response_data;
-        response_data = JSON.parse(data);
+        try {
+          response_data = JSON.parse(data);
+        } catch (error) {
+          return;
+        }
         count = response_data.unread_conversations;
         notification = $('#unread-conversation-notification');
         if (count === 0) {

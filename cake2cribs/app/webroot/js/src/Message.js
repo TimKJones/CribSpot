@@ -22,6 +22,9 @@
       $('#meaning').click(function() {
         return $('#hidden-meaning').fadeToggle();
       });
+      $('#delete_conversation').click(function() {
+        return _this.DeleteConversation();
+      });
       return this.refresh();
     };
 
@@ -177,6 +180,28 @@
         return $('#send_reply').removeAttr('disabled');
       });
       return false;
+    };
+
+    Messages.DeleteConversation = function() {
+      var request_data, url,
+        _this = this;
+      url = myBaseUrl + "messages/deleteConversation/";
+      request_data = {
+        'conv_id': this.CurrentConversation
+      };
+      return $.post(url, request_data, function(response) {
+        var data;
+        data = JSON.parse(response);
+        if (data.success === 1) {
+          Alertify.log.create("success", "Conversation deleted", 2);
+          _this.CurrentConversation = -1;
+          _this.CurrentParticipantID = -1;
+          A2Cribs.Dashboard.HideContent('messages');
+          return _this.refresh();
+        } else {
+          return Alertify.log.create("error", "Failed to delete the conversation", 2);
+        }
+      });
     };
 
     Messages.Direct = function(directive) {
