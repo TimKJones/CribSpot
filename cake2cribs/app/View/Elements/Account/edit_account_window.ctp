@@ -34,5 +34,4 @@
 	  		</div>
 	  </div>
 	</form>
-	<?php debug($user);?>
 </div>
