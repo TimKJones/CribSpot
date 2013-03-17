@@ -31,7 +31,10 @@
         if (data.loginStatus === 1) {
           return window.location.href = '/dashboard';
         } else {
-          return $('#loginStatus').html("Invalid login.");
+          $('#loginStatus').html("Invalid login.");
+          return $('#loginStatus').effect("highlight", {
+            color: "#FF0000"
+          }, 3000);
         }
       });
     };

@@ -6,7 +6,8 @@ class A2Cribs.Login
 		$('#loginForm').submit (e) =>
 			e.preventDefault()
 			@cribspotLogin() 
-		
+
+
 
 			
 	@cribspotLogin:() ->
@@ -26,6 +27,7 @@ class A2Cribs.Login
 				window.location.href= '/dashboard'
 			else
 				$('#loginStatus').html "Invalid login."
+				$('#loginStatus').effect "highlight", {color:"#FF0000"}, 3000
 			
 
 
