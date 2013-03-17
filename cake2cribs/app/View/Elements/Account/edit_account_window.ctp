@@ -3,7 +3,17 @@
 	  <div class="control-group">
 	    <label class="control-label" for="university">University:</label>
 	    <div class="controls">
-	      <input id = 'university' name = 'university_input' placeholder = "University" type = 'text'></input>
+	    	<p>
+	      <?php 
+	      if ($user['University']['id']!=NULL)
+	      {
+	      	echo $user['University']['name'];
+	      }
+	      else
+	      {
+	      	echo '<a href="/users/verifyUniversity">Verify your university</a>';
+	      }
+	      ?>
 	    </div>
 	  </div>
 	  <div class="control-group">

@@ -79,7 +79,7 @@
 			
 			<?php if ($this->Session->read('Auth.User.id')==0)
 			{
-				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">SIGN UP</a>';
+				echo '<a class="btn btn-link" href="#signupModal" data-toggle="modal">SIGN UP</a>';
 				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
 			}
 			else
