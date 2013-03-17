@@ -45,7 +45,7 @@
 	 		}
 	 		// die(debug($directive));
 	 		$this->User->University->id = $this->Auth->user('university_id');
-	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'))
+	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
 	 		$this->set(array('directive'=> json_encode($directive), 'user' => $this->Auth->User()));
 	 	}
 	}
