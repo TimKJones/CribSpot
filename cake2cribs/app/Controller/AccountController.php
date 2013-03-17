@@ -18,5 +18,6 @@
         	$json = json_encode($directive);
 			$this->Cookie->write('dashboard-directive', $json);
 			$this->redirect('/dashboard');
+			
 	 	}
 	}

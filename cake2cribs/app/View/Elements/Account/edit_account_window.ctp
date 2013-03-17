@@ -23,14 +23,14 @@
 	    </div>
 	  </div>
 	  <div class="control-group">
-	    <label class="control-label" for="last_name">Last Name:</label>
+	    <label class="control-label" for="last_name" value='<?php echo $user['last_name']; ?>'>Last Name:</label>
 	    <div class="controls">
 	      <input type="text" id="last_name_input" placeholder="Last Name">
 	    </div>
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button type="submit" class="btn">Sign in</button>
+	  			<button type="submit" class="btn">Save changes</button>
 	  		</div>
 	  </div>
 	</form>
