@@ -8,7 +8,7 @@ class University extends AppModel {
 		),
 		'Sublet' => array(
 			'className' => 'Sublet',
-			'foreignKey' = 'sublet_id'
+			'foreignKey' => 'sublet_id'
 		)
 	);					
 }

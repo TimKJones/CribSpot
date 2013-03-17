@@ -10,9 +10,7 @@ class UsersController extends AppController {
                 )
             )
         )
-
-
-        ,'Email');
+        ,'Email', 'RequestHandler');
 
 
 	public function beforeFilter() {
@@ -22,6 +20,7 @@ class UsersController extends AppController {
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
         $this->Auth->allow('getTwitterFollowers');
+        $this->Auth->allow('ajaxLogin');
 	}
 
 	public function login() {
@@ -61,31 +60,48 @@ class UsersController extends AppController {
 
 	}
 
-    public function ajax_login() {
-        
+    public function ajaxLogin() {
+        $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
             $this->Session->setFlash(__('You are already logged in.'));
-            $this->redirect('/dashboard');
+            $json = json_encode(array(
+                'loginStatus' => 0,
+                'error'=>'You are verified'));
+                $this->set('response', $json);
+           // $this->redirect('/dashboard');
         }
         if(!$this->request->isPost()){
             echo "This url only accepts post requests";
             die();
         }
-        if($this->Auth->login()) {
-            if($this->Auth->user('verified')==0) {
-                $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
-                $this->redirect('/dashboard');
+        $loginData = array('User' => array('email', 'password'));
+        if ($this->Auth->identify($this->request, $this->response))
+        {
+            if($this->Auth->login()) {
+                if($this->Auth->user('verified')==0) {
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are verified'));
+                    $this->set('response', $json);
+                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
+                 //   $this->redirect('/dashboard');
+                }
+                else {
+                    $this->Session->setFLash(__('You were successfully logged in.'));
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are logged in.'));
+                    $this->set('response', $json);
+                   // $this->redirect('/dashboard');
+                }
             }
-            else {
-                $this->Session->setFLash(__('You were successfully logged in.'));
-                $this->redirect('/dashboard');
-            }
+        
         } else {
             $json = json_encode(array(
                 'loginStatus' => 0,
                 'error'=>'Invalid login details.'));
-            $this->layout = 'ajax';
+            
             $this->set('response', $json);
 
         }
@@ -513,7 +529,6 @@ class UsersController extends AppController {
 	public function Logout()
 	{
 		$this->autoRender = false;
-		$this->Session->write('user', 0);
 		$this->facebook->destroySession();
         $this->Auth->logout();
 		$this->redirect('/');

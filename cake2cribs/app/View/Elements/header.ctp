@@ -76,8 +76,16 @@
 				<strong>Jason</strong>
 				<span class="caret"></span>
 			</a>
-			<a class="btn btn-link" href="#myModal" data-toggle="modal">SIGN UP</a>
-			<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>
+			
+			<?php if ($this->Session->read('Auth.User.id')==0)
+			{
+				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">SIGN UP</a>';
+				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
+			}
+			else
+				echo '<a class="btn btn-link" href="/users/logout">LOGOUT</a>'
+			?>
+			
 			<ul class="dropdown-menu">
 				<li><a href="#">Action 1</a></li>
 				<li><a href="#">Action 2</a></li>
@@ -85,9 +93,21 @@
 				<li><a href="#"><i class="icon-cogs"></i> Account Settings</a></li>
 			</ul>
 		</div>
-		<a href="/dashboard" class="personal-links"><i class="icon-comments icon-large"></i></a>
-		<div id = 'unread-conversation-notification'></div>
-		<a href="#" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>
+		<?php if ($this->Session->read('Auth.User.id')!=0)
+		{
+			echo '<a href="/dashboard" class="personal-links"><i class="icon-comments icon-large"></i></a>
+		<div id = "unread-conversation-notification"></div>
+		<a href="#" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>';
+		}
+		else
+		{
+			echo '<a href="#myModal" data-toggle="modal" class="personal-links"><i class="icon-comments icon-large"></i></a>
+		<div id = "unread-conversation-notification"></div>
+		<a href="#myModal" data-toggle="modal" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>';
+		}
+			
+		?>
+		
 	</div>
 </div>
 
@@ -142,3 +162,4 @@
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>
+

@@ -1,5 +1,6 @@
 <?php
 	echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
+	echo $this->Html->script('src/Login');
 ?>
 
 <!-- Modal -->
@@ -10,10 +11,10 @@
 		</div>
 		<div id="modal-center">
 			<div class="facebook-login-button">Login with Facebook</div>
-
-			<form>
-				<input type="email" id="inputEmail" placeholder="Email">
-				<input type="password" id="inputPassword" placeholder="Password">
+			<div id = "loginStatus"> Please login.</div>
+			<form id="loginForm">
+				<input type="email" id="inputEmail" name="email" placeholder="Email">
+				<input type="password" id="inputPassword" name="password" placeholder="Password">
 				<button type="submit" id="submitButton" class="btn">Sign in</button>
 			</form>
 		</div>
@@ -22,3 +23,10 @@
 		</div>
 	</div>
 </div>
+
+<script>
+
+var a = A2Cribs.Login;
+
+a.setupUI();
+</script>
