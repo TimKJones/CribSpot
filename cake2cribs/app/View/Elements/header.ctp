@@ -4,21 +4,35 @@
 	echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/popover.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false));
-
+	echo $this->Html->css('/css/jquery-dialog2/jquery.dialog2.css', array('inline'=>false));
+	//echo('<link rel="stylesheet" type="text/css" href="/css/jquery-dialog2/jquery.dialog2.css">');
 	/* Datepicker and slider css */
 	echo $this->Html->css('datepicker');
 
 	/* Datepicker and slider javascript */
 	echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
-
 	echo $this->Html->script('src/PageHeader');
 
 ?>
 
 
 <div class="top-bar">
-	<a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a>
+	<!-- <a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a> -->
+	<!-- <a id="sublet-post" class="post-button inline pull-left open-dialog" href="/users/verifyUniversity"> POST A SUBLET</a> -->
+	<a href="#" id="show-server-notice-link">Cool!</a>
+	<div id="sample1-dialog" style="display: none">
+                            <h1>Simple alert</h1>
+                            <p>
+                                It is always beneficial to acknowledge alerts of any kind.
+                                You can close this alert if you agree. 
+                                (Note: Normally a dialog box is not that penetrating)
+                            </p>
+                            <div class="form-actions">
+                                <button class="btn-primary close-dialog">Understood</button>
+                                <button class="btn-danger" onclick="alert('You might reconsider your click behaviour!')">I don't care</button>
+                            </div>
+                        </div>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
@@ -162,4 +176,18 @@
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>
+
+<script type="text/javascript">
+    $(function() {
+        $("#show-server-notice-link").click(function(event) {
+            $('<div/>').dialog2({
+                title: "Post a sublet", 
+                content: "findSubletPosition", 
+                id: "server-notice"
+            });
+
+            event.preventDefault();
+        });
+    });
+</script>
 
