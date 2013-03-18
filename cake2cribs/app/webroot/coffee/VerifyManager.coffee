@@ -81,7 +81,9 @@ class A2Cribs.VerifyManager
 
 	###
 		This function is used to see if the user is verified, and as well get some
-		additional information about the relationship between user1 and user2 (mutual friends & total friends)
+		additional information about the relationship
+		 between user1 and user2 (mutual friends & total friends)
+
 
 		fb_ids is an object that {'user1': int or null, 'user2': int or null}
 		the callback function takes a parameter data that 
@@ -94,7 +96,11 @@ class A2Cribs.VerifyManager
 
 
 	###
-	@getFacebookVerification: (fb_ids, callback)->
+
+	@a: ()->
+		@getVerificationInfo {'user1': 1249680161, 'user2': 1354124203}, 381100229, @samplecallback
+
+	@getVerificationInfo: (fb_ids, twitter_id, callback)->
 		fb_data = {
 			verified: false,
 			mutual_friends: null,
@@ -109,24 +115,16 @@ class A2Cribs.VerifyManager
 		$.when(
 			
 			@getMutalFriends(fb_ids), 
-			@getTotalFriends(fb_ids)
+			@getTotalFriends(fb_ids.user2)
+			@GetTwitterFollowersCount(twitter_id)
+
 			
-		).then (mut_friends_res, tot_friends_res)=>
-			fb_data = {}
-
-			if not mut_friends_res.error_code?
-				fb_data.mutual_friends = mut_friends_res.length
-			else
-				console.log mut_friends_res
-
-			if not tot_friends_res.error_code?
-				fb_data.total_friends = tot_friends_res[0].friend_count
-			else
-				console.log total_friends
+		).then (mut_friends, tot_friends, tot_followers)=>
 			callback {
 				verified: true,
-				mutual_friends: mut_friends_res?.length,
-				total_friends: tot_friends_res[0]?.friend_count,
+				mutual_friends: mutual_friends,
+				total_friends: tot_friends,
+				twitter_followers: tot_followers
 			}
 
 
@@ -134,16 +132,23 @@ class A2Cribs.VerifyManager
 	@getMutalFriends: (fb_ids)->
 		query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user1 + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user2 + ')'
 		defered = new $.Deferred();
-		FB.api {method:'fql.query', query: query}, (response)->
-			defered.resolve(response)
-		defered.promise()
+		if fb_ids.user1? and fb_ids.user2?
+			FB.api {method:'fql.query', query: query}, (response)->
+				defered.resolve(mut_friends_res.length)
+			return defered.promise()
+		else
+			# User1 or User2 were undefined so just resolve it to null
+			return defered.resolve(null)
 
 	@getTotalFriends: (fb_id)->
 		query = 'SELECT friend_count FROM user WHERE uid = ' + fb_id
 		defered = new $.Deferred()
-		FB.api { method:'fql.query', query: query}, (response)->
-			defered.resolve(response)
-		defered.promise()
+		if fb_id?
+			FB.api { method:'fql.query', query: query}, (response)->
+				defered.resolve(tot_friends_res[0].friend_count)
+			return defered.promise()
+		else
+			return defered.resolve(null)
 
 
 
@@ -152,10 +157,14 @@ class A2Cribs.VerifyManager
 
 
 	@GetTwitterFollowersCount: (user_id) ->
+		defered = new $.Deferred()
 		$.ajax
 			url: myBaseUrl + "Users/GetTwitterFollowers/" + user_id
 			type:"GET"
-			success: A2Cribs.VerifyManager.GetTwitterFollowersCallback
+			success: ()=>
+				defered(response)
+		
+		return defered.promise()
 
 	@GetTwitterFollowersCallback: (response) ->
 		alert response
