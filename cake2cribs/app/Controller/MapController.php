@@ -3,7 +3,7 @@
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
-  public $uses = array('Marker', 'Listing');
+  public $uses = array('Marker', 'Listing', 'School');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -31,8 +31,9 @@ class MapController extends AppController {
       $this->redirect(array('controller' => 'map', 'action' => 'index'));
   }
 
-  public function LoadMarkers() {
-    $markers = $this->Marker->getAllCoordinates();
+  public function LoadMarkers($school_id) {
+    $target_lat_long = $this->School->getTargetLatLong($school_id);
+    $markers = $this->Marker->getAllMarkers($target_lat_long);
     $this->layout = 'ajax';
     $this->set('response', $markers);
   }

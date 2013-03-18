@@ -10,9 +10,7 @@ class UsersController extends AppController {
                 )
             )
         )
-
-
-        ,'Email');
+        ,'Email', 'RequestHandler');
 
 
 	public function beforeFilter() {
@@ -22,6 +20,8 @@ class UsersController extends AppController {
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
         $this->Auth->allow('getTwitterFollowers');
+        $this->Auth->allow('ajaxLogin');
+        $this->Auth->allow('ajaxRegister');
 	}
 
 	public function login() {
@@ -61,31 +61,47 @@ class UsersController extends AppController {
 
 	}
 
-    public function ajax_login() {
-        
+    public function ajaxLogin() {
+        $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
             $this->Session->setFlash(__('You are already logged in.'));
-            $this->redirect('/dashboard');
+            $json = json_encode(array(
+                'loginStatus' => 0,
+                'error'=>'You are verified'));
+                $this->set('response', $json);
+           // $this->redirect('/dashboard');
         }
         if(!$this->request->isPost()){
             echo "This url only accepts post requests";
             die();
         }
-        if($this->Auth->login()) {
-            if($this->Auth->user('verified')==0) {
-                $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
-                $this->redirect('/dashboard');
+        if ($this->Auth->identify($this->request, $this->response))
+        {
+            if($this->Auth->login()) {
+                if($this->Auth->user('verified')==0) {
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are verified'));
+                    $this->set('response', $json);
+                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
+                 //   $this->redirect('/dashboard');
+                }
+                else {
+                    $this->Session->setFLash(__('You were successfully logged in.'));
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are logged in.'));
+                    $this->set('response', $json);
+                   // $this->redirect('/dashboard');
+                }
             }
-            else {
-                $this->Session->setFLash(__('You were successfully logged in.'));
-                $this->redirect('/dashboard');
-            }
+        
         } else {
             $json = json_encode(array(
                 'loginStatus' => 0,
                 'error'=>'Invalid login details.'));
-            $this->layout = 'ajax';
+            
             $this->set('response', $json);
 
         }
@@ -146,6 +162,95 @@ class UsersController extends AppController {
 			}
 		}
 	}
+
+    public function ajaxRegister() {
+         $this->layout = 'ajax';
+        if($this->Auth->loggedIn())
+        {
+            $json = json_encode(array(
+                'registerStatus' => 0,
+                'error'=>'You are already registered.'));
+                $this->set('response', $json);
+                return;
+           // $this->redirect('/dashboard');
+        }
+        if(!$this->request->isPost()){
+            echo "This url only accepts post requests";
+            die();
+        }
+        $this->request->data['User']['verified'] = 0;
+        $this->request->data['User']['group_id'] = 1;
+        $this->request->data['User']['vericode'] = uniqid();
+        if ($this->User->save($this->request->data)) {
+            $this->Email->smtpOptions = array(
+                  'port'=>'587',
+                  'timeout'=>'30',
+                  'host' => 'smtp.sendgrid.net',
+                  'username'=>'cribsadmin',
+                  'password'=>'lancPA*travMInj',
+                  'client' => 'a2cribs.com'
+                );
+            $this->Email->delivery = 'smtp';
+            $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
+            $this->Email->to = $this->request->data['User']['email'];
+            $this->set('name', $this->request->data['User']['first_name']);
+            $this->Email->subject = 'Please verify your CribSpot account';
+            $this->Email->template = 'registration';
+            $this->Email->sendAs = 'both';
+            $this->set('vericode', $this->request->data['User']['vericode']);
+            $this->set('id',$this->User->id);
+            $this->Email->send();
+            $this->Auth->login();
+            $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
+            $this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
+            $json = json_encode(array(
+                    'registerStatus' =>1,
+                    'error' => 'Registration successful.'));
+            $this->set('response', $json);
+        }
+        else
+        {
+            $this->set('response', array());
+            $this->User->set($this->request->data);
+            //check if passes email validation
+            $json = array('registerStatus' => 0,
+                    'error' => 'Please check the fields below.');
+            $error = $this->validateErrors($this->User);
+            $json = json_encode($error);
+            $this->set('response', $json);
+        }
+
+        /*
+        if ($this->Auth->identify($this->request, $this->response))
+        {
+            if($this->Auth->login()) {
+                if($this->Auth->user('verified')==0) {
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are verified'));
+                    $this->set('response', $json);
+                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
+                 //   $this->redirect('/dashboard');
+                }
+                else {
+                    $this->Session->setFLash(__('You were successfully logged in.'));
+                    $json = json_encode(array(
+                    'loginStatus' => 1,
+                    'error'=>'You are logged in.'));
+                    $this->set('response', $json);
+                   // $this->redirect('/dashboard');
+                }
+            }
+        
+        } else {
+            $json = json_encode(array(
+                'loginStatus' => 0,
+                'error'=>'Invalid login details.'));
+            
+            $this->set('response', $json);
+
+        }*/
+    }
 
     /*public function delete($id = null) {
         if (!$this->request->is('post')) {
@@ -513,7 +618,6 @@ class UsersController extends AppController {
 	public function Logout()
 	{
 		$this->autoRender = false;
-		$this->Session->write('user', 0);
 		$this->facebook->destroySession();
         $this->Auth->logout();
 		$this->redirect('/');

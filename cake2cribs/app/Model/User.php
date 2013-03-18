@@ -4,7 +4,7 @@ class User extends AppModel {
 	public $hasMany = array(
 		'Sublet' => array(
 			'className' => 'Sublet',
-			'foreignKey' => 'sublet_id'
+			'foreignKey' => 'id'
 		)
 	);
 	public $belongsTo = 'University'; 	

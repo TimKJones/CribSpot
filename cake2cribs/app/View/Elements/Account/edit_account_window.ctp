@@ -3,7 +3,17 @@
 	  <div class="control-group">
 	    <label class="control-label" for="university">University:</label>
 	    <div class="controls">
-	      <input id = 'university' name = 'university_input' placeholder = "University" type = 'text'></input>
+	    	<p>
+	      <?php 
+	      if ($user['University']['id']!=NULL)
+	      {
+	      	echo $user['University']['name'];
+	      }
+	      else
+	      {
+	      	echo '<a href="/users/verifyUniversity">Verify your university</a>';
+	      }
+	      ?>
 	    </div>
 	  </div>
 	  <div class="control-group">
@@ -13,16 +23,15 @@
 	    </div>
 	  </div>
 	  <div class="control-group">
-	    <label class="control-label" for="last_name">Last Name:</label>
+	    <label class="control-label" for="last_name" value='<?php echo $user['last_name']; ?>'>Last Name:</label>
 	    <div class="controls">
 	      <input type="text" id="last_name_input" placeholder="Last Name">
 	    </div>
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button type="submit" class="btn">Sign in</button>
+	  			<button type="submit" class="btn">Save changes</button>
 	  		</div>
 	  </div>
 	</form>
-	<?php debug($user);?>
 </div>

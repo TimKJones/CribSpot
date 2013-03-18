@@ -15,8 +15,9 @@ class A2Cribs.CorrectMarker
 			position: A2Cribs.Map.AnnArborCenter
 			map: A2Cribs.CorrectMarker.Map
 			visible: false
-		A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
+		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
 		@Geocoder = new google.maps.Geocoder()
+		A2Cribs.CorrectMarker.Map.setCenter()
 
 	@UpdateLatLong: (e) ->
 		$("#updatedLat").html(e.latLng.lat())
@@ -24,6 +25,7 @@ class A2Cribs.CorrectMarker
 
 	@AddressSearchCallback: (response, status) ->
 		# Need to detect invalid addresses
+		console.log response
 		if status == google.maps.GeocoderStatus.OK
 			A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
 			A2Cribs.CorrectMarker.Map.setZoom(18)
