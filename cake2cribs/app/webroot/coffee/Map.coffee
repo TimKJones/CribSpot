@@ -1,5 +1,8 @@
 class A2Cribs.Map
 
+	@CurentSchoolId = 171 
+	#TODO: get this from backend
+
 	###
 	Called when a marker is clicked
 	###
@@ -62,7 +65,7 @@ class A2Cribs.Map
 	@LoadMarkers: ->
 		#TODO: Add Loading GIF Here
 		$.ajax 
-			url: myBaseUrl + "Map/LoadMarkers"
+			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId
 			type:"GET"
 			context: this
 			success: @InitializeMarkers	
@@ -146,7 +149,6 @@ class A2Cribs.Map
 		A2Cribs.FilterManager.InitAddressSearch()
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
-
 
 	@UpdateMarkersCache: ->
 		$.ajax
