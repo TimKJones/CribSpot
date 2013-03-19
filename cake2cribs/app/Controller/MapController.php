@@ -3,7 +3,7 @@
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
-  public $uses = array('Marker', 'Listing', 'School');
+  public $uses = array('Marker', 'Listing', 'School', 'Sublet');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -19,9 +19,21 @@ class MapController extends AppController {
     $this->InitFilterValues();
   }
 
-  public function sublet($school_name = null, $address = null)
+  public function sublet($school_name = null, $address = null, $sublet_id = null)
   {
-    $this->set('ListingTooltip', $this->Listing->getTooltipVariables());
+    if ($sublet_id != null)
+    {
+      $this->set("listing_id_to_open", $sublet_id);
+      $subletData = $this->Sublet->getSubletData($sublet_id);
+      if (array_key_exists("Sublet", $subletData) && array_key_exists("marker_id", $subletData['Sublet']))
+        $marker_id_to_open = $subletData['Sublet']['marker_id']; 
+      else
+        $marker_id_to_open = null;
+
+      $this->set("marker_id_to_open", $marker_id_to_open);
+      $this->set("sublet_data_for_tooltip", $subletData);
+    }
+
     $this->InitFilterValues();
   }
 
@@ -50,6 +62,9 @@ class MapController extends AppController {
     $this->Session->write('house', true);
     $this->Session->write('apartment', true);
     $this->Session->write('duplex', true);
+    /*
+    TODO: ADD NEW FILTER VALUES HERE
+    */
   }
 
   }

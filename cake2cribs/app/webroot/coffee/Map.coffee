@@ -153,3 +153,15 @@ class A2Cribs.Map
 	@UpdateMarkersCache: ->
 		$.ajax
 			url: myBaseUrl + "Markers/UpdateCache"
+
+	###
+	EVAN:
+		marker_id is the id of the marker to open
+		sublet_data is an object containing all the data needed to populate a tooltip
+	###
+	@OpenMarker: (marker_id, sublet_data) ->
+		if (marker_id == -1)
+			#Invalid URL was given
+			alert "This listing either has been removed or is invalid."
+			return
+		alert marker_id
