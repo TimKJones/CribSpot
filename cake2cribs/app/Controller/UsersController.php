@@ -51,7 +51,7 @@ class UsersController extends AppController {
                 }
                 else {
                     $this->Session->setFlash(__('You were successfully logged in.'));
-                $this->redirect('/users');
+                $this->redirect('/dashboard');    
                 }
                 
 			} else {
@@ -597,6 +597,37 @@ class UsersController extends AppController {
        
     }
 
+    public function ajaxEditUser(){
+        // if(!$this->request->is('post')){
+        //     throw new NotFoundException();
+        // }
+        $user = $this->User->get($this->Auth->User('id'));
+        $first_name = $this->request->data['first_name'];
+        $last_name = $this->request->data['last_name'];
+        if(empty($first_name) or empty($last_name)){
+            $json = json_encode(array(
+                'success' => 0,
+                'message' => "A first name or last name left blank"
+            ));
+        }else{
+            $user['User']['first_name'] = $first_name;
+            $user['User']['last_name'] = $last_name;  
+
+            $data = array('id' => $user['User']['id'], 'first_name' => $first_name, 'last_name' => $last_name);
+            $user = $this->User->edit($data);
+
+            $json = json_encode(array(
+                'success' => 1,
+                'user' => json_encode($user)
+            ));  
+        }
+
+        $this->layout = 'ajax';
+        $this->set('response', $json);
+        return;
+        
+    }
+
     public function getTwitterFollowers($user_id)
     {
         App::import('Vendor', 'twitter/twitteroauth');
@@ -614,6 +645,8 @@ class UsersController extends AppController {
         $this->layout = 'ajax';
         $this->set("response", $follower_count);
     }
+
+
 
 	public function Logout()
 	{

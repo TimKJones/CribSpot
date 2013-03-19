@@ -43,9 +43,12 @@
 	 		if($directive == null){
 	 			$directive = array('classname'=>null);
 	 		}
-	 		// die(debug($directive));
-	 		$this->User->University->id = $this->Auth->user('university_id');
+
+
+	 		$user = $this->User->get($this->Auth->User('id'));
+	 		// die(debug($user));
+	 		$this->User->University->id = $user['User']['university_id'];
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
-	 		$this->set(array('directive'=> json_encode($directive), 'user' => $this->Auth->User()));
+	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user));
 	 	}
 	}
