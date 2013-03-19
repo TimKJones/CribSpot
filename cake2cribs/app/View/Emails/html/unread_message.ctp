@@ -9,7 +9,7 @@
 
 <html>
 	<h3>You've got a new message!</h3>
-	<a href = '<?php echo $partic_link; ?>' ><?php echo $participant['first_name'];?> </a>
+	<a href = '<?php echo $partic_link; ?>' ><?php echo $participant['first_name'];?></a>
 	just sent you a new message.
 
 	<a href = '<?php echo $view_msg; ?>' >Click here to view the message</a>

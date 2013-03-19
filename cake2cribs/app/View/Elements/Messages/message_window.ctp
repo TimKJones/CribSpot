@@ -1,3 +1,8 @@
+
+
+<!-- /map/…
+…sublet/[school_name]/[address]/[listing_id] -->
+
 <div id = 'messaging_window'>
 
 	<div class = 'row-fluid' id = 'participant_info_short'>

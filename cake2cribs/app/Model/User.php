@@ -173,6 +173,15 @@ class User extends AppModel {
 	{
 		
 	}
+
+	public function edit($data){
+		$this->save($data);
+		return $this->read();
+	}
+
+	public function get($user_id){
+		return $this->find('first', array('conditions'=>'User.id='.$user_id));
+	}
 	
 }
 ?>
