@@ -21,6 +21,12 @@
 	<!-- <a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a> -->
 	<!-- <a id="sublet-post" class="post-button inline pull-left open-dialog" href="/users/verifyUniversity"> POST A SUBLET</a> -->
 	<a href="#" id="show-server-notice-link">Cool!</a>
+	<a onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a>
+<div id="twitterDiv">
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
+
 	<div id="sample1-dialog" style="display: none">
                             <h1>Simple alert</h1>
                             <p>
@@ -189,5 +195,9 @@
             event.preventDefault();
         });
     });
+
+    $("#endDate").datepicker().on('changeDate', function(ev) {
+    	
+    }
 </script>
 
