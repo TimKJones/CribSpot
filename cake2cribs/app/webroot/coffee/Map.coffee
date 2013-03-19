@@ -1,5 +1,8 @@
 class A2Cribs.Map
 
+	@CurentSchoolId = 171 
+	#TODO: get this from backend
+
 	###
 	Called when a marker is clicked
 	###
@@ -62,7 +65,7 @@ class A2Cribs.Map
 	@LoadMarkers: ->
 		#TODO: Add Loading GIF Here
 		$.ajax 
-			url: myBaseUrl + "Map/LoadMarkers"
+			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId
 			type:"GET"
 			context: this
 			success: @InitializeMarkers	
@@ -147,7 +150,21 @@ class A2Cribs.Map
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
 
-
 	@UpdateMarkersCache: ->
 		$.ajax
 			url: myBaseUrl + "Markers/UpdateCache"
+
+	###
+	EVAN:
+		marker_id is the id of the marker to open
+		sublet_data is an object containing all the data needed to populate a tooltip
+	###
+	@OpenMarker: (marker_id, sublet_data) ->
+		if (marker_id == -1)
+			#Invalid URL was given
+			alert "This listing either has been removed or is invalid."
+			return
+		if (marker_id == -2)
+			#no sublet_id was given in url - don't do anything
+			return
+		alert marker_id

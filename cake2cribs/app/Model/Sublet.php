@@ -2,12 +2,13 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User','University','BuildingType','UtilityType','BathroomType','PaymentType');
+	public $belongsTo = array(/*'User',*/'University','BuildingType','UtilityType','BathroomType','PaymentType');
 	public $hasMany = 'Housemate';
 	public $hasOne = array();
-
+	public $primaryKey = 'id';
 
 	public $validate = array (
+		'id' => 'alphaNumeric', //TODO: make rule more precise
 		//section for user_id
 		'user_id' => array(
 			'required' => array(
@@ -306,7 +307,7 @@ class Sublet extends AppModel {
 				'rule' => array('naturalNumber',true),
 				'message' => 'Invalid furnished value.'
 				)
-			),
+			)
 
 
 		//section for galleryID
@@ -319,5 +320,125 @@ class Sublet extends AppModel {
 		//generate onSave by bundling with other properties at same location.
 	);
 	
+
+	/*
+	Returns the conditions array used to match the current filter settings in a query using model->find()
+	*/
+	private function getFilteredQueryConditions($params)
+	{
+		$conditions = array();
+
+		$unit_type_OR = array();
+		if ($params['house'] == "true")
+			array_push($unit_type_OR, 'house');
+		if ($params['apt'] == "true")
+			array_push($unit_type_OR, 'apt');
+		if ($params['other'] == "true")
+			array_push($unit_type_OR, 'other');
+
+		$housemates_OR = array();
+		// need fields for ac, parking
+		/*
+		add more 'OR' arrays depending on sublets table structure
+		*/
+
+
+		/*if (count($lease_range_OR) > 0)
+		{
+			array_push($conditions, array('OR' => array(
+				'Listing.lease_range' => $lease_range_OR)));
+		}	
+		else
+			array_push($conditions, array('OR' => array(
+				'Listing.lease_range' => 'NONE')));
+				// Without this, all lease ranges would be returned when all check boxes are unchecked*/
+
+		array_push($conditions, array('OR' => array(
+			'Sublet.unit_type'   => $unit_type_OR)));
+
+		array_push($conditions, array(
+			'Sublet.rent >=' => $params['minRent'],
+			'Sublet.rent <=' => $params['maxRent'],
+			'Sublet.beds >=' => $params['minBeds'],
+			'Sublet.beds <=' => $params['maxBeds']));
+
+		if ($params['utilities_included'] == "true")
+			array_push($conditions, array(
+				'Sublet.deposit_amount' => 0,
+			));
+
+			if ($params['no_security_deposit'] == "true")
+			array_push($conditions, array(
+				'Sublet.utility_cost' => 0,
+			)); 
+
+		return $conditions;
+	}
+
+
+	/*
+	Retrieves all listing data for a specific markerId.
+	Returns a (json_encoded) array of associative arrays, with assoc. array for each listing. 
+		Each assoc. array maps table column name to value.
+	*/
+	/*TODO: Filter which columns are retrieved - for example, not everything for realtor needs to be fetched */
+	public function getListingData($markerId, $includeRealtor)
+	{
+		$conditions = array('Listing.marker_id' => $markerId);
+
+		// Contain the query to only retrieve the fields needed for the marker tooltip.
+		$contains = array();
+
+		$listingsQuery = array();
+	 	$listingsQuery = $this->find('all', array(
+	                     'conditions' => $conditions,
+	                     'contain' => $contains
+	  	));
+
+	 	return $listingsQuery;
+	}
+
+	/*
+	Given array of parameter values as input.
+	Returns a list of marker_ids that have listings matching the parameter criteria.
+	*/
+	public function getFilteredMarkerIdList($params)
+	{
+		$conditions = $this->getFilteredQueryConditions($params);
+
+		/* Limit to only querying from the Listing table. */
+		$this->contain();
+
+		$markerIdList = $this->find('all', array(
+			'conditions' => $conditions,
+			'fields' => array('marker_id')));
+
+		//return $markerIdList[0]['Listing']['marker_id'];
+		$formattedIdList = array();
+		for ($i = 0; $i < count($markerIdList); $i++)
+			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
+
+		return json_encode($formattedIdList);
+	}
+
+	/*
+	Returns the marker id corresponding the listing with id=$sublet_id
+	*/
+	public function getMarkerId($sublet_id)
+	{
+		return 1;
+	}
+
+	public function getSubletData($sublet_id)
+	{
+		$conditions = array('Sublet.id' => $sublet_id);
+
+		$subletQuery = array();
+	 	$subletQuery = $this->find('first', array(
+	                     'conditions' => $conditions
+	  	));
+
+	 	return $subletQuery;
+	}
 }
 ?>
