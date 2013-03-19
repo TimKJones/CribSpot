@@ -209,6 +209,7 @@
         alert("This listing either has been removed or is invalid.");
         return;
       }
+      if (marker_id === -2) return;
       return alert(marker_id);
     };
 

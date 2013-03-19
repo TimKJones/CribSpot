@@ -164,4 +164,7 @@ class A2Cribs.Map
 			#Invalid URL was given
 			alert "This listing either has been removed or is invalid."
 			return
+		if (marker_id == -2)
+			#no sublet_id was given in url - don't do anything
+			return
 		alert marker_id
