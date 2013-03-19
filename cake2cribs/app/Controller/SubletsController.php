@@ -101,6 +101,9 @@ class SubletsController extends AppController {
         
     }
 
+    public function ajax_add2() {
+    }
+
 	public function edit($id = null) {
         //check authentication on this, only user can edit their sublets
         //(and admin)

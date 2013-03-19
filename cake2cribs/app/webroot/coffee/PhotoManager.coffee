@@ -159,8 +159,13 @@ class A2Cribs.PhotoManager
 		A2Cribs.PhotoManager.CurrentPreviewId = photoNumber
 		img = A2Cribs.PhotoManager.IdToPathMap[photoNumber]
 		A2Cribs.PhotoManager.SetImage img
+		old = A2Cribs.PhotoManager.CurrentPreviewImageIndex
 		A2Cribs.PhotoManager.CurrentPreviewImageIndex = photoNumber
 		$("#captionInput").val(A2Cribs.PhotoManager.IdToCaptionMap[photoNumber])
+		$("#imageContainer" + photoNumber).removeClass("unselected")
+		$("#imageContainer" + photoNumber).addClass("selected")
+		$("#imageContainer" + old).removeClass("selected")
+		$("#imageContainer" + old).addClass("unselected")
 
 	@CaptionKeyUp: ->
 		curString = $("#captionInput").val()

@@ -26,8 +26,8 @@
         map: A2Cribs.CorrectMarker.Map,
         visible: false
       });
-      A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map);
-      return this.Geocoder = new google.maps.Geocoder();
+      this.Geocoder = new google.maps.Geocoder();
+      return A2Cribs.CorrectMarker.Map.setCenter();
     };
 
     CorrectMarker.UpdateLatLong = function(e) {
@@ -37,6 +37,7 @@
 
     CorrectMarker.AddressSearchCallback = function(response, status) {
       var formattedAddress;
+      console.log(response);
       if (status === google.maps.GeocoderStatus.OK) {
         A2Cribs.CorrectMarker.Map.panTo(response[0].geometry.location);
         A2Cribs.CorrectMarker.Map.setZoom(18);

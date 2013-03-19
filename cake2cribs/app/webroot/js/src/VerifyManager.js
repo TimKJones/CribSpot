@@ -108,7 +108,9 @@ Manager class for all verify functionality
 
     /*
     		This function is used to see if the user is verified, and as well get some
-    		additional information about the relationship between user1 and user2 (mutual friends & total friends)
+    		additional information about the relationship
+    		 between user1 and user2 (mutual friends & total friends)
+    
     
     		fb_ids is an object that {'user1': int or null, 'user2': int or null}
     		the callback function takes a parameter data that 
@@ -121,7 +123,14 @@ Manager class for all verify functionality
     */
 
 
-    VerifyManager.getFacebookVerification = function(fb_ids, callback) {
+    VerifyManager.a = function() {
+      return this.getVerificationInfo({
+        'user1': 1249680161,
+        'user2': 1354124203
+      }, 381100229, this.samplecallback);
+    };
+
+    VerifyManager.getVerificationInfo = function(fb_ids, twitter_id, callback) {
       var fb_data,
         _this = this;
       fb_data = {
@@ -133,23 +142,12 @@ Manager class for all verify functionality
         callback(fb_data);
         return;
       }
-      return $.when(this.getMutalFriends(fb_ids), this.getTotalFriends(fb_ids)).then(function(mut_friends_res, tot_friends_res) {
-        var _ref;
-        fb_data = {};
-        if (!(mut_friends_res.error_code != null)) {
-          fb_data.mutual_friends = mut_friends_res.length;
-        } else {
-          console.log(mut_friends_res);
-        }
-        if (!(tot_friends_res.error_code != null)) {
-          fb_data.total_friends = tot_friends_res[0].friend_count;
-        } else {
-          console.log(total_friends);
-        }
+      return $.when(this.getMutalFriends(fb_ids), this.getTotalFriends(fb_ids.user2), this.GetTwitterFollowersCount(twitter_id)).then(function(mut_friends, tot_friends, tot_followers) {
         return callback({
           verified: true,
-          mutual_friends: mut_friends_res != null ? mut_friends_res.length : void 0,
-          total_friends: (_ref = tot_friends_res[0]) != null ? _ref.friend_count : void 0
+          mutual_friends: mutual_friends,
+          total_friends: tot_friends,
+          twitter_followers: tot_followers
         });
       });
     };
@@ -158,30 +156,56 @@ Manager class for all verify functionality
       var defered, query;
       query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user1 + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user2 + ')';
       defered = new $.Deferred();
-      FB.api({
-        method: 'fql.query',
-        query: query
-      }, function(response) {
-        return defered.resolve(response);
-      });
-      return defered.promise();
+      if ((fb_ids.user1 != null) && (fb_ids.user2 != null)) {
+        FB.api({
+          method: 'fql.query',
+          query: query
+        }, function(response) {
+          return defered.resolve(mut_friends_res.length);
+        });
+        return defered.promise();
+      } else {
+        return defered.resolve(null);
+      }
     };
 
     VerifyManager.getTotalFriends = function(fb_id) {
       var defered, query;
       query = 'SELECT friend_count FROM user WHERE uid = ' + fb_id;
       defered = new $.Deferred();
-      FB.api({
-        method: 'fql.query',
-        query: query
-      }, function(response) {
-        return defered.resolve(response);
-      });
-      return defered.promise();
+      if (fb_id != null) {
+        FB.api({
+          method: 'fql.query',
+          query: query
+        }, function(response) {
+          return defered.resolve(tot_friends_res[0].friend_count);
+        });
+        return defered.promise();
+      } else {
+        return defered.resolve(null);
+      }
     };
 
     VerifyManager.samplecallback = function(fb_data) {
       return console.log(fb_data);
+    };
+
+    VerifyManager.GetTwitterFollowersCount = function(user_id) {
+      var defered,
+        _this = this;
+      defered = new $.Deferred();
+      $.ajax({
+        url: myBaseUrl + "Users/GetTwitterFollowers/" + user_id,
+        type: "GET",
+        success: function() {
+          return defered(response);
+        }
+      });
+      return defered.promise();
+    };
+
+    VerifyManager.GetTwitterFollowersCallback = function(response) {
+      return alert(response);
     };
 
     return VerifyManager;

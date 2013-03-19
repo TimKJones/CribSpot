@@ -9,9 +9,13 @@
 
     PhotoManager.CurrentPrimaryImageIndex = 1;
 
+    PhotoManager.CurrentPreviewImageIndex = 0;
+
     PhotoManager.CurrentPreviewId = 0;
 
     PhotoManager.IdToPathMap = [];
+
+    PhotoManager.IdToCaptionMap = [];
 
     PhotoManager.NextImageSlot = 0;
 
@@ -42,6 +46,7 @@
       if (photoNumber === A2Cribs.PhotoManager.CurrentPrimaryImageIndex) {
         A2Cribs.PhotoManager.MakeNotPrimaryUI(photoNumber);
       }
+      A2Cribs.PhotoManager.ApplyRemovePhotoUI(photoNumber);
       return $.ajax({
         url: myBaseUrl + "Images/DeleteImage",
         type: "GET",
@@ -59,7 +64,7 @@
     };
 
     PhotoManager.UpdateImageSources = function(imageSources) {
-      var cssSettings, i, imageContentDiv, primary_image_index, x, _i, _ref, _results;
+      var cssSettings, i, imageContentDiv, nextSlot, primary_image_index, _i, _ref, _results;
       imageSources = JSON.parse(imageSources);
       primary_image_index = 0;
       if (imageSources[0] !== null) {
@@ -76,13 +81,18 @@
           "background-image": "url(" + imageSources[1][i] + ")"
         };
         imageContentDiv = "#imageContent";
-        if (i === primary_image_index) {
-          x = 5;
+        nextSlot = i + 1;
+        A2Cribs.PhotoManager.IdToPathMap[nextSlot] = imageSources[1][i];
+        if (i < imageSources[2].length) {
+          A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = imageSources[2][i];
+        } else {
+          A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = "";
         }
-        imageContentDiv = "#imageContent" + (i + 1);
+        A2Cribs.PhotoManager.ApplyAddPhotoUI(nextSlot);
+        imageContentDiv = "#imageContent" + nextSlot;
         $(imageContentDiv).html("");
         $(imageContentDiv).css(cssSettings);
-        if (i === A2Cribs.PhotoManager.CurrentPrimaryImageIndex) {
+        if (nextSlot === A2Cribs.PhotoManager.CurrentPrimaryImageIndex) {
           _results.push(A2Cribs.PhotoManager.MakePrimaryUI(primary_image_index));
         } else {
           _results.push(void 0);
@@ -117,7 +127,7 @@
     };
 
     PhotoManager.SetImage = function(img) {
-      var cssSettings, imageContentDiv;
+      var cssSettings, imageContentDiv, num;
       if (typeof img === "object") {
         img = img.target.result;
       }
@@ -128,10 +138,13 @@
       imageContentDiv = "";
       if (A2Cribs.PhotoManager.CurrentPhotoTarget === "secondary") {
         imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv();
+        num = imageContentDiv.substring(imageContentDiv.length - 1);
+        A2Cribs.PhotoManager.IdToPathMap[num] = img;
         if (!imageContentDiv) {
           alert("You have already uploaded a maximum of 6 images. Please delete an image before uploading another.");
           return;
         }
+        A2Cribs.PhotoManager.ApplyAddPhotoUI(num);
       } else {
         imageContentDiv = "#imageContent0";
         cssSettings = {
@@ -186,11 +199,19 @@
     };
 
     PhotoManager.EditImage = function(obj) {
-      var photoNumber;
+      var img, old, photoNumber;
       photoNumber = parseInt(obj.id.substring(obj.id.length - 1));
       A2Cribs.PhotoManager.CurrentPhotoTarget = "previewDiv";
       A2Cribs.PhotoManager.CurrentPreviewId = photoNumber;
-      return A2Cribs.PhotoManager.SetImage(A2Cribs.PhotoManager.IdToPathMap[photoNumber]);
+      img = A2Cribs.PhotoManager.IdToPathMap[photoNumber];
+      A2Cribs.PhotoManager.SetImage(img);
+      old = A2Cribs.PhotoManager.CurrentPreviewImageIndex;
+      A2Cribs.PhotoManager.CurrentPreviewImageIndex = photoNumber;
+      $("#captionInput").val(A2Cribs.PhotoManager.IdToCaptionMap[photoNumber]);
+      $("#imageContainer" + photoNumber).removeClass("unselected");
+      $("#imageContainer" + photoNumber).addClass("selected");
+      $("#imageContainer" + old).removeClass("selected");
+      return $("#imageContainer" + old).addClass("unselected");
     };
 
     PhotoManager.CaptionKeyUp = function() {
@@ -203,12 +224,6 @@
         $("#charactersLeft").html(A2Cribs.PhotoManager.MAX_CAPTION_LENGTH - curString.length);
         return $("#charactersLeft").css("color", "black");
       }
-    };
-
-    PhotoManager.SubmitCaption = function() {
-      var caption;
-      caption = $("#captionInput").val();
-      return alert("submitting " + caption);
     };
 
     PhotoManager.IsAcceptableFileType = function(fileName) {
@@ -272,9 +287,50 @@
       return $("#primary" + divId).removeAttr("disabled");
     };
 
-    PhotoManager.testfunc = function(data) {
-      var x;
-      return x = 5;
+    /*
+    	Submit the caption for the currently previewed image.
+    */
+
+
+    PhotoManager.SubmitCaption = function() {
+      var caption, ind;
+      caption = $("#captionInput").val();
+      ind = A2Cribs.PhotoManager.CurrentPreviewImageIndex;
+      return $.ajax({
+        url: myBaseUrl + "Images/SubmitCaption/" + caption + "/" + ind,
+        type: "GET",
+        success: A2Cribs.PhotoManager.SubmitCaptionCallback
+      });
+    };
+
+    PhotoManager.SubmitCaptionCallback = function(response) {
+      if (response === "SUCCESS") {
+        return A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val();
+      } else {
+        return alert("Error: Please use only numbers and letters.");
+      }
+    };
+
+    /*
+    	Update visibility of buttons for image after added to slot imageSlot
+    */
+
+
+    PhotoManager.ApplyAddPhotoUI = function(imageSlot) {
+      $("#delete" + imageSlot).toggleClass("hide");
+      $("#primary" + imageSlot).toggleClass("hide");
+      return $("#edit" + imageSlot).toggleClass("hide");
+    };
+
+    /*
+    	Update visibility of buttons for image after being removed
+    */
+
+
+    PhotoManager.ApplyRemovePhotoUI = function(imageSlot) {
+      $("#delete" + imageSlot).toggleClass("hide");
+      $("#primary" + imageSlot).toggleClass("hide");
+      return $("#edit" + imageSlot).toggleClass("hide");
     };
 
     return PhotoManager;

@@ -1,4 +1,5 @@
 <?php echo $this->Html->css('verify'); ?>
+<?php echo $this->Html->script('src/VerifyManager'); ?>
 <?php //App::import('Vendor', 'twitter');?>
 
 <script type="text/javascript" src="http://platform.linkedin.com/in.js">
