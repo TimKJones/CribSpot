@@ -65,5 +65,14 @@ class Housemate extends AppModel {
 			)
 	);
 	
+	public function getHousematesForSublet($sublet_id)
+	{
+		$housemates = $this->find('all', array(
+			'conditions' => array('Housemate.sublet_id' => $sublet_id)
+		));
+
+		return $housemates;
+	}
+
 }
 ?>
