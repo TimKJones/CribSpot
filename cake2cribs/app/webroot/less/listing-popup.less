@@ -1,0 +1,337 @@
+.listing-popup
+{
+	@border-radius: 8px;
+	height: 450px;
+	width: 800px;
+	position: relative;
+	border-radius: @border-radius;
+	-webkit-border-radius: @border-radius;
+	-moz-border-radius: @border-radius;
+	border: 1px solid black;
+	.modal-header
+	{
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 50px;
+		background-color: gray;
+		border-style: none;
+		padding: 0;
+		line-height: 48px;
+		background-image: url(/img/popup/header_background.jpg);
+		border-top-right-radius: @border-radius;
+		border-top-left-radius: @border-radius;
+		-moz-border-top-right-radius: @border-radius;
+		-moz-border-top-left-radius: @border-radius;
+		-webkit-border-top-right-radius: @border-radius;
+		-webkit-border-top-left-radius: @border-radius;
+		.title
+		{
+			font-style: normal;
+			font-weight: bolder;
+			font-size: 20px;
+			color: white;
+			margin-left: 20px;
+			text-shadow: -1px -1px black;
+		}
+		.btn-group
+		{
+			float: right;
+			margin-right: 50px;
+		}
+	}
+	.photo-region
+	{
+		position: absolute;
+		top: 50px;
+		right: 310px;
+		left: 0;
+		bottom: 0;
+		margin: 10px;
+		background-color: white;
+		padding: 10px;
+		box-shadow: 0 0 7px gray;
+		-webkit-box-shadow: 0 0 7px gray;
+		-moz-box-shadow: 0 0 7px gray;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		#main-photo
+		{
+			width: 100%;
+			height: 92%;
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+			-webkit-box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+			-moz-box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+		}
+		#photo-description
+		{
+			display: inline-block;
+			float: left;
+			font-size: 16px;
+			font-weight: bolder;
+			margin-top: 10px;
+		}
+		.preview-thumbnail
+		{
+			display: inline-block;
+			float: right;
+			text-decoration: none;
+			width: 40px;
+			height: 30px;
+			margin-top: 4px;
+			margin-left: 4px;
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+			-webkit-box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+			-moz-box-shadow: inset 0px 0px 2px 2px hsla(0, 0%, 25%, 0.5);
+		}
+	}
+
+	.side-pane
+	{
+		background-color: pink;
+		background-image: url(/img/popup/grid_background.jpg);
+		position: absolute;
+		right: 0;
+		top: 50px;
+		bottom: 0;
+		width: 280px;
+		padding: 5px 15px;
+		box-shadow: 0 0 7px gray;
+		-webkit-box-shadow: 0 0 7px gray;
+		-moz-box-shadow: 0 0 7px gray;
+		border-bottom-right-radius: @border-radius;
+		-moz-border-bottom-right-radius: @border-radius;
+		-webkit-border-bottom-right-radius: @border-radius;
+	}
+	
+	#overview
+	{
+		table
+		{
+			width: 100%;
+		}
+		.thumbnail
+		{
+			width: 70px;
+			height: 70px;
+			display: inline-block;
+			img
+			{
+				height: 100%;
+				width: 100%;
+			}
+		}
+		.post-info
+		{
+			display: inline-block;
+		}
+		.short-description
+		{
+			background-color: hsla(0, 0%, 25%, 0.1);
+			margin: 0 -15px;
+			padding: 10px 15px;
+			h1
+			{
+				font-size: 17px;
+				font-weight: bold;
+				line-height: 17px;
+				margin: 0;
+			}
+			p
+			{
+				word-wrap: break-word;
+				font-size: 13px;
+				line-height: 15px;
+			}
+		}
+	}
+
+	#details
+	{
+		display: none;
+		h1
+		{
+			font-size: 19px;
+			line-height: 19px;
+			margin-bottom: 0;
+		}
+		table
+		{
+			width: 100%;
+		}
+	}
+
+	#contact
+	{
+		display: none;
+		table
+		{
+			width: 100%;
+		}
+		textarea
+		{
+			width: 95%;
+			height: 150px;
+			display: none;
+			resize: none;
+		}
+		#message-submit-buttons
+		{
+			display: none;
+		}
+		#verify-table
+		{
+			background-color: whitesmoke;
+			td:not(:first-child)
+			{
+				border-left-style: none;
+			}
+		}
+		.user-info
+		{
+			height: 100px;
+		}
+		.thumbnail
+		{
+			width: 90px;
+			height: 90px;
+			display: inline-block;
+			margin-right: 10px;
+			img
+			{
+				height: 100%;
+				width: 100%;
+			}
+		}
+		.message-box
+		{
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			background-color: hsla(0, 0%, 25%, 0.1);
+			padding: 15px;
+		}
+		.table
+		{
+			td
+			{
+				padding: 6px 10px;
+			}
+		}
+		.verify-text
+		{
+			font-style: normal;
+			font-size: 13px;
+		}
+		.message-button
+		{
+			-moz-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+			-webkit-box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+			box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+			background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #378de5) );
+			background:-moz-linear-gradient( center top, #79bbff 5%, #378de5 100% );
+			filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#378de5');
+			background-color:#79bbff;
+			-moz-border-radius:6px;
+			-webkit-border-radius:6px;
+			border-radius:6px;
+			border:1px solid #84bbf3;
+			display:inline-block;
+			color:#ffffff;
+			font-size:16px;
+			font-weight:bold;
+			padding:6px 0;
+			width: 100%;
+			text-decoration:none;
+			text-shadow:1px 1px 0px #528ecc;
+			text-align: center;
+			&:hover
+			{
+				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #378de5), color-stop(1, #79bbff) );
+				background:-moz-linear-gradient( center top, #378de5 5%, #79bbff 100% );
+				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#378de5', endColorstr='#79bbff');
+				background-color:#378de5;	
+			}
+			&:active
+			{
+				position:relative;
+				top:1px;
+			}
+		}
+	}
+
+	.large-text
+	{
+		font-style: normal;
+		font-size: 40px;
+	}
+	.medium-text
+	{
+		font-style: normal;
+		font-size: 16px;
+	}
+	.small-text
+	{
+		font-style: normal;
+		font-size: 12px;
+		color: #6d6d6d;
+	}
+	.med-small-text
+	{
+		font-style: normal;
+		font-size: 14px;
+	}
+	.med-large-text
+	{
+		font-style: normal;
+		font-size: 30px;
+	}
+	.float-left
+	{
+		float: left;
+	}
+	.large-line-height
+	{
+		line-height: 25px;
+	}
+	.medium-line-height
+	{
+		line-height: 16px;
+	}
+	.small-line-height
+	{
+		line-height: 13px;
+	}
+	.med-large-line-height
+	{
+		line-height: 20px;
+	}
+	.inline
+	{
+		display: inline;
+	}
+	.margin-above
+	{
+		margin-top: 7px;
+	}
+	.img-ratio
+	{
+		position: relative;
+		height: 0;
+		padding-bottom: 100%;
+
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover;
+	}
+
+}
