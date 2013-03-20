@@ -4,7 +4,7 @@ class A2Cribs.Dashboard
 		$(window).resize =>
 			@SizeContent()
 		@SizeContent()
-
+		#set up click for listings
 		# Set up handlers to handle content drop downs and content switching
 		$('.content-header').each (index, element)=>
 			content_header = $(element)
