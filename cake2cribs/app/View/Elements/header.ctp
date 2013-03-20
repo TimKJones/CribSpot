@@ -28,16 +28,17 @@
 			else
 				echo '<a class="post-button inline pull-left" href="/sublets/add">POST A SUBLET</a>';
 	?>
-	<a onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a>
-<div id="twitterDiv">
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</div>
-
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
+		<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
+		<li>
+			<div id="twitterDiv">
+				<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+			</div>
+		</li>
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about">About</a></li>
