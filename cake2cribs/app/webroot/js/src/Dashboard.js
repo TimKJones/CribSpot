@@ -11,6 +11,10 @@
         return _this.SizeContent();
       });
       this.SizeContent();
+      $('#new_listing').click(function(e) {
+        e.preventDefault();
+        return $('#middle_content').load('findSubletPosition');
+      });
       return $('.content-header').each(function(index, element) {
         var class_name, content, content_header;
         content_header = $(element);

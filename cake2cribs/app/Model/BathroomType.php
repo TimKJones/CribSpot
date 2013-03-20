@@ -1,6 +1,11 @@
 <?php 
 
 class BathroomType extends AppModel {
-	public $belongsTo = array('Sublet','Listing');
+	public $belongsTo = array();
+	public $validate = array(
+		'id' => 'alphaNumeric', 
+		'name' => 'alphaNumeric',
+		'description' => 'alphaNumeric'
+	);
 }
 ?>

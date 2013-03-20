@@ -26,17 +26,50 @@ class A2Cribs.FilterManager
 
 	###
 	Called immediately after user applies a filter.
+	start_date, end_date, minRent, maxRent, beds, house, apt, unit_type_other, male, female, students_only, grad, undergrad,
+	bathroom_type, ac, parking, utilities_included, no_security_deposit
 	###
 	@ApplyFilter: (event, ui) ->
 		#TODO: USE THE ACTUAL VALUES	
-		fall    = $("#fallCheck").is(':checked')	
-		spring  = $("#springCheck").is(':checked')	
-		other   = $("#otherCheck").is(':checked')
-		house   = $("#houseCheck").is(':checked')
-		apt     = $("#aptCheck").is(':checked')	
-		duplex  = $("#duplexCheck").is(':checked') 	
+		ajaxData = null
+		if event.id == "houseCheck"
+			house = $("#houseCheck").is(':checked')	
+			ajaxData = "house=" + house
+		else if event.id == "aptCheck"
+			apt = $("#aptCheck").is(':checked')
+			ajaxData = "apt=" + apt
+		else if event.id == "otherCheck"
+			other = $("#otherCheck").is(':checked')
+			ajaxData = "unit_type_other=" + other
+		else if event.id == "maleCheck"
+			other = $("#maleCheck").is(':checked')
+			ajaxData = "male=" + other
+		else if event.id == "femaleCheck"
+			other = $("#femaleCheck").is(':checked')
+			ajaxData = "female=" + other
+		else if event.id == "studentsOnlyCheck"
+			other = $("#studentsOnlyCheck").is(':checked')
+			ajaxData = "students_only=" + other
+		else if event.id == "gradCheck"
+			other = $("#gradCheck").is(':checked')
+			ajaxData = "grad=" + other
+		else if event.id == "undergradCheck"
+			other = $("#undergradCheck").is(':checked')
+			ajaxData = "undergrad=" + other
+		else if event.id == "acCheck"
+			other = $("#acCheck").is(':checked')
+			ajaxData = "ac=" + other
+		else if event.id == "parkingCheck"
+			other = $("#parkingCheck").is(':checked')
+			ajaxData = "parking=" + other
+		else if event.id == "utilitiesCheck"
+			other = $("#utilitiesCheck").is(':checked')
+			ajaxData = "utilities_included=" + other
+		else if event.id == "noSecurityDepositCheck"
+			other = $("#noSecurityDepositCheck").is(':checked')
+			ajaxData = "no_security_deposit=" + other
 
-		if (event) #event is not null only when when it corresponds to a slider-value-changed event
+		if (event.target) #event is not null only when when it corresponds to a slider-value-changed event
 			if (event.target.id == "rentSlider")
 				A2Cribs.FilterManager.MinRent = ui.values[0]
 				A2Cribs.FilterManager.MaxRent = ui.values[1]
@@ -48,18 +81,9 @@ class A2Cribs.FilterManager
 				if A2Cribs.FilterManager.MaxBeds == A2Cribs.FilterManager.MaxSliderBeds
 					A2Cribs.FilterManager.MaxBeds = 999999
 		$.ajax
-			url: myBaseUrl + "Listings/ApplyFilter"
+			url: myBaseUrl + "Sublets/ApplyFilter"
 			type:"GET"
-			data:"fall="      + fall   + 
-				 "&spring="   + spring + 
-				 "&other="    + other  +
-				 "&house="    + house  +
-				 "&apt="      + apt    +
-				 "&duplex="   + duplex +
-				 "&minRent="  + A2Cribs.FilterManager.MinRent+
-				 "&maxRent="  + A2Cribs.FilterManager.MaxRent+
-				 "&minBeds="  + A2Cribs.FilterManager.MinBeds+
-				 "&maxBeds="  + A2Cribs.FilterManager.MaxBeds
+			data:ajaxData
 			context: this
 			success: A2Cribs.FilterManager.UpdateMarkers
 

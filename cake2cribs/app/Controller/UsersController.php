@@ -219,37 +219,6 @@ class UsersController extends AppController {
             $json = json_encode($error);
             $this->set('response', $json);
         }
-
-        /*
-        if ($this->Auth->identify($this->request, $this->response))
-        {
-            if($this->Auth->login()) {
-                if($this->Auth->user('verified')==0) {
-                    $json = json_encode(array(
-                    'loginStatus' => 1,
-                    'error'=>'You are verified'));
-                    $this->set('response', $json);
-                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
-                 //   $this->redirect('/dashboard');
-                }
-                else {
-                    $this->Session->setFLash(__('You were successfully logged in.'));
-                    $json = json_encode(array(
-                    'loginStatus' => 1,
-                    'error'=>'You are logged in.'));
-                    $this->set('response', $json);
-                   // $this->redirect('/dashboard');
-                }
-            }
-        
-        } else {
-            $json = json_encode(array(
-                'loginStatus' => 0,
-                'error'=>'Invalid login details.'));
-            
-            $this->set('response', $json);
-
-        }*/
     }
 
     /*public function delete($id = null) {

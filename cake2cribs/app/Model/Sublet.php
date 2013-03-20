@@ -2,10 +2,12 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array(/*'User',*/'University','BuildingType','UtilityType','BathroomType','PaymentType');
+	public $belongsTo = array(/*'User',*/'University'/*,'BuildingType','UtilityType','BathroomType','PaymentType'*/);
 	public $hasMany = 'Housemate';
 	public $hasOne = array();
 	public $primaryKey = 'id';
+	public $actsAs = array('Containable');
+	public $uses = array('Housemate', 'BuildingType','UtilityType','BathroomType','PaymentType');
 
 	public $validate = array (
 		'id' => 'alphaNumeric', //TODO: make rule more precise
@@ -326,21 +328,49 @@ class Sublet extends AppModel {
 	*/
 	private function getFilteredQueryConditions($params)
 	{
+		/*'user_id' => $this->Auth->User('id'),
+           *** 'start_date' => $this->Session->read('start_date'),
+         ***   'end_date' => $this->Session->read('end_date'),
+            'male' => $this->Session->read('male'),
+            'female' => $this->Session->read('female'),
+           *** 'students_only' => $this->Session->read('students_only'),
+            'grad' => $this->Session->read('grad'),
+            'undergrad' => $this->Session->read('undergrad'),
+            'ac' => $this->Session->read('ac'),
+            'parking' => $this->Session->read('parking'),*/
+
+		//$housemates = $this->Housemate->getHousematesForSublet($sublet_id);
+		/*
+		Missing information: gender, parking, ac, [grad, undergrad] -> student_type?
+		*/
 		$conditions = array();
 
-		$unit_type_OR = array();
-		if ($params['house'] == "true")
-			array_push($unit_type_OR, 'house');
-		if ($params['apt'] == "true")
-			array_push($unit_type_OR, 'apt');
-		if ($params['other'] == "true")
-			array_push($unit_type_OR, 'other');
+		$building_type_id_OR = array();
+		if ($params['house'] == true)
+			array_push($building_type_id_OR, $this->getBuildingTypeId('House'));
+		if ($params['apt'] == true)
+			array_push($building_type_id_OR, $this->getBuildingTypeId('Apartment'));
+		if ($params['unit_type_other'] == true)
+			array_push($building_type_id_OR, $this->getBuildingTypeId('Duplex'));
 
-		$housemates_OR = array();
+		$bathroom_type_id_OR = array();
+		if ($params['bathroom_type'] == "NOT_SET")
+		{
+			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Private'));
+			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Shared'));
+		}
+		else
+		{
+			if ($params['bathroom_type'] == 'Private')
+				array_push($conditions, array('Sublet.bathroom_type_id' => $this->getBathroomTypeId('Private')));
+			else
+				array_push($conditions, array('Sublet.bathroom_type_id' => $this->getBathroomTypeId('Shared')));
+		}
+
+		$gender_OR = array();
+		$grad_undergrad_OR = array();
+
 		// need fields for ac, parking
-		/*
-		add more 'OR' arrays depending on sublets table structure
-		*/
 
 
 		/*if (count($lease_range_OR) > 0)
@@ -354,20 +384,22 @@ class Sublet extends AppModel {
 				// Without this, all lease ranges would be returned when all check boxes are unchecked*/
 
 		array_push($conditions, array('OR' => array(
-			'Sublet.unit_type'   => $unit_type_OR)));
+			'Sublet.building_type_id'   => $building_type_id_OR)));
+
+		array_push($conditions, array('OR' => array(
+			'Sublet.bathroom_type_id' => $bathroom_type_id_OR)));
 
 		array_push($conditions, array(
-			'Sublet.rent >=' => $params['minRent'],
-			'Sublet.rent <=' => $params['maxRent'],
-			'Sublet.beds >=' => $params['minBeds'],
-			'Sublet.beds <=' => $params['maxBeds']));
+			'Sublet.price_per_bedroom >=' => $params['min_rent'],
+			'Sublet.price_per_bedroom <=' => $params['max_rent'],
+			'Sublet.number_bedrooms >=' => $params['beds']));
 
-		if ($params['utilities_included'] == "true")
+		if ($params['utilities_included'] == true && $params['utilities_included'] != "NOT_SET")
 			array_push($conditions, array(
 				'Sublet.deposit_amount' => 0,
 			));
 
-			if ($params['no_security_deposit'] == "true")
+		if ($params['no_security_deposit'] == true && $params['no_security_deposit'] != "NOT_SET")
 			array_push($conditions, array(
 				'Sublet.utility_cost' => 0,
 			)); 
@@ -404,19 +436,22 @@ class Sublet extends AppModel {
 	*/
 	public function getFilteredMarkerIdList($params)
 	{
+		CakeLog::write("urlParams", print_r($params, true));
 		$conditions = $this->getFilteredQueryConditions($params);
+		CakeLog::write("filterConditions", print_r($conditions, true));
 
-		/* Limit to only querying from the Listing table. */
-		$this->contain();
+		/* Limit which tables are queried */
+		$contains = array('Sublet', 'Housemate');
 
 		$markerIdList = $this->find('all', array(
 			'conditions' => $conditions,
-			'fields' => array('marker_id')));
+			'fields' => array('marker_id')/*,
+			'contain' => $contains*/));
 
 		//return $markerIdList[0]['Listing']['marker_id'];
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
-			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
+			array_push($formattedIdList, $markerIdList[$i]['Sublet']['marker_id']);
 
 		return json_encode($formattedIdList);
 	}
@@ -439,6 +474,50 @@ class Sublet extends AppModel {
 	  	));
 
 	 	return $subletQuery;
+	}
+
+	public function getBuildingTypeId($buildingString)
+	{
+		$buildingTypes = Cache::read("buildingTypes");
+		$buildingId = null;
+		if ($buildingTypes == null)
+		{
+			$BuildingType = ClassRegistry::init("BuildingType");
+			$allBuildingTypes = $BuildingType->find('all');
+			for ($i = 0; $i < count($allBuildingTypes); $i++)
+			{
+				$id = $allBuildingTypes[$i]['BuildingType']['id'];
+				$name = $allBuildingTypes[$i]['BuildingType']['name'];
+				$buildingTypes[$name] = $id;
+			}
+		}
+
+		if (array_key_exists($buildingString, $buildingTypes))
+			return $buildingTypes[$buildingString];
+		else
+			return null;
+	}	
+
+	function getBathroomTypeId($bathroomString)
+	{
+		$bathroomTypes = Cache::read("bathroomTypes");
+		$bathroomId = null;
+		if ($bathroomTypes == null)
+		{
+			$BathroomType = ClassRegistry::init("BathroomType");
+			$allBathroomTypes = $BathroomType->find('all');
+			for ($i = 0; $i < count($allBathroomTypes); $i++)
+			{
+				$id = $allBathroomTypes[$i]['BathroomType']['id'];
+				$name = $allBathroomTypes[$i]['BathroomType']['name'];
+				$bathroomTypes[$name] = $id;
+			}
+		}
+
+		if (array_key_exists($bathroomString, $bathroomTypes))
+			return $bathroomTypes[$bathroomString];
+		else
+			return null;
 	}
 }
 ?>
