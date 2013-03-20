@@ -28,7 +28,12 @@
 			else
 				echo '<a class="post-button inline pull-left" href="/sublets/add">POST A SUBLET</a>';
 	?>
-                           
+	<a onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a>
+<div id="twitterDiv">
+	<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
+
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
@@ -126,9 +131,9 @@
 	<div id='apttype-popover'>
 		<table>
 			<tr>
-				<td><label class="checkbox"><input type="checkbox">Apartment</label></td>
-				<td><label class="checkbox"><input type="checkbox">House</label></td>
-				<td><label class="checkbox"><input type="checkbox">Other</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="aptCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Apartment</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="houseCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">House</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="otherCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Other</label></td>
 			</tr>
 		</table>
 	</div>
@@ -136,15 +141,15 @@
 		<table>
 			<tr>
 				<td>Housemates:</td>
-				<td><label class="checkbox"><input type="checkbox">Male</label></td>
-				<td><label class="checkbox"><input type="checkbox">Female</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="maleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Male</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="femaleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Female</label></td>
 			</tr>
 		</table>
 		<table>
 			<tr>
-				<td><label class="checkbox"><input type="checkbox">Students Only</label></td>
-				<td><label class="checkbox"><input type="checkbox">Grad</label></td>
-				<td><label class="checkbox"><input type="checkbox">Undergrad</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="studentsOnlyCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Students Only</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="gradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Grad</label></td>
+				<td><label class="checkbox"><input type="checkbox" id="undergradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Undergrad</label></td>
 			</tr>
 		</table>
 	</div>
@@ -155,11 +160,11 @@
 				<option>Private</option>
 				<option>Public</option>
 			</select>
-			<label class="checkbox"><input type="checkbox">A/C</label>
-			<label class="checkbox"><input type="checkbox">Parking</label>
+			<label class="checkbox"><input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">A/C</label>
+			<label class="checkbox"><input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Parking</label>
 		</div>
-		<label class="checkbox"><input type="checkbox">Utilities Included</label>
-		<label class="checkbox"><input type="checkbox">No Security Deposit</label>
+		<label class="checkbox"><input type="checkbox" id="utilitiesCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Utilities Included</label>
+		<label class="checkbox"><input type="checkbox" id="noSecurityDepositCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">No Security Deposit</label>
 	</div>
 	<?= $this->element('slider'); ?>
 </div>
@@ -185,5 +190,9 @@
             event.preventDefault();
         });
     });
+
+    $("#endDate").datepicker().on('changeDate', function(ev) {
+    	
+    }
 </script>
 
