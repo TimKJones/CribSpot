@@ -8,7 +8,7 @@
 		//echo $this->element('favorites');
 
 		/* Hidden Elements */
-		//echo $this->element('tooltips');
+		echo $this->element('tooltips');
 		echo $this->element('popups');
 	echo '</div>';
 	$declare_marker_id_to_open =  'var marker_id_to_open = ' . $marker_id_to_open . ';';

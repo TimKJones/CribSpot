@@ -3,7 +3,13 @@ class A2Cribs.Map
 	Called when a marker is clicked
 	###
 	@MarkerClicked:(event) ->
-		A2Cribs.Map.IdToMarkerMap[this.id].LoadMarkerData()
+		A2Cribs.Map.ClickBubble.Open A2Cribs.Map.IdToMarkerMap[this.id]
+
+	@MarkerMouseIn: (event) ->
+		A2Cribs.Map.HoverBubble.Open A2Cribs.Map.IdToMarkerMap[this.id]
+
+	@MarkerMouseOut: (event) ->
+		A2Cribs.Map.HoverBubble.Close()
 
 	###
 	Add list of listings to cache
@@ -43,6 +49,8 @@ class A2Cribs.Map
 		#@VisibleMarkers.push(@IdToMarkerMap[id].GMarker)
 		@GMarkerClusterer.addMarker(@IdToMarkerMap[id].GMarker)
 		google.maps.event.addListener(@IdToMarkerMap[id].GMarker, 'click', @MarkerClicked)
+		google.maps.event.addListener(@IdToMarkerMap[id].GMarker, 'mouseover', @MarkerMouseIn)
+		google.maps.event.addListener(@IdToMarkerMap[id].GMarker, 'mouseout', @MarkerMouseOut)
 		A2Cribs.Map.AddressToMarkerIdMap[m['address']] = m['marker_id']
 		
 
@@ -142,7 +150,8 @@ class A2Cribs.Map
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
 		@LoadMarkers()
-		@MarkerTooltip = new A2Cribs.MarkerTooltip @GMap
+		@ClickBubble = new A2Cribs.ClickBubble @GMap
+		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		A2Cribs.FilterManager.InitAddressSearch()
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
