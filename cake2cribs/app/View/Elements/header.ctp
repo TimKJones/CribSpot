@@ -5,7 +5,7 @@
 	echo $this->Html->css('/less/popover.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/css/jquery-dialog2/jquery.dialog2.css', array('inline'=>false));
-	echo $this->Html->css('FindSubletPosition', array('inline'=>false));
+	
 	//echo('<link rel="stylesheet" type="text/css" href="/css/jquery-dialog2/jquery.dialog2.css">');
 	/* Datepicker and slider css */
 	echo $this->Html->css('datepicker');
@@ -185,8 +185,7 @@
         $('#subletAddSteps').click(function(event) {
             $('<div/>').dialog2({
                 title: "Post a sublet", 
-                content: "Sublets/ajax_add",
-                //content: "FindSubletPosition", 
+                content: "Sublets/ajax_add", 
                 id: "server-notice"
             });
 

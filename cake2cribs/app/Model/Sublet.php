@@ -300,6 +300,8 @@ class Sublet extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)),
 		'flexible_dates' => 'boolean',
+		'ac' => 'boolean',
+		'parking' => 'boolean',
 		'furnished_type_id' => array(
 			'required' => array(
 				'rule' => 'notEmpty',

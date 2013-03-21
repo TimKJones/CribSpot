@@ -105,6 +105,11 @@ class SubletsController extends AppController {
     public function ajax_add2() {
     }
 
+    public function ajax_add_create() {
+        $this->Session->write('PotentialSublet', $this->request->data);
+        $this->set('response', json_encode($this->Session->read('PotentialSublet')));
+    }
+
 	public function edit($id = null) {
         //check authentication on this, only user can edit their sublets
         //(and admin)
