@@ -1,7 +1,7 @@
 <?php
 class LandingController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array('School');
+	public $uses = array('University');
 
 	public function beforeFilter() {
 		$this->Auth->allow('index');
@@ -10,7 +10,7 @@ class LandingController extends AppController {
 
 	function index()
 	{
-		$this->set('locations', $this->School->getSchools());
+		$this->set('locations', $this->University->getSchools());
 	}
 }
 ?>
