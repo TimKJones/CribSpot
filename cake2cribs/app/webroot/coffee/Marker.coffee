@@ -9,43 +9,49 @@ class A2Cribs.Marker
 		@Clicked = false #Used to determine if data is already in the cache
 
 	###
-	Add realtor and listing data to cache
-	###
-	@CacheMarkerData = (markerData) ->
-		realtor = markerData[1][0].Realtor
-		listings = markerData[0]
-		A2Cribs.Map.CacheListings listings
-		A2Cribs.Map.CacheRealtor  realtor
-		A2Cribs.Map.CacheMarkerIdToListingsList listings
-		@Clicked = true
-
-	###
 	Filters the listing_ids at the current marker according to the user's current filter settings.
 	Returns list of listing_ids that should be visible in marker tooltip.
 	###
-	FilterVisibleListings = (listingIdList) ->
-		fall    = $("#fallCheck").is(':checked')	
-		spring  = $("#springCheck").is(':checked')	
-		other   = $("#otherCheck").is(':checked')
-		house   = $("#houseCheck").is(':checked')
-		apt     = $("#aptCheck").is(':checked')	
-		duplex  = $("#duplexCheck").is(':checked') 
+	FilterVisibleListings = (subletIdList) ->	
+		if subletIdList == undefined	
+			return null
+		house = $("#houseCheck").is(':checked')	
+		apt = $("#aptCheck").is(':checked')
+		other = $("#otherCheck").is(':checked')
+		male = $("#maleCheck").is(':checked')
+		female = $("#femaleCheck").is(':checked')
+		students_only = $("#studentsOnlyCheck").is(':checked')
+		grad = $("#gradCheck").is(':checked')
+		undergrad = $("#undergradCheck").is(':checked')
+		ac = $("#acCheck").is(':checked')
+		parking = $("#parkingCheck").is(':checked')
+		utilities = $("#utilitiesCheck").is(':checked')
+		no_security_deposit = $("#noSecurityDepositCheck").is(':checked')
+		min_rent = 0
+		max_rent = 999999
+		beds = 0
+		start_date = 0
+		end_date = 999999
+
 		visibleListingIds = []
 
-		for listingId in listingIdList
-			l = A2Cribs.Map.IdToListingMap[listingId]
-			l.Rent = parseInt(l.Rent)
-			l.Beds = parseInt(l.Beds)
-			if (((l.LeaseRange == 'fall' or l.leaseRange == null) and fall) or ((l.LeaseRange == 'spring' or l.leaseRange == null) and spring) or ((l.LeaseRange == 'other' or l.leaseRange == null) and other)) and
-			  ( ((l.UnitType == 'house' or l.UnitType == null) and house) or ((l.UnitType == 'apt' or l.UnitType == null) and apt) or ((l.UnitType == 'duplex' or l.UnitType == null) and duplex) or (l.UnitType != 'house' && l.UnitType != 'duplex' && l.UnitType != 'apt')) and
-			  ((l.Rent >= A2Cribs.FilterManager.MinRent and
-			  l.Rent <= A2Cribs.FilterManager.MaxRent) or (l.Rent == -1)) and
-			  ((l.Beds >= A2Cribs.FilterManager.MinBeds and
-			  l.Beds <= A2Cribs.FilterManager.MaxBeds) or (l.Rent == -1))
-				visibleListingIds.push listingId
+		for subletId in subletIdList
+			l = A2Cribs.Cache.IdToSubletMap[subletId]
+			unitType = null
+			bathType = null
+			if l.BuildingType != undefined
+				unitType = A2Cribs.Cache.BuildingIdToNameMap[l.BuildingType]
+
+			if l.BathroomType != undefined
+				bathType = A2Cribs.Cache.BathroomIdToNameMap[l.BathroomType] 
+
+			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
+			  ((l.PricePerBedroom >= min_rent and
+			  l.PricePerBedroom <= max_rent)) and
+			  (l.Bedrooms >= beds)
+				visibleListingIds.push subletId
 
 		return visibleListingIds
-
 	###
 	Called after successful ajax call to retrieve all listing data for a specific marker_id.
 	Updates UI with retrieved data
@@ -53,10 +59,11 @@ class A2Cribs.Marker
 	UpdateMarkerContent = (markerData) ->
 		#decodedData = $.parseJSON markerData
 		if (!@Clicked)
-			A2Cribs.Marker.CacheMarkerData JSON.parse markerData
-			A2Cribs.Map.IdToMarkerMap[@MarkerId].GMarker.setIcon("/img/dots/clicked_dot.png")
+				A2Cribs.Cache.CacheMarkerData JSON.parse markerData
+				A2Cribs.Cache.IdToMarkerMap[@MarkerId].GMarker.setIcon("/img/dots/clicked_dot.png")
 
-		visibleListingIds = FilterVisibleListings(A2Cribs.Map.MarkerIdToListingIdsMap[@MarkerId])
+		@Clicked = true
+		visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
 		A2Cribs.Map.MarkerTooltip.Display visibleListingIds, @GMarker
 
 	###
@@ -64,14 +71,13 @@ class A2Cribs.Marker
 	Called when a marker is clicked
 	###
 	LoadMarkerData: ->
-		includeRealtor = true #TODO check cache for this
 		@CorrectTooltipLocation()
 		if (@Clicked)
-			visibleListingIds = FilterVisibleListings(A2Cribs.Map.MarkerIdToListingIdsMap[@MarkerId])
+			visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
 			A2Cribs.Map.MarkerTooltip.Display visibleListingIds, @GMarker
 		else
 			$.ajax 
-				url: myBaseUrl + "Listings/LoadMarkerData/" + @MarkerId + "/" + includeRealtor
+				url: myBaseUrl + "Sublets/LoadMarkerData/" + @MarkerId
 				type:"GET"
 				context: this
 				success: UpdateMarkerContent

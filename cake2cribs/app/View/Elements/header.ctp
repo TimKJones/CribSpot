@@ -143,15 +143,15 @@
 		<table>
 			<tr>
 				<td>Housemates:</td>
-				<td><label class="checkbox"><input type="checkbox" id="maleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Male</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="femaleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Female</label></td>
+				<td><label class="checkbox"><input type="checkbox" checked="yes" id="maleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Male</label></td>
+				<td><label class="checkbox"><input type="checkbox" checked="yes" id="femaleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Female</label></td>
 			</tr>
 		</table>
 		<table>
 			<tr>
 				<td><label class="checkbox"><input type="checkbox" id="studentsOnlyCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Students Only</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="gradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Grad</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="undergradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Undergrad</label></td>
+				<td><label class="checkbox"><input type="checkbox" checked="yes" id="gradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Grad</label></td>
+				<td><label class="checkbox"><input type="checkbox" checked="yes" id="undergradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Undergrad</label></td>
 			</tr>
 		</table>
 	</div>
