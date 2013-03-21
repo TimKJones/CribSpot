@@ -1,8 +1,4 @@
 class A2Cribs.Map
-
-	@CurentSchoolId = 171 
-	#TODO: get this from backend
-
 	###
 	Called when a marker is clicked
 	###
@@ -95,7 +91,8 @@ class A2Cribs.Map
 			FILTER_BOX_BOTTOM: A2Cribs.UtilityFunctions.getPosition($("#filterBoxBackground")[0]).y + $("#filterBoxBackground").height()
 			CONTROL_BOX_LEFT: 95
 
-	@Init: ->
+	@Init: (school_id, latitude, longitude) ->
+		@CurentSchoolId = school_id
 		@IdToListingMap = []	#stores all listings after being loaded.
 		@IdToRealtorMap  = []  #stores all realtor data after being loaded.
 		@MarkerIdToListingIdsMap = [] #maps marker ids to list of listing_ids
@@ -104,7 +101,7 @@ class A2Cribs.Map
 		@IdToMarkerMap = []		#Map of MarkerIds to Marker objects
 		@AddressToMarkerIdMap = [] #Used to determine if searched address is property in database
 
-		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
+		@MapCenter = new google.maps.LatLng(latitude, longitude);
 		style = [
 			{
 				"featureType": "landscape",
@@ -131,7 +128,7 @@ class A2Cribs.Map
 		]
 		@MapOptions =
   			zoom: 15
-  			center: A2Cribs.Map.AnnArborCenter
+  			center: A2Cribs.Map.MapCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
   			styles: style
   			panControl: false

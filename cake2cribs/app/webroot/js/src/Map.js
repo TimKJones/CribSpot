@@ -5,8 +5,6 @@
 
     function Map() {}
 
-    Map.CurentSchoolId = 171;
-
     /*
     	Called when a marker is clicked
     */
@@ -141,14 +139,15 @@
       };
     };
 
-    Map.Init = function() {
+    Map.Init = function(school_id, latitude, longitude) {
       var mcOptions, style;
+      this.CurentSchoolId = school_id;
       this.IdToListingMap = [];
       this.IdToRealtorMap = [];
       this.MarkerIdToListingIdsMap = [];
       this.IdToMarkerMap = [];
       this.AddressToMarkerIdMap = [];
-      this.AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
+      this.MapCenter = new google.maps.LatLng(latitude, longitude);
       style = [
         {
           "featureType": "landscape",
@@ -184,7 +183,7 @@
       ];
       this.MapOptions = {
         zoom: 15,
-        center: A2Cribs.Map.AnnArborCenter,
+        center: A2Cribs.Map.MapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: style,
         panControl: false,
