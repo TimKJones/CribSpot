@@ -17,7 +17,7 @@ class A2Cribs.CorrectMarker
 			visible: false
 		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
 		@Geocoder = new google.maps.Geocoder()
-		A2Cribs.CorrectMarker.Map.setCenter()
+		
 
 	@UpdateLatLong: (e) ->
 		$("#updatedLat").html(e.latLng.lat())

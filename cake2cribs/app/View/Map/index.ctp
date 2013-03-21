@@ -5,6 +5,7 @@
 		echo $this->element('sidebar');
 		echo $this->element('login');
 		echo $this->element('register');
+		echo $this->element('Sublets/sublet_add_steps');
 		//echo $this->element('legend');
 		//echo $this->element('favorites');
 
