@@ -40,6 +40,26 @@
 			float: right;
 			margin-right: 50px;
 		}
+		#modal-close-button
+		{
+			height: 23px;
+			width: 23px;
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			background-image: url(/img/popup/close_button_sprite.png);
+			background-size: 100%;
+			background-repeat: no-repeat;
+			background-position: 0 0;
+			&:hover
+			{
+				background-position: 0 -32px;
+			}
+			&:active
+			{
+				background-position: 0 -64px;
+			}
+		}
 	}
 	.photo-region
 	{

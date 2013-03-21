@@ -9,6 +9,7 @@
 			<button type="button" id="contact-btn" class="btn">Contact</button>
 			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large"></i></button>
 		</div>
+		<a href=""><div id="modal-close-button"></div></a>
 	</div>
 	<div class="photo-region">
 		<div id="main-photo" style="background-image:url(/img/landing/house1.jpg);"></div>
