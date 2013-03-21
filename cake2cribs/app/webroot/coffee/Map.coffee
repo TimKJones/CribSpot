@@ -121,10 +121,10 @@ class A2Cribs.Map
 		buildings = types[0]
 		bathrooms = types[1]
 		for type in buildings
-			A2Cribs.Cache.BuildingNameToIdMap[type.BuildingType.name] = parseInt type.BuildingType.id
+			A2Cribs.Cache.BuildingIdToNameMap[parseInt type.BuildingType.id] = type.BuildingType.name
 
 		for type in bathrooms
-			A2Cribs.Cache.BathroomNameToIdMap[type.BathroomType.name] = parseInt type.BathroomType.id
+			A2Cribs.Cache.BathroomIdToNameMap[parseInt type.BathroomType.id] = type.BathroomType.name
 
 
 	###

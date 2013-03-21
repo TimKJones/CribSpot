@@ -13,6 +13,8 @@ class A2Cribs.Marker
 	Returns list of listing_ids that should be visible in marker tooltip.
 	###
 	FilterVisibleListings = (subletIdList) ->	
+		if subletIdList == undefined	
+			return null
 		house = $("#houseCheck").is(':checked')	
 		apt = $("#aptCheck").is(':checked')
 		other = $("#otherCheck").is(':checked')
@@ -30,22 +32,26 @@ class A2Cribs.Marker
 		beds = 0
 		start_date = 0
 		end_date = 999999
+
 		visibleListingIds = []
 
 		for subletId in subletIdList
 			l = A2Cribs.Cache.IdToSubletMap[subletId]
-			l.Rent = parseInt(l.Rent)
-			l.Beds = parseInt(l.Beds)
+			unitType = null
+			bathType = null
+			if l.BuildingType != undefined
+				unitType = A2Cribs.Cache.BuildingIdToNameMap[l.BuildingType]
 
-			if (((l.UnitType == 'house' or l.UnitType == null) and house) or ((l.UnitType == 'apt' or l.UnitType == null) and apt) or ((l.UnitType == 'duplex' or l.UnitType == null) and duplex) or (l.UnitType != 'house' && l.UnitType != 'duplex' && l.UnitType != 'apt')) and
-			  ((l.Rent >= A2Cribs.FilterManager.MinRent and
-			  l.Rent <= A2Cribs.FilterManager.MaxRent) or (l.Rent == -1)) and
-			  ((l.Beds >= A2Cribs.FilterManager.MinBeds and
-			  l.Beds <= A2Cribs.FilterManager.MaxBeds) or (l.Rent == -1))
+			if l.BathroomType != undefined
+				bathType = A2Cribs.Cache.BathroomIdToNameMap[l.BathroomType] 
+
+			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
+			  ((l.PricePerBedroom >= min_rent and
+			  l.PricePerBedroom <= max_rent)) and
+			  (l.Bedrooms >= beds)
 				visibleListingIds.push subletId
 
 		return visibleListingIds
-
 	###
 	Called after successful ajax call to retrieve all listing data for a specific marker_id.
 	Updates UI with retrieved data
