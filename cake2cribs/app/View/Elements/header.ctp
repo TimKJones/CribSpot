@@ -5,6 +5,7 @@
 	echo $this->Html->css('/less/popover.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/css/jquery-dialog2/jquery.dialog2.css', array('inline'=>false));
+	
 	//echo('<link rel="stylesheet" type="text/css" href="/css/jquery-dialog2/jquery.dialog2.css">');
 	/* Datepicker and slider css */
 	echo $this->Html->css('datepicker');
@@ -26,7 +27,7 @@
 				echo '<a class="post-button inline pull-left" href="#myModal" data-toggle="modal">POST A SUBLET</a>';
 			}
 			else
-				echo '<a class="post-button inline pull-left" href="/sublets/add">POST A SUBLET</a>';
+				echo '<a id="subletAddSteps" class="post-button inline pull-left" href="#" >POST A SUBLET</a>';
 	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
@@ -181,10 +182,10 @@
 
 <script type="text/javascript">
     $(function() {
-        $("#show-server-notice-link").click(function(event) {
+        $('#subletAddSteps').click(function(event) {
             $('<div/>').dialog2({
                 title: "Post a sublet", 
-                content: "findSubletPosition", 
+                content: "Sublets/ajax_add", 
                 id: "server-notice"
             });
 
@@ -192,8 +193,8 @@
         });
     });
 
-    $("#endDate").datepicker().on('changeDate', function(ev) {
+    /*$("#endDate").datepicker().on('changeDate', function(ev) {
     	
-    }
+    }*/
 </script>
 

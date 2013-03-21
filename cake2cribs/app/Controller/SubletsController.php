@@ -10,14 +10,9 @@ class SubletsController extends AppController {
         $this->Auth->allow('view');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
+
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
-        parent::beforeFilter();
-        //$this->Auth->allow('manageSublets');
-        //$this->Auth->allow('add');
-        //$this->Auth->allow('ajax_add');
-        //$this->Auth->allow('edit');
-        //$this->Auth->allow('delete');
     }
 
 	public function index() {
@@ -91,20 +86,81 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
-        $universities = $this->Sublet->University->find('list');
+        $canCreate = False;
+        $universities = $this->Sublet->University->find('all');
         $buildingTypes = $this->Sublet->BuildingType->find('list');
-        $utilityTypes = $this->Sublet->UtilityType->find('list');
-        $bathroomTypes = $this->Sublet->BathroomType->find('list');
-        $paymentTypes = $this->Sublet->PaymentType->find('list');
-        //$this->set(compact('universities'));
+        //$utilityTypes = $this->Sublet->UtilityType->find('list');
+        //$bathroomTypes = $this->Sublet->BathroomType->find('list');
+        //$paymentTypes = $this->Sublet->PaymentType->find('list');
+        $this->set(compact('universities'));
         $this->set(compact('buildingTypes'));
-        $this->set(compact('utilityTypes'));
-        $this->set(compact('bathroomTypes'));
-        $this->set(compact('paymentTypes'));
+        //$this->set(compact('utilityTypes'));
+        //$this->set(compact('bathroomTypes'));
+        //$this->set(compact('paymentTypes'));
+         if($this->Auth->loggedIn())
+        {
+            $usersSublet = $this->Sublet->findByUserId($this->Auth->user('id'));
+            if(!empty($usersSublet))
+            {
+                if($usersSublet['Sublet']['is_finished'] == 1)
+                {
+                    $this->redirect('/Sublet/edit?id='.$usersSublet['Sublet']['id']);
+                }
+                else
+                {
+                    $canCreate = False;
+                    $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
+                    $this->set('savedUniversity', $savedUniversity);
+                    $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
+                    $this->set('savedBuildingTypeID', $savedBuildingTypeID);
+                    $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
+                    $this->set('savedName', $savedName);
+                }
+                
+            }
+            else
+            {
+                $canCreate = true;
+            }
+            $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
+                    $this->set('savedUniversity', $savedUniversity);
+                    $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
+                    $this->set('savedBuildingTypeID', $savedBuildingTypeID);
+                    $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
+                    $this->set('savedName', $savedName);
+        }
         
     }
 
     public function ajax_add2() {
+    }
+
+    public function ajax_add_create() {
+        //add code to save mostly empty sublet 
+        /*$this->Sublet->create($this->request->data);
+
+        if ($this->Sublet->save($this->request->data, true, array('fieldList' => array('university_id', 'building_type_id', 'name'))))
+        {
+           /* $json = array('university_id' => $this->request->data['Sublet']['university_id'],
+                    'building_type_id' => $this->Sublet->field('building_type_id'),
+                    'name' => $this->Sublet->field('name'));
+            //$json = json_encode($this->Sublet);
+            //$this->set('response', $json);
+            $error = array('IT went through');
+            $json = json_encode($error);
+            $this->set('response', $json);
+        }
+        else
+        {
+            //$error = $this->validateErrors($this->Sublet);
+            $error = array('It did not go through.');
+            $json = json_encode($error);
+            $this->set('response', $json);
+
+        }*/
+        $this->Session->write('SubletInProgress', $this->request->data);
+        $this->set('response',json_encode($this->Session->read('SubletInProgress')));
+        
     }
 
 	public function edit($id = null) {
@@ -160,6 +216,7 @@ class SubletsController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
 
+<<<<<<< HEAD
 
 /*
 Returns a list of marker_ids that will be visible based on the current filter settings.
@@ -271,5 +328,8 @@ Returns json encoded data.
         return $sessionValues;
     }
 
+=======
+    
+>>>>>>> b8eb1b2063bb33903e07537e0ee687f85dc6ede1
 }
 ?>

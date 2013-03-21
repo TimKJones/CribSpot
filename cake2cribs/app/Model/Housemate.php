@@ -54,6 +54,12 @@ class Housemate extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)
 			),
+		'gender' => array(
+			'between' => array(
+				'rule' => array('between',4,6),
+				'message' => 'Invalid gender.'
+				)
+			),
 		//type
 		//must be between 1 and 250 characters, I have no idea what this is lol
 		//completed

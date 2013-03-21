@@ -2,12 +2,12 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array(/*'User',*/'University'/*,'BuildingType','UtilityType','BathroomType','PaymentType'*/);
+	public $belongsTo = array('User','University','BuildingType','UtilityType','BathroomType','PaymentType');
 	public $hasMany = 'Housemate';
 	public $hasOne = array();
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
-	public $uses = array('Housemate', 'BuildingType','UtilityType','BathroomType','PaymentType');
+	//public $uses = array('Housemate', 'BuildingType','UtilityType','BathroomType','PaymentType');
 
 	public $validate = array (
 		'id' => 'alphaNumeric', //TODO: make rule more precise
@@ -215,6 +215,12 @@ class Sublet extends AppModel {
 				'message' => 'Must be between 1 and 1000 characters'
 				)
 			),
+		'short_description' => array(
+			'between' => array(
+				'rule' => array('between',1,160),
+				'message' => 'Must be between 1 and 160 characters'
+				)
+			),
 		
 		//section for numberBathrooms
 		//naturalnumber, required.
@@ -300,6 +306,9 @@ class Sublet extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)),
 		'flexible_dates' => 'boolean',
+		'ac' => 'boolean',
+		'parking' => 'boolean',
+		'is_finished' => 'boolean',
 		'furnished_type_id' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
