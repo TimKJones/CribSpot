@@ -12,7 +12,7 @@
 	');
 ?>
 
-<?= $this->element('header'); ?>
+<?= $this->element('header-basic'); ?>
 <div id="photo-background">
 	<table>
 		<tr>

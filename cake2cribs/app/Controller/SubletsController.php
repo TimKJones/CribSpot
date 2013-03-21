@@ -62,12 +62,13 @@ class SubletsController extends AppController {
     }
 	public function add() {
         //have an action to fetch the current location to show in the map element
-        //$universities = $this->Sublet->University->find('list');
+        $universities = $this->Sublet->University->find('threaded');
+
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
         $bathroomTypes = $this->Sublet->BathroomType->find('list');
         $paymentTypes = $this->Sublet->PaymentType->find('list');
-        //$this->set(compact('universities'));
+        $this->set(compact('universities'));
         $this->set(compact('buildingTypes'));
         $this->set(compact('utilityTypes'));
         $this->set(compact('bathroomTypes'));
@@ -90,7 +91,7 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
-        //$universities = $this->Sublet->University->find('list');
+        $universities = $this->Sublet->University->find('list');
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
         $bathroomTypes = $this->Sublet->BathroomType->find('list');

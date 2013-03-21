@@ -20,36 +20,25 @@
 <div class="top-bar">
 	<!-- <a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a> -->
 	<!-- <a id="sublet-post" class="post-button inline pull-left open-dialog" href="/users/verifyUniversity"> POST A SUBLET</a> -->
-	<a href="#" id="show-server-notice-link">Cool!</a>
-	<a onclick="A2Cribs.ShareManager.ShareListingOnFacebook('test', 'test', 2)">Share</a>
 
-
-<!--
-EVAN - put this in the tooltip
-
-<div id="twitterDiv">
-	<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</div>
-
--->
-
-	<div id="sample1-dialog" style="display: none">
-                            <h1>Simple alert</h1>
-                            <p>
-                                It is always beneficial to acknowledge alerts of any kind.
-                                You can close this alert if you agree. 
-                                (Note: Normally a dialog box is not that penetrating)
-                            </p>
-                            <div class="form-actions">
-                                <button class="btn-primary close-dialog">Understood</button>
-                                <button class="btn-danger" onclick="alert('You might reconsider your click behaviour!')">I don't care</button>
-                            </div>
-                        </div>
+	<?php if ($this->Session->read('Auth.User.id')==0)
+			{
+				echo '<a class="post-button inline pull-left" href="#myModal" data-toggle="modal">POST A SUBLET</a>';
+			}
+			else
+				echo '<a class="post-button inline pull-left" href="/sublets/add">POST A SUBLET</a>';
+	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
+		<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
+		<li>
+			<div id="twitterDiv">
+				<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+			</div>
+		</li>
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about">About</a></li>
@@ -104,7 +93,7 @@ EVAN - put this in the tooltip
 				<span class="caret"></span>
 			</a>
 			
-			<?php if ($this->Session->read('Auth.User.id')==0)
+			<?php if ($this->Session->read('Auth.User.id') == 0)
 			{
 				echo '<a class="btn btn-link" href="#signupModal" data-toggle="modal">SIGN UP</a>';
 				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
@@ -112,7 +101,7 @@ EVAN - put this in the tooltip
 			else
 				echo '<a class="btn btn-link" href="/users/logout">LOGOUT</a>'
 			?>
-			
+
 			<ul class="dropdown-menu">
 				<li><a href="#">Action 1</a></li>
 				<li><a href="#">Action 2</a></li>
@@ -120,7 +109,7 @@ EVAN - put this in the tooltip
 				<li><a href="#"><i class="icon-cogs"></i> Account Settings</a></li>
 			</ul>
 		</div>
-		<?php if ($this->Session->read('Auth.User.id')!=0)
+		<?php if ($this->Session->read('Auth.User.id') != 0)
 		{
 			echo '<a href="/dashboard" class="personal-links"><i class="icon-comments icon-large"></i></a>
 		<div id = "unread-conversation-notification"></div>

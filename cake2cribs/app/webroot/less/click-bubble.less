@@ -1,0 +1,168 @@
+.click-bubble.multi-listing
+{
+	.single-content
+	{
+		display: none;
+	}
+}
+
+.click-bubble.single-listing
+{
+	.multi-content
+	{
+		display: none;
+	}
+}
+
+.click-bubble
+{
+	@title-color: #4673b2;
+	@user-color: #ffbd56;
+	@fb-color: blue;
+	@time-color: gray;
+	@calendar-color: #87c2ff;
+	@money-color: #00BB00;
+	@bed-color: #d25555;
+	@apt-color: black;
+	@button-color: #d25555;
+	width: 350px;
+	#sublet-name
+	{
+		color: @title-color;
+		font-style: normal;
+		font-weight: bold;
+	}
+	#posted-time
+	{
+		font-size: 12px;
+		font-style: normal;
+	}
+	.single-content
+	{
+		//display: none;
+		img
+		{
+			height: 90px;
+			width: 125px;
+			display: inline-block;
+			float: left;
+			margin-top: 2px;
+		}
+	}
+	.single-content.click-bubble-data
+	{
+		float: left;
+	}
+	.multi-content
+	{
+		//display: none;
+		img
+		{
+			height: 65px;
+			width: 80px;
+			display: inline-block;
+			float: left;
+			margin-top: 2px;
+			margin-right: 5px;
+		}
+		.click-bubble-data
+		{
+			border: solid 1px gray;
+			display: block;
+		}
+		#listing-count
+		{
+			@start_color: #404040;
+			@stop_color: #616161;
+			background-color: @start_color;
+			background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@start_color), to(@stop_color));
+			background: -webkit-linear-gradient(top, @stop_color, @start_color);
+			background: -moz-linear-gradient(top, @stop_color, @start_color);
+			background: -ms-linear-gradient(top, @stop_color, @start_color);
+			background: -o-linear-gradient(top, @stop_color, @start_color);
+			border: solid 1px black;
+			border-radius: 4px;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			color: white;
+			text-align: center;
+			height: 20px;
+			width: 20px;
+			display: inline-block;
+			font-size: 13px;
+			font-weight: bold;
+			margin-right: 12px;
+		}
+	}
+	.click-bubble-data
+	{
+		position: relative;
+		line-height: 17px;
+		padding: 5px;
+	}
+	.bold-text
+	{
+		font-style: normal;
+		font-weight: bold;
+		font-size: 13px;
+	}
+	.gray-text
+	{
+		color: gray;
+	}
+	.icon-map-marker
+	{
+		color: @title-color;
+		margin-right: 5px;
+	}
+	.icon-user
+	{
+		color: @user-color;
+		margin-right: 5px;
+	}
+	.icon-facebook-sign
+	{
+		color: @fb-color;
+		margin-left: 5px;
+		margin-right: 2px;
+	}
+	.icon-time
+	{
+		color: @time-color;
+		margin-left: 5px;
+		margin-right: 2px;
+	}
+	.icon-calendar
+	{
+		color: @calendar-color;
+		margin-right: 5px;
+	}
+	.icon-money-sign
+	{
+		color: @money-color;
+		margin-right: 6px;
+		margin-left: 1px;
+		font-style: normal;
+		font-weight: bolder;
+		font-size: 16px;
+	}
+	.icon-building
+	{
+		margin-right: 5px;
+	}
+	.extended-buttons
+	{
+		position: absolute;
+		bottom: 5px;
+		right: 5px;
+		font-size: 16px;
+		a
+		{
+			text-decoration: none;
+			i
+			{
+				color: @button-color;
+			}
+		}
+	}
+}

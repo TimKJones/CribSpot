@@ -38,6 +38,7 @@
 			</div>
 			<div class = 'listings-content hidden'>
 				Listings
+				<?php echo $this->element('Sublets/ajax_add') ?>
 			</div>
 			<div class = 'messages-content hidden'>
 				<?php echo $this->element('Messages/participant_info') ?>
@@ -92,6 +93,7 @@
 		A2Cribs.Dashboard.Direct(directive);
 		A2Cribs.Messages.Direct(directive);
 		A2Cribs.Account.Direct(directive);
+		A2Cribs.Sublest.Direct(directive);
 		// A2Cribs.MyListings.Direct(directive); for the listings section
 	}else{
 

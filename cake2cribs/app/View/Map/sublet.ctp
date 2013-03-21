@@ -3,7 +3,6 @@
 	echo '<div id="container">';
 		echo $this->element('header');
 		echo $this->element('map');
-		echo $this->element('sidebar');
 		echo $this->element('login');
 		//echo $this->element('legend');
 		//echo $this->element('favorites');
