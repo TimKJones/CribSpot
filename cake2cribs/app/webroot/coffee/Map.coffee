@@ -7,48 +7,18 @@ class A2Cribs.Map
 	Called when a marker is clicked
 	###
 	@MarkerClicked:(event) ->
-		A2Cribs.Map.IdToMarkerMap[this.id].LoadMarkerData()
-
-	###
-	Add list of listings to cache
-	###
-	@CacheListings: (listings) ->
-		A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = []
-		for listing in listings
-			if (listing == undefined)
-				continue
-			l = listing.Listing
-			l.listing_id = parseInt(l.listing_id)
-			A2Cribs.Map.IdToListingMap[l.listing_id] = new A2Cribs.Listing(l.listing_id, l.marker_id, l.available, l.lease_range, l.unit_type, l.unit_description, l.beds, l.baths, l.rent, l.electric, l.water, l.heat, l.air, l.parking, l.furnished, l.url, l.realtor_id)
-
-	###
-	Add a realtor to the cache
-	###
-	@CacheRealtor: (realtor) ->
-		realtor.realtor_id = parseInt(realtor.realtor_id)
-		A2Cribs.Map.IdToRealtorMap[parseInt(realtor.realtor_id)] = new A2Cribs.Realtor(realtor.realtor_id, realtor.company, realtor.email)
-
-	###
-	Add a list of listingIds to the MarkerIdToListingIds map
-	###
-	@CacheMarkerIdToListingsList: (listings) ->
-		A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = []
-		for listing in listings
-			if (listing == undefined)
-				continue
-			A2Cribs.Map.MarkerIdToListingIdsMap[listing.Listing.marker_id].push parseInt(listing.Listing.listing_id)
+		A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
 
 	###
 	Add a marker to the map
 	###
 	@AddMarker:(m) ->
 		id = parseInt(m["marker_id"], 10)
-		@IdToMarkerMap[id] =  new A2Cribs.Marker(id, m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
+		A2Cribs.Cache.CacheMarker id, m
 		#@VisibleMarkers.push(@IdToMarkerMap[id].GMarker)
-		@GMarkerClusterer.addMarker(@IdToMarkerMap[id].GMarker)
-		google.maps.event.addListener(@IdToMarkerMap[id].GMarker, 'click', @MarkerClicked)
-		A2Cribs.Map.AddressToMarkerIdMap[m['address']] = m['marker_id']
-		
+		@GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker)
+		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'click', @MarkerClicked)
+		A2Cribs.Cache.AddressToMarkerIdMap[m.address] = parseInt m.marker_id
 
 	###
 	Add all markers in markerList to map
@@ -96,14 +66,6 @@ class A2Cribs.Map
 			CONTROL_BOX_LEFT: 95
 
 	@Init: ->
-		@IdToListingMap = []	#stores all listings after being loaded.
-		@IdToRealtorMap  = []  #stores all realtor data after being loaded.
-		@MarkerIdToListingIdsMap = [] #maps marker ids to list of listing_ids
-								#TODO: Set a maximum size for each cache.
-
-		@IdToMarkerMap = []		#Map of MarkerIds to Marker objects
-		@AddressToMarkerIdMap = [] #Used to determine if searched address is property in database
-
 		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
 		style = [
 			{
@@ -145,14 +107,28 @@ class A2Cribs.Map
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
 		@LoadMarkers()
+		@LoadTypeTables()
 		@MarkerTooltip = new A2Cribs.MarkerTooltip @GMap
 		A2Cribs.FilterManager.InitAddressSearch()
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
 
-	@UpdateMarkersCache: ->
+	@LoadTypeTables: ->
 		$.ajax
-			url: myBaseUrl + "Markers/UpdateCache"
+			url: myBaseUrl + "Map/LoadTypeTables"
+			type: "POST"
+			success: @LoadTypeTablesCallback
+
+	@LoadTypeTablesCallback: (types) ->
+		types = JSON.parse types
+		buildings = types[0]
+		bathrooms = types[1]
+		for type in buildings
+			A2Cribs.Cache.BuildingNameToIdMap[type.BuildingType.name] = parseInt type.BuildingType.id
+
+		for type in bathrooms
+			A2Cribs.Cache.BathroomNameToIdMap[type.BathroomType.name] = parseInt type.BathroomType.id
+
 
 	###
 	EVAN:

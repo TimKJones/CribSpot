@@ -11,6 +11,7 @@ class SubletsController extends AppController {
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
         $this->Auth->allow('ApplyFilter');
+        $this->Auth->allow('LoadMarkerData');
         parent::beforeFilter();
         //$this->Auth->allow('manageSublets');
         //$this->Auth->allow('add');
@@ -169,6 +170,25 @@ Returns a list of marker_ids that will be visible based on the current filter se
         $response = $this->Sublet->getFilteredMarkerIdList($this->getSessionValues($this->params['url']));
         $this->layout = 'ajax';
         $this->set('response', $response);
+    }
+
+/*
+Called via ajax when a marker is clicked to load all listings for that marker_id
+Returns json encoded data.
+*/
+    public function LoadMarkerData($marker_id)
+    {
+        CakeLog::write("loadMarkerData", "marker_id = " . $marker_id);
+        $markerListingsData = $this->Sublet->getSubletDataByMarkerId($marker_id);
+        
+        $markerListingsData = json_encode($markerListingsData);
+
+        $this->layout = 'ajax';
+        $this->set('response', $markerListingsData);
+
+        /*TODO: NEED THIS TO BE DONE AFTER RETURNING MARKER_LIST TO CLIENT */
+        //$filter_id = $this->FilterAnalytic->AddFilter($this->getSessionValues(), $marker_id);
+        //$this->ClickAnalytic->AddClick($this->Session->read('user'), $marker_id, $filter_id);
     }
 
     public function UpdateFilterValues($params)

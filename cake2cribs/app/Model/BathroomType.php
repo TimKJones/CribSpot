@@ -7,5 +7,11 @@ class BathroomType extends AppModel {
 		'name' => 'alphaNumeric',
 		'description' => 'alphaNumeric'
 	);
+
+	public function LoadAll()
+	{
+		$all = $this->find('all');
+		return $all;
+	}
 }
 ?>

@@ -476,6 +476,18 @@ class Sublet extends AppModel {
 	 	return $subletQuery;
 	}
 
+	public function getSubletDataByMarkerId($marker_id)
+	{
+		$conditions = array('Sublet.marker_id' => $marker_id);
+
+	 	$subletQuery = $this->find('all', array(
+	                     'conditions' => $conditions
+	  	));
+	  	CakeLog::write("loadMarkerData",  print_r($subletQuery, true));
+
+	 	return $subletQuery;
+	}
+
 	public function getBuildingTypeId($buildingString)
 	{
 		$buildingTypes = Cache::read("buildingTypes");

@@ -3,7 +3,7 @@
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
-  public $uses = array('Marker', 'Listing', 'School', 'Sublet');
+  public $uses = array('Marker', 'Listing', 'School', 'Sublet', 'BuildingType', 'BathroomType');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -12,6 +12,7 @@ class MapController extends AppController {
     $this->Auth->allow('sublet');
     $this->Auth->allow('InitFilterValues');
     $this->Auth->allow('ViewListing');
+    $this->Auth->allow('LoadTypeTables');
   }
 
   public function index() {	
@@ -50,6 +51,16 @@ class MapController extends AppController {
     $markers = $this->Marker->getAllMarkers($target_lat_long);
     $this->layout = 'ajax';
     $this->set('response', $markers);
+  }
+
+  public function LoadTypeTables()
+  {
+    $buildings = $this->BuildingType->LoadAll();
+    $bathrooms = $this->BathroomType->LoadAll();
+    $response = array();
+    array_push($response, $buildings, $bathrooms);
+    $this->layout = 'ajax';
+    $this->set('response', json_encode($response));
   }
 
   public function InitFilterValues()
