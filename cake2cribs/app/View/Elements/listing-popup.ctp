@@ -1,6 +1,6 @@
 <?= $this->Html->css('/less/listing-popup.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div class="listing-popup modal">
+<div class="listing-popup modal hide fade">
 	<div class="modal-header">
 		<i class="title">Willow Tree Apartments</i>
 		<div class="btn-group">
@@ -9,7 +9,7 @@
 			<button type="button" id="contact-btn" class="btn">Contact</button>
 			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large"></i></button>
 		</div>
-		<a href=""><div id="modal-close-button"></div></a>
+		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div class="photo-region">
 		<div id="main-photo" style="background-image:url(/img/landing/house1.jpg);"></div>

@@ -22,7 +22,7 @@
 			<br>
 			<i class="icon-building"></i><i class="bold-text">House</i>
 			<div class="extended-buttons">
-				<a href=""><i class="icon-plus"></i></a>
+				<a href="#" onclick="A2Cribs.Map.ListingPopup.Open(1)"><i class="icon-plus"></i></a>
 				<a href=""><i class="icon-comments"></i></a>
 				<a href=""><i class="icon-heart"></i></a>
 			</div>
@@ -40,7 +40,7 @@
 			<br>
 			<i class="icon-building"></i><i class="bold-text">House</i>
 			<div class="extended-buttons">
-				<a href=""><i class="icon-plus"></i></a>
+				<a href="#" onclick="A2Cribs.Map.ListingPopup.Open(1)"><i class="icon-plus"></i></a>
 				<a href=""><i class="icon-comments"></i></a>
 				<a href=""><i class="icon-heart"></i></a>
 			</div>
@@ -60,9 +60,9 @@
 		<br>
 		<i class="icon-building"></i><i class="building-type bold-text">House</i>
 		<div class="extended-buttons">
-			<a href=""><i class="icon-plus"></i></a>
-			<a href=""><i class="icon-comments"></i></a>
-			<a href=""><i class="icon-heart"></i></a>
+			<a href="#" onclick="A2Cribs.Map.ListingPopup.Open(1)"><i class="icon-plus"></i></a>
+			<a href="#"><i class="icon-comments"></i></a>
+			<a href="#"><i class="icon-heart"></i></a>
 		</div>
 	</div>
 </div>
