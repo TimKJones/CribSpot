@@ -74,7 +74,7 @@
 						<td>&nbsp;&nbsp;Price: 
 							<div id="slider-div"><input id="price-filter" class="popover-btn tooltip-btn" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
 						<td>
-							&nbsp;&nbsp;Beds: <select>
+							&nbsp;&nbsp;Beds: <select id="bedsSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 								<option>1</option>
 								<option>2+</option>
 							</select>
