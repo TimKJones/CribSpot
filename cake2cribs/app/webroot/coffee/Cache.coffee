@@ -33,9 +33,11 @@ class A2Cribs.Cache
 		l.marker_id = parseInt l.marker_id
 		l.furnished_type_id = parseInt l.furnished_type_id
 		l.building_type_id = parseInt l.building_type_id
+		building = @BuildingIdToNameMap[l.building_type_id]
 		l.bathroom_type_id = parseInt l.bathroom_type_id
+		bathroom = @BathroomIdToNameMap[l.bathroom_type_id]
 		l.university_id = parseInt l.university_id
-		@IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, l.building_type_id, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, l.bathroom_type_id, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created)
+		@IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, building, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, bathroom, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created)
 
 	###
 	Add a list of subletIds to the MarkerIdToSubletIdsMap
