@@ -163,11 +163,11 @@
 				<option>Private</option>
 				<option>Public</option>
 			</select>
-			<input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="aptCheck">A/C</label>
-			<input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="aptCheck">Parking</label>
+			<input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="acCheck">A/C</label>
+			<input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="parkingCheck">Parking</label>
 		</div>
-		<input type="checkbox" id="utilitiesCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="aptCheck">Utilities Included</label>
-		<input type="checkbox" id="noSecurityDepositCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="aptCheck">No Security Deposit</label>
+		<input type="checkbox" id="utilitiesCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="utilitiesCheck">Utilities Included</label>
+		<input type="checkbox" id="noSecurityDepositCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="noSecurityDepositCheck">No Security Deposit</label>
 	</div>
 	<?= $this->element('slider'); ?>
 </div>
