@@ -70,10 +70,54 @@ Wrapper for google infobubble
 
 
     ClickBubble.prototype.SetContent = function(marker) {
-      var template;
+      var subletIds;
+      subletIds = A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId];
+      if (subletIds.length > 1) {
+        return this.setMultiContent(subletIds);
+      } else {
+        return this.setSingleContent(subletIds);
+      }
+    };
+
+    ClickBubble.prototype.setMultiContent = function(subletIds) {
+      var content, firstSublet, template;
       template = $(".click-bubble:first").wrap('<p/>').parent();
+      content = template.children();
+      firstSublet = A2Cribs.Cache.IdToSubletMap(subletIds[0]);
+      content.addClass("multi-listing");
+      content.removeClass("single-listing");
+      content.find('#listing-count').text(subletIds.length);
+      content.find('.sublet-name').text(firstSublet.Name);
       this.InfoBubble.setContent(template.html());
       return $(".click-bubble:first").unwrap();
+    };
+
+    ClickBubble.prototype.setSingleContent = function(subletId) {
+      var content, firstSublet, template;
+      template = $(".click-bubble:first").wrap('<p/>').parent();
+      content = template.children();
+      firstSublet = A2Cribs.Cache.IdToSubletMap[subletId[0]];
+      template.children().addClass("single-listing");
+      template.children().removeClass("multi-listing");
+      content.find('.sublet-name').text(firstSublet.Name);
+      content.find('.username').text("Evan");
+      content.find('.date-range').text(this.resolveDateRange(firstSublet.StartDate, firstSublet.EndDate));
+      content.find('.bed-price').text(firstSublet.PricePerBedroom);
+      content.find('.bed-count').text(firstSublet.Bedrooms);
+      content.find('.building-type').text(firstSublet.BuildingType);
+      this.InfoBubble.setContent(template.html());
+      return $(".click-bubble:first").unwrap();
+    };
+
+    ClickBubble.prototype.resolveDateRange = function(startDate, endDate) {
+      var endSplit, range, rmonth, startSplit;
+      rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+      range = "";
+      startSplit = startDate.split("-");
+      endSplit = endDate.split("-");
+      range += rmonth[startSplit[1] - 1];
+      range += " " + parseInt(startSplit[2]) + "-";
+      return range + rmonth[endSplit[1] - 1] + " " + parseInt(endSplit[2]);
     };
 
     return ClickBubble;

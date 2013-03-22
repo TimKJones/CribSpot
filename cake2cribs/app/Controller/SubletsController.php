@@ -216,8 +216,6 @@ class SubletsController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
 
-<<<<<<< HEAD
-
 /*
 Returns a list of marker_ids that will be visible based on the current filter settings.
 */
@@ -327,9 +325,5 @@ Returns json encoded data.
 
         return $sessionValues;
     }
-
-=======
-    
->>>>>>> b8eb1b2063bb33903e07537e0ee687f85dc6ede1
 }
 ?>

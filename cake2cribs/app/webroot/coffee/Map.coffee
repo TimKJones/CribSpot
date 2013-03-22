@@ -3,8 +3,7 @@ class A2Cribs.Map
 	Called when a marker is clicked
 	###
 	@MarkerClicked:(event) ->
-		#A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
-		A2Cribs.Map.ClickBubble.Open A2Cribs.Cache.IdToMarkerMap[this.id]
+		A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
 
 	@MarkerMouseIn: (event) ->
 		A2Cribs.Map.HoverBubble.Open A2Cribs.Cache.IdToMarkerMap[this.id]

@@ -64,7 +64,7 @@ class A2Cribs.Marker
 
 		@Clicked = true
 		visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
-		A2Cribs.Map.MarkerTooltip.Display visibleListingIds, @GMarker
+		A2Cribs.Map.ClickBubble.Open this
 
 	###
 	Load all listing data for this marker
@@ -74,7 +74,7 @@ class A2Cribs.Marker
 		@CorrectTooltipLocation()
 		if (@Clicked)
 			visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
-			A2Cribs.Map.MarkerTooltip.Display visibleListingIds, @GMarker
+			A2Cribs.Map.ClickBubble.Open this
 		else
 			$.ajax 
 				url: myBaseUrl + "Sublets/LoadMarkerData/" + @MarkerId

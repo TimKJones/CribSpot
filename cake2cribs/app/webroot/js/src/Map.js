@@ -11,7 +11,7 @@
 
 
     Map.MarkerClicked = function(event) {
-      return A2Cribs.Map.ClickBubble.Open(A2Cribs.Cache.IdToMarkerMap[this.id]);
+      return A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData();
     };
 
     Map.MarkerMouseIn = function(event) {
