@@ -106,6 +106,9 @@ class A2Cribs.Messages
 			@ParticipantInfoCache[user_data['id']] = user_data
 			@setParticipantInfoUI @ParticipantInfoCache[participantid]
 
+	@refreshParticpantVerification:()->
+		# @getVerificationInfo {'user1': 1249680161, 'user2': 1354124203}, 381100229, (verification_info)->
+
 	# Sets all the UI elements that pertain to the current conversation's participant
 	# Using the data provided in the participant object
 	@setParticipantInfoUI:(participant)->
@@ -113,6 +116,12 @@ class A2Cribs.Messages
 			.html(participant['first_name'])
 			.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
 		$("#participant_university").html participant['University']['name']
+		participant['facebook_id'] = 1354124203
+		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
+			if verification_info.verified_fb
+				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
+				console.log(url)
+				$('#p_pic').attr 'src', url
 
 	@loadConversation:(event)->
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
@@ -215,7 +224,7 @@ class A2Cribs.Messages
 			@CurrentParticipantID = participant_id
 			$('#listing_title').text directive.data.title
 
-	@init:()->
+	@init:(user)->
 		@ViewOnlyUnread = false
 		if not @CurrentConversation?
 			@CurrentConversation = -1
@@ -224,5 +233,6 @@ class A2Cribs.Messages
 		if not @CurrentParticipantID?
 			@CurrentParticipantID = -1
 		@ParticipantInfoCache = {}
+
 
 

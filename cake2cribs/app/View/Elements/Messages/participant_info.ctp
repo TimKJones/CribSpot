@@ -1,6 +1,6 @@
 <div class = 'shadowed' id = 'participant_info'>
 	<div id = 'participant_pic_large'>
-		<img class = '' src="/img/messages/archer_big.png"></img>
+		<img id = 'p_pic' src="https://graph.facebook.com/1249680161/picture?width=480"></img>
 	</div>
 	<p><a id = 'participant_name' class = 'from_participant'></a></p>
 	<p id = 'participant_university'><br></p>

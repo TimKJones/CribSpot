@@ -107,9 +107,20 @@
       });
     };
 
+    Messages.refreshParticpantVerification = function() {};
+
     Messages.setParticipantInfoUI = function(participant) {
       $(".from_participant").html(participant['first_name']).attr('href', myBaseUrl + 'users/view/' + participant['id']);
-      return $("#participant_university").html(participant['University']['name']);
+      $("#participant_university").html(participant['University']['name']);
+      participant['facebook_id'] = 1354124203;
+      return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
+        var url;
+        if (verification_info.verified_fb) {
+          url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
+          console.log(url);
+          return $('#p_pic').attr('src', url);
+        }
+      });
     };
 
     Messages.loadConversation = function(event) {
@@ -215,7 +226,7 @@
       }
     };
 
-    Messages.init = function() {
+    Messages.init = function(user) {
       this.ViewOnlyUnread = false;
       if (!(this.CurrentConversation != null)) {
         this.CurrentConversation = -1;

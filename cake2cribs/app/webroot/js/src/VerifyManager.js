@@ -11,156 +11,102 @@ Manager class for all verify functionality
 
     function VerifyManager() {}
 
-    VerifyManager.LoggedInUserFacebookUserId = null;
-
-    VerifyManager.FBIdOfListingOwner = 755192993;
-
-    VerifyManager.TwitterIdOfListingOwner = 381100229;
-
-    VerifyManager.EmailOfListingOwner = "timjones@umich.edu";
-
-    VerifyManager.VerificationData = {
-      TotalFriends: "?",
-      MutualFriends: "?",
-      TwitterFollowers: "?"
-    };
-
-    VerifyManager.GetUserVerifications = function() {
-      /*
-      		Get facebook user id of logged in user.
-      		Get facebook user id of user that listed current property.
-      		fql query for total facebook friends of user that listed property.
-      		fql query for total mutual friends between the two users.
-      */
-      return $.ajax({
-        url: myBaseUrl + "Verify/GetLoggedInUserFacebookId",
-        type: "GET",
-        success: A2Cribs.VerifyManager.GetLoggedInUserFacebookIdCallback
-      });
-    };
-
-    VerifyManager.GetLoggedInUserFacebookIdCallback = function(response) {
-      A2Cribs.VerifyManager.LoggedInUserFacebookUserId = response;
-      return A2Cribs.VerifyManager.FindTotalFriends();
-    };
-
-    VerifyManager.FindTotalFriends = function() {
-      var query;
-      query = 'SELECT friend_count FROM user WHERE uid = ' + A2Cribs.VerifyManager.FBIdOfListingOwner;
-      return FB.api({
-        method: 'fql.query',
-        query: query
-      }, A2Cribs.VerifyManager.FindTotalFriendsCallback);
-    };
-
-    VerifyManager.FindTotalFriendsCallback = function(response) {
-      if (response.error_code === void 0) {
-        A2Cribs.VerifyManager.VerificationData.TotalFriends = response[0].friend_count;
-      }
-      return A2Cribs.VerifyManager.FindMutualFriends();
-    };
-
-    VerifyManager.FindMutualFriends = function() {
-      var me, owner, query;
-      me = A2Cribs.VerifyManager.LoggedInUserFacebookUserId;
-      owner = A2Cribs.VerifyManager.FBIdOfListingOwner;
-      query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + me + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + owner + ')';
-      return FB.api({
-        method: 'fql.query',
-        query: query
-      }, A2Cribs.VerifyManager.FindMutualFriendsCallback);
-    };
-
-    VerifyManager.FindMutualFriendsCallback = function(response) {
-      if (response.error_code === void 0) {
-        A2Cribs.VerifyManager.VerificationData.MutualFriends = response.length;
-      }
-      return A2Cribs.VerifyManager.GetTwitterAndEmailData();
-    };
-
-    VerifyManager.GetTwitterAndEmailData = function() {
-      var email, id;
-      id = A2Cribs.VerifyManager.TwitterIdOfListingOwner;
-      email = A2Cribs.VerifyManager.EmailOfListingOwner;
-      return $.ajax({
-        url: myBaseUrl + "Verify/GetTwitterAndEmailData/" + id + "/" + email,
-        type: "GET",
-        success: A2Cribs.VerifyManager.GetTwitterAndEmailDataCallback
-      });
-    };
-
-    VerifyManager.GetTwitterAndEmailDataCallback = function(response) {
-      response = JSON.parse(response);
-      A2Cribs.VerifyManager.VerificationData.TwitterFollowers = response.followers;
-      A2Cribs.VerifyManager.VerificationData.SchoolVerifiedWithEmail = response.school;
-      return A2Cribs.VerifyManager.LoadVerificationDataComplete();
-    };
-
-    /*
-    	All verication data is now loaded into the object A2Cribs.VerifyManager.VerificationData.
-    */
-
-
-    VerifyManager.LoadVerificationDataComplete = function() {
-      var x;
-      return x = 5;
-    };
-
-    /*
-    		This function is used to see if the user is verified, and as well get some
-    		additional information about the relationship
-    		 between user1 and user2 (mutual friends & total friends)
-    
-    
-    		fb_ids is an object that {'user1': int or null, 'user2': int or null}
-    		the callback function takes a parameter data that 
-    		will have the form {'verified': boolean, 'total_friends': int or null, 'mutual_friends' int or null}
-    		
-    		Note: that total_friends is the total friends of user2
-    
-    		In context this structure will be cached client side for getting a users
-    		verification state.
-    */
-
-
-    VerifyManager.a = function() {
-      return this.getVerificationInfo({
-        'user1': 1249680161,
-        'user2': 1354124203
-      }, 381100229, this.samplecallback);
-    };
-
-    VerifyManager.getVerificationInfo = function(fb_ids, twitter_id, callback) {
-      var fb_data,
-        _this = this;
-      fb_data = {
-        verified: false,
-        mutual_friends: null,
-        total_friends: null
+    VerifyManager.init = function() {
+      this.my_verification_info = {
+        'facebook_id': 1249680161
       };
-      if (!(fb_ids.user1 != null)) {
-        callback(fb_data);
-        return;
-      }
-      return $.when(this.getMutalFriends(fb_ids), this.getTotalFriends(fb_ids.user2), this.GetTwitterFollowersCount(twitter_id)).then(function(mut_friends, tot_friends, tot_followers) {
-        return callback({
-          verified: true,
-          mutual_friends: mutual_friends,
-          total_friends: tot_friends,
-          twitter_followers: tot_followers
-        });
-      });
+      this.VerificationData = {};
+      return window.fbAsyncInit = function() {
+	    // init the FB JS SDK
+	    FB.init({
+	      appId      : '148187588666959', // App ID from the App Dashboard
+	      channelUrl : 'http://localhost/channel.html', // Channel File for x-domain communication
+	      status     : true, // check the login status upon init?
+	      cookie     : true, // set sessions cookies to allow your server to access the session?
+	      xfbml      : true  // parse XFBML tags on this page?
+	    });
+
+	    // Additional initialization code such as adding Event Listeners goes here
+
+	  };
+
+	  // Load the SDK's source Asynchronously
+	  // Note that the debug version is being actively developed and might 
+	  // contain some type checks that are overly strict. 
+	  // Please report such bugs using the bugs tool.
+	  (function(d, debug){
+	     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement('script'); js.id = id; js.async = true;
+	     js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
+	     ref.parentNode.insertBefore(js, ref);
+	   }(document, /*debug*/ false));
+
+	  function onLinkedInLoad() {
+	    IN.Event.on(IN, "auth", onLinkedInAuth);
+	  }
+
+	  function onLinkedInAuth() {
+	     IN.API.Profile("me").result(A2Cribs.FacebookManager.UpdateLinkedinLogin);
+	  };
     };
 
-    VerifyManager.getMutalFriends = function(fb_ids) {
+    /*    
+    	Returns a JQuery defered object. Example way to call the function is
+    
+    	@getVerificationFor(user).then (verification_info)->
+    	  # Do what you want with the data
+    
+    	the verification info object has the following key value pairs
+    	{
+    		'user_id': int
+    		'fb_id': int or null
+    		'tw_id': int or null
+    		'verified_email': bool,
+    		'verificed_edu': bool,
+    		'verified_fb': bool,
+    		'verified_tw': bool,
+    		'mutual_friends': int or null, #depends if the user is verified on fb and if you are verified on fb
+    		'total_friends': int or null, #depends on if the user is verified on fb
+    		'total_followers' int or null, #depends on if the user is verified ob tw
+    	}
+    
+    	You do not need to worry about caching the data as this function already provides this functionality
+    
+    	Jquery deferred      http://api.jquery.com/category/deferred-object/
+    */
+
+
+    VerifyManager.getVerificationFor = function(user_) {
+      var defered, user;
+      if (!(this.VerificationData[user_.id] != null)) {
+        defered = new $.Deferred();
+        user = user_;
+        this.VerificationData[user.id] = defered;
+        $.when(this.getTotalFriends(user), this.getMutalFriends(user)).done(function(tot_friends, mut_friends) {
+          var verification_info;
+          verification_info = {
+            'user_id': user.id,
+            'fb_id': user.facebook_id,
+            'verified_fb': tot_friends != null,
+            'mut_friends': mut_friends,
+            'tot_friends': tot_friends
+          };
+          return defered.resolve(verification_info);
+        });
+      }
+      return this.VerificationData[user_.id];
+    };
+
+    VerifyManager.getMutalFriends = function(user) {
       var defered, query;
-      query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user1 + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + fb_ids.user2 + ')';
       defered = new $.Deferred();
-      if ((fb_ids.user1 != null) && (fb_ids.user2 != null)) {
+      if ((this.my_verification_info.facebook_id != null) && (user.facebook_id != null)) {
+        query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + this.my_verification_info.facebook_id + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_id + ')';
         FB.api({
           method: 'fql.query',
           query: query
-        }, function(response) {
+        }, function(mut_friends_res) {
           return defered.resolve(mut_friends_res.length);
         });
         return defered.promise();
@@ -169,16 +115,16 @@ Manager class for all verify functionality
       }
     };
 
-    VerifyManager.getTotalFriends = function(fb_id) {
+    VerifyManager.getTotalFriends = function(user) {
       var defered, query;
-      query = 'SELECT friend_count FROM user WHERE uid = ' + fb_id;
       defered = new $.Deferred();
-      if (fb_id != null) {
+      if (user.facebook_id != null) {
+        query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_id;
         FB.api({
           method: 'fql.query',
           query: query
-        }, function(response) {
-          return defered.resolve(tot_friends_res[0].friend_count);
+        }, function(tot_friends_res) {
+          return defered.resolve(parseInt(tot_friends_res[0].friend_count));
         });
         return defered.promise();
       } else {

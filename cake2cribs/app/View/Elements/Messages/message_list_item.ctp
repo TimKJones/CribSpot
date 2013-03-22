@@ -1,7 +1,7 @@
 <!-- app/View/Elements/message_list_item.ctp -->
 <?php 
 	$msg_id = $message['Message']['message_id'];
-
+	die(debug($message));
 	$side = "left";
 	$pic = '/img/messages/archer_small.png';
 	if($user_id == $message['User']['id']){
