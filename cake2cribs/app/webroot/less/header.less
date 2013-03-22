@@ -28,6 +28,31 @@ body
 		text-decoration: none;
 		outline: 0;
 	}
+	.filter-btn
+	{
+		&:hover
+		{
+			background-position: 0 0;
+			-moz-transition: none;
+			-webkit-transition: none;
+			-o-transition: none;
+			transition: none;
+		}
+		&:active
+		{
+			background-color: whiteSmoke;
+			background-image: -moz-linear-gradient(top, white, hsl(0, 0%, 90%));
+			background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), to(hsl(0, 0%, 90%)));
+			background-image: -webkit-linear-gradient(top, white, hsl(0, 0%, 90%));
+			background-image: -o-linear-gradient(top, white, hsl(0, 0%, 90%));
+			background-image: linear-gradient(to bottom, white, hsl(0, 0%, 90%));
+			background-repeat: repeat-x;
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+		}
+	}
 	.middle-btn
 	{
 		height: 22px;

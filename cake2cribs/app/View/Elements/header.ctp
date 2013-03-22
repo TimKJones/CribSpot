@@ -63,7 +63,7 @@
 	</div>
 
 	<div id="expanded-filter" class="btn-group">
-		<div class="btn middle-btn">
+		<div class="btn middle-btn filter-btn">
 			<form>
 				<table>
 					<tr>
