@@ -3,8 +3,7 @@ class A2Cribs.Map
 	Called when a marker is clicked
 	###
 	@MarkerClicked:(event) ->
-		#A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
-		A2Cribs.Map.ClickBubble.Open A2Cribs.Cache.IdToMarkerMap[this.id]
+		A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
 
 	@MarkerMouseIn: (event) ->
 		A2Cribs.Map.HoverBubble.Open A2Cribs.Cache.IdToMarkerMap[this.id]
@@ -118,6 +117,7 @@ class A2Cribs.Map
 		@LoadTypeTables()
 		@ClickBubble = new A2Cribs.ClickBubble @GMap
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
+		@ListingPopup = new A2Cribs.ListingPopup()
 		A2Cribs.FilterManager.InitAddressSearch()
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()

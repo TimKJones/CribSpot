@@ -82,7 +82,7 @@
       }
       this.Clicked = true;
       visibleListingIds = FilterVisibleListings(A2Cribs.Cache.MarkerIdToSubletIdsMap[this.MarkerId]);
-      return A2Cribs.Map.MarkerTooltip.Display(visibleListingIds, this.GMarker);
+      return A2Cribs.Map.ClickBubble.Open(this);
     };
 
     /*
@@ -96,7 +96,7 @@
       this.CorrectTooltipLocation();
       if (this.Clicked) {
         visibleListingIds = FilterVisibleListings(A2Cribs.Cache.MarkerIdToSubletIdsMap[this.MarkerId]);
-        return A2Cribs.Map.MarkerTooltip.Display(visibleListingIds, this.GMarker);
+        return A2Cribs.Map.ClickBubble.Open(this);
       } else {
         return $.ajax({
           url: myBaseUrl + "Sublets/LoadMarkerData/" + this.MarkerId,

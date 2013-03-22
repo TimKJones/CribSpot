@@ -9,7 +9,7 @@
     */
 
     Map.MarkerClicked = function(event) {
-      return A2Cribs.Map.ClickBubble.Open(A2Cribs.Cache.IdToMarkerMap[this.id]);
+      return A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData();
     };
 
     Map.MarkerMouseIn = function(event) {
@@ -149,6 +149,7 @@
       this.LoadTypeTables();
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
+      this.ListingPopup = new A2Cribs.ListingPopup();
       A2Cribs.FilterManager.InitAddressSearch();
       A2Cribs.Map.InitBoundaries();
       return A2Cribs.MarkerTooltip.Init();
