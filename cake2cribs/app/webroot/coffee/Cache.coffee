@@ -40,11 +40,11 @@ class A2Cribs.Cache
 	Add a list of subletIds to the MarkerIdToSubletIdsMap
 	###
 	@CacheMarkerIdToSubletsList: (sublets) ->
-		A2Cribs.Map.MarkerIdToSubletIdsMap[sublets[0].Sublet.marker_id] = []
+		A2Cribs.Map.MarkerIdToSubletIdsMap[parseInt sublets[0].Sublet.marker_id] = []
 		for sublet in sublets
 			if (sublet == undefined)
 				continue
-			@MarkerIdToSubletIdsMap[sublet.Sublet.marker_id].push parseInt(sublet.Sublets.sublet_id)
+			@MarkerIdToSubletIdsMap[parseInt sublet.Sublet.marker_id].push parseInt(sublet.Sublets.sublet_id)
 
 	@CacheUniversity: (university) ->
 		if university == null
@@ -52,9 +52,52 @@ class A2Cribs.Cache
 		id = parseInt university.id
 		@IdToUniversityMap[id] = new A2Cribs.University(university.city, university.domain, university.name, university.state)
 
-	@CacheHoverData: (marker_id, hoverData) ->
-		###h = hoverData
-		@MarkerIdToHoverDataMap[marker_id] = new A2Cribs.HoverData(h.UnitType, @Beds, @Rent, @Duration)###
+	@CacheHoverData: (hoverDataList) ->
+		###
+		TODO: find min and max dates
+		###
+		marker_id = null
+		if hoverDataList[0] != null
+			marker_id = parseInt hoverDataList[0].Sublet.marker_id
+			if @IdToMarkerMap[marker_id] == undefined #Only cache for markers currently loaded on map.
+				return
+		else
+			return
+
+		numListings = hoverDataList.length
+		sublet = hoverDataList[0].Sublet
+		if sublet == null 
+			return
+
+		building_type_id = sublet.building_type_id
+		if building_type_id == null
+			return
+		building_type_id = parseInt	 building_type_id
+		unitType = @BuildingIdToNameMap[building_type_id]
+			
+		#find min and max for remaining fields
+		minBeds = parseInt sublet.number_bedrooms
+		maxBeds = parseInt sublet.number_bedrooms
+		minRent = parseInt sublet.price_per_bedroom
+		maxRent = parseInt sublet.price_per_bedroom
+		minDate = sublet.date_begin
+		maxDate = sublet.date_end
+
+		for hd in hoverDataList
+			sublet = hd.Sublet
+			building_type_id = parseInt sublet.building_type_id
+			beds = parseInt sublet.number_bedrooms
+			price = parseInt sublet.price_per_bedroom
+			if beds < minBeds
+				minBeds = beds
+			if beds > maxBeds 
+				maxBeds = beds
+			if price < minRent
+				minRent = price
+			if price > maxRent
+				maxRent = price
+		hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate)
+		@MarkerIdToHoverDataMap[marker_id] = hd
 
 	@CacheHousemates: (sublet_id, housemates) ->
 		if housemates == null
@@ -64,12 +107,12 @@ class A2Cribs.Cache
 		@SubletIdToHousemateIdsMap[sublet_id] = []
 		for h in housemates
 			h.id = parseInt h.id
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, h.type)
+			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, parseInt h.type)
 			@SubletIdToHousemateIdsMap[sublet_id].push h.id
 
 	@CacheMarker: (id, marker) ->
 		m = marker
-		@IdToMarkerMap[id] =  new A2Cribs.Marker(id, m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
+		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
 
 	###
 	Add sublet data to cache
