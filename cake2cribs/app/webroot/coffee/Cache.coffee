@@ -56,48 +56,56 @@ class A2Cribs.Cache
 		###
 		TODO: find min and max dates
 		###
-		marker_id = null
-		if hoverDataList[0] != null
-			marker_id = parseInt hoverDataList[0].Sublet.marker_id
-			if @IdToMarkerMap[marker_id] == undefined #Only cache for markers currently loaded on map.
-				return
-		else
-			return
-
-		numListings = hoverDataList.length
-		sublet = hoverDataList[0].Sublet
-		if sublet == null 
-			return
-
-		building_type_id = sublet.building_type_id
-		if building_type_id == null
-			return
-		building_type_id = parseInt	 building_type_id
-		unitType = @BuildingIdToNameMap[building_type_id]
-			
-		#find min and max for remaining fields
-		minBeds = parseInt sublet.number_bedrooms
-		maxBeds = parseInt sublet.number_bedrooms
-		minRent = parseInt sublet.price_per_bedroom
-		maxRent = parseInt sublet.price_per_bedroom
-		minDate = sublet.date_begin
-		maxDate = sublet.date_end
+		markerIdToHd = []
 
 		for hd in hoverDataList
-			sublet = hd.Sublet
-			building_type_id = parseInt sublet.building_type_id
-			beds = parseInt sublet.number_bedrooms
-			price = parseInt sublet.price_per_bedroom
-			if beds < minBeds
-				minBeds = beds
-			if beds > maxBeds 
-				maxBeds = beds
-			if price < minRent
-				minRent = price
-			if price > maxRent
-				maxRent = price
-		hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate)
-		@MarkerIdToHoverDataMap[marker_id] = hd
+			marker_id = null
+			if hd != null
+				marker_id = parseInt hoverDataList[0].Sublet.marker_id
+				if @IdToMarkerMap[marker_id] == undefined #Only cache for markers currently loaded on map.
+					continue
+				else
+					if markerIdToHd[marker_id] == undefined
+						markerIdToHd[marker_id] = []
+					markerIdToHd[marker_id].push hd
+			else
+				continue
+
+		for marker_id, hdList of markerIdToHd
+			numListings = hdList.length
+			sublet = hdList[0].Sublet
+			if sublet == undefined  || sublet == null
+				return
+
+			building_type_id = sublet.building_type_id
+			if building_type_id == null
+				return
+			building_type_id = parseInt	 building_type_id
+			unitType = @BuildingIdToNameMap[building_type_id]
+				
+			#find min and max for remaining fields
+			minBeds = parseInt sublet.number_bedrooms
+			maxBeds = parseInt sublet.number_bedrooms
+			minRent = parseInt sublet.price_per_bedroom
+			maxRent = parseInt sublet.price_per_bedroom
+			minDate = sublet.date_begin
+			maxDate = sublet.date_end
+
+			for hd in hdList
+				sublet = hd.Sublet
+				building_type_id = parseInt sublet.building_type_id
+				beds = parseInt sublet.number_bedrooms
+				price = parseInt sublet.price_per_bedroom
+				if beds < minBeds
+					minBeds = beds
+				if beds > maxBeds 
+					maxBeds = beds
+				if price < minRent
+					minRent = price
+				if price > maxRent
+					maxRent = price
+			hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate)
+			@MarkerIdToHoverDataMap[marker_id] = hd
 
 	@CacheHousemates: (sublet_id, housemates) ->
 		if housemates == null

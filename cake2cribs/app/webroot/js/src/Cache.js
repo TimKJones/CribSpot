@@ -78,40 +78,52 @@
       /*
       		TODO: find min and max dates
       */
-      var beds, building_type_id, hd, marker_id, maxBeds, maxDate, maxRent, minBeds, minDate, minRent, numListings, price, sublet, unitType, _i, _len;
-      marker_id = null;
-      if (hoverDataList[0] !== null) {
-        marker_id = parseInt(hoverDataList[0].Sublet.marker_id);
-        if (this.IdToMarkerMap[marker_id] === void 0) return;
-      } else {
-        return;
-      }
-      numListings = hoverDataList.length;
-      sublet = hoverDataList[0].Sublet;
-      if (sublet === null) return;
-      building_type_id = sublet.building_type_id;
-      if (building_type_id === null) return;
-      building_type_id = parseInt(building_type_id);
-      unitType = this.BuildingIdToNameMap[building_type_id];
-      minBeds = parseInt(sublet.number_bedrooms);
-      maxBeds = parseInt(sublet.number_bedrooms);
-      minRent = parseInt(sublet.price_per_bedroom);
-      maxRent = parseInt(sublet.price_per_bedroom);
-      minDate = sublet.date_begin;
-      maxDate = sublet.date_end;
+      var beds, building_type_id, hd, hdList, markerIdToHd, marker_id, maxBeds, maxDate, maxRent, minBeds, minDate, minRent, numListings, price, sublet, unitType, _i, _j, _len, _len2;
+      markerIdToHd = [];
       for (_i = 0, _len = hoverDataList.length; _i < _len; _i++) {
         hd = hoverDataList[_i];
-        sublet = hd.Sublet;
-        building_type_id = parseInt(sublet.building_type_id);
-        beds = parseInt(sublet.number_bedrooms);
-        price = parseInt(sublet.price_per_bedroom);
-        if (beds < minBeds) minBeds = beds;
-        if (beds > maxBeds) maxBeds = beds;
-        if (price < minRent) minRent = price;
-        if (price > maxRent) maxRent = price;
+        marker_id = null;
+        if (hd !== null) {
+          marker_id = parseInt(hoverDataList[0].Sublet.marker_id);
+          if (this.IdToMarkerMap[marker_id] === void 0) {
+            continue;
+          } else {
+            if (markerIdToHd[marker_id] === void 0) markerIdToHd[marker_id] = [];
+            markerIdToHd[marker_id].push(hd);
+          }
+        } else {
+          continue;
+        }
       }
-      hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate);
-      return this.MarkerIdToHoverDataMap[marker_id] = hd;
+      for (marker_id in markerIdToHd) {
+        hdList = markerIdToHd[marker_id];
+        numListings = hdList.length;
+        sublet = hdList[0].Sublet;
+        if (sublet === void 0 || sublet === null) return;
+        building_type_id = sublet.building_type_id;
+        if (building_type_id === null) return;
+        building_type_id = parseInt(building_type_id);
+        unitType = this.BuildingIdToNameMap[building_type_id];
+        minBeds = parseInt(sublet.number_bedrooms);
+        maxBeds = parseInt(sublet.number_bedrooms);
+        minRent = parseInt(sublet.price_per_bedroom);
+        maxRent = parseInt(sublet.price_per_bedroom);
+        minDate = sublet.date_begin;
+        maxDate = sublet.date_end;
+        for (_j = 0, _len2 = hdList.length; _j < _len2; _j++) {
+          hd = hdList[_j];
+          sublet = hd.Sublet;
+          building_type_id = parseInt(sublet.building_type_id);
+          beds = parseInt(sublet.number_bedrooms);
+          price = parseInt(sublet.price_per_bedroom);
+          if (beds < minBeds) minBeds = beds;
+          if (beds > maxBeds) maxBeds = beds;
+          if (price < minRent) minRent = price;
+          if (price > maxRent) maxRent = price;
+        }
+        hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate);
+        this.MarkerIdToHoverDataMap[marker_id] = hd;
+      }
     };
 
     Cache.CacheHousemates = function(sublet_id, housemates) {
