@@ -43,7 +43,7 @@ class A2Cribs.FavoritesManager
 
 	@InitializeFavorites: (favoritesList) ->
 		favorites = JSON.parse favoritesList
-		A2Cribs.Map.CacheListings favorites
+		A2Cribs.Map.CacheSublets favorites
 		for favorite in favorites
 			@_insertFavoriteCache favorite.Listing.listing_id
 			@_insertIntoFavoriteDiv favorite.Listing.listing_id
@@ -63,17 +63,17 @@ class A2Cribs.FavoritesManager
 	###
 	Inserts the recent favorite into the favorites tab
 	###
-	@_insertIntoFavoriteDiv: (listing_id) ->
+	@_insertIntoFavoriteDiv: (sublet_id) ->
 		if @FavoritesCache.size is 1
 			$('#noFavorites').hide()
 
-		listing = A2Cribs.Map.IdToListingMap[listing_id]
-		marker = A2Cribs.Map.IdToMarkerMap[listing.MarkerId]
+		sublet = A2Cribs.Map.IdToSubletMap[sublet_id]
+		marker = A2Cribs.Map.IdToMarkerMap[sublet.MarkerId]
 		title = if marker.Title then marker.Title else marker.Address
 		template = $ '#favoriteTemplate'
-		template.find('.favoriteDiv').attr id: "favoriteDiv" + listing_id
+		template.find('.favoriteDiv').attr id: "favoriteDiv" + sublet_id
 		template.find('.favoritesAddress').html title
-		template.find('.removeButton').attr onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + listing_id + ")"
+		template.find('.removeButton').attr onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + sublet_id + ")"
 		template.find('a').attr href: listing.Url
 		template.find('#price').html if listing.Rent then '$' + listing.Rent else "???"
 		template.find('#beds').html listing.Beds + if listing.Beds > 1 then " Beds" else " Bed"

@@ -1,8 +1,10 @@
 class A2Cribs.SubletAdd
 
 	@setupUI:() ->
+
 		$('#goToStep2').click (e) =>
 			e.preventDefault()
+			#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
 			@subletAddStep1() 
 
 
@@ -15,18 +17,20 @@ class A2Cribs.SubletAdd
 				university: $('#universitiesInput').val()
 				building_type_id: $('#SubletBuildingTypeId').val()
 				name: $('#SubletName').val()
+				latitude: $('#updatedLat').text()
+				longitude: $('#updatedLong').text()
 			}
 			
 		}
 		$.post url, request_data, (response) =>
-			console.log request_data
-			console.log response
+			console.log(response)
 			data = JSON.parse response
 			console.log data
-			if data.registerStatus == 1
-				window.location.href= '/dashboard'
-			else
-				$('#registerStatus').empty()
+			#window.location.href= '/dashboard'
+			#if data.registerStatus == 1
+			#	window.location.href= '/dashboard'
+			#else
+			#	$('#registerStatus').empty()
 			
 
 

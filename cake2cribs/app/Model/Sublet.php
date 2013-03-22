@@ -215,6 +215,12 @@ class Sublet extends AppModel {
 				'message' => 'Must be between 1 and 1000 characters'
 				)
 			),
+		'short_description' => array(
+			'between' => array(
+				'rule' => array('between',1,160),
+				'message' => 'Must be between 1 and 160 characters'
+				)
+			),
 		
 		//section for numberBathrooms
 		//naturalnumber, required.
@@ -302,6 +308,7 @@ class Sublet extends AppModel {
 		'flexible_dates' => 'boolean',
 		'ac' => 'boolean',
 		'parking' => 'boolean',
+		'is_finished' => 'boolean',
 		'furnished_type_id' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -476,6 +483,42 @@ class Sublet extends AppModel {
 	  	));
 
 	 	return $subletQuery;
+	}
+
+	public function getSubletDataByMarkerId($marker_id)
+	{
+		$conditions = array('Sublet.marker_id' => $marker_id);
+
+		$University = ClassRegistry::init("University");
+		$university_verified = $University->getUniversityFromEmail('test@umich.edu');
+	 	$subletQuery = $this->find('all', array(
+	                     'conditions' => $conditions, 
+	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.facebook_userid', 'Housemate')
+	  	));
+
+	  	for ($i = 0; $i < count($subletQuery); $i++)
+	  	{
+	  		unset($subletQuery[$i]['User']['email']);
+	  		//$email = array('verified_university' => $university_verified);
+	  		$subletQuery[$i]['User']['verified_university'] = $university_verified;
+	  		$User = ClassRegistry::init("User");
+	  		$twitter_followers = $User->getTwitterFollowersCount($subletQuery[$i]['User']['id']);
+	  		//$followers_array = array('twitter_followers' => $twitter_followers);
+	  		$subletQuery[$i]['User']['twitter_followers'] = $twitter_followers;
+	  		unset($subletQuery[$i]['User']['id']);
+	  	}
+	  	
+	  	CakeLog::write("loadMarkerData",  print_r($subletQuery, true));
+
+	 	return $subletQuery;
+	}
+
+	public function LoadHoverData()
+	{
+		$this->contain();
+		$hover_data = $this->find('all', array(
+			'fields' => array('marker_id', 'building_type_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
+		return $hover_data;
 	}
 
 	public function getBuildingTypeId($buildingString)

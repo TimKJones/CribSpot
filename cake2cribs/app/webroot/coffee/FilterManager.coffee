@@ -42,32 +42,32 @@ class A2Cribs.FilterManager
 			other = $("#otherCheck").is(':checked')
 			ajaxData = "unit_type_other=" + other
 		else if event.id == "maleCheck"
-			other = $("#maleCheck").is(':checked')
-			ajaxData = "male=" + other
+			male = $("#maleCheck").is(':checked')
+			ajaxData = "male=" + male
 		else if event.id == "femaleCheck"
-			other = $("#femaleCheck").is(':checked')
-			ajaxData = "female=" + other
+			female = $("#femaleCheck").is(':checked')
+			ajaxData = "female=" + female
 		else if event.id == "studentsOnlyCheck"
-			other = $("#studentsOnlyCheck").is(':checked')
-			ajaxData = "students_only=" + other
+			students_only = $("#studentsOnlyCheck").is(':checked')
+			ajaxData = "students_only=" + students_only
 		else if event.id == "gradCheck"
-			other = $("#gradCheck").is(':checked')
-			ajaxData = "grad=" + other
+			grad = $("#gradCheck").is(':checked')
+			ajaxData = "grad=" + grad
 		else if event.id == "undergradCheck"
-			other = $("#undergradCheck").is(':checked')
-			ajaxData = "undergrad=" + other
+			undergrad = $("#undergradCheck").is(':checked')
+			ajaxData = "undergrad=" + undergrad
 		else if event.id == "acCheck"
-			other = $("#acCheck").is(':checked')
-			ajaxData = "ac=" + other
+			ac = $("#acCheck").is(':checked')
+			ajaxData = "ac=" + ac
 		else if event.id == "parkingCheck"
-			other = $("#parkingCheck").is(':checked')
-			ajaxData = "parking=" + other
+			parking = $("#parkingCheck").is(':checked')
+			ajaxData = "parking=" + parking
 		else if event.id == "utilitiesCheck"
-			other = $("#utilitiesCheck").is(':checked')
-			ajaxData = "utilities_included=" + other
+			utilities = $("#utilitiesCheck").is(':checked')
+			ajaxData = "utilities_included=" + utilities
 		else if event.id == "noSecurityDepositCheck"
-			other = $("#noSecurityDepositCheck").is(':checked')
-			ajaxData = "no_security_deposit=" + other
+			no_security_deposit = $("#noSecurityDepositCheck").is(':checked')
+			ajaxData = "no_security_deposit=" + no_security_deposit
 
 		if (event.target) #event is not null only when when it corresponds to a slider-value-changed event
 			if (event.target.id == "rentSlider")

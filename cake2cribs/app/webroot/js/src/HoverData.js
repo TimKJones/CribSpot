@@ -3,11 +3,15 @@
 
   A2Cribs.HoverData = (function() {
 
-    function HoverData(UnitType, Beds, Rent, Duration) {
+    function HoverData(NumListings, UnitType, MinBeds, MaxBeds, MinRent, MaxRent, MinDate, MaxDate) {
+      this.NumListings = NumListings;
       this.UnitType = UnitType;
-      this.Beds = Beds;
-      this.Rent = Rent;
-      this.Duration = Duration;
+      this.MinBeds = MinBeds;
+      this.MaxBeds = MaxBeds;
+      this.MinRent = MinRent;
+      this.MaxRent = MaxRent;
+      this.MinDate = MinDate;
+      this.MaxDate = MaxDate;
     }
 
     return HoverData;

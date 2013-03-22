@@ -1,0 +1,27 @@
+input[type='checkbox']
+{
+	opacity: 0;
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	margin-left: 5px;
+}
+
+input[type='checkbox'] + label
+{
+	margin: 0;
+	clear: none;
+
+	padding: 0;
+	cursor: pointer;
+
+	background-image: url(/img/checkbox.png);
+	background-repeat: no-repeat;
+	background-position: 0 -66px;
+}
+
+input[type='checkbox']:checked + label
+{
+	background-position: 0 0;
+}

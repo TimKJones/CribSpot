@@ -11,57 +11,15 @@
 
 
     Map.MarkerClicked = function(event) {
-      return A2Cribs.Map.IdToMarkerMap[this.id].LoadMarkerData();
+      return A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData();
     };
 
-    /*
-    	Add list of listings to cache
-    */
-
-
-    Map.CacheListings = function(listings) {
-      var l, listing, _i, _len, _results;
-      A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = [];
-      _results = [];
-      for (_i = 0, _len = listings.length; _i < _len; _i++) {
-        listing = listings[_i];
-        if (listing === void 0) {
-          continue;
-        }
-        l = listing.Listing;
-        l.listing_id = parseInt(l.listing_id);
-        _results.push(A2Cribs.Map.IdToListingMap[l.listing_id] = new A2Cribs.Listing(l.listing_id, l.marker_id, l.available, l.lease_range, l.unit_type, l.unit_description, l.beds, l.baths, l.rent, l.electric, l.water, l.heat, l.air, l.parking, l.furnished, l.url, l.realtor_id));
-      }
-      return _results;
+    Map.MarkerMouseIn = function(event) {
+      return A2Cribs.Map.HoverBubble.Open(A2Cribs.Cache.IdToMarkerMap[this.id]);
     };
 
-    /*
-    	Add a realtor to the cache
-    */
-
-
-    Map.CacheRealtor = function(realtor) {
-      realtor.realtor_id = parseInt(realtor.realtor_id);
-      return A2Cribs.Map.IdToRealtorMap[parseInt(realtor.realtor_id)] = new A2Cribs.Realtor(realtor.realtor_id, realtor.company, realtor.email);
-    };
-
-    /*
-    	Add a list of listingIds to the MarkerIdToListingIds map
-    */
-
-
-    Map.CacheMarkerIdToListingsList = function(listings) {
-      var listing, _i, _len, _results;
-      A2Cribs.Map.MarkerIdToListingIdsMap[listings[0].Listing.marker_id] = [];
-      _results = [];
-      for (_i = 0, _len = listings.length; _i < _len; _i++) {
-        listing = listings[_i];
-        if (listing === void 0) {
-          continue;
-        }
-        _results.push(A2Cribs.Map.MarkerIdToListingIdsMap[listing.Listing.marker_id].push(parseInt(listing.Listing.listing_id)));
-      }
-      return _results;
+    Map.MarkerMouseOut = function(event) {
+      return A2Cribs.Map.HoverBubble.Close();
     };
 
     /*
@@ -71,11 +29,13 @@
 
     Map.AddMarker = function(m) {
       var id;
-      id = parseInt(m["marker_id"], 10);
-      this.IdToMarkerMap[id] = new A2Cribs.Marker(id, m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude);
-      this.GMarkerClusterer.addMarker(this.IdToMarkerMap[id].GMarker);
-      google.maps.event.addListener(this.IdToMarkerMap[id].GMarker, 'click', this.MarkerClicked);
-      return A2Cribs.Map.AddressToMarkerIdMap[m['address']] = m['marker_id'];
+      id = parseInt(m.marker_id, 10);
+      A2Cribs.Cache.CacheMarker(id, m);
+      this.GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker);
+      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'click', this.MarkerClicked);
+      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseover', this.MarkerMouseIn);
+      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseout', this.MarkerMouseOut);
+      return A2Cribs.Cache.AddressToMarkerIdMap[m.address] = parseInt(m.marker_id);
     };
 
     /*
@@ -84,14 +44,13 @@
 
 
     Map.InitializeMarkers = function(markerList) {
-      var decodedMarkerList, marker, _i, _len, _results;
+      var decodedMarkerList, marker, _i, _len;
       decodedMarkerList = JSON.parse(markerList);
-      _results = [];
       for (_i = 0, _len = decodedMarkerList.length; _i < _len; _i++) {
         marker = decodedMarkerList[_i];
-        _results.push(this.AddMarker(marker["Marker"]));
+        this.AddMarker(marker.Marker);
       }
-      return _results;
+      return this.LoadHoverData();
     };
 
     /*
@@ -142,11 +101,6 @@
     Map.Init = function(school_id, latitude, longitude) {
       var mcOptions, style;
       this.CurentSchoolId = school_id;
-      this.IdToListingMap = [];
-      this.IdToRealtorMap = [];
-      this.MarkerIdToListingIdsMap = [];
-      this.IdToMarkerMap = [];
-      this.AddressToMarkerIdMap = [];
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
       style = [
         {
@@ -199,16 +153,52 @@
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
       this.GMarkerClusterer.ignoreHidden_ = true;
       this.LoadMarkers();
-      this.MarkerTooltip = new A2Cribs.MarkerTooltip(this.GMap);
+      this.LoadTypeTables();
+      this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
+      this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
+      this.ListingPopup = new A2Cribs.ListingPopup();
       A2Cribs.FilterManager.InitAddressSearch();
       A2Cribs.Map.InitBoundaries();
       return A2Cribs.MarkerTooltip.Init();
     };
 
-    Map.UpdateMarkersCache = function() {
+    Map.LoadTypeTables = function() {
       return $.ajax({
-        url: myBaseUrl + "Markers/UpdateCache"
+        url: myBaseUrl + "Map/LoadTypeTables",
+        type: "POST",
+        success: this.LoadTypeTablesCallback
       });
+    };
+
+    Map.LoadHoverData = function() {
+      return $.ajax({
+        url: myBaseUrl + "Map/LoadHoverData",
+        type: "POST",
+        success: this.LoadHoverDataCallback
+      });
+    };
+
+    Map.LoadHoverDataCallback = function(response) {
+      var hdList;
+      hdList = JSON.parse(response);
+      return A2Cribs.Cache.CacheHoverData(hdList);
+    };
+
+    Map.LoadTypeTablesCallback = function(types) {
+      var bathrooms, buildings, type, _i, _j, _len, _len1, _results;
+      types = JSON.parse(types);
+      buildings = types[0];
+      bathrooms = types[1];
+      for (_i = 0, _len = buildings.length; _i < _len; _i++) {
+        type = buildings[_i];
+        A2Cribs.Cache.BuildingIdToNameMap[parseInt(type.BuildingType.id)] = type.BuildingType.name;
+      }
+      _results = [];
+      for (_j = 0, _len1 = bathrooms.length; _j < _len1; _j++) {
+        type = bathrooms[_j];
+        _results.push(A2Cribs.Cache.BathroomIdToNameMap[parseInt(type.BathroomType.id)] = type.BathroomType.name);
+      }
+      return _results;
     };
 
     /*

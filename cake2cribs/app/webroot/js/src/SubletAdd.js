@@ -21,20 +21,16 @@
         Sublet: {
           university: $('#universitiesInput').val(),
           building_type_id: $('#SubletBuildingTypeId').val(),
-          name: $('#SubletName').val()
+          name: $('#SubletName').val(),
+          latitude: $('#updatedLat').text(),
+          longitude: $('#updatedLong').text()
         }
       };
       return $.post(url, request_data, function(response) {
         var data;
-        console.log(request_data);
         console.log(response);
         data = JSON.parse(response);
-        console.log(data);
-        if (data.registerStatus === 1) {
-          return window.location.href = '/dashboard';
-        } else {
-          return $('#registerStatus').empty();
-        }
+        return console.log(data);
       });
     };
 

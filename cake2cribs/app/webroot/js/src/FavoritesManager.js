@@ -63,7 +63,7 @@ Call functions using FavoritesManager.FunctionName()
     FavoritesManager.InitializeFavorites = function(favoritesList) {
       var favorite, favorites, _i, _len, _results;
       favorites = JSON.parse(favoritesList);
-      A2Cribs.Map.CacheListings(favorites);
+      A2Cribs.Map.CacheSublets(favorites);
       _results = [];
       for (_i = 0, _len = favorites.length; _i < _len; _i++) {
         favorite = favorites[_i];
@@ -92,21 +92,21 @@ Call functions using FavoritesManager.FunctionName()
     */
 
 
-    FavoritesManager._insertIntoFavoriteDiv = function(listing_id) {
-      var content, listing, marker, template, title;
+    FavoritesManager._insertIntoFavoriteDiv = function(sublet_id) {
+      var content, marker, sublet, template, title;
       if (this.FavoritesCache.size === 1) {
         $('#noFavorites').hide();
       }
-      listing = A2Cribs.Map.IdToListingMap[listing_id];
-      marker = A2Cribs.Map.IdToMarkerMap[listing.MarkerId];
+      sublet = A2Cribs.Map.IdToSubletMap[sublet_id];
+      marker = A2Cribs.Map.IdToMarkerMap[sublet.MarkerId];
       title = marker.Title ? marker.Title : marker.Address;
       template = $('#favoriteTemplate');
       template.find('.favoriteDiv').attr({
-        id: "favoriteDiv" + listing_id
+        id: "favoriteDiv" + sublet_id
       });
       template.find('.favoritesAddress').html(title);
       template.find('.removeButton').attr({
-        onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + listing_id + ")"
+        onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + sublet_id + ")"
       });
       template.find('a').attr({
         href: listing.Url

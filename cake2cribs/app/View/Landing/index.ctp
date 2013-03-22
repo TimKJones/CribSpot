@@ -70,7 +70,7 @@
 	<div id="search" class="input-append">
 		<form id="school-form">
 			<input id="search-text" class="typeahead" type="text" autocomplete="off">
-			<a href="" onclick="A2Cribs.Landing.Submit()" id="search-btn" class="btn add-on"><i class="icon-search icon-large"></i></a>
+			<button type="submit" id="search-btn" class="btn add-on"><i class="icon-search icon-large"></i></button>
 		</form>
 
 	</div>
