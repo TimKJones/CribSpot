@@ -39,8 +39,17 @@ class University extends AppModel {
 		$id = $this->find('first', array(
 			'conditions' => array('University.name' => $school_name),
 			'fields' => 	array('id')));
-		CakeLog::write("fuckEvan", $id['University']['id']);
 		return $id['University']['id'];
+	}
+
+	public function getUniversityFromEmail($email)
+	{
+		$domain = substr($email, strrpos($email, '@') + 1);
+		$university = $this->find('first', array(
+			'conditions' => array('University.domain' => $domain))
+		);
+
+		return $university['University']['name'];
 	}
 }
 ?>

@@ -234,11 +234,8 @@ Returns json encoded data.
 */
     public function LoadMarkerData($marker_id)
     {
-        CakeLog::write("loadMarkerData", "marker_id = " . $marker_id);
         $markerListingsData = $this->Sublet->getSubletDataByMarkerId($marker_id);
-        
         $markerListingsData = json_encode($markerListingsData);
-
         $this->layout = 'ajax';
         $this->set('response', $markerListingsData);
 

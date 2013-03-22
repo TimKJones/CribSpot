@@ -5,6 +5,7 @@ class A2Cribs.Cache
 	@IdToUniversityMap = []
 	@IdToHousematesMap = []
 	@SubletIdToHousemateIdsMap = []
+	@SubletIdToOwnerMap = []
 	@MarkerIdToHoverDataMap = []
 	@MarkerIdToSubletIdsMap = [] #maps marker ids to list of sublet_ids
 							#TODO: Set a maximum size for each cache.
@@ -122,6 +123,10 @@ class A2Cribs.Cache
 		m = marker
 		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
 
+	@CacheSubletOwner: (sublet_id, user) ->
+		owner = new A2Cribs.SubletOwner(user.first_name, user.facebook_userid, user.verified_university, user.twitter_followers)
+		@SubletIdToOwnerMap[sublet_id] = owner
+
 	###
 	Add sublet data to cache
 	###
@@ -135,4 +140,5 @@ class A2Cribs.Cache
 			sublet = markerData.Sublet
 			A2Cribs.Cache.CacheSublet sublet
 			A2Cribs.Cache.CacheHousemates sublet.id, markerData.Housemate
-			A2Cribs.Cache.CacheUniversity markerData.University
+		#	A2Cribs.Cache.CacheUniversity markerData.University
+			A2Cribs.Cache.CacheSubletOwner parseInt(sublet.id), markerData.User

@@ -14,6 +14,8 @@
 
     Cache.SubletIdToHousemateIdsMap = [];
 
+    Cache.SubletIdToOwnerMap = [];
+
     Cache.MarkerIdToHoverDataMap = [];
 
     Cache.MarkerIdToSubletIdsMap = [];
@@ -147,6 +149,12 @@
       return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude);
     };
 
+    Cache.CacheSubletOwner = function(sublet_id, user) {
+      var owner;
+      owner = new A2Cribs.SubletOwner(user.first_name, user.facebook_userid, user.verified_university, user.twitter_followers);
+      return this.SubletIdToOwnerMap[sublet_id] = owner;
+    };
+
     /*
     	Add sublet data to cache
     */
@@ -163,7 +171,7 @@
         sublet = markerData.Sublet;
         A2Cribs.Cache.CacheSublet(sublet);
         A2Cribs.Cache.CacheHousemates(sublet.id, markerData.Housemate);
-        _results.push(A2Cribs.Cache.CacheUniversity(markerData.University));
+        _results.push(A2Cribs.Cache.CacheSubletOwner(parseInt(sublet.id), markerData.User));
       }
       return _results;
     };

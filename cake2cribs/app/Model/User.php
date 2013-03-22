@@ -4,7 +4,7 @@ class User extends AppModel {
 	public $hasMany = array(
 		'Sublet' => array(
 			'className' => 'Sublet',
-			'foreignKey' => 'id'
+			'foreignKey' => 'user_id'
 		)
 	);
 	public $belongsTo = 'University'; 	
@@ -166,6 +166,7 @@ class User extends AppModel {
 
 		$twitter_data = array();
 		array_push($twitter_data, $twitter_auth_token, $twitter_auth_token_secret);
+		return 10;
 		return $twitter_data;
 	}
 
