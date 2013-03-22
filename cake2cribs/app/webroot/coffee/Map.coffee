@@ -15,7 +15,7 @@ class A2Cribs.Map
 	Add a marker to the map
 	###
 	@AddMarker:(m) ->
-		id = parseInt(m["marker_id"], 10)
+		id = parseInt(m.marker_id, 10)
 		A2Cribs.Cache.CacheMarker id, m
 		#@VisibleMarkers.push(@IdToMarkerMap[id].GMarker)
 		@GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker)
@@ -30,8 +30,10 @@ class A2Cribs.Map
 	@InitializeMarkers:(markerList) ->
 		decodedMarkerList = JSON.parse markerList
 		for marker in decodedMarkerList
-			@AddMarker marker["Marker"]
+			@AddMarker marker.Marker
 			#handle onClick
+
+		@LoadHoverData()
 
 	###
 	Load all markers from Markers table
@@ -125,6 +127,16 @@ class A2Cribs.Map
 			url: myBaseUrl + "Map/LoadTypeTables"
 			type: "POST"
 			success: @LoadTypeTablesCallback
+
+	@LoadHoverData: ->
+		$.ajax 
+			url: myBaseUrl + "Map/LoadHoverData"
+			type: "POST"
+			success: @LoadHoverDataCallback
+
+	@LoadHoverDataCallback: (response) ->
+		hdList = JSON.parse response
+		A2Cribs.Cache.CacheHoverData hdList
 
 	@LoadTypeTablesCallback: (types) ->
 		types = JSON.parse types

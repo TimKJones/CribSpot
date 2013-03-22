@@ -13,6 +13,7 @@ class MapController extends AppController {
     $this->Auth->allow('InitFilterValues');
     $this->Auth->allow('ViewListing');
     $this->Auth->allow('LoadTypeTables');
+    $this->Auth->allow('LoadHoverData');
   }
 
 	public function index() {	
@@ -95,4 +96,12 @@ class MapController extends AppController {
 		$this->layout = 'ajax';
 		$this->set('response', $markers);
 	}
+
+  public function LoadHoverData()
+  {
+    $hover_data = $this->Sublet->LoadHoverData();
+    $this->layout = 'ajax';
+    $response = json_encode($hover_data);
+    $this->set("response", $response);
+  }
 }

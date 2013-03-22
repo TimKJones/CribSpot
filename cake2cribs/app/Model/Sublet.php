@@ -497,6 +497,14 @@ class Sublet extends AppModel {
 	 	return $subletQuery;
 	}
 
+	public function LoadHoverData()
+	{
+		$this->contain();
+		$hover_data = $this->find('all', array(
+			'fields' => array('marker_id', 'building_type_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
+		return $hover_data;
+	}
+
 	public function getBuildingTypeId($buildingString)
 	{
 		$buildingTypes = Cache::read("buildingTypes");
