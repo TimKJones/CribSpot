@@ -159,9 +159,9 @@
 	<div id='more-popover'>
 		<div class="top-row">
 			<label>Bathroom</label>
-			<select>
+			<select id="bathSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 				<option>Private</option>
-				<option>Public</option>
+				<option>Shared</option>
 			</select>
 			<input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="acCheck">A/C</label>
 			<input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="parkingCheck">Parking</label>
@@ -193,9 +193,11 @@
             event.preventDefault();
         });
     });
-
-    /*$("#endDate").datepicker().on('changeDate', function(ev) {
-    	
+/*
+    $("#endDate").datepicker().on('changeDate', function(ev) {
+    	alert('changed');
     }*/
+
+  //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
 </script>
 

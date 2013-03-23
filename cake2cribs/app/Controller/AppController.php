@@ -48,6 +48,7 @@ class AppController extends Controller {
 		$this->Auth->authError = "You need to login to do that.";
 		//$this->Auth->allow('pages', 'display');
 		$this->Auth->allow('beforeRender','__initLogin');
+		$this->Auth->allow('InitFilterValues');
 		//$this->Auth->allow('map','index');
 		//$this->Auth->allow('map','ViewListing');
 		//$this->Auth->allow('user','confirmUser');
@@ -143,4 +144,26 @@ Set userid in session as well as $this->loginUrl and $this->logoutUrl
     {
         $this->_jsVars[$name] = $value;
     }
+
+    public function InitFilterValues()
+  	{
+	    $this->Session->write('start_date', "NOT_SET");
+	    $this->Session->write('end_date', "NOT_SET"); 
+	    $this->Session->write('min_rent', 0); 
+	    $this->Session->write('max_rent', 999999); 
+	    $this->Session->write('beds', 0);
+	    $this->Session->write('house', true); 
+	    $this->Session->write('apt', true); 
+	    $this->Session->write('unit_type_other', true);  
+	    $this->Session->write('male', "NOT_SET");  
+	    $this->Session->write('female', "NOT_SET");  
+	    $this->Session->write('students_only', "NOT_SET");  
+	    $this->Session->write('grad', "NOT_SET"); 
+	    $this->Session->write('undergrad', "NOT_SET"); 
+	    $this->Session->write('bathroom_type', "NOT_SET"); 
+	    $this->Session->write('ac', "NOT_SET");
+	    $this->Session->write('parking', "NOT_SET");
+	    $this->Session->write('utilities_included', "NOT_SET");  
+	    $this->Session->write('no_security_deposit', "NOT_SET");
+  	}
 }
