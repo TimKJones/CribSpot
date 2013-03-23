@@ -30,8 +30,14 @@ f	Closes the tooltip, no animation
 	###
 	Sets the content of the tooltip
 	###
-	SetContent: (marker) ->
-		1
+	SetContent: (subletId) ->
+		template = $(".listing-popup:first").wrap('<p/>').parent()
+		content = template.children().first()
+		sublet = A2Cribs.Cache.IdToSubletMap[subletId]
+		content.find('.sublet-name').text if sublet.Name then sublet.Name else sublet.StreetAddress
+		content.find('.bed-price').text sublet.PricePerBedroom
+		
+		$(".listing-popup:first").unwrap()
 
 	resolveDateRange: (startDate, endDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
