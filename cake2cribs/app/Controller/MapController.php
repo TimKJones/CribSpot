@@ -1,5 +1,4 @@
 <?php
-
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
@@ -10,7 +9,6 @@ class MapController extends AppController {
     $this->Auth->allow('LoadMarkers');
     $this->Auth->allow('index');
     $this->Auth->allow('sublet');
-    $this->Auth->allow('InitFilterValues');
     $this->Auth->allow('ViewListing');
     $this->Auth->allow('LoadTypeTables');
     $this->Auth->allow('LoadHoverData');
@@ -50,38 +48,18 @@ class MapController extends AppController {
 		$this->set("sublet_data_for_tooltip", $subletData);
 
 		$this->InitFilterValues();
+    CakeLog::write("sessionValues", "in map: " . print_r($this->Session->read(), true));
 	}
 
   public function LoadTypeTables()
   {
+    //CakeLog::write("sessionValues", "in loadTypeTables: " . print_r($this->getSessionValues(), true));
     $buildings = $this->BuildingType->LoadAll();
     $bathrooms = $this->BathroomType->LoadAll();
     $response = array();
     array_push($response, $buildings, $bathrooms);
     $this->layout = 'ajax';
     $this->set('response', json_encode($response));
-  }
-
-  public function InitFilterValues()
-  {
-    $this->Session->write('start_date', "NOT_SET");
-    $this->Session->write('end_date', "NOT_SET"); 
-    $this->Session->write('min_rent', 0); 
-    $this->Session->write('max_rent', 999999); 
-    $this->Session->write('beds', 0);
-    $this->Session->write('house', true); 
-    $this->Session->write('apt', true); 
-    $this->Session->write('unit_type_other', true);  
-    $this->Session->write('male', "NOT_SET");  
-    $this->Session->write('female', "NOT_SET");  
-    $this->Session->write('students_only', "NOT_SET");  
-    $this->Session->write('grad', "NOT_SET"); 
-    $this->Session->write('undergrad', "NOT_SET"); 
-    $this->Session->write('bathroom_type', "NOT_SET"); 
-    $this->Session->write('ac', "NOT_SET");
-    $this->Session->write('parking', "NOT_SET");
-    $this->Session->write('utilities_included', "NOT_SET");  
-    $this->Session->write('no_security_deposit', "NOT_SET");
   }
 
 	public function ViewListing($listing_id = null)
@@ -104,4 +82,31 @@ class MapController extends AppController {
     $response = json_encode($hover_data);
     $this->set("response", $response);
   }
+
+  public function getSessionValues()
+    {
+        $sessionValues = array(
+            'user_id' => $this->Auth->User('id'),
+            'start_date' => $this->Session->read('start_date'),
+            'end_date' => $this->Session->read('end_date'),
+            'min_rent' => $this->Session->read('min_rent'),
+            'max_rent' => $this->Session->read('max_rent'),
+            'beds' => $this->Session->read('beds'),
+            'house' => $this->Session->read('house'),
+            'apt' => $this->Session->read('apt'),
+            'unit_type_other' => $this->Session->read('unit_type_other'),
+            'male' => $this->Session->read('male'),
+            'female' => $this->Session->read('female'),
+            'students_only' => $this->Session->read('students_only'),
+            'grad' => $this->Session->read('grad'),
+            'undergrad' => $this->Session->read('undergrad'),
+            'bathroom_type' => $this->Session->read('bathroom_type'),
+            'ac' => $this->Session->read('ac'),
+            'parking' => $this->Session->read('parking'),
+            'utilities_included' => $this->Session->read('utilities_included'),
+            'no_security_deposit' => $this->Session->read('no_security_deposit'),
+        );
+
+        return $sessionValues;
+    }
 }
