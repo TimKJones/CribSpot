@@ -14,6 +14,8 @@ class A2Cribs.Cache
 	@AddressToMarkerIdMap = [] #Used to determine if searched address is property in database
 	@BuildingIdToNameMap = []
 	@BathroomIdToNameMap = []
+	@GenderIdToNameMap = []
+	@StudentTypeIdToNameMap = []
 
 	###
 	Add list of sublets to cache
