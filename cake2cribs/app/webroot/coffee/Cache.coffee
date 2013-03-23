@@ -64,7 +64,7 @@ class A2Cribs.Cache
 		for hd in hoverDataList
 			marker_id = null
 			if hd != null
-				marker_id = parseInt hoverDataList[0].Sublet.marker_id
+				marker_id = parseInt hd.Sublet.marker_id
 				if @IdToMarkerMap[marker_id] == undefined #Only cache for markers currently loaded on map.
 					continue
 				else
