@@ -131,16 +131,24 @@
       }
     };
 
-    Cache.CacheHousemates = function(sublet_id, housemates) {
-      var h, _i, _len, _results;
-      if (housemates === null) return;
-      sublet_id = parseInt(sublet_id);
+    Cache.CacheHousemates = function(housemates) {
+      var gender, grad_status, h, sublet_id, _i, _len, _results;
+      if (housemates === null || housemates === void 0) return;
+      sublet_id = null;
+      if (housemates[0] !== void 0 && housemates[0].sublet_id !== void 0) {
+        sublet_id = parseInt(housemates[0].sublet_id);
+      } else {
+        return;
+      }
       this.SubletIdToHousemateIdsMap[sublet_id] = [];
       _results = [];
       for (_i = 0, _len = housemates.length; _i < _len; _i++) {
         h = housemates[_i];
         h.id = parseInt(h.id);
-        this.IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, parseInt(h.type));
+        grad_status = this.StudentTypeIdToNameMap[parseInt(h.student_type)];
+        gender = this.GenderIdToNameMap[parseInt(h.gender)];
+        sublet_id = parseInt(h.sublet_id);
+        this.IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender);
         _results.push(this.SubletIdToHousemateIdsMap[sublet_id].push(h.id));
       }
       return _results;
@@ -174,7 +182,7 @@
         markerData = markerDataList[_i];
         sublet = markerData.Sublet;
         A2Cribs.Cache.CacheSublet(sublet);
-        A2Cribs.Cache.CacheHousemates(sublet.id, markerData.Housemate);
+        A2Cribs.Cache.CacheHousemates(markerData.Housemate);
         _results.push(A2Cribs.Cache.CacheSubletOwner(parseInt(sublet.id), markerData.User));
       }
       return _results;

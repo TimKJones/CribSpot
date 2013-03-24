@@ -108,15 +108,23 @@ class A2Cribs.Cache
 			hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate)
 			@MarkerIdToHoverDataMap[marker_id] = hd
 
-	@CacheHousemates: (sublet_id, housemates) ->
-		if housemates == null
+	@CacheHousemates: (housemates) ->
+		if housemates ==  null || housemates == undefined
 			return
 
-		sublet_id = parseInt sublet_id
+		sublet_id = null
+		if housemates[0] != undefined and housemates[0].sublet_id != undefined
+			sublet_id = parseInt housemates[0].sublet_id
+		else
+			return
+			
 		@SubletIdToHousemateIdsMap[sublet_id] = []
 		for h in housemates
 			h.id = parseInt h.id
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, parseInt h.type)
+			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type]
+			gender = @GenderIdToNameMap[parseInt h.gender]
+			sublet_id = parseInt h.sublet_id
+			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender)
 			@SubletIdToHousemateIdsMap[sublet_id].push h.id
 
 	@CacheMarker: (id, marker) ->
@@ -140,6 +148,6 @@ class A2Cribs.Cache
 		for markerData in markerDataList
 			sublet = markerData.Sublet
 			A2Cribs.Cache.CacheSublet sublet
-			A2Cribs.Cache.CacheHousemates sublet.id, markerData.Housemate
+			A2Cribs.Cache.CacheHousemates markerData.Housemate
 		#	A2Cribs.Cache.CacheUniversity markerData.University
 			A2Cribs.Cache.CacheSubletOwner parseInt(sublet.id), markerData.User
