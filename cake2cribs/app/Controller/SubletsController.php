@@ -2,7 +2,7 @@
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-    public $components= array('RequestHandler');
+    public $components= array('RequestHandler', 'Auth');
 
     public function beforeFilter() {
         $this->Auth->allow('index');
@@ -10,6 +10,8 @@ class SubletsController extends AppController {
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
         $this->Auth->allow('ajax_add');
+        $this->Auth->allow('ajax_add_create');
+        $this->Auth->allow('ajax_add2');
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
     }
@@ -135,6 +137,10 @@ class SubletsController extends AppController {
                     $this->set('savedUnitNumber', $savedUnitNumber);
                     $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
                     $this->set('university_id', $savedUniversityID);
+        }
+        else
+        {
+            $this->set('savedUniversity', "BLAH");
         }
         
     }

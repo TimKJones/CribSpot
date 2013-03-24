@@ -14,7 +14,7 @@ class A2Cribs.SubletAdd
 		url = "sublets/ajax_add_create"
 		request_data = {
 			Sublet: {
-				university_id: (window.universitiesArray.indexOf($('#universitiesInput').val()) + swindow.universitiesMap[0].University.id)
+				university_id: parseInt(window.universitiesArray.indexOf($('#universitiesInput').val()) + parseInt(window.universitiesMap[0].University.id))
 				university: $('#universitiesInput').val()
 				unit_number: $('#SubletUnitNumber').val()
 				address: $("#addressToMark").val()
