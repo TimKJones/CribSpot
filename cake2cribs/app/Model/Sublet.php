@@ -276,21 +276,6 @@ class Sublet extends AppModel {
 	*/
 	private function getFilteredQueryConditions($params)
 	{
-		/*'user_id' => $this->Auth->User('id'),
-           *** 'start_date' => $this->Session->read('start_date'),
-         ***   'end_date' => $this->Session->read('end_date'),
-            'male' => $this->Session->read('male'),
-            'female' => $this->Session->read('female'),
-           *** 'students_only' => $this->Session->read('students_only'),
-            'grad' => $this->Session->read('grad'),
-            'undergrad' => $this->Session->read('undergrad'),
-            'ac' => $this->Session->read('ac'),
-            'parking' => $this->Session->read('parking'),*/
-
-		//$housemates = $this->Housemate->getHousematesForSublet($sublet_id);
-		/*
-		Missing information: gender, parking, ac, [grad, undergrad] -> student_type?
-		*/
 		$conditions = array();
 CakeLog::write("urlParams", "in func: " . print_r($params, true));
 		$building_type_id_OR = array();
@@ -342,20 +327,6 @@ CakeLog::write("urlParams", "in func: " . print_r($params, true));
 		if ($params['students_only'] == "true")
 			array_push($conditions, array(
 				'Housemate.enrolled' => true));
-		
-
-		// need fields for ac, parking
-
-
-		/*if (count($lease_range_OR) > 0)
-		{
-			array_push($conditions, array('OR' => array(
-				'Listing.lease_range' => $lease_range_OR)));
-		}	
-		else
-			array_push($conditions, array('OR' => array(
-				'Listing.lease_range' => 'NONE')));
-				// Without this, all lease ranges would be returned when all check boxes are unchecked*/
 
 CakeLog::write("filterConditions", "params: " . print_r($params, true));
 
@@ -375,6 +346,16 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 			'Sublet.price_per_bedroom >=' => $params['min_rent'],
 			'Sublet.price_per_bedroom <=' => $params['max_rent'],
 			'Sublet.number_bedrooms >=' => $params['beds']));
+
+		$date_conditions = array();
+		if ($params['start_date'] != 'NOT_SET')
+			$date_conditions['Sublet.date_begin <='] = date($params['start_date']);
+
+		if ($params['end_date'] != 'NOT_SET')
+			$date_conditions['Sublet.date_end >='] = date($params['end_date']);
+
+		if (count($date_conditions) > 0)
+			array_push($conditions, $date_conditions);
 
 		if ($params['utilities_included'] == "true")
 			array_push($conditions, array(
