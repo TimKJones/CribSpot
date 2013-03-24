@@ -2,14 +2,16 @@
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-    public $components= array('RequestHandler');
+    public $components= array('RequestHandler', 'Auth');
 
     public function beforeFilter() {
         $this->Auth->allow('index');
         $this->Auth->allow('view');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
-
+        $this->Auth->allow('ajax_add');
+        $this->Auth->allow('ajax_add_create');
+        $this->Auth->allow('ajax_add2');
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
     }
@@ -85,8 +87,10 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        Configure::write('debug', 0);
         $canCreate = False;
-        $universities = $this->Sublet->University->find('all');
+        $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
+
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         //$utilityTypes = $this->Sublet->UtilityType->find('list');
         //$bathroomTypes = $this->Sublet->BathroomType->find('list');
@@ -127,11 +131,22 @@ class SubletsController extends AppController {
                     $this->set('savedBuildingTypeID', $savedBuildingTypeID);
                     $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
                     $this->set('savedName', $savedName);
+                    $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
+                    $this->set('savedAddress',$savedAddress);
+                    $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
+                    $this->set('savedUnitNumber', $savedUnitNumber);
+                    $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
+                    $this->set('university_id', $savedUniversityID);
+        }
+        else
+        {
+            $this->set('savedUniversity', "BLAH");
         }
         
     }
 
     public function ajax_add2() {
+
     }
 
     public function ajax_add_create() {

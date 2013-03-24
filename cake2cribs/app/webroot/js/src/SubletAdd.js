@@ -19,7 +19,10 @@
       url = "sublets/ajax_add_create";
       request_data = {
         Sublet: {
+          university_id: parseInt(window.universitiesArray.indexOf($('#universitiesInput').val()) + parseInt(window.universitiesMap[0].University.id)),
           university: $('#universitiesInput').val(),
+          unit_number: $('#SubletUnitNumber').val(),
+          address: $("#addressToMark").val(),
           building_type_id: $('#SubletBuildingTypeId').val(),
           name: $('#SubletName').val(),
           latitude: $('#updatedLat').text(),
@@ -30,7 +33,10 @@
         var data;
         console.log(response);
         data = JSON.parse(response);
-        return console.log(data);
+        console.log(data);
+        return $('#server-notice').dialog2("options", {
+          content: "Sublets/ajax_add2"
+        });
       });
     };
 

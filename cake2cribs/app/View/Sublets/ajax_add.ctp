@@ -14,9 +14,10 @@
  		   max-width: none !important;
 		}
 </style>
+<?php echo $savedUniversity; ?>
 <div class="ui-widget">
                           <label for="universitiesInput">University: </label>
-                          <input id="universitiesInput" placeholder="<?php echo $savedUniversity; ?>"/>
+                          <input id="universitiesInput" value="<?php echo $savedUniversity; ?>"/>
                         </div>
 <div id="sublets form">
 <?php echo $this->Form->create('Sublet'); ?>
@@ -25,8 +26,9 @@
 
 	<?php echo $this->Form->input('building_type_id', array('value'=> $savedBuildingTypeID));?>
 
-	<?php echo $this->Form->input('name', array('placeholder'=> $savedName)); ?>
+	<?php echo $this->Form->input('name', array('value'=> $savedName)); ?>
 	<?php echo $this->element('correctPinLocationMap'); ?>
+	<?php echo $this->Form->input('unit_number', array('value'=> $savedUnitNumber)); ?>
 
 	<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
 	<a href="#" id="goToStep2">Go next </a>
@@ -42,6 +44,7 @@
                               echo $universities_json; ?>;
                             var universitiesArray = [];
                             var currentUniversity;
+                            window.universitiesMap = universitiesMap;
                             for(var universityIndex=0; universityIndex < universitiesMap.length; universityIndex+=1)
                                 universitiesArray.push(universitiesMap[universityIndex].University.name+ ', ' + universitiesMap[universityIndex].University.city + ' ' + universitiesMap[universityIndex].University.state );
                             //for (var university in universitiesMap)
@@ -49,6 +52,7 @@
                             /*$( "#universities" ).autocomplete({
                               source: universitiesArray
                             });*/
+							window.universitiesArray = universitiesArray;
                             $("#universitiesInput").autocomplete({
 
                                 source: function(request, response) {
@@ -62,9 +66,10 @@
 						  google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
 
 						var a = A2Cribs.SubletAdd;
-
 							a.setupUI();
+						$('#addressToMark').val('<?php echo $savedAddress; ?>');
 						  $('#goToStep2').click(function(event) {
+						  	console.log(window.universitiesArray.indexOf("<?php echo $savedUniversity; ?>"));
 				          	//do ajax here lol
 
 				        });

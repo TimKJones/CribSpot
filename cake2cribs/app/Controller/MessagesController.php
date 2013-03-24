@@ -124,6 +124,7 @@
  			$only_unread = intval($this->request->query['only_unread']);
  		}
  		$conversations = $this->Conversation->getConversations($user['id'], ($only_unread==1));
+        
  		$this->layout = 'ajax';
  		$this->set(array('conversations'=> $conversations));	
  	}
@@ -179,11 +180,11 @@
  	}
 
  	public function getParticipantInfo($conv_id){
- 		$options['condtions'] = array('Conversation.conversation_id'=>$conv_id);
+ 		$options['conditions'] = array('Conversation.conversation_id'=>$conv_id);
  		$conversation = $this->Conversation->find('first', $options);
  		$participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
  			
- 		$options['condtions'] = array('University.university_id'=>$participant['university_id']);
+ 		$options['conditions'] = array('University.id'=>$participant['university_id']);
  		// $options['fields'] = array('University.name');
  		// $options['contain'] = true;
  		$this->University->recursive = -1;

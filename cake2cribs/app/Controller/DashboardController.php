@@ -39,16 +39,15 @@
 	 	public function index(){
 	 		$directive = $this->Cookie->read('dashboard-directive');
 	 		$this->Cookie->delete('dashboard-directive');
-	 		// die();
 	 		if($directive == null){
 	 			$directive = array('classname'=>null);
 	 		}
 
 
 	 		$user = $this->User->get($this->Auth->User('id'));
-	 		// die(debug($user));
+	 		$json_user = json_encode($user['User']);
 	 		$this->User->University->id = $user['User']['university_id'];
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
-	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user));
+	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user, 'user_json'=>$json_user));
 	 	}
 	}

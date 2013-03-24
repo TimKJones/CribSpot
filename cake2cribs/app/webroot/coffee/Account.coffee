@@ -15,6 +15,24 @@ class A2Cribs.Account
 			$('#save_btn').click =>
 				@SaveAccount()
 
+		my_verification_info = A2Cribs.VerifyManager.getMyVerification()
+		veripanel = $('#my-verification-panel')
+		
+		if my_verification_info.verified_email
+			veripanel.find('#veri-email i:last-child').removeClass('unverified').addClass('verified')
+		if my_verification_info.verified_edu
+			veripanel.find('#veri-edu i:last-child').removeClass('unverified').addClass('verified')
+		if my_verification_info.verified_fb
+			veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified')
+		if my_verification_info.verified_tw
+			veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified')
+
+		console.log(my_verification_info)
+
+		$('.veridd').each (index, element)=>
+			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})
+
+
 	@Direct: (directive)->
 
 	@SaveAccount:()->
@@ -37,6 +55,8 @@ class A2Cribs.Account
 
 
 			$('#save_btn').removeAttr 'disabled'
+
+
 
 
 
