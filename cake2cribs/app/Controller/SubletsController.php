@@ -9,7 +9,7 @@ class SubletsController extends AppController {
         $this->Auth->allow('view');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
-
+        $this->Auth->allow('ajax_add');
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
     }
@@ -85,8 +85,10 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        Configure::write('debug', 0);
         $canCreate = False;
-        $universities = $this->Sublet->University->find('all');
+        $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
+
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         //$utilityTypes = $this->Sublet->UtilityType->find('list');
         //$bathroomTypes = $this->Sublet->BathroomType->find('list');
