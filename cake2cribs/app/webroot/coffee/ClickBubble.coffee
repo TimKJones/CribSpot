@@ -62,34 +62,67 @@ f	Closes the tooltip, no animation
 
 	setMultiContent: (subletIds) ->
 		template = $(".click-bubble:first").wrap('<p/>').parent()
-		content = template.children()
-		firstSublet = A2Cribs.Cache.IdToSubletMap subletIds[0]
+		content = template.children().first()
+		firstSublet = A2Cribs.Cache.IdToSubletMap[subletIds[0]]
 		content.addClass "multi-listing"
 		content.removeClass "single-listing"
 		content.find('#listing-count').text subletIds.length
-		content.find('.sublet-name').text firstSublet.Name
+		if (firstSublet.Name)
+			content.find('.sublet-name').text firstSublet.Name
+		else
+			content.find('.sublet-name').text firstSublet.StreetAddress
+
+		dataTemplate = content.find('.click-bubble-data').first()
+		content.find('.bubble-container').first().empty()
+		for subletId in subletIds
+			div = dataTemplate.clone()
+			firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
+			subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
+			div.removeClass "single-listing"
+			div.find('.username').text subletOwner.FirstName
+			if subletOwner.FBUserId
+				div.find('.friend-count').text 100
+			else
+				div.find('.fb-mutual').hide()
+
+			div.find('.date-range').text @resolveDateRange firstSublet.StartDate, firstSublet.EndDate
+			div.find('.bed-price').text firstSublet.PricePerBedroom
+			div.find('.bed-count').text firstSublet.Bedrooms
+			div.find('.building-type').text firstSublet.BuildingType
+			div.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
+
+			content.find('.bubble-container').first().append div
 
 		@InfoBubble.setContent template.html()
 		$(".click-bubble:first").unwrap()
 
 	setSingleContent: (subletId) ->
 		template = $(".click-bubble:first").wrap('<p/>').parent()
-		content = template.children()
-		firstSublet = A2Cribs.Cache.IdToSubletMap[subletId[0]]
+		content = template.children().first()
+		firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
+		subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
 		template.children().addClass "single-listing"
 		template.children().removeClass "multi-listing"
-		content.find('.sublet-name').text firstSublet.Name
-		content.find('.username').text "Evan"
+		if (firstSublet.Name)
+			content.find('.sublet-name').text firstSublet.Name
+		else
+			content.find('.sublet-name').text firstSublet.StreetAddress
+		content.find('.username').text subletOwner.FirstName
+		if subletOwner.FBUserId
+			content.find('.friend-count').text 100
+		else
+			content.find('.fb-mutual').hide()
 		content.find('.date-range').text @resolveDateRange firstSublet.StartDate, firstSublet.EndDate
 		content.find('.bed-price').text firstSublet.PricePerBedroom
 		content.find('.bed-count').text firstSublet.Bedrooms
 		content.find('.building-type').text firstSublet.BuildingType
+		content.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
 
 		@InfoBubble.setContent template.html()
 		$(".click-bubble:first").unwrap()
 
 	resolveDateRange: (startDate, endDate) ->
-		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		range = ""
 		startSplit = startDate.split "-"
 		endSplit = endDate.split "-"

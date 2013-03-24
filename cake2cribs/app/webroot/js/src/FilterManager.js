@@ -10,7 +10,7 @@
 
     FilterManager.MaxRent = 999999;
 
-    FilterManager.MaxSliderRent = 4000;
+    FilterManager.MaxSliderRent = 2000;
 
     FilterManager.MinBeds = 0;
 
@@ -47,60 +47,48 @@
 
 
     FilterManager.ApplyFilter = function(event, ui) {
-      var ac, ajaxData, apt, female, grad, house, male, no_security_deposit, other, parking, students_only, undergrad, utilities;
+      var ac, ajaxData, apt, bathroom_type, beds, female, grad, house, male, no_security_deposit, other, parking, students_only, undergrad, utilities;
       ajaxData = null;
-      if (event.id === "houseCheck") {
-        house = $("#houseCheck").is(':checked');
-        ajaxData = "house=" + house;
-      } else if (event.id === "aptCheck") {
-        apt = $("#aptCheck").is(':checked');
-        ajaxData = "apt=" + apt;
-      } else if (event.id === "otherCheck") {
-        other = $("#otherCheck").is(':checked');
-        ajaxData = "unit_type_other=" + other;
-      } else if (event.id === "maleCheck") {
-        male = $("#maleCheck").is(':checked');
-        ajaxData = "male=" + male;
-      } else if (event.id === "femaleCheck") {
-        female = $("#femaleCheck").is(':checked');
-        ajaxData = "female=" + female;
-      } else if (event.id === "studentsOnlyCheck") {
-        students_only = $("#studentsOnlyCheck").is(':checked');
-        ajaxData = "students_only=" + students_only;
-      } else if (event.id === "gradCheck") {
-        grad = $("#gradCheck").is(':checked');
-        ajaxData = "grad=" + grad;
-      } else if (event.id === "undergradCheck") {
-        undergrad = $("#undergradCheck").is(':checked');
-        ajaxData = "undergrad=" + undergrad;
-      } else if (event.id === "acCheck") {
-        ac = $("#acCheck").is(':checked');
-        ajaxData = "ac=" + ac;
-      } else if (event.id === "parkingCheck") {
-        parking = $("#parkingCheck").is(':checked');
-        ajaxData = "parking=" + parking;
-      } else if (event.id === "utilitiesCheck") {
-        utilities = $("#utilitiesCheck").is(':checked');
-        ajaxData = "utilities_included=" + utilities;
-      } else if (event.id === "noSecurityDepositCheck") {
-        no_security_deposit = $("#noSecurityDepositCheck").is(':checked');
-        ajaxData = "no_security_deposit=" + no_security_deposit;
+      house = $("#houseCheck").is(':checked');
+      ajaxData = "house=" + house;
+      apt = $("#aptCheck").is(':checked');
+      ajaxData += "&apt=" + apt;
+      other = $("#otherCheck").is(':checked');
+      ajaxData += "&unit_type_other=" + other;
+      male = $("#maleCheck").is(':checked');
+      ajaxData += "&male=" + male;
+      female = $("#femaleCheck").is(':checked');
+      ajaxData += "&female=" + female;
+      students_only = $("#studentsOnlyCheck").is(':checked');
+      ajaxData += "&students_only=" + students_only;
+      grad = $("#gradCheck").is(':checked');
+      ajaxData += "&grad=" + grad;
+      undergrad = $("#undergradCheck").is(':checked');
+      ajaxData += "&undergrad=" + undergrad;
+      ac = $("#acCheck").is(':checked');
+      ajaxData += "&ac=" + ac;
+      parking = $("#parkingCheck").is(':checked');
+      ajaxData += "&parking=" + parking;
+      utilities = $("#utilitiesCheck").is(':checked');
+      ajaxData += "&utilities_included=" + utilities;
+      no_security_deposit = $("#noSecurityDepositCheck").is(':checked');
+      ajaxData += "&no_security_deposit=" + no_security_deposit;
+      beds = $("#bedsSelect").val();
+      if (beds === "2+") {
+        beds = "2";
       }
-      if (event.target) {
-        if (event.target.id === "rentSlider") {
-          A2Cribs.FilterManager.MinRent = ui.values[0];
-          A2Cribs.FilterManager.MaxRent = ui.values[1];
-          if (A2Cribs.FilterManager.MaxRent === A2Cribs.FilterManager.MaxSliderRent) {
-            A2Cribs.FilterManager.MaxRent = 999999;
-          }
-        } else {
-          A2Cribs.FilterManager.MinBeds = ui.values[0];
-          A2Cribs.FilterManager.MaxBeds = ui.values[1];
-          if (A2Cribs.FilterManager.MaxBeds === A2Cribs.FilterManager.MaxSliderBeds) {
-            A2Cribs.FilterManager.MaxBeds = 999999;
-          }
+      ajaxData += "&beds=" + beds;
+      bathroom_type = $("#bathSelect").val();
+      ajaxData += "&bathroom_type=" + bathroom_type;
+      if (event.target !== void 0 && event.target.id === "slider") {
+        A2Cribs.FilterManager.MinRent = event.value[0];
+        A2Cribs.FilterManager.MaxRent = event.value[1];
+        if (A2Cribs.FilterManager.MaxRent === A2Cribs.FilterManager.MaxSliderRent) {
+          A2Cribs.FilterManager.MaxRent = 999999;
         }
       }
+      ajaxData += "&min_rent=" + A2Cribs.FilterManager.MinRent;
+      ajaxData += "&max_rent=" + A2Cribs.FilterManager.MaxRent;
       return $.ajax({
         url: myBaseUrl + "Sublets/ApplyFilter",
         type: "GET",

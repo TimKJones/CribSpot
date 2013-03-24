@@ -1,9 +1,8 @@
 <?php
-
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-    public $components= array('Session', 'Auth','RequestHandler');
+    public $components= array('RequestHandler');
 
     public function beforeFilter() {
         $this->Auth->allow('index');
@@ -128,11 +127,18 @@ class SubletsController extends AppController {
                     $this->set('savedBuildingTypeID', $savedBuildingTypeID);
                     $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
                     $this->set('savedName', $savedName);
+                    $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
+                    $this->set('savedAddress',$savedAddress);
+                    $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
+                    $this->set('savedUnitNumber', $savedUnitNumber);
+                    $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
+                    $this->set('university_id', $savedUniversityID);
         }
         
     }
 
     public function ajax_add2() {
+
     }
 
     public function ajax_add_create() {
@@ -221,9 +227,11 @@ Returns a list of marker_ids that will be visible based on the current filter se
 */
     public function ApplyFilter()
     {
-        $this->UpdateFilterValues($this->params['url']);
-        CakeLog::write("urlParams", print_r($this->params['url'], true));
-        $response = $this->Sublet->getFilteredMarkerIdList($this->getSessionValues($this->params['url']));
+        //CakeLog::write("sessionValues", 'before' . print_r($this->Session->read(), true));
+        //$this->UpdateFilterValues($this->params['url']);
+        //CakeLog::write("sessionValues", 'after' . print_r($this->getSessionValues(), true));
+       //CakeLog::write("urlParams", print_r($this->params['url'], true));
+        $response = $this->Sublet->getFilteredMarkerIdList($this->params['url']);
         $this->layout = 'ajax';
         $this->set('response', $response);
     }
@@ -251,7 +259,6 @@ Returns json encoded data.
         /*
         If sliders are at either of these maximum values, ensure that results greater than the maximum value are also returned.
         */  
-        $maxPossibleBeds = 2;
         $maxPossibleRent = 2000;
 
         if (array_key_exists("start_date", $params))

@@ -29,13 +29,17 @@
 
     Cache.BathroomIdToNameMap = [];
 
+    Cache.GenderIdToNameMap = [];
+
+    Cache.StudentTypeIdToNameMap = [];
+
     /*
     	Add list of sublets to cache
     */
 
 
     Cache.CacheSublet = function(sublet) {
-      var l;
+      var bathroom, building, l;
       l = sublet;
       l.id = parseInt(l.id);
       l.marker_id = parseInt(l.marker_id);
@@ -50,9 +54,11 @@
       l.marker_id = parseInt(l.marker_id);
       l.furnished_type_id = parseInt(l.furnished_type_id);
       l.building_type_id = parseInt(l.building_type_id);
+      building = this.BuildingIdToNameMap[l.building_type_id];
       l.bathroom_type_id = parseInt(l.bathroom_type_id);
+      bathroom = this.BathroomIdToNameMap[l.bathroom_type_id];
       l.university_id = parseInt(l.university_id);
-      return this.IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, l.building_type_id, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, l.bathroom_type_id, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created);
+      return this.IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, building, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, bathroom, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created);
     };
 
     /*
@@ -94,7 +100,7 @@
         hd = hoverDataList[_i];
         marker_id = null;
         if (hd !== null) {
-          marker_id = parseInt(hoverDataList[0].Sublet.marker_id);
+          marker_id = parseInt(hd.Sublet.marker_id);
           if (this.IdToMarkerMap[marker_id] === void 0) {
             continue;
           } else {
@@ -114,12 +120,7 @@
         if (sublet === void 0 || sublet === null) {
           return;
         }
-        building_type_id = sublet.building_type_id;
-        if (building_type_id === null) {
-          return;
-        }
-        building_type_id = parseInt(building_type_id);
-        unitType = this.BuildingIdToNameMap[building_type_id];
+        unitType = this.IdToMarkerMap[marker_id].UnitType;
         minBeds = parseInt(sublet.number_bedrooms);
         maxBeds = parseInt(sublet.number_bedrooms);
         minRent = parseInt(sublet.price_per_bedroom);
@@ -150,27 +151,36 @@
       }
     };
 
-    Cache.CacheHousemates = function(sublet_id, housemates) {
-      var h, _i, _len, _results;
-      if (housemates === null) {
+    Cache.CacheHousemates = function(housemates) {
+      var gender, grad_status, h, sublet_id, _i, _len, _results;
+      if (housemates === null || housemates === void 0) {
         return;
       }
-      sublet_id = parseInt(sublet_id);
+      sublet_id = null;
+      if (housemates[0] !== void 0 && housemates[0].sublet_id !== void 0) {
+        sublet_id = parseInt(housemates[0].sublet_id);
+      } else {
+        return;
+      }
       this.SubletIdToHousemateIdsMap[sublet_id] = [];
       _results = [];
       for (_i = 0, _len = housemates.length; _i < _len; _i++) {
         h = housemates[_i];
         h.id = parseInt(h.id);
-        this.IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, parseInt(h.type));
+        grad_status = this.StudentTypeIdToNameMap[parseInt(h.student_type)];
+        gender = this.GenderIdToNameMap[parseInt(h.gender)];
+        sublet_id = parseInt(h.sublet_id);
+        this.IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender);
         _results.push(this.SubletIdToHousemateIdsMap[sublet_id].push(h.id));
       }
       return _results;
     };
 
     Cache.CacheMarker = function(id, marker) {
-      var m;
+      var m, unitType;
       m = marker;
-      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude);
+      unitType = this.BuildingIdToNameMap[parseInt(m.building_type_id)];
+      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, unitType, m.latitude, m.longitude);
     };
 
     Cache.CacheSubletOwner = function(sublet_id, user) {
@@ -195,7 +205,7 @@
         markerData = markerDataList[_i];
         sublet = markerData.Sublet;
         A2Cribs.Cache.CacheSublet(sublet);
-        A2Cribs.Cache.CacheHousemates(sublet.id, markerData.Housemate);
+        A2Cribs.Cache.CacheHousemates(markerData.Housemate);
         _results.push(A2Cribs.Cache.CacheSubletOwner(parseInt(sublet.id), markerData.User));
       }
       return _results;

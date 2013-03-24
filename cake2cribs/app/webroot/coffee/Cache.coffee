@@ -14,6 +14,8 @@ class A2Cribs.Cache
 	@AddressToMarkerIdMap = [] #Used to determine if searched address is property in database
 	@BuildingIdToNameMap = []
 	@BathroomIdToNameMap = []
+	@GenderIdToNameMap = []
+	@StudentTypeIdToNameMap = []
 
 	###
 	Add list of sublets to cache
@@ -33,9 +35,11 @@ class A2Cribs.Cache
 		l.marker_id = parseInt l.marker_id
 		l.furnished_type_id = parseInt l.furnished_type_id
 		l.building_type_id = parseInt l.building_type_id
+		building = @BuildingIdToNameMap[l.building_type_id]
 		l.bathroom_type_id = parseInt l.bathroom_type_id
+		bathroom = @BathroomIdToNameMap[l.bathroom_type_id]
 		l.university_id = parseInt l.university_id
-		@IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, l.building_type_id, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, l.bathroom_type_id, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created)
+		@IdToSubletMap[l.id] = new A2Cribs.Sublet(l.id, l.university_id, building, l.name, l.street_address, l.city, l.state, l.date_begin, l.date_end, l.number_bedrooms, l.price_per_bedroom, l.description, l.number_bathrooms, bathroom, l.utility_cost, l.deposit_amount, l.additional_fees_description, l.additional_fees_amount, l.marker_id, l.flexible_dates, l.furnished_type_id, l.created)
 
 	###
 	Add a list of subletIds to the MarkerIdToSubletIdsMap
@@ -62,7 +66,7 @@ class A2Cribs.Cache
 		for hd in hoverDataList
 			marker_id = null
 			if hd != null
-				marker_id = parseInt hoverDataList[0].Sublet.marker_id
+				marker_id = parseInt hd.Sublet.marker_id
 				if @IdToMarkerMap[marker_id] == undefined #Only cache for markers currently loaded on map.
 					continue
 				else
@@ -78,11 +82,7 @@ class A2Cribs.Cache
 			if sublet == undefined  || sublet == null
 				return
 
-			building_type_id = sublet.building_type_id
-			if building_type_id == null
-				return
-			building_type_id = parseInt	 building_type_id
-			unitType = @BuildingIdToNameMap[building_type_id]
+			unitType = @IdToMarkerMap[marker_id].UnitType
 				
 			#find min and max for remaining fields
 			minBeds = parseInt sublet.number_bedrooms
@@ -108,20 +108,29 @@ class A2Cribs.Cache
 			hd = new A2Cribs.HoverData(numListings, unitType, minBeds, maxBeds, minRent, maxRent, minDate, maxDate)
 			@MarkerIdToHoverDataMap[marker_id] = hd
 
-	@CacheHousemates: (sublet_id, housemates) ->
-		if housemates == null
+	@CacheHousemates: (housemates) ->
+		if housemates ==  null || housemates == undefined
 			return
 
-		sublet_id = parseInt sublet_id
+		sublet_id = null
+		if housemates[0] != undefined and housemates[0].sublet_id != undefined
+			sublet_id = parseInt housemates[0].sublet_id
+		else
+			return
+			
 		@SubletIdToHousemateIdsMap[sublet_id] = []
 		for h in housemates
 			h.id = parseInt h.id
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, parseInt h.type)
+			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type]
+			gender = @GenderIdToNameMap[parseInt h.gender]
+			sublet_id = parseInt h.sublet_id
+			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender)
 			@SubletIdToHousemateIdsMap[sublet_id].push h.id
 
 	@CacheMarker: (id, marker) ->
 		m = marker
-		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
+		unitType = @BuildingIdToNameMap[parseInt m.building_type_id]
+		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, unitType, m.latitude, m.longitude)
 
 	@CacheSubletOwner: (sublet_id, user) ->
 		owner = new A2Cribs.SubletOwner(user.first_name, user.facebook_userid, user.verified_university, user.twitter_followers)
@@ -139,6 +148,6 @@ class A2Cribs.Cache
 		for markerData in markerDataList
 			sublet = markerData.Sublet
 			A2Cribs.Cache.CacheSublet sublet
-			A2Cribs.Cache.CacheHousemates sublet.id, markerData.Housemate
+			A2Cribs.Cache.CacheHousemates markerData.Housemate
 		#	A2Cribs.Cache.CacheUniversity markerData.University
 			A2Cribs.Cache.CacheSubletOwner parseInt(sublet.id), markerData.User

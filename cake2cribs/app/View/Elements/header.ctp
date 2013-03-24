@@ -34,13 +34,13 @@
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
-		<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
+		<!--<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
 		<li>
 			<div id="twitterDiv">
 				<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 			</div>
-		</li>
+		</li>-->
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about">About</a></li>
@@ -63,7 +63,7 @@
 	</div>
 
 	<div id="expanded-filter" class="btn-group">
-		<div class="btn middle-btn">
+		<div class="btn middle-btn filter-btn">
 			<form>
 				<table>
 					<tr>
@@ -74,7 +74,7 @@
 						<td>&nbsp;&nbsp;Price: 
 							<div id="slider-div"><input id="price-filter" class="popover-btn tooltip-btn" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
 						<td>
-							&nbsp;&nbsp;Beds: <select>
+							&nbsp;&nbsp;Beds: <select id="bedsSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 								<option>1</option>
 								<option>2+</option>
 							</select>
@@ -159,9 +159,9 @@
 	<div id='more-popover'>
 		<div class="top-row">
 			<label>Bathroom</label>
-			<select>
+			<select id="bathSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 				<option>Private</option>
-				<option>Public</option>
+				<option>Shared</option>
 			</select>
 			<input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="acCheck">A/C</label>
 			<input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="parkingCheck">Parking</label>
@@ -193,9 +193,11 @@
             event.preventDefault();
         });
     });
-
-    /*$("#endDate").datepicker().on('changeDate', function(ev) {
-    	
+/*
+    $("#endDate").datepicker().on('changeDate', function(ev) {
+    	alert('changed');
     }*/
+
+  //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
 </script>
 

@@ -15,13 +15,69 @@ class Marker extends AppModel {
 
 	public $validate = array(
 		'marker_id' =>'alphaNumeric', 
-		'alternate_name' => array(							/*******TODO: NEED TO ADD MAX LENGTH FOR THIS AND CHECK FOR ONLY ALPHANUMERIC CHARACTERS */
-			'rule' => 'alphaNumeric'		/*            NOTE: 'title' is the previous 'alternate_name' field */
-		), 	
-		'unit_type' => 'alphaNumeric',
-		'address' => array(
+		//section for name
+		//Must be between 1 and 250 characters. Required for everything but house. We can use this to adjust the buildingID
+		//completed
+		'alternate_name' => array(
+			'between' => array(
+				'rule' => array('between',0,250),
+				'message' => 'Must be between 1 and 250 characters'
+				)
+			),
+		//section for building_type_id
+		//is required, must be natural number
+		//completed
+		'building_type_id' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'An building type is required'
+				),
+			'isNumber' => array(
+				'rule' => array('naturalNumber',true),
+				'message' => 'Invalid building type'
+				)
+			),
+		'street_address' => array(
 			'rule'    => 'alphaNumeric'
 		),
+		//section for city
+		//required. 
+		//completed
+		'city' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'A city name is required.'
+				),
+			'between' => array(
+				'rule' => array('between',1,250),
+				'message' => 'Must be between 1 and 250 characters'
+				)
+			),
+		//section for state
+		//alphanumeric, required, might want to write a custom regex validation for this one later
+		'state' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'A state is required.'
+				),
+			'between' => array(
+				'rule' => array('between',1,2),
+				'message' => 'Must be between 1 and 2 characters'
+				)
+			),
+		//section for ZIP
+		// postal, required.
+		//completed
+		'zip' => array(
+			'isZIP' => array(
+				'rule' => array('postal', null, 'us'),
+				'message' => 'ZIP is invalid.'
+				),
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'A ZIP is required.'
+				)
+			),
 		'latitude' => 'decimal',
 		'longitude' => 'decimal'
 	);
@@ -89,4 +145,4 @@ class Marker extends AppModel {
 
 }
 
-?> 
+?>

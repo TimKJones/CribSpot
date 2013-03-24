@@ -45,8 +45,14 @@ ListingPopup class
     */
 
 
-    ListingPopup.prototype.SetContent = function(marker) {
-      return 1;
+    ListingPopup.prototype.SetContent = function(subletId) {
+      var content, sublet, template;
+      template = $(".listing-popup:first").wrap('<p/>').parent();
+      content = template.children().first();
+      sublet = A2Cribs.Cache.IdToSubletMap[subletId];
+      content.find('.sublet-name').text(sublet.Name ? sublet.Name : sublet.StreetAddress);
+      content.find('.bed-price').text(sublet.PricePerBedroom);
+      return $(".listing-popup:first").unwrap();
     };
 
     ListingPopup.prototype.resolveDateRange = function(startDate, endDate) {

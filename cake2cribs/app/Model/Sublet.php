@@ -35,19 +35,6 @@ class Sublet extends AppModel {
 				'message' => 'Invalid university ID'
 				)
 			),
-		//section for building_type_id
-		//is required, must be natural number
-		//completed
-		'building_type_id' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'An building type is required'
-				),
-			'isNumber' => array(
-				'rule' => array('naturalNumber',true),
-				'message' => 'Invalid building type'
-				)
-			),
 		//section for buildingID
 		//is not required(will be generated if an existing building isn't selected, we probably will want to generate buildings by hand)
 		//this could be selected through an autocomplete form for the selected university
@@ -57,15 +44,6 @@ class Sublet extends AppModel {
 			'isNumber' => array(
 				'rule' => array('naturalNumber',true),
 				'message' => 'Invalid building ID'
-				)
-			),
-		//section for name
-		//Must be between 1 and 250 characters. Required for everything but house. We can use this to adjust the buildingID
-		//completed
-		'name' => array(
-			'between' => array(
-				'rule' => array('between',0,250),
-				'message' => 'Must be between 1 and 250 characters'
 				)
 			),
 		//section for streetAddress
@@ -81,45 +59,6 @@ class Sublet extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)
 			),
-		//section for city
-		//required. 
-		//completed
-		'city' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A city name is required.'
-				),
-			'between' => array(
-				'rule' => array('between',1,250),
-				'message' => 'Must be between 1 and 250 characters'
-				)
-			),
-		//section for state
-		//alphanumeric, required, might want to write a custom regex validation for this one later
-		'state' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A state is required.'
-				),
-			'between' => array(
-				'rule' => array('between',1,2),
-				'message' => 'Must be between 1 and 2 characters'
-				)
-			),
-		//section for ZIP
-		// postal, required.
-		//completed
-		'zip' => array(
-			'isZIP' => array(
-				'rule' => array('postal', null, 'us'),
-				'message' => 'ZIP is invalid.'
-				),
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A ZIP is required.'
-				)
-			),
-
 		//section for latitude
 		//required, decimal, generated through map helper
 		//completed
@@ -353,20 +292,22 @@ class Sublet extends AppModel {
 		Missing information: gender, parking, ac, [grad, undergrad] -> student_type?
 		*/
 		$conditions = array();
-
+CakeLog::write("urlParams", "in func: " . print_r($params, true));
 		$building_type_id_OR = array();
-		if ($params['house'] == true)
+		if ($params['house'] == "true")
 			array_push($building_type_id_OR, $this->getBuildingTypeId('House'));
-		if ($params['apt'] == true)
+		if ($params['apt'] == "true")
 			array_push($building_type_id_OR, $this->getBuildingTypeId('Apartment'));
-		if ($params['unit_type_other'] == true)
+		if ($params['unit_type_other'] == "true")
 			array_push($building_type_id_OR, $this->getBuildingTypeId('Duplex'));
 
 		$bathroom_type_id_OR = array();
-		if ($params['bathroom_type'] == "NOT_SET")
+		if ($params['bathroom_type'] != "Private" && $params['bathroom_type'] != 'Shared')
 		{
 			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Private'));
 			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Shared'));
+			array_push($conditions, array('OR' => array(
+			'Sublet.bathroom_type_id' => $bathroom_type_id_OR)));
 		}
 		else
 		{
@@ -392,10 +333,13 @@ class Sublet extends AppModel {
 				'Listing.lease_range' => 'NONE')));
 				// Without this, all lease ranges would be returned when all check boxes are unchecked*/
 
+CakeLog::write("filterConditions", "params: " . print_r($params, true));
+
 		array_push($conditions, array('OR' => array(
 			'Sublet.building_type_id'   => $building_type_id_OR)));
 
-		array_push($conditions, array('OR' => array(
+		if (count($bathroom_type_id_OR) > 0)
+			array_push($conditions, array('OR' => array(
 			'Sublet.bathroom_type_id' => $bathroom_type_id_OR)));
 
 		array_push($conditions, array(
@@ -403,14 +347,14 @@ class Sublet extends AppModel {
 			'Sublet.price_per_bedroom <=' => $params['max_rent'],
 			'Sublet.number_bedrooms >=' => $params['beds']));
 
-		if ($params['utilities_included'] == true && $params['utilities_included'] != "NOT_SET")
-			array_push($conditions, array(
-				'Sublet.deposit_amount' => 0,
-			));
-
-		if ($params['no_security_deposit'] == true && $params['no_security_deposit'] != "NOT_SET")
+		if ($params['utilities_included'] == "true")
 			array_push($conditions, array(
 				'Sublet.utility_cost' => 0,
+			));
+
+		if ($params['no_security_deposit'] == "true")
+			array_push($conditions, array(
+				'Sublet.deposit_amount' => 0,
 			)); 
 
 		return $conditions;
@@ -517,7 +461,7 @@ class Sublet extends AppModel {
 	{
 		$this->contain();
 		$hover_data = $this->find('all', array(
-			'fields' => array('marker_id', 'building_type_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
+			'fields' => array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
 		return $hover_data;
 	}
 

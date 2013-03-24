@@ -14,5 +14,9 @@
 			$("#price-max").html("$" + max.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ",") + plus)
 			$("#price-filter").val($("#price-min").html() + " - " + $("#price-max").html())
 		});
+		$("#slider").slider()
+		.on("slideStop", function(ev){
+			A2Cribs.FilterManager.ApplyFilter(ev);
+		});
 	');
 ?>

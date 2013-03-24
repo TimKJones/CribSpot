@@ -10,7 +10,7 @@
 			<h2 id="modal-logo" class="text-center">CribSpot</h2>
 		</div>
 		<div id="modal-center">
-			<div class="facebook-login-button">Login with Facebook</div>
+			<!--<div class="facebook-login-button">Login with Facebook</div>-->
 			<div id = "loginStatus"> Please login.</div>
 			<form id="loginForm">
 				<input type="email" id="inputEmail" name="email" placeholder="Email">
