@@ -5,8 +5,8 @@ class Marker extends AppModel {
 	public $actsAs = array('Containable');
 	public $primaryKey = 'marker_id';
 	public $hasMany = array(
-						'Listing' => array(
-							'className' => 'Listing', 
+						'Sublet' => array(
+							'className' => 'Sublet', 
 							'foreignKey' => 'marker_id'
 						)
 	);

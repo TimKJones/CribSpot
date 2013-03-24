@@ -23,8 +23,13 @@
     FilterManager.UpdateMarkers = function(visibleMarkerIds) {
       var marker, markerid, _i, _len, _ref, _ref1;
       visibleMarkerIds = JSON.parse(visibleMarkerIds);
+<<<<<<< HEAD
+      _ref = A2Cribs.Cache.IdToMarkerMap;
+      for (markerid = 0, _len = _ref.length; markerid < _len; markerid++) {
+=======
       _ref = A2Cribs.Map.IdToMarkerMap;
       for (markerid = _i = 0, _len = _ref.length; _i < _len; markerid = ++_i) {
+>>>>>>> 2d6e2d0317b53fa455325d4dc9ab0b7fb125f3cc
         marker = _ref[markerid];
         if (_ref1 = markerid.toString(), __indexOf.call(visibleMarkerIds, _ref1) >= 0) {
           if (marker) {

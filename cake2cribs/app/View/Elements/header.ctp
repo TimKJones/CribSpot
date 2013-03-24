@@ -160,6 +160,7 @@
 		<div class="top-row">
 			<label>Bathroom</label>
 			<select id="bathSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
+				<option>No Preference</option>
 				<option>Private</option>
 				<option>Shared</option>
 			</select>

@@ -2,9 +2,16 @@
 
 class Housemate extends AppModel {
 	//potentially link with users?
-	public $belongsTo = 'Sublet';
+	public $belongsTo = array('Sublet');
+	/*	'Sublet' => array(
+			'className' => 'Sublet',
+			'foreignKey' => 'sublet_id'
+			)
+	);*/
+	public $primaryKey = 'id';
 
 	public $validate = array (
+		'id' => 'alphaNumeric', 
 		//section for sublet_id
 		// required, must be natural number.
 		//completed
