@@ -10,7 +10,7 @@
 			<h2 id="modal-logo" class="text-center">CribSpot</h2>
 		</div>
 		<div id="modal-center">
-			<div class="facebook-login-button">Register with Facebook</div>
+			<!--<div class="facebook-login-button">Register with Facebook</div>-->
 			<div id = "registerStatus"> Join CribSpot today!</div>
 			<form id="registerForm">
 				<input type="email" id="inputEmail" name="email" placeholder="Email">

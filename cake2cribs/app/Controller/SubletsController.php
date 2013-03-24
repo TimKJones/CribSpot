@@ -131,11 +131,18 @@ class SubletsController extends AppController {
                     $this->set('savedBuildingTypeID', $savedBuildingTypeID);
                     $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
                     $this->set('savedName', $savedName);
+                    $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
+                    $this->set('savedAddress',$savedAddress);
+                    $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
+                    $this->set('savedUnitNumber', $savedUnitNumber);
+                    $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
+                    $this->set('university_id', $savedUniversityID);
         }
         
     }
 
     public function ajax_add2() {
+
     }
 
     public function ajax_add_create() {
