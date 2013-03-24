@@ -139,6 +139,18 @@
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);
       google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
+      /*imageStyles = [
+      			{
+      				"url": "/img/dots/group_dot.png",
+      			}
+      		]
+      */
+      /*imageStyles = [
+      			{
+      				url: '/img/dots/group_dot.png'
+      			}
+      		]
+      */
       mcOptions = {
         gridSize: 60,
         maxZoom: 15
