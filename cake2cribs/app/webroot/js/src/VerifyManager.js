@@ -11,10 +11,8 @@ Manager class for all verify functionality
 
     function VerifyManager() {}
 
-    VerifyManager.init = function() {
-      this.my_verification_info = {
-        'facebook_id': 1249680161
-      };
+    VerifyManager.init = function(user) {
+      this.me = user;
       this.VerificationData = {};
       return window.fbAsyncInit = function() {
 	    // init the FB JS SDK
@@ -87,11 +85,14 @@ Manager class for all verify functionality
           var verification_info;
           verification_info = {
             'user_id': user.id,
-            'fb_id': user.facebook_id,
+            'fb_id': user.facebook_userid,
+            'verified_email': user.verified,
+            'verified_edu': user.university_verified,
             'verified_fb': tot_friends != null,
             'mut_friends': mut_friends,
             'tot_friends': tot_friends
           };
+          console.log(verification_info);
           return defered.resolve(verification_info);
         });
       }
@@ -101,12 +102,16 @@ Manager class for all verify functionality
     VerifyManager.getMutalFriends = function(user) {
       var defered, query;
       defered = new $.Deferred();
-      if ((this.my_verification_info.facebook_id != null) && (user.facebook_id != null)) {
-        query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + this.my_verification_info.facebook_id + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_id + ')';
+      if ((this.me.facebook_userid != null) && (user.facebook_userid != null)) {
+        query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + this.me.facebook_userid + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_userid + ')';
         FB.api({
           method: 'fql.query',
           query: query
         }, function(mut_friends_res) {
+          if (mut_friends_res.error_code != null) {
+            console.log("Error during verification fb error: " + mut_friends_res.error_code + ".");
+            defered.resolve(null);
+          }
           return defered.resolve(mut_friends_res.length);
         });
         return defered.promise();
@@ -118,22 +123,22 @@ Manager class for all verify functionality
     VerifyManager.getTotalFriends = function(user) {
       var defered, query;
       defered = new $.Deferred();
-      if (user.facebook_id != null) {
-        query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_id;
+      if (user.facebook_userid != null) {
+        query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_userid;
         FB.api({
           method: 'fql.query',
           query: query
         }, function(tot_friends_res) {
+          if (tot_friends_res.error_code != null) {
+            console.log("Error during verification fb error: " + tot_friends_res.error_code + ".");
+            defered.resolve(null);
+          }
           return defered.resolve(parseInt(tot_friends_res[0].friend_count));
         });
         return defered.promise();
       } else {
         return defered.resolve(null);
       }
-    };
-
-    VerifyManager.samplecallback = function(fb_data) {
-      return console.log(fb_data);
     };
 
     VerifyManager.GetTwitterFollowersCount = function(user_id) {
@@ -152,6 +157,20 @@ Manager class for all verify functionality
 
     VerifyManager.GetTwitterFollowersCallback = function(response) {
       return alert(response);
+    };
+
+    VerifyManager.getMyVerification = function() {
+      var my_verif_info;
+      my_verif_info = {
+        'user_id': parseInt(this.me.id),
+        'fb_id': parseInt(this.me.facebook_userid),
+        'tw_id': this.me.twitter_userid,
+        'verified_email': this.me.verified,
+        'verified_edu': this.me.university_verified != null,
+        'verified_fb': this.me.facebook_userid != null,
+        'verified_tw': this.me.twitter_userid != null
+      };
+      return my_verif_info;
     };
 
     return VerifyManager;

@@ -1,12 +1,16 @@
 <!-- app/View/Elements/message_list_item.ctp -->
 <?php 
 	$msg_id = $message['Message']['message_id'];
-	die(debug($message));
-	$side = "left";
-	$pic = '/img/messages/archer_small.png';
+	// die(debug($message));
+	
+	$pic = '/img/profile_pic_placeholder.png';
 	if($user_id == $message['User']['id']){
-		$side = "right";
-		$pic = '/img/messages/me_small.png';
+		$side = "right";	
+	}else{
+		$side = "left";
+	}
+	if($message['User']['facebook_userid']){
+		$pic = "https://graph.facebook.com/".$message['User']['facebook_userid']."/picture?width=80&height=80";	
 	}
 
 	// $time_ms = strtotime($message['Message']['created'])

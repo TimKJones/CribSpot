@@ -11,7 +11,6 @@
 <?php echo $this->Html->css('dashboard'); ?>
 
 
-
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
 		<div class = 'span3' id = 'left_content'>
@@ -28,7 +27,7 @@
 				Listings
 			</div>
 			<div class = 'messages-content hidden'>
-			 	<?php echo $this->element('Messages/message_window') ?>
+			 	<?php echo $this->element('Messages/message_window', $user) ?>
 			</div>
 
 		</div>
@@ -83,7 +82,7 @@
  //  function onLinkedInAuth() {
  //     IN.API.Profile("me").result(A2Cribs.FacebookManager.UpdateLinkedinLogin);
  //  }
- 	A2Cribs.VerifyManager.init();
+ 	A2Cribs.VerifyManager.init(<?php echo $user_json;?>);
 	A2Cribs.Dashboard.SetupUI();
 	A2Cribs.Account.setupUI();
 	var a = A2Cribs.Messages
@@ -99,7 +98,7 @@
 
 	}
 
-	a.init();
+	a.init(<?php echo $user_json;?>);
 	a.setupUI();
 	
 

@@ -6,10 +6,10 @@
     function Account() {}
 
     Account.setupUI = function() {
-      var url,
+      var my_verification_info, url, veripanel,
         _this = this;
       url = myBaseUrl + "university/getAll/";
-      return $.get(url, function(data) {
+      $.get(url, function(data) {
         _this.UniversityData = JSON.parse(data);
         _this.UniversityNames = [];
         _this.UniversityID = [];
@@ -22,6 +22,27 @@
         });
         return $('#save_btn').click(function() {
           return _this.SaveAccount();
+        });
+      });
+      my_verification_info = A2Cribs.VerifyManager.getMyVerification();
+      veripanel = $('#my-verification-panel');
+      if (my_verification_info.verified_email) {
+        veripanel.find('#veri-email i:last-child').removeClass('unverified').addClass('verified');
+      }
+      if (my_verification_info.verified_edu) {
+        veripanel.find('#veri-edu i:last-child').removeClass('unverified').addClass('verified');
+      }
+      if (my_verification_info.verified_fb) {
+        veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified');
+      }
+      if (my_verification_info.verified_tw) {
+        veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified');
+      }
+      console.log(my_verification_info);
+      return $('.veridd').each(function(index, element) {
+        return $(element).tooltip({
+          'title': 'Verify?',
+          'trigger': 'hover'
         });
       });
     };

@@ -111,14 +111,31 @@
 
     Messages.setParticipantInfoUI = function(participant) {
       $(".from_participant").html(participant['first_name']).attr('href', myBaseUrl + 'users/view/' + participant['id']);
-      $("#participant_university").html(participant['University']['name']);
-      participant['facebook_id'] = 1354124203;
+      $(".participant-university").html(participant['University']['name']);
       return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
-        var url;
+        var url, veripanel;
+        veripanel = $('#verification-panel');
+        if (verification_info.verified_email) {
+          veripanel.find('#veri-email  i:last-child').removeClass('unverified').addClass('verified');
+        }
+        if (verification_info.verified_edu) {
+          veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified');
+        }
         if (verification_info.verified_fb) {
           url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
           console.log(url);
-          return $('#p_pic').attr('src', url);
+          $('#p_pic').attr('src', url);
+          veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified');
+          if (verification_info.mut_friends != null) {
+            veripanel.find('#participant-friends').html("- " + verification_info.mut_friends + " mutual");
+          } else if (verification_info.tot_friends != null) {
+            veripanel.find('#participant-friends').html("- " + verification_info.tot_friends + " friends");
+          }
+        }
+        if (verification_info.verified_tw) {
+          if (verification_info.tot_followers != null) {
+            return veripanel.find("#participant-followers").html("- " + verification_info.tot_followers + " followers");
+          }
         }
       });
     };
@@ -227,6 +244,7 @@
     };
 
     Messages.init = function(user) {
+      this.me = user;
       this.ViewOnlyUnread = false;
       if (!(this.CurrentConversation != null)) {
         this.CurrentConversation = -1;

@@ -15,7 +15,7 @@
 
 
 /******************************************************************************/
-/********************************Left Side Content*****************************/
+/********************************Right Side Content*****************************/
 /******************************************************************************/
 
 #user_info{
@@ -30,6 +30,7 @@
 	margin-top: 7px;
 	margin-right: 5px;
 	margin-left: 5px;
+	margin-bottom: 7px;
 	border-radius: 5px;
 	
 	padding-top: 5px;
@@ -63,35 +64,38 @@
 	color: #3B5998;
 }
 
-#verification-panel{
+#my-verification-panel{
 	border-left: 1px solid #b7b1b1;
 	border-right: 1px solid #b7b1b1;
 }
 
-#verification-panel > div{
+#my-verification-panel > div{
 	position: relative;
-	height: 40px;
+	min-height: 30px;
 	padding-left: 50px;
+	overflow: hidden;
+	padding-right: 30px;
 	font-size: 16px;
-	padding-top: 15px;
+	padding-top: 10px;
 	border-bottom: 1px solid #b7b1b1;
 	background: #f6f6f6;
+
 }
 
-#verification-panel > div > i:first-child{
+#my-verification-panel > div > i:first-child{
 	position: absolute;
 	font-size: 20px;
 	left: 12px;
 	top: 15px;
 }
 
-
-.verified{
+#my-verification-panel > div > img:first-child{
 	position: absolute;
-	font-size: 20px;
-	right: 12px;
-	color: #68c613;
+	/*font-size: 20px;*/
+	left: 12px;
+	top: 15px;
 }
+
 
 #meaning{
 	cursor: pointer;
@@ -101,4 +105,17 @@
 #hidden-meaning{
 	display: none;
 	width: 100%;
+}
+
+#edit_account_window label{
+	font-weight: bold;
+}
+
+.veri-dropdown{
+	display: none;
+}
+
+
+#my-verification-panel .unverified{
+	cursor: pointer;
 }

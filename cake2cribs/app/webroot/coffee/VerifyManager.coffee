@@ -3,10 +3,8 @@ Manager class for all verify functionality
 ###
 class A2Cribs.VerifyManager
 
-	@init:()->
-		@my_verification_info = {
-			'facebook_id': 1249680161,
-		}
+	@init:(user)->
+		@me = user
 		@VerificationData = {} # Cache to hold users verification data
 
 		#init fb api
@@ -73,8 +71,6 @@ class A2Cribs.VerifyManager
 
 	###
 
-
-
 	@getVerificationFor: (user_)->
 		
 		if not @VerificationData[user_.id]?
@@ -90,7 +86,9 @@ class A2Cribs.VerifyManager
 			).done (tot_friends, mut_friends)->
 				verification_info = {
 					'user_id': user.id,
-					'fb_id': user.facebook_id,
+					'fb_id': user.facebook_userid,
+					'verified_email': user.verified,
+					'verified_edu': user.university_verified,
 					# 'tw_id': user.twitter_id,
 					'verified_fb': tot_friends?, # if tot_friends is defined the user is verified
 					'mut_friends': mut_friends,
@@ -98,7 +96,7 @@ class A2Cribs.VerifyManager
 					# 'verified_tw': followers?,
 					# 'tot_followers': null,
 				}
-
+				console.log(verification_info)
 				defered.resolve verification_info
 
 
@@ -107,9 +105,12 @@ class A2Cribs.VerifyManager
 
 	@getMutalFriends: (user)->
 		defered = new $.Deferred();
-		if @my_verification_info.facebook_id? and user.facebook_id?
-			query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + @my_verification_info.facebook_id + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_id + ')'
+		if @me.facebook_userid? and user.facebook_userid?
+			query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + @me.facebook_userid + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_userid + ')'
 			FB.api {method:'fql.query', query: query}, (mut_friends_res)->
+				if mut_friends_res.error_code?
+					console.log "Error during verification fb error: #{mut_friends_res.error_code}."
+					defered.resolve(null)
 				defered.resolve(mut_friends_res.length)
 			return defered.promise()
 		else
@@ -118,18 +119,17 @@ class A2Cribs.VerifyManager
 
 	@getTotalFriends: (user)->
 		defered = new $.Deferred()
-		if user.facebook_id?
-			query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_id
+		if user.facebook_userid?
+			query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_userid
 			FB.api { method:'fql.query', query: query}, (tot_friends_res)->
+				if tot_friends_res.error_code?
+					console.log "Error during verification fb error: #{tot_friends_res.error_code}."
+					defered.resolve(null)
+
 				defered.resolve(parseInt(tot_friends_res[0].friend_count))
 			return defered.promise()
 		else
 			return defered.resolve(null)
-
-
-
-	@samplecallback:(fb_data)->
-		console.log(fb_data)
 
 
 	@GetTwitterFollowersCount: (user_id) ->
@@ -144,6 +144,20 @@ class A2Cribs.VerifyManager
 
 	@GetTwitterFollowersCallback: (response) ->
 		alert response
+
+
+	@getMyVerification: ()->
+		my_verif_info = {
+			'user_id': parseInt(@me.id),
+			'fb_id': parseInt(@me.facebook_userid),
+			'tw_id': @me.twitter_userid,
+			'verified_email': @me.verified
+			'verified_edu': @me.university_verified?
+			'verified_fb': @me.facebook_userid?,
+			'verified_tw': @me.twitter_userid?,
+		}
+
+		return my_verif_info
 
 
 
