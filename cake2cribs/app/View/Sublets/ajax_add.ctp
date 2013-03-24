@@ -14,6 +14,7 @@
  		   max-width: none !important;
 		}
 </style>
+<?php echo $savedUniversity; ?>
 <div class="ui-widget">
                           <label for="universitiesInput">University: </label>
                           <input id="universitiesInput" value="<?php echo $savedUniversity; ?>"/>

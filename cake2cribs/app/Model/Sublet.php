@@ -2,9 +2,9 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User','University','BuildingType','UtilityType','BathroomType','PaymentType');
-	public $hasMany = 'Housemate';
-	public $hasOne = array();
+	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType');
+	public $hasMany = array('Housemate');
+	//public $hasOne = array();
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
 	//public $uses = array('Housemate', 'BuildingType','UtilityType','BathroomType','PaymentType');
@@ -307,7 +307,8 @@ CakeLog::write("urlParams", "in func: " . print_r($params, true));
 			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Private'));
 			array_push($bathroom_type_id_OR, $this->getBathroomTypeId('Shared'));
 			array_push($conditions, array('OR' => array(
-			'Sublet.bathroom_type_id' => $bathroom_type_id_OR)));
+			array('Sublet.bathroom_type_id' => $bathroom_type_id_OR),
+			array('Sublet.bathroom_type_id' => NULL))));
 		}
 		else
 		{
@@ -317,8 +318,31 @@ CakeLog::write("urlParams", "in func: " . print_r($params, true));
 				array_push($conditions, array('Sublet.bathroom_type_id' => $this->getBathroomTypeId('Shared')));
 		}
 
-		$gender_OR = array();
+		
 		$grad_undergrad_OR = array();
+		if ($params['grad'] == "true")
+			array_push($grad_undergrad_OR, $this->getStudentTypeId('Graduate'));
+		if ($params['undergrad'] == "true")
+			array_push($grad_undergrad_OR, $this->getStudentTypeId('Undergraduate'));
+		if (count($grad_undergrad_OR) > 0)
+			array_push($grad_undergrad_OR, $this->getStudentTypeId('Mix'));
+		//array_push($grad_undergrad_OR, 	NULL);
+
+
+		$gender_OR = array();
+		if ($params['male'] == "true")
+			array_push($gender_OR, $this->getGenderTypeId('Male'));
+		if ($params['female'] == "true")
+			array_push($gender_OR, $this->getGenderTypeId('Female'));
+		if (count($gender_OR) > 0)
+			array_push($gender_OR, $this->getGenderTypeId('Mix'));
+		//array_push($gender_OR, 	NULL);
+
+
+		if ($params['students_only'] == "true")
+			array_push($conditions, array(
+				'Housemate.enrolled' => true));
+		
 
 		// need fields for ac, parking
 
@@ -336,11 +360,16 @@ CakeLog::write("urlParams", "in func: " . print_r($params, true));
 CakeLog::write("filterConditions", "params: " . print_r($params, true));
 
 		array_push($conditions, array('OR' => array(
-			'Sublet.building_type_id'   => $building_type_id_OR)));
+			array('Marker.building_type_id' => $building_type_id_OR),
+			array('Marker.building_type_id' => NULL))));
 
-		if (count($bathroom_type_id_OR) > 0)
-			array_push($conditions, array('OR' => array(
-			'Sublet.bathroom_type_id' => $bathroom_type_id_OR)));
+		array_push($conditions, array('OR' => array(
+			array('Housemate.student_type'   => $grad_undergrad_OR), 
+			array('Housemate.student_type'   => NULL))));
+
+		array_push($conditions, array('OR' => array(
+			array('Housemate.gender'   => $gender_OR),
+			array('Housemate.gender'   => NULL))));
 
 		array_push($conditions, array(
 			'Sublet.price_per_bedroom >=' => $params['min_rent'],
@@ -394,18 +423,31 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 		CakeLog::write("filterConditions", print_r($conditions, true));
 
 		/* Limit which tables are queried */
-		$contains = array('Sublet', 'Housemate');
+		$contains = array('Housemate', 'Marker');
 
 		$markerIdList = $this->find('all', array(
 			'conditions' => $conditions,
-			'fields' => array('marker_id')/*,
-			'contain' => $contains*/));
+			'joins' => array(
+		        array(
+		            'table' => 'housemates',
+		            'alias' => 'Housemate',
+		            'type' => 'INNER',
+		            'conditions' => array(
+		                'Housemate.sublet_id = Sublet.id'
+		            )
+		        )
+		    ),
+			'fields' => array('marker_id'),
+			'contain' => $contains));
 
 		//return $markerIdList[0]['Listing']['marker_id'];
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Sublet']['marker_id']);
 
+
+$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -507,6 +549,58 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 			return $bathroomTypes[$bathroomString];
 		else
 			return null;
+	}
+
+	function getGenderTypeId($genderString)
+	{
+		$genderTypes = Cache::read("genderTypes");
+		$genderId = null;
+		if ($genderTypes == null)
+		{
+			$GenderType = ClassRegistry::init("GenderType");
+			$allGenderTypes = $GenderType->find('all');
+			for ($i = 0; $i < count($allGenderTypes); $i++)
+			{
+				$id = $allGenderTypes[$i]['GenderType']['id'];
+				$name = $allGenderTypes[$i]['GenderType']['name'];
+				$genderTypes[$name] = $id;
+			}
+		}
+
+		if (array_key_exists($genderString, $genderTypes))
+			return $genderTypes[$genderString];
+		else
+			return null;
+	}
+
+	function getStudentTypeId($studentTypeString)
+	{
+		$studentTypes = Cache::read("studentTypes");
+		$studentId = null;
+		if ($studentTypes == null)
+		{
+			$StudentType = ClassRegistry::init("StudentType");
+			$allStudentTypes = $StudentType->find('all');
+			for ($i = 0; $i < count($allStudentTypes); $i++)
+			{
+				$id = $allStudentTypes[$i]['StudentType']['id'];
+				$name = $allStudentTypes[$i]['StudentType']['name'];
+				$studentTypes[$name] = $id;
+			}
+		}
+
+		if (array_key_exists($studentTypeString, $studentTypes))
+			return $studentTypes[$studentTypeString];
+		else
+			return null;
+	}
+
+	function getLastQuery()
+	{
+		$dbo = $this->getDatasource();
+		$logs = $dbo->_queriesLog;
+
+		return end($logs);
 	}
 }
 ?>

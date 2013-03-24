@@ -152,18 +152,26 @@ Set userid in session as well as $this->loginUrl and $this->logoutUrl
 	    $this->Session->write('min_rent', 0); 
 	    $this->Session->write('max_rent', 999999); 
 	    $this->Session->write('beds', 0);
-	    $this->Session->write('house', true); 
-	    $this->Session->write('apt', true); 
-	    $this->Session->write('unit_type_other', true);  
-	    $this->Session->write('male', "NOT_SET");  
-	    $this->Session->write('female', "NOT_SET");  
-	    $this->Session->write('students_only', "NOT_SET");  
-	    $this->Session->write('grad', "NOT_SET"); 
-	    $this->Session->write('undergrad', "NOT_SET"); 
-	    $this->Session->write('bathroom_type', "NOT_SET"); 
-	    $this->Session->write('ac', "NOT_SET");
-	    $this->Session->write('parking', "NOT_SET");
-	    $this->Session->write('utilities_included', "NOT_SET");  
-	    $this->Session->write('no_security_deposit', "NOT_SET");
+	    $this->Session->write('house', "true"); 
+	    $this->Session->write('apt', "true"); 
+	    $this->Session->write('unit_type_other', "true");  
+	    $this->Session->write('male', "true");  
+	    $this->Session->write('female', "true");  
+	    $this->Session->write('students_only', "false");  
+	    $this->Session->write('grad', "true"); 
+	    $this->Session->write('undergrad', "true"); 
+	    $this->Session->write('bathroom_type', "false"); 
+	    $this->Session->write('ac', "false");
+	    $this->Session->write('parking', "false");
+	    $this->Session->write('utilities_included', "false");  
+	    $this->Session->write('no_security_deposit', "false");
   	}
+
+  	 function getLastQuery()
+	{
+		$dbo = $this->getDatasource();
+		$logs = $dbo->_queriesLog;
+
+		return end($logs);
+	}
 }

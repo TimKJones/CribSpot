@@ -11,7 +11,7 @@ class A2Cribs.FilterManager
 	@UpdateMarkers: (visibleMarkerIds) ->
 		visibleMarkerIds = JSON.parse visibleMarkerIds
 		#map.VisibleMarkers = []
-		for marker, markerid in A2Cribs.Map.IdToMarkerMap
+		for marker, markerid in A2Cribs.Cache.IdToMarkerMap
 			if markerid.toString() in visibleMarkerIds
 				if (marker)
 					#map.VisibleMarkers.push(marker.GMarker)

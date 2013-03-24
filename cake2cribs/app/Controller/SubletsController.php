@@ -2,14 +2,17 @@
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-    public $components= array('RequestHandler');
+    public $components= array('RequestHandler', 'Auth', 'Session');
 
     public function beforeFilter() {
+        parent::beforeFilter();
         $this->Auth->allow('index');
         $this->Auth->allow('view');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
-
+        $this->Auth->allow('ajax_add');
+        $this->Auth->allow('ajax_add_create');
+        $this->Auth->allow('ajax_add2');
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
     }
@@ -85,8 +88,10 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        Configure::write('debug', 0);
         $canCreate = False;
-        $universities = $this->Sublet->University->find('all');
+        $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
+
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         //$utilityTypes = $this->Sublet->UtilityType->find('list');
         //$bathroomTypes = $this->Sublet->BathroomType->find('list');
@@ -121,19 +126,20 @@ class SubletsController extends AppController {
             {
                 $canCreate = true;
             }
-            $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
-                    $this->set('savedUniversity', $savedUniversity);
-                    $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
-                    $this->set('savedBuildingTypeID', $savedBuildingTypeID);
-                    $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
-                    $this->set('savedName', $savedName);
-                    $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
-                    $this->set('savedAddress',$savedAddress);
-                    $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
-                    $this->set('savedUnitNumber', $savedUnitNumber);
-                    $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
-                    $this->set('university_id', $savedUniversityID);
+                $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
+                $this->set('savedUniversity', $savedUniversity);
+                $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
+                $this->set('savedBuildingTypeID', $savedBuildingTypeID);
+                $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
+                $this->set('savedName', $savedName);
+                $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
+                $this->set('savedAddress',$savedAddress);
+                $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
+                $this->set('savedUnitNumber', $savedUnitNumber);
+                $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
+                $this->set('university_id', $savedUniversityID);
         }
+
         
     }
 
@@ -142,29 +148,40 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add_create() {
-        //add code to save mostly empty sublet 
-        /*$this->Sublet->create($this->request->data);
-
-        if ($this->Sublet->save($this->request->data, true, array('fieldList' => array('university_id', 'building_type_id', 'name'))))
+    /*
+    CurrentStep: "2"
+Sublet: Object
+address: ""
+building_type_id: "1"
+latitude: ""
+longitude: ""
+name: ""
+unit_number: ""
+university: ""
+university_id: "4144"
+*/
+        if ($this->request->data['CurrentStep'] == 1)
         {
-           /* $json = array('university_id' => $this->request->data['Sublet']['university_id'],
-                    'building_type_id' => $this->Sublet->field('building_type_id'),
-                    'name' => $this->Sublet->field('name'));
-            //$json = json_encode($this->Sublet);
-            //$this->set('response', $json);
-            $error = array('IT went through');
-            $json = json_encode($error);
-            $this->set('response', $json);
+            $this->Session->write('SubletInProgress.Sublet.address', $this->request->data['Sublet']['address']);
+            $this->Session->write('SubletInProgress.Sublet.building_type_id', $this->request->data['Sublet']['building_type_id']);
+            $this->Session->write('SubletInProgress.Sublet.latitude', $this->request->data['Sublet']['latitude']);
+            $this->Session->write('SubletInProgress.Sublet.longitude', $this->request->data['Sublet']['longitude']);
+            $this->Session->write('SubletInProgress.Sublet.name', $this->request->data['Sublet']['name']);
+            $this->Session->write('SubletInProgress.Sublet.unit_number', $this->request->data['Sublet']['unit_number']);
+            $this->Session->write('SubletInProgress.Sublet.university', $this->request->data['Sublet']['university']);
+            $this->Session->write('SubletInProgress.Sublet.university_id', $this->request->data['Sublet']['university_id']);
+
         }
-        else
+        else if ($this->request->data['CurrentStep'] ==2)
         {
-            //$error = $this->validateErrors($this->Sublet);
-            $error = array('It did not go through.');
-            $json = json_encode($error);
-            $this->set('response', $json);
+            $this->Session->write('SubletInProgress.Sublet.date_begin', $this->request->data['Sublet']['date_begin']);
+            $this->Session->write('SubletInProgress.Sublet.date_end', $this->request->data['Sublet']['date_end']);   
+        }
+        else if ($this->request->data['CurrentStep'] == 3)
+        {
 
-        }*/
-        $this->Session->write('SubletInProgress', $this->request->data);
+        }
+        //$this->Session->write('SubletInProgress', $this->request->data);
         $this->set('response',json_encode($this->Session->read('SubletInProgress')));
         
     }

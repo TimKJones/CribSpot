@@ -5,6 +5,7 @@ class A2Cribs.SubletAdd
 		$('#goToStep2').click (e) =>
 			e.preventDefault()
 			#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
+
 			@subletAddStep1() 
 
 
@@ -14,7 +15,7 @@ class A2Cribs.SubletAdd
 		url = "sublets/ajax_add_create"
 		request_data = {
 			Sublet: {
-				university_id: (window.universitiesArray.indexOf($('#universitiesInput').val()) + swindow.universitiesMap[0].University.id)
+				university_id: parseInt(window.universitiesArray.indexOf($('#universitiesInput').val()) + parseInt(window.universitiesMap[0].University.id))
 				university: $('#universitiesInput').val()
 				unit_number: $('#SubletUnitNumber').val()
 				address: $("#addressToMark").val()
@@ -23,6 +24,7 @@ class A2Cribs.SubletAdd
 				latitude: $('#updatedLat').text()
 				longitude: $('#updatedLong').text()
 			}
+			CurrentStep: 1
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
 			
 		}
