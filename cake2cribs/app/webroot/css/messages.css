@@ -353,7 +353,9 @@
 
 /* Right Content */
 
+
 #participant_info{
+
 	background: #fbfbfb;
 	margin-top: 20px;
 	border: 2px solid #b7b1b1;
@@ -365,6 +367,7 @@
 	margin-top: 7px;
 	margin-right: 5px;
 	margin-left: 5px;
+	margin-bottom: 7px;
 	border-radius: 5px;
 	
 	padding-top: 5px;
@@ -385,7 +388,7 @@
 	margin-left: 12px;
 }
 
-#participant_university{
+p.participant-university{
 	font-size: 18px;
 	margin-left: 12px;
 }
@@ -401,11 +404,12 @@
 #verification-panel{
 	border-left: 1px solid #b7b1b1;
 	border-right: 1px solid #b7b1b1;
+	border-top: 1px solid #b7b1b1;
 }
 
 #verification-panel > div{
 	position: relative;
-	height: 40px;
+	min-height: 30px;
 	padding-left: 50px;
 	font-size: 16px;
 	padding-top: 15px;
@@ -420,16 +424,17 @@
 	top: 15px;
 }
 
-
-.verified{
+#verification-panel > div > img:first-child{
 	position: absolute;
-	font-size: 20px;
-	right: 12px;
-	color: #68c613;
+	/*font-size: 20px;*/
+	left: 12px;
+	top: 15px;
 }
+
 
 #meaning{
 	cursor: pointer;
+	margin-top: 10px;
 	width: 100%;
 	text-align: right;
 }
@@ -437,3 +442,39 @@
 	display: none;
 	width: 100%;
 }
+
+#user_unverified{
+	margin-top: 15px;
+	min-height: 50px; 
+	position: relative;
+	border-radius: 5px;
+	border: 2px solid #cec59e;
+	background-color: #f8edc0;
+}
+
+#user_unverified > i{
+	
+	font-size: 28px;
+	padding-left: 5px;
+	float: left;
+}
+
+#user_unverified > div{
+	position: absolute;
+	left: 35px;
+	right: 5px;
+	top: 5px;
+	bottom: 5px;
+	font-size: 16px;
+}
+
+#user_unverified > div > span:last-child{
+	color: #bd1d1c;
+}
+
+
+
+
+
+
+

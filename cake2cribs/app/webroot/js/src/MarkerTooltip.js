@@ -107,7 +107,7 @@ Wrapper for google infobubble
 
 
     MarkerTooltip.prototype.createSingleContent_ = function(visibleId, fromMultipleListings) {
-      if (A2Cribs.Map.IdToListingMap[visibleId[0]].UnitType === "Greek") {
+      if (A2Cribs.Map.IdToSubletMap[visibleId[0]].UnitType === "Greek") {
         return this.createGreekContent_(visibleId);
       } else {
         return this.createGeneralContent_(visibleId, fromMultipleListings);
@@ -134,7 +134,7 @@ Wrapper for google infobubble
       this.SetHeight(198);
       this.SetWidth(250);
       this.previousContent = fromMultipleListings ? this.InfoBubble.getContent() : null;
-      visibleListing = A2Cribs.Map.IdToListingMap[visibleId];
+      visibleListing = A2Cribs.Map.IdToSubletMap[visibleId];
       visibleMarker = A2Cribs.Map.IdToMarkerMap[visibleListing.MarkerId];
       title = visibleMarker.Title ? visibleMarker.Title : visibleMarker.Address;
       tooltipDiv = $('#generalTooltip');
@@ -206,14 +206,14 @@ Wrapper for google infobubble
         this.SetContent(this.previousContent);
         return this.Refresh();
       }
-      rootMarker = A2Cribs.Map.IdToMarkerMap[A2Cribs.Map.IdToListingMap[visibleIds[0]].MarkerId];
+      rootMarker = A2Cribs.Map.IdToMarkerMap[A2Cribs.Map.IdToSubletMap[visibleIds[0]].MarkerId];
       title = rootMarker.Title ? rootMarker.Title : rootMarker.Address;
       tooltipDiv = $('#multiTooltip');
       tooltipDiv.find('#tooltipAddress').html(title);
       tooltipDiv.find('#multiBubbleContainer').empty();
       _fn = function(id) {
         var currentListing, unitSummary;
-        currentListing = A2Cribs.Map.IdToListingMap[id];
+        currentListing = A2Cribs.Map.IdToSubletMap[id];
         unitSummary = currentListing.Beds > 1 ? currentListing.Beds + " Beds, " : currentListing.Beds + " Bed, ";
         unitSummary += currentListing.Baths > 1 ? currentListing.Baths + " Baths, " : currentListing.Baths + " Baths, ";
         unitSummary += currentListing.LeaseRange;

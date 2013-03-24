@@ -71,10 +71,8 @@ class Conversation extends AppModel {
 		$options['fields'] = array(
 				"DISTINCT Conversation.*",
 				"Conversation.unread_message_count",
-				"Participant1.username",
 				"Participant1.first_name",
 				"Participant1.id",
-				"Participant2.username",
 				"Participant2.first_name",
 				"Participant2.id",
 
@@ -110,6 +108,7 @@ class Conversation extends AppModel {
 			unset($conversation['Participant1']);
 			unset($conversation['Participant2']);
 		}
+		
 		return $conversations;
 
 	}

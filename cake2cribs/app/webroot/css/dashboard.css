@@ -22,6 +22,7 @@
 
 #right_content{
 	height: 100%;
+	min-width: 250px;
 	position: relative;
 }
 
@@ -40,6 +41,7 @@ a:hover{
 #left_content{
 	height: 100%;
 	position: relative;
+	min-width: 250px;
 }
 
 
@@ -130,3 +132,37 @@ a:hover{
 #middle_content > div{
 	height: 100%
 }
+
+
+
+
+
+.verified{
+	position: absolute;
+	font-size: 20px;
+	right: 12px;
+	top: 15px;
+	color: #68c613;
+	background-color: #f6f6f6;
+}
+
+.unverified{
+	position: absolute;
+	font-size: 20px;
+	right: 12px;
+	top: 15px;
+	color: #bd1d1c;	
+	background-color: #f6f6f6;
+}
+
+
+
+
+/* MISC */
+
+.icon-edu{
+	width: 20px;
+	height: 20px;
+}
+
+
