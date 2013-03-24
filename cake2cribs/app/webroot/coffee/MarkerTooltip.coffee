@@ -70,7 +70,7 @@ f	Closes the tooltip, no animation
 	Creates single listing content based on the unit type
 	###
 	createSingleContent_: (visibleId, fromMultipleListings) ->
-		if A2Cribs.Map.IdToListingMap[visibleId[0]].UnitType is "Greek"
+		if A2Cribs.Map.IdToSubletMap[visibleId[0]].UnitType is "Greek"
 			@createGreekContent_ visibleId
 		else
 			@createGeneralContent_ visibleId, fromMultipleListings
@@ -89,7 +89,7 @@ f	Closes the tooltip, no animation
 		@SetHeight 198
 		@SetWidth 250
 		@previousContent = if fromMultipleListings then @InfoBubble.getContent() else null
-		visibleListing = A2Cribs.Map.IdToListingMap[visibleId]
+		visibleListing = A2Cribs.Map.IdToSubletMap[visibleId]
 		visibleMarker = A2Cribs.Map.IdToMarkerMap[visibleListing.MarkerId]
 		title = if visibleMarker.Title then visibleMarker.Title else visibleMarker.Address
 
@@ -141,7 +141,7 @@ f	Closes the tooltip, no animation
 			@SetContent @previousContent
 			return @Refresh()
 
-		rootMarker = A2Cribs.Map.IdToMarkerMap[A2Cribs.Map.IdToListingMap[visibleIds[0]].MarkerId];
+		rootMarker = A2Cribs.Map.IdToMarkerMap[A2Cribs.Map.IdToSubletMap[visibleIds[0]].MarkerId];
 		title = if rootMarker.Title then rootMarker.Title else rootMarker.Address
 
 		tooltipDiv = $('#multiTooltip')
@@ -150,7 +150,7 @@ f	Closes the tooltip, no animation
 
 		for id in visibleIds
 			do (id) ->
-				currentListing = A2Cribs.Map.IdToListingMap[id]
+				currentListing = A2Cribs.Map.IdToSubletMap[id]
 				unitSummary = if currentListing.Beds > 1 then currentListing.Beds + " Beds, " else currentListing.Beds + " Bed, "
 				unitSummary += if currentListing.Baths > 1 then currentListing.Baths + " Baths, " else currentListing.Baths + " Baths, "
 				unitSummary += currentListing.LeaseRange

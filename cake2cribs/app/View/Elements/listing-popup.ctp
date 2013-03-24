@@ -1,15 +1,15 @@
 <?= $this->Html->css('/less/listing-popup.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div class="listing-popup modal">
+<div class="listing-popup modal hide fade">
 	<div class="modal-header">
-		<i class="title">Willow Tree Apartments</i>
+		<i class="sublet-name title">Willow Tree Apartments</i>
 		<div class="btn-group">
 			<button type="button" id="overview-btn" class="btn btn-primary active btn-active">Overview</button>
 			<button type="button" id="details-btn" class="btn">Details</button>
 			<button type="button" id="contact-btn" class="btn">Contact</button>
 			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large"></i></button>
 		</div>
-		<a href=""><div id="modal-close-button"></div></a>
+		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div class="photo-region">
 		<div id="main-photo" style="background-image:url(/img/landing/house1.jpg);"></div>
@@ -28,7 +28,7 @@
 			<table>
 				<tr>
 					<td>
-						<i class="large-text green-text">$</i><i class="large-text green-text">1,050</i><i class="medium-text">/m</i>
+						<i class="large-text green-text">$</i><i class="bed-price large-text green-text">1,050</i><i class="medium-text">/m</i>
 					</td>
 					<td>
 						<i class="large-text">1</i> <i class="medium-text">Bed</i>
@@ -123,7 +123,7 @@
 		<table class="med-large-line-height">
 			<tr>
 				<td><i class="med-small-text">Price:</i></td>
-				<td><i class="medium-text">$1,050</i></td>
+				<td><i class="medium-text bed-price">$1,050</i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Utilities:</i></td>

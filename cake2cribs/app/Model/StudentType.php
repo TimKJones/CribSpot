@@ -1,6 +1,6 @@
 <?php 
 
-class BuildingType extends AppModel {
+class StudentType extends AppModel {
 	public $belongsTo = array();
 	public $validate = array(
 		'id' => 'alphaNumeric', 

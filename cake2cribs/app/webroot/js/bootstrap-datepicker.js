@@ -127,7 +127,7 @@
 		},
 		
 		set: function() {
-			var formated = DPGlobal.formatDate(this.date, this.format);
+			var formated = (this.date)? DPGlobal.formatDate(this.date, this.format) : "Whenever";
 			if (!this.isInput) {
 				if (this.component){
 					this.element.find('input').prop('value', formated);
@@ -250,9 +250,15 @@
 		click: function(e) {
 			e.stopPropagation();
 			e.preventDefault();
-			var target = $(e.target).closest('span, td, th');
+			var target = $(e.target).closest('span, td, th, button');
 			if (target.length === 1) {
 				switch(target[0].nodeName.toLowerCase()) {
+					case 'button':
+						this.picker.find('.active').removeClass('active');
+						this.date = null;
+						this.set();
+						this.hide();
+						break;
 					case 'th':
 						switch(target[0].className) {
 							case 'switch':
@@ -309,6 +315,7 @@
 								date: this.date,
 								viewMode: DPGlobal.modes[this.viewMode].clsName
 							});
+							this.hide();
 						}
 						break;
 				}
@@ -452,6 +459,7 @@
 									DPGlobal.headTemplate+
 									'<tbody></tbody>'+
 								'</table>'+
+								'<button class="btn btn-block btn-primary">Whenever</button>'
 							'</div>'+
 							'<div class="datepicker-months">'+
 								'<table class="table-condensed">'+

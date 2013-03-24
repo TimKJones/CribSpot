@@ -5,6 +5,7 @@
 	echo $this->Html->css('/less/popover.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/css/jquery-dialog2/jquery.dialog2.css', array('inline'=>false));
+	echo $this->Html->css('/less/checkbox.less?','stylesheet/less', array('inline' => false));
 	
 	//echo('<link rel="stylesheet" type="text/css" href="/css/jquery-dialog2/jquery.dialog2.css">');
 	/* Datepicker and slider css */
@@ -33,13 +34,13 @@
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
-		<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
+		<!--<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
 		<li>
 			<div id="twitterDiv">
 				<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 			</div>
-		</li>
+		</li>-->
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about">About</a></li>
@@ -62,7 +63,7 @@
 	</div>
 
 	<div id="expanded-filter" class="btn-group">
-		<div class="btn middle-btn">
+		<div class="btn middle-btn filter-btn">
 			<form>
 				<table>
 					<tr>
@@ -73,7 +74,7 @@
 						<td>&nbsp;&nbsp;Price: 
 							<div id="slider-div"><input id="price-filter" class="popover-btn tooltip-btn" data-placement="bottom" type="text" value="$0 - $2000+" data-content="slider-content" data-html="true" readonly></div></td>
 						<td>
-							&nbsp;&nbsp;Beds: <select>
+							&nbsp;&nbsp;Beds: <select id="bedsSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 								<option>1</option>
 								<option>2+</option>
 							</select>
@@ -133,9 +134,9 @@
 	<div id='apttype-popover'>
 		<table>
 			<tr>
-				<td><label class="checkbox"><input type="checkbox" id="aptCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Apartment</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="houseCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">House</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="otherCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Other</label></td>
+				<td><input type="checkbox" id="aptCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="aptCheck">Apartment</label></td>
+				<td><input type="checkbox" id="houseCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="houseCheck">House</label></td>
+				<td><input type="checkbox" id="otherCheck" checked="yes" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="otherCheck">Other</label></td>
 			</tr>
 		</table>
 	</div>
@@ -143,30 +144,30 @@
 		<table>
 			<tr>
 				<td>Housemates:</td>
-				<td><label class="checkbox"><input type="checkbox" id="maleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Male</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="femaleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Female</label></td>
+				<td><input type="checkbox" checked="yes" id="maleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="maleCheck">Male</label></td>
+				<td><input type="checkbox" checked="yes" id="femaleCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="femaleCheck">Female</label></td>
 			</tr>
 		</table>
 		<table>
 			<tr>
-				<td><label class="checkbox"><input type="checkbox" id="studentsOnlyCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Students Only</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="gradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Grad</label></td>
-				<td><label class="checkbox"><input type="checkbox" id="undergradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Undergrad</label></td>
+				<td><input type="checkbox" id="studentsOnlyCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="studentsOnlyCheck">Students Only</label></td>
+				<td><input type="checkbox" checked="yes" id="gradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="gradCheck">Grad</label></td>
+				<td><input type="checkbox" checked="yes" id="undergradCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="undergradCheck">Undergrad</label></td>
 			</tr>
 		</table>
 	</div>
 	<div id='more-popover'>
 		<div class="top-row">
 			<label>Bathroom</label>
-			<select>
+			<select id="bathSelect" onchange="A2Cribs.FilterManager.ApplyFilter(this)">
 				<option>Private</option>
-				<option>Public</option>
+				<option>Shared</option>
 			</select>
-			<label class="checkbox"><input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">A/C</label>
-			<label class="checkbox"><input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Parking</label>
+			<input type="checkbox" id="acCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="acCheck">A/C</label>
+			<input type="checkbox" id="parkingCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="parkingCheck">Parking</label>
 		</div>
-		<label class="checkbox"><input type="checkbox" id="utilitiesCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">Utilities Included</label>
-		<label class="checkbox"><input type="checkbox" id="noSecurityDepositCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)">No Security Deposit</label>
+		<input type="checkbox" id="utilitiesCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="utilitiesCheck">Utilities Included</label>
+		<input type="checkbox" id="noSecurityDepositCheck" onchange="A2Cribs.FilterManager.ApplyFilter(this)"><label for="noSecurityDepositCheck">No Security Deposit</label>
 	</div>
 	<?= $this->element('slider'); ?>
 </div>
@@ -192,9 +193,11 @@
             event.preventDefault();
         });
     });
-
-    /*$("#endDate").datepicker().on('changeDate', function(ev) {
-    	
+/*
+    $("#endDate").datepicker().on('changeDate', function(ev) {
+    	alert('changed');
     }*/
+
+  //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
 </script>
 

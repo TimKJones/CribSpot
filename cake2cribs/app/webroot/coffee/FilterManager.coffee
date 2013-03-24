@@ -1,7 +1,7 @@
 class A2Cribs.FilterManager
 	@MinRent = 0
 	@MaxRent = 999999
-	@MaxSliderRent = 4000
+	@MaxSliderRent = 2000
 	@MinBeds = 0
 	@MaxBeds = 999999
 	@MaxSliderBeds = 10
@@ -32,54 +32,60 @@ class A2Cribs.FilterManager
 	@ApplyFilter: (event, ui) ->
 		#TODO: USE THE ACTUAL VALUES	
 		ajaxData = null
-		if event.id == "houseCheck"
-			house = $("#houseCheck").is(':checked')	
-			ajaxData = "house=" + house
-		else if event.id == "aptCheck"
-			apt = $("#aptCheck").is(':checked')
-			ajaxData = "apt=" + apt
-		else if event.id == "otherCheck"
-			other = $("#otherCheck").is(':checked')
-			ajaxData = "unit_type_other=" + other
-		else if event.id == "maleCheck"
-			other = $("#maleCheck").is(':checked')
-			ajaxData = "male=" + other
-		else if event.id == "femaleCheck"
-			other = $("#femaleCheck").is(':checked')
-			ajaxData = "female=" + other
-		else if event.id == "studentsOnlyCheck"
-			other = $("#studentsOnlyCheck").is(':checked')
-			ajaxData = "students_only=" + other
-		else if event.id == "gradCheck"
-			other = $("#gradCheck").is(':checked')
-			ajaxData = "grad=" + other
-		else if event.id == "undergradCheck"
-			other = $("#undergradCheck").is(':checked')
-			ajaxData = "undergrad=" + other
-		else if event.id == "acCheck"
-			other = $("#acCheck").is(':checked')
-			ajaxData = "ac=" + other
-		else if event.id == "parkingCheck"
-			other = $("#parkingCheck").is(':checked')
-			ajaxData = "parking=" + other
-		else if event.id == "utilitiesCheck"
-			other = $("#utilitiesCheck").is(':checked')
-			ajaxData = "utilities_included=" + other
-		else if event.id == "noSecurityDepositCheck"
-			other = $("#noSecurityDepositCheck").is(':checked')
-			ajaxData = "no_security_deposit=" + other
+		#if event.id == "houseCheck"
+		house = $("#houseCheck").is(':checked')	
+		ajaxData = "house=" + house
+	#else if event.id == "aptCheck"
+		apt = $("#aptCheck").is(':checked')
+		ajaxData += "&apt=" + apt
+	#else if event.id == "otherCheck"
+		other = $("#otherCheck").is(':checked')
+		ajaxData += "&unit_type_other=" + other
+	#else if event.id == "maleCheck"
+		male = $("#maleCheck").is(':checked')
+		ajaxData += "&male=" + male
+	#else if event.id == "femaleCheck"
+		female = $("#femaleCheck").is(':checked')
+		ajaxData += "&female=" + female
+	#else if event.id == "studentsOnlyCheck"
+		students_only = $("#studentsOnlyCheck").is(':checked')
+		ajaxData += "&students_only=" + students_only
+	#else if event.id == "gradCheck"
+		grad = $("#gradCheck").is(':checked')
+		ajaxData += "&grad=" + grad
+	#else if event.id == "undergradCheck"
+		undergrad = $("#undergradCheck").is(':checked')
+		ajaxData += "&undergrad=" + undergrad
+	#else if event.id == "acCheck"
+		ac = $("#acCheck").is(':checked')
+		ajaxData += "&ac=" + ac
+	#else if event.id == "parkingCheck"
+		parking = $("#parkingCheck").is(':checked')
+		ajaxData += "&parking=" + parking
+	#else if event.id == "utilitiesCheck"
+		utilities = $("#utilitiesCheck").is(':checked')
+		ajaxData += "&utilities_included=" + utilities
+	#else if event.id == "noSecurityDepositCheck"
+		no_security_deposit = $("#noSecurityDepositCheck").is(':checked')
+		ajaxData += "&no_security_deposit=" + no_security_deposit
+	#else if event.id == "bedsSelect"
+		beds = $("#bedsSelect").val()
+		if beds == "2+"
+			beds = "2"
+		ajaxData += "&beds=" + beds
 
-		if (event.target) #event is not null only when when it corresponds to a slider-value-changed event
-			if (event.target.id == "rentSlider")
-				A2Cribs.FilterManager.MinRent = ui.values[0]
-				A2Cribs.FilterManager.MaxRent = ui.values[1]
-				if A2Cribs.FilterManager.MaxRent == A2Cribs.FilterManager.MaxSliderRent
-					A2Cribs.FilterManager.MaxRent = 999999
-			else
-				A2Cribs.FilterManager.MinBeds = ui.values[0]
-				A2Cribs.FilterManager.MaxBeds = ui.values[1]
-				if A2Cribs.FilterManager.MaxBeds == A2Cribs.FilterManager.MaxSliderBeds
-					A2Cribs.FilterManager.MaxBeds = 999999
+		bathroom_type = $("#bathSelect").val()
+		ajaxData += "&bathroom_type=" + bathroom_type
+
+		if (event.target != undefined && event.target.id == "slider") #event is not null only when when it corresponds to a slider-value-changed event
+			A2Cribs.FilterManager.MinRent = event.value[0]
+			A2Cribs.FilterManager.MaxRent = event.value[1]
+			if A2Cribs.FilterManager.MaxRent == A2Cribs.FilterManager.MaxSliderRent
+				A2Cribs.FilterManager.MaxRent = 999999
+
+		ajaxData += "&min_rent=" + A2Cribs.FilterManager.MinRent
+		ajaxData += "&max_rent=" + A2Cribs.FilterManager.MaxRent
+
 		$.ajax
 			url: myBaseUrl + "Sublets/ApplyFilter"
 			type:"GET"

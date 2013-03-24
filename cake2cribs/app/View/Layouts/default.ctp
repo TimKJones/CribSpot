@@ -51,6 +51,15 @@
 		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
+		echo $this->Html->script('src/HoverBubble');
+		echo $this->Html->script('src/ClickBubble');
+		echo $this->Html->script('src/Cache');
+		echo $this->Html->script('src/Sublet');
+		echo $this->Html->script('src/Housemate');
+		echo $this->Html->script('src/University');
+		echo $this->Html->script('src/HoverData');
+		echo $this->Html->script('src/SubletOwner');
+		echo $this->Html->script('src/ListingPopup');
 		echo $this->Html->script('knockout.js');
 		echo $this->Html->script('alertify.min.js');
 		

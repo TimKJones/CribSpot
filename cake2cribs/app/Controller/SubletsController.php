@@ -1,21 +1,17 @@
 <?php
-
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
-    public $components= array('Session', 'Auth','RequestHandler');
+    public $components= array('RequestHandler');
 
     public function beforeFilter() {
         $this->Auth->allow('index');
         $this->Auth->allow('view');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
-        parent::beforeFilter();
-        //$this->Auth->allow('manageSublets');
-        //$this->Auth->allow('add');
-        $this->Auth->allow('ajax_add');
-        //$this->Auth->allow('edit');
-        //$this->Auth->allow('delete');
+
+        $this->Auth->allow('ApplyFilter');
+        $this->Auth->allow('LoadMarkerData');
     }
 
 	public function index() {
@@ -226,6 +222,112 @@ class SubletsController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
 
-    
+/*
+Returns a list of marker_ids that will be visible based on the current filter settings.
+*/
+    public function ApplyFilter()
+    {
+        //CakeLog::write("sessionValues", 'before' . print_r($this->Session->read(), true));
+        //$this->UpdateFilterValues($this->params['url']);
+        //CakeLog::write("sessionValues", 'after' . print_r($this->getSessionValues(), true));
+       //CakeLog::write("urlParams", print_r($this->params['url'], true));
+        $response = $this->Sublet->getFilteredMarkerIdList($this->params['url']);
+        $this->layout = 'ajax';
+        $this->set('response', $response);
+    }
+
+/*
+Called via ajax when a marker is clicked to load all listings for that marker_id
+Returns json encoded data.
+*/
+    public function LoadMarkerData($marker_id)
+    {
+        $markerListingsData = $this->Sublet->getSubletDataByMarkerId($marker_id);
+        $markerListingsData = json_encode($markerListingsData);
+        $this->layout = 'ajax';
+        $this->set('response', $markerListingsData);
+
+        /*TODO: NEED THIS TO BE DONE AFTER RETURNING MARKER_LIST TO CLIENT */
+        //$filter_id = $this->FilterAnalytic->AddFilter($this->getSessionValues(), $marker_id);
+        //$this->ClickAnalytic->AddClick($this->Session->read('user'), $marker_id, $filter_id);
+    }
+
+    public function UpdateFilterValues($params)
+    {
+       /* start_date, end_date, minRent, maxRent, beds, house, apt, unit_type_other, male, female, students_only, grad, undergrad,
+    bathroom_type, ac, parking, utilities_included, no_security_deposit*/
+        /*
+        If sliders are at either of these maximum values, ensure that results greater than the maximum value are also returned.
+        */  
+        $maxPossibleRent = 2000;
+
+        if (array_key_exists("start_date", $params))
+            $this->Session->write('start_date', $params['start_date']);
+        if (array_key_exists("end_date", $params))
+            $this->Session->write('end_date', $params['end_date']); 
+        if (array_key_exists("min_rent", $params))
+            $this->Session->write('min_rent', $params['min_rent']); 
+        if (array_key_exists("max_rent", $params))
+        {
+            if ($params['max_rent'] == $maxPossibleRent)
+                $params['max_rent'] = 999999;
+            $this->Session->write('max_rent', $params['max_rent']); 
+        }
+        if (array_key_exists("beds", $params))
+            $this->Session->write('beds', $params['beds']);
+        if (array_key_exists("house", $params))
+            $this->Session->write('house', $params['house'] == "true"); 
+        if (array_key_exists("apt", $params))
+            $this->Session->write('apt', $params['apt'] == "true"); 
+        if (array_key_exists("unit_type_other", $params))
+            $this->Session->write('unit_type_other', $params['unit_type_other'] == "true");  
+        if (array_key_exists("male", $params))
+            $this->Session->write('male', $params['male'] == "true");  
+        if (array_key_exists("female", $params))
+            $this->Session->write('female', $params['female'] == "true");  
+        if (array_key_exists("students_only", $params))
+            $this->Session->write('students_only', $params['students_only'] == "true");  
+        if (array_key_exists("grad", $params))
+            $this->Session->write('grad', $params['grad'] == "true"); 
+        if (array_key_exists("undergrad", $params))
+            $this->Session->write('undergrad', $params['undergrad'] == "true"); 
+        if (array_key_exists("bathroom_type", $params))
+            $this->Session->write('bathroom_type', $params['bathroom_type'] == "true"); 
+        if (array_key_exists("ac", $params))
+            $this->Session->write('ac', $params['ac'] == "true");
+        if (array_key_exists("parking", $params))
+            $this->Session->write('parking', $params['parking'] == "true");
+        if (array_key_exists("utilities_included", $params))
+            $this->Session->write('utilities_included', $params['utilities_included'] == "true");
+        if (array_key_exists("no_security_deposit", $params))
+            $this->Session->write('no_security_deposit', $params['no_security_deposit'] == "true");       
+    }
+
+    public function getSessionValues()
+    {
+        $sessionValues = array(
+            'user_id' => $this->Auth->User('id'),
+            'start_date' => $this->Session->read('start_date'),
+            'end_date' => $this->Session->read('end_date'),
+            'min_rent' => $this->Session->read('min_rent'),
+            'max_rent' => $this->Session->read('max_rent'),
+            'beds' => $this->Session->read('beds'),
+            'house' => $this->Session->read('house'),
+            'apt' => $this->Session->read('apt'),
+            'unit_type_other' => $this->Session->read('unit_type_other'),
+            'male' => $this->Session->read('male'),
+            'female' => $this->Session->read('female'),
+            'students_only' => $this->Session->read('students_only'),
+            'grad' => $this->Session->read('grad'),
+            'undergrad' => $this->Session->read('undergrad'),
+            'bathroom_type' => $this->Session->read('bathroom_type'),
+            'ac' => $this->Session->read('ac'),
+            'parking' => $this->Session->read('parking'),
+            'utilities_included' => $this->Session->read('utilities_included'),
+            'no_security_deposit' => $this->Session->read('no_security_deposit'),
+        );
+
+        return $sessionValues;
+    }
 }
 ?>
