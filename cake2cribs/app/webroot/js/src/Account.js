@@ -38,7 +38,6 @@
       if (my_verification_info.verified_tw) {
         veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified');
       }
-      console.log(my_verification_info);
       return $('.veridd').each(function(index, element) {
         return $(element).tooltip({
           'title': 'Verify?',

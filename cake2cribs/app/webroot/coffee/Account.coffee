@@ -27,7 +27,7 @@ class A2Cribs.Account
 		if my_verification_info.verified_tw
 			veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified')
 
-		console.log(my_verification_info)
+		
 
 		$('.veridd').each (index, element)=>
 			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})

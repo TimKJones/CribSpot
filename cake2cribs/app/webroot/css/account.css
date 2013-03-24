@@ -44,6 +44,7 @@
 
 #user_pic_large img{
 	border: 2px solid #50574f;
+	width: 100%;
 }
 
 #user_name{

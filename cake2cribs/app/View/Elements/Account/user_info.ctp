@@ -6,7 +6,7 @@
 			echo "<img class = '' src='https://graph.facebook.com/". $user['User']['facebook_userid'] ."/picture?width=480'></img>";
 		}
 		else{
-			echo "<img class = '' src='/img/profile_pic_placeholder.jpg'></img>";
+			echo "<img class = 'sprite-head_large'></img>";
 		}
 
 		?>

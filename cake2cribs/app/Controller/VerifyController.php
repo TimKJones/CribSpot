@@ -174,7 +174,7 @@ class VerifyController extends AppController {
 
 	function TwitterVerify($token, $twitterUserId)
 	{
-		$this->User->TwitterVerify($this->getCurrentUserId(), $token['oauth_token'], $token['oauth_token_secret'], $twitterUserId);	
+		$this->User->TwitterVerify($this->Auth->User('id'), $token['oauth_token'], $token['oauth_token_secret'], $twitterUserId);	
 	}
 
 	/* THIS IS NOT YET FUNCTIONAL */
