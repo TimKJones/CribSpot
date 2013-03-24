@@ -33,7 +33,7 @@ class A2Cribs.Map
 			@AddMarker marker.Marker
 			#handle onClick
 
-		@LoadHoverData()
+		A2Cribs.Map.LoadHoverData()
 
 	###
 	Load all markers from Markers table
@@ -113,7 +113,6 @@ class A2Cribs.Map
 			maxZoom: 15
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
-		@LoadMarkers()
 		@LoadTypeTables()
 		@ClickBubble = new A2Cribs.ClickBubble @GMap
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
@@ -142,13 +141,21 @@ class A2Cribs.Map
 		types = JSON.parse types
 		buildings = types[0]
 		bathrooms = types[1]
+		genders = types[2]
+		student_types = types[3]
 		for type in buildings
 			A2Cribs.Cache.BuildingIdToNameMap[parseInt type.BuildingType.id] = type.BuildingType.name
 
 		for type in bathrooms
 			A2Cribs.Cache.BathroomIdToNameMap[parseInt type.BathroomType.id] = type.BathroomType.name
 
+		for type in genders
+			A2Cribs.Cache.GenderIdToNameMap[parseInt type.GenderType.id] = type.GenderType.name
 
+		for type in student_types
+			A2Cribs.Cache.StudentTypeIdToNameMap[parseInt type.StudentType.id] = type.StudentType.name
+
+		A2Cribs.Map.LoadMarkers()
 	###
 	EVAN:
 		marker_id is the id of the marker to open

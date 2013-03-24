@@ -46,7 +46,7 @@
         marker = decodedMarkerList[_i];
         this.AddMarker(marker.Marker);
       }
-      return this.LoadHoverData();
+      return A2Cribs.Map.LoadHoverData();
     };
 
     /*
@@ -145,7 +145,6 @@
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
       this.GMarkerClusterer.ignoreHidden_ = true;
-      this.LoadMarkers();
       this.LoadTypeTables();
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
@@ -178,20 +177,29 @@
     };
 
     Map.LoadTypeTablesCallback = function(types) {
-      var bathrooms, buildings, type, _i, _j, _len, _len2, _results;
+      var bathrooms, buildings, genders, student_types, type, _i, _j, _k, _l, _len, _len2, _len3, _len4;
       types = JSON.parse(types);
       buildings = types[0];
       bathrooms = types[1];
+      genders = types[2];
+      student_types = types[3];
       for (_i = 0, _len = buildings.length; _i < _len; _i++) {
         type = buildings[_i];
         A2Cribs.Cache.BuildingIdToNameMap[parseInt(type.BuildingType.id)] = type.BuildingType.name;
       }
-      _results = [];
       for (_j = 0, _len2 = bathrooms.length; _j < _len2; _j++) {
         type = bathrooms[_j];
-        _results.push(A2Cribs.Cache.BathroomIdToNameMap[parseInt(type.BathroomType.id)] = type.BathroomType.name);
+        A2Cribs.Cache.BathroomIdToNameMap[parseInt(type.BathroomType.id)] = type.BathroomType.name;
       }
-      return _results;
+      for (_k = 0, _len3 = genders.length; _k < _len3; _k++) {
+        type = genders[_k];
+        A2Cribs.Cache.GenderIdToNameMap[parseInt(type.GenderType.id)] = type.GenderType.name;
+      }
+      for (_l = 0, _len4 = student_types.length; _l < _len4; _l++) {
+        type = student_types[_l];
+        A2Cribs.Cache.StudentTypeIdToNameMap[parseInt(type.StudentType.id)] = type.StudentType.name;
+      }
+      return A2Cribs.Map.LoadMarkers();
     };
 
     /*

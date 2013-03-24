@@ -108,10 +108,7 @@
         numListings = hdList.length;
         sublet = hdList[0].Sublet;
         if (sublet === void 0 || sublet === null) return;
-        building_type_id = sublet.building_type_id;
-        if (building_type_id === null) return;
-        building_type_id = parseInt(building_type_id);
-        unitType = this.BuildingIdToNameMap[building_type_id];
+        unitType = this.IdToMarkerMap[marker_id].UnitType;
         minBeds = parseInt(sublet.number_bedrooms);
         maxBeds = parseInt(sublet.number_bedrooms);
         minRent = parseInt(sublet.price_per_bedroom);
@@ -150,9 +147,10 @@
     };
 
     Cache.CacheMarker = function(id, marker) {
-      var m;
+      var m, unitType;
       m = marker;
-      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude);
+      unitType = this.BuildingIdToNameMap[parseInt(m.building_type_id)];
+      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, unitType, m.latitude, m.longitude);
     };
 
     Cache.CacheSubletOwner = function(sublet_id, user) {

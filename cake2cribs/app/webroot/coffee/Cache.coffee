@@ -82,11 +82,7 @@ class A2Cribs.Cache
 			if sublet == undefined  || sublet == null
 				return
 
-			building_type_id = sublet.building_type_id
-			if building_type_id == null
-				return
-			building_type_id = parseInt	 building_type_id
-			unitType = @BuildingIdToNameMap[building_type_id]
+			unitType = @IdToMarkerMap[marker_id].UnitType
 				
 			#find min and max for remaining fields
 			minBeds = parseInt sublet.number_bedrooms
@@ -125,7 +121,8 @@ class A2Cribs.Cache
 
 	@CacheMarker: (id, marker) ->
 		m = marker
-		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, m.unit_type, m.latitude, m.longitude)
+		unitType = @BuildingIdToNameMap[parseInt m.building_type_id]
+		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, unitType, m.latitude, m.longitude)
 
 	@CacheSubletOwner: (sublet_id, user) ->
 		owner = new A2Cribs.SubletOwner(user.first_name, user.facebook_userid, user.verified_university, user.twitter_followers)

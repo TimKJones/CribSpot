@@ -2,7 +2,7 @@
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
-  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType');
+  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -56,8 +56,10 @@ class MapController extends AppController {
     //CakeLog::write("sessionValues", "in loadTypeTables: " . print_r($this->getSessionValues(), true));
     $buildings = $this->BuildingType->LoadAll();
     $bathrooms = $this->BathroomType->LoadAll();
+    $genders = $this->GenderType->LoadAll();
+    $student_types = $this->StudentType->LoadAll();
     $response = array();
-    array_push($response, $buildings, $bathrooms);
+    array_push($response, $buildings, $bathrooms, $genders, $student_types);
     $this->layout = 'ajax';
     $this->set('response', json_encode($response));
   }
