@@ -88,7 +88,7 @@ class UsersController extends AppController {
                  //   $this->redirect('/dashboard');
                 }
                 else {
-                    $this->Session->setFLash(__('You were successfully logged in.'));
+                    $this->Session->setFlash(__('You were successfully logged in.'));
                     $json = json_encode(array(
                     'loginStatus' => 1,
                     'error'=>'You are logged in.'));
@@ -621,6 +621,7 @@ class UsersController extends AppController {
 	{
 		$this->autoRender = false;
 		$this->facebook->destroySession();
+        $this->Session->destroy();
         $this->Auth->logout();
 		$this->redirect('/');
 	}

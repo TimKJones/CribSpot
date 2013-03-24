@@ -9,6 +9,7 @@
       var _this = this;
       return $('#goToStep2').click(function(e) {
         e.preventDefault();
+        alert(window.location);
         return _this.subletAddStep1();
       });
     };
@@ -27,7 +28,8 @@
           name: $('#SubletName').val(),
           latitude: $('#updatedLat').text(),
           longitude: $('#updatedLong').text()
-        }
+        },
+        CurrentStep: 2
       };
       return $.post(url, request_data, function(response) {
         var data;
