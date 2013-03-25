@@ -107,8 +107,6 @@
       });
     };
 
-    Messages.refreshParticpantVerification = function() {};
-
     Messages.setParticipantInfoUI = function(participant) {
       $(".from_participant").html(participant['first_name']).attr('href', myBaseUrl + 'users/view/' + participant['id']);
       $(".participant-university").html(participant['University']['name']);
@@ -141,7 +139,7 @@
     };
 
     Messages.loadConversation = function(event) {
-      var title;
+      var sublet_url, title;
       $('#cli_' + this.CurrentConversation).removeClass('selected_conversation');
       $('#cli_' + this.CurrentConversation).addClass('read_conversation');
       $(event.currentTarget).addClass('selected_conversation').removeClass('unread_conversation');
@@ -150,7 +148,8 @@
       $('#message_reply').show();
       $('#participant_info_short').show();
       title = $('#cli_' + this.CurrentConversation).find('.conversation_title').text();
-      $('#listing_title').text(title);
+      sublet_url = $('#cli_' + this.CurrentConversation + ' a').attr('href');
+      $('#listing_title').text(title).attr('href', sublet_url);
       this.refreshParticipantInfo();
       this.refreshUnreadCount();
       return this.refreshMessages();

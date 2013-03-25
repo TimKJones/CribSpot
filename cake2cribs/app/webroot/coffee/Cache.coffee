@@ -6,6 +6,7 @@ class A2Cribs.Cache
 	@IdToHousematesMap = []
 	@SubletIdToHousemateIdsMap = []
 	@SubletIdToOwnerMap = []
+	@SubletIdToImagesMap = []
 	@MarkerIdToHoverDataMap = []
 	@MarkerIdToSubletIdsMap = [] #maps marker ids to list of sublet_ids
 							#TODO: Set a maximum size for each cache.
@@ -16,6 +17,8 @@ class A2Cribs.Cache
 	@BathroomIdToNameMap = []
 	@GenderIdToNameMap = []
 	@StudentTypeIdToNameMap = []
+	@FavoritesSubletIdsList = []
+	@FavoritesMarkerIdsList = []
 
 	###
 	Add list of sublets to cache
@@ -126,6 +129,23 @@ class A2Cribs.Cache
 			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender)
 			@SubletIdToHousemateIdsMap[sublet_id].push h.id
 
+	@CacheImages: (imageList) ->
+		if imageList == undefined or imageList == null or imageList[0] == undefined
+			return
+
+		first_image = imageList[0]
+		if first_image == undefined or first_image.sublet_id == undefined
+			return
+
+		sublet_id = parseInt first_image.sublet_id
+		A2Cribs.Cache.SubletIdToImagesMap[sublet_id] = []
+		for image in imageList
+			sublet_id = parseInt image.sublet_id
+			path = "/" + image.image_path
+			is_primary = image.is_primary
+			caption = image.caption
+			A2Cribs.Cache.SubletIdToImagesMap[sublet_id].push new A2Cribs.Image(sublet_id, path, is_primary, caption)
+
 	@CacheMarker: (id, marker) ->
 		m = marker
 		unitType = @BuildingIdToNameMap[parseInt m.building_type_id]
@@ -150,3 +170,4 @@ class A2Cribs.Cache
 			A2Cribs.Cache.CacheHousemates markerData.Housemate
 		#	A2Cribs.Cache.CacheUniversity markerData.University
 			A2Cribs.Cache.CacheSubletOwner parseInt(sublet.id), markerData.User
+			A2Cribs.Cache.CacheImages markerData.Image

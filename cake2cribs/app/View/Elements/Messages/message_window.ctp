@@ -3,7 +3,7 @@
 
 	<div class = 'row-fluid' id = 'participant_info_short'>
 		<div class ='span8'>
-			<a href = 'view that listing' id = 'listing_title'></a><i class = 'icon-map-marker icon-large'></i>
+			<a href = '#' id = 'listing_title'></a><i class = 'icon-map-marker icon-large'></i>
 			<span id = 'conversation_toolbar'>
 				<i  id = 'refresh_content' class = 'icon-refresh'></i><i id = 'delete_conversation' class = 'icon-trash'></i>
 			</span>
@@ -20,7 +20,7 @@
 			if($user['User']['facebook_userid']){
 				echo "<img src='https://graph.facebook.com/".$user['User']['facebook_userid']."/picture?width=80&height=80'></img>";
 			}else{
-				echo "<img class = 'sprite-head sprite-head_medium'></img>";
+				echo "<img class = '/img/head_medium.jpg'></img>";
 			}
 			?>
 			<img src = '/img/messages/arrow-right.png' class = 'bump'></img>

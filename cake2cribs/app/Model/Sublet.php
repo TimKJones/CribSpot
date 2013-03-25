@@ -3,7 +3,7 @@
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
 	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType', 'FurnishedType');
-	public $hasMany = array('Housemate');
+	public $hasMany = array('Housemate', 'Favorite', 'Image');
 	//public $hasOne = array();
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
@@ -460,7 +460,8 @@ $log = $this->getDataSource()->getLog(false, false);
 		$university_verified = $University->getUniversityFromEmail('test@umich.edu');
 	 	$subletQuery = $this->find('all', array(
 	                     'conditions' => $conditions, 
-	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.facebook_userid', 'Housemate')
+	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.facebook_userid', 'Housemate', 
+	                     	'Image.sublet_id', 'Image.image_path', 'Image.is_primary', 'Image.caption')
 	  	));
 
 	  	for ($i = 0; $i < count($subletQuery); $i++)
@@ -486,6 +487,25 @@ $log = $this->getDataSource()->getLog(false, false);
 		$hover_data = $this->find('all', array(
 			'fields' => array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
 		return $hover_data;
+	}
+
+	/*
+	Pulls marker_ids for sublets in the logged-in users favorites
+	*/
+	public function GetFavoritesMarkerIds($subletIdsResultSet)
+	{
+		$subletIdsList = array();
+		for ($i = 0; $i < count($subletIdsResultSet); $i++)
+		{
+			array_push($subletIdsList, $subletIdsResultSet[$i]['Favorite']['sublet_id']);
+		}
+
+		$this->contain();	
+		$marker_ids = $this->find('all', array(
+			'conditions' => array('Sublet.id' => $subletIdsList),
+			'fields' => array('Sublet.marker_id')));
+
+		return $marker_ids;
 	}
 
 	public function getBuildingTypeId($buildingString)
@@ -583,5 +603,7 @@ $log = $this->getDataSource()->getLog(false, false);
 
 		return end($logs);
 	}
+
+	
 }
 ?>

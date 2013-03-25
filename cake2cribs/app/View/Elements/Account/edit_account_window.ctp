@@ -4,16 +4,13 @@
 	    <label class="control-label" for="university">University:</label>
 	    <div class="controls">
 	    	<p>
-	      <?php 
-	      if ($user['University']['id']!=NULL)
-	      {
-	      	echo $user['University']['name'];
-	      }
-	      else
-	      {
-	      	echo '<a href="/users/verifyUniversity">Verify your university</a>';
-	      }
-	      ?>
+	      	<?php 
+	    	if ($user['University']['id']!=NULL)
+	      		echo $user['University']['name'];
+	      	else
+	      		echo '<a href="/users/verifyUniversity">Verify your university</a>';
+	      	?>
+	  		</p>
 	    </div>
 	  </div>
 	  <div class="control-group">

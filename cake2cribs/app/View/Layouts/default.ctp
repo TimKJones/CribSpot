@@ -60,6 +60,8 @@
 		echo $this->Html->script('src/HoverData');
 		echo $this->Html->script('src/SubletOwner');
 		echo $this->Html->script('src/ListingPopup');
+		echo $this->Html->script('src/UIManager');
+		echo $this->Html->script('src/Image');
 		echo $this->Html->script('knockout.js');
 		echo $this->Html->script('alertify.min.js');
 		
