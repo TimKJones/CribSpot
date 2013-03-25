@@ -39,29 +39,27 @@
 		<div class="medium-line-height">
 			<i class="small-text">Available From:</i>
 			<br>
-			<i class="medium-text">March 13, 2013 to August 25, 2013</i>
+			<i class="medium-text full-date">March 13, 2013 to August 25, 2013</i>
 			<br>
 			<i class="small-text">*Dates are Flexible</i>
 		</div>
 		<div class="medium-line-height margin-above">
 			<i class="small-text">Building Type:</i>
 			<br>
-			<i class="med-small-text">Apartment</i>
+			<i class="med-small-text building-type">Apartment</i>
 		</div>
 		<div class="medium-line-height margin-above">
 			<a href="" class="thumbnail">
 				<img src="" alt="Jason">
 			</a>
-			<div class="post-info">
+			<div class="post-info ellipsis">
 				<i class="small-text">Posted By:</i>
 				<br>
-				<i class="medium-text">Michael</i>
+				<i class="medium-text first-name">Michael</i>
 				<br>
-				<i class="med-small-text">University of Michigan</i>
+				<i class="med-small-text school-name">University of Michigan</i>
 				<br>
-				<i class="small-text">Posted:</i>
-				<br>
-				<i class="small-text">2 Days Ago</i>
+				<i class="small-text">Posted: </i><i class="small-text">2 Days Ago</i>
 			</div>			
 		</div>
 		<table class="margin-above">
@@ -90,40 +88,40 @@
 			<h1>Short Description:</h1>
 			<p>This is my house and I think it's awesome. There is a pool in the back and lots of showers. I really love showering and trees.</p>
 		</div>
-		<i class="icon-map-marker icon-large"></i><i>1001 Vaughn Street, Ann Arbor, MI 48104</i>
+		<i class="icon-map-marker icon-large"></i><i class="full-address">1001 Vaughn Street, Ann Arbor, MI 48104</i>
 	</div>
 	<div id="details" class="side-pane">
 		<h1>Additional Details:</h1>
 		<table class="medium-line-height">
 			<tr>
-				<td><div><i class="small-text">Bathroom:</i><br><i class="medium-text">Private</i></div></td>
-				<td><div><i class="small-text">Parking:</i><br><i class="medium-text">Available</i></div></td>
-				<td><div><i class="small-text">A/C:</i><br><i class="medium-text">Yes</i></div></td>
+				<td><div><i class="small-text">Bathroom:</i><br><i class="medium-text bath-type">Private</i></div></td>
+				<td><div><i class="small-text">Parking:</i><br><i class="medium-text parking-avail">Available</i></div></td>
+				<td><div><i class="small-text">A/C:</i><br><i class="medium-text ac-avail">Yes</i></div></td>
 			</tr>
 			<tr>
-				<td><div><i class="small-text">Furnished:</i><br><i class="medium-text">Fully</i></div></td>
+				<td><div><i class="small-text">Furnished:</i><br><i class="medium-text furnish-avail">Fully</i></div></td>
 			</tr>
 		</table>
 		<h1>Anticipated Housemates:</h1>
 		<table class="medium-line-height">
 			<tr>
-				<td><div><i class="small-text">Estimated #:</i><br><i class="medium-text">4</i></div></td>
-				<td><div><i class="small-text">Students:</i><br><i class="medium-text">Yes</i></div></td>
-				<td><div><i class="small-text">Type:</i><br><i class="medium-text">Undergraduate</i></div></td>
+				<td><div><i class="small-text">Estimated #:</i><br><i class="medium-text housemate-count">4</i></div></td>
+				<td><div><i class="small-text">Students:</i><br><i class="medium-text housemate-enrolled">Yes</i></div></td>
+				<td><div><i class="small-text">Type:</i><br><i class="medium-text housemate-type">Undergraduate</i></div></td>
 			</tr>
 			<tr>
-				<td><div><i class="small-text">Gender:</i><br><i class="medium-text">Male</i></div></td>
-				<td><div><i class="small-text">Year:</i><br><i class="medium-text">Seniors</i></div></td>
+				<td><div><i class="small-text">Gender:</i><br><i class="medium-text housemate-gender">Male</i></div></td>
+				<td><div><i class="small-text">Year:</i><br><i class="medium-text housemate-year">Seniors</i></div></td>
 			</tr>
 			<tr>
-				<td><div><i class="small-text">Majors:</i><br><i class="medium-text">YOLO</i></div></td>
+				<td><div><i class="small-text">Majors:</i><br><i class="medium-text housemate-major">YOLO</i></div></td>
 			</tr>
 		</table>
 		<h1>Sublet Costs:</h1>
 		<table class="med-large-line-height">
 			<tr>
 				<td><i class="med-small-text">Price:</i></td>
-				<td><i class="medium-text bed-price">$1,050</i></td>
+				<td><i class="medium-text">$</i><i class="medium-text bed-price">1,050</i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Utilities:</i></td>
@@ -144,12 +142,12 @@
 			<a href="" class="thumbnail float-left">
 				<img src="" alt="Jason">
 			</a>
-			<div class="post-info inline float-left">
+			<div class="post-info inline float-left ellipsis">
 				<i class="small-text">Posted By:</i>
 				<br>
-				<i class="medium-text">Michael</i>
+				<i class="medium-text first-name">Michael</i>
 				<br>
-				<i class="med-small-text">University of Michigan</i>
+				<i class="med-small-text school-name">University of Michigan</i>
 				<br>
 			</div>		
 		</div>
