@@ -86,9 +86,22 @@ class A2Cribs.FilterManager
 				A2Cribs.FilterManager.MaxRent = 999999
 
 		if (event.target != undefined && event.target.id == "startDate") #event is not null only when when it corresponds to a slider-value-changed event
-			A2Cribs.FilterManager.DateBegin = A2Cribs.FilterManager.GetFormattedDate event.valueOf().date
+			eventDate = event.valueOf().date
+			if A2Cribs.FilterManager.DateEnd != "NOT_SET" and A2Cribs.FilterManager.DateEnd != "Whenever" && eventDate > new Date(A2Cribs.FilterManager.DateEnd)
+				A2Cribs.UIManager.Alert "Start Date cannot occur after End Date."
+				A2Cribs.FilterManager.DateBegin = new Date(A2Cribs.FilterManager.DateEnd)
+				A2Cribs.FilterManager.StartDateObject.setValue(A2Cribs.FilterManager.DateBegin)
+				return
+			A2Cribs.FilterManager.DateBegin = A2Cribs.FilterManager.GetFormattedDate eventDate
 
 		if (event.target != undefined && event.target.id == "endDate") #event is not null only when when it corresponds to a slider-value-changed event
+			eventDate = event.valueOf().date
+			if A2Cribs.FilterManager.DateBegin != "NOT_SET" and A2Cribs.FilterManager.DateBegin != "Whenever" and eventDate < new Date(A2Cribs.FilterManager.DateBegin)
+				A2Cribs.UIManager.Alert "End Date cannot occur before Start Date."
+				A2Cribs.FilterManager.DateEnd= new Date(A2Cribs.FilterManager.DateBegin)
+				A2Cribs.FilterManager.EndDateObject.setValue(A2Cribs.FilterManager.DateEnd)
+				return
+
 			A2Cribs.FilterManager.DateEnd = A2Cribs.FilterManager.GetFormattedDate event.valueOf().date
 
 		ajaxData += "&min_rent=" + A2Cribs.FilterManager.MinRent
@@ -108,6 +121,18 @@ class A2Cribs.FilterManager
 		month = date.getMonth() + 1
 		day = date.getDate()
 		return year + '-' + month + '-' + day
+
+	@GetTodaysDate: () ->
+		today = new Date()
+		dd = today.getDate()
+		mm = today.getMonth() + 1
+		yyyy = today.getUTCFullYear()
+		if dd<10
+			dd='0'+dd 
+		if mm<10
+			mm='0'+mm
+		today = mm+'-'+dd+'-'+yyyy;
+		return new Date(today)
 
 	###
 	Initialize the underlying google maps functionality of the address search bar
