@@ -24,10 +24,17 @@ class A2Cribs.Account
 			veripanel.find('#veri-edu i:last-child').removeClass('unverified').addClass('verified')
 		if my_verification_info.verified_fb
 			veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified')
+		
 		if my_verification_info.verified_tw
 			veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified')
+		else
+			url = myBaseUrl + 'account/getTwitterVerificationUrl'
+			$.get url, (response)->
+				twitter_verification_url = JSON.parse(response).twitter_url
+				
+				# verification_link = $()
+				$('#veri-tw').append("<a href = '#{twitter_verification_url}'>Verify?</a>")
 
-		
 
 		$('.veridd').each (index, element)=>
 			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})

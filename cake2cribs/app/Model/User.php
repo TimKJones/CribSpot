@@ -151,7 +151,7 @@ class User extends AppModel {
 			'twitter_auth_token'=>$auth_token,
 			'twitter_auth_token_secret'=>$auth_token_secret,
 			);
-		debug($data);
+
 		// $this->saveField('twitter_userid', $twitter_userid);
 		// $this->saveField('twitter_auth_token', $auth_token);
 		// $this->saveField('twitter_auth_token_secret', $auth_token_secret);
@@ -159,7 +159,7 @@ class User extends AppModel {
 		if($this->save($data) == false){
 			debug($this->validationErrors);
 		}
-		debug($this->read());
+		$this->read();
 	}
 
 	public function getTwitterFollowersCount($user_id)
