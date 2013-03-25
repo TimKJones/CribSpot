@@ -1,12 +1,5 @@
 <!--<div> BLAH</div>
 <a class="ajax" href="/sublets/ajax_add" id="gotoscreen2">Go back </a> -->
-<?php //$this->layout = false; ?>
-<?php
-echo $this->Html->css('datepicker');
-
-	/* Datepicker and slider javascript */
-	echo $this->Html->script('bootstrap-datepicker');
-	?>
 
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php echo $this->Html->script('src/SubletAdd'); ?>
@@ -48,6 +41,4 @@ echo $this->Form->input('additional_fees_amount', array('value' => $savedAdditio
 <script>
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-$("#SubletDateBegin").datepicker();
-$('#SubletDateEnd').datepicker();
 </script>

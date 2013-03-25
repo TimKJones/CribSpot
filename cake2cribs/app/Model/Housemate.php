@@ -25,6 +25,16 @@ class Housemate extends AppModel {
 				'message' => 'Invalid sublet ID'
 				)
 			),
+		'quantity' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'A quantity of housemates must be entered.'
+				),
+			'isNumber' => array(
+				'rule' => array('naturalNumber', true),
+				'message' => 'Invalid number of housemates'
+				)
+			),
 		//section for enrolled
 		//is required.
 		//completed

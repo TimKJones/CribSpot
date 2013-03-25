@@ -138,23 +138,23 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add2() {
-            $this->set('savedDateBegin', $this->Session->read('SubletInProgress.Sublet.date_begin'));
-            $this->set('savedDateEnd', $this->Session->read('SubletInProgress.Sublet.date_end'));
-            $this->set('savedFlexibleDates', $this->Session->read('SubletInProgress.Sublet.flexible_dates'));
-            $this->set('savedNumberBedrooms', $this->Session->read('SubletInProgress.Sublet.number_bedrooms'));
-            $this->set('savedPricePerBedroom', $this->Session->read('SubletInProgress.Sublet.price_per_bedroom'));
-            $this->set('savedPaymentTypeID', $this->Session->read('SubletInProgress.Sublet.payment_type_id'));
-            $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
-            $this->set('savedNumberBathrooms', $this->Session->read('SubletInProgress.Sublet.number_bathrooms'));
-            $this->set('savedBathroomTypeID', $this->Session->read('SubletInProgress.Sublet.bathroom_type_id'));
-            $this->set('savedUtilityTypeID', $this->Session->read('SubletInProgress.Sublet.utility_type_id'));
-            $this->set('savedUtilityCost', $this->Session->read('SubletInProgress.Sublet.utility_cost'));
-            $this->set('savedParking', $this->Session->read('SubletInProgress.Sublet.parking'));
-            $this->set('savedAC', $this->Session->read('SubletInProgress.Sublet.ac'));
-            $this->set('savedFurnishedTypeID', $this->Session->read('SubletInProgress.Sublet.furnished_type_id'));
-            $this->set('savedDepositAmount', $this->Session->read('SubletInProgress.Sublet.deposit_amount'));
-            $this->set('savedAdditionalFeesDescription', $this->Session->read('SubletInProgress.Sublet.additional_fees_description'));
-            $this->set('savedAdditionalFeesAmount', $this->Session->read('SubletInProgress.Sublet.additional_fees_amount'));
+        $this->set('savedDateBegin', $this->Session->read('SubletInProgress.Sublet.date_begin'));
+        $this->set('savedDateEnd', $this->Session->read('SubletInProgress.Sublet.date_end'));
+        $this->set('savedFlexibleDates', $this->Session->read('SubletInProgress.Sublet.flexible_dates'));
+        $this->set('savedNumberBedrooms', $this->Session->read('SubletInProgress.Sublet.number_bedrooms'));
+        $this->set('savedPricePerBedroom', $this->Session->read('SubletInProgress.Sublet.price_per_bedroom'));
+        $this->set('savedPaymentTypeID', $this->Session->read('SubletInProgress.Sublet.payment_type_id'));
+        $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
+        $this->set('savedNumberBathrooms', $this->Session->read('SubletInProgress.Sublet.number_bathrooms'));
+        $this->set('savedBathroomTypeID', $this->Session->read('SubletInProgress.Sublet.bathroom_type_id'));
+        $this->set('savedUtilityTypeID', $this->Session->read('SubletInProgress.Sublet.utility_type_id'));
+        $this->set('savedUtilityCost', $this->Session->read('SubletInProgress.Sublet.utility_cost'));
+        $this->set('savedParking', $this->Session->read('SubletInProgress.Sublet.parking'));
+        $this->set('savedAC', $this->Session->read('SubletInProgress.Sublet.ac'));
+        $this->set('savedFurnishedTypeID', $this->Session->read('SubletInProgress.Sublet.furnished_type_id'));
+        $this->set('savedDepositAmount', $this->Session->read('SubletInProgress.Sublet.deposit_amount'));
+        $this->set('savedAdditionalFeesDescription', $this->Session->read('SubletInProgress.Sublet.additional_fees_description'));
+        $this->set('savedAdditionalFeesAmount', $this->Session->read('SubletInProgress.Sublet.additional_fees_amount'));
 
 
 
@@ -162,7 +162,7 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add3() {
-        //housemate stuff here     
+        //
     }
 
     public function ajax_add_create() {
