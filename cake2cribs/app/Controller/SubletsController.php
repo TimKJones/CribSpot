@@ -38,6 +38,16 @@ class SubletsController extends AppController {
         $this->set('_serialize','sublets');
     }
 
+    function show($sublet_id){
+        $sublet = $this->Sublet->find('first', array('conditions'=>'Sublet.id='.$sublet_id));
+        if($sublet == null){
+            throw new NotFoundException();
+        }
+        $school_name = str_replace(" ", "_", $sublet['University']['name']);
+        $address = str_replace(" ", "_", $sublet['Marker']['street_address']);
+        $this->redirect("/map/sublet/$school_name/$address/$sublet_id");
+    }
+
 	public function view($id = null) {
 		$this->Sublet->id = $id;
         $this->set('id', CakeSession::read("Auth.User.id"));
