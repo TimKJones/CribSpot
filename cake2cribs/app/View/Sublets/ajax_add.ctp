@@ -14,7 +14,6 @@
  		   max-width: none !important;
 		}
 </style>
-<?php echo $savedUniversity; ?>
 <div class="ui-widget">
                           <label for="universitiesInput">University: </label>
                           <input id="universitiesInput" value="<?php echo $savedUniversity; ?>"/>
@@ -68,9 +67,5 @@
 						var a = A2Cribs.SubletAdd;
 							a.setupUI();
 						$('#addressToMark').val('<?php echo $savedAddress; ?>');
-						  $('#goToStep2').click(function(event) {
-						  	console.log(window.universitiesArray.indexOf("<?php echo $savedUniversity; ?>"));
-				          	//do ajax here lol
-
-				        });
+						 
 </script>

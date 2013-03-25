@@ -18,6 +18,10 @@
 
     FilterManager.MaxSliderBeds = 10;
 
+    FilterManager.DateBegin = 'NOT_SET';
+
+    FilterManager.DateEnd = 'NOT_SET';
+
     FilterManager.Geocoder = null;
 
     FilterManager.UpdateMarkers = function(visibleMarkerIds) {
@@ -87,8 +91,16 @@
           A2Cribs.FilterManager.MaxRent = 999999;
         }
       }
+      if (event.target !== void 0 && event.target.id === "startDate") {
+        A2Cribs.FilterManager.DateBegin = A2Cribs.FilterManager.GetFormattedDate(event.valueOf().date);
+      }
+      if (event.target !== void 0 && event.target.id === "endDate") {
+        A2Cribs.FilterManager.DateEnd = A2Cribs.FilterManager.GetFormattedDate(event.valueOf().date);
+      }
       ajaxData += "&min_rent=" + A2Cribs.FilterManager.MinRent;
       ajaxData += "&max_rent=" + A2Cribs.FilterManager.MaxRent;
+      ajaxData += "&start_date=" + A2Cribs.FilterManager.DateBegin;
+      ajaxData += "&end_date=" + A2Cribs.FilterManager.DateEnd;
       return $.ajax({
         url: myBaseUrl + "Sublets/ApplyFilter",
         type: "GET",
@@ -96,6 +108,14 @@
         context: this,
         success: A2Cribs.FilterManager.UpdateMarkers
       });
+    };
+
+    FilterManager.GetFormattedDate = function(date) {
+      var day, month, year;
+      year = date.getUTCFullYear();
+      month = date.getMonth() + 1;
+      day = date.getDate();
+      return year + '-' + month + '-' + day;
     };
 
     /*

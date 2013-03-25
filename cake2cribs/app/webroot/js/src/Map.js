@@ -170,7 +170,6 @@
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
       this.ListingPopup = new A2Cribs.ListingPopup();
-      A2Cribs.FilterManager.InitAddressSearch();
       A2Cribs.Map.InitBoundaries();
       return A2Cribs.MarkerTooltip.Init();
     };

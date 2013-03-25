@@ -177,7 +177,9 @@
 	$this->Js->buffer('
 		$(".tooltip-btn").tooltip();	
 		$(".popover-btn").popover();
-		$(".date-picker").datepicker();
+		$(".date-picker").datepicker().on("changeDate", function(ev) {
+    		A2Cribs.FilterManager.ApplyFilter(ev);
+    	});
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>
