@@ -97,10 +97,10 @@ class A2Cribs.SubletAdd
 			Housemate: {
 				quantity: $('#HousemateQuantity').val()
 				enrolled: $('#HousemateEnrolled').val()
-				student_type: $('#HousemateStudentType').val()
+				student_type: $('#HousemateStudentTypeId').val()
 				major: $('#HousemateMajor').val()
 				seeking: $('#HousemateSeeking').val()
-				gender: $('#HousemateGender').val()
+				gender: $('#HousemateGenderTypeId').val()
 			}
 			CurrentStep: 3
 			Finish: 1

@@ -1,7 +1,7 @@
 <?php 
 
 class StudentType extends AppModel {
-	public $belongsTo = array();
+	public $belongsTo = array('Housemate');
 	public $validate = array(
 		'id' => 'alphaNumeric', 
 		'name' => 'alphaNumeric',
