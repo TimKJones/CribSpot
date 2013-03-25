@@ -38,7 +38,7 @@ Call functions using FavoritesManager.FunctionName()
     FavoritesManager.AddFavoriteCallback = function(response, sublet_id) {
       response = JSON.parse(response);
       if (response.SUCCESS === void 0) {
-        A2Cribs.UIManager.Alert("There was an error adding your favorite. Contact support if this error persists.");
+        A2Cribs.UIManager.Alert("There was an error adding your favorite. Contact help@cribspot.com if this error persists.");
         $('.favorite-clickable').removeClass("active");
         return $('.favorite-clickable').attr({
           title: "Add to Favorites",
@@ -70,7 +70,7 @@ Call functions using FavoritesManager.FunctionName()
     FavoritesManager.DeleteFavoriteCallback = function(response, sublet_id) {
       response = JSON.parse(response);
       if (response.SUCCESS === void 0) {
-        A2Cribs.UIManager.Alert("There was an error deleting your favorite. Contact support if this error persists.");
+        A2Cribs.UIManager.Alert("There was an error deleting your favorite. Contact help@cribspot.com if this error persists.");
         $('.favorite-clickable').addClass("active");
         return $('.favorite-clickable').attr({
           title: "Delete from Favorites",
