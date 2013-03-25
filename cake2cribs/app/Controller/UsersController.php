@@ -587,7 +587,7 @@ class UsersController extends AppController {
 
             $json = json_encode(array(
                 'success' => 1,
-                'user' => json_encode($user)
+                // 'user' => json_encode($user)
             ));  
         }
 
