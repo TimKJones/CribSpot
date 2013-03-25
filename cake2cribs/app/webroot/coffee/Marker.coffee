@@ -27,28 +27,53 @@ class A2Cribs.Marker
 		parking = $("#parkingCheck").is(':checked')
 		utilities = $("#utilitiesCheck").is(':checked')
 		no_security_deposit = $("#noSecurityDepositCheck").is(':checked')
-		min_rent = 0
-		max_rent = 999999
-		beds = 0
-		start_date = 0
-		end_date = 999999
+		min_rent = A2Cribs.FilterManager.MinRent
+		max_rent = A2Cribs.FilterManager.MaxRent
+		beds = $("#bedsSelect").val()
+		if beds == "2+"
+			beds = "2"
+		beds = parseInt beds
+		start_date = new Date(A2Cribs.FilterManager.DateBegin)
+		end_date = new Date(A2Cribs.FilterManager.DateEnd)
+		bathroom = $("#bathSelect").val()
 
 		visibleListingIds = []
 
 		for subletId in subletIdList
 			l = A2Cribs.Cache.IdToSubletMap[subletId]
-			unitType = null
-			bathType = null
-			if l.BuildingType != undefined
-				unitType = A2Cribs.Cache.BuildingIdToNameMap[l.BuildingType]
+			unitType = l.BuildingType
+			bathType = l.BathroomType
+			sublet_start_date = new Date(l.StartDate)
+			sublet_end_date = new Date(l.EndDate)
 
-			if l.BathroomType != undefined
-				bathType = A2Cribs.Cache.BathroomIdToNameMap[l.BathroomType] 
+			#Housemates
+			housemate_id = A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId]
+			housemate = A2Cribs.Cache.IdToHousematesMap[housemate_id]
+			has_males = housemate.Gender == "Male" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+			has_females = housemate.Gender == "Female" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+			has_grads = housemate.GradType == "Graduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+			has_undergrads = housemate.GradType == "Undergraduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+			has_students_only = housemate.Enrolled == true or housemate.Enrolled == undefined or housemate.Enrolled == null
+
+			#Extra Filters
+
+			bathrooms_match = (l.BathroomType == bathroom) or (bathroom != "Private" and bathroom != "Shared")
+			#ac_match = !ac or (ac and l.air)
+			#parking_match = !parking or (parking and l.parking)
+			utilities_included_match = !utilities or (utilities and l.UtilityCost == 0)
+			no_security_deposit_match = !no_security_deposit or (no_security_deposit and l.DepositAmount == 0)
 
 			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
 			  ((l.PricePerBedroom >= min_rent and
 			  l.PricePerBedroom <= max_rent)) and
-			  (l.Bedrooms >= beds)
+			  (l.Bedrooms >= beds) and
+			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date)) and
+			  ((female and has_females) or (male and has_males)) and 
+			  ((undergrad and has_undergrads) or (grad and has_grads)) and 
+			  (!students_only or (students_only and has_students_only)) and 
+			  bathrooms_match and
+			  utilities_included_match and 
+			  no_security_deposit_match
 				visibleListingIds.push subletId
 
 		return visibleListingIds
@@ -140,4 +165,5 @@ class A2Cribs.Marker
 
 		A2Cribs.Map.GMap.panBy(tooltipOffset.x, tooltipOffset.y)
 
-
+	@IsValidDate: (date) ->
+		return date.toString() != "Invalid Date"

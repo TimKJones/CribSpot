@@ -2,7 +2,7 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType');
+	public $belongsTo = array('User', 'Marker', 'University',/*'BuildingType',*/'UtilityType','BathroomType','PaymentType');
 	public $hasMany = array('Housemate');
 	//public $hasOne = array();
 	public $primaryKey = 'id';
@@ -469,9 +469,9 @@ $log = $this->getDataSource()->getLog(false, false);
 	  		//$email = array('verified_university' => $university_verified);
 	  		$subletQuery[$i]['User']['verified_university'] = $university_verified;
 	  		$User = ClassRegistry::init("User");
-	  		$twitter_followers = $User->getTwitterFollowersCount($subletQuery[$i]['User']['id']);
+	  		/*$twitter_followers = $User->getTwitterFollowersCount($subletQuery[$i]['User']['id']);
 	  		//$followers_array = array('twitter_followers' => $twitter_followers);
-	  		$subletQuery[$i]['User']['twitter_followers'] = $twitter_followers;
+	  		$subletQuery[$i]['User']['twitter_followers'] = $twitter_followers;*/
 	  		unset($subletQuery[$i]['User']['id']);
 	  	}
 	  	
