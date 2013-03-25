@@ -1,6 +1,6 @@
 <?= $this->Html->css('/less/listing-popup.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div class="listing-popup">
+<div class="listing-popup modal hide fade">
 	<div class="modal-header">
 		<i class="sublet-name title">Willow Tree Apartments</i>
 		<div class="btn-group">
