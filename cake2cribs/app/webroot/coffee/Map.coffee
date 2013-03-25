@@ -128,7 +128,7 @@ class A2Cribs.Map
 		@ClickBubble = new A2Cribs.ClickBubble @GMap
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		@ListingPopup = new A2Cribs.ListingPopup()
-		A2Cribs.FilterManager.InitAddressSearch()
+		
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
 

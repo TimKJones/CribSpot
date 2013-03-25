@@ -5,6 +5,8 @@ class A2Cribs.FilterManager
 	@MinBeds = 0
 	@MaxBeds = 999999
 	@MaxSliderBeds = 10
+	@DateBegin = 'NOT_SET'
+	@DateEnd = 'NOT_SET'
 	#@PlacesService = null #Google Places Service for address search
 	@Geocoder = null
 
@@ -83,8 +85,16 @@ class A2Cribs.FilterManager
 			if A2Cribs.FilterManager.MaxRent == A2Cribs.FilterManager.MaxSliderRent
 				A2Cribs.FilterManager.MaxRent = 999999
 
+		if (event.target != undefined && event.target.id == "startDate") #event is not null only when when it corresponds to a slider-value-changed event
+			A2Cribs.FilterManager.DateBegin = A2Cribs.FilterManager.GetFormattedDate event.valueOf().date
+
+		if (event.target != undefined && event.target.id == "endDate") #event is not null only when when it corresponds to a slider-value-changed event
+			A2Cribs.FilterManager.DateEnd = A2Cribs.FilterManager.GetFormattedDate event.valueOf().date
+
 		ajaxData += "&min_rent=" + A2Cribs.FilterManager.MinRent
 		ajaxData += "&max_rent=" + A2Cribs.FilterManager.MaxRent
+		ajaxData += "&start_date=" + A2Cribs.FilterManager.DateBegin
+		ajaxData += "&end_date=" + A2Cribs.FilterManager.DateEnd
 
 		$.ajax
 			url: myBaseUrl + "Sublets/ApplyFilter"
@@ -92,6 +102,12 @@ class A2Cribs.FilterManager
 			data:ajaxData
 			context: this
 			success: A2Cribs.FilterManager.UpdateMarkers
+
+	@GetFormattedDate: (date) ->
+		year = date.getUTCFullYear()
+		month = date.getMonth() + 1
+		day = date.getDate()
+		return year + '-' + month + '-' + day
 
 	###
 	Initialize the underlying google maps functionality of the address search bar
