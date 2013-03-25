@@ -70,10 +70,9 @@
         var json_response;
         json_response = JSON.parse(response);
         if (json_response.success === 1) {
-          Alertify.log.success('Account Saved');
-          console.log(JSON.parse(json_response.user));
+          alertify.success('Account Saved', 1500);
         } else {
-          Alertify.log.error('Account Failed to Save: ' + json_response.message);
+          alertify.error('Account Failed to Save: ' + json_response.message, 1500);
         }
         return $('#save_btn').removeAttr('disabled');
       });
