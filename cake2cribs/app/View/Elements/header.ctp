@@ -43,7 +43,7 @@
 		</li>-->
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
-		<li><a href="#about">About</a></li>
+		<li><a href="#about-page" data-toggle="modal">About</a></li>
 		<li><a href="#partners">Partners</a></li>
 		<li><a href="#contact">Contact</a></li>
 		<li><a href="#help">Help</a></li>
