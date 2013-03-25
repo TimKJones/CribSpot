@@ -335,12 +335,12 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 			array('Marker.building_type_id' => NULL))));
 
 		array_push($conditions, array('OR' => array(
-			array('Housemate.student_type'   => $grad_undergrad_OR), 
-			array('Housemate.student_type'   => NULL))));
+			array('Housemate.student_type_id'   => $grad_undergrad_OR), 
+			array('Housemate.student_type_id'   => NULL))));
 
 		array_push($conditions, array('OR' => array(
-			array('Housemate.gender'   => $gender_OR),
-			array('Housemate.gender'   => NULL))));
+			array('Housemate.gender_type_id'   => $gender_OR),
+			array('Housemate.gender_type_id'   => NULL))));
 
 		array_push($conditions, array(
 			'Sublet.price_per_bedroom >=' => $params['min_rent'],
