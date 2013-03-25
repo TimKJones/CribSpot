@@ -244,6 +244,7 @@ class SubletsController extends AppController {
                 $this->Session->write('SubletInProgress.Sublet.user_id', $this->Auth->user('id'));
                 //saving code here
                 //STORE BUILDING TYPE ID IN MARKER AS WELL, MAKE IT NOT EDITABLE
+                //find existing sublet/marker in database
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
                 {
                     $this->Session->write('SubletInProgress.Housemate.sublet_id', $this->Sublet->field('id'));
