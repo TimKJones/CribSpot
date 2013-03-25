@@ -88,7 +88,7 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
-        Configure::write('debug', 0);
+        Configure::write('debug', 2);
         $canCreate = False;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
 
@@ -144,7 +144,7 @@ class SubletsController extends AppController {
         $this->set('savedNumberBedrooms', $this->Session->read('SubletInProgress.Sublet.number_bedrooms'));
         $this->set('savedPricePerBedroom', $this->Session->read('SubletInProgress.Sublet.price_per_bedroom'));
         $this->set('savedPaymentTypeID', $this->Session->read('SubletInProgress.Sublet.payment_type_id'));
-        $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
+        $this->set('savedShortDescription', $this->Session->read('SubletInProgress.Sublet.short_description'));
         $this->set('savedNumberBathrooms', $this->Session->read('SubletInProgress.Sublet.number_bathrooms'));
         $this->set('savedBathroomTypeID', $this->Session->read('SubletInProgress.Sublet.bathroom_type_id'));
         $this->set('savedUtilityTypeID', $this->Session->read('SubletInProgress.Sublet.utility_type_id'));
@@ -162,22 +162,17 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add3() {
-        //
+        $this->set('savedHousemateQuantity', $this->Session->read('SubletInProgress.Housemate.quantity'));
+        $this->set('savedHousemateEnrolled', $this->Session->read('SubletInProgress.Housemate.enrolled'));
+        $this->set('savedHousemateStudentType', $this->Session->read('SubletInProgress.Housemate.student_type'));
+        $this->set('savedHousemateMajor', $this->Session->read('SubletInProgress.Housemate.major'));
+        $this->set('savedHousemateSeeking', $this->Session->read('SubletInProgress.Housemate.seeking'));
+        $this->set('savedHousemateGender', $this->Session->read('SubletInProgress.Housemate.gender'));
+        $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
     }
 
     public function ajax_add_create() {
-    /*
-    CurrentStep: "2"
-Sublet: Object
-address: ""
-building_type_id: "1"
-latitude: ""
-longitude: ""
-name: ""
-unit_number: ""
-university: ""
-university_id: "4144"
-*/
+
         if ($this->request->data['CurrentStep'] == 1)
         {
             $this->Session->write('SubletInProgress.Sublet.address', $this->request->data['Sublet']['address']);
@@ -198,7 +193,7 @@ university_id: "4144"
             $this->Session->write('SubletInProgress.Sublet.number_bedrooms', $this->request->data['Sublet']['number_bedrooms']);
             $this->Session->write('SubletInProgress.Sublet.price_per_bedroom', $this->request->data['Sublet']['price_per_bedroom']);
             $this->Session->write('SubletInProgress.Sublet.payment_type_id', $this->request->data['Sublet']['payment_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
+            $this->Session->write('SubletInProgress.Sublet.short_description', $this->request->data['Sublet']['short_description']);
             $this->Session->write('SubletInProgress.Sublet.number_bathrooms', $this->request->data['Sublet']['number_bathrooms']);
             $this->Session->write('SubletInProgress.Sublet.bathroom_type_id', $this->request->data['Sublet']['bathroom_type_id']);
             $this->Session->write('SubletInProgress.Sublet.utility_type_id', $this->request->data['Sublet']['utility_type_id']);
@@ -214,7 +209,21 @@ university_id: "4144"
         else if ($this->request->data['CurrentStep'] == 3)
         {
             //http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savemany-array-data-null-array-options-array
+            $this->Session->write('SubletInProgress.Housemate.quantity', $this->request->data['Housemate']['quantity']);
+            $this->Session->write('SubletInProgress.Housemate.enrolled', $this->request->data['Housemate']['enrolled']);
+            $this->Session->write('SubletInProgress.Housemate.student_type', $this->request->data['Housemate']['student_type']);
+            $this->Session->write('SubletInProgress.Housemate.major', $this->request->data['Housemate']['major']);
+            $this->Session->write('SubletInProgress.Housemate.seeking', $this->request->data['Housemate']['seeking']);
+            $this->Session->write('SubletInProgress.Housemate.gender', $this->request->data['Housemate']['gender']);
+            $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
 
+        }
+        else if ($this->request->data['CurrentStep'] == 4)
+        {
+            //saving code here
+
+            //save sublet
+            //save housemate
         }
         //$this->Session->write('SubletInProgress', $this->request->data);
         $this->set('response',json_encode($this->Session->read('SubletInProgress')));

@@ -6,6 +6,13 @@
 <?php echo $this->Html->css('account'); ?>
 
 <div id="sublets form">
+	<?php echo $this->Form->create('Housemate'); 
+	echo $this->Form->input('quantity');
+	echo $this->Form->input('enrolled');
+	echo $this->Form->input('student_type');
+	echo $this->Form->input('major');
+	echo $this->Form->input('seeking');
+	echo $this->Form->input('gender'); ?>
 <?php echo $this->Form->create('Sublet'); ?>
 <fieldset>
 <div id="sublet_register_screen1">
@@ -33,7 +40,7 @@ echo $this->Form->input('additional_fees_amount', array('value' => $savedAdditio
                         ?>
 
 	<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
-	<a href="#" id="goToStep1">Go back </a>
+	<a href="#" id="finishSubletAdd">Go back </a>
 </div>
 
 

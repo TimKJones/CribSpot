@@ -2,7 +2,7 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User', 'Marker', 'University',/*'BuildingType',*/'UtilityType','BathroomType','PaymentType');
+	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType');
 	public $hasMany = array('Housemate');
 	//public $hasOne = array();
 	public $primaryKey = 'id';
