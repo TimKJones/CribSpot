@@ -603,5 +603,7 @@ $log = $this->getDataSource()->getLog(false, false);
 
 		return end($logs);
 	}
+
+	
 }
 ?>

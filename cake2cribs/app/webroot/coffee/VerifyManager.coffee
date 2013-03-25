@@ -99,7 +99,6 @@ class A2Cribs.VerifyManager
 					'verified_tw': followers_count?,
 					'tot_followers': followers_count,
 				}
-				console.log(verification_info)
 				defered.resolve verification_info
 
 

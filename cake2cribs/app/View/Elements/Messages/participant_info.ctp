@@ -1,6 +1,6 @@
 <div class = 'shadowed' id = 'participant_info'>
 	<div id = 'participant_pic_large'>
-		<img id = 'p_pic' src="/img/profile_pic_placeholder.jpg"></img>
+		<img id = 'p_pic' src="/img/head_large.jpg"></img>
 	</div>
 	
 	<div>

@@ -25,7 +25,7 @@
 				}
 			?>
 			<span class ='conversation_title'>
-				<a><?php echo $conversation['Conversation']['title'];?></a>
+				<a href = '/sublets/show/<?php echo $conversation['Conversation']['sublet_id']?>'><?php echo $conversation['Conversation']['title'];?></a>
 			</span>
 			<span class = 'conv_list_item_time_ago'>
 				<?php echo $this->Time->timeAgoInWords($conversation['Conversation']['modified'], array('accuracy' => array('year'=>'year', 'month'=>'month', 'week'=>'week','day' => 'day', 'hour'=>'hour')));?>
