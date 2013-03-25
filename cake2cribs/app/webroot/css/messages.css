@@ -26,8 +26,11 @@
 }
 
 
-#conversation_drop_down{
-	max-height: 380px;
+.conversation_list{
+	max-height: 250px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	border-bottom: 2px solid #cacaca;
 }
 
 #view_unread_cb{
