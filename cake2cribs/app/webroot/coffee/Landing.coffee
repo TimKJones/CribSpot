@@ -17,6 +17,6 @@ class A2Cribs.Landing
 			alert location + " is not a valid location."
 			return false
 
-		window.location = "/map/sublet/" + location.split(' ').join('_');
+		window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');
 
 
