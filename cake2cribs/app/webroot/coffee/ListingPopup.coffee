@@ -16,8 +16,22 @@ class A2Cribs.ListingPopup
 	Opens the tooltip given a marker, with popping animation
 	###
 	Open: (subletId) ->
-		if subletId
+		if subletId?
 			@SetContent subletId
+			$(".side-pane").hide();
+			$("#overview").show();
+			@modal.modal 'show'
+
+	Message: (subletId) ->
+		if subletId?
+			@SetContent subletId
+			$(".side-pane").hide();
+			$("#contact").show();
+			$('#message-button').hide();
+			$("#verify-table").hide();
+			$("#message-area").show();
+			$("#message-submit-buttons").show();
+			$("#message-area").focus();
 			@modal.modal 'show'
 
 

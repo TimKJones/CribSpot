@@ -24,8 +24,8 @@
 		<br>
 		<i class="icon-building"></i><i class="building-type bold-text">House</i>
 		<div class="extended-buttons">
-			<a href="#" class="listing-popup-link" onclick="A2Cribs.Map.ListingPopup.Open(1)"><i class="icon-plus"></i></a>
-			<a href="#"><i class="icon-comments"></i></a>
+			<a href="#" class="listing-popup-link"><i class="icon-plus"></i></a>
+			<a href="#" class="listing-message"><i class="icon-comments"></i></a>
 			<a href="#"><i class="icon-heart favorite-clickable"></i></a>
 		</div>
 	</div>

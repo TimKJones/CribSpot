@@ -90,12 +90,12 @@ f	Closes the tooltip, no animation
 			div.find('.bed-count').text firstSublet.Bedrooms
 			div.find('.building-type').text firstSublet.BuildingType
 			div.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
+			div.find('.listing-message').attr 'onclick', 'A2Cribs.Map.ListingPopup.Message(' + subletId + ')'
 			is_favorite = $(".favorite-clickable").hasClass("active")
 			if is_favorite
 				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
 			else
 				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
-
 			content.find('.bubble-container').first().append div
 
 		@InfoBubble.setContent template.html()
@@ -122,6 +122,7 @@ f	Closes the tooltip, no animation
 		content.find('.bed-count').text firstSublet.Bedrooms
 		content.find('.building-type').text firstSublet.BuildingType
 		content.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
+		content.find('.listing-message').attr 'onclick', 'A2Cribs.Map.ListingPopup.Message(' + subletId + ')'
 		is_favorite = $(".favorite-clickable").hasClass("active")
 		if is_favorite
 			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
