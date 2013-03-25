@@ -12,14 +12,6 @@
 	if($message['User']['facebook_userid']){
 		$pic = "https://graph.facebook.com/".$message['User']['facebook_userid']."/picture?width=80&height=80";	
 	}
-
-	// $time_ms = strtotime($message['Message']['created'])
-	// if($time_ms > 1000 * 60 * 60 * 24 * 365){
-	// 	$accuracy = 'year'
-	// }
-
-
-	// if($me)
 		
 ?>
 

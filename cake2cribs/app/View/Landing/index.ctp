@@ -9,6 +9,7 @@
 	$this->Js->buffer('
 		A2Cribs.Landing.Init(' . json_encode($locations) . ');
 		$("#school-form").submit(function() { A2Cribs.Landing.Submit(); return false; });
+		$("#search-text").focus();
 	');
 ?>
 

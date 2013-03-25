@@ -1,3 +1,4 @@
+
 <div class = 'shadowed' id = 'user_info'>
 	<div id = 'user_pic_large'>
 		<?php 
@@ -6,7 +7,8 @@
 			echo "<img class = '' src='https://graph.facebook.com/". $user['User']['facebook_userid'] ."/picture?width=480'></img>";
 		}
 		else{
-			echo "<img class = '' src='/img/profile_pic_placeholder.jpg'></img>";
+			// echo "<img class = 'sprite-head_large'></img>";
+			echo "<img src = '/img/profile_pic_placeholder.jpg'></img>";
 		}
 
 		?>

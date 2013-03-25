@@ -152,10 +152,11 @@
     // init the FB JS SDK
     FB.init({
       appId      : '148187588666959', // App ID from the App Dashboard
-      channelUrl : 'http://localhost/channel.html', // Channel File for x-domain communication
+      channelUrl : 'http://localhost:8888/channel.html', // Channel File for x-domain communication
       status     : true, // check the login status upon init?
       cookie     : true, // set sessions cookies to allow your server to access the session?
-      xfbml      : true  // parse XFBML tags on this page?
+      xfbml      : true,  // parse XFBML tags on this page?
+      oauth		 : true,
     });
 
     // Additional initialization code such as adding Event Listeners goes here
