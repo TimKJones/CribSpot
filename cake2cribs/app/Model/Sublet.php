@@ -3,7 +3,7 @@
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
 	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType', 'FurnishedType');
-	public $hasMany = array('Housemate', 'Favorite', 'Image');
+	public $hasMany = array('Housemate', 'Favorite', /*'Image'*/);
 	//public $hasOne = array();
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
@@ -40,7 +40,7 @@ class Sublet extends AppModel {
 		//this could be selected through an autocomplete form for the selected university
 		//if a building isn't found, perhaps create one?
 		//completed
-		'building_id' => array(
+		'building_type_id' => array(
 			'isNumber' => array(
 				'rule' => array('naturalNumber',true),
 				'message' => 'Invalid building ID'
