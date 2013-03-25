@@ -241,6 +241,7 @@ class SubletsController extends AppController {
             $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
             if ($this->request->data['Finish'] !=0)
             {
+                $this->Session->write('SubletInProgress.Sublet.user_id', $this->Auth->user('id'));
                 //saving code here
                 //STORE BUILDING TYPE ID IN MARKER AS WELL, MAKE IT NOT EDITABLE
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
@@ -252,7 +253,15 @@ class SubletsController extends AppController {
                     }
                     else
                     {
-                        
+                        $this->set('response', array());
+                        $this->Sublet->set($this->Session->read('SubletInProgress'));
+                        //check if passes email validation
+                        $json = array('registerStatus' => 0,
+                            'error' => 'Please check the fields below.');
+                        $error = $this->validateErrors($this->Sublet);
+                        $json = json_encode($error);
+                        $this->set('response', $json);  
+                        return;
                     }
                      
                 }
