@@ -24,10 +24,13 @@ class A2Cribs.Account
 			veripanel.find('#veri-edu i:last-child').removeClass('unverified').addClass('verified')
 		if my_verification_info.verified_fb
 			veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified')
-		
+		else
+			$('#veri-fb').append("<a href = '#'>Verify?</a>").click @FacebookConnect
+
 		if my_verification_info.verified_tw
 			veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified')
 		else
+			# Generate a twitter verification link server side and add it to the twitter verification panel
 			url = myBaseUrl + 'account/getTwitterVerificationUrl'
 			$.get url, (response)->
 				twitter_verification_url = JSON.parse(response).twitter_url
@@ -65,7 +68,21 @@ class A2Cribs.Account
 
 
 
+	@FacebookConnect:()->
+		FB.login (response)->
+			$.ajax
+				url: myBaseUrl + "account/verifyFacebook"
+				data: {'signed_request':response.authResponse.signedRequest}
+				type:"POST"
+			# This may be bad if verify Facebook fails
+			document.location.href = '/account'
 
-
-
-
+	# @JSLoginCallback: (response) ->
+	# 	if response.authResponse
+	# 		FB.api('/me', A2Cribs.FacebookManager.APICallback)
+	# 		$.ajax
+	# 			url: myBaseUrl + "Verify/FacebookVerify"
+	# 			type:"POST"
+	# 		location.reload()
+	# 	else
+	# 		alert 'failed

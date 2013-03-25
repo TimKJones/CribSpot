@@ -1,3 +1,4 @@
+
 <div class = 'shadowed' id = 'user_info'>
 	<div id = 'user_pic_large'>
 		<?php 

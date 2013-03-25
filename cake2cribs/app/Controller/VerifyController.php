@@ -26,6 +26,7 @@ class VerifyController extends AppController {
 			$this->set('loginUrl', $loginUrl);
 		$this->set('logoutUrl', $logoutUrl);
 		$userId = $this->facebook->getUser();
+		debug($userId);
 		$this->set('fb_userId', $userId);
 
 /* -------------- TWITTER -----------------------------*/
@@ -157,7 +158,7 @@ class VerifyController extends AppController {
 			$this->Session->write('oauth_token', $request_token['oauth_token']);
 			$this->Session->write('oauth_token_secret', $request_token['oauth_token_secret']);
 		}
-		
+
 		$connection = null;
 		$url = null;
 		if (array_key_exists('twitter_confirmed', $_GET) && array_key_exists('oauth_token', $_GET) && array_key_exists('oauth_verifier', $_GET))

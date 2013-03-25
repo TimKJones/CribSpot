@@ -116,11 +116,11 @@ Email verification (This email address will be the email for the person posting 
      ref.parentNode.insertBefore(js, ref);
    }(document, /*debug*/ false));
 
-  function onLinkedInLoad() {
-    IN.Event.on(IN, "auth", onLinkedInAuth);
-  }
+  // function onLinkedInLoad() {
+  //   IN.Event.on(IN, "auth", onLinkedInAuth);
+  // }
 
-  function onLinkedInAuth() {
-     IN.API.Profile("me").result(A2Cribs.FacebookManager.UpdateLinkedinLogin);
-  }
+  // function onLinkedInAuth() {
+  //    IN.API.Profile("me").result(A2Cribs.FacebookManager.UpdateLinkedinLogin);
+  // }
 </script>

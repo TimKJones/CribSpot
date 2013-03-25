@@ -21,6 +21,81 @@
 			
 	 	}
 
+		function parse_signed_request($signed_request, $secret) {
+			list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+
+			// decode the data
+			$sig = $this->base64_url_decode($encoded_sig);
+			$data = json_decode($this->base64_url_decode($payload), true);
+
+			if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
+				error_log('Unknown algorithm. Expected HMAC-SHA256');
+				return null;
+			}
+
+			// Adding the verification of the signed_request below
+			$expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+			if ($sig !== $expected_sig) {
+				error_log('Bad Signed JSON signature!');
+				return null;
+			}
+
+  			return $data;
+		}
+
+		function base64_url_decode($input) {
+  			return base64_decode(strtr($input, '-_', '+/'));
+		}
+
+	 	public function verifyFacebook(){
+	 		if(!$this->request->is('post')){
+	 		    throw new NotFoundException();
+	 		}
+
+			$signed_request = $this->request->data['signed_request'];
+
+			$secret = Configure::read("FB_APP_SECRET");
+
+	 		$data = $this->parse_signed_request($signed_request, $secret);
+	 		if($data == null){
+	 			// Data verification failed
+	 			$json_response = json_encode(array(
+	 				'success'=>false,
+	 				'message'=>"Data verification failed",
+	 				));
+	 			$this->set('response',$json_response);
+	 			return;
+	 		}
+	 		// $data = json_decode($jsondata);
+	 		$fb_id = $data['user_id'];
+	 		$user = $this->User->get($this->Auth->User('id'));
+	 		$data = array('id'=>$user['User']['id'], 'facebook_userid'=>$fb_id);
+	 		try{
+	 			$user = $this->User->edit($data);
+	 			$this->redirect('/account');
+	 		} catch (Exception $e){
+	 			// Saving the user model failed
+	 			$json_response = json_encode(array(
+	 				'success'=>false,
+	 				'message'=>"Saving the user failed",
+	 				));
+	 			$this->set('response',$json_response);
+	 			return;
+	 		}
+
+	 		$this->layout = 'ajax';
+	 		// Everything went okay
+ 			$json_response = json_encode(array(
+ 				'success'=>true,
+ 				'message'=>"User Verified"
+ 				));
+ 			$this->set('response',$json_response);
+ 			return;
+
+	 	}
+
+	 	
+
 	 	public function verifyTwitter(){
 
 			App::import('Vendor', 'twitter/twitteroauth');

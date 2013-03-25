@@ -30,11 +30,10 @@ Manager class for all social networking functionality
     FacebookManager.JSLoginCallback = function(response) {
       if (response.authResponse) {
         FB.api('/me', A2Cribs.FacebookManager.APICallback);
-        $.ajax({
+        return $.ajax({
           url: myBaseUrl + "Verify/FacebookVerify",
           type: "POST"
         });
-        return location.reload();
       } else {
         return alert('failed');
       }
@@ -54,6 +53,7 @@ Manager class for all social networking functionality
     };
 
     FacebookManager.APICallback = function(response) {
+      console.log(response);
       $(".facebook.unverified").toggleClass("unverified verified");
       return $(".facebook.verified").html(response.name + " is now verified.");
     };
