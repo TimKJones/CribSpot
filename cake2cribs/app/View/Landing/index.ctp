@@ -73,6 +73,13 @@
 			<input id="search-text" class="typeahead" type="text" autocomplete="off">
 			<button type="submit" id="search-btn" class="btn add-on"><i class="icon-search icon-large"></i></button>
 		</form>
+		<?php
+		echo $this->Html->link(
+			'',
+			array('controller' => 'map', 'action' => 'sublet'),
+			array('class' => 'hide', 'id' => 'sublet-redirect')
+		);
+		?>
 
 	</div>
 	<div class="btn-group" data-toggle="buttons-radio">
