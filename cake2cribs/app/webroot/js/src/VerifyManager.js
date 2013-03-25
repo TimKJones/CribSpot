@@ -62,7 +62,6 @@ Manager class for all verify functionality
             'verified_tw': followers_count != null,
             'tot_followers': followers_count
           };
-          console.log(verification_info);
           return defered.resolve(verification_info);
         });
       }

@@ -106,8 +106,6 @@ class A2Cribs.Messages
 			@ParticipantInfoCache[user_data['id']] = user_data
 			@setParticipantInfoUI @ParticipantInfoCache[participantid]
 
-	@refreshParticpantVerification:()->
-		# @getVerificationInfo {'user1': 1249680161, 'user2': 1354124203}, 381100229, (verification_info)->
 
 	# Sets all the UI elements that pertain to the current conversation's participant
 	# Using the data provided in the participant object
@@ -143,7 +141,8 @@ class A2Cribs.Messages
 
 	@loadConversation:(event)->
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
-		$('#cli_' + @CurrentConversation).addClass 'read_conversation'		
+		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
+
 		$(event.currentTarget)
 			.addClass('selected_conversation')
 			.removeClass('unread_conversation')
@@ -151,13 +150,16 @@ class A2Cribs.Messages
 		@CurrentConversation = parseInt $(event.currentTarget).attr('convid')
 		@CurrentParticipantID = $('#cli_' + @CurrentConversation).find('meta')
 												.attr('participantid')
+
 		$('#message_reply').show()
 		$('#participant_info_short').show()
 
 		# Get the title of the conversation being selected and make the title of ther
 		# center messaging window have that title as well.
 		title = $('#cli_' + @CurrentConversation).find('.conversation_title').text()
-		$('#listing_title').text title
+		sublet_url = $('#cli_' + @CurrentConversation + ' a').attr 'href'
+		$('#listing_title').text(title).attr('href', sublet_url)
+
 
 		# @CurrentConversation = parseInt SelectedConversationDiv.attr 'convid'
 		@refreshParticipantInfo()

@@ -8,7 +8,7 @@
 		}
 		else{
 			// echo "<img class = 'sprite-head_large'></img>";
-			echo "<img src = '/img/profile_pic_placeholder.jpg'></img>";
+			echo "<img src = '/img/head_large.jpg'></img>";
 		}
 
 		?>
