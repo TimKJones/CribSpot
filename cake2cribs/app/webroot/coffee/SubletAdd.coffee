@@ -1,12 +1,16 @@
 class A2Cribs.SubletAdd
 
 	@setupUI:() ->
+		$('#finishSubletAdd').click (e) =>
+			e.preventDefault()
+			@subletAddStep3()
 
 		$('#goToStep2').click (e) =>
 			e.preventDefault()
 			#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
 
 			@subletAddStep1() 
+
 		$('#goToStep1').click (e) =>
 			e.preventDefault()
 			@subletAddStep2()
@@ -54,7 +58,7 @@ class A2Cribs.SubletAdd
 				number_bedrooms: $('#SubletNumberBedrooms').val()
 				price_per_bedroom: $('#SubletPricePerBedroom').val()
 				payment_type_id: $('#SubletPaymentTypeId').val()
-				description: $('#SubletDescription').val()
+				short_description: $('#SubletShortDescription').val()
 				number_bathrooms: $('#SubletNumberBathrooms').val()
 				bathroom_type_id: $('#SubletBathroomTypeId').val()
 				utility_type_id: $('#SubletUtilityTypeId').val()
@@ -76,7 +80,40 @@ class A2Cribs.SubletAdd
 			console.log(response)
 			data = JSON.parse response
 			console.log data
-			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add"});
+			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add3"});
+			#window.location.href= '/dashboard'
+			#if data.registerStatus == 1
+			#	window.location.href= '/dashboard'
+			#else
+			#	$('#registerStatus').empty()
+
+	@subletAddStep3:() ->
+		url = "sublets/ajax_add_create"
+		request_data = {
+			Sublet: {
+				description: $('#SubletDescription').val()
+			}
+
+			Housemate: {
+				quantity: $('#HousemateQuantity').val()
+				enrolled: $('#HousemateEnrolled').val()
+				student_type: $('#HousemateStudentType').val()
+				major: $('#HousemateMajor').val()
+				seeking: $('#HousemateSeeking').val()
+				gender: $('#HousemateGender').val()
+			}
+			CurrentStep: 3
+			Finish: 1
+			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
+			
+		}
+
+		$.post url, request_data, (response) =>
+			console.log(response)
+			data = JSON.parse response
+			console.log data
+			alert "You should be finished by now."
+			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add4"});
 			#window.location.href= '/dashboard'
 			#if data.registerStatus == 1
 			#	window.location.href= '/dashboard'
