@@ -25,7 +25,7 @@ class A2Cribs.SubletAdd
 				university_id: parseInt(window.universitiesArray.indexOf($('#universitiesInput').val()) + parseInt(window.universitiesMap[0].University.id))
 				university: $('#universitiesInput').val()
 				unit_number: $('#SubletUnitNumber').val()
-				address: $("#addressToMark").val()
+				address: $("#formattedAddress").text()
 				building_type_id: $('#SubletBuildingTypeId').val()
 				name: $('#SubletName').val()
 				latitude: $('#updatedLat').text()
