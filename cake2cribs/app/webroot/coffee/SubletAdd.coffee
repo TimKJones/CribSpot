@@ -7,6 +7,9 @@ class A2Cribs.SubletAdd
 			#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
 
 			@subletAddStep1() 
+		$('#goToStep1').click (e) =>
+			e.preventDefault()
+			@subletAddStep2()
 
 
 
@@ -28,12 +31,52 @@ class A2Cribs.SubletAdd
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
 			
 		}
+		console.log(request_data)
 
 		$.post url, request_data, (response) =>
 			console.log(response)
 			data = JSON.parse response
 			console.log data
 			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
+			#window.location.href= '/dashboard'
+			#if data.registerStatus == 1
+			#	window.location.href= '/dashboard'
+			#else
+			#	$('#registerStatus').empty()
+
+	@subletAddStep2:() ->
+		url = "sublets/ajax_add_create"
+		request_data = {
+			Sublet: {
+				date_begin: $('#SubletDateBegin').val()
+				date_end: $('#SubletDateEnd').val()
+				flexible_dates: $('#SubletFlexibleDates').val()
+				number_bedrooms: $('#SubletNumberBedrooms').val()
+				price_per_bedroom: $('#SubletPricePerBedroom').val()
+				payment_type_id: $('#SubletPaymentTypeId').val()
+				description: $('#SubletDescription').val()
+				number_bathrooms: $('#SubletNumberBathrooms').val()
+				bathroom_type_id: $('#SubletBathroomTypeId').val()
+				utility_type_id: $('#SubletUtilityTypeId').val()
+				utility_cost: $('#SubletUtilityCost').val()
+				parking: $('#SubletParking').val()
+				ac: $('#SubletAc').val()
+				furnished_type_id: $('#SubletFurnishedTypeId').val()
+				deposit_amount: $('#SubletDepositAmount').val()
+				additional_fees_description: $('#SubletAdditionalFeesDescription').val()
+				additional_fees_amount: $('#SubletAdditionalFeesAmount').val()
+
+			}
+			CurrentStep: 2
+			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
+			
+		}
+
+		$.post url, request_data, (response) =>
+			console.log(response)
+			data = JSON.parse response
+			console.log data
+			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add"});
 			#window.location.href= '/dashboard'
 			#if data.registerStatus == 1
 			#	window.location.href= '/dashboard'

@@ -34,7 +34,7 @@ class VerifyController extends AppController {
 		App::uses('Xml', 'Utility');
 
 		$twitteroauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
-		$request_token = $twitteroauth->getRequestToken('http://127.0.0.1/verify?twitter_confirmed=true');
+		$request_token = $twitteroauth->getRequestToken('http://www.cribspot.com/verify?twitter_confirmed=true');
 		//echo debug($twitteroauth);
 		// Requesting authentication tokens, the parameter is the URL we will be redirected to
 		//$request_token = $twitteroauth->getRequestToken('');
@@ -138,6 +138,72 @@ class VerifyController extends AppController {
 */
 	}
 
+	// Ajax function to fetch a qualified twitter authorization url to allow the user to verify.
+
+	function getTwitterVerificationURL(){
+
+		App::import('Vendor', 'twitter/twitteroauth');
+		App::import('Vendor', 'twitter/twconfig');
+		App::uses('Xml', 'Utility');
+
+		$twitteroauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
+		$request_token = $twitteroauth->getRequestToken('http://127.0.0.1/verify?twitter_confirmed=true');
+		//echo debug($twitteroauth);
+		// Requesting authentication tokens, the parameter is the URL we will be redirected to
+		//$request_token = $twitteroauth->getRequestToken('');
+		// Saving them into the session
+		if (array_key_exists('oauth_token', $request_token) && array_key_exists('oauth_token_secret', $request_token))
+		{
+			$this->Session->write('oauth_token', $request_token['oauth_token']);
+			$this->Session->write('oauth_token_secret', $request_token['oauth_token_secret']);
+		}
+		
+		$connection = null;
+		$url = null;
+		if (array_key_exists('twitter_confirmed', $_GET) && array_key_exists('oauth_token', $_GET) && array_key_exists('oauth_verifier', $_GET))
+		{
+			if ($this->Session->read('oauth_token') && $this->Session->read('oauth_token_secret'))
+			{
+				$connection = new TwitterOAuth(CONSUMER_KEY, 
+												CONSUMER_SECRET,
+												$_REQUEST['oauth_token'],
+												$this->Session->read('oauth_token_secret'));
+
+
+
+				// get long-term credentials from twitter
+				$token_credentials = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+				if (array_key_exists('oauth_token', $token_credentials))
+				{
+					$content = $connection->get('account/verify_credentials');
+					$full_name = $content->name;
+					$username = $content->screen_name;
+					$follower_count = $content->followers_count;
+					$user_id = $content->id;
+					$this->set("success", true);
+					$this->set("fullName", $full_name);
+					$this->set("userName", $username);
+					$this->set("followerCount", $follower_count);
+					$this->TwitterVerify($token_credentials, $user_id);
+					//echo debug($content);
+				}
+				else
+				{
+					echo "Twitter validation failed.";
+					$this->set("success", false);
+				}
+			}
+		}
+
+		// If everything goes well..
+		if ($twitteroauth->http_code == 200) 
+		    $url = $twitteroauth->getAuthorizeURL($request_token['oauth_token']);
+		else 
+		    $url = null;
+
+		$this->set('twitterLoginUrl', $url);
+	}
+
 	/*
 	TODO: Eventually, this needs to pull the facebook user id of the logged in user.
 	*/
@@ -174,7 +240,7 @@ class VerifyController extends AppController {
 
 	function TwitterVerify($token, $twitterUserId)
 	{
-		$this->User->TwitterVerify($this->getCurrentUserId(), $token['oauth_token'], $token['oauth_token_secret'], $twitterUserId);	
+		$this->User->TwitterVerify($this->Auth->User('id'), $token['oauth_token'], $token['oauth_token_secret'], $twitterUserId);	
 	}
 
 	/* THIS IS NOT YET FUNCTIONAL */
