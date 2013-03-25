@@ -27,28 +27,29 @@ class A2Cribs.Marker
 		parking = $("#parkingCheck").is(':checked')
 		utilities = $("#utilitiesCheck").is(':checked')
 		no_security_deposit = $("#noSecurityDepositCheck").is(':checked')
-		min_rent = 0
-		max_rent = 999999
-		beds = 0
-		start_date = 0
-		end_date = 999999
+		min_rent = A2Cribs.FilterManager.MinRent
+		max_rent = A2Cribs.FilterManager.MaxRent
+		beds = $("#bedsSelect").val()
+		if beds == "2+"
+			beds = "2"
+		beds = parseInt beds
+		start_date = new Date(A2Cribs.FilterManager.DateBegin)
+		end_date = new Date(A2Cribs.FilterManager.DateEnd)
 
 		visibleListingIds = []
 
 		for subletId in subletIdList
 			l = A2Cribs.Cache.IdToSubletMap[subletId]
-			unitType = null
-			bathType = null
-			if l.BuildingType != undefined
-				unitType = A2Cribs.Cache.BuildingIdToNameMap[l.BuildingType]
-
-			if l.BathroomType != undefined
-				bathType = A2Cribs.Cache.BathroomIdToNameMap[l.BathroomType] 
+			unitType = l.BuildingType
+			bathType = l.BathroomType
+			sublet_start_date = new Date(l.StartDate)
+			sublet_end_date = new Date(l.EndDate)
 
 			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
 			  ((l.PricePerBedroom >= min_rent and
 			  l.PricePerBedroom <= max_rent)) and
-			  (l.Bedrooms >= beds)
+			  (l.Bedrooms >= beds) and
+			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date))
 				visibleListingIds.push subletId
 
 		return visibleListingIds
@@ -140,4 +141,5 @@ class A2Cribs.Marker
 
 		A2Cribs.Map.GMap.panBy(tooltipOffset.x, tooltipOffset.y)
 
-
+	@IsValidDate: (date) ->
+		return date.toString() != "Invalid Date"

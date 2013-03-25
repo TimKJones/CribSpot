@@ -34,8 +34,7 @@ class A2Cribs.Cache
 		l.additional_fees_amount = parseInt l.additional_fees_amount
 		l.marker_id = parseInt l.marker_id
 		l.furnished_type_id = parseInt l.furnished_type_id
-		l.building_type_id = parseInt l.building_type_id
-		building = @BuildingIdToNameMap[l.building_type_id]
+		building = @IdToMarkerMap[l.marker_id].UnitType
 		l.bathroom_type_id = parseInt l.bathroom_type_id
 		bathroom = @BathroomIdToNameMap[l.bathroom_type_id]
 		l.university_id = parseInt l.university_id
