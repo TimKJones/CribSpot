@@ -3,7 +3,7 @@
 	$msg_id = $message['Message']['message_id'];
 	// die(debug($message));
 	
-	$pic = '/img/profile_pic_placeholder.png';
+	$pic = '/img/head_medium.jpg';
 	if($user_id == $message['User']['id']){
 		$side = "right";	
 	}else{

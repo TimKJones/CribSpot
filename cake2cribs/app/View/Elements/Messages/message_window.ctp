@@ -20,7 +20,7 @@
 			if($user['User']['facebook_userid']){
 				echo "<img src='https://graph.facebook.com/".$user['User']['facebook_userid']."/picture?width=80&height=80'></img>";
 			}else{
-				echo "<img class = 'sprite-head sprite-head_medium'></img>";
+				echo "<img class = '/img/head_medium.jpg'></img>";
 			}
 			?>
 			<img src = '/img/messages/arrow-right.png' class = 'bump'></img>
