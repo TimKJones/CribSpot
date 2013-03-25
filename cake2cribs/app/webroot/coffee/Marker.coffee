@@ -35,6 +35,7 @@ class A2Cribs.Marker
 		beds = parseInt beds
 		start_date = new Date(A2Cribs.FilterManager.DateBegin)
 		end_date = new Date(A2Cribs.FilterManager.DateEnd)
+		bathroom = $("#bathSelect").val()
 
 		visibleListingIds = []
 
@@ -54,7 +55,13 @@ class A2Cribs.Marker
 			has_undergrads = housemate.GradType == "Undergraduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
 			has_students_only = housemate.Enrolled == true or housemate.Enrolled == undefined or housemate.Enrolled == null
 
-			
+			#Extra Filters
+
+			bathrooms_match = (l.BathroomType == bathroom) or (bathroom != "Private" and bathroom != "Shared")
+			#ac_match = !ac or (ac and l.air)
+			#parking_match = !parking or (parking and l.parking)
+			utilities_included_match = !utilities or (utilities and l.UtilityCost == 0)
+			no_security_deposit_match = !no_security_deposit or (no_security_deposit and l.DepositAmount == 0)
 
 			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
 			  ((l.PricePerBedroom >= min_rent and
@@ -63,7 +70,10 @@ class A2Cribs.Marker
 			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date)) and
 			  ((female and has_females) or (male and has_males)) and 
 			  ((undergrad and has_undergrads) or (grad and has_grads)) and 
-			  (!students_only or (students_only and has_students_only))
+			  (!students_only or (students_only and has_students_only)) and 
+			  bathrooms_match and
+			  utilities_included_match and 
+			  no_security_deposit_match
 				visibleListingIds.push subletId
 
 		return visibleListingIds
