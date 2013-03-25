@@ -8,4 +8,5 @@
 	echo $this->element('terms');
 	*/
 	echo $this->element('loader');
+	echo $this->element('about');
 ?>

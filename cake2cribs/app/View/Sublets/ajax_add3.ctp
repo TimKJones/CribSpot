@@ -1,18 +1,18 @@
 <!--<div> BLAH</div>
 <a class="ajax" href="/sublets/ajax_add" id="gotoscreen2">Go back </a> -->
-<?php //$this->layout = false; ?>
-<?php
-echo $this->Html->css('datepicker');
-
-	/* Datepicker and slider javascript */
-	echo $this->Html->script('bootstrap-datepicker');
-	?>
 
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>
 
 <div id="sublets form">
+	<?php echo $this->Form->create('Housemate'); 
+	echo $this->Form->input('quantity');
+	echo $this->Form->input('enrolled');
+	echo $this->Form->input('student_type');
+	echo $this->Form->input('major');
+	echo $this->Form->input('seeking');
+	echo $this->Form->input('gender'); ?>
 <?php echo $this->Form->create('Sublet'); ?>
 <fieldset>
 <div id="sublet_register_screen1">
@@ -26,7 +26,7 @@ echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", 'val
 echo $this->Form->input('number_bedrooms', array('value' => $savedNumberBedrooms));
 echo $this->Form->input('price_per_bedroom', array('value' => $savedPricePerBedroom));
 echo $this->Form->input('payment_type_id', array('value' => $savedPaymentTypeID));
-echo $this->Form->input('description', array('value' => $savedShortDescription));
+echo $this->Form->input('description', array('value' => $savedDescription));
 echo $this->Form->input('number_bathrooms', array('value' => $savedNumberBathrooms));
 echo $this->Form->input('bathroom_type_id', array('value' => $savedBathroomTypeID));
 echo $this->Form->input('utility_type_id', array('value' => $savedUtilityTypeID));
@@ -40,7 +40,7 @@ echo $this->Form->input('additional_fees_amount', array('value' => $savedAdditio
                         ?>
 
 	<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
-	<a href="#" id="goToStep1">Go back </a>
+	<a href="#" id="finishSubletAdd">Go back </a>
 </div>
 
 
@@ -48,6 +48,4 @@ echo $this->Form->input('additional_fees_amount', array('value' => $savedAdditio
 <script>
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-$("#SubletDateBegin").datepicker();
-$('#SubletDateEnd').datepicker();
 </script>

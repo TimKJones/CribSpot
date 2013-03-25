@@ -43,7 +43,7 @@
 		</li>-->
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
-		<li><a href="#about">About</a></li>
+		<li><a href="#about-page" data-toggle="modal">About</a></li>
 		<li><a href="#partners">Partners</a></li>
 		<li><a href="#contact">Contact</a></li>
 		<li><a href="#help">Help</a></li>
@@ -108,12 +108,12 @@
 				<li><a href="#">Action 1</a></li>
 				<li><a href="#">Action 2</a></li>
 				<li class="divider"></li>
-				<li><a href="#"><i class="icon-cogs"></i> Account Settings</a></li>
+				<li><a href="/dashboard"><i class="icon-cogs"></i> Account Settings</a></li>
 			</ul>
 		</div>
 		<?php if ($this->Session->read('Auth.User.id') != 0)
 		{
-			echo '<a href="/dashboard" class="personal-links"><i class="icon-comments icon-large"></i></a>
+			echo '<a href="/messages" class="personal-links"><i class="icon-comments icon-large"></i></a>
 		<div id = "unread-conversation-notification"></div>
 		<a href="#" class="personal-links"><i id="FavoritesHeaderIcon" class="icon-heart-empty icon-large" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility()"></i></a>';
 		}
