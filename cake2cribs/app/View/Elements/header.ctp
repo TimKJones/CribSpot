@@ -115,13 +115,13 @@
 		{
 			echo '<a href="/messages" class="personal-links"><i class="icon-comments icon-large"></i></a>
 		<div id = "unread-conversation-notification"></div>
-		<a href="#" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>';
+		<a href="#" class="personal-links"><i id="FavoritesHeaderIcon" class="icon-heart-empty icon-large" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility()"></i></a>';
 		}
 		else
 		{
 			echo '<a href="#myModal" data-toggle="modal" class="personal-links"><i class="icon-comments icon-large"></i></a>
 		<div id = "unread-conversation-notification"></div>
-		<a href="#myModal" data-toggle="modal" class="personal-links"><i class="icon-heart-empty icon-large"></i></a>';
+		<a href="#myModal" data-toggle="modal" class="personal-links"><i id="FavoritesHeaderIcon" class="icon-heart-empty icon-large"></i></a>';
 		}
 			
 		?>

@@ -16,6 +16,8 @@ class A2Cribs.Cache
 	@BathroomIdToNameMap = []
 	@GenderIdToNameMap = []
 	@StudentTypeIdToNameMap = []
+	@FavoritesSubletIdsList = []
+	@FavoritesMarkerIdsList = []
 
 	###
 	Add list of sublets to cache
