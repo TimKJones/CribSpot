@@ -45,11 +45,25 @@ class A2Cribs.Marker
 			sublet_start_date = new Date(l.StartDate)
 			sublet_end_date = new Date(l.EndDate)
 
+			#Housemates
+			housemate_id = A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId]
+			housemate = A2Cribs.Cache.IdToHousematesMap[housemate_id]
+			has_males = housemate.Gender == "Male" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+			has_females = housemate.Gender == "Female" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+			has_grads = housemate.GradType == "Graduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+			has_undergrads = housemate.GradType == "Undergraduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+			has_students_only = housemate.Enrolled == true or housemate.Enrolled == undefined or housemate.Enrolled == null
+
+			
+
 			if (((unitType == 'House' or unitType == null) and house) or ((unitType == 'Apartment' or unitType == null) and apt) or ((unitType == 'Duplex' or unitType == null) and other) or (unitType != 'House' && unitType != 'Duplex' && unitType != 'Apartment')) and
 			  ((l.PricePerBedroom >= min_rent and
 			  l.PricePerBedroom <= max_rent)) and
 			  (l.Bedrooms >= beds) and
-			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date))
+			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date)) and
+			  ((female and has_females) or (male and has_males)) and 
+			  ((undergrad and has_undergrads) or (grad and has_grads)) and 
+			  (!students_only or (students_only and has_students_only))
 				visibleListingIds.push subletId
 
 		return visibleListingIds
