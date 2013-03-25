@@ -126,25 +126,43 @@ class SubletsController extends AppController {
             {
                 $canCreate = true;
             }
-                $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
-                $this->set('savedUniversity', $savedUniversity);
-                $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
-                $this->set('savedBuildingTypeID', $savedBuildingTypeID);
-                $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
-                $this->set('savedName', $savedName);
-                $savedAddress = $this->Session->read('SubletInProgress.Sublet.address');
-                $this->set('savedAddress',$savedAddress);
-                $savedUnitNumber = $this->Session->read('SubletInProgress.Sublet.unit_number');
-                $this->set('savedUnitNumber', $savedUnitNumber);
-                $savedUniversityID = $this->Session->read('SubletInProgress.Sublet.university_id');
-                $this->set('university_id', $savedUniversityID);
+                $this->set('savedUniversity', $this->Session->read('SubletInProgress.Sublet.university'));
+                $this->set('savedBuildingTypeID', $this->Session->read('SubletInProgress.Sublet.building_type_id'));
+                $this->set('savedName', $this->Session->read('SubletInProgress.Sublet.name'));
+                $this->set('savedAddress',$this->Session->read('SubletInProgress.Sublet.address'));
+                $this->set('savedUnitNumber',$this->Session->read('SubletInProgress.Sublet.unit_number'));
+                $this->set('university_id', $this->Session->read('SubletInProgress.Sublet.university_id'));
         }
 
         
     }
 
     public function ajax_add2() {
+            $this->set('savedDateBegin', $this->Session->read('SubletInProgress.Sublet.date_begin'));
+            $this->set('savedDateEnd', $this->Session->read('SubletInProgress.Sublet.date_end'));
+            $this->set('savedFlexibleDates', $this->Session->read('SubletInProgress.Sublet.flexible_dates'));
+            $this->set('savedNumberBedrooms', $this->Session->read('SubletInProgress.Sublet.number_bedrooms'));
+            $this->set('savedPricePerBedroom', $this->Session->read('SubletInProgress.Sublet.price_per_bedroom'));
+            $this->set('savedPaymentTypeID', $this->Session->read('SubletInProgress.Sublet.payment_type_id'));
+            $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
+            $this->set('savedNumberBathrooms', $this->Session->read('SubletInProgress.Sublet.number_bathrooms'));
+            $this->set('savedBathroomTypeID', $this->Session->read('SubletInProgress.Sublet.bathroom_type_id'));
+            $this->set('savedUtilityTypeID', $this->Session->read('SubletInProgress.Sublet.utility_type_id'));
+            $this->set('savedUtilityCost', $this->Session->read('SubletInProgress.Sublet.utility_cost'));
+            $this->set('savedParking', $this->Session->read('SubletInProgress.Sublet.parking'));
+            $this->set('savedAC', $this->Session->read('SubletInProgress.Sublet.ac'));
+            $this->set('savedFurnishedTypeID', $this->Session->read('SubletInProgress.Sublet.furnished_type_id'));
+            $this->set('savedDepositAmount', $this->Session->read('SubletInProgress.Sublet.deposit_amount'));
+            $this->set('savedAdditionalFeesDescription', $this->Session->read('SubletInProgress.Sublet.additional_fees_description'));
+            $this->set('savedAdditionalFeesAmount', $this->Session->read('SubletInProgress.Sublet.additional_fees_amount'));
 
+
+
+
+    }
+
+    public function ajax_add3() {
+        //housemate stuff here     
     }
 
     public function ajax_add_create() {
@@ -172,13 +190,30 @@ university_id: "4144"
             $this->Session->write('SubletInProgress.Sublet.university_id', $this->request->data['Sublet']['university_id']);
 
         }
-        else if ($this->request->data['CurrentStep'] ==2)
+        else if ($this->request->data['CurrentStep'] == 2)
         {
             $this->Session->write('SubletInProgress.Sublet.date_begin', $this->request->data['Sublet']['date_begin']);
             $this->Session->write('SubletInProgress.Sublet.date_end', $this->request->data['Sublet']['date_end']);   
+            $this->Session->write('SubletInProgress.Sublet.flexible_dates', $this->request->data['Sublet']['flexible_dates']);
+            $this->Session->write('SubletInProgress.Sublet.number_bedrooms', $this->request->data['Sublet']['number_bedrooms']);
+            $this->Session->write('SubletInProgress.Sublet.price_per_bedroom', $this->request->data['Sublet']['price_per_bedroom']);
+            $this->Session->write('SubletInProgress.Sublet.payment_type_id', $this->request->data['Sublet']['payment_type_id']);
+            $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
+            $this->Session->write('SubletInProgress.Sublet.number_bathrooms', $this->request->data['Sublet']['number_bathrooms']);
+            $this->Session->write('SubletInProgress.Sublet.bathroom_type_id', $this->request->data['Sublet']['bathroom_type_id']);
+            $this->Session->write('SubletInProgress.Sublet.utility_type_id', $this->request->data['Sublet']['utility_type_id']);
+            $this->Session->write('SubletInProgress.Sublet.utility_cost', $this->request->data['Sublet']['utility_cost']);
+            $this->Session->write('SubletInProgress.Sublet.parking', $this->request->data['Sublet']['parking']);
+            $this->Session->write('SubletInProgress.Sublet.ac', $this->request->data['Sublet']['ac']);
+            $this->Session->write('SubletInProgress.Sublet.furnished_type_id', $this->request->data['Sublet']['furnished_type_id']);
+            $this->Session->write('SubletInProgress.Sublet.deposit_amount', $this->request->data['Sublet']['deposit_amount']);
+            $this->Session->write('SubletInProgress.Sublet.additional_fees_description', $this->request->data['Sublet']['additional_fees_description']);
+            $this->Session->write('SubletInProgress.Sublet.additional_fees_amount', $this->request->data['Sublet']['additional_fees_amount']);
+
         }
         else if ($this->request->data['CurrentStep'] == 3)
         {
+            //http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savemany-array-data-null-array-options-array
 
         }
         //$this->Session->write('SubletInProgress', $this->request->data);

@@ -192,7 +192,7 @@
 
 	background-color: #f6f6f6;
 
-	z-index: 10001;
+	z-index: 2;
 
 	
 }
@@ -361,7 +361,7 @@
 	border: 2px solid #b7b1b1;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
-	z-index: 10001;
+	/*z-index: 10001;*/
 }
 #participant_pic_large{
 	margin-top: 7px;

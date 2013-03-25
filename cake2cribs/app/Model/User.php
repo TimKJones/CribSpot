@@ -96,7 +96,7 @@ class User extends AppModel {
 		'vericode' => 'alphaNumeric',
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
-		'twitter_auth_token' => 'alphaNumeric',
+		// 'twitter_auth_token' => 'alphaNumeric',
 		'twitter_auth_token_secret' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
 		'created' => 'datetime',
@@ -139,34 +139,40 @@ class User extends AppModel {
 				  'User.twitter_auth_token_secret' => $auth_token_secret
 				 );
 
-		$conditions = array('User.id' => $user_id);
-		echo debug($fields);
-		echo debug($conditions);
-		$this->id = $user_id;
-		$this->saveField('twitter_userid', $twitter_userid);
-		$this->saveField('twitter_auth_token', $auth_token);
-		$this->saveField('twitter_auth_token_secret', $auth_token_secret);
-		echo debug(false);
+		// $conditions = array('User.id' => $user_id);
+		// echo debug($fields);
+		// echo debug($conditions);
+		// $this->id = $user_id;
+		$user = $this->get($user_id);
+		// debug($user);
+		$data = array(
+			'id'=>$user['User']['id'],
+			'twitter_userid'=>$twitter_userid,
+			'twitter_auth_token'=>$auth_token,
+			'twitter_auth_token_secret'=>$auth_token_secret,
+			);
+
+		// $this->saveField('twitter_userid', $twitter_userid);
+		// $this->saveField('twitter_auth_token', $auth_token);
+		// $this->saveField('twitter_auth_token_secret', $auth_token_secret);
+
+		if($this->save($data) == false){
+			debug($this->validationErrors);
+		}
+		$this->read();
 	}
 
 	public function getTwitterFollowersCount($user_id)
 	{
 		$twitter_data = null;
-		/*$twitter_data = $this->find('first', array(
-			'conditions' => array('User.id' => $user_id),
-			'fields' => 	array('twitter_userid', 'twitter_auth_token', 'twitter_auth_token_secret')));
-*/
-		$twitter_userid = $twitter_data['User']['twitter_userid'];
-		$twitter_auth_token = $twitter_data['User']['twitter_auth_token'];
-		$twitter_auth_token_secret = $twitter_data['User']['twitter_auth_token_secret'];
-
-		$twitter_userid = '381100229';
-		$twitter_auth_token = '381100229-sua9NBNe08ZH3HtdrKb9Ks7MF8xcrUh5ISno88M1';
-		$twitter_auth_token_secret = 'PkjMGkMjyztpqKV3So18EsPZpqBBrw9AF0PQWB0pBs';
+		$user = $this->get($user_id);
+		
+		$twitter_userid = $user['User']['twitter_userid'];
+		$twitter_auth_token = $user['User']['twitter_auth_token'];
+		$twitter_auth_token_secret = $user['User']['twitter_auth_token_secret'];
 
 		$twitter_data = array();
 		array_push($twitter_data, $twitter_auth_token, $twitter_auth_token_secret);
-		return 10;
 		return $twitter_data;
 	}
 
