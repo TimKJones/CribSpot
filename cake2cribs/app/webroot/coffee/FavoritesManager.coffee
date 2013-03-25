@@ -28,7 +28,7 @@ class A2Cribs.FavoritesManager
 	@AddFavoriteCallback: (response, sublet_id) ->
 		response = JSON.parse response
 		if response.SUCCESS == undefined
-			A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact support if this error persists."
+			A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
 			$('.favorite-clickable').removeClass "active"
 			$('.favorite-clickable').attr
 				title: "Add to Favorites"
@@ -54,7 +54,7 @@ class A2Cribs.FavoritesManager
 	@DeleteFavoriteCallback: (response, sublet_id) ->
 		response = JSON.parse response
 		if response.SUCCESS == undefined
-			A2Cribs.UIManager.Alert "There was an error deleting your favorite. Contact support if this error persists."
+			A2Cribs.UIManager.Alert "There was an error deleting your favorite. Contact help@cribspot.com if the error persists."
 			$('.favorite-clickable').addClass "active"
 			$('.favorite-clickable').attr 
 				title: "Delete from Favorites"

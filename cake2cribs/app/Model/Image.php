@@ -3,7 +3,7 @@
 class Image extends AppModel {
 	public $name = 'Image';
 	public $primaryKey = 'image_id';
-	//public $belongsTo = array('Listing');
+	public $belongsTo = array('Sublet');
 	public $MAX_FILE_SIZE = 5242880; // in bytes (5 MB)
 
 	public $validate = array(
