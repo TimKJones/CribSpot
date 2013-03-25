@@ -7,7 +7,7 @@
 			<button type="button" id="overview-btn" class="btn btn-primary active btn-active">Overview</button>
 			<button type="button" id="details-btn" class="btn">Details</button>
 			<button type="button" id="contact-btn" class="btn">Contact</button>
-			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large"></i></button>
+			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large favorite-clickable"></i></button>
 		</div>
 		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
