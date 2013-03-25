@@ -116,7 +116,8 @@ class User extends AppModel {
 /*TODO: Figure out how to get userid of currently logged in user - necessary for table updates here */
 
 	public function FacebookVerify($user_id)
-	{
+	{	
+		die(debug($user_id));
 		$conditions = array(
 			'User.facebook_user_id' => $user_id,
 		);

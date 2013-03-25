@@ -34,6 +34,8 @@
       }
       if (my_verification_info.verified_fb) {
         veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified');
+      } else {
+        $('#veri-fb').append("<a href = '#'>Verify?</a>").click(this.FacebookConnect);
       }
       if (my_verification_info.verified_tw) {
         veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified');
@@ -74,6 +76,19 @@
           Alertify.log.error('Account Failed to Save: ' + json_response.message);
         }
         return $('#save_btn').removeAttr('disabled');
+      });
+    };
+
+    Account.FacebookConnect = function() {
+      return FB.login(function(response) {
+        $.ajax({
+          url: myBaseUrl + "account/verifyFacebook",
+          data: {
+            'signed_request': response.authResponse.signedRequest
+          },
+          type: "POST"
+        });
+        return document.location.href = '/account';
       });
     };
 

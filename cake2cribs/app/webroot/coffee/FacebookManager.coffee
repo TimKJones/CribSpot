@@ -21,7 +21,7 @@ class A2Cribs.FacebookManager
 			$.ajax
 				url: myBaseUrl + "Verify/FacebookVerify"
 				type:"POST"
-			location.reload()
+			# location.reload()
 		else
 			alert 'failed'
 
@@ -37,6 +37,7 @@ class A2Cribs.FacebookManager
 		$("#numMutualFriendsVal").html(response.length)
 
 	@APICallback: (response) ->
+		console.log(response)
 		$(".facebook.unverified").toggleClass("unverified verified")
 		$(".facebook.verified").html(response.name + " is now verified.")
 
