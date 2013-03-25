@@ -152,12 +152,14 @@
       			}
       		]
       */
+
       /*imageStyles = [
       			{
       				url: '/img/dots/group_dot.png'
       			}
       		]
       */
+
       mcOptions = {
         gridSize: 60,
         maxZoom: 15
