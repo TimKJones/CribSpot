@@ -98,10 +98,10 @@
         Housemate: {
           quantity: $('#HousemateQuantity').val(),
           enrolled: $('#HousemateEnrolled').val(),
-          student_type: $('#HousemateStudentType').val(),
+          student_type_id: $('#HousemateStudentTypeId').val(),
           major: $('#HousemateMajor').val(),
           seeking: $('#HousemateSeeking').val(),
-          gender: $('#HousemateGender').val()
+          gender_type_id: $('#HousemateGenderTypeId').val()
         },
         CurrentStep: 3,
         Finish: 1

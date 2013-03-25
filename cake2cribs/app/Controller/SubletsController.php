@@ -234,14 +234,15 @@ class SubletsController extends AppController {
             //http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savemany-array-data-null-array-options-array
             $this->Session->write('SubletInProgress.Housemate.quantity', $this->request->data['Housemate']['quantity']);
             $this->Session->write('SubletInProgress.Housemate.enrolled', $this->request->data['Housemate']['enrolled']);
-            $this->Session->write('SubletInProgress.Housemate.student_type', $this->request->data['Housemate']['student_type']);
+            $this->Session->write('SubletInProgress.Housemate.student_type_id', $this->request->data['Housemate']['student_type_id']);
             $this->Session->write('SubletInProgress.Housemate.major', $this->request->data['Housemate']['major']);
             $this->Session->write('SubletInProgress.Housemate.seeking', $this->request->data['Housemate']['seeking']);
-            $this->Session->write('SubletInProgress.Housemate.gender', $this->request->data['Housemate']['gender']);
+            $this->Session->write('SubletInProgress.Housemate.gender_type_id', $this->request->data['Housemate']['gender_type_id']);
             $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
             if ($this->request->data['Finish'] !=0)
             {
                 //saving code here
+                //STORE BUILDING TYPE ID IN MARKER AS WELL, MAKE IT NOT EDITABLE
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
                 {
                     $this->Session->write('SubletInProgress.Housemate.sublet_id', $this->Sublet->field('id'));
