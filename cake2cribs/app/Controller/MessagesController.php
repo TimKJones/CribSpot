@@ -2,7 +2,7 @@
 
  class MessagesController extends AppController {
  	public $helpers = array('Html');
-	public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing');
+	public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Sublet');
 	public $components= array('Session','Auth','Email', 'Cookie');
 
 	function beforeFilter(){
@@ -51,17 +51,17 @@
         $this->redirect('/dashboard');
     }
 
- 	//Create a new conversation and the first message thats in the conversation
- 	public function newConversation(){
- 		if(!$this->request->isPost()){
-			echo "This url only accepts post requests";
- 			die();
- 		}
- 		$data = $this->request->data;
-		$conv_id = $this->Conversation->createConversation($data, $this->Auth->User());
-		$msg_id = $this->Message->createMessage($data['message_body'], $conv_id, $this->Auth->User());
- 		$this->redirect(array('controller' => 'messages', 'action' => 'index'));
- 	}
+ 	// //Create a new conversation and the first message thats in the conversation
+ 	// public function newConversation(){
+ 	// 	if(!$this->request->isPost()){
+		// 	echo "This url only accepts post requests";
+ 	// 		die();
+ 	// 	}
+ 	// 	$data = $this->request->data;
+		// $conv_id = $this->Conversation->createConversation($data, $this->Auth->User());
+		// $msg_id = $this->Message->createMessage($data['message_body'], $conv_id, $this->Auth->User());
+ 	// 	$this->redirect(array('controller' => 'messages', 'action' => 'index'));
+ 	// }
 
 
  	//Creates a new message in a specified conversation
@@ -80,33 +80,7 @@
  		$conversation = $this->Conversation->find('first', $options);
  		$participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
 
- 		//send unread message email
-        $this->Email->smtpOptions = array(
-          'port'=>'587',
-          'timeout'=>'30',
-          'host' => 'smtp.sendgrid.net',
-          'username'=>'cribsadmin',
-          'password'=>'lancPA*travMInj',
-          'client' => 'a2cribs.com'
-        );
-
-
-        $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
-        $this->Email->to = $participant['email'];
-        
-        $this->Email->subject = 'New message received from ' . $user['first_name'];
-        $this->Email->template = 'unread_message';
-        $this->Email->sendAs = 'html';
-        $this->set(array(
-        	'participant'=> $user,
-        	'conv_id'=>  $conversation['Conversation']['conversation_id'],
-        	'host_name' => $_SERVER['HTTP_HOST'],
-        	)
-        );
-        
-
-        $this->Email->send();
+ 		$this->emailUserAboutMessage($participant['email'], $user, $conversation);
 
 
  		$json = json_encode(array('success'=>$msg_id > 0));
@@ -199,8 +173,7 @@
     // responded with a json object indicating success
     public function deleteConversation(){
  		if(!$this->request->isPost()){
-			echo "This url only accepts post requests";
- 			die();
+			throw new NotFoundException();
  		}
         $user = $this->Auth->User();
         $data = $this->request->data;
@@ -230,5 +203,128 @@
 
 
  	}
+
+    public function msgSubTest(){}
+
+    /*
+        Function expects a post request, 404 response will be given otherwise
+        post parameters need to be {'sublet_id':int, 'message_body':string}
+
+        valid reponse is json, with an object notation as follows
+        {
+        'successs': boolean
+        'message': string (only if error occured)
+        }
+
+    */
+    public function messageSublet(){
+        if(!$this->request->isPost()){
+            throw new NotFoundException();
+        }  
+
+        $sublet_id = $this->request->data['sublet_id'];
+        $message_body = $this->request->data['message_body'];
+
+        if(!($sublet_id && $message_body)){
+            $json = json_encode(array(
+                'success' => false,
+                'message' => "Not all parameters received in request",
+            ));
+            $this->layout = 'ajax';
+            $this->set('response', $json);
+            return;
+        }
+
+        $user = $this->User->get($this->Auth->User('id'));
+
+        $sublet = $this->Sublet->find('first', array('conditions'=>'Sublet.id='.$sublet_id));
+        if($sublet == null){
+            $json = json_encode(array(
+                'success' => false,
+                'message' => "sublet with id $sublet_id does not exist",
+            ));
+            $this->layout = 'ajax';
+            $this->set('response', $json);
+            return;
+        }
+
+
+
+        $options['conditions'] = array(
+            'Conversation.sublet_id'=>$sublet['Sublet']['id'],
+            'Conversation.participant1_id'=>$user['User']['id'],
+            'Conversation.participant2_id'=>$sublet['User']['id']
+            );
+        $conversation = $this->Conversation->find('first', $options);
+        if($conversation){
+            // Conversation already exists so just add a new message to the conversation
+            $this->Message->createMessage($message_body, 
+                $conversation['Conversation']['conversation_id'],
+                $user['User']);
+
+            $message = $this->Message->read();
+        }else{
+            // Conversation doesn't exist so we need to create it.
+            
+            
+            $data = array();
+            $data['sublet_id'] = $sublet_id;
+            $data['participant1_id'] = $user['User']['id'];
+            $data['participant2_id'] = $sublet['Sublet']['user_id'];
+            // We need to get the street address of the marker the sublet
+            // Corresponds to since that will be the title of the conversation
+            $data['title'] = $sublet['Marker']['street_address'];
+
+            $this->Conversation->createConversation($data);
+            $conversation = $this->Conversation->read();
+            $this->Message->createMessage($message_body, 
+                $conversation['Conversation']['conversation_id'],
+                $user['User']);
+
+            $message = $this->Message->read();
+
+        }   
+
+        $this->emailUserAboutMessage($sublet['User']['email'], $user['User'], $conversation);
+        $json = json_encode(array(
+                'success' => true,
+        ));
+        $this->layout = 'ajax';
+        $this->set('response', $json);
+        return;
+
+    }
+
+
+    private function emailUserAboutMessage($email_addr, $from_user, $conversation){
+            //send unread message email
+        $this->Email->smtpOptions = array(
+          'port'=>'587',
+          'timeout'=>'30',
+          'host' => 'smtp.sendgrid.net',
+          'username'=>'cribsadmin',
+          'password'=>'lancPA*travMInj',
+          'client' => 'a2cribs.com'
+        );
+
+
+        $this->Email->delivery = 'smtp';
+        $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
+        $this->Email->to = $email_addr;
+        
+        $this->Email->subject = 'New message received from ' . $from_user['first_name'];
+        $this->Email->template = 'unread_message';
+        $this->Email->sendAs = 'html';
+        $this->set(array(
+            'participant'=> $from_user,
+            'conv_id'=>  $conversation['Conversation']['conversation_id'],
+            'host_name' => $_SERVER['HTTP_HOST'],
+            )
+        );
+        
+
+        $this->Email->send();
+
+    }
 }
  ?>
