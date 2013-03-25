@@ -180,6 +180,11 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add3() {
+        $studentTypes = $this->Sublet->StudentType->find('list');
+        $genderTypes = $this->Sublet->GenderType->find('list');
+        $this->set(compact('studentTypes'));
+        $this->set(compact('genderTypes'));
+        
         $this->set('savedHousemateQuantity', $this->Session->read('SubletInProgress.Housemate.quantity'));
         $this->set('savedHousemateEnrolled', $this->Session->read('SubletInProgress.Housemate.enrolled'));
         $this->set('savedHousemateStudentType', $this->Session->read('SubletInProgress.Housemate.student_type'));

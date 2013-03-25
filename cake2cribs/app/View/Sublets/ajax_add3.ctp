@@ -9,10 +9,10 @@
 	<?php echo $this->Form->create('Housemate'); 
 	echo $this->Form->input('quantity');
 	echo $this->Form->input('enrolled');
-	echo $this->Form->input('student_type');
+	echo $this->Form->input('student_type_id');
 	echo $this->Form->input('major');
 	echo $this->Form->input('seeking');
-	echo $this->Form->input('gender'); ?>
+	echo $this->Form->input('gender_type_id'); ?>
 <?php echo $this->Form->create('Sublet'); ?>
 <fieldset>
 <div id="sublet_register_screen1">

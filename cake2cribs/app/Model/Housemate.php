@@ -2,7 +2,7 @@
 
 class Housemate extends AppModel {
 	//potentially link with users?
-	public $belongsTo = array('Sublet');
+	public $belongsTo = array('Sublet', 'GenderType', 'StudentType');
 	/*	'Sublet' => array(
 			'className' => 'Sublet',
 			'foreignKey' => 'sublet_id'
