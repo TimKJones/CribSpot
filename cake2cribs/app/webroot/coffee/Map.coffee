@@ -33,7 +33,7 @@ class A2Cribs.Map
 			@AddMarker marker.Marker
 
 
-		if A2Cribs.marker_id_to_open
+		if A2Cribs.marker_id_to_open >= 0
 			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
 		A2Cribs.Map.LoadHoverData()
 
@@ -76,7 +76,7 @@ class A2Cribs.Map
 	@Init: (school_id, latitude, longitude) ->
 		@CurentSchoolId = school_id
 		zoom = 15
-		if A2Cribs.loaded_sublet_data? 
+		if A2Cribs.marker_id_to_open >= 0
 			@MapCenter = new google.maps.LatLng A2Cribs.loaded_sublet_data.Marker.latitude,
 				A2Cribs.loaded_sublet_data.Marker.longitude
 				zoom = 18
@@ -142,8 +142,10 @@ class A2Cribs.Map
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		@ListingPopup = new A2Cribs.ListingPopup()
 
-		if A2Cribs.loaded_sublet_data?
+		if A2Cribs.marker_id_to_open >= 0
 			@ListingPopup.OpenLoaded A2Cribs.loaded_sublet_data
+		else if A2Cribs.marker_id_to_open is -2
+			alertify.alert "Sorry. This listing no longer exists!"
 		
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
