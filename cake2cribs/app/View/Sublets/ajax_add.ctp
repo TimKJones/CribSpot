@@ -14,6 +14,7 @@
  		   max-width: none !important;
 		}
 </style>
+<input style="height:0px; top:-1000px; position:absolute" type="text" value=""> <!-- Hidden input to take focus off date -->
 <div class="ui-widget">
                           <label for="universitiesInput">University: </label>
                           <input id="universitiesInput" value="<?php echo $savedUniversity; ?>"/>
@@ -67,5 +68,12 @@
 						var a = A2Cribs.SubletAdd;
 							a.setupUI();
 						$('#addressToMark').val('<?php echo $savedAddress; ?>');
+            var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;
+            console.log(currentUniversityFromSave - window.universitiesMap[0].University.id);
+            if (currentUniversityFromSave)
+            {
+              $('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);
+
+            }
 						 
 </script>

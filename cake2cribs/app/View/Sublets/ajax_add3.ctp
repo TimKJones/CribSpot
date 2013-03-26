@@ -7,12 +7,12 @@
 
 <div id="sublets form">
 	<?php echo $this->Form->create('Housemate'); 
-	echo $this->Form->input('quantity');
-	echo $this->Form->input('enrolled');
-	echo $this->Form->input('student_type_id');
-	echo $this->Form->input('major');
-	echo $this->Form->input('seeking');
-	echo $this->Form->input('gender_type_id'); ?>
+	echo $this->Form->input('quantity', array('value' =>  $savedHousemateQuantity ));
+	echo $this->Form->input('enrolled', array('value' => $savedHousemateEnrolled));
+	echo $this->Form->input('student_type_id', array('value' =>  $savedHousemateStudentType));
+	echo $this->Form->input('major', array('value' =>  $savedHousemateMajor));
+	echo $this->Form->input('seeking', array('value' => $savedHousemateSeeking));
+	echo $this->Form->input('gender_type_id', array('value' => $savedHousemateGender)); ?>
 <?php echo $this->Form->create('Sublet'); ?>
 <fieldset>
 <div id="sublet_register_screen1">

@@ -13,11 +13,12 @@ echo $this->Html->css('datepicker');
 <?php echo $this->Html->css('account'); ?>
 
 <div id="sublets form">
+        <input style="height:0px; top:-1000px; position:absolute" type="text" value=""> <!-- Hidden input to take focus off date -->
 <?php echo $this->Form->create('Sublet'); ?>
 <fieldset>
 <div id="sublet_register_screen1">
 <style> .datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; } </style>
-<input style="height:0px; top:-1000px; position:absolute" type="text" value=""> <!-- Hidden input to take focus off date -->
+
 <?php 
 echo $this->Form->input('date_begin', array('class' => 'date-picker','data-html' => 'true', 'data-placement' =>'bottom', 'type'=>'text', 'style' => 'position: relative; z-index: 100000;', 'value' =>$savedDateBegin)); 
                        
@@ -46,8 +47,13 @@ echo $this->Form->input('additional_fees_amount', array('value' => $savedAdditio
 
 </div>
 <script>
+$.datepicker.setDefaults($.datepicker.regional['nl']);
+$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' }); 
+$('.date-picker').datepicker();
+//$( "#SubletDateBegin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+//$( "#SubletDateEnd" ).datepicker({ dateFormat: 'yy-mm-dd' });
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-$("#SubletDateBegin").datepicker();
-$('#SubletDateEnd').datepicker();
+
+
 </script>
