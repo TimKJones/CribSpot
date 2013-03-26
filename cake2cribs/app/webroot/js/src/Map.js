@@ -46,6 +46,9 @@
         marker = decodedMarkerList[_i];
         this.AddMarker(marker.Marker);
       }
+      if (A2Cribs.marker_id_to_open) {
+        A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon("/img/dots/clicked_dot.png");
+      }
       return A2Cribs.Map.LoadHoverData();
     };
 
@@ -92,11 +95,16 @@
     };
 
     Map.Init = function(school_id, latitude, longitude, city, state) {
-      var imageStyles, mcOptions, style;
+      var imageStyles, mcOptions, style, zoom;
       this.CurentSchoolId = school_id;
-      this.MapCenter = new google.maps.LatLng(latitude, longitude);
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
+      zoom = 15;
+      if (A2Cribs.loaded_sublet_data != null) {
+        this.MapCenter = new google.maps.LatLng(A2Cribs.loaded_sublet_data.Marker.latitude, A2Cribs.loaded_sublet_data.Marker.longitude, zoom = 18);
+      } else {
+        this.MapCenter = new google.maps.LatLng(latitude, longitude);
+      }
       style = [
         {
           "featureType": "landscape",
@@ -131,7 +139,7 @@
         }
       ];
       this.MapOptions = {
-        zoom: 15,
+        zoom: zoom,
         center: A2Cribs.Map.MapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: style,
@@ -167,6 +175,9 @@
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
       this.ListingPopup = new A2Cribs.ListingPopup();
+      if (A2Cribs.loaded_sublet_data != null) {
+        this.ListingPopup.OpenLoaded(A2Cribs.loaded_sublet_data);
+      }
       A2Cribs.Map.InitBoundaries();
       A2Cribs.MarkerTooltip.Init();
       A2Cribs.FavoritesManager.LoadFavorites();

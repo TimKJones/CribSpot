@@ -35,14 +35,20 @@
     };
 
     CorrectMarker.AddressSearchCallback = function(response, status) {
-      var formattedAddress;
+      var city, formattedAddress, postal, state;
       console.log(response);
       if (status === google.maps.GeocoderStatus.OK) {
         A2Cribs.CorrectMarker.Map.panTo(response[0].geometry.location);
         A2Cribs.CorrectMarker.Map.setZoom(18);
         if (response[0].address_components.length >= 2) {
-          formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[1].short_name;
+          formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[2].short_name;
+          city = response[0].address_components[4].short_name;
+          state = response[0].address_components[7].short_name;
+          postal = response[0].address_components[9].short_name;
           $("#formattedAddress").html(formattedAddress);
+          $("#city").html(city);
+          $("#state").html(state);
+          $("#postal").html(postal);
           A2Cribs.CorrectMarker.Marker.setPosition(response[0].geometry.location);
           A2Cribs.CorrectMarker.Marker.setVisible(true);
           google.maps.event.addListener(A2Cribs.CorrectMarker.Marker, 'dragend', A2Cribs.CorrectMarker.UpdateLatLong);

@@ -4,6 +4,7 @@ class Marker extends AppModel {
 	public $name = 'Marker';
 	public $actsAs = array('Containable');
 	public $primaryKey = 'marker_id';
+	public $belongsTo = array('BuildingType');
 	public $hasMany = array(
 						'Sublet' => array(
 							'className' => 'Sublet', 
@@ -21,7 +22,7 @@ class Marker extends AppModel {
 		'alternate_name' => array(
 			'between' => array(
 				'rule' => array('between',0,250),
-				'message' => 'Must be between 1 and 250 characters'
+				'message' => 'Must be between 0 and 250 characters'
 				)
 			),
 		//section for building_type_id
@@ -37,9 +38,9 @@ class Marker extends AppModel {
 				'message' => 'Invalid building type'
 				)
 			),
-		'street_address' => array(
+		/*'street_address' => array(
 			'rule'    => 'alphaNumeric'
-		),
+		),*/
 		//section for city
 		//required. 
 		//completed
