@@ -55,9 +55,9 @@
         method: 'feed',
         link: url,
         picture: 'http://54.225.226.210/img/header/logo.png',
-        name: 'Cribspot',
-        caption: 'Share this listing with your friends!',
-        description: 'description'
+        name: A2Cribs.Cache.IdToMarkerMap[sublet_id].Address,
+        caption: 'Check out this listing on Cribspot!',
+        description: A2Cribs.Cache.IdToSubletMap[sublet_id].Description
       };
       return FB.ui(fbObj);
     };
