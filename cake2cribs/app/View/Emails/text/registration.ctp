@@ -1,1 +1,1 @@
-Thanks for registering 
+Thanks for registering!

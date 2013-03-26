@@ -1,7 +1,7 @@
 <?php
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array();
+	public $uses = array('Sublet');
     public $components= array('RequestHandler', 'Auth', 'Session');
 
     public function beforeFilter() {
@@ -98,6 +98,24 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
+        if ($sublet)
+        {
+            $this->Session->write('SubletInProgress.Sublet', $sublet['Sublet']);
+        }
+        $housemate = $this->Sublet->Housemate-> find('first', array('conditions' => array('Housemate.sublet_id' => $sublet['Sublet']['id'])));
+        if ($housemate)
+        {
+           $this->Session->write('SubletInProgress.Housemate', $housemate['Housemate']);
+        }
+        $marker = $this->Sublet->Marker->find('first', array('conditions' => array('marker_id' => $sublet['Marker']['marker_id'])));
+        if ($marker)
+        {
+            $this->Session->write('SubletInProgress.Sublet.address', $marker['Marker']['street_address']);
+            $this->Session->write('SubletInProgress.Sublet.name', $marker['Marker']['alternate_name']);
+            
+        }
+        print_r($sublet['Marker']['marker_id']);
         Configure::write('debug', 2);
         $canCreate = False;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
@@ -137,6 +155,7 @@ class SubletsController extends AppController {
                 $canCreate = true;
             }
                 $this->set('savedUniversity', $this->Session->read('SubletInProgress.Sublet.university'));
+                $this->set('savedUniversityId', $this->Session->read('SubletInProgress.Sublet.university_id'));
                 $this->set('savedBuildingTypeID', $this->Session->read('SubletInProgress.Sublet.building_type_id'));
                 $this->set('savedName', $this->Session->read('SubletInProgress.Sublet.name'));
                 $this->set('savedAddress',$this->Session->read('SubletInProgress.Sublet.address'));
@@ -252,7 +271,13 @@ class SubletsController extends AppController {
                 $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
                 if ($sublet)
                 {
-                    $this->set('response', "You already have one sublet");
+                    $this->Sublet->id = $sublet['Sublet']['id'];
+                    $this->Sublet->save($this->Session->read('SubletInProgress'));
+                    $housemate = $this->Sublet->Housemate-> find('first', array('conditions' => array('Housemate.sublet_id' => $this->Sublet->id)));
+                    $this->Sublet->Housemate->id = $housemate['Housemate']['id'];
+                    $this->Sublet->Housemate->Save($this->Session->read('SubletInProgress'));
+
+                    $this->set('response', json_encode(array('status' => 'Your existing sublet was updated.')));
                     return;
                 }
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
@@ -324,7 +349,8 @@ class SubletsController extends AppController {
             //save sublet
             //save housemate
             }
-
+            $this->set('response',json_encode(array('status' => 'You successfully saved your sublet.')));
+            return;
         }
         $this->set('response',json_encode($this->Session->read('SubletInProgress')));
         

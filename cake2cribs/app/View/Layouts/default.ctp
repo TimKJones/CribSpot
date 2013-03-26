@@ -26,6 +26,7 @@
 		echo $this->Html->charset();
 		echo $this->Html->script('http://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js');
 		echo $this->Html->script('jquery.controls');
 	
 		echo $this->Html->script('jquery.dialog2');

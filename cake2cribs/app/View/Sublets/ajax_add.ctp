@@ -31,6 +31,7 @@
         // 'label'=> 'Building Type:',
         )
 
+
       );?>
 
     	<?php echo $this->Form->input('name', array(
@@ -84,8 +85,16 @@
   						  //A2Cribs.CorrectMarker.Map.setCenter()
   						  google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
 
-  						var a = A2Cribs.SubletAdd;
-  							a.setupUI();
-  						$('#addressToMark').val('<?php echo $savedAddress; ?>');
-  						 
-  </script>
+						var a = A2Cribs.SubletAdd;
+							a.setupUI();
+						$('#addressToMark').val('<?php echo $savedAddress; ?>');
+            var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;
+            console.log(currentUniversityFromSave - window.universitiesMap[0].University.id);
+            if (currentUniversityFromSave)
+            {
+              $('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);
+
+            }
+						 
+</script>
+

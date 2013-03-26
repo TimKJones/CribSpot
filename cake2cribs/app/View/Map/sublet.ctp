@@ -18,7 +18,7 @@
 	$this->Js->buffer(	
 		$declare_marker_id_to_open . 
 		$declare_sublet_data . 
-		'A2Cribs.Map.Init(' . $school_id . ',' . $school_lat . ',' . $school_lng . ');
+		'A2Cribs.Map.Init(' . $school_id . ',' . $school_lat . ',' . $school_lng . ',"' . $school_city . '","' . $school_state . '");
 		$("#addressSearchBar").keyup(function(event){
     		if(event.keyCode == 13){
         		$("#addressSearchSubmit").click();

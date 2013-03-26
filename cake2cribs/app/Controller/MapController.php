@@ -14,13 +14,13 @@ class MapController extends AppController {
     $this->Auth->allow('LoadHoverData');
   }
 
-	public function index() {	
-		$this->set('ListingTooltip', $this->Listing->getTooltipVariables());
-		$this->InitFilterValues();
-	}
-
 	public function sublet($school_name = null, $address = null, $sublet_id = null)
 	{
+        /* -1 Code means do not open the tooltip */
+        if (($address == null && $sublet_id != null) || 
+            ($address != null && $sublet_id == null))
+            throw new NotFoundException();
+        
 		$marker_id_to_open = -1;
 		$subletData = -1;
 
@@ -28,10 +28,16 @@ class MapController extends AppController {
         {
             $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
+            if ($id == null)
+                throw new NotFoundException();  
             $this->set('school_id', $id);
             $lat_long = $this->University->getTargetLatLong($id);
+            if ($lat_long == null)
+                throw new NotFoundException();
             $this->set('school_lat', $lat_long['latitude']);
             $this->set('school_lng', $lat_long['longitude']);
+            $this->set('school_city', $lat_long['city']);
+            $this->set('school_state', $lat_long['state']);
         }
 
 		if ($sublet_id != null)
@@ -39,10 +45,10 @@ class MapController extends AppController {
 			$this->set("listing_id_to_open", $sublet_id);
 			$subletData = $this->Sublet->getSubletData($sublet_id);
 			if (array_key_exists("Sublet", $subletData) && array_key_exists("marker_id", $subletData['Sublet']))
-				$marker_id_to_open = $subletData['Sublet']['marker_id'];	
+				$marker_id_to_open = $subletData['Sublet']['marker_id'];
+            if ($subletData == null)
+                $marker_id_to_open = -2;
 		}
-		else
-			$marker_id_to_open = -2;
 
 		$this->set("marker_id_to_open", $marker_id_to_open);
 		$this->set("sublet_data_for_tooltip", $subletData);

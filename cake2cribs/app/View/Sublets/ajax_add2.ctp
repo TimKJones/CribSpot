@@ -12,7 +12,6 @@ echo $this->Html->css('datepicker');
 <?php echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>
 
-
 <div class = 'sublet-register container-fluid'>
 	<?php echo $this->Form->create('Sublet'); ?>
 	<fieldset class ='row-fluid'>
@@ -163,8 +162,13 @@ echo $this->Html->css('datepicker');
 
 </div>
 <script>
+$.datepicker.setDefaults($.datepicker.regional['nl']);
+$.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' }); 
+$('.date-picker').datepicker();
+//$( "#SubletDateBegin" ).datepicker({ dateFormat: 'yy-mm-dd' });
+//$( "#SubletDateEnd" ).datepicker({ dateFormat: 'yy-mm-dd' });
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-$("#SubletDateBegin").datepicker();
-$('#SubletDateEnd').datepicker();
+
+
 </script>

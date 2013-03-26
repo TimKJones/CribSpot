@@ -59,6 +59,7 @@
 		<input style="height:0px; top:-1000px; position:absolute" type="text" value=""> <!-- Hidden input to take focus off date -->
 		<?php      ?>
 
+
 		<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
 		<a href="#" id="finishSubletAdd">Save</a>
 	</div>
