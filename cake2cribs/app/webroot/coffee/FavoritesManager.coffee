@@ -12,10 +12,9 @@ class A2Cribs.FavoritesManager
 	Add a favorite
 	###
 	@AddFavorite: (sublet_id) ->
-		$('.favorite-clickable').addClass "active"
-		$('.favorite-clickable').attr 
-			title: "Delete from Favorites"
-			onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + sublet_id + ")"
+		A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
+		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
+		A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
 		$.ajax
 			url: myBaseUrl + "Favorites/AddFavorite/" + sublet_id
 			type:"POST"
@@ -28,20 +27,25 @@ class A2Cribs.FavoritesManager
 	@AddFavoriteCallback: (response, sublet_id) ->
 		response = JSON.parse response
 		if response.SUCCESS == undefined
-			A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
-			$('.favorite-clickable').removeClass "active"
-			$('.favorite-clickable').attr
-				title: "Add to Favorites"
-				onclick: "A2Cribs.FavoritesManager.AddFavorite(" + sublet_id + ")"
+			message = "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
+			if response.ERROR == "USER_NOT_LOGGED_IN"
+				message = "You must log in to add favorites."
+			A2Cribs.UIManager.Alert message
+			sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf sublet_id
+			marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
+			markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
+			A2Cribs.Cache.FavoritesSubletIdsList.splice sublet_index, 1
+			A2Cribs.Cache.FavoritesMarkerIdsList.splice markerid_index, 1
 
 	###
 	Delete a favorite
 	###
 	@DeleteFavorite: (sublet_id) ->
-		$('.favorite-clickable').removeClass "active"
-		$('.favorite-clickable').attr
-			title: "Add to Favorites"
-			onclick: "A2Cribs.FavoritesManager.AddFavorite(" + sublet_id + ")"
+		sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf sublet_id
+		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
+		markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
+		A2Cribs.Cache.FavoritesSubletIdsList.splice sublet_index, 1
+		A2Cribs.Cache.FavoritesMarkerIdsList.splice markerid_index, 1
 		$.ajax
 			url: myBaseUrl + "Favorites/DeleteFavorite/" + sublet_id
 			type:"POST"
@@ -55,11 +59,10 @@ class A2Cribs.FavoritesManager
 		response = JSON.parse response
 		if response.SUCCESS == undefined
 			A2Cribs.UIManager.Alert "There was an error deleting your favorite. Contact help@cribspot.com if the error persists."
-			$('.favorite-clickable').addClass "active"
-			$('.favorite-clickable').attr 
-				title: "Delete from Favorites"
-				onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + sublet_id + ")"
-
+			A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
+			A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
+			marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
+			A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
 
 	@InitializeFavorites: (response) ->
 		response = JSON.parse response
