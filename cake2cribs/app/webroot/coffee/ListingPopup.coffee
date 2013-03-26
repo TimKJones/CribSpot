@@ -34,12 +34,46 @@ class A2Cribs.ListingPopup
 			$("#message-area").focus();
 			@modal.modal 'show'
 
+	OpenLoaded: (sublet) ->
+		if sublet?
+			@SetPreloadedContent sublet
+			$(".side-pane").hide();
+			$("#overview").show();
+			@modal.modal 'show'
+
 
 	###
-f	Closes the tooltip, no animation
+	Closes the tooltip, no animation
 	###
 	Close: ->
 		@modal.modal 'hide'
+
+	SetPreloadedContent: (subletObject) ->
+		template = $(".listing-popup:first").wrap('<p/>').parent()
+		content = template.children().first()
+		sublet = subletObject.Sublet
+		if subletObject.Marker.alternate_name
+			content.find('.sublet-name').text subletObject.Marker.alternate_name
+		else
+			content.find('.sublet-name').text subletObject.Marker.street_address
+		content.find('.bed-price').text sublet.price_per_bedroom
+		content.find('.full-date').text @resolveDateRange sublet.date_begin, sublet.date_end
+		content.find('.building-type').text subletObject.BuildingType.name
+		content.find('.school-name').text subletObject.User.university_verified
+		content.find('.full-address').text subletObject.Marker.street_address + ", " + subletObject.Marker.city + ", " + subletObject.Marker.state
+		content.find('.bath-type').text subletObject.BathroomType.name
+		content.find('.parking-avail').text "LOL"
+		content.find('.ac-avail').text "Maybe"
+		content.find('.furnish-avail').text subletObject.FurnishedType.name
+		content.find('.first-name').text subletObject.User.first_name
+		content.find('.short-description').find('p').text sublet.description
+		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
+		#content.find('.').text
+		#content.find('.').text
+		#content.find('.').text
+		#content.find('.').text
+		
+		$(".listing-popup:first").unwrap()
 
 	###
 	Sets the content of the tooltip
