@@ -31,6 +31,12 @@ class A2Cribs.SubletAdd
 				latitude: $('#updatedLat').text()
 				longitude: $('#updatedLong').text()
 			}
+			Marker: {
+				street_address: $("#formattedAddress").text()
+				city: $("#city").text()
+				state: $("#state").text()
+				zip: $("#postal").text()
+			}
 			CurrentStep: 1
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
 			
@@ -80,6 +86,7 @@ class A2Cribs.SubletAdd
 			console.log(response)
 			data = JSON.parse response
 			console.log data
+			console.log "Done with step 2"
 			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add3"});
 			#window.location.href= '/dashboard'
 			#if data.registerStatus == 1
@@ -112,6 +119,7 @@ class A2Cribs.SubletAdd
 			console.log(response)
 			data = JSON.parse response
 			console.log data
+			console.log "Done"
 			alert "You should be finished by now."
 			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add4"});
 			#window.location.href= '/dashboard'

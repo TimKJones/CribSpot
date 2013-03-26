@@ -1,3 +1,4 @@
+
 (function() {
 
   A2Cribs.Map = (function() {
@@ -7,6 +8,7 @@
     /*
     	Called when a marker is clicked
     */
+
 
     Map.MarkerClicked = function(event) {
       return A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData();
@@ -24,6 +26,7 @@
     	Add a marker to the map
     */
 
+
     Map.AddMarker = function(m) {
       var id;
       id = parseInt(m.marker_id, 10);
@@ -39,6 +42,7 @@
     	Add all markers in markerList to map
     */
 
+
     Map.InitializeMarkers = function(markerList) {
       var decodedMarkerList, marker, _i, _len;
       decodedMarkerList = JSON.parse(markerList);
@@ -46,12 +50,16 @@
         marker = decodedMarkerList[_i];
         this.AddMarker(marker.Marker);
       }
+      if (A2Cribs.marker_id_to_open) {
+        A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon("/img/dots/clicked_dot.png");
+      }
       return A2Cribs.Map.LoadHoverData();
     };
 
     /*
     	Load all markers from Markers table
     */
+
 
     Map.LoadMarkers = function() {
       return $.ajax({
@@ -67,12 +75,14 @@
       		@AutoComplete = new google.maps.places.Autocomplete(input, options)
       		@AutoComplete.setBounds(defaultBounds)
       */
+
     };
 
     /*
     	Used to only show markers that are within a certain bounds based on the user's current viewport.
     	https://developers.google.com/maps/articles/toomanymarkers#viewportmarkermanagement
     */
+
 
     Map.ShowMarkers = function() {
       var bounds;
@@ -92,9 +102,14 @@
     };
 
     Map.Init = function(school_id, latitude, longitude) {
-      var imageStyles, mcOptions, style;
+      var imageStyles, mcOptions, style, zoom;
       this.CurentSchoolId = school_id;
-      this.MapCenter = new google.maps.LatLng(latitude, longitude);
+      zoom = 15;
+      if (A2Cribs.loaded_sublet_data != null) {
+        this.MapCenter = new google.maps.LatLng(A2Cribs.loaded_sublet_data.Marker.latitude, A2Cribs.loaded_sublet_data.Marker.longitude, zoom = 18);
+      } else {
+        this.MapCenter = new google.maps.LatLng(latitude, longitude);
+      }
       style = [
         {
           "featureType": "landscape",
@@ -129,7 +144,7 @@
         }
       ];
       this.MapOptions = {
-        zoom: 15,
+        zoom: zoom,
         center: A2Cribs.Map.MapCenter,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: style,
@@ -145,6 +160,7 @@
       			}
       		]
       */
+
       imageStyles = [
         {
           height: 48,
@@ -165,6 +181,9 @@
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
       this.ListingPopup = new A2Cribs.ListingPopup();
+      if (A2Cribs.loaded_sublet_data != null) {
+        this.ListingPopup.OpenLoaded(A2Cribs.loaded_sublet_data);
+      }
       A2Cribs.Map.InitBoundaries();
       A2Cribs.MarkerTooltip.Init();
       A2Cribs.FavoritesManager.LoadFavorites();
@@ -194,7 +213,7 @@
     };
 
     Map.LoadTypeTablesCallback = function(types) {
-      var bathrooms, buildings, genders, student_types, type, _i, _j, _k, _l, _len, _len2, _len3, _len4;
+      var bathrooms, buildings, genders, student_types, type, _i, _j, _k, _l, _len, _len1, _len2, _len3;
       types = JSON.parse(types);
       buildings = types[0];
       bathrooms = types[1];
@@ -204,15 +223,15 @@
         type = buildings[_i];
         A2Cribs.Cache.BuildingIdToNameMap[parseInt(type.BuildingType.id)] = type.BuildingType.name;
       }
-      for (_j = 0, _len2 = bathrooms.length; _j < _len2; _j++) {
+      for (_j = 0, _len1 = bathrooms.length; _j < _len1; _j++) {
         type = bathrooms[_j];
         A2Cribs.Cache.BathroomIdToNameMap[parseInt(type.BathroomType.id)] = type.BathroomType.name;
       }
-      for (_k = 0, _len3 = genders.length; _k < _len3; _k++) {
+      for (_k = 0, _len2 = genders.length; _k < _len2; _k++) {
         type = genders[_k];
         A2Cribs.Cache.GenderIdToNameMap[parseInt(type.GenderType.id)] = type.GenderType.name;
       }
-      for (_l = 0, _len4 = student_types.length; _l < _len4; _l++) {
+      for (_l = 0, _len3 = student_types.length; _l < _len3; _l++) {
         type = student_types[_l];
         A2Cribs.Cache.StudentTypeIdToNameMap[parseInt(type.StudentType.id)] = type.StudentType.name;
       }
@@ -225,12 +244,15 @@
     		sublet_data is an object containing all the data needed to populate a tooltip
     */
 
+
     Map.OpenMarker = function(marker_id, sublet_data) {
       if (marker_id === -1) {
         alert("This listing either has been removed or is invalid.");
         return;
       }
-      if (marker_id === -2) return;
+      if (marker_id === -2) {
+        return;
+      }
       return alert(marker_id);
     };
 
