@@ -87,7 +87,9 @@
 
 						var a = A2Cribs.SubletAdd;
 							a.setupUI();
+            google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
 						$('#addressToMark').val('<?php echo $savedAddress; ?>');
+
             <?php if ($savedUniversityId)
             {
              echo 'var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;';
