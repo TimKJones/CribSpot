@@ -155,7 +155,7 @@ class A2Cribs.FilterManager
 			$("#addressSearchBar").effect("highlight", {color: "#FF0000"}, 2000)
 
 	@SearchForAddress: ->
-		address = $("#addressSearchBar").val()
+		address = $("#AddressSearchText").val()
 		request = 
 			location: A2Cribs.Map.GMap.getCenter()
 			radius: 8100 # in meters (approximately 5 miles)

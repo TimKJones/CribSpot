@@ -167,7 +167,7 @@
 
     FilterManager.SearchForAddress = function() {
       var address, request;
-      address = $("#addressSearchBar").val();
+      address = $("#AddressSearchText").val();
       request = {
         location: A2Cribs.Map.GMap.getCenter(),
         radius: 8100,
