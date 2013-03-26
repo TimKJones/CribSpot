@@ -9,6 +9,8 @@ class A2Cribs.FilterManager
 	@DateEnd = 'NOT_SET'
 	#@PlacesService = null #Google Places Service for address search
 	@Geocoder = null
+	#@CurrentCity = null
+	#@CurrentState = null
 
 	@UpdateMarkers: (visibleMarkerIds) ->
 		visibleMarkerIds = JSON.parse visibleMarkerIds
@@ -162,5 +164,5 @@ class A2Cribs.FilterManager
 			types: ['street_address', 'street_number', 'postal_code', 'postal_code_prefix', 'point_of_interest', 'neighborhood', 'intersection', 'transit_station']
 			keyword: address
 			name: address
-		A2Cribs.FilterManager.Geocoder.geocode({ 'address' : address + " Ann Arbor, MI 48104"}, A2Cribs.FilterManager.AddressSearchCallback)
+		A2Cribs.FilterManager.Geocoder.geocode({ 'address' : address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState}, A2Cribs.FilterManager.AddressSearchCallback)
 		#@PlacesService.nearbySearch(request, @AddressSearchCallback)

@@ -128,7 +128,7 @@
 </div>
 
 <div style="display:none;">
-	<form id='search-form'><input type='text' placeholder='Local Street Address'></form>
+	<form id='search-form'><input type='text' id="AddressSearchText" placeholder='Local Street Address'></form>
 	<div id='apttype-popover'>
 		<table>
 			<tr>
@@ -192,7 +192,7 @@
 		}).on("changeDate", function(ev) {
     		A2Cribs.FilterManager.ApplyFilter(ev);
     	}).data("datepicker");
-		A2Cribs.PageHeader.renderUnreadConversationsCount();
+		A2Cribs.PageHeader.renderUnreadConversationsCount();	
 	');
 ?>
 
@@ -208,6 +208,9 @@
             event.preventDefault();
         });
     });
+
+     $("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
+
 /*
     $("#endDate").datepicker().on('changeDate', function(ev) {
     	alert('changed');

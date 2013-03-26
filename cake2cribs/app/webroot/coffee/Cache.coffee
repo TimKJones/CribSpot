@@ -123,10 +123,11 @@ class A2Cribs.Cache
 		@SubletIdToHousemateIdsMap[sublet_id] = []
 		for h in housemates
 			h.id = parseInt h.id
-			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type]
-			gender = @GenderIdToNameMap[parseInt h.gender]
+			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type_id]
+			gender = @GenderIdToNameMap[parseInt h.gender_type_id]
 			sublet_id = parseInt h.sublet_id
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender)
+			quantity = parseInt h.quantity
+			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender, quantity)
 			@SubletIdToHousemateIdsMap[sublet_id].push h.id
 
 	@CacheImages: (imageList) ->

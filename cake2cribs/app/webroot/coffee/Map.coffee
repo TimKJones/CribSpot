@@ -33,7 +33,7 @@ class A2Cribs.Map
 			@AddMarker marker.Marker
 
 
-		if A2Cribs.marker_id_to_open
+		if A2Cribs.marker_id_to_open >= 0
 			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
 		A2Cribs.Map.LoadHoverData()
 
@@ -73,10 +73,12 @@ class A2Cribs.Map
 			FILTER_BOX_BOTTOM: A2Cribs.UtilityFunctions.getPosition($("#filterBoxBackground")[0]).y + $("#filterBoxBackground").height()
 			CONTROL_BOX_LEFT: 95
 
-	@Init: (school_id, latitude, longitude) ->
+	@Init: (school_id, latitude, longitude, city, state) ->
 		@CurentSchoolId = school_id
+		A2Cribs.FilterManager.CurrentCity = city
+		A2Cribs.FilterManager.CurrentState = state
 		zoom = 15
-		if A2Cribs.loaded_sublet_data? 
+		if A2Cribs.marker_id_to_open >= 0
 			@MapCenter = new google.maps.LatLng A2Cribs.loaded_sublet_data.Marker.latitude,
 				A2Cribs.loaded_sublet_data.Marker.longitude
 				zoom = 18
@@ -142,8 +144,10 @@ class A2Cribs.Map
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		@ListingPopup = new A2Cribs.ListingPopup()
 
-		if A2Cribs.loaded_sublet_data?
+		if A2Cribs.marker_id_to_open >= 0
 			@ListingPopup.OpenLoaded A2Cribs.loaded_sublet_data
+		else if A2Cribs.marker_id_to_open is -2
+			alertify.alert "Sorry. This listing no longer exists!"
 		
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()

@@ -146,10 +146,10 @@ class UsersController extends AppController {
                   'client' => 'a2cribs.com'
                 );
                 $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
+                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
                 $this->Email->to = $this->request->data['User']['email'];
                 $this->set('name', $this->request->data['User']['first_name']);
-                $this->Email->subject = 'Please verify your CribSpot account';
+                $this->Email->subject = 'Please verify your Cribspot account';
                 $this->Email->template = 'registration';
                 $this->Email->sendAs = 'both';
                 $this->set('vericode', $this->request->data['User']['vericode']);
@@ -191,10 +191,10 @@ class UsersController extends AppController {
                   'client' => 'a2cribs.com'
                 );
             $this->Email->delivery = 'smtp';
-            $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
+            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
             $this->Email->to = $this->request->data['User']['email'];
             $this->set('name', $this->request->data['User']['first_name']);
-            $this->Email->subject = 'Please verify your CribSpot account';
+            $this->Email->subject = 'Please verify your Cribspot account';
             $this->Email->template = 'registration';
             $this->Email->sendAs = 'both';
             $this->set('vericode', $this->request->data['User']['vericode']);
@@ -274,7 +274,7 @@ class UsersController extends AppController {
                   'client' => 'a2cribs.com'
                 );
                 $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The Cribspot Team<team@a2cribs.com>';
+                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
                 $this->Email->to = $this->User->field('email');
                 $this->set('name', $this->User->first_name);
                 $this->Email->subject = 'Please reset your password';
@@ -418,10 +418,10 @@ class UsersController extends AppController {
                   'client' => 'a2cribs.com'
                 );
                 $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The CribSpot Team<team@a2cribs.com>';
+                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
                 $this->Email->to = $this->Auth->user('email');
                 $this->set('name', $this->Auth->user('first_name'));
-                $this->Email->subject = 'Please verify your CribSpot account\'s university association!';
+                $this->Email->subject = 'Please verify your Cribspot account\'s university association!';
                 $this->Email->template = 'university_verification';
                 $this->Email->sendAs = 'both';
                 $this->set('vericode', $this->request->data['User']['vericode']);
@@ -587,6 +587,7 @@ class UsersController extends AppController {
 
             $json = json_encode(array(
                 'success' => 1,
+                'user' => json_encode($user)
             ));  
         }
 
