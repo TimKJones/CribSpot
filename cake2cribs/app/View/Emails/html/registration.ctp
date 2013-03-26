@@ -114,7 +114,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
             <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
                 <tbody><tr><td class="w325" width="350" height="8"></td></tr>
             </tbody></table>
-            <div class="header-content"><a href="www.cribspot.com">Cribspot.com</a><span class="hide">&nbsp;&nbsp;|&nbsp;Made By Students. For Students.</span></div>
+            <div class="header-content"><webversion><a href="www.cribspot.com">Cribspot.com</a></webversion><span class="hide">&nbsp;&nbsp;|&nbsp;Made By Students. For Students.</span></div>
             <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
                 <tbody><tr><td class="w325" width="350" height="8"></td></tr>
             </tbody></table>
@@ -127,13 +127,13 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
             <table cellpadding="0" cellspacing="0" border="0">
     <tbody><tr>
         
-        <td valign="middle"><fblike><img src="https://cribspot.com/images/like-glyph.png" border="0" width="8" height="14" alt="Facebook icon"=""></fblike></td>
+        <td valign="middle"><fblike><img src="/img/email/like-glyph.png" border="0" width="8" height="14" alt="Facebook icon"=""></fblike></td>
         <td width="3"></td>
         <td valign="middle"><div class="header-content"><fblike>Like</fblike></div></td>
         
         
         <td class="w10" width="10"></td>
-        <td valign="middle"><tweet><img src="https://cribspot.com/images/tweet-glyph.png" border="0" width="17" height="13" alt="Twitter icon"=""></tweet></td>
+        <td valign="middle"><tweet><img src="img/email/tweet-glyph.png" border="0" width="17" height="13" alt="Twitter icon"=""></tweet></td>
         <td width="3"></td>
         <td valign="middle"><div class="header-content"><tweet>Tweet</tweet></div></td>
         
@@ -155,7 +155,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
     
     <div align="left" style="text-align: left">
         
-        <img id="customHeaderImage" label="Header Image" editable="true" width="306" src="cribspot.com/images/email_logo_black.194444.png" class="w640" border="0" align="top" style="display: inline">
+        <img id="customHeaderImage" label="Header Image" editable="true" width="306" src="img/email_logo_black.194444.png" class="w640" border="0" align="top" style="display: inline">
         
     </div>
     

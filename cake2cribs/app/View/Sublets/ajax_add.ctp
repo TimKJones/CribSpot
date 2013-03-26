@@ -87,14 +87,14 @@
 
 						var a = A2Cribs.SubletAdd;
 							a.setupUI();
+            google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
 						$('#addressToMark').val('<?php echo $savedAddress; ?>');
-            var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;
-            console.log(currentUniversityFromSave - window.universitiesMap[0].University.id);
-            if (currentUniversityFromSave)
-            {
-              $('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);
 
-            }
+            <?php if ($savedUniversityId)
+            {
+             echo 'var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;';
+             echo "$('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);";
+            } ?>
 						 
 </script>
 
