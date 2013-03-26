@@ -73,10 +73,11 @@ class A2Cribs.Map
 			FILTER_BOX_BOTTOM: A2Cribs.UtilityFunctions.getPosition($("#filterBoxBackground")[0]).y + $("#filterBoxBackground").height()
 			CONTROL_BOX_LEFT: 95
 
-	@Init: (school_id, latitude, longitude, city, state) ->
+	@Init: (school_id, latitude, longitude, city, state, school_name) ->
 		@CurentSchoolId = school_id
 		A2Cribs.FilterManager.CurrentCity = city
 		A2Cribs.FilterManager.CurrentState = state
+		A2Cribs.FilterManager.CurrentSchool = school_name
 		zoom = 15
 		if A2Cribs.marker_id_to_open >= 0
 			@MapCenter = new google.maps.LatLng A2Cribs.loaded_sublet_data.Marker.latitude,

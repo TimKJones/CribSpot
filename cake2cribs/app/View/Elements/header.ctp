@@ -87,11 +87,7 @@
 	</div>
 	<div id="personal-buttons" class="pull-right">
 		<div class="btn-group">
-			<a class="btn btn-link hide" data-toggle="dropdown" href="#">
-				<img src="img/jason.jpg" class="img-polaroid">
-				<strong>Jason</strong>
-				<span class="caret"></span>
-			</a>
+
 			
 			<?php if ($this->Session->read('Auth.User.id') == 0)
 			{
@@ -99,14 +95,20 @@
 				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
 			}
 			else
-				echo '<a class="btn btn-link" href="/users/logout">LOGOUT</a>'
+				echo '
+					<a class="btn btn-link" data-toggle="dropdown" href="#">
+						<img src="img/jason.jpg" class="img-polaroid">
+						<strong>Jason</strong>
+						<span class="caret"></span>
+					</a>'
 			?>
 
 			<ul class="dropdown-menu">
-				<li><a href="#">Action 1</a></li>
-				<li><a href="#">Action 2</a></li>
-				<li class="divider"></li>
+				<li><a href="/dashboard"><i class="icon-dashboard"></i> My Dashboard</a></li>
+				<li><a href="#"><i class="icon-edit"></i> Edit My Listing</a></li>
 				<li><a href="/dashboard"><i class="icon-cogs"></i> Account Settings</a></li>
+				<li class="divider"></li>
+				<li><a href="/users/logout"><i class="icon-signout"></i> Logout</a></li>
 			</ul>
 		</div>
 		<?php if ($this->Session->read('Auth.User.id') != 0)

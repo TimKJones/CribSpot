@@ -68,6 +68,20 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text subletObject.FurnishedType.name
 		content.find('.first-name').text subletObject.User.first_name
 		content.find('.short-description').find('p').text sublet.description
+		subletId = sublet.id
+		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
+		if is_favorite
+			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
+			$('#favorite-btn').addClass "active"
+			$('#favorite-btn').addClass "btn-danger"
+		else
+			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
+			if $('#favorite-btn').hasClass "active"
+				$('#favorite-btn').removeClass "active"
+			if $('#favorite-btn').hasClass "btn-danger"
+				$('#favorite-btn').removeClass "btn-danger"
 		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
 		#content.find('.').text
 		#content.find('.').text
@@ -83,8 +97,13 @@ class A2Cribs.ListingPopup
 		template = $(".listing-popup:first").wrap('<p/>').parent()
 		content = template.children().first()
 		sublet = A2Cribs.Cache.IdToSubletMap[subletId]
+		marker = A2Cribs.Cache.IdToMarkerMap[subletId]
+		school = A2Cribs.FilterManager.CurrentSchool.split(" ").join "_"
+		short_address = marker.Address.split(" ").join "_"
+		content.find('.facebook-share').attr 'onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')'
+		content.find('.twitter-share').attr 'href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId)
 		content.find('#sublet-id').text subletId
-		content.find('.sublet-name').text if sublet.Name then sublet.Name else sublet.StreetAddress
+		content.find('.sublet-name').text if sublet.Title then sublet.Title else marker.Address
 		content.find('.bed-price').text sublet.PricePerBedroom
 		content.find('.full-date').text @resolveDateRange sublet.StartDate, sublet.EndDate
 		content.find('.building-type').text sublet.BuildingType
@@ -96,6 +115,20 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text if sublet.Furnished then "Fully" else "No"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
+		subletId = sublet.SubletId
+		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
+		if is_favorite
+			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
+			$('#favorite-btn').addClass "active"
+			$('#favorite-btn').addClass "btn-danger"
+		else
+			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
+			if $('#favorite-btn').hasClass "active"
+				$('#favorite-btn').removeClass "active"
+			if $('#favorite-btn').hasClass "btn-danger"
+				$('#favorite-btn').removeClass "btn-danger"
 		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
 		#content.find('.').text
 		#content.find('.').text
