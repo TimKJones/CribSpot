@@ -31,8 +31,10 @@ class A2Cribs.Map
 		decodedMarkerList = JSON.parse markerList
 		for marker in decodedMarkerList
 			@AddMarker marker.Marker
-			#handle onClick
 
+
+		if A2Cribs.marker_id_to_open
+			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
 		A2Cribs.Map.LoadHoverData()
 
 	###
@@ -73,7 +75,14 @@ class A2Cribs.Map
 
 	@Init: (school_id, latitude, longitude) ->
 		@CurentSchoolId = school_id
-		@MapCenter = new google.maps.LatLng(latitude, longitude);
+		zoom = 15
+		if A2Cribs.loaded_sublet_data? 
+			@MapCenter = new google.maps.LatLng A2Cribs.loaded_sublet_data.Marker.latitude,
+				A2Cribs.loaded_sublet_data.Marker.longitude
+				zoom = 18
+		else
+			@MapCenter = new google.maps.LatLng(latitude, longitude);
+
 		style = [
 			{
 				"featureType": "landscape",
@@ -99,7 +108,7 @@ class A2Cribs.Map
 			}
 		]
 		@MapOptions =
-  			zoom: 15
+  			zoom: zoom
   			center: A2Cribs.Map.MapCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
   			styles: style
@@ -132,6 +141,9 @@ class A2Cribs.Map
 		@ClickBubble = new A2Cribs.ClickBubble @GMap
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		@ListingPopup = new A2Cribs.ListingPopup()
+
+		if A2Cribs.loaded_sublet_data?
+			@ListingPopup.OpenLoaded A2Cribs.loaded_sublet_data
 		
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
