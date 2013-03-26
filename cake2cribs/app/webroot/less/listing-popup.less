@@ -34,6 +34,45 @@
 			color: white;
 			margin-left: 20px;
 			text-shadow: -1px -1px black;
+			float: left;
+		}
+		.share-buttons
+		{
+			float: right;
+			margin-top: 10px;
+			margin-right: 10px;
+			.twitter-share
+			{
+				div
+				{
+					background-image: url(/img/social_sprite.png);
+					background-size: 100%;
+					height: 30px;
+					width: 30px;
+					display: inline-block;
+					background-position: 0 -136px;
+					&:hover
+					{
+						background-position: 0 -170px;
+					}
+				}
+			}
+			.facebook-share
+			{
+				div
+				{
+					background-image: url(/img/social_sprite.png);
+					background-size: 100%;
+					height: 30px;
+					width: 30px;
+					display: inline-block;
+					background-position: 0 -68px;
+					&:hover
+					{
+						background-position: 0 -102px;
+					}
+				}
+			}
 		}
 		.btn-group
 		{

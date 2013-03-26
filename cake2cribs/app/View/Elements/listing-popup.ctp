@@ -10,6 +10,10 @@
 			<button type="button" id="contact-btn" class="btn">Contact</button>
 			<button type="button" id="favorite-btn" class="btn"><i class="icon-heart icon-large favorite-clickable"></i></button>
 		</div>
+		<div class="share-buttons">
+			<a href="#" class="facebook-share"><div></div></a>
+			<a href="#" target="_blank" class="twitter-share"><div></div></a>
+		</div>
 		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div class="photo-region">

@@ -96,12 +96,17 @@ ListingPopup class
 
 
     ListingPopup.prototype.SetContent = function(subletId) {
-      var content, sublet, template;
+      var content, marker, school, short_address, sublet, template;
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = A2Cribs.Cache.IdToSubletMap[subletId];
+      marker = A2Cribs.Cache.IdToMarkerMap[subletId];
+      school = A2Cribs.FilterManager.CurrentSchool.split(" ").join("_");
+      short_address = marker.Address.split(" ").join("_");
+      content.find('.facebook-share').attr('onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')');
+      content.find('.twitter-share').attr('href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId));
       content.find('#sublet-id').text(subletId);
-      content.find('.sublet-name').text(sublet.Name ? sublet.Name : sublet.StreetAddress);
+      content.find('.sublet-name').text(sublet.Title ? sublet.Title : marker.Address);
       content.find('.bed-price').text(sublet.PricePerBedroom);
       content.find('.full-date').text(this.resolveDateRange(sublet.StartDate, sublet.EndDate));
       content.find('.building-type').text(sublet.BuildingType);
