@@ -64,13 +64,14 @@ f	Closes the tooltip, no animation
 		template = $(".click-bubble:first").wrap('<p/>').parent()
 		content = template.children().first()
 		firstSublet = A2Cribs.Cache.IdToSubletMap[subletIds[0]]
+		marker = A2Cribs.Cache.IdToMarkerMap[subletId]
 		content.addClass "multi-listing"
 		content.removeClass "single-listing"
 		content.find('#listing-count').text subletIds.length
-		if (firstSublet.Name)
-			content.find('.sublet-name').text firstSublet.Name
+		if (marker.Title)
+			content.find('.sublet-name').text marker.Title
 		else
-			content.find('.sublet-name').text firstSublet.StreetAddress
+			content.find('.sublet-name').text marker.Address
 
 		dataTemplate = content.find('.click-bubble-data').first()
 		content.find('.bubble-container').first().empty()
@@ -108,12 +109,13 @@ f	Closes the tooltip, no animation
 		content = template.children().first()
 		firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
 		subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
+		marker = A2Cribs.Cache.IdToMarkerMap[subletId]
 		template.children().addClass "single-listing"
 		template.children().removeClass "multi-listing"
-		if (firstSublet.Name)
-			content.find('.sublet-name').text firstSublet.Name
+		if (marker.Title)
+			content.find('.sublet-name').text marker.Title
 		else
-			content.find('.sublet-name').text firstSublet.StreetAddress
+			content.find('.sublet-name').text marker.Address
 		content.find('.username').text subletOwner.FirstName
 		if subletOwner.FBUserId
 			content.find('.friend-count').text 100
