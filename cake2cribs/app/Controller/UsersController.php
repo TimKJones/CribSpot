@@ -151,7 +151,7 @@ class UsersController extends AppController {
                 $this->set('name', $this->request->data['User']['first_name']);
                 $this->Email->subject = 'Please verify your Cribspot account';
                 $this->Email->template = 'registration';
-                $this->Email->sendAs = 'both';
+                $this->Email->sendAs = 'html';
                 $this->set('vericode', $this->request->data['User']['vericode']);
                 $this->set('id',$this->User->id);
                 $this->Email->send();
