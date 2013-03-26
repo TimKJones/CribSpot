@@ -1,18 +1,24 @@
 .click-bubble.multi-listing
 {
 	max-width: 300px;
+	position: relative;
 	.single-content
 	{
-		display: none;
+		display: none !important;
 	}
 }
 
 .click-bubble.single-listing
 {
-	width: 320px;
+	min-width: 200px;
+	max-width: 400px;
+	overflow: auto;
+	white-space: nowrap;
+	display: inline-block;
+	//max-height: 100px;
 	.multi-content
 	{
-		display: none;
+		display: none !important;
 	}
 }
 
@@ -26,8 +32,9 @@
 	@money-color: #00BB00;
 	@bed-color: #d25555;
 	@apt-color: black;
-	@button-color: #d25555;
-	#sublet-name
+	@button-color: #B0B0B0;
+
+	.sublet-name
 	{
 		color: @title-color;
 		font-style: normal;
@@ -38,26 +45,31 @@
 		font-size: 12px;
 		font-style: normal;
 	}
+	.bed-icon
+	{
+		height: 12px;
+		width: 24px;
+	}
 	.single-content
 	{
 		//display: none;
-		img
+		.listing-image
 		{
 			height: 90px;
 			width: 125px;
-			display: inline-block;
 			float: left;
 			margin-top: 2px;
 		}
 	}
 	.single-content.click-bubble-data
 	{
-		float: left;
+		display: inline-block;
+		white-space: nowrap;
 	}
 	.multi-content
 	{
 		//display: none;
-		img
+		.listing-image
 		{
 			height: 65px;
 			width: 80px;
@@ -70,6 +82,9 @@
 		{
 			border: solid 1px gray;
 			display: block;
+			overflow: auto;
+			white-space: nowrap;
+			display: inline-block;
 		}
 		#listing-count
 		{
@@ -151,6 +166,10 @@
 	{
 		margin-right: 5px;
 	}
+	.inline-block
+	{
+		display: inline-block;
+	}
 	.extended-buttons
 	{
 		position: absolute;
@@ -163,6 +182,13 @@
 			i
 			{
 				color: @button-color;
+			}
+			&:hover
+			{
+				i
+				{
+					color: #989898;
+				}
 			}
 		}
 	}

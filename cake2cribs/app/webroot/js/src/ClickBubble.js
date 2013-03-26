@@ -85,7 +85,7 @@ Wrapper for google infobubble
       template = $(".click-bubble:first").wrap('<p/>').parent();
       content = template.children().first();
       firstSublet = A2Cribs.Cache.IdToSubletMap[subletIds[0]];
-      marker = A2Cribs.Cache.IdToMarkerMap[subletId];
+      marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId];
       content.addClass("multi-listing");
       content.removeClass("single-listing");
       content.find('#listing-count').text(subletIds.length);
@@ -101,7 +101,7 @@ Wrapper for google infobubble
         div = dataTemplate.clone();
         firstSublet = A2Cribs.Cache.IdToSubletMap[subletId];
         subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId];
-        div.removeClass("single-listing");
+        div.removeClass("single-content");
         div.find('.username').text(subletOwner.FirstName);
         if (subletOwner.FBUserId) {
           div.find('.friend-count').text(100);
@@ -134,7 +134,7 @@ Wrapper for google infobubble
       content = template.children().first();
       firstSublet = A2Cribs.Cache.IdToSubletMap[subletId];
       subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId];
-      marker = A2Cribs.Cache.IdToMarkerMap[subletId];
+      marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId];
       template.children().addClass("single-listing");
       template.children().removeClass("multi-listing");
       if (marker.Title) {

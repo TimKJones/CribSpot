@@ -118,7 +118,7 @@ ListingPopup class
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = A2Cribs.Cache.IdToSubletMap[subletId];
-      marker = A2Cribs.Cache.IdToMarkerMap[subletId];
+      marker = A2Cribs.Cache.IdToMarkerMap[sublet.MarkerId];
       school = A2Cribs.FilterManager.CurrentSchool.split(" ").join("_");
       short_address = marker.Address.split(" ").join("_");
       content.find('.facebook-share').attr('onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')');
