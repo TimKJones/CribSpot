@@ -186,7 +186,8 @@
       }
       A2Cribs.Map.InitBoundaries();
       A2Cribs.MarkerTooltip.Init();
-      return A2Cribs.FavoritesManager.LoadFavorites();
+      A2Cribs.FavoritesManager.LoadFavorites();
+      return A2Cribs.FilterManager.InitAddressSearch();
     };
 
     Map.LoadTypeTables = function() {

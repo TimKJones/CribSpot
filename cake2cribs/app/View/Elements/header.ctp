@@ -175,9 +175,23 @@
 	$this->Js->buffer('
 		$(".tooltip-btn").tooltip();	
 		$(".popover-btn").popover();
-		$(".date-picker").datepicker().on("changeDate", function(ev) {
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+		A2Cribs.FilterManager.StartDateObject = $("#startDate").datepicker({
+		  onRender: function(date) {
+		    return date.valueOf() < now.valueOf() ? "disabled" : "";
+		  }
+		}).on("changeDate", function(ev) {
     		A2Cribs.FilterManager.ApplyFilter(ev);
-    	});
+    	}).data("datepicker");
+
+		A2Cribs.FilterManager.EndDateObject = $("#endDate").datepicker({
+		  onRender: function(date) {
+		    return date.valueOf() < now.valueOf() ? "disabled" : "";
+		  }
+		}).on("changeDate", function(ev) {
+    		A2Cribs.FilterManager.ApplyFilter(ev);
+    	}).data("datepicker");
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>

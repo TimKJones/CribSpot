@@ -148,6 +148,7 @@ class A2Cribs.Map
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
 		A2Cribs.FavoritesManager.LoadFavorites()
+		A2Cribs.FilterManager.InitAddressSearch()
 
 	@LoadTypeTables: ->
 		$.ajax
