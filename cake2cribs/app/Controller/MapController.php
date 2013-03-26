@@ -21,6 +21,7 @@ class MapController extends AppController {
 
 	public function sublet($school_name = null, $address = null, $sublet_id = null)
 	{
+        /* -1 Code means do not open the tooltip */
 		$marker_id_to_open = -1;
 		$subletData = -1;
 
@@ -39,10 +40,10 @@ class MapController extends AppController {
 			$this->set("listing_id_to_open", $sublet_id);
 			$subletData = $this->Sublet->getSubletData($sublet_id);
 			if (array_key_exists("Sublet", $subletData) && array_key_exists("marker_id", $subletData['Sublet']))
-				$marker_id_to_open = $subletData['Sublet']['marker_id'];	
+				$marker_id_to_open = $subletData['Sublet']['marker_id'];
+            if ($subletData == null)
+                $marker_id_to_open = -2;
 		}
-		else
-			$marker_id_to_open = -2;
 
 		$this->set("marker_id_to_open", $marker_id_to_open);
 		$this->set("sublet_data_for_tooltip", $subletData);
