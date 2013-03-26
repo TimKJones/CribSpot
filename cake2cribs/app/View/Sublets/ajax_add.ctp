@@ -88,13 +88,11 @@
 						var a = A2Cribs.SubletAdd;
 							a.setupUI();
 						$('#addressToMark').val('<?php echo $savedAddress; ?>');
-            var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;
-            console.log(currentUniversityFromSave - window.universitiesMap[0].University.id);
-            if (currentUniversityFromSave)
+            <?php if ($savedUniversityId)
             {
-              $('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);
-
-            }
+             echo 'var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;';
+             echo "$('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);";
+            } ?>
 						 
 </script>
 
