@@ -24,12 +24,15 @@ class University extends AppModel {
 	{
 		$lat_long = $this->find('first', array(
 			'conditions' => array('University.id' => $school_id),
-			'fields' => 	array('latitude', 'longitude')));
+			'fields' => 	array('latitude', 'longitude', 'city', 'state'
+		)));
 		CakeLog::write("School", print_r($lat_long, true));
 		$return_val = array(
 			'latitude' => $lat_long['University']['latitude'],
-			'longitude' => $lat_long['University']['longitude']
-			);
+			'longitude' => $lat_long['University']['longitude'],
+			'city' => $lat_long['University']['city'],
+			'state' => $lat_long['University']['state']
+		);
 
 		return $return_val; 
 	}

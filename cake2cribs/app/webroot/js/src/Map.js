@@ -91,10 +91,12 @@
       };
     };
 
-    Map.Init = function(school_id, latitude, longitude) {
+    Map.Init = function(school_id, latitude, longitude, city, state) {
       var imageStyles, mcOptions, style;
       this.CurentSchoolId = school_id;
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
+      A2Cribs.FilterManager.CurrentCity = city;
+      A2Cribs.FilterManager.CurrentState = state;
       style = [
         {
           "featureType": "landscape",

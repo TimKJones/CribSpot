@@ -32,6 +32,8 @@ class MapController extends AppController {
             $lat_long = $this->University->getTargetLatLong($id);
             $this->set('school_lat', $lat_long['latitude']);
             $this->set('school_lng', $lat_long['longitude']);
+            $this->set('school_city', $lat_long['city']);
+            $this->set('school_state', $lat_long['state']);
         }
 
 		if ($sublet_id != null)

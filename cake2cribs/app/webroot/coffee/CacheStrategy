@@ -1,0 +1,26 @@
+Objects to Cache:
+- Sublet
+- Housemate
+- Marker
+- University
+- HoverData
+
+Id Maps:
+- MarkerIdToMarkerObject
+- MarkerIdToSubletIdsMap
+- AddressToMarkerIdMap
+- IdToSubletMap
+- IdToHouseMateMap
+- IdToMarkerMap
+- IdToUniversityMap
+- IdToHousematesMap
+- SubletIdToHousemateIdsMap
+- MarkerIdToHoverData	
+
+When To Add to Cache:
+- When marker is clicked and sublet data is loaded.
+	- Sublet, Housemate, University, HoverData
+- When marker is hovered and hover data is loaded.
+	- only HoverData
+- When markers are loaded on page load.
+	- Marker

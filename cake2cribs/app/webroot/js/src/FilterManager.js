@@ -176,7 +176,7 @@
         name: address
       };
       return A2Cribs.FilterManager.Geocoder.geocode({
-        'address': address + " Ann Arbor, MI 48104"
+        'address': address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState
       }, A2Cribs.FilterManager.AddressSearchCallback);
     };
 
