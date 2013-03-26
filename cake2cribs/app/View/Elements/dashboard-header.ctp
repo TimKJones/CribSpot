@@ -34,13 +34,6 @@
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#">Full-Year Leases</a></li>
 		<li><a href="#">Parking</a></li>
-		<!--<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
-		<li>
-			<div id="twitterDiv">
-				<a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;tweetUrl&quot;" data-text="&quot;tweet text&quot;" data-via="TheCribspot" data-size="small">Tweet</a>
-				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-			</div>
-		</li>-->
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about-page" data-toggle="modal">About</a></li>
@@ -55,7 +48,7 @@
 	<div id="personal-buttons" class="pull-right">
 		<div class="btn-group">
 			<a class="btn btn-link hide" data-toggle="dropdown" href="#">
-				<img src="img/jason.jpg" class="img-polaroid">
+				<img src="/img/head_small.jpg" class="img-polaroid">
 				<strong>Jason</strong>
 				<span class="caret"></span>
 			</a>
@@ -68,31 +61,10 @@
 			else
 				echo '<a class="btn btn-link" href="/users/logout">LOGOUT</a>'
 			?>
-
-			<ul class="dropdown-menu">
-				<li><a href="#">Action 1</a></li>
-				<li><a href="#">Action 2</a></li>
-				<li class="divider"></li>
-				<li><a href="/dashboard"><i class="icon-cogs"></i> Account Settings</a></li>
-			</ul>
 		</div>
-		<?php if ($this->Session->read('Auth.User.id') != 0)
-		{
-			echo '<a href="/messages" class="personal-links"><i class="icon-comments icon-large"></i></a>
-		<div id = "unread-conversation-notification"></div>
-		<a href="#" class="personal-links"><i id="FavoritesHeaderIcon" class="icon-heart-empty icon-large" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility()"></i></a>';
-		}
-		else
-		{
-			echo '<a href="#myModal" data-toggle="modal" class="personal-links"><i class="icon-comments icon-large"></i></a>
-		<div id = "unread-conversation-notification"></div>
-		<a href="#myModal" data-toggle="modal" class="personal-links"><i id="FavoritesHeaderIcon" class="icon-heart-empty icon-large"></i></a>';
-		}
-			
-		?>
-		
 	</div>
 </div>
+
 
 <?php
 	$this->Js->buffer('
