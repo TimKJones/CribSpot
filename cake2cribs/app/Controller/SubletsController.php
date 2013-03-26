@@ -98,6 +98,7 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        Configure::write('debug', 0);
         $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
         if ($sublet)
         {
@@ -115,8 +116,7 @@ class SubletsController extends AppController {
             $this->Session->write('SubletInProgress.Sublet.name', $marker['Marker']['alternate_name']);
             
         }
-        print_r($sublet['Marker']['marker_id']);
-        Configure::write('debug', 2);
+        
         $canCreate = False;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
 
