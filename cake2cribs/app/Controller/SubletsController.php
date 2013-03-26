@@ -102,7 +102,7 @@ class SubletsController extends AppController {
         $canCreate = False;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
 
-        $buildingTypes = $this->Sublet->BuildingType->find('list');
+        $buildingTypes = $this->Sublet->Marker->BuildingType->find('list');
         //$utilityTypes = $this->Sublet->UtilityType->find('list');
         //$bathroomTypes = $this->Sublet->BathroomType->find('list');
         //$paymentTypes = $this->Sublet->PaymentType->find('list');
@@ -206,6 +206,10 @@ class SubletsController extends AppController {
             $this->Session->write('SubletInProgress.Sublet.unit_number', $this->request->data['Sublet']['unit_number']);
             $this->Session->write('SubletInProgress.Sublet.university', $this->request->data['Sublet']['university']);
             $this->Session->write('SubletInProgress.Sublet.university_id', $this->request->data['Sublet']['university_id']);
+            $this->Session->write('SubletInProgress.Marker.street_address', $this->request->data['Sublet']['address']);
+            $this->Session->write('SubletInProgress.Marker.city', $this->request->data['Marker']['city']);
+            $this->Session->write('SubletInProgress.Marker.state', $this->request->data['Marker']['state']);
+            $this->Session->write('SubletInProgress.Marker.zip', $this->request->data['Marker']['zip']);
 
         }
         else if ($this->request->data['CurrentStep'] == 2)
@@ -245,11 +249,51 @@ class SubletsController extends AppController {
                 //saving code here
                 //STORE BUILDING TYPE ID IN MARKER AS WELL, MAKE IT NOT EDITABLE
                 //find existing sublet/marker in database
+                $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
+                if ($sublet)
+                {
+                    $this->set('response', "You already have one sublet");
+                    return;
+                }
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
                 {
+                    //find marker address, if so, set marker ID to existing marker, if not, create one
+                    $marker = $this->Sublet->Marker->find('first', array('conditions'=> array('Marker.street_address' => $this->Session->read('SubletInProgress.Sublet.address'))));
+                    if ($marker)
+                    {
+                        $this->Sublet->saveField('marker_id', $marker['Marker']['marker_id']);
+                    }
+                    else
+                    {
+                        //insert new values into marker from session
+                        $this->Session->write('SubletInProgress.Marker.building_type_id', $this->Session->read('SubletInProgress.Sublet.building_type_id'));
+                        $this->Session->write('SubletInProgress.Marker.latitude', $this->Session->read('SubletInProgress.Sublet.latitude'));
+                        $this->Session->write('SubletInProgress.Marker.longitude', $this->Session->read('SubletInProgress.Sublet.longitude'));
+                        $this->Session->write('SubletInProgress.Marker.street_address', $this->Session->read('SubletInProgress.Sublet.address'));
+                        $this->Session->write('SubletInProgress.Marker.alternate_name', $this->Session->read('SubletInProgress.Sublet.name'));
+                        $this->set('response', array());
+                        if($this->Sublet->Marker->save($this->Session->read('SubletInProgress.Marker')))
+                        {
+                            $json = json_encode($this->Session->read('SubletInProgress.Marker'));
+                        }
+                        else
+                        {
+                            $this->Sublet->Marker->set($this->Session->read('SubletInProgress.Marker'));
+                        //check if passes email validation
+                        $json = array('registerStatus' => 0,
+                            'error' => 'Please check the fields below.');
+                        $error = $this->validateErrors($this->Sublet->Marker);
+                        $json = json_encode($error);
+                        }
+                        
+                        
+                        $this->set('response', $json);  
+                        return;
+                    }
                     $this->Session->write('SubletInProgress.Housemate.sublet_id', $this->Sublet->field('id'));
                     if ($this->Sublet->Housemate->save($this->Session->read('SubletInProgress')))
                     {
+                        //if ($this->Sublet->Marker->hasAny(array('Marker.sublet_id')))
 
                     }
                     else

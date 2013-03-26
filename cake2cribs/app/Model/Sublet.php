@@ -2,7 +2,7 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User', 'Marker', 'University','BuildingType','UtilityType','BathroomType','PaymentType', 'FurnishedType');
+	public $belongsTo = array('User', 'Marker', 'University','UtilityType','BathroomType','PaymentType', 'FurnishedType');
 	public $hasMany = array('Housemate', 'Favorite', 'Image');
 	//public $hasOne = array();
 	public $primaryKey = 'id';
@@ -49,16 +49,6 @@ class Sublet extends AppModel {
 		//section for streetAddress
 		// required, length limited. Too hard to apply a custom validation to, so much variation. 
 		//completed
-		'street_address' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A street address is required.'
-				),
-			'between' => array(
-				'rule' => array('between',1,250),
-				'message' => 'Must be between 1 and 250 characters'
-				)
-			),
 		//section for latitude
 		//required, decimal, generated through map helper
 		//completed

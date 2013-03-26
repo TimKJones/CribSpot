@@ -33,4 +33,5 @@ echo $this->Form->input('description', array('value' => $savedDescription));
 <script>
 var a = A2Cribs.SubletAdd;
 a.setupUI();
+
 </script>
