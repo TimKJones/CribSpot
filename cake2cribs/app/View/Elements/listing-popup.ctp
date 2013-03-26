@@ -1,6 +1,7 @@
 <?= $this->Html->css('/less/listing-popup.less?','stylesheet/less', array('inline' => false)); ?>
 
 <div class="listing-popup modal hide fade">
+	<div id="sublet-id" class="hide"></div>
 	<div class="modal-header">
 		<i class="sublet-name title">Willow Tree Apartments</i>
 		<div class="btn-group">
@@ -199,7 +200,7 @@
 						<button id="cancel-message" class="btn btn-block" type="button">Cancel</button>
 					</td>
 					<td>
-						<button id="submit-message" class="btn btn-primary btn-block" type="button">Send Message</button>
+						<button id="submit-message" class="btn btn-primary btn-block" type="button" data-loading-text="Sending...">Send Message</button>
 					</td>
 				</tr>
 			</table>
@@ -251,4 +252,17 @@
 			return false;
 		});
 	');
+	if ($this->Session->read('Auth.User.id')==0)
+		$this->Js->buffer('$("#submit-message").click(function() { A2Cribs.UIManager.Alert("Please Log In!"); });');
+	else
+		$this->Js->buffer('$("#submit-message").click(function() {
+			$("#submit-message").button("loading");
+			$.ajax({
+				url: myBaseUrl + "Messages/messageSublet",
+				type: "POST",
+				context: this,
+				data: { sublet_id: $("#sublet-id").text(), message_body: $("#message-area").val() },
+				success: $("#submit-message").button("reset")
+				});
+		});');
 ?>

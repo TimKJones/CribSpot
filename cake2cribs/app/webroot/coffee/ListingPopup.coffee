@@ -52,6 +52,7 @@ class A2Cribs.ListingPopup
 		template = $(".listing-popup:first").wrap('<p/>').parent()
 		content = template.children().first()
 		sublet = subletObject.Sublet
+		content.find('#sublet-id').text sublet.id
 		if subletObject.Marker.alternate_name
 			content.find('.sublet-name').text subletObject.Marker.alternate_name
 		else
@@ -82,6 +83,7 @@ class A2Cribs.ListingPopup
 		template = $(".listing-popup:first").wrap('<p/>').parent()
 		content = template.children().first()
 		sublet = A2Cribs.Cache.IdToSubletMap[subletId]
+		content.find('#sublet-id').text subletId
 		content.find('.sublet-name').text if sublet.Name then sublet.Name else sublet.StreetAddress
 		content.find('.bed-price').text sublet.PricePerBedroom
 		content.find('.full-date').text @resolveDateRange sublet.StartDate, sublet.EndDate

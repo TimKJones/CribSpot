@@ -70,6 +70,7 @@ ListingPopup class
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = subletObject.Sublet;
+      content.find('#sublet-id').text(sublet.id);
       if (subletObject.Marker.alternate_name) {
         content.find('.sublet-name').text(subletObject.Marker.alternate_name);
       } else {
@@ -99,6 +100,7 @@ ListingPopup class
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = A2Cribs.Cache.IdToSubletMap[subletId];
+      content.find('#sublet-id').text(subletId);
       content.find('.sublet-name').text(sublet.Name ? sublet.Name : sublet.StreetAddress);
       content.find('.bed-price').text(sublet.PricePerBedroom);
       content.find('.full-date').text(this.resolveDateRange(sublet.StartDate, sublet.EndDate));
