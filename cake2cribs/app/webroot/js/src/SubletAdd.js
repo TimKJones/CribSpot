@@ -36,6 +36,12 @@
           latitude: $('#updatedLat').text(),
           longitude: $('#updatedLong').text()
         },
+        Marker: {
+          street_address: $("#formattedAddress").text(),
+          city: $("#city").text(),
+          state: $("#state").text(),
+          zip: $("#postal").text()
+        },
         CurrentStep: 1
       };
       console.log(request_data);
@@ -81,6 +87,7 @@
         console.log(response);
         data = JSON.parse(response);
         console.log(data);
+        console.log("Done with step 2");
         return $('#server-notice').dialog2("options", {
           content: "Sublets/ajax_add3"
         });
@@ -111,6 +118,7 @@
         console.log(response);
         data = JSON.parse(response);
         console.log(data);
+        console.log("Done");
         alert("You should be finished by now.");
         return $('#server-notice').dialog2("options", {
           content: "Sublets/ajax_add4"
