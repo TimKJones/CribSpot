@@ -113,15 +113,19 @@ class A2Cribs.Map
 				"url": "/img/dots/group_dot.png",
 			}
 		]###
-		###imageStyles = [
+		imageStyles = [
 			{
+				height: 48
 				url: '/img/dots/group_dot.png'
+				width: 48
+				textColor: '#ffffff'
+				textSize: 13
 			}
-		]###
+		]
 		mcOptions =
 			gridSize: 60
 			maxZoom: 15
-			#styles: imageStyles
+			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
 		@LoadTypeTables()
@@ -132,6 +136,7 @@ class A2Cribs.Map
 		A2Cribs.Map.InitBoundaries();
 		A2Cribs.MarkerTooltip.Init()
 		A2Cribs.FavoritesManager.LoadFavorites()
+		A2Cribs.FilterManager.InitAddressSearch()
 
 	@LoadTypeTables: ->
 		$.ajax

@@ -28,7 +28,7 @@
         alert(location + " is not a valid location.");
         return false;
       }
-      return window.location = "/map/sublet/" + location.split(' ').join('_');
+      return window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');
     };
 
     return Landing;

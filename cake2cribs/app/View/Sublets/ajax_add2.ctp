@@ -22,7 +22,7 @@ echo $this->Html->css('datepicker');
 echo $this->Form->input('date_begin', array('class' => 'date-picker','data-html' => 'true', 'data-placement' =>'bottom', 'type'=>'text', 'style' => 'position: relative; z-index: 100000;', 'value' =>$savedDateBegin)); 
                        
 echo $this->Form->input('date_end', array('class' => 'date-picker','data-html' => 'true', 'data-placement' =>'top', 'type'=>'text', 'style' => 'position: relative; z-index: 100000;', 'value' => $savedDateEnd));
-echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", 'value' => $savedFlexibleDates));
+echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", /*'value' => $savedFlexibleDates,*/ 'type' => 'checkbox'));
 echo $this->Form->input('number_bedrooms', array('value' => $savedNumberBedrooms));
 echo $this->Form->input('price_per_bedroom', array('value' => $savedPricePerBedroom));
 echo $this->Form->input('payment_type_id', array('value' => $savedPaymentTypeID));

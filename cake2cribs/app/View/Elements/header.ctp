@@ -32,8 +32,8 @@
 	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
-		<li><a href="#">Full-Year Leases</a></li>
-		<li><a href="#">Parking</a></li>
+		<li class="disabled"><a href="#" onclick="alertify.alert('Full-Year Leases are coming soon!');">Full-Year Leases</a></li>
+		<li class="disabled"><a href="#" onclick="alertify.alert('Parking is coming soon!');">Parking</a></li>
 		<!--<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
 		<li>
 			<div id="twitterDiv">
@@ -44,10 +44,8 @@
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about-page" data-toggle="modal">About</a></li>
-		<li><a href="#partners">Partners</a></li>
 		<li><a href="#contact">Contact</a></li>
 		<li><a href="#help">Help</a></li>
-		<li><a href="#more">More</a></li>
 	</ul>
 </div>
 <div id="header" class="container">
@@ -177,9 +175,23 @@
 	$this->Js->buffer('
 		$(".tooltip-btn").tooltip();	
 		$(".popover-btn").popover();
-		$(".date-picker").datepicker().on("changeDate", function(ev) {
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+		A2Cribs.FilterManager.StartDateObject = $("#startDate").datepicker({
+		  onRender: function(date) {
+		    return date.valueOf() < now.valueOf() ? "disabled" : "";
+		  }
+		}).on("changeDate", function(ev) {
     		A2Cribs.FilterManager.ApplyFilter(ev);
-    	});
+    	}).data("datepicker");
+
+		A2Cribs.FilterManager.EndDateObject = $("#endDate").datepicker({
+		  onRender: function(date) {
+		    return date.valueOf() < now.valueOf() ? "disabled" : "";
+		  }
+		}).on("changeDate", function(ev) {
+    		A2Cribs.FilterManager.ApplyFilter(ev);
+    	}).data("datepicker");
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>

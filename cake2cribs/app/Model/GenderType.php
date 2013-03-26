@@ -1,7 +1,7 @@
 <?php 
 
 class GenderType extends AppModel {
-	public $belongsTo = array('Housemate');
+	public $hasMany = array('Housemate');
 	public $validate = array(
 		'id' => 'alphaNumeric', 
 		'name' => 'alphaNumeric',

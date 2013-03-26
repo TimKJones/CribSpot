@@ -180,11 +180,11 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add3() {
-        $studentTypes = $this->Sublet->StudentType->find('list');
-        $genderTypes = $this->Sublet->GenderType->find('list');
+        $studentTypes = $this->Sublet->Housemate->StudentType->find('list');
+        $genderTypes = $this->Sublet->Housemate->GenderType->find('list');
         $this->set(compact('studentTypes'));
         $this->set(compact('genderTypes'));
-        
+
         $this->set('savedHousemateQuantity', $this->Session->read('SubletInProgress.Housemate.quantity'));
         $this->set('savedHousemateEnrolled', $this->Session->read('SubletInProgress.Housemate.enrolled'));
         $this->set('savedHousemateStudentType', $this->Session->read('SubletInProgress.Housemate.student_type'));
@@ -234,24 +234,35 @@ class SubletsController extends AppController {
             //http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savemany-array-data-null-array-options-array
             $this->Session->write('SubletInProgress.Housemate.quantity', $this->request->data['Housemate']['quantity']);
             $this->Session->write('SubletInProgress.Housemate.enrolled', $this->request->data['Housemate']['enrolled']);
-            $this->Session->write('SubletInProgress.Housemate.student_type', $this->request->data['Housemate']['student_type']);
+            $this->Session->write('SubletInProgress.Housemate.student_type_id', $this->request->data['Housemate']['student_type_id']);
             $this->Session->write('SubletInProgress.Housemate.major', $this->request->data['Housemate']['major']);
             $this->Session->write('SubletInProgress.Housemate.seeking', $this->request->data['Housemate']['seeking']);
-            $this->Session->write('SubletInProgress.Housemate.gender', $this->request->data['Housemate']['gender']);
+            $this->Session->write('SubletInProgress.Housemate.gender_type_id', $this->request->data['Housemate']['gender_type_id']);
             $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
             if ($this->request->data['Finish'] !=0)
             {
+                $this->Session->write('SubletInProgress.Sublet.user_id', $this->Auth->user('id'));
                 //saving code here
+                //STORE BUILDING TYPE ID IN MARKER AS WELL, MAKE IT NOT EDITABLE
+                //find existing sublet/marker in database
                 if($this->Sublet->save($this->Session->read('SubletInProgress')))
                 {
                     $this->Session->write('SubletInProgress.Housemate.sublet_id', $this->Sublet->field('id'));
-                    if ($this->Housemate->Save($this->Session->read('SubletInProgress')))
+                    if ($this->Sublet->Housemate->save($this->Session->read('SubletInProgress')))
                     {
 
                     }
                     else
                     {
-                        
+                        $this->set('response', array());
+                        $this->Sublet->Housemate->set($this->Session->read('SubletInProgress'));
+                        //check if passes email validation
+                        $json = array('registerStatus' => 0,
+                            'error' => 'Please check the fields below.');
+                        $error = $this->validateErrors($this->Sublet->Housemate);
+                        $json = json_encode($error);
+                        $this->set('response', $json);  
+                        return;
                     }
                      
                 }

@@ -2,7 +2,7 @@
 
 class Housemate extends AppModel {
 	//potentially link with users?
-	public $belongsTo = array('Sublet', 'GenderType', 'StudentType');
+	public $belongsTo = array('Sublet','GenderType', 'StudentType');
 	/*	'Sublet' => array(
 			'className' => 'Sublet',
 			'foreignKey' => 'sublet_id'
@@ -47,7 +47,7 @@ class Housemate extends AppModel {
 		//section for student type
 		//must be a natural number.
 		//completed
-		'student_type' => array(
+		'student_type_id' => array(
 			'isNumber' => array(
 				'rule' => array('naturalNumber',true),
 				'message' => 'Invalid student type.'
@@ -71,10 +71,10 @@ class Housemate extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)
 			),
-		'gender' => array(
-			'between' => array(
-				'rule' => array('between',4,6),
-				'message' => 'Invalid gender.'
+		'gender_type_id' => array(
+			'isNumber' => array(
+				'rule' => array('naturalNumber',true),
+				'message' => 'Invalid gender type.'
 				)
 			),
 		//type

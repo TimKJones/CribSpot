@@ -25,8 +25,24 @@ ListingPopup class
 
 
     ListingPopup.prototype.Open = function(subletId) {
-      if (subletId) {
+      if (subletId != null) {
         this.SetContent(subletId);
+        $(".side-pane").hide();
+        $("#overview").show();
+        return this.modal.modal('show');
+      }
+    };
+
+    ListingPopup.prototype.Message = function(subletId) {
+      if (subletId != null) {
+        this.SetContent(subletId);
+        $(".side-pane").hide();
+        $("#contact").show();
+        $('#message-button').hide();
+        $("#verify-table").hide();
+        $("#message-area").show();
+        $("#message-submit-buttons").show();
+        $("#message-area").focus();
         return this.modal.modal('show');
       }
     };
