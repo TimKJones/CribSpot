@@ -77,7 +77,7 @@
         return "";
       }
       url = A2Cribs.ShareManager.GetShareUrl(university_encoded, address_encoded, sublet_id);
-      return 'https://twitter.com/share?url=' + encodeURIComponent(url);
+      return 'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot';
     };
 
     ShareManager.InitTweetButton = function(university_encoded, address_encoded, sublet_id) {

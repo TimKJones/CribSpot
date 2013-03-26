@@ -36,7 +36,7 @@ class A2Cribs.ShareManager
 		if university_encoded == null or address_encoded == null or sublet_id == null
 			return ""
 		url = A2Cribs.ShareManager.GetShareUrl university_encoded, address_encoded, sublet_id
-		'https://twitter.com/share?url=' + encodeURIComponent(url)
+		'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot'
 
 
 	@InitTweetButton: (university_encoded=null, address_encoded=null, sublet_id=null) ->
