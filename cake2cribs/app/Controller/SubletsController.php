@@ -102,7 +102,7 @@ class SubletsController extends AppController {
         $canCreate = False;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state')));
 
-        $buildingTypes = $this->Sublet->BuildingType->find('list');
+        $buildingTypes = $this->Sublet->Marker->BuildingType->find('list');
         //$utilityTypes = $this->Sublet->UtilityType->find('list');
         //$bathroomTypes = $this->Sublet->BathroomType->find('list');
         //$paymentTypes = $this->Sublet->PaymentType->find('list');
