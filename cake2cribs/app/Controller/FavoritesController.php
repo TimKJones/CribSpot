@@ -29,7 +29,11 @@ class FavoritesController extends AppController {
 	{
 		if( $this->request->is('ajax') || Configure::read('debug') > 0)
 		{
-			$response = $this->Favorite->AddFavorite($sublet_id, $this->Auth->User('id'));
+			$response = null;
+			if ($this->Auth->User('id') == 0)
+				$response = array('ERROR' => 'USER_NOT_LOGGED_IN');
+			else
+				$response = $this->Favorite->AddFavorite($sublet_id, $this->Auth->User('id'));
 			$this->layout = 'ajax';
 			$this->set('response', json_encode($response));
 		}

@@ -203,7 +203,7 @@
         $('#subletAddSteps').click(function(event) {
             $('<div/>').dialog2({
                 title: "Post a sublet", 
-                content: "Sublets/ajax_add", 
+                content: "/Sublets/ajax_add", 
                 id: "server-notice"
             });
 

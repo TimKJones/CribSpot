@@ -30,6 +30,7 @@
 	max-height: 250px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	/*top: -5px;*/
 	border-bottom: 2px solid #cacaca;
 }
 

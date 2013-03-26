@@ -68,6 +68,20 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text subletObject.FurnishedType.name
 		content.find('.first-name').text subletObject.User.first_name
 		content.find('.short-description').find('p').text sublet.description
+		subletId = sublet.id
+		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
+		if is_favorite
+			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
+			$('#favorite-btn').addClass "active"
+			$('#favorite-btn').addClass "btn-danger"
+		else
+			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
+			if $('#favorite-btn').hasClass "active"
+				$('#favorite-btn').removeClass "active"
+			if $('#favorite-btn').hasClass "btn-danger"
+				$('#favorite-btn').removeClass "btn-danger"
 		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
 		#content.find('.').text
 		#content.find('.').text
@@ -101,6 +115,20 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text if sublet.Furnished then "Fully" else "No"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
+		subletId = sublet.SubletId
+		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
+		if is_favorite
+			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
+			$('#favorite-btn').addClass "active"
+			$('#favorite-btn').addClass "btn-danger"
+		else
+			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
+			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
+			if $('#favorite-btn').hasClass "active"
+				$('#favorite-btn').removeClass "active"
+			if $('#favorite-btn').hasClass "btn-danger"
+				$('#favorite-btn').removeClass "btn-danger"
 		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
 		#content.find('.').text
 		#content.find('.').text

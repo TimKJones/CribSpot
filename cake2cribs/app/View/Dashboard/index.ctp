@@ -1,4 +1,4 @@
-<?php echo $this->element('header'); ?>
+<?php echo $this->element('dashboard-header'); ?>
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
 <?php echo $this->Html->script('src/Message'); ?>
