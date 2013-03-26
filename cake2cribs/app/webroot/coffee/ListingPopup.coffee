@@ -97,8 +97,13 @@ class A2Cribs.ListingPopup
 		template = $(".listing-popup:first").wrap('<p/>').parent()
 		content = template.children().first()
 		sublet = A2Cribs.Cache.IdToSubletMap[subletId]
+		marker = A2Cribs.Cache.IdToMarkerMap[subletId]
+		school = A2Cribs.FilterManager.CurrentSchool.split(" ").join "_"
+		short_address = marker.Address.split(" ").join "_"
+		content.find('.facebook-share').attr 'onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')'
+		content.find('.twitter-share').attr 'href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId)
 		content.find('#sublet-id').text subletId
-		content.find('.sublet-name').text if sublet.Name then sublet.Name else sublet.StreetAddress
+		content.find('.sublet-name').text if sublet.Title then sublet.Title else marker.Address
 		content.find('.bed-price').text sublet.PricePerBedroom
 		content.find('.full-date').text @resolveDateRange sublet.StartDate, sublet.EndDate
 		content.find('.building-type').text sublet.BuildingType

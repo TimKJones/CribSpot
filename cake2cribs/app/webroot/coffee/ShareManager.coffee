@@ -11,7 +11,7 @@ class A2Cribs.ShareManager
 		if university_encoded == null or address_encoded == null or sublet_id == null
 			return
 
-		url = 'http://localhost/map/sublet/' + university_encoded + '/' + address_encoded + '/' + sublet_id
+		url = 'http://cribspot.com/sublet/' + university_encoded + '/' + address_encoded + '/' + sublet_id
 		return url
 
 	@ShareListingOnFacebook: (university_encoded=null, address_encoded=null, sublet_id=null) ->
@@ -26,10 +26,18 @@ class A2Cribs.ShareManager
 		fbObj = 
 			method: 'feed'
 			link: url
-			name: 'Cribspot'
-			caption: 'Share this listing with your friends!'
-			description: 'description'
-		FB.ui fbObj, A2Cribs.ShareManager.ShareListingOnFacebook
+			picture: 'http://54.225.226.210/img/header/logo.png'
+			name: A2Cribs.Cache.IdToMarkerMap[sublet_id].Address
+			caption: 'Check out this listing on Cribspot!'
+			description: A2Cribs.Cache.IdToSubletMap[sublet_id].Description
+		FB.ui fbObj
+
+	@GetTwitterShareUrl: (university_encoded=null, address_encoded=null, sublet_id=null) ->
+		if university_encoded == null or address_encoded == null or sublet_id == null
+			return ""
+		url = A2Cribs.ShareManager.GetShareUrl university_encoded, address_encoded, sublet_id
+		'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot'
+
 
 	@InitTweetButton: (university_encoded=null, address_encoded=null, sublet_id=null) ->
 		if university_encoded == null or address_encoded == null or sublet_id == null

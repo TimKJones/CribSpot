@@ -185,7 +185,7 @@
       var m, unitType;
       m = marker;
       unitType = this.BuildingIdToNameMap[parseInt(m.building_type_id)];
-      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.address, m.alternate_name, unitType, m.latitude, m.longitude);
+      return this.IdToMarkerMap[id] = new A2Cribs.Marker(parseInt(id), m.street_address, m.alternate_name, unitType, m.latitude, m.longitude);
     };
 
     Cache.CacheSubletOwner = function(sublet_id, user) {
