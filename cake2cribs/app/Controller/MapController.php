@@ -14,14 +14,13 @@ class MapController extends AppController {
     $this->Auth->allow('LoadHoverData');
   }
 
-	public function index() {	
-		$this->set('ListingTooltip', $this->Listing->getTooltipVariables());
-		$this->InitFilterValues();
-	}
-
 	public function sublet($school_name = null, $address = null, $sublet_id = null)
 	{
         /* -1 Code means do not open the tooltip */
+        if (($address == null && $sublet_id != null) || 
+            ($address != null && $sublet_id == null))
+            throw new NotFoundException();
+        
 		$marker_id_to_open = -1;
 		$subletData = -1;
 
@@ -29,8 +28,12 @@ class MapController extends AppController {
         {
             $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
+            if ($id == null)
+                throw new NotFoundException();  
             $this->set('school_id', $id);
             $lat_long = $this->University->getTargetLatLong($id);
+            if ($lat_long == null)
+                throw new NotFoundException();
             $this->set('school_lat', $lat_long['latitude']);
             $this->set('school_lng', $lat_long['longitude']);
             $this->set('school_city', $lat_long['city']);
