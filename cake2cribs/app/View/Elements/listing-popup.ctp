@@ -262,7 +262,18 @@
 				type: "POST",
 				context: this,
 				data: { sublet_id: $("#sublet-id").text(), message_body: $("#message-area").val() },
-				success: $("#submit-message").button("reset")
+				success: function(data) {
+					data = JSON.parse(data);
+					if (data.success)
+					{
+						A2Cribs.UIManager.Alert("Message Sent!");
+					}
+					else
+					{
+						A2Cribs.UIManager.Alert("Message Failed! Please Try Again.");
+					}
+					$("#submit-message").button("reset");
+				}
 				});
 		});');
 ?>
