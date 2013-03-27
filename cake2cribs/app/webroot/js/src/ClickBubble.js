@@ -123,10 +123,12 @@ Wrapper for google infobubble
         is_favorite = __indexOf.call(A2Cribs.Cache.FavoritesSubletIdsList, subletId) >= 0;
         if (is_favorite) {
           div.find('.favorite-clickable').attr('title', 'Delete from Favorites');
-          div.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')');
+          div.find('.favorite-clickable').addClass('active');
+          div.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ', this)');
         } else {
           div.find('.favorite-clickable').attr('title', 'Add to Favorites');
-          div.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')');
+          div.find('.favorite-clickable').removeClass('active');
+          div.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ', this)');
         }
         content.find('.listings').append(div);
       }
