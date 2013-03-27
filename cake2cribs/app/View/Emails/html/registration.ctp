@@ -185,7 +185,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
 <![endif]--><meta name="robots" content="noindex,nofollow"></meta>
 
-<meta property="og:title" content="Check out Cribspot - a student sublet and rental site -"></meta>
+<meta property="og:title" content="Check out Cribspot - a student sublet and rental site - "></meta>
 
 <link href="cribspot.com" media="screen,projection" rel="stylesheet" type="text/css" />
 
@@ -219,7 +219,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
             </tbody></table>
 
-            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.createsend1.com/t/t-e-qkkvd-l-r/" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="http://cribspot.com/about" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
+            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="http://cribspot.com/about" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
 
             <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
 
@@ -337,7 +337,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                 <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
 
-                                    <p align="left" class="article-title" style="font-size:18px;line-height:24px;color:#3c95c9;font-weight:bold;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >Thank you for registering for Cribspot!</p>
+                                    <p align="left" class="article-title" style="font-size:18px;line-height:24px;color:#3c95c9;font-weight:bold;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >Thank you for registering at Cribspot!</p>
 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
@@ -384,7 +384,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
             <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
 
             <td class="w580" width="360" valign="top" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:2px;color:#888888;margin-top:0px;margin-bottom:15px;" >&nbsp;</p>
-              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="http://cribspot.updatemyprofile.com/t-l-2AD73FFF-l-k" lang="en" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Edit your subscription</a> | <a href="http://cribspot.createsend1.com/t/t-u-qkkvd-l-u/" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Unsubscribe</a></p>
+              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="http://cribspot.com/post" lang="en" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Post a Listing</a> | <a href="http://cribspot.com/help" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a></p>
 
             </td>
 
