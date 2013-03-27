@@ -97,8 +97,8 @@
 			else
 				echo '
 					<a class="btn btn-link" data-toggle="dropdown" href="#">
-						<img src="img/jason.jpg" class="img-polaroid">
-						<strong>Jason</strong>
+						<img src="/img/head_large.jpg" class="img-polaroid">
+						<strong>Hello!</strong>
 						<span class="caret"></span>
 					</a>'
 			?>

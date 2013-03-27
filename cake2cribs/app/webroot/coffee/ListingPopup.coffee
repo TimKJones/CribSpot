@@ -93,6 +93,7 @@ class A2Cribs.ListingPopup
 		content = template.children().first()
 		sublet = A2Cribs.Cache.IdToSubletMap[subletId]
 		marker = A2Cribs.Cache.IdToMarkerMap[sublet.MarkerId]
+		housemates = A2Cribs.Cache.IdToHousematesMap[A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId]]
 		school = A2Cribs.FilterManager.CurrentSchool.split(" ").join "_"
 		short_address = marker.Address.split(" ").join "_"
 
@@ -117,11 +118,11 @@ class A2Cribs.ListingPopup
 		content.find('.full-date').text @resolveDateRange sublet.StartDate, sublet.EndDate
 		content.find('.building-type').text sublet.BuildingType
 		content.find('.school-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].VerifiedUniversity
-		content.find('.full-address').text sublet.StreetAddress + ", " + sublet.City + ", " + sublet.State
+		content.find('.full-address').text marker.Address + ", " + marker.City + ", " + marker.State
 		content.find('.bath-type').text sublet.BathroomType
-		content.find('.parking-avail').text "LOL"
-		content.find('.ac-avail').text "Maybe"
-		content.find('.furnish-avail').text if sublet.Furnished then "Fully" else "No"
+		content.find('.parking-avail').text if sublet.Parking then "Yes" else "No"
+		content.find('.ac-avail').text if sublet.Air then "Yes" else "No"
+		content.find('.furnish-avail').text if sublet.Furnished is 3 then "No" else "Yes"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
 		subletId = sublet.SubletId
@@ -138,7 +139,15 @@ class A2Cribs.ListingPopup
 				$('#favorite-btn').removeClass "active"
 			if $('#favorite-btn').hasClass "btn-danger"
 				$('#favorite-btn').removeClass "btn-danger"
-		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
+		content.find('.housemate-count').text housemates.Quantity
+		content.find('.housemate-enrolled').text if housemates.Enrolled then "Yes" else "No"
+		content.find('.housemate-type').text housemates.GradType
+		content.find('.housemate-major').text housemates.Major
+		content.find('.housemate-gender').text housemates.Gender
+		content.find('.housemate-year').text housemates.Year
+		content.find('.utilities-cost').text if sublet.UtilityCost is 0 then "Included" else "$" + sublet.UtilityCost
+		content.find('.deposit-cost').text if sublet.DepositAmount is 0 then "None" else "$" + sublet.DepositAmount
+		content.find('.additional-fee').text if sublet.AdditionalFeesAmount is 0 then "None" else "$" + sublet.AdditionalFeesAmount
 		#content.find('.').text
 		#content.find('.').text
 		#content.find('.').text

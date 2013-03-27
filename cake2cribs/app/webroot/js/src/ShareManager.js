@@ -55,7 +55,7 @@
         method: 'feed',
         link: url,
         picture: 'http://54.225.226.210/img/header/logo.png',
-        name: A2Cribs.Cache.IdToMarkerMap[sublet_id].Address,
+        name: A2Cribs.Cache.IdToMarkerMap[A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId].Address,
         caption: 'Check out this listing on Cribspot!',
         description: A2Cribs.Cache.IdToSubletMap[sublet_id].Description
       };
