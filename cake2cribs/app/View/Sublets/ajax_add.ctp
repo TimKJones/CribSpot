@@ -36,7 +36,7 @@
 
     	<?php echo $this->Form->input('name', array(
         'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Property Name:'),
+        'label'=> array('class'=>'span3','text'=>'Property Name (optional):'),
         'class'=>'span9',
         'value'=> $savedName,
         )
@@ -57,6 +57,25 @@
     <a href="#" id="goToStep2">Go next </a>
   </div>
    <script>
+   var universitiesMap = [];
+   A2Cribs.CorrectMarker.SelectedUniversity = null;
+   $('#universitiesInput').focusout(function() {
+      selected = $("#universitiesInput").val();
+      selected = selected.substring(0, selected.indexOf(','));
+      for (var i = 0; i < universitiesMap.length; i++)
+      {
+        if (universitiesMap[i].University.name === selected)
+        {
+          A2Cribs.CorrectMarker.SelectedUniversity = universitiesMap[i].University;
+        }
+      }
+
+      if (A2Cribs.CorrectMarker.SelectedUniversity != null)
+      {
+        u = A2Cribs.CorrectMarker.SelectedUniversity;
+        A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
+      }
+    });
                             $(function() {
                               var universitiesMap = 
                                 <?php 

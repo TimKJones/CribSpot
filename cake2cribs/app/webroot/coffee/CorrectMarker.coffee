@@ -4,15 +4,15 @@ class A2Cribs.CorrectMarker
 	@Geocoder = null
 
 	@Init: ()->
-		AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378)
+		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378)
 		MapOptions =
   			zoom: 15
-  			center: AnnArborCenter
+  			center: @AnnArborCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
 		@Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions)
 		@Marker = new google.maps.Marker
 			draggable: true
-			position: A2Cribs.Map.AnnArborCenter
+			position: @AnnArborCenter
 			map: A2Cribs.CorrectMarker.Map
 			visible: false
 		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
@@ -27,14 +27,28 @@ class A2Cribs.CorrectMarker
 		# Need to detect invalid addresses
 		console.log response
 		if status == google.maps.GeocoderStatus.OK
-			A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
-			A2Cribs.CorrectMarker.Map.setZoom(18)
 			if (response[0].address_components.length >= 2)
-				formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[2].short_name
-				city = response[0].address_components[4].short_name
-				state = response[0].address_components[7].short_name
-				postal = response[0].address_components[9].short_name
-				$("#formattedAddress").html(formattedAddress)
+				#formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[2].short_name
+				formatted_address = response[0].formatted_address
+				first_comma = formatted_address.indexOf(',')
+				street = formatted_address.substring(0, first_comma)
+				street_number = street.substring(0, street.indexOf(' '))
+				if isNaN(parseInt(street_number))
+					A2Cribs.UIManager.Alert "Entered street address is not valid."
+					$("#formattedAddress").text("")
+					return
+				else
+					A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
+					A2Cribs.CorrectMarker.Map.setZoom(18)
+				second_comma = formatted_address.indexOf(',', first_comma + 1)
+				city = formatted_address.substring(first_comma + 2, second_comma)
+				remaining = formatted_address.substring(second_comma + 2)
+				state = remaining.substring(0, remaining.indexOf(" "))
+				remaining = remaining.substring(remaining.indexOf(" ") + 1)
+				postal = remaining.substring(0,remaining.indexOf(","))
+				#city = response[0].address_components[4].short_name
+				#state = response[0].address_components[7].short_name
+				$("#formattedAddress").html(street)
 				$("#city").html(city);
 				$("#state").html(state);
 				$("#postal").html(postal);
@@ -44,6 +58,9 @@ class A2Cribs.CorrectMarker
 				$("#updatedLat").html(response[0].geometry.location.lat())
 				$("#updatedLong").html(response[0].geometry.location.lng())		
 
+	@CenterMap: (lat, long) ->
+		@Map.setCenter(new google.maps.LatLng(lat, long))
+
 	@FindAddress: () ->
 		address = $("#addressToMark").val()
 		request = 
@@ -52,5 +69,8 @@ class A2Cribs.CorrectMarker
 			types: ['street_address']
 			keyword: address
 			name: address
-		A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address + " Ann Arbor, MI 48104"}, A2Cribs.CorrectMarker.AddressSearchCallback)
-
+		if A2Cribs.CorrectMarker.SelectedUniversity != undefined
+			u = A2Cribs.CorrectMarker.SelectedUniversity
+			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address + " " + u.city + ", " + u.state}, A2Cribs.CorrectMarker.AddressSearchCallback)
+		else
+			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address}, A2Cribs.CorrectMarker.AddressSearchCallback)
