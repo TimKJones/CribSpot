@@ -1,7 +1,3 @@
-<h1> Thanks for registering at Cribspot!</h1>
-<a href=""> Click here to verify your account </a>
-
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
 
 @media only screen and (max-device-width: 480px) { 
@@ -346,7 +342,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         <p style="margin-bottom:15px;" >
 
-    <strong>Please click</strong> <a href="http://54.225.226.210/users/verifyUniversity?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>&email=<?php echo $email; ?>" > here </a> <strong>to verify your university email account.</strong></p>
+    <strong>Please click</strong> <a href="http://54.225.226.210/users/verifyUniversity?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>&email=<?php echo $email; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;"> here </a> <strong>to verify your university association.</strong></p>
 
                                     </div>
 

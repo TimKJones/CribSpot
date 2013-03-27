@@ -1,21 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php 
-	// [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
-	// There was issue invalid links while testing on the dev enviorment
+    // [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
+    // There was issue invalid links while testing on the dev enviorment
 
-	$partic_link = "http://www.cribspot.com/users/view/$participant[id]/";
-	$view_msg = "http://www.cribspot.com/messages/view/$conv_id";
-	// BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
+    $partic_link = "http://www.cribspot.com/users/view/$participant[id]/";
+    $view_msg = "http://www.cribspot.com/messages/view/$conv_id";
+    // BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
 ?>
-
-<html>
-	<h3></h3>
-	
-
-
-
-
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
+<html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
 
 @media only screen and (max-device-width: 480px) { 
 
@@ -353,7 +345,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                 <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
 
-                                    <p align="left" class="article-title" style="font-size:18px;line-height:24px;color:#3c95c9;font-weight:bold;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >Hello <?php echo $name; ?>, You've got a new message!</p>
+                                    <p align="left" class="article-title" style="font-size:18px;line-height:24px;color:#3c95c9;font-weight:bold;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >You've received a new message!</p>
 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
@@ -363,7 +355,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 	
      <a href = "'<?php echo $partic_link; ?>' ><?php echo $participant['first_name'];?>'" style="color:#d54849;font-weight:bold;text-decoration:none;" ></a> <strong> just sent you a new message.</strong>
      <strong>Click</strong>
-     <a href = '<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;" > here</a> <strong> to view the message.</strong></p>
+     <a href = '<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;" > here</a> <strong> to view it.</strong></p>
 
                                     </div>
 

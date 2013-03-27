@@ -81,6 +81,13 @@ f	Closes the tooltip, no animation
 			else
 				div.find('.fb-mutual').hide()
 
+			if A2Cribs.Cache.SubletIdToImagesMap[subletId]? and A2Cribs.Cache.SubletIdToImagesMap[subletId].length
+				for image in A2Cribs.Cache.SubletIdToImagesMap[subletId]
+					if image.IsPrimary
+						div.find('.listing-image').attr 'src', image.Path
+			else
+				div.find('.listing-image').attr 'src', '/img/tooltip/default_house.png'
+
 			div.find('.date-range').text @resolveDateRange firstSublet.StartDate, firstSublet.EndDate
 			div.find('.bed-price').text firstSublet.PricePerBedroom
 			div.find('.bed-count').text firstSublet.Bedrooms

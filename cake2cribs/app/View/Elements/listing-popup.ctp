@@ -19,12 +19,9 @@
 	<div class="photo-region">
 		<div id="main-photo" style="background-image:url(/img/landing/house1.jpg);"></div>
 		<div id="photo-description">My House</div>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house2.jpg);"></a>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house1.jpg);"></a>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house3.jpg);"></a>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house4.jpg);"></a>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house5.jpg);"></a>
-		<a href="" class="preview-thumbnail" style="background-image:url(/img/landing/house3.jpg);"></a>
+		<div class="photos">
+			<a href="#" class="preview-thumbnail" style="background-image:url(/img/landing/house2.jpg);"></a>
+		</div>
 	</div>
 	<div id="overview" class="side-pane">
 		<div class="large-line-height">

@@ -18,19 +18,14 @@ class A2Cribs.ListingPopup
 	Open: (subletId) ->
 		if subletId?
 			@SetContent subletId
-			$(".side-pane").hide();
-			$("#overview").show();
+			$("#overview-btn").click();
 			@modal.modal 'show'
 
 	Message: (subletId) ->
 		if subletId?
 			@SetContent subletId
-			$(".side-pane").hide();
-			$("#contact").show();
-			$('#message-button').hide();
-			$("#verify-table").hide();
-			$("#message-area").show();
-			$("#message-submit-buttons").show();
+			$("#contact-btn").click()
+			$("#message-button").click()
 			$("#message-area").focus();
 			@modal.modal 'show'
 
@@ -100,6 +95,20 @@ class A2Cribs.ListingPopup
 		marker = A2Cribs.Cache.IdToMarkerMap[sublet.MarkerId]
 		school = A2Cribs.FilterManager.CurrentSchool.split(" ").join "_"
 		short_address = marker.Address.split(" ").join "_"
+
+		content.find('.photos').empty()
+		if A2Cribs.Cache.SubletIdToImagesMap[subletId]? and A2Cribs.Cache.SubletIdToImagesMap[subletId].length
+			for image in A2Cribs.Cache.SubletIdToImagesMap[subletId]
+				content.find('.photos').append
+				$('<a href="#" class="preview-thumbnail">').appendTo(content.find('.photos')).css
+					'background-image': image.Path
+				if image.IsPrimary
+					content.find('#main-photo').css
+						'background-image': 'url(' + image.Path + ')'
+		else
+			content.find('#main-photo').css
+						'background-image': 'url(/img/tooltip/default_house.png)'
+
 		content.find('.facebook-share').attr 'onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')'
 		content.find('.twitter-share').attr 'href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId)
 		content.find('#sublet-id').text subletId
