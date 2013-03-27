@@ -137,6 +137,7 @@ Call functions using FavoritesManager.FunctionName()
     FavoritesManager.ToggleFavoritesVisibility = function(button) {
       var marker, marker_id, markerid, _i, _j, _len, _len1, _ref, _ref1;
       $(button).toggleClass('active');
+      A2Cribs.Map.ClickBubble.Close();
       if (!A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()) {
         $("#FavoritesHeaderIcon").addClass("pressed");
         _ref = A2Cribs.Cache.IdToMarkerMap;

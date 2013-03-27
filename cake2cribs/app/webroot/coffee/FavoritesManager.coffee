@@ -104,6 +104,7 @@ class A2Cribs.FavoritesManager
 
 	@ToggleFavoritesVisibility: (button) ->
 		$(button).toggleClass 'active'
+		A2Cribs.Map.ClickBubble.Close()
 		if !A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()
 			$("#FavoritesHeaderIcon").addClass("pressed")
 			for marker, markerid in A2Cribs.Cache.IdToMarkerMap
