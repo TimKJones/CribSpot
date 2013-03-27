@@ -212,7 +212,7 @@
     });
 
      $("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
-
+     //$(".wheneverButton").click(A2Cribs.FilterManager.WheneverButtonClicked);
 /*
     $("#endDate").datepicker().on('changeDate', function(ev) {
     	alert('changed');

@@ -28,6 +28,14 @@ class A2Cribs.FilterManager
 		#map.GMarkerClusterer = new MarkerClusterer(@GMap, map.VisibleMarkers, mcOptions)
 		A2Cribs.Map.GMarkerClusterer.repaint()
 
+	@WheneverButtonClicked: (event) ->
+		if $("#startDate").datepicker().valueOf()[0].value == "Whenever"
+			A2Cribs.FilterManager.DateBegin = "NOT_SET"
+		if $("#endDate").datepicker().valueOf()[0].value == "Whenever"
+			A2Cribs.FilterManager.DateEnd = "NOT_SET"
+
+		A2Cribs.FilterManager.ApplyFilter()
+
 	###
 	Called immediately after user applies a filter.
 	start_date, end_date, minRent, maxRent, beds, house, apt, unit_type_other, male, female, students_only, grad, undergrad,
