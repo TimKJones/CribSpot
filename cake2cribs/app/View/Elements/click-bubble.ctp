@@ -28,8 +28,9 @@
 			<div class="extended-buttons">
 				<a href="#" class="listing-popup-link"><i class="icon-plus"></i></a>
 				<a href="#" class="listing-message"><i class="icon-comments"></i></a>
-				<a href="#"><i class="icon-heart favorite-clickable"></i></a>
+				<a href="#" class="favorite-clickable"><i class="icon-heart"></i></a>
 			</div>
 		</div>
 	</div>	
 </div>
+
