@@ -103,6 +103,12 @@ f	Closes the tooltip, no animation
 				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
 			content.find('.listings').append div
 		
+		if subletIds.length > 2
+			$('.listings').css
+				'overflow-y': 'scroll'
+		else
+			$('.listings').css
+				'overflow-y': 'hidden'
 		@InfoBubble.setContent template.html()
 		$(".click-bubble:first").unwrap()
 

@@ -130,6 +130,15 @@ Wrapper for google infobubble
         }
         content.find('.listings').append(div);
       }
+      if (subletIds.length > 2) {
+        $('.listings').css({
+          'overflow-y': 'scroll'
+        });
+      } else {
+        $('.listings').css({
+          'overflow-y': 'hidden'
+        });
+      }
       this.InfoBubble.setContent(template.html());
       return $(".click-bubble:first").unwrap();
     };
