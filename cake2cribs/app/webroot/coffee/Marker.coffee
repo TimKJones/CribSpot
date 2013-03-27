@@ -1,5 +1,5 @@
 class A2Cribs.Marker
-	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude) -> 
+	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
 		@ListingIds = null
 		@MarkerId = parseInt(@MarkerId)
 		@GMarker = new google.maps.Marker
