@@ -71,7 +71,7 @@ Wrapper for google infobubble
 
 
     ClickBubble.prototype.SetContent = function(marker) {
-      var content, dataTemplate, div, firstSublet, is_favorite, subletId, subletIds, subletOwner, template, _i, _len;
+      var content, dataTemplate, div, firstSublet, image, is_favorite, subletId, subletIds, subletOwner, template, _i, _j, _len, _len1, _ref;
       subletIds = A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId];
       template = $(".click-bubble:first").wrap('<p/>').parent();
       content = template.children().first();
@@ -102,6 +102,17 @@ Wrapper for google infobubble
           div.find('.friend-count').text(100);
         } else {
           div.find('.fb-mutual').hide();
+        }
+        if ((A2Cribs.Cache.SubletIdToImagesMap[subletId] != null) && A2Cribs.Cache.SubletIdToImagesMap[subletId].length) {
+          _ref = A2Cribs.Cache.SubletIdToImagesMap[subletId];
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            image = _ref[_j];
+            if (image.IsPrimary) {
+              div.find('.listing-image').attr('src', image.Path);
+            }
+          }
+        } else {
+          div.find('.listing-image').attr('src', '/img/tooltip/default_house.png');
         }
         div.find('.date-range').text(this.resolveDateRange(firstSublet.StartDate, firstSublet.EndDate));
         div.find('.bed-price').text(firstSublet.PricePerBedroom);

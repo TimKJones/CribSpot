@@ -28,8 +28,7 @@ ListingPopup class
     ListingPopup.prototype.Open = function(subletId) {
       if (subletId != null) {
         this.SetContent(subletId);
-        $(".side-pane").hide();
-        $("#overview").show();
+        $("#overview-btn").click();
         return this.modal.modal('show');
       }
     };
@@ -37,12 +36,8 @@ ListingPopup class
     ListingPopup.prototype.Message = function(subletId) {
       if (subletId != null) {
         this.SetContent(subletId);
-        $(".side-pane").hide();
-        $("#contact").show();
-        $('#message-button').hide();
-        $("#verify-table").hide();
-        $("#message-area").show();
-        $("#message-submit-buttons").show();
+        $("#contact-btn").click();
+        $("#message-button").click();
         $("#message-area").focus();
         return this.modal.modal('show');
       }
@@ -114,13 +109,33 @@ ListingPopup class
 
 
     ListingPopup.prototype.SetContent = function(subletId) {
-      var content, is_favorite, marker, school, short_address, sublet, template;
+      var content, image, is_favorite, marker, school, short_address, sublet, template, _i, _len, _ref;
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = A2Cribs.Cache.IdToSubletMap[subletId];
       marker = A2Cribs.Cache.IdToMarkerMap[sublet.MarkerId];
       school = A2Cribs.FilterManager.CurrentSchool.split(" ").join("_");
       short_address = marker.Address.split(" ").join("_");
+      content.find('.photos').empty();
+      if ((A2Cribs.Cache.SubletIdToImagesMap[subletId] != null) && A2Cribs.Cache.SubletIdToImagesMap[subletId].length) {
+        _ref = A2Cribs.Cache.SubletIdToImagesMap[subletId];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          image = _ref[_i];
+          content.find('.photos').append;
+          $('<a href="#" class="preview-thumbnail">').appendTo(content.find('.photos')).css({
+            'background-image': image.Path
+          });
+          if (image.IsPrimary) {
+            content.find('#main-photo').css({
+              'background-image': 'url(' + image.Path + ')'
+            });
+          }
+        }
+      } else {
+        content.find('#main-photo').css({
+          'background-image': 'url(/img/tooltip/default_house.png)'
+        });
+      }
       content.find('.facebook-share').attr('onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')');
       content.find('.twitter-share').attr('href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId));
       content.find('#sublet-id').text(subletId);
