@@ -185,7 +185,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
 <![endif]--><meta name="robots" content="noindex,nofollow"></meta>
 
-<meta property="og:title" content="Check out Cribspot - a student sublet and rental site - "></meta>
+<meta property="og:title" content="Cribspot"></meta>
 
 <link href="cribspot.com" media="screen,projection" rel="stylesheet" type="text/css" />
 

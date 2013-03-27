@@ -310,7 +310,7 @@
 
 
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The A2Cribs Team<team@a2cribs.com>';
+        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
         $this->Email->to = $email_addr;
         
         $this->Email->subject = 'New message received from ' . $from_user['first_name'];
