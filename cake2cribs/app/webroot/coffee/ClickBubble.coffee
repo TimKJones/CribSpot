@@ -52,31 +52,26 @@ f	Closes the tooltip, no animation
 	###
 	SetContent: (marker) ->
 		subletIds = A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId]
-		if subletIds.length > 1
-			@setMultiContent subletIds
-		else
-			@setSingleContent subletIds
-		
-
-
-
-	setMultiContent: (subletIds) ->
 		template = $(".click-bubble:first").wrap('<p/>').parent()
 		content = template.children().first()
-		firstSublet = A2Cribs.Cache.IdToSubletMap[subletIds[0]]
-		marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId]
-		content.addClass "multi-listing"
-		content.removeClass "single-listing"
+		content.find('.listings').empty()
+		dataTemplate = content.find('.listing-block').first()
+
 		content.find('#listing-count').text subletIds.length
 		if (marker.Title)
 			content.find('.sublet-name').text marker.Title
 		else
 			content.find('.sublet-name').text marker.Address
-
-		dataTemplate = content.find('.click-bubble-data').first()
-		content.find('.bubble-container').first().empty()
+		
+		if subletIds.length is 1
+			content.addClass "single-listing"
+			content.removeClass "multi-listing"
+		else
+			content.addClass "multi-listing"
+			content.removeClass "single-listing"
 		for subletId in subletIds
 			div = dataTemplate.clone()
+			div.removeClass "hide"
 			firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
 			subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
 			div.removeClass "single-content"
@@ -99,42 +94,8 @@ f	Closes the tooltip, no animation
 			else
 				div.find('.favorite-clickable').attr 'title', 'Add to Favorites'
 				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
-			content.find('.bubble-container').first().append div
-
-		@InfoBubble.setContent template.html()
-		$(".click-bubble:first").unwrap()
-
-	setSingleContent: (subletId) ->
-		template = $(".click-bubble:first").wrap('<p/>').parent()
-		content = template.children().first()
-		firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
-		subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
-		marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId]
-		template.children().addClass "single-listing"
-		template.children().removeClass "multi-listing"
-		if (marker.Title)
-			content.find('.sublet-name').text marker.Title
-		else
-			content.find('.sublet-name').text marker.Address
-		content.find('.username').text subletOwner.FirstName
-		if subletOwner.FBUserId
-			content.find('.friend-count').text 100
-		else
-			content.find('.fb-mutual').hide()
-		content.find('.date-range').text @resolveDateRange firstSublet.StartDate, firstSublet.EndDate
-		content.find('.bed-price').text firstSublet.PricePerBedroom
-		content.find('.bed-count').text firstSublet.Bedrooms
-		content.find('.building-type').text firstSublet.BuildingType
-		content.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
-		content.find('.listing-message').attr 'onclick', 'A2Cribs.Map.ListingPopup.Message(' + subletId + ')'
-		is_favorite = firstSublet.SubletId in A2Cribs.Cache.FavoritesSubletIdsList
-		if is_favorite
-			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
-		else
-			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
-
+			content.find('.listings').append div
+		
 		@InfoBubble.setContent template.html()
 		$(".click-bubble:first").unwrap()
 
@@ -146,6 +107,5 @@ f	Closes the tooltip, no animation
 		range += rmonth[startSplit[1] - 1]
 		range += " " + parseInt(startSplit[2]) + "-"
 		range + rmonth[endSplit[1] - 1] + " " + parseInt endSplit[2]
-
 
 

@@ -6,6 +6,15 @@
 	{
 		display: none !important;
 	}
+	.listing-image
+	{
+		height: 65px;
+		width: 80px;
+		display: inline-block;
+		float: left;
+		margin-top: 2px;
+		margin-right: 5px;
+	}
 }
 
 .click-bubble.single-listing
@@ -19,6 +28,13 @@
 	.multi-content
 	{
 		display: none !important;
+	}
+	.listing-image
+	{
+		height: 90px;
+		width: 125px;
+		float: left;
+		margin-top: 2px;
 	}
 }
 
@@ -45,6 +61,11 @@
 		font-size: 12px;
 		font-style: normal;
 	}
+	.listings
+	{
+		overflow: hidden;
+		max-height: 160px;
+	}
 	.bed-icon
 	{
 		height: 12px;
@@ -55,13 +76,9 @@
 		//display: none;
 		.listing-image
 		{
-			height: 90px;
-			width: 125px;
-			float: left;
-			margin-top: 2px;
 		}
 	}
-	.single-content.click-bubble-data
+	.click-bubble-data
 	{
 		display: inline-block;
 		white-space: nowrap;
@@ -71,20 +88,11 @@
 		//display: none;
 		.listing-image
 		{
-			height: 65px;
-			width: 80px;
-			display: inline-block;
-			float: left;
-			margin-top: 2px;
-			margin-right: 5px;
+
 		}
 		.click-bubble-data
 		{
-			border: solid 1px gray;
-			display: block;
-			overflow: auto;
-			white-space: nowrap;
-			display: inline-block;
+
 		}
 		#listing-count
 		{

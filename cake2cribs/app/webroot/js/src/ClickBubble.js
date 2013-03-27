@@ -71,34 +71,29 @@ Wrapper for google infobubble
 
 
     ClickBubble.prototype.SetContent = function(marker) {
-      var subletIds;
+      var content, dataTemplate, div, firstSublet, is_favorite, subletId, subletIds, subletOwner, template, _i, _len;
       subletIds = A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId];
-      if (subletIds.length > 1) {
-        return this.setMultiContent(subletIds);
-      } else {
-        return this.setSingleContent(subletIds);
-      }
-    };
-
-    ClickBubble.prototype.setMultiContent = function(subletIds) {
-      var content, dataTemplate, div, firstSublet, is_favorite, marker, subletId, subletOwner, template, _i, _len;
       template = $(".click-bubble:first").wrap('<p/>').parent();
       content = template.children().first();
-      firstSublet = A2Cribs.Cache.IdToSubletMap[subletIds[0]];
-      marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId];
-      content.addClass("multi-listing");
-      content.removeClass("single-listing");
+      content.find('.listings').empty();
+      dataTemplate = content.find('.listing-block').first();
       content.find('#listing-count').text(subletIds.length);
       if (marker.Title) {
         content.find('.sublet-name').text(marker.Title);
       } else {
         content.find('.sublet-name').text(marker.Address);
       }
-      dataTemplate = content.find('.click-bubble-data').first();
-      content.find('.bubble-container').first().empty();
+      if (subletIds.length === 1) {
+        content.addClass("single-listing");
+        content.removeClass("multi-listing");
+      } else {
+        content.addClass("multi-listing");
+        content.removeClass("single-listing");
+      }
       for (_i = 0, _len = subletIds.length; _i < _len; _i++) {
         subletId = subletIds[_i];
         div = dataTemplate.clone();
+        div.removeClass("hide");
         firstSublet = A2Cribs.Cache.IdToSubletMap[subletId];
         subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId];
         div.removeClass("single-content");
@@ -122,45 +117,7 @@ Wrapper for google infobubble
           div.find('.favorite-clickable').attr('title', 'Add to Favorites');
           div.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')');
         }
-        content.find('.bubble-container').first().append(div);
-      }
-      this.InfoBubble.setContent(template.html());
-      return $(".click-bubble:first").unwrap();
-    };
-
-    ClickBubble.prototype.setSingleContent = function(subletId) {
-      var content, firstSublet, is_favorite, marker, subletOwner, template, _ref;
-      template = $(".click-bubble:first").wrap('<p/>').parent();
-      content = template.children().first();
-      firstSublet = A2Cribs.Cache.IdToSubletMap[subletId];
-      subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId];
-      marker = A2Cribs.Cache.IdToMarkerMap[firstSublet.MarkerId];
-      template.children().addClass("single-listing");
-      template.children().removeClass("multi-listing");
-      if (marker.Title) {
-        content.find('.sublet-name').text(marker.Title);
-      } else {
-        content.find('.sublet-name').text(marker.Address);
-      }
-      content.find('.username').text(subletOwner.FirstName);
-      if (subletOwner.FBUserId) {
-        content.find('.friend-count').text(100);
-      } else {
-        content.find('.fb-mutual').hide();
-      }
-      content.find('.date-range').text(this.resolveDateRange(firstSublet.StartDate, firstSublet.EndDate));
-      content.find('.bed-price').text(firstSublet.PricePerBedroom);
-      content.find('.bed-count').text(firstSublet.Bedrooms);
-      content.find('.building-type').text(firstSublet.BuildingType);
-      content.find('.listing-popup-link').attr('onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')');
-      content.find('.listing-message').attr('onclick', 'A2Cribs.Map.ListingPopup.Message(' + subletId + ')');
-      is_favorite = (_ref = firstSublet.SubletId, __indexOf.call(A2Cribs.Cache.FavoritesSubletIdsList, _ref) >= 0);
-      if (is_favorite) {
-        content.find('.favorite-clickable').attr('title', 'Delete from Favorites');
-        content.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')');
-      } else {
-        content.find('.favorite-clickable').attr('title', 'Add to Favorites');
-        content.find('.favorite-clickable').attr('onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')');
+        content.find('.listings').append(div);
       }
       this.InfoBubble.setContent(template.html());
       return $(".click-bubble:first").unwrap();
