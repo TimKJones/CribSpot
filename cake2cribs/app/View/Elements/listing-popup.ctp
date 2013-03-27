@@ -52,7 +52,7 @@
 		</div>
 		<div class="medium-line-height margin-above">
 			<a href="" class="thumbnail">
-				<img src="" alt="Jason">
+				<img src="/img/head_small.jpg" alt="Jason">
 			</a>
 			<div class="post-info ellipsis">
 				<i class="small-text">Posted By:</i>
@@ -72,7 +72,7 @@
 						<br>
 						<i class="small-text">Mutual Friends:</i>
 					</div>
-					<i class="med-large-text large-line-height">10</i>
+					<i class="med-large-text large-line-height">--</i>
 				</td>
 				<td>
 					<div class="small-line-height inline float-left">
@@ -80,7 +80,7 @@
 						<br>
 						<i class="small-text">Followers:</i>
 					</div>
-					<i class="med-large-text large-line-height">321</i>					
+					<i class="med-large-text large-line-height">--</i>					
 				</td>
 			</tr>
 		</table>
@@ -115,10 +115,8 @@
 				<td><div><i class="small-text">Gender:</i><br><i class="medium-text housemate-gender">Male</i></div></td>
 				<td><div><i class="small-text">Year:</i><br><i class="medium-text housemate-year">Seniors</i></div></td>
 			</tr>
-			<tr>
-				<td><div><i class="small-text">Majors:</i><br><i class="medium-text housemate-major">YOLO</i></div></td>
-			</tr>
 		</table>
+		<div class="medium-line-height"><i class="small-text">Majors:</i><br><i class="medium-text housemate-major">YOLO</i></div>
 		<h1>Sublet Costs:</h1>
 		<table class="med-large-line-height">
 			<tr>
@@ -127,22 +125,22 @@
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Utilities:</i></td>
-				<td><i class="medium-text">Included</i></td>
+				<td><i class="medium-text utilities-cost">Included</i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Security Deposit:</i></td>
-				<td><i class="medium-text">$1,050</i></td>
+				<td><i class="medium-text deposit-cost">$1,050</i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Other Fees:</i></td>
-				<td><i class="medium-text">$1,050</i></td>
+				<td><i class="medium-text additional-fee">$1,050</i></td>
 			</tr>
 		</table>
 	</div>
 	<div id="contact" class="side-pane">
 		<div class="medium-line-height margin-above user-info">
 			<a href="" class="thumbnail float-left">
-				<img src="" alt="Jason">
+				<img src="/img/head_large.jpg" alt="Jason">
 			</a>
 			<div class="post-info inline float-left ellipsis">
 				<i class="small-text">Posted By:</i>
@@ -161,7 +159,7 @@
 						<br>
 						<i class="small-text">Mutual Friends:</i>
 					</div>
-					<i class="med-large-text large-line-height">10</i>
+					<i class="med-large-text large-line-height">--</i>
 				</td>
 				<td>
 					<div class="small-line-height inline float-left">
@@ -169,26 +167,26 @@
 						<br>
 						<i class="small-text">Followers:</i>
 					</div>
-					<i class="med-large-text large-line-height">321</i>					
+					<i class="med-large-text large-line-height">--</i>					
 				</td>
 			</tr>
 		</table>
 		<table id="verify-table" class="table table-bordered margin-above">
 			<tr>
 				<td><i class="verify-text">Email Address</i></td>
-				<td><i class="verify-text">Not Verified</i></td>
+				<td><i class="verify-text">---</i></td>
 			</tr>
 			<tr>
 				<td><i class="verify-text">@umich.edu</i></td>
-				<td><i class="verify-text">Verified</i></td>
+				<td><i class="verify-text">---</i></td>
 			</tr>
 			<tr>
 				<td><i class="verify-text">Facebook</i></td>
-				<td><i class="verify-text">Verified</i></td>
+				<td><i class="verify-text">---</i></td>
 			</tr>
 			<tr>
 				<td><i class="verify-text">Twitter</i></td>
-				<td><i class="verify-text">Verified</i></td>
+				<td><i class="verify-text">---</i></td>
 			</tr>
 		</table>
 		<!--<i class="med-small-text">You must sign up or logged in to message!</i>-->

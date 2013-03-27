@@ -109,11 +109,12 @@ ListingPopup class
 
 
     ListingPopup.prototype.SetContent = function(subletId) {
-      var content, image, is_favorite, marker, school, short_address, sublet, template, _i, _len, _ref;
+      var content, housemates, image, is_favorite, marker, school, short_address, sublet, template, _i, _len, _ref;
       template = $(".listing-popup:first").wrap('<p/>').parent();
       content = template.children().first();
       sublet = A2Cribs.Cache.IdToSubletMap[subletId];
       marker = A2Cribs.Cache.IdToMarkerMap[sublet.MarkerId];
+      housemates = A2Cribs.Cache.IdToHousematesMap[A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId]];
       school = A2Cribs.FilterManager.CurrentSchool.split(" ").join("_");
       short_address = marker.Address.split(" ").join("_");
       content.find('.photos').empty();
@@ -144,11 +145,11 @@ ListingPopup class
       content.find('.full-date').text(this.resolveDateRange(sublet.StartDate, sublet.EndDate));
       content.find('.building-type').text(sublet.BuildingType);
       content.find('.school-name').text(A2Cribs.Cache.SubletIdToOwnerMap[subletId].VerifiedUniversity);
-      content.find('.full-address').text(sublet.StreetAddress + ", " + sublet.City + ", " + sublet.State);
+      content.find('.full-address').text(marker.Address + ", " + marker.City + ", " + marker.State);
       content.find('.bath-type').text(sublet.BathroomType);
-      content.find('.parking-avail').text("LOL");
-      content.find('.ac-avail').text("Maybe");
-      content.find('.furnish-avail').text(sublet.Furnished ? "Fully" : "No");
+      content.find('.parking-avail').text(sublet.Parking ? "Yes" : "No");
+      content.find('.ac-avail').text(sublet.Air ? "Yes" : "No");
+      content.find('.furnish-avail').text(sublet.Furnished === 3 ? "No" : "Yes");
       content.find('.first-name').text(A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName);
       content.find('.short-description').find('p').text(sublet.Description);
       subletId = sublet.SubletId;
@@ -168,6 +169,15 @@ ListingPopup class
           $('#favorite-btn').removeClass("btn-danger");
         }
       }
+      content.find('.housemate-count').text(housemates.Quantity);
+      content.find('.housemate-enrolled').text(housemates.Enrolled ? "Yes" : "No");
+      content.find('.housemate-type').text(housemates.GradType);
+      content.find('.housemate-major').text(housemates.Major);
+      content.find('.housemate-gender').text(housemates.Gender);
+      content.find('.housemate-year').text(housemates.Year);
+      content.find('.utilities-cost').text(sublet.UtilityCost === 0 ? "Included" : "$" + sublet.UtilityCost);
+      content.find('.deposit-cost').text(sublet.DepositAmount === 0 ? "None" : "$" + sublet.DepositAmount);
+      content.find('.additional-fee').text(sublet.AdditionalFeesAmount === 0 ? "None" : "$" + sublet.AdditionalFeesAmount);
       return $(".listing-popup:first").unwrap();
     };
 
