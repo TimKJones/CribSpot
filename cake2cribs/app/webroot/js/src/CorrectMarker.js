@@ -109,6 +109,7 @@
         university = _ref[_i];
         if (university.University.name === selected) {
           A2Cribs.CorrectMarker.SelectedUniversity = university.University;
+          A2Cribs.Cache.SelectedUniversity = university.University;
         }
       }
       if (A2Cribs.CorrectMarker.SelectedUniversity !== void 0) {

@@ -224,6 +224,10 @@
       return A2Cribs.Cache.Step2Data = data;
     };
 
+    Cache.CacheSubletAddStep3 = function(data) {
+      return A2Cribs.Cache.Step3Data = data;
+    };
+
     return Cache;
 
   })();

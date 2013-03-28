@@ -51,7 +51,7 @@
 
       <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
     </div>
-    <a href="#" id="goToStep2">Next</a>
+    <a href="#" id="goToStep2">next</a>
   </div>
    <script>
    var universitiesMap = [];

@@ -86,6 +86,7 @@ class A2Cribs.CorrectMarker
 		for university in A2Cribs.CorrectMarker.universitiesMap
 			if university.University.name == selected
 				A2Cribs.CorrectMarker.SelectedUniversity = university.University;
+				A2Cribs.Cache.SelectedUniversity = university.University;
 		if (A2Cribs.CorrectMarker.SelectedUniversity != undefined)
 			u = A2Cribs.CorrectMarker.SelectedUniversity;
 			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);

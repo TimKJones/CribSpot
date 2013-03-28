@@ -52,13 +52,11 @@ class A2Cribs.SubletAdd
 				A2Cribs.SubletAdd.subletAddStep2()
  
 		$('#finishSubletAdd').click (e) =>
-			if ($('#SubletDescription').val().length >= 254)
-				A2Cribs.UIManager.Alert "Please keep the sublet description under 255 characters."
 			if (!$('#HousemateQuantity').val() || $('#HousemateQuantity').val() >= 50 || $('#HousemateQuantity').val() < 0)
 				A2Cribs.UIManager.Alert "Please enter a valid housemate quantity."
-			if ($('#HousemateMajor').val().length >= 254)
+			else if ($('#HousemateMajor').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
-			if ($('#HousemateSeeking').val().lenght >=254)
+			else if ($('#HousemateSeeking').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the description of who you're seeking under 255 characters."
 			e.preventDefault()
 			@subletAddStep3()
@@ -101,7 +99,6 @@ class A2Cribs.SubletAdd
 
 		A2Cribs.Cache.CacheSubletAddStep1 request_data
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
-		return 
 		#validations go here
 		#A2Cribs.SubletAdd.Step1Data = request_data
 
@@ -162,11 +159,44 @@ class A2Cribs.SubletAdd
 			#	$('#registerStatus').empty()###
 
 	@subletAddStep3:() ->
-		url = "sublets/ajax_add_create"
+		url = "/sublets/ajax_submit_sublet"
+		step1 = A2Cribs.Cache.Step1Data
+		step2 = A2Cribs.Cache.Step2Data
+
 		request_data = {
 			Sublet: {
-				description: $('#SubletDescription').val()
+				university_id: parseInt(A2Cribs.Cache.SelectedUniversity.id)
+				building_type_id: step1.Sublet.building_type_id
+				date_begin: step2.Sublet.date_begin
+				date_end: step2.Sublet.date_end
+				number_bedrooms: step2.Sublet.number_bedrooms
+				price_per_bedroom: step2.Sublet.price_per_bedroom
+				payment_type_id: "0"
+				description: ""
+				short_description: step2.Sublet.short_description
+				number_bathrooms: step2.Sublet.number_bathrooms
+				bathroom_type_id: step2.Sublet.bathroom_type_id
+				utility_type_id: step2.Sublet.utility_type_id
+				utility_cost: step2.Sublet.utility_cost
+				deposit_amount: step2.Sublet.deposit_amount
+				additional_fees_description: step2.Sublet.additional_fees_description
+				additional_fees_amount: step2.Sublet.additional_fees_amount
+				unit_number: step1.Sublet.unit_number
+				flexible_dates: step2.Sublet.flexible_dates
+				furnished_type_id: step2.Sublet.furnished_type_id
+				ac: step2.Sublet.ac
+				parking: step2.Sublet.parking
 			}
+
+			Marker: {
+				alternate_name: step1.Sublet.name
+				street_address: step1.Sublet.address
+				city: step1.Marker.city
+				state: step1.Marker.state
+				zip: step1.Marker.zip
+				latitude: step1.Sublet.latitude
+				longitude: step1.Sublet.longitude
+			}			
 
 			Housemate: {
 				quantity: $('#HousemateQuantity').val()
@@ -176,11 +206,8 @@ class A2Cribs.SubletAdd
 				seeking: $('#HousemateSeeking').val()
 				gender_type_id: $('#HousemateGenderTypeId').val()
 			}
-			CurrentStep: 3
-			Finish: 1
-			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
-
 		}
+
 		#validations go here
 		$.post url, request_data, (response) =>
 			console.log(response)

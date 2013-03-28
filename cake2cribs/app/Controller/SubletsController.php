@@ -213,6 +213,19 @@ class SubletsController extends AppController {
       //  $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
     }
 
+    public function ajax_submit_sublet(){
+        $sublet = $this->request->data['Sublet'];
+        $marker = $this->request->data['Marker'];
+        $housemate = $this->request->data['Housemate'];
+        CakeLog::write('subletAdd', print_r($sublet, true));
+        CakeLog::write('subletAdd', print_r($marker, true));
+        CakeLog::write('subletAdd', print_r($housemate, true));
+
+        $response = array('status' => 'Sublet submitted successfully');
+        $this->layout = 'ajax';
+        $this->set('response', json_encode($response));
+    }
+
     public function ajax_add_create() {
 
         if ($this->request->data['CurrentStep'] == 1)
