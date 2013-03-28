@@ -144,6 +144,36 @@ class Marker extends AppModel {
 		Cache::write('markers', $this->find('all'));
 	}
 
+	public function FindMarkerId($marker)
+	{
+		$street_address = $marker['street_address'];
+		$city = $marker['city'];
+		$state = $marker['state'];
+		$conditions = array('Marker.street_address' => $street_address,
+							'Marker.city' => $city,
+							'Marker.state' => $state);
+		$markerMatch = $this->find('first', array(
+	                     'conditions' => $conditions,
+	    	                 'fields' => 'Marker.marker_id'
+	  	));
+
+	  	if ($markerMatch == null)
+	  	{
+	  		// create new marker
+	  		$marker_to_save = array('Marker' => $marker);
+	  		if ($this->save($marker_to_save))
+	  		{
+	  			return $this->id;
+	  		}
+	  		else
+	  		{
+	  			CakeLog::write("savingMarker", "error: " . print_r($this->validationErrors, true));
+	  			return null;
+	  		}
+	  	}
+	  	else
+	  		return $markerMatch['Marker']['marker_id'];
+	}
 }
 
 ?>

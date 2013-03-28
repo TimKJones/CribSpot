@@ -141,7 +141,7 @@ class Sublet extends AppModel {
 		'description' => array(
 			'between' => array(
 				'rule' => array('between',1,1000),
-				'message' => 'Must be between 1 and 1000 characters'
+				'message' => 'Must be between 0 and 1000 characters'
 				)
 			),
 		'short_description' => array(
@@ -586,6 +586,19 @@ $log = $this->getDataSource()->getLog(false, false);
 			return $studentTypes[$studentTypeString];
 		else
 			return null;
+	}
+
+	function SaveSublet($sublet)
+	{
+		// create new marker
+  		$sublet_to_save = array('Sublet' => $sublet);
+  		if ($this->save($sublet_to_save))
+  			return array('status' => 'Sublet submitted successfully');
+  		else
+  		{
+  			CakeLog::write("savingSublet", "error: " . print_r($this->validationErrors, true));
+  			return array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists.');
+		}
 	}
 
 	function getLastQuery()
