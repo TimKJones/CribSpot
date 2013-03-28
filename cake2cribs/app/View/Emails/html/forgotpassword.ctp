@@ -184,7 +184,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
 <![endif]--><meta name="robots" content="noindex,nofollow"></meta>
 
-<meta property="og:title" content="Check out Cribspot - a student sublet and rental site - "></meta>
+<meta property="og:title" content="Cribspot"></meta>
 
 <link href="cribspot.com" media="screen,projection" rel="stylesheet" type="text/css" />
 
@@ -256,11 +256,11 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
         <td class="w10" width="10" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
 
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><a href="http://cribspot.createsend1.com/t/t-tw-qkkvd-l-d/" style="font-weight:bold;color:#ffffff;text-decoration:none;" ><img src="https://img.createsend1.com/img/templatebuilder/tweet-glyph.png" border="0" width="17" height="13" alt="Twitter icon" ="" style="outline-style:none;text-decoration:none;display:block;" /></a></td>
+        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><a class="twitter popup" href="http://twitter.com/share?text=Check%20Out%20Cribspot%20-%20Student%20Sublets%20and%20Rentals%20-%20@TheCribspot" style="font-weight:bold;color:#ffffff;text-decoration:none;" ><img src="https://img.createsend1.com/img/templatebuilder/tweet-glyph.png" border="0" width="17" height="13" alt="Twitter icon" ="" style="outline-style:none;text-decoration:none;display:block;" /></a></td>
 
         <td width="3" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
 
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.createsend1.com/t/t-tw-qkkvd-l-h/" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Tweet</a></div></td>
+        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a class="twitter popup" href="http://twitter.com/share?text=Check%20Out%20Cribspot%20-%20Student%20Sublets%20and%20Rentals%20-%20@TheCribspot" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Tweet</a></div></td>
 
         
 
@@ -420,6 +420,24 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 </tbody></table>
 
 
+<script>
+  $('.popup').click(function(event) {
+    var width  = 575,
+        height = 400,
+        left   = ($(window).width()  - width)  / 2,
+        top    = ($(window).height() - height) / 2,
+        url    = this.href,
+        opts   = 'status=1' +
+                 ',width='  + width  +
+                 ',height=' + height +
+                 ',top='    + top    +
+                 ',left='   + left;
+    
+    window.open(url, 'twitter', opts);
+ 
+    return false;
+  });
+</script>
 
 <div id="fb-root"></div>
 

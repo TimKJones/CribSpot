@@ -11,7 +11,7 @@ class A2Cribs.FavoritesManager
 	###
 	Add a favorite
 	###
-	@AddFavorite: (sublet_id) ->
+	@AddFavorite: (sublet_id, button) ->
 		A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
 		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
 		A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
@@ -22,9 +22,9 @@ class A2Cribs.FavoritesManager
 			success: (response) ->
 				#@_insertFavoriteCache sublet_id
 				#@_insertIntoFavoriteDiv sublet_id
-				A2Cribs.FavoritesManager.AddFavoriteCallback(response, sublet_id)
+				A2Cribs.FavoritesManager.AddFavoriteCallback(response, sublet_id, button)
 
-	@AddFavoriteCallback: (response, sublet_id) ->
+	@AddFavoriteCallback: (response, sublet_id, button) ->
 		response = JSON.parse response
 		if response.SUCCESS == undefined
 			message = "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
@@ -36,11 +36,16 @@ class A2Cribs.FavoritesManager
 			markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
 			A2Cribs.Cache.FavoritesSubletIdsList.splice sublet_index, 1
 			A2Cribs.Cache.FavoritesMarkerIdsList.splice markerid_index, 1
+		else
+			if button?
+				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + sublet_id + ', this);'
+				$(button).attr 'title', 'Delete from Favorites'
+				$(button).addClass 'active'
 
 	###
 	Delete a favorite
 	###
-	@DeleteFavorite: (sublet_id) ->
+	@DeleteFavorite: (sublet_id, button) ->
 		sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf sublet_id
 		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
 		markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
@@ -53,9 +58,9 @@ class A2Cribs.FavoritesManager
 			success: (response) ->
 				#@_removeFavoriteCache sublet_id
 				#@_removeFromFavoriteDiv sublet_id
-				A2Cribs.FavoritesManager.DeleteFavoriteCallback(response, sublet_id)
+				A2Cribs.FavoritesManager.DeleteFavoriteCallback(response, sublet_id, button)
 
-	@DeleteFavoriteCallback: (response, sublet_id) ->
+	@DeleteFavoriteCallback: (response, sublet_id, button) ->
 		response = JSON.parse response
 		if response.SUCCESS == undefined
 			A2Cribs.UIManager.Alert "There was an error deleting your favorite. Contact help@cribspot.com if the error persists."
@@ -63,6 +68,11 @@ class A2Cribs.FavoritesManager
 			A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
 			marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
 			A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
+		else
+			if button?
+				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + sublet_id + ', this);'
+				$(button).attr 'title', 'Add to Favorites'
+				$(button).removeClass 'active'
 
 	@InitializeFavorites: (response) ->
 		response = JSON.parse response
@@ -92,7 +102,9 @@ class A2Cribs.FavoritesManager
 			context: this
 			success: @.InitializeFavorites
 
-	@ToggleFavoritesVisibility: () ->
+	@ToggleFavoritesVisibility: (button) ->
+		$(button).toggleClass 'active'
+		A2Cribs.Map.ClickBubble.Close()
 		if !A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()
 			$("#FavoritesHeaderIcon").addClass("pressed")
 			for marker, markerid in A2Cribs.Cache.IdToMarkerMap

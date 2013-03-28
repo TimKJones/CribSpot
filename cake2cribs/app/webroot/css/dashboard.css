@@ -1,11 +1,11 @@
 #main_content{
 	background-color: #eeecec;	
 	margin: 0px;
-	margin-top: 40px;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-   font-weight: 400;
+	font-weight: 400;
 }
 #main_content > div{
+	padding-top: 70px;
 	height: 100%;
 }
 

@@ -42,7 +42,8 @@ class A2Cribs.FilterManager
 	bathroom_type, ac, parking, utilities_included, no_security_deposit
 	###
 	@ApplyFilter: (event, ui) ->
-		#TODO: USE THE ACTUAL VALUES	
+		#TODO: USE THE ACTUAL VALUES
+		A2Cribs.Map.ClickBubble.Close()	
 		ajaxData = null
 		#if event.id == "houseCheck"
 		house = $("#houseCheck").is(':checked')	
