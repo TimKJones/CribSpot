@@ -166,7 +166,13 @@ echo $this->Html->css('datepicker');
 <script>
 $.datepicker.setDefaults($.datepicker.regional['nl']);
 $.datepicker.setDefaults({ dateFormat: 'yy-mm-dd' }); 
-$('.date-picker').datepicker();
+var nowTemp = new Date();
+var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+$('.date-picker').datepicker({
+                  onRender: function(date) {
+                    return date.valueOf() < now.valueOf() ? "disabled" : "";
+                  }
+                });
 //$( "#SubletDateBegin" ).datepicker({ dateFormat: 'yy-mm-dd' });
 //$( "#SubletDateEnd" ).datepicker({ dateFormat: 'yy-mm-dd' });
 var a = A2Cribs.SubletAdd;

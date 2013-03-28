@@ -19,10 +19,14 @@ class A2Cribs.SubletAdd
 
 		$('#goToStep1').click (e) =>
 			@backToStep1()
+
+		$("#goToStep3").click (e) ->
 			#begin the validations
-			###parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
+			parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
 			parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()))
 			todayDate = new Date();
+			if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
+				A2Cribs.UIManager.Alert "Please enter a valid date."
 			if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
 				A2Cribs.UIManager.Alert "Please enter a valid date."
 			else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
@@ -41,11 +45,8 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please keep the additional fees description under 160 characters."
 			else if ($('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
 				A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
-
 			else
-				e.preventDefault()
-			###
-			#@subletAddStep2()
+				A2Cribs.SubletAdd.subletAddStep2()
  
 		$('#finishSubletAdd').click (e) =>
 			if ($('#SubletDescription').val().length >= 254)
