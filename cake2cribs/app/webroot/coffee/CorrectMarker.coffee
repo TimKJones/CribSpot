@@ -61,6 +61,10 @@ class A2Cribs.CorrectMarker
 	@CenterMap: (lat, long) ->
 		@Map.setCenter(new google.maps.LatLng(lat, long))
 
+	@SetMarkerAtPosition: (latLng) ->
+		A2Cribs.CorrectMarker.Marker.setPosition(latLng)
+		#A2Cribs.CorrectMarker.Marker.setVisible(true)
+
 	@FindAddress: () ->
 		address = $("#addressToMark").val()
 		request = 
@@ -74,3 +78,13 @@ class A2Cribs.CorrectMarker
 			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address + " " + u.city + ", " + u.state}, A2Cribs.CorrectMarker.AddressSearchCallback)
 		else
 			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address}, A2Cribs.CorrectMarker.AddressSearchCallback)
+
+	@FindSelectedUniversity: () ->
+		selected = $("#universitiesInput").val()
+		selected = selected.substring(0, selected.indexOf(','))
+		for university in universitiesMap
+			if university.University.name == selected
+				A2Cribs.CorrectMarker.SelectedUniversity = university.University;
+		if (A2Cribs.CorrectMarker.SelectedUniversity != null)
+			u = A2Cribs.CorrectMarker.SelectedUniversity;
+			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);

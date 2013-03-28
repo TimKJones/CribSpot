@@ -216,6 +216,10 @@
       return _results;
     };
 
+    Cache.CacheSubletAddStep1 = function(data) {
+      return A2Cribs.Cache.Step1Data = data;
+    };
+
     return Cache;
 
   })();

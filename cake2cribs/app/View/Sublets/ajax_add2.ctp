@@ -44,7 +44,8 @@ echo $this->Html->css('datepicker');
 		);
 
                 echo "</div>";
-		echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", /*'value' => $savedFlexibleDates,*/ 'type' => 'checkbox'));
+		/*echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", /*'value' => $savedFlexibleDates,*/// 'type' => 'checkbox'));*/
+                echo 'Flexible Dates? <input type="checkbox" name="data[Sublet][flexible_dates]" checked=true id="SubletFlexibleDates">';
 
 		echo $this->Form->input('number_bedrooms', array(
         	'div'=>'row-fluid subin',
@@ -64,13 +65,13 @@ echo $this->Html->css('datepicker');
         );
 
 
-		echo $this->Form->input('payment_type_id', array(
+	/*	echo $this->Form->input('payment_type_id', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Payment Type:'),
         	'class'=>'span9',
         	'value'=> $savedPaymentTypeID
         	)
-        );
+        );*/
 
         echo "<div class = 'row-fluid'>";
         echo $this->Form->label('short_description', 'Short Description:', 'span3');
@@ -92,7 +93,7 @@ echo $this->Html->css('datepicker');
         );
 		echo $this->Form->input('bathroom_type_id', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Number of Bedrooms:'),
+        	'label'=> array('class'=>'span3','text'=>'Bathroom Type: '),
         	'class'=>'span9',
         	'value'=> $savedBathroomTypeID
         	)
@@ -128,7 +129,7 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('furnished_type_id',  array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Furnishing Type:'),
+        	'label'=> array('class'=>'span3','text'=>'Furnished: '),
         	'class'=>'span9',
         	'value'=> $savedFurnishedTypeID
         	)
@@ -136,7 +137,7 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('deposit_amount',  array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Deposit Ammount:'),
+        	'label'=> array('class'=>'span3','text'=>'Deposit Amount:'),
         	'class'=>'span9',
         	'value'=> $savedDepositAmount
         	)
@@ -152,13 +153,14 @@ echo $this->Html->css('datepicker');
         );
 		echo $this->Form->input('additional_fees_amount',  array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Additional Fees Ammount:'),
+        	'label'=> array('class'=>'span3','text'=>'Additional Fees Amount:'),
         	'class'=>'span9',
         	'value'=> $savedAdditionalFeesAmount
         	)
         ); 
 	?>
 	<a href="#" id="goToStep1">Go back </a>
+        <a href="#" id="goToStep3" style="float:right">Next</a>
 
 </div>
 <script>

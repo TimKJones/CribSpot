@@ -172,3 +172,6 @@ class A2Cribs.Cache
 		#	A2Cribs.Cache.CacheUniversity markerData.University
 			A2Cribs.Cache.CacheSubletOwner parseInt(sublet.id), markerData.User
 			A2Cribs.Cache.CacheImages markerData.Image
+
+	@CacheSubletAddStep1: (data) ->
+		A2Cribs.Cache.Step1Data = data

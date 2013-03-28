@@ -146,8 +146,8 @@ class Sublet extends AppModel {
 			),
 		'short_description' => array(
 			'between' => array(
-				'rule' => array('between',1,160),
-				'message' => 'Must be between 1 and 160 characters'
+				'rule' => array('between',0,160),
+				'message' => 'Must be less than 160 characters'
 				)
 			),
 		
@@ -217,8 +217,8 @@ class Sublet extends AppModel {
 		//no additional checks besides escaping special characters
 		'additional_fees_description' => array(
 			'between' => array(
-				'rule' => array('between',1,1000),
-				'message' => 'Must be between 1 and 1000 characters'
+				'rule' => array('between',0,1000),
+				'message' => 'Must be less than 1000 characters'
 				)
 			),
 		//section for additionalFeesAmount
@@ -335,8 +335,10 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 		array_push($conditions, array(
 			'Sublet.price_per_bedroom >=' => $params['min_rent'],
 			'Sublet.price_per_bedroom <=' => $params['max_rent'],
-			'Sublet.number_bedrooms >=' => $params['beds']));
+			'Sublet.number_bedrooms >=' => $params['beds']));	
 
+		// add date flexibility
+		
 		$date_conditions = array();
 		if ($params['start_date'] != 'NOT_SET')
 			$date_conditions['Sublet.date_begin <='] = date($params['start_date']);

@@ -73,6 +73,10 @@
       return this.Map.setCenter(new google.maps.LatLng(lat, long));
     };
 
+    CorrectMarker.SetMarkerAtPosition = function(latLng) {
+      return A2Cribs.CorrectMarker.Marker.setPosition(latLng);
+    };
+
     CorrectMarker.FindAddress = function() {
       var address, request, u;
       address = $("#addressToMark").val();
@@ -92,6 +96,22 @@
         return A2Cribs.CorrectMarker.Geocoder.geocode({
           'address': address
         }, A2Cribs.CorrectMarker.AddressSearchCallback);
+      }
+    };
+
+    CorrectMarker.FindSelectedUniversity = function() {
+      var selected, u, university, _i, _len;
+      selected = $("#universitiesInput").val();
+      selected = selected.substring(0, selected.indexOf(','));
+      for (_i = 0, _len = universitiesMap.length; _i < _len; _i++) {
+        university = universitiesMap[_i];
+        if (university.University.name === selected) {
+          A2Cribs.CorrectMarker.SelectedUniversity = university.University;
+        }
+      }
+      if (A2Cribs.CorrectMarker.SelectedUniversity !== null) {
+        u = A2Cribs.CorrectMarker.SelectedUniversity;
+        return A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
       }
     };
 

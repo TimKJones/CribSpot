@@ -1,4 +1,5 @@
 class A2Cribs.SubletAdd
+	#@Step1Data = null
 
 	@setupUI:() ->
 		$('#goToStep2').click (e) =>
@@ -14,12 +15,12 @@ class A2Cribs.SubletAdd
 			else
 				e.preventDefault()
 				#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
-		
 				@subletAddStep1()
 
 		$('#goToStep1').click (e) =>
+			@backToStep1()
 			#begin the validations
-			parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
+			###parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
 			parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()))
 			todayDate = new Date();
 			if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
@@ -43,7 +44,8 @@ class A2Cribs.SubletAdd
 
 			else
 				e.preventDefault()
-				@subletAddStep2()
+			###
+			#@subletAddStep2()
  
 		$('#finishSubletAdd').click (e) =>
 			if ($('#SubletDescription').val().length >= 254)
@@ -64,12 +66,20 @@ class A2Cribs.SubletAdd
 
 
 
-			
+	@backToStep1: () ->
+		$('#server-notice').dialog2("options", {content:"Sublets/ajax_add"});
+		###$("#universitiesInput").val(A2Cribs.Cache.Step1Data.Sublet.university)
+		$("#SubletBuildingTypeId").val(A2Cribs.Cache.Step1Data.Sublet.building_type_id)
+		$("#SubletName").val(A2Cribs.Cache.Step1Data.Sublet.name)
+		$("#addressToMark").val(A2Cribs.Cache.Step1Data.Sublet.address)
+		A2Cribs.CorrectMarker.FindAddress()
+		$("#SubletUnitNumber").val(A2Cribs.Cache.Step1Data.Sublet.unit_number)###
+
 	@subletAddStep1:() ->
 		url = "sublets/ajax_add_create"
 		request_data = {
 			Sublet: {
-				university_id: parseInt(window.universitiesArray.indexOf($('#universitiesInput').val()) + parseInt(window.universitiesMap[0].University.id))
+				university_id: parseInt(A2Cribs.CorrectMarker.SelectedUniversity)
 				university: $('#universitiesInput').val()
 				unit_number: $('#SubletUnitNumber').val()
 				address: $("#formattedAddress").text()
@@ -86,9 +96,11 @@ class A2Cribs.SubletAdd
 			}
 			CurrentStep: 1
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
-			
 		}
+
+		A2Cribs.Cache.CacheSubletAddStep1 request_data
 		#validations go here
+		#A2Cribs.SubletAdd.Step1Data = request_data
 
 		$.post url, request_data, (response) =>
 			console.log(response)
@@ -128,7 +140,7 @@ class A2Cribs.SubletAdd
 			}
 			CurrentStep: 2
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
-			
+
 		}
 		#validations go here
 
@@ -162,7 +174,7 @@ class A2Cribs.SubletAdd
 			CurrentStep: 3
 			Finish: 1
 			#console.log(universitiesArray.indexOf(request_data.Sublet.university));
-			
+
 		}
 		#validations go here
 		$.post url, request_data, (response) =>
@@ -179,6 +191,3 @@ class A2Cribs.SubletAdd
 			#	window.location.href= '/dashboard'
 			#else
 			#	$('#registerStatus').empty()
-			
-
-

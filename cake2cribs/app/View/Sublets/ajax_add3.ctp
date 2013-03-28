@@ -49,7 +49,7 @@
         	'class'=>'span9',
         	)
         ); 
-	echo $this->Form->input('description', array('value' => $savedDescription));
+	//echo $this->Form->input('description', array('value' => $savedDescription));
 	?>
 	<?php echo $this->Form->create('Sublet'); ?>
 	<fieldset>
