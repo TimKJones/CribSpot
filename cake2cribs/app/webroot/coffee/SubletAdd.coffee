@@ -17,6 +17,9 @@ class A2Cribs.SubletAdd
 				#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
 				@subletAddStep1()
 
+		$("#backToStep2").click (e) =>
+			@backToStep2()
+
 		$('#goToStep1').click (e) =>
 			@backToStep1()
 
@@ -27,7 +30,7 @@ class A2Cribs.SubletAdd
 			todayDate = new Date();
 			if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 				A2Cribs.UIManager.Alert "Please enter a valid date."
-			if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
+			else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
 				A2Cribs.UIManager.Alert "Please enter a valid date."
 			else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 				A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
@@ -68,13 +71,10 @@ class A2Cribs.SubletAdd
 
 
 	@backToStep1: () ->
-		$('#server-notice').dialog2("options", {content:"Sublets/ajax_add"});
-		###$("#universitiesInput").val(A2Cribs.Cache.Step1Data.Sublet.university)
-		$("#SubletBuildingTypeId").val(A2Cribs.Cache.Step1Data.Sublet.building_type_id)
-		$("#SubletName").val(A2Cribs.Cache.Step1Data.Sublet.name)
-		$("#addressToMark").val(A2Cribs.Cache.Step1Data.Sublet.address)
-		A2Cribs.CorrectMarker.FindAddress()
-		$("#SubletUnitNumber").val(A2Cribs.Cache.Step1Data.Sublet.unit_number)###
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add"});
+
+	@backToStep2: () ->
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
 
 	@subletAddStep1:() ->
 		url = "sublets/ajax_add_create"
@@ -100,10 +100,12 @@ class A2Cribs.SubletAdd
 		}
 
 		A2Cribs.Cache.CacheSubletAddStep1 request_data
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
+		return 
 		#validations go here
 		#A2Cribs.SubletAdd.Step1Data = request_data
 
-		$.post url, request_data, (response) =>
+		###$.post url, request_data, (response) =>
 			console.log(response)
 			data = JSON.parse response
 			console.log data
@@ -112,7 +114,7 @@ class A2Cribs.SubletAdd
 			#if data.registerStatus == 1
 			#	window.location.href= '/dashboard'
 			#else
-			#	$('#registerStatus').empty()
+			#	$('#registerStatus').empty()###
 
 	@subletAddStep2:() ->
 		url = "sublets/ajax_add_create"
@@ -144,8 +146,10 @@ class A2Cribs.SubletAdd
 
 		}
 		#validations go here
+		A2Cribs.Cache.CacheSubletAddStep2 request_data
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
 
-		$.post url, request_data, (response) =>
+		###$.post url, request_data, (response) =>
 			console.log(response)
 			data = JSON.parse response
 			console.log data
@@ -155,7 +159,7 @@ class A2Cribs.SubletAdd
 			#if data.registerStatus == 1
 			#	window.location.href= '/dashboard'
 			#else
-			#	$('#registerStatus').empty()
+			#	$('#registerStatus').empty()###
 
 	@subletAddStep3:() ->
 		url = "sublets/ajax_add_create"
@@ -192,3 +196,13 @@ class A2Cribs.SubletAdd
 			#	window.location.href= '/dashboard'
 			#else
 			#	$('#registerStatus').empty()
+
+	@GetFormattedDate:(date) ->
+		month = date.getMonth() + 1
+		if month < 10
+			month = "0" + month
+		day = date.getDate()
+		if day < 10
+			day = "0" + day
+		year = date.getUTCFullYear()
+		beginDateFormatted = month + "/" + day + "/" + year

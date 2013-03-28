@@ -10,6 +10,7 @@ class A2Cribs.CorrectMarker
   			center: @AnnArborCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
 		@Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions)
+		google.maps.event.trigger(@Map, "resize");
 		@Marker = new google.maps.Marker
 			draggable: true
 			position: @AnnArborCenter
@@ -17,7 +18,7 @@ class A2Cribs.CorrectMarker
 			visible: false
 		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
 		@Geocoder = new google.maps.Geocoder()
-		
+
 
 	@UpdateLatLong: (e) ->
 		$("#updatedLat").html(e.latLng.lat())
@@ -82,9 +83,9 @@ class A2Cribs.CorrectMarker
 	@FindSelectedUniversity: () ->
 		selected = $("#universitiesInput").val()
 		selected = selected.substring(0, selected.indexOf(','))
-		for university in universitiesMap
+		for university in A2Cribs.CorrectMarker.universitiesMap
 			if university.University.name == selected
 				A2Cribs.CorrectMarker.SelectedUniversity = university.University;
-		if (A2Cribs.CorrectMarker.SelectedUniversity != null)
+		if (A2Cribs.CorrectMarker.SelectedUniversity != undefined)
 			u = A2Cribs.CorrectMarker.SelectedUniversity;
 			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);

@@ -19,6 +19,7 @@
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       this.Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions);
+      google.maps.event.trigger(this.Map, "resize");
       this.Marker = new google.maps.Marker({
         draggable: true,
         position: this.AnnArborCenter,
@@ -100,16 +101,17 @@
     };
 
     CorrectMarker.FindSelectedUniversity = function() {
-      var selected, u, university, _i, _len;
+      var selected, u, university, _i, _len, _ref;
       selected = $("#universitiesInput").val();
       selected = selected.substring(0, selected.indexOf(','));
-      for (_i = 0, _len = universitiesMap.length; _i < _len; _i++) {
-        university = universitiesMap[_i];
+      _ref = A2Cribs.CorrectMarker.universitiesMap;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        university = _ref[_i];
         if (university.University.name === selected) {
           A2Cribs.CorrectMarker.SelectedUniversity = university.University;
         }
       }
-      if (A2Cribs.CorrectMarker.SelectedUniversity !== null) {
+      if (A2Cribs.CorrectMarker.SelectedUniversity !== void 0) {
         u = A2Cribs.CorrectMarker.SelectedUniversity;
         return A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
       }

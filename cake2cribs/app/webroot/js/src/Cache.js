@@ -220,6 +220,10 @@
       return A2Cribs.Cache.Step1Data = data;
     };
 
+    Cache.CacheSubletAddStep2 = function(data) {
+      return A2Cribs.Cache.Step2Data = data;
+    };
+
     return Cache;
 
   })();

@@ -61,7 +61,8 @@
 
 
 		<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
-		<a href="#" id="finishSubletAdd">Save</a>
+                <a href="#" id="backToStep2">Back</a>
+		<a href="#" id="finishSubletAdd" style="float:right">Finish</a>
 	</div>
 </div>
 

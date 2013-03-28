@@ -175,3 +175,6 @@ class A2Cribs.Cache
 
 	@CacheSubletAddStep1: (data) ->
 		A2Cribs.Cache.Step1Data = data
+
+	@CacheSubletAddStep2: (data) ->
+		A2Cribs.Cache.Step2Data = data

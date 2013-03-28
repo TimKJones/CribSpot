@@ -159,7 +159,7 @@ echo $this->Html->css('datepicker');
         	)
         ); 
 	?>
-	<a href="#" id="goToStep1">Go back </a>
+	<a href="#" id="goToStep1">Back</a>
         <a href="#" id="goToStep3" style="float:right">Next</a>
 
 </div>
@@ -177,6 +177,28 @@ $('.date-picker').datepicker({
 //$( "#SubletDateEnd" ).datepicker({ dateFormat: 'yy-mm-dd' });
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-
+if (A2Cribs.Cache.Step2Data != undefined)
+{
+        beginDate = new Date(A2Cribs.Cache.Step2Data.Sublet.date_begin);
+        formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate);
+        endDate = new Date(A2Cribs.Cache.Step2Data.Sublet.date_end);
+        formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate);
+        $('#SubletDateBegin').val(formattedBeginDate);
+        $('#SubletDateEnd').val(formattedEndDate);
+        $('#SubletFlexibleDates').val(A2Cribs.Cache.Step2Data.Sublet.flexible_dates);
+        $('#SubletNumberBedrooms').val(A2Cribs.Cache.Step2Data.Sublet.number_bedrooms);
+        $('#SubletPricePerBedroom').val(A2Cribs.Cache.Step2Data.Sublet.price_per_bedroom);
+        $('#SubletShortDescription').val(A2Cribs.Cache.Step2Data.Sublet.short_description);
+        $('#SubletNumberBathrooms').val(A2Cribs.Cache.Step2Data.Sublet.number_bathrooms);
+        $('#SubletBathroomTypeId').val(A2Cribs.Cache.Step2Data.Sublet.bathroom_type_id);
+        $('#SubletUtilityTypeId').val(A2Cribs.Cache.Step2Data.Sublet.utility_type_id);
+        $('#SubletUtilityCost').val(A2Cribs.Cache.Step2Data.Sublet.utility_type_id);
+        $('#SubletParking').val(A2Cribs.Cache.Step2Data.Sublet.parking);
+        $('#SubletAc').val(A2Cribs.Cache.Step2Data.Sublet.ac);
+        $('#SubletFurnishedTypeId').val(A2Cribs.Cache.Step2Data.Sublet.furnished_type_id);
+        $('#SubletDepositAmount').val(A2Cribs.Cache.Step2Data.Sublet.deposit_amount);
+        $('#SubletAdditionalFeesDescription').val(A2Cribs.Cache.Step2Data.Sublet.additional_fees_description);
+        $('#SubletAdditionalFeesAmount').val(A2Cribs.Cache.Step2Data.Sublet.additional_fees_amount);
+}
 
 </script>

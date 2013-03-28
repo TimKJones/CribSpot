@@ -21,6 +21,9 @@
           return _this.subletAddStep1();
         }
       });
+      $("#backToStep2").click(function(e) {
+        return _this.backToStep2();
+      });
       $('#goToStep1').click(function(e) {
         return _this.backToStep1();
       });
@@ -30,9 +33,8 @@
         parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
         todayDate = new Date();
         if (parsedBeginDate.toString() === "Invalid Date" || parsedEndDate.toString() === "Invalid Date") {
-          A2Cribs.UIManager.Alert("Please enter a valid date.");
-        }
-        if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf()) {
+          return A2Cribs.UIManager.Alert("Please enter a valid date.");
+        } else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf()) {
           return A2Cribs.UIManager.Alert("Please enter a valid date.");
         } else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
           return A2Cribs.UIManager.Alert("Please enter a valid number of bedrooms.");
@@ -78,20 +80,18 @@
 
     SubletAdd.backToStep1 = function() {
       return $('#server-notice').dialog2("options", {
-        content: "Sublets/ajax_add"
+        content: "/Sublets/ajax_add"
       });
-      /*$("#universitiesInput").val(A2Cribs.Cache.Step1Data.Sublet.university)
-      		$("#SubletBuildingTypeId").val(A2Cribs.Cache.Step1Data.Sublet.building_type_id)
-      		$("#SubletName").val(A2Cribs.Cache.Step1Data.Sublet.name)
-      		$("#addressToMark").val(A2Cribs.Cache.Step1Data.Sublet.address)
-      		A2Cribs.CorrectMarker.FindAddress()
-      		$("#SubletUnitNumber").val(A2Cribs.Cache.Step1Data.Sublet.unit_number)
-      */
+    };
+
+    SubletAdd.backToStep2 = function() {
+      return $('#server-notice').dialog2("options", {
+        content: "/Sublets/ajax_add2"
+      });
     };
 
     SubletAdd.subletAddStep1 = function() {
-      var request_data, url,
-        _this = this;
+      var request_data, url;
       url = "sublets/ajax_add_create";
       request_data = {
         Sublet: {
@@ -113,20 +113,24 @@
         CurrentStep: 1
       };
       A2Cribs.Cache.CacheSubletAddStep1(request_data);
-      return $.post(url, request_data, function(response) {
-        var data;
-        console.log(response);
-        data = JSON.parse(response);
-        console.log(data);
-        return $('#server-notice').dialog2("options", {
-          content: "Sublets/ajax_add2"
-        });
+      $('#server-notice').dialog2("options", {
+        content: "/Sublets/ajax_add2"
       });
+      /*$.post url, request_data, (response) =>
+      			console.log(response)
+      			data = JSON.parse response
+      			console.log data
+      			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
+      			#window.location.href= '/dashboard'
+      			#if data.registerStatus == 1
+      			#	window.location.href= '/dashboard'
+      			#else
+      			#	$('#registerStatus').empty()
+      */
     };
 
     SubletAdd.subletAddStep2 = function() {
-      var parsedBeginDate, parsedEndDate, request_data, url,
-        _this = this;
+      var parsedBeginDate, parsedEndDate, request_data, url;
       url = "sublets/ajax_add_create";
       parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
       parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
@@ -152,16 +156,22 @@
         },
         CurrentStep: 2
       };
-      return $.post(url, request_data, function(response) {
-        var data;
-        console.log(response);
-        data = JSON.parse(response);
-        console.log(data);
-        console.log("Done with step 2");
-        return $('#server-notice').dialog2("options", {
-          content: "Sublets/ajax_add3"
-        });
+      A2Cribs.Cache.CacheSubletAddStep2(request_data);
+      return $('#server-notice').dialog2("options", {
+        content: "/Sublets/ajax_add3"
       });
+      /*$.post url, request_data, (response) =>
+      			console.log(response)
+      			data = JSON.parse response
+      			console.log data
+      			console.log "Done with step 2"
+      			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add3"});
+      			#window.location.href= '/dashboard'
+      			#if data.registerStatus == 1
+      			#	window.location.href= '/dashboard'
+      			#else
+      			#	$('#registerStatus').empty()
+      */
     };
 
     SubletAdd.subletAddStep3 = function() {
@@ -195,6 +205,16 @@
         }
         return $('#server-notice').dialog2("close");
       });
+    };
+
+    SubletAdd.GetFormattedDate = function(date) {
+      var beginDateFormatted, day, month, year;
+      month = date.getMonth() + 1;
+      if (month < 10) month = "0" + month;
+      day = date.getDate();
+      if (day < 10) day = "0" + day;
+      year = date.getUTCFullYear();
+      return beginDateFormatted = month + "/" + day + "/" + year;
     };
 
     return SubletAdd;

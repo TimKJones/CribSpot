@@ -51,7 +51,7 @@
 
       <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
     </div>
-    <a href="#" id="goToStep2">Go next </a>
+    <a href="#" id="goToStep2">Next</a>
   </div>
    <script>
    var universitiesMap = [];
@@ -69,6 +69,7 @@
         var universitiesArray = [];
         var currentUniversity;
         window.universitiesMap = universitiesMap;
+        A2Cribs.CorrectMarker.universitiesMap = universitiesMap;
         for(var universityIndex=0; universityIndex < universitiesMap.length; universityIndex+=1)
             universitiesArray.push(universitiesMap[universityIndex].University.name+ ', ' + universitiesMap[universityIndex].University.city + ' ' + universitiesMap[universityIndex].University.state );
         //for (var university in universitiesMap)
