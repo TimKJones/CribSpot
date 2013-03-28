@@ -46,16 +46,16 @@
 					<span>
 						<?php 
 						if(!$email){
-							echo "email";
+							echo "email ";
 						}
 						if(!$edu){
-							echo ".Edu";
+							echo ".Edu ";
 						}
 						if(!$fb){
-							echo "Facebook";
+							echo "Facebook ";
 						}
 						if(!$tw){
-							echo "Twitter";
+							echo "Twitter ";
 						}
 						?>
 					</span>

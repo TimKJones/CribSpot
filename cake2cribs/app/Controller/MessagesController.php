@@ -204,20 +204,6 @@
 
     }
 
-    public function msgSubTest(){}
-
-    
-    /*
-        Function expects a post request, 404 response will be given otherwise
-        post parameters need to be {'sublet_id':int, 'message_body':string}
-
-        valid reponse is json, with an object notation as follows
-        {
-        'successs': boolean
-        'message': string (only if error occured)
-        }
-
-    */
     public function messageSublet(){
         if(!$this->request->isPost()){
             throw new NotFoundException();
