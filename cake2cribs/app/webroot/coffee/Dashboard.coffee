@@ -27,7 +27,7 @@ class A2Cribs.Dashboard
 		# Strech the widget to the bottom of the window
 		main_content = $('#main_content')
 		middle_content = $('#middle_content')
-		main_content.css 'height', Math.max((window.innerHeight - main_content.offset().top), 680) + 'px'
+		main_content.css 'height', Math.max((window.innerHeight - main_content.offset().top), 750) + 'px'
 
 		# content_header is the jquery object for the side content headers that HAS a
 		# drop down sibling. mode is need to be either ['toggle', 'hide', 'show']

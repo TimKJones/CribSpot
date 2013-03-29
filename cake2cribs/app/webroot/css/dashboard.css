@@ -1,11 +1,11 @@
 #main_content{
+	padding-top: 70px;
 	background-color: #eeecec;	
 	margin: 0px;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 	font-weight: 400;
 }
 #main_content > div{
-	padding-top: 70px;
 	height: 100%;
 }
 
@@ -33,6 +33,8 @@ a:hover{
 .hidden{
 	display: none;
 }
+
+
 
 /******************************************************************************/
 /********************************Left Side Content*****************************/

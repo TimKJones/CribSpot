@@ -35,7 +35,7 @@
       var main_content, middle_content;
       main_content = $('#main_content');
       middle_content = $('#middle_content');
-      return main_content.css('height', Math.max(window.innerHeight - main_content.offset().top, 680) + 'px');
+      return main_content.css('height', Math.max(window.innerHeight - main_content.offset().top, 750) + 'px');
     };
 
     Dashboard.SlideDropDown = function(content_header, show_content) {
