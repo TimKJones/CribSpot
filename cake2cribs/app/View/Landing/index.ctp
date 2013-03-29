@@ -13,65 +13,25 @@
 	');
 ?>
 
-<?= $this->element('header-basic'); ?>
-<div id="photo-background">
-	<table>
-		<tr>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-		</tr>
-		<tr>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-		</tr>
-		<tr>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house2.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-		</tr>
-		<tr>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-			<td><div class="img-ratio img-faded" style="background-image:url(/img/landing/house1.jpg)"></div></td>
-		</tr>								
-	</table>
+<div class="top-bar">
+	<ul id="left-options" class="inline unstyled pull-left">
+		<li><a href="#">Login</a></li>
+	</ul>
+	<ul id="right-options" class="inline unstyled pull-right">
+		<li><a href="#about-page" data-toggle="modal">About</a></li>
+		<li><a href="#contact">Contact</a></li>
+		<li><a href="#help">Help</a></li>
+	</ul>
 </div>
+
 <div class="float" id="search-div">
-	<h2>WHERE TO LIVE?</h2>
-	<div id="search" class="input-append">
+	<img src="/img/landing/logo.png" height="300px" width="300px">
+	<h1>Student Sublets.</h1>
+	<div class="blue-background input-append">
 		<form id="school-form">
-			<input id="search-text" class="typeahead" type="text" autocomplete="off">
-			<button type="submit" id="search-btn" class="btn add-on"><i class="icon-search icon-large"></i></button>
+			<a href="#" id="post-btn" class="btn add-on">POST</a>
+			<input id="search-text" class="typeahead" placeholder="Search By University or City" type="text" autocomplete="off">
+			<button type="submit" id="search-btn" class="btn add-on"><i class="icon-search icon-2x"></i></button>
 		</form>
 		<?php
 		echo $this->Html->link(
@@ -82,13 +42,14 @@
 		?>
 
 	</div>
-	<div class="btn-group" data-toggle="buttons-radio">
-		<button type="button" class="btn btn-primary active">Sublets</button>
-		<button type="button" class="btn btn-primary">Full-Year Leases</button>
-		<button type="button" class="btn btn-primary">Parking</button>
+	<div>
+		<table>
+			<tr>
+				<td><a href="http://facebook.com/cribspot"><i class="icon-facebook icon-large"></i> facebook.com/cribspot</a></td>
+				<td><a href="http://twitter.com/TheCribSpot"><i class="icon-twitter icon-large"></i> @TheCribSpot</a></td>
+			</tr>
+		</table>
 	</div>
 </div>
+<div id="subprobs"><a id="subprobs" href="https://twitter.com/intent/tweet?button_hashtag=SUBLETPROBS&via=TheCribSpot">Tweet #SUBLETPROBS</a></div>
 
-<div id="landing-footer">
-	<div id="slogan">Live your Life #YOLO</div>
-</div>

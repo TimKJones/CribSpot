@@ -5,32 +5,59 @@
 @btn-contains-height: 22px;
 @header-height: 50px;
 
+html
+{
+	background: url(/img/landing/background.jpg) no-repeat center center fixed;
+	background-size: cover;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+
 body
 {
 	padding: 0;
 }
 
-#header
-{
-	/* Hide all filters and tools */
-	#search-button,
-	#compact-filter,
-	#expanded-filter,
-	#personal-buttons
-	{
-		display: none;
-	}
-}
 .top-bar
 {
-	/* Hide topbar components */
-	#sublet-post,
-	#left-options
+	position: fixed;
+	background-color: black;
+	background: black; /* Old browsers */
+	background-image: url(/img/header/black_header.jpg);
+	background-repeat: repeat no-repeat;
+	top: 0;
+	z-index: 1000;
+	height: 25px;
+	width: 100%;
+	ul
 	{
-		display: none;
+		margin-top: 2px;
+		margin-bottom: 0;
+		margin-right: 10px;
+		margin-left: 10px;
+		a
+		{
+			color: gray;
+			text-decoration: none;
+			transition: color .25s ease-in-out;
+			-moz-transition: color .25s ease-in-out;
+			-webkit-transition: color .25s ease-in-out;
+			&:hover
+			{
+				color: white;
+			}
+		}
+		.disabled
+		{
+			a { color: gray; }
+		}
+		.active
+		{
+			a { color: white; }
+		}
 	}
 }
-
 
 #landing-footer
 {
@@ -61,6 +88,11 @@ body
 	left: 0;
 	right: 0;
 	margin: auto;
+	img
+	{
+		display: block;
+		margin: auto;
+	}
 }
 
 #logo
@@ -73,46 +105,133 @@ body
 	margin-top: 15px;
 }
 
+#subprobs
+{
+	position: absolute;
+	bottom: 10px;
+	right: 0;
+	left: 0;
+	text-align: center;
+	a
+	{
+		font-size: 20px;
+		position: absolute;
+		bottom: 10px;
+		width: 250px;
+		text-align: center;
+		margin: auto;
+		color: gray;
+		text-decoration: none;
+		transition: color .25s ease-in-out;
+		-moz-transition: color .25s ease-in-out;
+		-webkit-transition: color .25s ease-in-out;
+		&:hover
+		{
+			text-decoration: none;
+			color: white;
+		}
+	}
+}
+
+table
+{
+	width: 350px;
+	margin: 20px auto auto auto;
+	font-weight: bold;
+	text-decoration: none;
+	a
+	{
+		color: gray;
+		text-decoration: none;
+		transition: color .25s ease-in-out;
+		-moz-transition: color .25s ease-in-out;
+		-webkit-transition: color .25s ease-in-out;
+		&:hover
+		{
+			text-decoration: none;
+			color: white;
+		}
+	}
+}
 
 
 #search-div
 {
-	@search-width: 570px;
-	@s-btn-width: 100px;
+	@search-width: 350px;
+	@s-btn-width: 50px;
 	@radius: 3px;
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
-	-ms-border-radius: @radius;
-	-o-border-radius: @radius;
-	border-radius: @radius;
+	@height-input: 30px;
 	padding: 25px;
-	width: @search-width;
-	height: 200px;
-	background-color: rgba(0, 0, 0, 0.75);
-	box-shadow: 2px 4px 10px gray;
-	-webkit-box-shadow: 2px 4px 10px gray;
-	-moz-box-shadow: 2px 4px 10px gray;
+	position: absolute;
+	height: 500px;
+	width: 430px;
+	margin: auto;
 	
-	h2
+	h1
 	{
 		color: white;
 		text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5);
+		text-align: center;
+		font-size: 50px;
 	}
-
+	form
+	{
+		margin: 0;
+	}
+	#post-btn
+	{
+		margin-right: 5px;
+		@radius: 3px;
+		@width: 80px;
+		height: @height-input;
+		width: @width;
+		-webkit-border-radius: @radius;
+		-moz-border-radius: @radius;
+		-ms-border-radius: @radius;
+		-o-border-radius: @radius;
+		border-radius: @radius;
+		font-size: 25px;
+		line-height: 30px;
+		font-weight: bold;
+		box-shadow: 0px 0px 4px black;
+		-webkit-box-shadow: 0px 0px 4px black;
+		-moz-box-shadow: 0px 0px 4px black;
+		-o-box-shadow: 0px 0px 4px black;
+		color: #08298A;
+	}
+	.blue-background
+	{
+		@baby-blue: #55a4d0;
+		@radius: 3px;
+		-webkit-border-radius: @radius;
+		-moz-border-radius: @radius;
+		-ms-border-radius: @radius;
+		-o-border-radius: @radius;
+		border-radius: @radius;
+		background-color: @baby-blue; 
+		padding: 5px;
+		width: 430px;
+		display: block;
+		margin: auto;
+	}
 	.dropdown-menu
 	{
-		right: 26px;
+		right: 80px;
+		overflow: hidden;
+		font-size: 16px;
 	}
 	
 	#search-btn
 	{
 		width: @s-btn-width;
-		height: 30px;
+		height: 40px;
 	}
 	#search-text
 	{
 		margin-top: 0;
 		width: @search-width - @s-btn-width - 28;
+		height: @height-input;
+		font-size: 20px;
 	}
 	.btn-group
 	{
