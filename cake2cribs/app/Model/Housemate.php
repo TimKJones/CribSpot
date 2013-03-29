@@ -97,5 +97,16 @@ class Housemate extends AppModel {
 		return $housemates;
 	}
 
+	public function SaveHousemate($housemate)
+	{
+  		$housemate_to_save = array('Housemate' => $housemate);
+  		if ($this->save($housemate_to_save))
+  			return $this->id;
+  		else
+  		{
+  			CakeLog::write("savingHousemate", "error: " . print_r($this->validationErrors, true));
+  			return null;
+		}	
+	}
 }
 ?>

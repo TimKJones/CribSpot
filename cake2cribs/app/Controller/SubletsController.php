@@ -1,7 +1,7 @@
 <?php
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array('Sublet', 'Marker');
+	public $uses = array('Sublet', 'Marker', 'Housemate');
     public $components= array('RequestHandler', 'Auth', 'Session');
 
     public function beforeFilter() {
@@ -224,16 +224,28 @@ class SubletsController extends AppController {
 
         $marker['building_type_id'] = $sublet['building_type_id'];
         $marker_id = $this->Marker->FindMarkerId($marker);
+        $sublet_id = null;
+        $housemate_id = null;
         $response = null;
         if ($marker_id != null)
         {
             $sublet['marker_id'] = $marker_id;
             $sublet['is_finished'] = 1;
             $sublet['flexible_dates'] = 1; //TODO: get this from js
-            $response = $this->Sublet->SaveSublet($sublet);
+            $sublet['user_id'] = $this->Auth->User('id');
+            $sublet_id = $this->Sublet->SaveSublet($sublet);
+            if ($sublet_id != null)
+            {
+                $housemate['sublet_id'] = $sublet_id;
+                CakeLog::write("savingHousemate", print_r($housemate, true));
+                $housemate_id = $this->Housemate->SaveHousemate($housemate);
+            }
         }
-        else
+        
+        if ($marker_id == null || $sublet_id == null || $housemate_id == null)
             $response = array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists.');
+        else
+            $response = array('status' => 'Your sublet was saved successfully!');
 
         $this->layout = 'ajax';
         $this->set('response', json_encode($response));

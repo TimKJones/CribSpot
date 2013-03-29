@@ -30,7 +30,35 @@ class A2Cribs.CorrectMarker
 		if status == google.maps.GeocoderStatus.OK
 			if (response[0].address_components.length >= 2)
 				#formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[2].short_name
-				formatted_address = response[0].formatted_address
+				street_number = null
+				street_name = null
+				city = null
+				state = null
+				zip = null
+				for component in response[0].address_components
+					for type in component.types
+						if type == "street_number"
+							street_number = component.short_name
+						else if type == "route"
+							street_name = component.short_name
+						else if type == "locality"
+							city = component.short_name
+						else if type == "administrative_area_level_1"
+							state = component.short_name
+						else if type == "postal_code"
+							zip = component.short_name
+
+				if street_number == null
+					A2Cribs.UIManager.Alert "Entered street address is not valid."
+					$("#formattedAddress").text("")
+					return
+				else
+					A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
+					A2Cribs.CorrectMarker.Map.setZoom(18)
+
+				street_address = street_number + " " + street_name
+
+				###formatted_address = response[0].formatted_address
 				first_comma = formatted_address.indexOf(',')
 				street = formatted_address.substring(0, first_comma)
 				street_number = street.substring(0, street.indexOf(' '))
@@ -46,13 +74,14 @@ class A2Cribs.CorrectMarker
 				remaining = formatted_address.substring(second_comma + 2)
 				state = remaining.substring(0, remaining.indexOf(" "))
 				remaining = remaining.substring(remaining.indexOf(" ") + 1)
-				postal = remaining.substring(0,remaining.indexOf(","))
+				postal = remaining.substring(0,remaining.indexOf(","))###
 				#city = response[0].address_components[4].short_name
 				#state = response[0].address_components[7].short_name
-				$("#formattedAddress").html(street)
+
+				$("#formattedAddress").html(street_address)
 				$("#city").html(city);
 				$("#state").html(state);
-				$("#postal").html(postal);
+				$("#postal").html(zip);
 				A2Cribs.CorrectMarker.Marker.setPosition(response[0].geometry.location)
 				A2Cribs.CorrectMarker.Marker.setVisible(true)
 				google.maps.event.addListener(A2Cribs.CorrectMarker.Marker, 'dragend', A2Cribs.CorrectMarker.UpdateLatLong)	

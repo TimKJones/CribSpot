@@ -87,7 +87,7 @@
 
     SubletAdd.subletAddStep1 = function() {
       var request_data, url;
-      url = "sublets/ajax_add_create";
+      url = "/	sublets/ajax_add_create";
       request_data = {
         Sublet: {
           university_id: parseInt(A2Cribs.CorrectMarker.SelectedUniversity),
@@ -179,8 +179,8 @@
         Sublet: {
           university_id: parseInt(A2Cribs.Cache.SelectedUniversity.id),
           building_type_id: step1.Sublet.building_type_id,
-          date_begin: new Date(step2.Sublet.date_begin),
-          date_end: new Date(step2.Sublet.date_end),
+          date_begin: A2Cribs.FilterManager.GetFormattedDate(new Date(step2.Sublet.date_begin)),
+          date_end: A2Cribs.FilterManager.GetFormattedDate(new Date(step2.Sublet.date_end)),
           number_bedrooms: step2.Sublet.number_bedrooms,
           price_per_bedroom: step2.Sublet.price_per_bedroom,
           payment_type_id: "0",
@@ -214,7 +214,8 @@
           student_type_id: $('#HousemateStudentTypeId').val(),
           major: $('#HousemateMajor').val(),
           seeking: $('#HousemateSeeking').val(),
-          gender_type_id: $('#HousemateGenderTypeId').val()
+          gender_type_id: $('#HousemateGenderTypeId').val(),
+          type: "Senior, Sophomore"
         }
       };
       return $.post(url, request_data, function(response) {

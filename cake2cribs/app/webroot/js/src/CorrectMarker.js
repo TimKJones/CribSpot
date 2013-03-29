@@ -35,15 +35,35 @@
     };
 
     CorrectMarker.AddressSearchCallback = function(response, status) {
-      var city, first_comma, formatted_address, postal, remaining, second_comma, state, street, street_number;
+      var city, component, state, street_address, street_name, street_number, type, zip, _i, _j, _len, _len2, _ref, _ref2;
       console.log(response);
       if (status === google.maps.GeocoderStatus.OK) {
         if (response[0].address_components.length >= 2) {
-          formatted_address = response[0].formatted_address;
-          first_comma = formatted_address.indexOf(',');
-          street = formatted_address.substring(0, first_comma);
-          street_number = street.substring(0, street.indexOf(' '));
-          if (isNaN(parseInt(street_number))) {
+          street_number = null;
+          street_name = null;
+          city = null;
+          state = null;
+          zip = null;
+          _ref = response[0].address_components;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            component = _ref[_i];
+            _ref2 = component.types;
+            for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+              type = _ref2[_j];
+              if (type === "street_number") {
+                street_number = component.short_name;
+              } else if (type === "route") {
+                street_name = component.short_name;
+              } else if (type === "locality") {
+                city = component.short_name;
+              } else if (type === "administrative_area_level_1") {
+                state = component.short_name;
+              } else if (type === "postal_code") {
+                zip = component.short_name;
+              }
+            }
+          }
+          if (street_number === null) {
             A2Cribs.UIManager.Alert("Entered street address is not valid.");
             $("#formattedAddress").text("");
             return;
@@ -51,16 +71,29 @@
             A2Cribs.CorrectMarker.Map.panTo(response[0].geometry.location);
             A2Cribs.CorrectMarker.Map.setZoom(18);
           }
-          second_comma = formatted_address.indexOf(',', first_comma + 1);
-          city = formatted_address.substring(first_comma + 2, second_comma);
-          remaining = formatted_address.substring(second_comma + 2);
-          state = remaining.substring(0, remaining.indexOf(" "));
-          remaining = remaining.substring(remaining.indexOf(" ") + 1);
-          postal = remaining.substring(0, remaining.indexOf(","));
-          $("#formattedAddress").html(street);
+          street_address = street_number + " " + street_name;
+          /*formatted_address = response[0].formatted_address
+          				first_comma = formatted_address.indexOf(',')
+          				street = formatted_address.substring(0, first_comma)
+          				street_number = street.substring(0, street.indexOf(' '))
+          				if isNaN(parseInt(street_number))
+          					A2Cribs.UIManager.Alert "Entered street address is not valid."
+          					$("#formattedAddress").text("")
+          					return
+          				else
+          					A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
+          					A2Cribs.CorrectMarker.Map.setZoom(18)
+          				second_comma = formatted_address.indexOf(',', first_comma + 1)
+          				city = formatted_address.substring(first_comma + 2, second_comma)
+          				remaining = formatted_address.substring(second_comma + 2)
+          				state = remaining.substring(0, remaining.indexOf(" "))
+          				remaining = remaining.substring(remaining.indexOf(" ") + 1)
+          				postal = remaining.substring(0,remaining.indexOf(","))
+          */
+          $("#formattedAddress").html(street_address);
           $("#city").html(city);
           $("#state").html(state);
-          $("#postal").html(postal);
+          $("#postal").html(zip);
           A2Cribs.CorrectMarker.Marker.setPosition(response[0].geometry.location);
           A2Cribs.CorrectMarker.Marker.setVisible(true);
           google.maps.event.addListener(A2Cribs.CorrectMarker.Marker, 'dragend', A2Cribs.CorrectMarker.UpdateLatLong);

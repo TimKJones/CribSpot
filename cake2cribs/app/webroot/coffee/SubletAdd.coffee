@@ -75,7 +75,7 @@ class A2Cribs.SubletAdd
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
 
 	@subletAddStep1:() ->
-		url = "sublets/ajax_add_create"
+		url = "/	sublets/ajax_add_create"
 		request_data = {
 			Sublet: {
 				university_id: parseInt(A2Cribs.CorrectMarker.SelectedUniversity)
@@ -167,8 +167,8 @@ class A2Cribs.SubletAdd
 			Sublet: {
 				university_id: parseInt(A2Cribs.Cache.SelectedUniversity.id)
 				building_type_id: step1.Sublet.building_type_id
-				date_begin: new Date(step2.Sublet.date_begin)
-				date_end: new Date(step2.Sublet.date_end)
+				date_begin: A2Cribs.FilterManager.GetFormattedDate new Date(step2.Sublet.date_begin)
+				date_end: A2Cribs.FilterManager.GetFormattedDate new Date(step2.Sublet.date_end)
 				number_bedrooms: step2.Sublet.number_bedrooms
 				price_per_bedroom: step2.Sublet.price_per_bedroom
 				payment_type_id: "0"
@@ -205,6 +205,7 @@ class A2Cribs.SubletAdd
 				major: $('#HousemateMajor').val()
 				seeking: $('#HousemateSeeking').val()
 				gender_type_id: $('#HousemateGenderTypeId').val()
+				type: "Senior, Sophomore"
 			}
 		}
 

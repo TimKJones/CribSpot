@@ -590,14 +590,13 @@ $log = $this->getDataSource()->getLog(false, false);
 
 	function SaveSublet($sublet)
 	{
-		// create new marker
   		$sublet_to_save = array('Sublet' => $sublet);
   		if ($this->save($sublet_to_save))
-  			return array('status' => 'Sublet submitted successfully');
+  			return $this->id;
   		else
   		{
   			CakeLog::write("savingSublet", "error: " . print_r($this->validationErrors, true));
-  			return array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists.');
+  			return null;
 		}
 	}
 
