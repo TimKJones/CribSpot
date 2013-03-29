@@ -2,7 +2,7 @@
 
 class Sublet extends AppModel {
 	//Not sure if belongs to many. Perhaps just allow one listing.
-	public $belongsTo = array('User', 'Marker', 'University','UtilityType', 'BathroomType','PaymentType', 'FurnishedType');
+	public $belongsTo = array('User', 'Marker', 'University','UtilityType', 'BuildingType', 'BathroomType','PaymentType', 'FurnishedType');
 	public $hasMany = array('Housemate', 'Favorite', 'Image');
 	//public $hasOne = array();
 	public $primaryKey = 'id';
@@ -606,6 +606,21 @@ $log = $this->getDataSource()->getLog(false, false);
 		$logs = $dbo->_queriesLog;
 
 		return end($logs);
+	}
+
+	/*
+		Check if user owns sublet_id. Returns true if so, false otherwise.
+	*/
+	function UserOwnsSublet($user_id, $sublet_id)
+	{
+		if ($user_id == null || $user_id == 0)
+			return false;
+		
+		$conditions = array('Sublet.user_id' => $user_id, 
+							'Sublet.id' => $sublet_id);
+		$this->contain();
+		$user_owns_sublet_query = $this->find('first', array('conditions' => $conditions, 'fields' => array('Sublet.id')));
+		return $user_owns_sublet_query != null;
 	}
 
 	

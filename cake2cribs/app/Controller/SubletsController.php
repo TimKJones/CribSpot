@@ -117,7 +117,7 @@ class SubletsController extends AppController {
             
         }
         
-        $canCreate = False;
+        $canCreate = true;
         $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state', 'latitude', 'longitude')));
 
         $buildingTypes = $this->Sublet->Marker->BuildingType->find('list');
@@ -126,42 +126,7 @@ class SubletsController extends AppController {
         //$paymentTypes = $this->Sublet->PaymentType->find('list');
         $this->set(compact('universities'));
         $this->set(compact('buildingTypes'));
-        //$this->set(compact('utilityTypes'));
-        //$this->set(compact('bathroomTypes'));
-        //$this->set(compact('paymentTypes'));
-         if($this->Auth->loggedIn())
-        {
-            $usersSublet = $this->Sublet->findByUserId($this->Auth->user('id'));
-            if(!empty($usersSublet))
-            {
-                if($usersSublet['Sublet']['is_finished'] == 1)
-                {
-                    $this->redirect('/Sublet/edit?id='.$usersSublet['Sublet']['id']);
-                }
-                else
-                {
-                    $canCreate = False;
-                    $savedUniversity = $this->Session->read('SubletInProgress.Sublet.university');
-                    $this->set('savedUniversity', $savedUniversity);
-                    $savedBuildingTypeID = $this->Session->read('SubletInProgress.Sublet.building_type_id');
-                    $this->set('savedBuildingTypeID', $savedBuildingTypeID);
-                    $savedName =  $this->Session->read('SubletInProgress.Sublet.name');
-                    $this->set('savedName', $savedName);
-                }
-                
-            }
-            else
-            {
-                $canCreate = true;
-            }
-                $this->set('savedUniversity', $this->Session->read('SubletInProgress.Sublet.university'));
-                $this->set('savedUniversityId', $this->Session->read('SubletInProgress.Sublet.university_id'));
-                $this->set('savedBuildingTypeID', $this->Session->read('SubletInProgress.Sublet.building_type_id'));
-                $this->set('savedName', $this->Session->read('SubletInProgress.Sublet.name'));
-                $this->set('savedAddress',$this->Session->read('SubletInProgress.Sublet.address'));
-                $this->set('savedUnitNumber',$this->Session->read('SubletInProgress.Sublet.unit_number'));
-                $this->set('university_id', $this->Session->read('SubletInProgress.Sublet.university_id'));
-        }
+        
 
         
     }
@@ -218,9 +183,6 @@ class SubletsController extends AppController {
         $sublet = $this->request->data['Sublet'];
         $marker = $this->request->data['Marker'];
         $housemate = $this->request->data['Housemate'];
-        CakeLog::write('subletAdd', print_r($sublet, true));
-        CakeLog::write('subletAdd', print_r($marker, true));
-        CakeLog::write('subletAdd', print_r($housemate, true));
 
         $marker['building_type_id'] = $sublet['building_type_id'];
         $marker_id = $this->Marker->FindMarkerId($marker);
@@ -398,6 +360,12 @@ class SubletsController extends AppController {
         //check authentication on this, only user can edit their sublets
         //(and admin)
          //$universities = $this->Sublet->University->find('list');
+        $sublet_id = $this->request->query['id'];
+        $user_id = $this->Auth->User('id');
+        if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
+        {
+            throw new NotFoundException();
+        }
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
         $bathroomTypes = $this->Sublet->BathroomType->find('list');
