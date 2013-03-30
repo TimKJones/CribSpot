@@ -1,6 +1,8 @@
 <?php //$this->layout = false; ?>
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php echo $this->Html->script('src/SubletAdd'); ?>
+<?php echo $this->Html->script('src/SubletEdit') ?>
+<?php echo $this->Html->script('src/SubletInProgress') ?>
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('ajax_sublet'); ?>
 <?php echo $this->Html->css('FindSubletPosition'); ?>
@@ -115,11 +117,9 @@ for (var i = 0; i < universities.length; i++)
     $("#universityName").focusout(function() {
       A2Cribs.CorrectMarker.FindSelectedUniversity();
     });
+
+    A2Cribs.SubletEdit.Init();
+    A2Cribs.SubletEdit.InitStep1();
 });
 
 </script>
-
-<?php 
-    $this->Js->buffer('
-    ');
-?>

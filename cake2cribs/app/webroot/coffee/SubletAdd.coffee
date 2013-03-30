@@ -4,9 +4,9 @@ class A2Cribs.SubletAdd
 	@setupUI:() ->
 		$('#goToStep2').click (e) =>
 			#begin the validations
-			if (!$('#formattedAddress').text())
+			if (!$('#formattedAddress').val())
 				A2Cribs.UIManager.Alert "Please place your street address on the map using the Place On Map button."
-			else if (!$('#universitiesInput').val())
+			else if (!$('#universityName').val())
 				A2Cribs.UIManager.Alert "You need to select a university."
 			else if ($('#SubletUnitNumber').val().length >=249)
 				A2Cribs.UIManager.Alert "Your unit number is too long."

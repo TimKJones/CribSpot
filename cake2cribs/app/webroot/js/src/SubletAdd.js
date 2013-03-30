@@ -8,9 +8,9 @@
       var oldBeginDate, oldEndDate,
         _this = this;
       $('#goToStep2').click(function(e) {
-        if (!$('#formattedAddress').text()) {
+        if (!$('#formattedAddress').val()) {
           return A2Cribs.UIManager.Alert("Please place your street address on the map using the Place On Map button.");
-        } else if (!$('#universitiesInput').val()) {
+        } else if (!$('#universityName').val()) {
           return A2Cribs.UIManager.Alert("You need to select a university.");
         } else if ($('#SubletUnitNumber').val().length >= 249) {
           return A2Cribs.UIManager.Alert("Your unit number is too long.");
