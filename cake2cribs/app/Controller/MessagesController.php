@@ -67,20 +67,25 @@
     //Creates a new message in a specified conversation
     public function newMessage(){
         if(!$this->request->isPost()){
-            echo "This url only accepts post requests";
-            die();
+           // echo "This url only accepts post requests";
+            //die();
         }
         $data = $this->request->data;
         $user = $this->Auth->User();
         //Create send reply
+        CakeLog::write("sendMessage", "1");
         $msg_id = $this->Message->createMessage($data['message_text'], $data['conversation_id'], $user);
-        
+        CakeLog::write("sendMessage", "2");
         $message = $this->Message->read();
+        CakeLog::write("sendMessage", "3");
         $options['condtions'] = array('Conversation.conversation_id'=>$message['Message']['conversation_id']);
         $conversation = $this->Conversation->find('first', $options);
+        CakeLog::write("sendMessage", "4");
         $participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
+        CakeLog::write("sendMessage", "5");
 
         $this->emailUserAboutMessage($participant['email'], $user, $conversation);
+        CakeLog::write("sendMessage", "6");
 
 
         $json = json_encode(array('success'=>$msg_id > 0));
@@ -156,13 +161,17 @@
     public function getParticipantInfo($conv_id){
         $options['conditions'] = array('Conversation.conversation_id'=>$conv_id);
         $conversation = $this->Conversation->find('first', $options);
+        CakeLog::write("messagesDebug" , print_r($conversation, true));
         $participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
+        CakeLog::write("messagesDebug" , print_r($participant, true));
             
         $options['conditions'] = array('University.id'=>$participant['university_id']);
         // $options['fields'] = array('University.name');
         // $options['contain'] = true;
         $this->University->recursive = -1;
+        CakeLog::write("messagesDebug" , print_r($participant, true));
         $university = $this->University->find('first', $options);
+
         $participant['University'] = $university['University'];
         $this->layout = 'ajax';
         $this->set('response', json_encode($participant));

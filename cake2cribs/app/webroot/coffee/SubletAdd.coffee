@@ -163,7 +163,7 @@ class A2Cribs.SubletAdd
 		step1 = A2Cribs.Cache.Step1Data
 		step2 = A2Cribs.Cache.Step2Data
 
-		request_data = {
+		request_data = 	{
 			Sublet: {
 				university_id: parseInt(A2Cribs.Cache.SelectedUniversity.id)
 				building_type_id: step1.Sublet.building_type_id
@@ -172,8 +172,8 @@ class A2Cribs.SubletAdd
 				number_bedrooms: step2.Sublet.number_bedrooms
 				price_per_bedroom: step2.Sublet.price_per_bedroom
 				payment_type_id: "0"
-				description: "TEMP DESCRIPTION"
-				short_description: step2.Sublet.short_description
+				short_description: "NA"
+				description: step2.Sublet.short_description
 				number_bathrooms: step2.Sublet.number_bathrooms
 				bathroom_type_id: step2.Sublet.bathroom_type_id
 				utility_type_id: step2.Sublet.utility_type_id

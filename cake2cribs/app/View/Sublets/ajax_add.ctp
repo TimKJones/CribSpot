@@ -16,9 +16,8 @@
       }
   </style>
   <div class = 'sublet-register container-fluid'>
-    <div class="ui-widget row-fluid subin">
-      <label class = 'span3' for="universitiesInput">University: </label>
-      <input class = 'span9' id="universitiesInput"/>
+    <div id="search" class="input-append">
+      <label for="universityName" class="span3 span3" id="universityNameLabel">University: </label><input id="universityName" class="typeahead" type="text" autocomplete="off">
     </div>
     <?php echo $this->Form->create('Sublet'); ?>
     <fieldset>
@@ -56,7 +55,7 @@
    <script>
    var universitiesMap = [];
    //A2Cribs.CorrectMarker.SelectedUniversity = null;
-   $('#universitiesInput').focusout(function() {
+   $('#universityName').focusout(function() {
       A2Cribs.CorrectMarker.FindSelectedUniversity();
     });
     $(function() {
@@ -82,7 +81,7 @@
       }
       else
       {
-        $("#universitiesInput").val(A2Cribs.Cache.Step1Data.Sublet.university);
+        $("#universityName").val(A2Cribs.Cache.Step1Data.Sublet.university);
         A2Cribs.CorrectMarker.FindSelectedUniversity();
         $("#SubletBuildingTypeId").val(A2Cribs.Cache.Step1Data.Sublet.building_type_id);
         $("#SubletName").val(A2Cribs.Cache.Step1Data.Sublet.name);
@@ -95,27 +94,32 @@
       }
     });
 
-    $("#universitiesInput").autocomplete({
-
-            source: function(request, response) {
-            var results = $.ui.autocomplete.filter(universitiesArray, request.term);
-            response(results.slice(0, 10));
-            }
-        });
         A2Cribs.CorrectMarker.Init();
                 
                 //A2Cribs.CorrectMarker.Map.setCenter()
                 google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
 
             var a = A2Cribs.SubletAdd;
-              a.setupUI();
+            a.setupUI();
             google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
-            $('#addressToMark').val('<?php echo $savedAddress; ?>');
+           
+$(document).ready(function(){
+schoolList = [];
+for (var i = 0; i < universities.length; i++)
+    schoolList.push(universities[i].University.name);
+    A2Cribs.CorrectMarker.universitiesMap = universities;
+    $("#universityName").typeahead({
+        source: schoolList
+    });
 
-            /*<?php if ($savedUniversityId)
-            {
-             echo 'var currentUniversityFromSave = <?php echo $savedUniversityId; ?>;';
-             echo "$('#universitiesInput').val(universitiesArray[currentUniversityFromSave-window.universitiesMap[0].University.id]);";
-            } ?>*/
-             
+    $("#universityName").focusout(function() {
+      A2Cribs.CorrectMarker.FindSelectedUniversity();
+    });
+});
+
 </script>
+
+<?php 
+    $this->Js->buffer('
+    ');
+?>

@@ -1,7 +1,7 @@
 <?php
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array('Sublet', 'Marker', 'Housemate');
+	public $uses = array('Sublet', 'Marker', 'Housemate', 'University');
     public $components= array('RequestHandler', 'Auth', 'Session');
 
     public function beforeFilter() {
@@ -362,35 +362,46 @@ class SubletsController extends AppController {
          //$universities = $this->Sublet->University->find('list');
         $sublet_id = $this->request->query['id'];
         $user_id = $this->Auth->User('id');
+        if ($user_id == 0)
+        {
+            $this->Session->setFlash(__('You must log in to edit sublets.'));
+            $this->redirect(array('controller' => 'users', 'action' => 'login'));
+        }
         if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
         {
             throw new NotFoundException();
         }
+
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
         $bathroomTypes = $this->Sublet->BathroomType->find('list');
         $paymentTypes = $this->Sublet->PaymentType->find('list');
-        //$this->set(compact('universities'));
+
+        // set sublet data
+        $this->Sublet->id = $this->request->query['id'];
+        $sublet_data = $this->Sublet->read();
+        $this->University->contain();
+        $universities = $this->University->find('all');
+
         $this->set(compact('buildingTypes'));
         $this->set(compact('utilityTypes'));
         $this->set(compact('bathroomTypes'));
         $this->set(compact('paymentTypes'));
-        //set current v
-
-        $this->Sublet->id = $this->request->query['id'];
+        $this->set('subletData', $sublet_data);
+        $this->set('universities', json_encode($universities));
+       
         if (!$this->Sublet->exists()) {
             throw new NotFoundException(__('Invalid sublet'));
-        }
+        }   
+
         if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Sublet->save($this->request->data)) {
                 $this->Session->setFlash(__('The sublet has been saved'));
-                
             } else {
                 $this->Session->setFlash(__('The sublet could not be saved. Please try again.'));
             }
         } else {
             $this->request->data = $this->Sublet->read(null, $id);
-
         }
     }
 

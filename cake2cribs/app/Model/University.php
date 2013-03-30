@@ -1,6 +1,7 @@
 <?php 
 
 class University extends AppModel {
+	public $actsAs = array('Containable');
 	public $hasMany = array(
 		'User' => array(
 			'className' => 'User',

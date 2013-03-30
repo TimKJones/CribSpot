@@ -3,6 +3,7 @@
 <?php echo $this->Html->css('bootstrap'); ?>
 <?php echo $this->Html->css('font-awesome'); ?>
 <?php echo $this->Html->css('users'); ?>
+<?php echo $this->Html->css('sublet_edit'); ?>
 <?php echo $this->element('header'); ?>
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
@@ -27,14 +28,42 @@
 
 	<div id="helloMessage">
 	<div class="users form" id="userRegistration">
+<script>
+var subletData = 
+<?php 
+echo json_encode($subletData); 
+?>;
+var universities = 
+<?php
+echo $universities;
+?>;
+$('<div/>').dialog2({
+    title: "Edit " + subletData.Marker.street_address, 
+    content: "/Sublets/ajax_add", 
+    id: "server-notice"
+});
+
+schoolList = [];
+        for (var i = 0; i < universities.length; i++)
+            schoolList.push(universities[i].University.name);
+
+        $("#universityName").typeahead({
+            source: schoolList
+        });
+
+        $("#universityName").focusout(function() {
+          A2Cribs.CorrectMarker.FindSelectedUniversity();
+        });
+</script>
 <?php echo $this->Form->create('Sublet'); ?>
     <fieldset>
-        <h3><?php echo __('Edit your sublet at '. $this->request->data['Sublet']['street_address']); ?></h3>
+        <h3><?php echo __('Edit your sublet at '. $subletData['Marker']['street_address']); ?></h3>
         <br />
         <div class="span5">
-       <?php 
-        //pass the universities array key-value through the sublets view controller
-        //echo $this->Form->select('university_id');
+
+
+
+       <?php
         echo $this->Form->input('university_id');
         //pass the buildtype array key-value through the sublets view controller
         //also need to make this db table
@@ -84,4 +113,10 @@
 </div>
 <script>
 $('body').css('background-color','#eeecec');
-</script>`
+</script>
+
+<?php 
+    $this->Js->buffer('
+    ');
+?>
+

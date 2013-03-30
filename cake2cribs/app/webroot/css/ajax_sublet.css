@@ -22,3 +22,13 @@
 	border-radius: 15px;
 }
 
+#universityNameLabel
+{
+	width: 110px;
+	margin-left: 0px;
+}
+
+#universityName
+{
+	width:338px;
+}

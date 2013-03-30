@@ -107,11 +107,10 @@ class A2Cribs.CorrectMarker
 			u = A2Cribs.CorrectMarker.SelectedUniversity
 			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address + " " + u.city + ", " + u.state}, A2Cribs.CorrectMarker.AddressSearchCallback)
 		else
-			A2Cribs.CorrectMarker.Geocoder.geocode({ 'address' : address}, A2Cribs.CorrectMarker.AddressSearchCallback)
+			A2Cribs.UIManager.Alert "Please select a university."
 
 	@FindSelectedUniversity: () ->
-		selected = $("#universitiesInput").val()
-		selected = selected.substring(0, selected.indexOf(','))
+		selected = $("#universityName").val()
 		for university in A2Cribs.CorrectMarker.universitiesMap
 			if university.University.name == selected
 				A2Cribs.CorrectMarker.SelectedUniversity = university.University;
@@ -119,3 +118,5 @@ class A2Cribs.CorrectMarker
 		if (A2Cribs.CorrectMarker.SelectedUniversity != undefined)
 			u = A2Cribs.CorrectMarker.SelectedUniversity;
 			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
+
+	
