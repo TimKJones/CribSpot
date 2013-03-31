@@ -184,6 +184,10 @@ class SubletsController extends AppController {
         $marker = $this->request->data['Marker'];
         $housemate = $this->request->data['Housemate'];
 
+        CakeLog::write("savingSublet", print_r($sublet, true));
+        CakeLog::write("savingMarker", print_r($marker, true));
+        CakeLog::write("savingHousemate", print_r($housemate, true));
+
         $marker['building_type_id'] = $sublet['building_type_id'];
         $marker_id = $this->Marker->FindMarkerId($marker);
         $sublet_id = null;

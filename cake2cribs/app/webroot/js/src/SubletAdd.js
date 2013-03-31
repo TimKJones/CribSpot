@@ -123,57 +123,11 @@
     };
 
     SubletAdd.subletAddStep3 = function() {
-      var request_data, step1, step2, url,
+      var url,
         _this = this;
       url = "/sublets/ajax_submit_sublet";
-      step1 = A2Cribs.Cache.Step1Data;
-      step2 = A2Cribs.Cache.Step2Data;
-      request_data = {
-        Sublet: {
-          university_id: parseInt(A2Cribs.Cache.SelectedUniversity.id),
-          building_type_id: step1.Sublet.building_type_id,
-          date_begin: A2Cribs.FilterManager.GetFormattedDate(new Date(step2.Sublet.date_begin)),
-          date_end: A2Cribs.FilterManager.GetFormattedDate(new Date(step2.Sublet.date_end)),
-          number_bedrooms: step2.Sublet.number_bedrooms,
-          price_per_bedroom: step2.Sublet.price_per_bedroom,
-          payment_type_id: "0",
-          short_description: "NA",
-          description: step2.Sublet.short_description,
-          number_bathrooms: step2.Sublet.number_bathrooms,
-          bathroom_type_id: step2.Sublet.bathroom_type_id,
-          utility_type_id: step2.Sublet.utility_type_id,
-          utility_cost: step2.Sublet.utility_cost,
-          deposit_amount: step2.Sublet.deposit_amount,
-          additional_fees_description: step2.Sublet.additional_fees_description,
-          additional_fees_amount: step2.Sublet.additional_fees_amount,
-          unit_number: step1.Sublet.unit_number,
-          flexible_dates: step2.Sublet.flexible_dates,
-          furnished_type_id: step2.Sublet.furnished_type_id,
-          ac: step2.Sublet.ac,
-          parking: step2.Sublet.parking
-        },
-        Marker: {
-          alternate_name: step1.Sublet.name,
-          street_address: step1.Sublet.address,
-          city: step1.Marker.city,
-          state: step1.Marker.state,
-          zip: step1.Marker.zip,
-          latitude: step1.Sublet.latitude,
-          longitude: step1.Sublet.longitude
-        },
-        Housemate: {
-          quantity: $('#HousemateQuantity').val(),
-          enrolled: $('#HousemateEnrolled').val(),
-          student_type_id: $('#HousemateStudentTypeId').val(),
-          major: $('#HousemateMajor').val(),
-          seeking: $('#HousemateSeeking').val(),
-          gender_type_id: $('#HousemateGenderTypeId').val(),
-          type: "Senior, Sophomore"
-        }
-      };
-      return $.post(url, request_data, function(response) {
+      return $.post(url, A2Cribs.Cache.SubletEditInProgress, function(response) {
         var data;
-        console.log(response);
         data = JSON.parse(response);
         console.log(data.status);
         if (data.status) {

@@ -127,7 +127,7 @@
 		},
 		
 		set: function() {
-			var formated = (this.date)? DPGlobal.formatDate(this.date, this.format) : "Whenever";
+			var formated = DPGlobal.formatDate(this.date, this.format);
 			if (!this.isInput) {
 				if (this.component){
 					this.element.find('input').prop('value', formated);
@@ -459,7 +459,6 @@
 									DPGlobal.headTemplate+
 									'<tbody></tbody>'+
 								'</table>'+
-								'<button class="btn btn-block btn-primary">Whenever</button>'
 							'</div>'+
 							'<div class="datepicker-months">'+
 								'<table class="table-condensed">'+

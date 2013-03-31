@@ -588,8 +588,20 @@ $log = $this->getDataSource()->getLog(false, false);
 			return null;
 	}
 
-	function SaveSublet($sublet)
+	/*
+
+	*/
+	function SaveSublet($sublet, $id = null)
 	{
+		if ($sublet['ac'])
+			$sublet['ac'] = 1;
+		else
+			$sublet['ac'] = 0;
+		if ($sublet['parking'])
+			$sublet['parking'] = 1;
+		else
+			$sublet['parking'] = 0;
+
   		$sublet_to_save = array('Sublet' => $sublet);
   		if ($this->save($sublet_to_save))
   			return $this->id;

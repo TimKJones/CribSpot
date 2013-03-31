@@ -34,7 +34,7 @@ class A2Cribs.CorrectMarker
 				street_name = null
 				city = null
 				state = null
-				zip = null
+				zip = "00000"
 				for component in response[0].address_components
 					for type in component.types
 						if type == "street_number"

@@ -14,12 +14,8 @@
         	'class'=>'span9',
         	)
         ); 
-	echo $this->Form->input('enrolled', array(
-        	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Enrolled:'),
-        	'class'=>'span9',
-        	)
-        ); 
+	echo 'Enrolled: <input type="checkbox" name="data[Housemate][enrolled]" id="HousemateEnrolled"></br>';
+
 	echo $this->Form->input('student_type_id', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Student Type:'),

@@ -43,7 +43,7 @@
           street_name = null;
           city = null;
           state = null;
-          zip = null;
+          zip = "00000";
           _ref = response[0].address_components;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             component = _ref[_i];
