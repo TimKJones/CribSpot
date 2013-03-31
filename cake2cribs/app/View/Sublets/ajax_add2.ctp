@@ -26,8 +26,7 @@ echo $this->Html->css('datepicker');
 			'data-html' => 'true', 
 			'data-placement' =>'bottom', 
 			'type'=>'text', 
-			'style' => 'position: relative; z-index: 100000;', 
-			'value' =>$savedDateBegin
+			'style' => 'position: relative; z-index: 100000;'
 			)
 		); 
 
@@ -38,8 +37,7 @@ echo $this->Html->css('datepicker');
 			'data-html' => 'true', 
 			'data-placement' =>'top', 
 			'type'=>'text', 
-			'style' => 'position: relative; z-index: 100000;', 
-			'value' => $savedDateEnd
+			'style' => 'position: relative; z-index: 100000;'
 			)
 		);
 
@@ -50,8 +48,7 @@ echo $this->Html->css('datepicker');
 		echo $this->Form->input('number_bedrooms', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Number of Bedrooms:'),
-        	'class'=>'span9',
-        	'value'=> $savedNumberBedrooms
+        	'class'=>'span9'
         	)
         );
 
@@ -59,8 +56,7 @@ echo $this->Html->css('datepicker');
 		echo $this->Form->input('price_per_bedroom', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Price Per Bedroom:'),
-        	'class'=>'span9',
-        	'value'=> $savedPricePerBedroom
+        	'class'=>'span9'
         	)
         );
 
@@ -78,8 +74,7 @@ echo $this->Html->css('datepicker');
         echo $this->Form->textarea('short_description', array(
                 'div'=>'subin',
                 'placeholder'=>"Short description of the property",
-                'class'=>'span9',
-                'value'=> $savedShortDescription
+                'class'=>'span9'
                 )
         );
         echo "</div>";
@@ -87,59 +82,51 @@ echo $this->Html->css('datepicker');
 		echo $this->Form->input('number_bathrooms', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Number of Bathrooms:'),
-        	'class'=>'span9',
-        	'value'=> $savedNumberBathrooms
+        	'class'=>'span9'
         	)
         );
 		echo $this->Form->input('bathroom_type_id', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Bathroom Type: '),
-        	'class'=>'span9',
-        	'value'=> $savedBathroomTypeID
+        	'class'=>'span9'
         	)
         );
 		echo $this->Form->input('utility_type_id', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Utility Type:'),
-        	'class'=>'span9',
-        	'value'=> $savedUtilityTypeID
+        	'class'=>'span9'
         	)
         );
 		echo $this->Form->input('utility_cost', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Utility Cost:'),
-        	'class'=>'span9',
-        	'value'=> $savedUtilityCost
+        	'class'=>'span9'
         	)
         ); 
 		echo $this->Form->input('parking', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Parking:'),
-        	'class'=>'span9',
-        	'value'=> $savedParking
+        	'class'=>'span9'
         	)
         );
 		echo $this->Form->input('ac', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'AC:'),
-        	'class'=>'span9',
-        	'value'=> $savedAC
+        	'class'=>'span9'
         	)
         ); 
 
 		echo $this->Form->input('furnished_type_id',  array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Furnished: '),
-        	'class'=>'span9',
-        	'value'=> $savedFurnishedTypeID
+        	'class'=>'span9'
         	)
         ); 
 
 		echo $this->Form->input('deposit_amount',  array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Deposit Amount:'),
-        	'class'=>'span9',
-        	'value'=> $savedDepositAmount
+        	'class'=>'span9'
         	)
         ); 
         echo "<div class = 'row-fluid'>";
@@ -147,15 +134,13 @@ echo $this->Html->css('datepicker');
         echo $this->Form->textarea('additional_fees_description', array(
                 'div'=>'subin',
                 'placeholder'=>"Describe any additional fees here.",
-                'class'=>'span9',
-                'value'=> $savedAdditionalFeesDescription
+                'class'=>'span9'
                 )
         );
 		echo $this->Form->input('additional_fees_amount',  array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Additional Fees Amount:'),
-        	'class'=>'span9',
-        	'value'=> $savedAdditionalFeesAmount
+        	'class'=>'span9'
         	)
         ); 
 	?>
@@ -177,28 +162,5 @@ $('.date-picker').datepicker({
 //$( "#SubletDateEnd" ).datepicker({ dateFormat: 'yy-mm-dd' });
 var a = A2Cribs.SubletAdd;
 a.setupUI();
-if (A2Cribs.Cache.Step2Data != undefined)
-{
-        beginDate = new Date(A2Cribs.Cache.Step2Data.Sublet.date_begin);
-        formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate);
-        endDate = new Date(A2Cribs.Cache.Step2Data.Sublet.date_end);
-        formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate);
-        $('#SubletDateBegin').val(formattedBeginDate);
-        $('#SubletDateEnd').val(formattedEndDate);
-        $('#SubletFlexibleDates').val(A2Cribs.Cache.Step2Data.Sublet.flexible_dates);
-        $('#SubletNumberBedrooms').val(A2Cribs.Cache.Step2Data.Sublet.number_bedrooms);
-        $('#SubletPricePerBedroom').val(A2Cribs.Cache.Step2Data.Sublet.price_per_bedroom);
-        $('#SubletShortDescription').val(A2Cribs.Cache.Step2Data.Sublet.short_description);
-        $('#SubletNumberBathrooms').val(A2Cribs.Cache.Step2Data.Sublet.number_bathrooms);
-        $('#SubletBathroomTypeId').val(A2Cribs.Cache.Step2Data.Sublet.bathroom_type_id);
-        $('#SubletUtilityTypeId').val(A2Cribs.Cache.Step2Data.Sublet.utility_type_id);
-        $('#SubletUtilityCost').val(A2Cribs.Cache.Step2Data.Sublet.utility_type_id);
-        $('#SubletParking').val(A2Cribs.Cache.Step2Data.Sublet.parking);
-        $('#SubletAc').val(A2Cribs.Cache.Step2Data.Sublet.ac);
-        $('#SubletFurnishedTypeId').val(A2Cribs.Cache.Step2Data.Sublet.furnished_type_id);
-        $('#SubletDepositAmount').val(A2Cribs.Cache.Step2Data.Sublet.deposit_amount);
-        $('#SubletAdditionalFeesDescription').val(A2Cribs.Cache.Step2Data.Sublet.additional_fees_description);
-        $('#SubletAdditionalFeesAmount').val(A2Cribs.Cache.Step2Data.Sublet.additional_fees_amount);
-}
-
+A2Cribs.SubletEdit.InitStep2();
 </script>

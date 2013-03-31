@@ -90,15 +90,15 @@
           				remaining = remaining.substring(remaining.indexOf(" ") + 1)
           				postal = remaining.substring(0,remaining.indexOf(","))
           */
-          $("#formattedAddress").html(street_address);
-          $("#city").html(city);
-          $("#state").html(state);
-          $("#postal").html(zip);
+          $("#formattedAddress").val(street_address);
+          $("#city").val(city);
+          $("#state").val(state);
+          $("#postal").val(zip);
           A2Cribs.CorrectMarker.Marker.setPosition(response[0].geometry.location);
           A2Cribs.CorrectMarker.Marker.setVisible(true);
           google.maps.event.addListener(A2Cribs.CorrectMarker.Marker, 'dragend', A2Cribs.CorrectMarker.UpdateLatLong);
-          $("#updatedLat").html(response[0].geometry.location.lat());
-          return $("#updatedLong").html(response[0].geometry.location.lng());
+          $("#updatedLat").val(response[0].geometry.location.lat());
+          return $("#updatedLong").val(response[0].geometry.location.lng());
         }
       }
     };

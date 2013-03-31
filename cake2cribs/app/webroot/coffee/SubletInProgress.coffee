@@ -2,6 +2,7 @@ class A2Cribs.SubletInProgress
 	constructor: () ->
 		@Sublet =
 			university_id: null
+			university_name: null
 			building_type_id: null
 			date_begin: null
 			date_end: null
@@ -12,6 +13,7 @@ class A2Cribs.SubletInProgress
 			description: null
 			number_bathrooms: null
 			bathroom_type_id: null
+			building_type_id: null
 			utility_type_id: null
 			utility_cost: null
 			deposit_amount: null
@@ -26,6 +28,7 @@ class A2Cribs.SubletInProgress
 		@Marker =
 			alternate_name: null
 			street_address: null
+			building_type_id: null
 			city: null
 			state: null
 			zip: null

@@ -69,4 +69,5 @@
 <script>
 	var a = A2Cribs.SubletAdd;
 	a.setupUI();
+        A2Cribs.SubletEdit.InitStep3();
 </script>

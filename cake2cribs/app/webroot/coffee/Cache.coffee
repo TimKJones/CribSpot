@@ -20,6 +20,8 @@ class A2Cribs.Cache
 	@FavoritesSubletIdsList = []
 	@FavoritesMarkerIdsList = []
 
+	@SubletEditInProgress = null
+
 	###
 	Add list of sublets to cache
 	###

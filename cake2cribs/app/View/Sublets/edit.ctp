@@ -63,6 +63,7 @@ $('body').css('background-color','#eeecec');
 <script>
 $(document).ready(function() {
     A2Cribs.Cache.SubletData = subletData;
+    A2Cribs.SubletEdit.Init();
 });
 </script>
 <?php 

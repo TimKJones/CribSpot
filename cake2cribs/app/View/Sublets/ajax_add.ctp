@@ -52,7 +52,7 @@
 
       <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
     </div>
-    <a href="#" id="goToStep2">next</a>
+    <a href="#" id="goToStep2" style="float:right">Next</a>
   </div>
    <script>
    var universitiesMap = [];
@@ -67,6 +67,7 @@
           <?php 
           $universities_json = json_encode($universities);
           echo $universities_json; ?>;
+        universities = universitiesMap;
         var universitiesArray = [];
         var currentUniversity;
         window.universitiesMap = universitiesMap;
@@ -105,7 +106,6 @@
             a.setupUI();
             google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
            
-$(document).ready(function(){
 schoolList = [];
 for (var i = 0; i < universities.length; i++)
     schoolList.push(universities[i].University.name);
@@ -118,8 +118,8 @@ for (var i = 0; i < universities.length; i++)
       A2Cribs.CorrectMarker.FindSelectedUniversity();
     });
 
-    A2Cribs.SubletEdit.Init();
+    if (A2Cribs.Cache.SubletEditInProgress == null || A2Cribs.Cache.SubletEditInProgress == undefined)
+      A2Cribs.SubletEdit.Init();
     A2Cribs.SubletEdit.InitStep1();
-});
 
 </script>

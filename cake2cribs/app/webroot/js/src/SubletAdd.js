@@ -86,28 +86,7 @@
     };
 
     SubletAdd.subletAddStep1 = function() {
-      var request_data, url;
-      url = "/	sublets/ajax_add_create";
-      request_data = {
-        Sublet: {
-          university_id: parseInt(A2Cribs.CorrectMarker.SelectedUniversity),
-          university: $('#universitiesInput').val(),
-          unit_number: $('#SubletUnitNumber').val(),
-          address: $("#formattedAddress").text(),
-          building_type_id: $('#SubletBuildingTypeId').val(),
-          name: $('#SubletName').val(),
-          latitude: $('#updatedLat').text(),
-          longitude: $('#updatedLong').text()
-        },
-        Marker: {
-          street_address: $("#formattedAddress").text(),
-          city: $("#city").text(),
-          state: $("#state").text(),
-          zip: $("#postal").text()
-        },
-        CurrentStep: 1
-      };
-      A2Cribs.Cache.CacheSubletAddStep1(request_data);
+      A2Cribs.SubletEdit.CacheStep1Data();
       return $('#server-notice').dialog2("options", {
         content: "/Sublets/ajax_add2"
       });
@@ -125,33 +104,7 @@
     };
 
     SubletAdd.subletAddStep2 = function() {
-      var parsedBeginDate, parsedEndDate, request_data, url;
-      url = "sublets/ajax_add_create";
-      parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
-      parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
-      request_data = {
-        Sublet: {
-          date_begin: parsedBeginDate.toISOString(),
-          date_end: parsedEndDate.toISOString(),
-          flexible_dates: $('#SubletFlexibleDates').val(),
-          number_bedrooms: $('#SubletNumberBedrooms').val(),
-          price_per_bedroom: $('#SubletPricePerBedroom').val(),
-          payment_type_id: $('#SubletPaymentTypeId').val(),
-          short_description: $('#SubletShortDescription').val(),
-          number_bathrooms: $('#SubletNumberBathrooms').val(),
-          bathroom_type_id: $('#SubletBathroomTypeId').val(),
-          utility_type_id: $('#SubletUtilityTypeId').val(),
-          utility_cost: $('#SubletUtilityCost').val(),
-          parking: $('#SubletParking').val(),
-          ac: $('#SubletAc').val(),
-          furnished_type_id: $('#SubletFurnishedTypeId').val(),
-          deposit_amount: $('#SubletDepositAmount').val(),
-          additional_fees_description: $('#SubletAdditionalFeesDescription').val(),
-          additional_fees_amount: $('#SubletAdditionalFeesAmount').val()
-        },
-        CurrentStep: 2
-      };
-      A2Cribs.Cache.CacheSubletAddStep2(request_data);
+      A2Cribs.SubletEdit.CacheStep2Data();
       return $('#server-notice').dialog2("options", {
         content: "/Sublets/ajax_add3"
       });
