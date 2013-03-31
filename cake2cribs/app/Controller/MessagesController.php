@@ -171,8 +171,23 @@
         $this->University->recursive = -1;
         CakeLog::write("messagesDebug" , print_r($participant, true));
         $university = $this->University->find('first', $options);
+        if($university == null){
+            $participant['University'] = array();
+        }else{
+            $participant['University'] = $university['University'];    
+        }
+        
+        unset($participant['password']);
+        unset($participant['phone']);
+        unset($participant['group_id']);
+        unset($participant['vericode']);
+        unset($participant['twitter_auth_token']);
+        unset($participant['twitter_auth_token_secret']);
+        unset($participant['password_reset_token']);
+        unset($participant['password_reset_date']);
+        unset($participant['created']);
+        unset($participant['modified']);
 
-        $participant['University'] = $university['University'];
         $this->layout = 'ajax';
         $this->set('response', json_encode($participant));
 

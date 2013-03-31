@@ -156,7 +156,7 @@ class A2Cribs.VerifyManager
 			'fb_id': parseInt(@me.facebook_userid),
 			'tw_id': @me.twitter_userid,
 			'verified_email': @me.verified
-			'verified_edu': @me.university_verified?
+			'verified_edu': @me.university_verified == true
 			'verified_fb': @me.facebook_userid?,
 			'verified_tw': @me.twitter_userid?,
 		}

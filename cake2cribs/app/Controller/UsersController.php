@@ -27,7 +27,7 @@ class UsersController extends AppController {
 	public function login() {
         if ($this->Auth->loggedIn())
         {
-            $this->redirect('/users');
+            $this->redirect('/dashbaord');
         }
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
@@ -47,7 +47,7 @@ class UsersController extends AppController {
                 
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
-                    $this->redirect('/users');
+                    $this->redirect('/dashboard');
                 }
                 else {
                     $this->Session->setFlash(__('You were successfully logged in.'));
@@ -156,7 +156,7 @@ class UsersController extends AppController {
                 $this->set('id',$this->User->id);
                 $this->Email->send();
 				$this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect('/dashboard');
 			} else {
 				$this->Session->setFlash(__('An error occurred during registration. Please try again.'));
 			}
