@@ -1,6 +1,9 @@
-<div class="popupContent" id="contactPopup">
-	<a href="http://twitter.com/A2Cribs" target="_blank"><div id="twitterLinkDiv"></div></a>
-	<a href="http://www.facebook.com/A2Cribs" target="_blank"><div id="facebookLinkDiv"></div></a>
-	<a href="mailto:info@a2cribs.com" target="_blank"><div id="mailToLinkDiv"></div></a>
-	<div class="close_button">X</div>
+<div id="contact-page" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Contact</h3>
+	</div>
+	<div class="modal-body">
+		<p>We'd love to hear from you! Email info@cribspot.com with feedback, suggestions, bugs, or anything else.</p>
+	</div>
 </div>
