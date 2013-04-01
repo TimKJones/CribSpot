@@ -122,7 +122,9 @@ class A2Cribs.Messages
 				veripanel.find('#veri-email  i:last-child').removeClass('unverified').addClass('verified')
 
 			if verification_info.verified_edu
-				veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified')				
+				veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified')
+			else
+				$('.participant-university').append("No Associated University")
 
 			if verification_info.verified_fb
 				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
@@ -200,9 +202,13 @@ class A2Cribs.Messages
 		@loadMessages(@NumMessagePages, true)
 	
 	@sendReply:(event)->
+		# Gather the data to send to the server
+		message_text = $('#message_text textarea').val()	
+		if message_text.length == 0
+			alertify.error("Message can not be empty", 1500)
+			return false
 		# Disable the submit button
 		$('#send_reply').attr 'disabled','disabled'
-		# Gather the data to send to the server
 		message_text = $('#message_text textarea').val()	
 		# Build the data object that we'll send to the server
 		message_data = 
@@ -215,6 +221,7 @@ class A2Cribs.Messages
 			@refreshMessages()
 			@refreshConversations()			
 			$('#message_text textarea').val('') # Clear the reply text field
+		.always ()=>
 			$('#send_reply').removeAttr 'disabled'
 		false
 

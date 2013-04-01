@@ -118,6 +118,8 @@
         }
         if (verification_info.verified_edu) {
           veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified');
+        } else {
+          $('.participant-university').append("No Associated University");
         }
         if (verification_info.verified_fb) {
           url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
@@ -193,6 +195,11 @@
     Messages.sendReply = function(event) {
       var message_data, message_text, url,
         _this = this;
+      message_text = $('#message_text textarea').val();
+      if (message_text.length === 0) {
+        alertify.error("Message can not be empty", 1500);
+        return false;
+      }
       $('#send_reply').attr('disabled', 'disabled');
       message_text = $('#message_text textarea').val();
       message_data = {
@@ -203,7 +210,8 @@
       $.post(url, message_data, function(data) {
         _this.refreshMessages();
         _this.refreshConversations();
-        $('#message_text textarea').val('');
+        return $('#message_text textarea').val('');
+      }).always(function() {
         return $('#send_reply').removeAttr('disabled');
       });
       return false;

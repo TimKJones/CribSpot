@@ -12,6 +12,9 @@
 	background-color: #f6f6f6;
 }
 
+#edit_account_window > form {
+	padding-top: 20px;
+}
 
 
 /******************************************************************************/

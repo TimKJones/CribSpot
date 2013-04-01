@@ -25,7 +25,16 @@
 		<a>Send Verification Email Again?</a>
 	</div>
 	<div id = 'veri-edu'>
-		<img src = '/img/university_icon.png' class = 'icon-edu'><?php echo $user['University']['name'];?><i class = 'unverified icon-ok-sign'></i>
+		<img src = '/img/university_icon.png' class = 'icon-edu'><?php 
+		if($user['University']['id']){
+			echo $user['University']['name'];
+		}
+		else{
+			echo 'University <a href="/users/verifyUniversity">Verify?</a>';
+	      	
+
+		}
+		?><i class = 'unverified icon-ok-sign'></i>
 	</div>
 	<div id = 'veri-fb'>
 		<i class = 'fb icon-facebook-sign'></i>Facebook<i class = 'unverified icon-ok-sign'></i>

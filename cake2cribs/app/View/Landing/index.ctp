@@ -13,9 +13,20 @@
 	');
 ?>
 
+<?php
+	echo $this->element('login');
+	echo $this->element('popups');
+?>
+
 <div class="top-bar">
 	<ul id="left-options" class="inline unstyled pull-left">
-		<li><a href="#">Login</a></li>
+
+	<?php 
+	if ($this->Session->read('Auth.User.id') == 0)
+		echo '<li><a href="#myModal" data-toggle="modal">Login</a></li>';
+	else
+		echo '<li><a href="/dashboard">My Dashboard</a></li>';
+	?>
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about-page" data-toggle="modal">About</a></li>

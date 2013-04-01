@@ -30,9 +30,8 @@
 		The panel shows whether the user has verified their email, their .edu address, their facebook, and their twitter.
 	</p>
 	<?php 
-
 		$email = $user['User']['verified'] == 1;
-		$edu = $user['User']['university_verified'] == 1;
+		$edu = $user['User']['university_verified'] == true;
 		$fb = $user['User']['facebook_userid'] != null;
 		$tw = $user['User']['twitter_userid'] != null;
 
