@@ -353,7 +353,6 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         	
 	
-     <a href = "'<?php echo $partic_link; ?>' ><?php echo $participant['first_name'];?>'" style="color:#d54849;font-weight:bold;text-decoration:none;" ></a> <strong> just sent you a new message.</strong>
      <strong>Click</strong>
      <a href = '<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;" > here</a> <strong> to view it.</strong></p>
 
