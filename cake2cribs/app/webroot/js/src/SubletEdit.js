@@ -86,11 +86,22 @@
     };
 
     SubletEdit.InitStep2 = function() {
+      var beginDate, endDate, formattedBeginDate, formattedEndDate;
       $('#SubletDateBegin').val("");
       $('#SubletDateEnd').val("");
       if (A2Cribs.Cache.SubletEditInProgress.Sublet === null || A2Cribs.Cache.SubletEditInProgress.Sublet === void 0) {
         return;
       }
+      if (A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin !== null) {
+        beginDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin);
+        formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate);
+      }
+      if (A2Cribs.Cache.SubletEditInProgress.Sublet.date_end !== null) {
+        endDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_end);
+        formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate);
+      }
+      $('#SubletDateBegin').val(formattedBeginDate);
+      $('#SubletDateEnd').val(formattedEndDate);
       $('#SubletFlexibleDates').val(A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates);
       $('#SubletNumberBedrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms);
       $('#SubletPricePerBedroom').val(A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom);
