@@ -128,6 +128,7 @@
     SubletAdd.subletAddStep3 = function() {
       var url,
         _this = this;
+      A2Cribs.SubletEdit.CacheStep3Data();
       url = "/sublets/ajax_submit_sublet";
       return $.post(url, A2Cribs.Cache.SubletEditInProgress, function(response) {
         var data;

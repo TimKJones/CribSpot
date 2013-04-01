@@ -589,9 +589,10 @@ $log = $this->getDataSource()->getLog(false, false);
 	}
 
 	/*
-
+	Save the sublet contained in $sublet
+	If $id = 
 	*/
-	function SaveSublet($sublet, $id = null)
+	function SaveSublet($sublet)
 	{
 		if ($sublet['ac'])
 			$sublet['ac'] = 1;

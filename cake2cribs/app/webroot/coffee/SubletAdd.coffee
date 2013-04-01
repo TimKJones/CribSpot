@@ -109,6 +109,7 @@ class A2Cribs.SubletAdd
 			#	$('#registerStatus').empty()###
 
 	@subletAddStep3:() ->
+		A2Cribs.SubletEdit.CacheStep3Data()
 		url = "/sublets/ajax_submit_sublet"
 
 		#validations go here

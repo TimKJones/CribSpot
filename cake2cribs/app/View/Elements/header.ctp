@@ -201,6 +201,7 @@
 <script type="text/javascript">
     $(function() {
         $('#subletAddSteps').click(function(event) {
+        	A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
             $('<div/>').dialog2({
                 title: "Post a sublet", 
                 content: "/Sublets/ajax_add", 

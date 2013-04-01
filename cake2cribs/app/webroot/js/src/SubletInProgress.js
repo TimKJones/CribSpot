@@ -5,6 +5,7 @@
 
     function SubletInProgress() {
       this.Sublet = {
+        id: null,
         university_id: null,
         university_name: null,
         building_type_id: null,
@@ -30,6 +31,7 @@
         parking: null
       };
       this.Marker = {
+        marker_id: null,
         alternate_name: null,
         street_address: null,
         building_type_id: null,
@@ -40,6 +42,7 @@
         longitude: null
       };
       this.Housemate = {
+        id: null,
         quantity: null,
         enrolled: null,
         student_type_id: null,
