@@ -32,8 +32,8 @@
 	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
-		<li class="disabled"><a href="#" onclick="alertify.alert('Full-Year Leases are coming soon!');">Full-Year Leases</a></li>
-		<li class="disabled"><a href="#" onclick="alertify.alert('Parking is coming soon!');">Parking</a></li>
+		<li class="disabled"><a href="#" onclick="A2Cribs.UIManager.Alert('Full-Year Leases are coming soon!');">Full-Year Leases</a></li>
+		<li class="disabled"><a href="#" onclick="A2Cribs.UIManager.Alert('Parking is coming soon!');">Parking</a></li>
 		<!--<li><a href="" onclick="A2Cribs.FacebookManager.ShareListingOnFacebook('test', 'test', 2)">Share</a></li>
 		<li>
 			<div id="twitterDiv">
