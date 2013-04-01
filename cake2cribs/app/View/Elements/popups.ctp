@@ -9,4 +9,6 @@
 	*/
 	echo $this->element('loader');
 	echo $this->element('about');
+	echo $this->element('contact');
+	echo $this->element('help');
 ?>
