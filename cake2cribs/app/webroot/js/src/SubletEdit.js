@@ -14,7 +14,8 @@
       A2Cribs.Cache.SubletEditInProgress.Sublet.university_name = $('#universityName').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.unit_number = $('#SubletUnitNumber').val();
       A2Cribs.Cache.SubletEditInProgress.Marker.street_address = $("#formattedAddress").val();
-      A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = $('#SubletBuildingTypeId').val();
+      A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt($('#SubletBuildingTypeId').val());
+      A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = parseInt($('#SubletBuildingTypeId').val());
       A2Cribs.Cache.SubletEditInProgress.Marker.alternate_name = $('#SubletName').val();
       A2Cribs.Cache.SubletEditInProgress.Marker.latitude = $('#updatedLat').val();
       A2Cribs.Cache.SubletEditInProgress.Marker.longitude = $('#updatedLong').val();
@@ -24,22 +25,34 @@
     };
 
     SubletEdit.CacheStep2Data = function() {
-      A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = $('#SubletDateBegin').val();
-      A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = $('#SubletDateEnd').val();
+      A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateBegin').val());
+      A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateEnd').val());
       A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates = $('#SubletFlexibleDates').is(':checked');
       A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms = $('#SubletNumberBedrooms').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom = $('#SubletPricePerBedroom').val();
+      A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = $('#SubletShortDescription').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.description = $('#SubletShortDescription').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms = $('#SubletNumberBathrooms').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id = $('#SubletBathroomTypeId').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityTypeId').val();
-      A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityCost').val();
+      A2Cribs.Cache.SubletEditInProgress.Sublet.utility_cost = $('#SubletUtilityCost').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.parking = $('#SubletParking').is(':checked');
       A2Cribs.Cache.SubletEditInProgress.Sublet.ac = $('#SubletAc').is(':checked');
       A2Cribs.Cache.SubletEditInProgress.Sublet.furnished_type_id = $('#SubletFurnishedTypeId').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.deposit_amount = $('#SubletDepositAmount').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_description = $('#SubletAdditionalFeesDescription').val();
-      return A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_amount = $('#SubletAdditionalFeesAmount').val();
+      A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_amount = $('#SubletAdditionalFeesAmount').val();
+      return A2Cribs.Cache.SubletEditInProgress.Sublet.payment_type_id = 1;
+    };
+
+    SubletEdit.CacheStep3Data = function() {
+      A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = $("#HousemateQuantity").val();
+      A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = $("#HousemateEnrolled").is(':checked');
+      A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = $("#HousemateStudentTypeId").val();
+      A2Cribs.Cache.SubletEditInProgress.Housemate.major = $("#HousemateMajor").val();
+      A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val();
+      A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val();
+      return A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateGenderTypeId").val();
     };
 
     /*
@@ -130,6 +143,7 @@
         A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt(b.id);
       }
       if (s !== null && s !== void 0) {
+        A2Cribs.Cache.SubletEditInProgress.Sublet.id = parseInt(s.id);
         A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = s.date_begin;
         A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = s.date_end;
         A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms = parseInt(s.number_bedrooms);
@@ -158,6 +172,7 @@
         A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = parseInt(A2Cribs.Cache.SubletData.UtilityType.id);
       }
       if (m !== null && m !== void 0) {
+        A2Cribs.Cache.SubletEditInProgress.Marker.marker_id = parseInt(m.marker_id);
         A2Cribs.Cache.SubletEditInProgress.Marker.street_address = m.street_address;
         A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = m.building_type_id;
         A2Cribs.Cache.SubletEditInProgress.Marker.alternate_name = m.alternate_name;
@@ -168,7 +183,7 @@
         A2Cribs.Cache.SubletEditInProgress.Marker.longitude = m.longitude;
       }
       if (h !== null && h !== void 0) {
-        A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = h.quantity;
+        A2Cribs.Cache.SubletEditInProgress.Housemate.id = parseInt(h.id);
         A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = h.enrolled;
         A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = h.student_type_id;
         A2Cribs.Cache.SubletEditInProgress.Housemate.major = h.major;
@@ -176,6 +191,21 @@
         A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = h.gender_type_id;
         return A2Cribs.Cache.SubletEditInProgress.Housemate.type = h.type;
       }
+    };
+
+    /*
+    	Replaces '/' with '-' to make convertible to mysql datetime format
+    */
+
+    SubletEdit.GetMysqlDateFormat = function(dateString) {
+      var beginDateFormatted, date, day, month, year;
+      date = new Date(dateString);
+      month = date.getMonth() + 1;
+      if (month < 10) month = "0" + month;
+      day = date.getDate();
+      if (day < 10) day = "0" + day;
+      year = date.getUTCFullYear();
+      return beginDateFormatted = year + "-" + month + "-" + day;
     };
 
     return SubletEdit;

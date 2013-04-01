@@ -189,6 +189,18 @@ class SubletsController extends AppController {
         CakeLog::write("savingHousemate", print_r($housemate, true));
 
         $marker['building_type_id'] = $sublet['building_type_id'];
+        if ($marker['marker_id'] == null)
+        {   
+            unset($marker['marker_id']);
+        }
+        if ($sublet['id'] == null)
+        {
+            unset($sublet['id']);
+        }
+        if ($housemate['id'] == null)
+        {
+            unset($housemate['id']);
+        }
         $marker_id = $this->Marker->FindMarkerId($marker);
         $sublet_id = null;
         $housemate_id = null;
@@ -199,6 +211,7 @@ class SubletsController extends AppController {
             $sublet['is_finished'] = 1;
             $sublet['flexible_dates'] = 1; //TODO: get this from js
             $sublet['user_id'] = $this->Auth->User('id');
+
             $sublet_id = $this->Sublet->SaveSublet($sublet);
             if ($sublet_id != null)
             {
@@ -360,10 +373,8 @@ class SubletsController extends AppController {
         
     }
 
-	public function edit($id = null) {
-        //check authentication on this, only user can edit their sublets
-        //(and admin)
-         //$universities = $this->Sublet->University->find('list');
+	public function edit() 
+    {
         $sublet_id = $this->request->query['id'];
         $user_id = $this->Auth->User('id');
         if ($user_id == 0)
@@ -371,10 +382,12 @@ class SubletsController extends AppController {
             $this->Session->setFlash(__('You must log in to edit sublets.'));
             $this->redirect(array('controller' => 'users', 'action' => 'login'));
         }
-        if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
-        {
+
+        if ($sublet_id == null)
             throw new NotFoundException();
-        }
+
+        if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
+            throw new NotFoundException();
 
         $buildingTypes = $this->Sublet->BuildingType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
@@ -404,8 +417,6 @@ class SubletsController extends AppController {
             } else {
                 $this->Session->setFlash(__('The sublet could not be saved. Please try again.'));
             }
-        } else {
-            $this->request->data = $this->Sublet->read(null, $id);
         }
     }
 

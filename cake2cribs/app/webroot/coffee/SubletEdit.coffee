@@ -9,7 +9,8 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Sublet.university_name = $('#universityName').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.unit_number = $('#SubletUnitNumber').val()
 		A2Cribs.Cache.SubletEditInProgress.Marker.street_address = $("#formattedAddress").val()
-		A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = $('#SubletBuildingTypeId').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt $('#SubletBuildingTypeId').val()
+		A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = parseInt $('#SubletBuildingTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Marker.alternate_name = $('#SubletName').val()
 		A2Cribs.Cache.SubletEditInProgress.Marker.latitude = $('#updatedLat').val()
 		A2Cribs.Cache.SubletEditInProgress.Marker.longitude = $('#updatedLong').val()
@@ -18,22 +19,34 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Marker.zip = $('#postal').val()
 
 	@CacheStep2Data: () ->
-		A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = $('#SubletDateBegin').val()
-		A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = $('#SubletDateEnd').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = A2Cribs.SubletEdit.GetMysqlDateFormat $('#SubletDateBegin').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = A2Cribs.SubletEdit.GetMysqlDateFormat $('#SubletDateEnd').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates = $('#SubletFlexibleDates').is(':checked')
 		A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms = $('#SubletNumberBedrooms').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom = $('#SubletPricePerBedroom').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = $('#SubletShortDescription').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.description = $('#SubletShortDescription').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms = $('#SubletNumberBathrooms').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id = $('#SubletBathroomTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityTypeId').val()
-		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityCost').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_cost = $('#SubletUtilityCost').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.parking = $('#SubletParking').is(':checked')
 		A2Cribs.Cache.SubletEditInProgress.Sublet.ac = $('#SubletAc').is(':checked')
 		A2Cribs.Cache.SubletEditInProgress.Sublet.furnished_type_id = $('#SubletFurnishedTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.deposit_amount = $('#SubletDepositAmount').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_description = $('#SubletAdditionalFeesDescription').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_amount = $('#SubletAdditionalFeesAmount').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.payment_type_id = 1
+
+	@CacheStep3Data: () ->
+		A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = $("#HousemateQuantity").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = $("#HousemateEnrolled").is(':checked')
+		A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = $("#HousemateStudentTypeId").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.major = $("#HousemateMajor").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val()
+		#TODO: ADD A FIELD AND GET THIS ACTUAL VALUE
+		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateGenderTypeId").val()
 
 	###
 	Populates fields in step 1 with data loaded from cache
@@ -113,6 +126,7 @@ class A2Cribs.SubletEdit
 		if b != null and b != undefined
 			A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt(b.id)
 		if s != null and s != undefined
+			A2Cribs.Cache.SubletEditInProgress.Sublet.id = parseInt s.id
 			A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = s.date_begin
 			A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = s.date_end
 			A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms = parseInt(s.number_bedrooms)
@@ -137,6 +151,7 @@ class A2Cribs.SubletEdit
 		if A2Cribs.Cache.SubletData.UtilityType != null and A2Cribs.Cache.SubletData.UtilityType != undefined
 			A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = parseInt(A2Cribs.Cache.SubletData.UtilityType.id)
 		if m != null and m != undefined
+			A2Cribs.Cache.SubletEditInProgress.Marker.marker_id = parseInt m.marker_id
 			A2Cribs.Cache.SubletEditInProgress.Marker.street_address = m.street_address
 			A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = m.building_type_id
 			A2Cribs.Cache.SubletEditInProgress.Marker.alternate_name = m.alternate_name
@@ -146,10 +161,24 @@ class A2Cribs.SubletEdit
 			A2Cribs.Cache.SubletEditInProgress.Marker.latitude = m.latitude
 			A2Cribs.Cache.SubletEditInProgress.Marker.longitude = m.longitude
 		if h != null and h != undefined 
-			A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = h.quantity
+			A2Cribs.Cache.SubletEditInProgress.Housemate.id = parseInt h.id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = h.enrolled
 			A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = h.student_type_id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.major = h.major
 			A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = h.seeking
 			A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = h.gender_type_id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.type = h.type
+
+	###
+	Replaces '/' with '-' to make convertible to mysql datetime format
+	###
+	@GetMysqlDateFormat: (dateString) ->
+		date = new Date(dateString)
+		month = date.getMonth() + 1
+		if month < 10
+			month = "0" + month
+		day = date.getDate()
+		if day < 10
+			day = "0" + day
+		year = date.getUTCFullYear()
+		beginDateFormatted = year + "-" + month + "-" + day
