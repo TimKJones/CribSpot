@@ -175,7 +175,7 @@ f	Closes the tooltip, no animation
 		@InfoBubble.setMinHeight height
 
 	@Init: () ->
-		@Height = 175
+		@Height = 230
 		@Width = 309
 		@ArrowOffset = 25
 		@ArrowHeight = 15

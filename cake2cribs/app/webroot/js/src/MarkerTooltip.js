@@ -223,7 +223,7 @@ Wrapper for google infobubble
     };
 
     MarkerTooltip.Init = function() {
-      this.Height = 175;
+      this.Height = 230;
       this.Width = 309;
       this.ArrowOffset = 25;
       this.ArrowHeight = 15;
