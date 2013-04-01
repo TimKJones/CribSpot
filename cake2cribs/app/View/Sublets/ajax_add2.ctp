@@ -45,7 +45,7 @@ echo $this->Html->css('datepicker');
 
                 echo "</div>";
 		/*echo $this->Form->input('flexible_dates', array('label'=>"Flexible dates?", /*'value' => $savedFlexibleDates,*/// 'type' => 'checkbox'));*/
-                echo 'Flexible Dates? <input type="checkbox" name="data[Sublet][flexible_dates]" id="SubletFlexibleDates">';
+                echo '<input type="checkbox" name="data[Sublet][flexible_dates]" id="SubletFlexibleDates"><label for="SubletFlexibleDates">Is the Date Flexible?</label>';
 
 		echo $this->Form->input('number_bedrooms', array(
         	'div'=>'row-fluid subin',
@@ -106,9 +106,9 @@ echo $this->Html->css('datepicker');
         	)
         ); 
 
-        echo 'Parking: <input type="checkbox" name="data[Sublet][parking]" id="SubletParking"><br/>';
+        echo '<input type="checkbox" name="data[Sublet][parking]" id="SubletParking"><label for="SubletParking">Parking</label>';
 
-        echo 'Air Conditioning: <input type="checkbox" name="data[Sublet][ac]" id="SubletAc">';
+        echo '<input type="checkbox" name="data[Sublet][ac]" id="SubletAc"><label for="SubletAc">Air Conditioning</label>';
 
 		echo $this->Form->input('furnished_type_id',  array(
         	'div'=>'row-fluid subin',
