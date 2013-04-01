@@ -1,6 +1,6 @@
 <!--<div> BLAH</div>
 <a class="ajax" href="/sublets/ajax_add" id="gotoscreen2">Go back </a> -->
-
+<?php echo $this->Html->css('SubletAddEditCommon'); ?>
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php //echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>

@@ -1,8 +1,10 @@
 <!--<div> BLAH</div>
 <a class="ajax" href="/sublets/ajax_add" id="gotoscreen2">Go back </a> -->
+<?php echo $this->Html->css('SubletAddEditCommon'); ?>
 <?php //$this->layout = false; ?>
 <?php
 echo $this->Html->css('datepicker');
+
 
 	/* Datepicker and slider javascript */
 	echo $this->Html->script('bootstrap-datepicker');

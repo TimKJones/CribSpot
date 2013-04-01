@@ -6,6 +6,7 @@
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('ajax_sublet'); ?>
 <?php echo $this->Html->css('FindSubletPosition'); ?>
+<?php echo $this->Html->css('SubletAddEditCommon'); ?>
   <style>
           .ui-autocomplete
           {
