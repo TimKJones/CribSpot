@@ -1,5 +1,4 @@
 class A2Cribs.Account
-
 	@setupUI:()->
 		# Get all the universities data
 		url = myBaseUrl + "university/getAll/"

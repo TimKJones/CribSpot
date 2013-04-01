@@ -1,3 +1,4 @@
+
 <?php
 	echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->script('src/Login');
@@ -7,7 +8,7 @@
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-body">
 		<div id="modal-top">
-			<h2 id="modal-logo" class="text-center">CribSpot</h2>
+			<h2 id="modal-logo" class="text-center">Cribspot</h2>
 		</div>
 		<div id="modal-center">
 			<!--<div class="facebook-login-button">Login with Facebook</div>-->

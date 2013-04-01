@@ -15,7 +15,6 @@
 	echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
 	echo $this->Html->script('src/PageHeader');
-
 ?>
 
 
@@ -49,7 +48,7 @@
 	</ul>
 </div>
 <div id="header" class="container">
-	<a href="/"><div class="main-logo pull-left"></div></a>
+	<a id="HeaderLogo"><div class="main-logo pull-left"></div></a>
 	<a id="search-button" class="btn middle-btn popover-btn tooltip-btn" title="<strong>Search by Street Address</strong>" href="#" data-content="search-form" data-placement="bottom" data-html="true"><i class="icon-search icon-large"></i></a>
 	<div id="compact-filter" class="btn-group">
 		<a class="btn middle-btn" href="#"><i class="icon-calendar icon-large"></i></a>
@@ -221,4 +220,9 @@
 
   //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
 </script>
+
+<?php
+$this->Js->buffer(	
+);
+?>
 

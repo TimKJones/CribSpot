@@ -1,5 +1,7 @@
 class A2Cribs.Login
 
+	@LANDING_URL = "localhost"
+	@HTTP_PREFIX = "http://"
 
 
 	@setupUI:() ->
@@ -24,7 +26,11 @@ class A2Cribs.Login
 			data = JSON.parse response
 			console.log data
 			if data.loginStatus == 1
-				window.location.href= '/dashboard'
+				url = document.URL
+				if url == @LANDING_URL or url == @HTTP_PREFIX + @LANDING_URL or url == @HTTP_PREFIX + @LANDING_URL + '/'
+					window.location.href = '/dashboard'
+				else
+					window.location.href= document.URL
 			else
 				$('#loginStatus').html "Invalid login."
 				$('#loginStatus').effect "highlight", {color:"#FF0000"}, 3000
