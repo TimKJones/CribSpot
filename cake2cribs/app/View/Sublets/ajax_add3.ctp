@@ -4,6 +4,7 @@
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php //echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>
+<?php echo $this->Html->css('ajax_add3'); ?>
 
 <div class="sublet-register">
 	<?php 
@@ -14,7 +15,13 @@
         	'class'=>'span9',
         	)
         ); 
-	echo 'Enrolled: <input type="checkbox" name="data[Housemate][enrolled]" id="HousemateEnrolled"></br>';
+
+	echo '<div class="control-group">';
+	echo $this->Form->label('enrolled', null, array('class' => 'control-label')); 
+	echo '<div class="controls">';
+	echo $this->Form->checkbox('enrolled');
+	echo '</div>';
+	echo '</div>';
 
 	echo $this->Form->input('student_type_id', array(
         	'div'=>'row-fluid subin',
@@ -26,6 +33,14 @@
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Majors:'),
         	'class'=>'span9',
+        	)
+        );
+
+	echo $this->Form->input('type', array(
+        	'div'=>'row-fluid subin',
+        	'label'=> array('class'=>'span3','text'=>'Standing:'),
+        	'class'=>'span9',
+        	'placeholder' => 'ex. Sophomore, Senior...'
         	)
         );
 	
@@ -65,5 +80,5 @@
 <script>
 	var a = A2Cribs.SubletAdd;
 	a.setupUI();
-        A2Cribs.SubletEdit.InitStep3();
+	A2Cribs.SubletEdit.InitStep3();
 </script>

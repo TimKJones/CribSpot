@@ -72,10 +72,10 @@ echo $this->Html->css('datepicker');
         );*/
 
         echo "<div class = 'row-fluid'>";
-        echo $this->Form->label('short_description', 'Short Description:', 'span3');
-        echo $this->Form->textarea('short_description', array(
+        echo $this->Form->label('description', 'Description:', 'span3');
+        echo $this->Form->textarea('description', array(
                 'div'=>'subin',
-                'placeholder'=>"Short description of the property",
+                'placeholder'=>"Description of the property",
                 'class'=>'span9'
                 )
         );

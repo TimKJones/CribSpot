@@ -1,5 +1,4 @@
 <?php
-
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
@@ -239,56 +238,55 @@ class UsersController extends AppController {
     */
 
     public function resetpassword() {
+        $response = null;
+        if ($this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
+        {
+            //finding user by email
+            //$this->User->read(null, $this->request->data['User']['email']);
+            $user = $this->User->find('first', array( 
+                'conditions' => array(
+                    'User.email' => $this->request->data['User']['email'])
+                ));
+            $this->User->id = $user['User']['id'];
 
-        
-            if ($this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
-            {
-                //finding user by email
-                //$this->User->read(null, $this->request->data['User']['email']);
-                $user = $this->User->find('first', array( 
-                    'conditions' => array(
-                        'User.email' => $this->request->data['User']['email'])
-                    ));
-                $this->User->id = $user['User']['id'];
 
-
-                if (!$this->User->exists()) {
-                    //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
-                    $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-                    $this->redirect('/users/resetpassword');
-                }
-                //set password reset token to a unique and random string
-                $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
-                //save the password reset token to the request data
-                $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
-                //save date of request
-                $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
-                
-                //email stuff
-                $this->Email->smtpOptions = array(
-                  'port'=>'587',
-                  'timeout'=>'30',
-                  'host' => 'smtp.sendgrid.net',
-                  'username'=>'cribsadmin',
-                  'password'=>'lancPA*travMInj',
-                  'client' => 'a2cribs.com'
-                );
-                $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-                $this->Email->to = $this->User->field('email');
-                $this->set('name', $this->User->first_name);
-                $this->Email->subject = 'Please reset your password';
-                $this->Email->template = 'forgotpassword';
-                $this->Email->sendAs = 'both';
-                
-                $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
-                $this->set('id',$this->User->id);
-                $this->Email->send();
-                //end email portion
-                //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
+            if (!$this->User->exists()) {
+                //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
                 $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-                //$this->redirect(array('action' => 'index'));
+                $this->redirect('/users/resetpassword');
             }
+            //set password reset token to a unique and random string
+            $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
+            //save the password reset token to the request data
+            $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
+            //save date of request
+            $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
+            
+            //email stuff
+            $this->Email->smtpOptions = array(
+              'port'=>'587',
+              'timeout'=>'30',
+              'host' => 'smtp.sendgrid.net',
+              'username'=>'cribsadmin',
+              'password'=>'lancPA*travMInj',
+              'client' => 'a2cribs.com'
+            );
+            $this->Email->delivery = 'smtp';
+            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+            $this->Email->to = $this->User->field('email');
+            $this->set('name', $this->User->first_name);
+            $this->Email->subject = 'Please reset your password';
+            $this->Email->template = 'forgotpassword';
+            $this->Email->sendAs = 'both';
+            
+            $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
+            $this->set('id',$this->User->id);
+            $this->Email->send();
+            //end email portion
+            //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
+            $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
+            //$this->redirect(array('action' => 'index'));
+        }
         
         if ($this->request->query['id']!='')
         {
@@ -339,10 +337,8 @@ class UsersController extends AppController {
                 $this->Session->setFlash('There was a problem verifying the account.');
             }
         }
-        
-
-
     }
+
     public function verify() {
     	//this functionality is completed
 
