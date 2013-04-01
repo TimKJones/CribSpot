@@ -15,7 +15,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('add');
+		//$this->Auth->allow('add');
 		$this->Auth->allow('verify');
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
@@ -23,7 +23,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ajaxLogin');
         $this->Auth->allow('ajaxRegister');
 	}
-
+/*
 	public function login() {
         if ($this->Auth->loggedIn())
         {
@@ -31,19 +31,7 @@ class UsersController extends AppController {
         }
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-                /*
-                THIS IS WHAT *NOT* TO DO 
-                Auth has methods to retrieve user
-
-                //write userid to session for other controllers to use
-                //writes groupid to session data, implement checks to 
-                //  prevent abuse
-
-                $this->Session->write('User.id', $this->User->id);
-                $this->Session->write('User.group_id', $this->User->group_id);
-                */
-                //redirects to user page
-				//$this->redirect($this->Auth->redirect(''));
+      
                 
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
@@ -60,6 +48,7 @@ class UsersController extends AppController {
 		}
 
 	}
+    */
 
     public function ajaxLogin() {
         $this->layout = 'ajax';
@@ -107,7 +96,7 @@ class UsersController extends AppController {
         }
     }
 
-	public function index() {
+	/*public function index() {
 		$this->User->recursive = 0;
         $this->Auth->deny('index');
 		$this->set('users',$this->paginate());
@@ -116,17 +105,17 @@ class UsersController extends AppController {
         $this->set('firstName', $this->Auth->user('first_name'));
         //test email
         
-	}
+	}*/
 
-	public function view($id = null) {
+	/*public function view($id = null) {
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
 			throw new NotFoundException(__('Invalid user'));
 		}
 		$this->set('user', $this->User->read(null, $id));
-	}
+	}*/
 
-	public function add() {
+	/*public function add() {
 
 		if ($this->request->is('post')) {
 			$this->User->create();
@@ -161,7 +150,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash(__('An error occurred during registration. Please try again.'));
 			}
 		}
-	}
+	}*/
 
     public function ajaxRegister() {
          $this->layout = 'ajax';
@@ -481,7 +470,7 @@ class UsersController extends AppController {
 
         
     }
-    public function account() {
+   /* public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));
         $this->set('last_name', $this->Auth->user('last_name'));
 
@@ -512,7 +501,7 @@ class UsersController extends AppController {
             }
             else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            */
+            
             if($this->request->data['User']['first_name'] == '')
             {
                  $this->request->data['User']['first_name'] = $this->Auth->user('first_name');
@@ -559,13 +548,13 @@ class UsersController extends AppController {
                 
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            */
+            
             //}
         } 
         //
        
     }
-
+*/
     public function ajaxEditUser(){
         // if(!$this->request->is('post')){
         //     throw new NotFoundException();
