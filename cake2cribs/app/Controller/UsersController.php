@@ -50,6 +50,8 @@ class UsersController extends AppController {
     */
 
     public function ajaxLogin() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
@@ -152,6 +154,8 @@ class UsersController extends AppController {
 	}*/
 
     public function ajaxRegister() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
          $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
@@ -552,9 +556,8 @@ class UsersController extends AppController {
     }
 */
     public function ajaxEditUser(){
-        // if(!$this->request->is('post')){
-        //     throw new NotFoundException();
-        // }
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $user = $this->User->get($this->Auth->User('id'));
         $first_name = $this->request->data['first_name'];
         $last_name = $this->request->data['last_name'];
@@ -584,6 +587,8 @@ class UsersController extends AppController {
 
     public function getTwitterFollowers($user_id)
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         App::import('Vendor', 'twitter/twitteroauth');
         App::import('Vendor', 'twitter/twconfig');
 

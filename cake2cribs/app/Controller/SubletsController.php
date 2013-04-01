@@ -24,7 +24,8 @@ class SubletsController extends AppController {
 		$this->set('sublets',$this->paginate('Sublet'));
 	}
     public function getSubletsAjax() {
-
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $this->layout = 'ajax';
         $this->RequestHandler->setContent('json'); 
         $conditions  = array();
@@ -98,6 +99,8 @@ class SubletsController extends AppController {
 	}
 
     public function ajax_add() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         Configure::write('debug', 0);
         $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
         if ($sublet)
@@ -132,6 +135,8 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add2() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $paymentTypes = $this->Sublet->PaymentType->find('list');
         $furnishedTypes = $this->Sublet->FurnishedType->find('list');
         $utilityTypes = $this->Sublet->UtilityType->find('list');
@@ -164,6 +169,8 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add3() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $studentTypes = $this->Sublet->Housemate->StudentType->find('list');
         $genderTypes = $this->Sublet->Housemate->GenderType->find('list');
         $this->set(compact('studentTypes'));
@@ -180,6 +187,8 @@ class SubletsController extends AppController {
 
     public function ajax_submit_sublet()
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $sublet = $this->request->data['Sublet'];
         $marker = $this->request->data['Marker'];
         $housemate = $this->request->data['Housemate'];
@@ -231,6 +240,8 @@ class SubletsController extends AppController {
     }
 
     public function ajax_add_create() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 
         if ($this->request->data['CurrentStep'] == 1)
         {
@@ -423,8 +434,11 @@ class SubletsController extends AppController {
    
     //ADD ACCESS CONTROL FOR THE LOVE OF GOD
     public function delete($id = null) {
+        if ($this->Auth->User('id') == null || $id == null)
+           throw new NotFoundException(); 
 
-        //once again, check authentication
+        if (!$this->Sublet->UserOwnsSublet($this->Auth->User('id'), $id))
+            throw new NotFoundException();
 
         if (!$this->request->is('post')) {
             throw new MethodNotAllowedException();
@@ -446,10 +460,8 @@ Returns a list of marker_ids that will be visible based on the current filter se
 */
     public function ApplyFilter()
     {
-        //CakeLog::write("sessionValues", 'before' . print_r($this->Session->read(), true));
-        //$this->UpdateFilterValues($this->params['url']);
-        //CakeLog::write("sessionValues", 'after' . print_r($this->getSessionValues(), true));
-       //CakeLog::write("urlParams", print_r($this->params['url'], true));
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $response = $this->Sublet->getFilteredMarkerIdList($this->params['url']);
         $this->layout = 'ajax';
         $this->set('response', $response);
@@ -461,6 +473,8 @@ Returns json encoded data.
 */
     public function LoadMarkerData($marker_id)
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $markerListingsData = $this->Sublet->getSubletDataByMarkerId($marker_id);
         $markerListingsData = json_encode($markerListingsData);
         $this->layout = 'ajax';
