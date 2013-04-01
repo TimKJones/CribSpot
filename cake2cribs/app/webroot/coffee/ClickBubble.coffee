@@ -30,9 +30,9 @@ class A2Cribs.ClickBubble
 	###
 	Opens the tooltip given a marker, with popping animation
 	###
-	Open: (marker) ->
+	Open: (marker, sublet_ids = null) ->
 		if marker
-			@SetContent marker
+			@SetContent marker, sublet_ids
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
 
 	###
@@ -50,8 +50,8 @@ f	Closes the tooltip, no animation
 	###
 	Sets the content of the tooltip
 	###
-	SetContent: (marker) ->
-		subletIds = A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId]
+	SetContent: (marker, sublet_ids) ->
+		subletIds = if not sublet_ids? then A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId] else sublet_ids
 		template = $(".click-bubble:first").wrap('<p/>').parent()
 		content = template.children().first()
 		content.find('.listings').empty()
