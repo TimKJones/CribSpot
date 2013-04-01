@@ -19,7 +19,7 @@
 			<i class="fb-mutual"><i class="icon-facebook-sign"></i><i class="bold-text friend-count">132</i></i>
 			<i class="hide"><i class="icon-time"></i><i id="posted-time">2 days ago</i></i>
 			<br>
-			<i class="icon-calendar"></i><i class="date-range bold-text">May 12-Aug 31</i><small>(Flexible)</small>
+			<i class="icon-calendar"></i><i class="date-range bold-text">May 12-Aug 31</i><small> (Flexible)</small>
 			<br>
 			<i class="icon-money-sign">$</i><i class="bed-price bold-text">1050</i><small> /m</small>
 			<img src="/img/tooltip/bed_icon.png" alt="bed" width="24" height="12" align="middle"><i class="bed-count bold-text">3</i>

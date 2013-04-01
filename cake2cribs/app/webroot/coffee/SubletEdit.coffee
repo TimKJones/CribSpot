@@ -72,13 +72,17 @@ class A2Cribs.SubletEdit
 			A2Cribs.CorrectMarker.FindAddress()
 
 	@InitStep2: () ->
+		$('#SubletDateBegin').val("")
+		$('#SubletDateEnd').val("")
 		if A2Cribs.Cache.SubletEditInProgress.Sublet == null or A2Cribs.Cache.SubletEditInProgress.Sublet == undefined
 			return
 
-		beginDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin)
-		formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate)
-		endDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_end)
-		formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate)
+		if A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin != null
+			beginDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin)
+			formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate)
+		if A2Cribs.Cache.SubletEditInProgress.Sublet.date_end != null
+			endDate = new Date(A2Cribs.Cache.SubletEditInProgress.Sublet.date_end)
+			formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate)
 		$('#SubletDateBegin').val(formattedBeginDate)
 		$('#SubletDateEnd').val(formattedEndDate)
 		$('#SubletFlexibleDates').val(A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates)
@@ -185,3 +189,15 @@ class A2Cribs.SubletEdit
 			day = "0" + day
 		year = date.getUTCFullYear()
 		beginDateFormatted = year + "-" + month + "-" + day
+
+	@GetTodaysDate: () ->
+		today = new Date()
+		dd = today.getDate()
+		mm = today.getMonth()+1
+		yyyy = today.getFullYear()
+		if(dd<10)
+			dd='0'+dd
+		if(mm<10)
+			mm='0'+mm
+		today = mm+'/'+dd+'/'+yyyy
+		return today

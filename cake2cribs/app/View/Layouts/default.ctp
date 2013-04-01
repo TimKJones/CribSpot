@@ -64,6 +64,8 @@
 		echo $this->Html->script('src/UIManager');
 		echo $this->Html->script('src/Image');
 		echo $this->Html->script('src/SubletAdd');
+		echo $this->Html->script('src/SubletEdit');
+		echo $this->Html->script('src/SubletInProgress');
 		echo $this->Html->script('knockout.js');
 		echo $this->Html->script('alertify.min.js');
 		
