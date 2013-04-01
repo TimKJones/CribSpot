@@ -29,61 +29,11 @@ class A2Cribs.ListingPopup
 			$("#message-area").focus();
 			@modal.modal 'show'
 
-	OpenLoaded: (sublet) ->
-		if sublet?
-			@SetPreloadedContent sublet
-			$(".side-pane").hide();
-			$("#overview").show();
-			@modal.modal 'show'
-
-
 	###
 	Closes the tooltip, no animation
 	###
 	Close: ->
 		@modal.modal 'hide'
-
-	SetPreloadedContent: (subletObject) ->
-		template = $(".listing-popup:first").wrap('<p/>').parent()
-		content = template.children().first()
-		sublet = subletObject.Sublet
-		content.find('#sublet-id').text sublet.id
-		if subletObject.Marker.alternate_name
-			content.find('.sublet-name').text subletObject.Marker.alternate_name
-		else
-			content.find('.sublet-name').text subletObject.Marker.street_address
-		content.find('.bed-price').text sublet.price_per_bedroom
-		content.find('.full-date').text @resolveDateRange sublet.date_begin, sublet.date_end
-		content.find('.building-type').text subletObject.BuildingType.name
-		content.find('.school-name').text subletObject.User.university_verified
-		content.find('.full-address').text subletObject.Marker.street_address + ", " + subletObject.Marker.city + ", " + subletObject.Marker.state
-		content.find('.bath-type').text subletObject.BathroomType.name
-		content.find('.parking-avail').text "LOL"
-		content.find('.ac-avail').text "Maybe"
-		content.find('.furnish-avail').text subletObject.FurnishedType.name
-		content.find('.first-name').text subletObject.User.first_name
-		content.find('.short-description').find('p').text sublet.description
-		subletId = sublet.id
-		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
-		if is_favorite
-			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
-			$('#favorite-btn').addClass "active"
-			$('#favorite-btn').addClass "btn-danger"
-		else
-			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
-			if $('#favorite-btn').hasClass "active"
-				$('#favorite-btn').removeClass "active"
-			if $('#favorite-btn').hasClass "btn-danger"
-				$('#favorite-btn').removeClass "btn-danger"
-		#content.find('.housemate-count').text A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId].length
-		#content.find('.').text
-		#content.find('.').text
-		#content.find('.').text
-		#content.find('.').text
-		
-		$(".listing-popup:first").unwrap()
 
 	###
 	Sets the content of the tooltip
@@ -148,10 +98,6 @@ class A2Cribs.ListingPopup
 		content.find('.utilities-cost').text if sublet.UtilityCost is 0 then "Included" else "$" + sublet.UtilityCost
 		content.find('.deposit-cost').text if sublet.DepositAmount is 0 then "None" else "$" + sublet.DepositAmount
 		content.find('.additional-fee').text if sublet.AdditionalFeesAmount is 0 then "None" else "$" + sublet.AdditionalFeesAmount
-		#content.find('.').text
-		#content.find('.').text
-		#content.find('.').text
-		#content.find('.').text
 		
 		$(".listing-popup:first").unwrap()
 

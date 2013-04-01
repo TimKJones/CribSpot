@@ -146,7 +146,9 @@ class A2Cribs.Map
 		@ListingPopup = new A2Cribs.ListingPopup()
 
 		if A2Cribs.marker_id_to_open >= 0
-			@ListingPopup.OpenLoaded A2Cribs.loaded_sublet_data
+			A2Cribs.Cache.CacheMarker A2Cribs.marker_id_to_open, A2Cribs.loaded_sublet_data.Marker
+			A2Cribs.Cache.CacheMarkerData [A2Cribs.loaded_sublet_data]
+			@ListingPopup.Open A2Cribs.loaded_sublet_data.Sublet.id
 		else if A2Cribs.marker_id_to_open is -2
 			alertify.alert "Sorry. This listing no longer exists!"
 		
