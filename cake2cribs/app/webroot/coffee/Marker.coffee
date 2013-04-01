@@ -130,11 +130,7 @@ class A2Cribs.Marker
 	###
 	CorrectTooltipLocation: ->
 		#Off left edge
-		leftBound = ($("#favoritesBar").css('display') == 'block') * $("#favoritesBar").width()
-		if leftBound == 0
-			leftBound = A2Cribs.Map.Bounds.CONTROL_BOX_LEFT
-		else
-			leftBound += A2Cribs.MarkerTooltip.Padding
+		leftBound = A2Cribs.Map.Bounds.CONTROL_BOX_LEFT
 
 		markerLocation = A2Cribs.Marker.GetMarkerPixelCoordinates(@GMarker.position)
 		tooltipOffset = 
@@ -156,18 +152,6 @@ class A2Cribs.Marker
 		# past bottom edge of screen
 		if markerLocation.y > A2Cribs.Map.Bounds.BOTTOM - A2Cribs.MarkerTooltip.Padding	
 			tooltipOffset.y = markerLocation.y - A2Cribs.Map.Bounds.BOTTOM + A2Cribs.MarkerTooltip.Padding
-
-		# past filter box region
-		if (markerLocation.x + tooltipOffset.x + A2Cribs.MarkerTooltip.Width - A2Cribs.MarkerTooltip.ArrowOffset + A2Cribs.MarkerTooltip.Padding > A2Cribs.Map.Bounds.FILTER_BOX_LEFT) &&
-				 (markerLocation.y + tooltipOffset.y - A2Cribs.MarkerTooltip.Height - A2Cribs.MarkerTooltip.ArrowHeight < A2Cribs.Map.Bounds.FILTER_BOX_BOTTOM)
-			oldX = tooltipOffset.x
-			oldY = tooltipOffset.y
-			tooltipOffset.x = markerLocation.x + A2Cribs.MarkerTooltip.Width - A2Cribs.MarkerTooltip.ArrowOffset + A2Cribs.MarkerTooltip.Padding - A2Cribs.Map.Bounds.FILTER_BOX_LEFT
-			tooltipOffset.y = markerLocation.y - A2Cribs.MarkerTooltip.Height - A2Cribs.MarkerTooltip.ArrowHeight - A2Cribs.Map.Bounds.FILTER_BOX_BOTTOM
-			if Math.abs(tooltipOffset.x) > Math.abs(tooltipOffset.y)
-				tooltipOffset.x = oldX
-			else
-				tooltipOffset.y = oldY
 
 		A2Cribs.Map.GMap.panBy(tooltipOffset.x, tooltipOffset.y)
 

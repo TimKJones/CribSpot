@@ -135,13 +135,8 @@
     */
 
     Marker.prototype.CorrectTooltipLocation = function() {
-      var leftBound, markerLocation, oldX, oldY, tooltipOffset;
-      leftBound = ($("#favoritesBar").css('display') === 'block') * $("#favoritesBar").width();
-      if (leftBound === 0) {
-        leftBound = A2Cribs.Map.Bounds.CONTROL_BOX_LEFT;
-      } else {
-        leftBound += A2Cribs.MarkerTooltip.Padding;
-      }
+      var leftBound, markerLocation, tooltipOffset;
+      leftBound = A2Cribs.Map.Bounds.CONTROL_BOX_LEFT;
       markerLocation = A2Cribs.Marker.GetMarkerPixelCoordinates(this.GMarker.position);
       tooltipOffset = {
         x: 0,
@@ -158,17 +153,6 @@
       }
       if (markerLocation.y > A2Cribs.Map.Bounds.BOTTOM - A2Cribs.MarkerTooltip.Padding) {
         tooltipOffset.y = markerLocation.y - A2Cribs.Map.Bounds.BOTTOM + A2Cribs.MarkerTooltip.Padding;
-      }
-      if ((markerLocation.x + tooltipOffset.x + A2Cribs.MarkerTooltip.Width - A2Cribs.MarkerTooltip.ArrowOffset + A2Cribs.MarkerTooltip.Padding > A2Cribs.Map.Bounds.FILTER_BOX_LEFT) && (markerLocation.y + tooltipOffset.y - A2Cribs.MarkerTooltip.Height - A2Cribs.MarkerTooltip.ArrowHeight < A2Cribs.Map.Bounds.FILTER_BOX_BOTTOM)) {
-        oldX = tooltipOffset.x;
-        oldY = tooltipOffset.y;
-        tooltipOffset.x = markerLocation.x + A2Cribs.MarkerTooltip.Width - A2Cribs.MarkerTooltip.ArrowOffset + A2Cribs.MarkerTooltip.Padding - A2Cribs.Map.Bounds.FILTER_BOX_LEFT;
-        tooltipOffset.y = markerLocation.y - A2Cribs.MarkerTooltip.Height - A2Cribs.MarkerTooltip.ArrowHeight - A2Cribs.Map.Bounds.FILTER_BOX_BOTTOM;
-        if (Math.abs(tooltipOffset.x) > Math.abs(tooltipOffset.y)) {
-          tooltipOffset.x = oldX;
-        } else {
-          tooltipOffset.y = oldY;
-        }
       }
       return A2Cribs.Map.GMap.panBy(tooltipOffset.x, tooltipOffset.y);
     };

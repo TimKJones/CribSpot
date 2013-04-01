@@ -69,8 +69,6 @@ class A2Cribs.Map
 			RIGHT: window.innerWidth
 			BOTTOM: window.innerHeight
 			TOP: 0
-			FILTER_BOX_LEFT: A2Cribs.UtilityFunctions.getPosition($("#filterBoxBackground")[0]).x
-			FILTER_BOX_BOTTOM: A2Cribs.UtilityFunctions.getPosition($("#filterBoxBackground")[0]).y + $("#filterBoxBackground").height()
 			CONTROL_BOX_LEFT: 95
 
 	@Init: (school_id, latitude, longitude, city, state, school_name) ->
