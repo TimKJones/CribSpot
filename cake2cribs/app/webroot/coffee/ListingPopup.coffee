@@ -89,12 +89,13 @@ class A2Cribs.ListingPopup
 				$('#favorite-btn').removeClass "active"
 			if $('#favorite-btn').hasClass "btn-danger"
 				$('#favorite-btn').removeClass "btn-danger"
-		content.find('.housemate-count').text housemates.Quantity
-		content.find('.housemate-enrolled').text if housemates.Enrolled then "Yes" else "No"
-		content.find('.housemate-type').text housemates.GradType
-		content.find('.housemate-major').text housemates.Major
-		content.find('.housemate-gender').text housemates.Gender
-		content.find('.housemate-year').text housemates.Year
+		if housemates != undefined and housemates != null
+			content.find('.housemate-count').text housemates.Quantity
+			content.find('.housemate-enrolled').text if housemates.Enrolled then "Yes" else "No"
+			content.find('.housemate-type').text housemates.GradType
+			content.find('.housemate-major').text housemates.Major
+			content.find('.housemate-gender').text housemates.Gender
+			content.find('.housemate-year').text housemates.Year
 		content.find('.utilities-cost').text if sublet.UtilityCost is 0 then "Included" else "$" + sublet.UtilityCost
 		content.find('.deposit-cost').text if sublet.DepositAmount is 0 then "None" else "$" + sublet.DepositAmount
 		content.find('.additional-fee').text if sublet.AdditionalFeesAmount is 0 then "None" else "$" + sublet.AdditionalFeesAmount

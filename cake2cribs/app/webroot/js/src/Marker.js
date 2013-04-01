@@ -66,11 +66,18 @@
         sublet_end_date = new Date(l.EndDate);
         housemate_id = A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId];
         housemate = A2Cribs.Cache.IdToHousematesMap[housemate_id];
-        has_males = housemate.Gender === "Male" || housemate.Gender === "Mix" || housemate.Gender === void 0 || housemate.Gender === null;
-        has_females = housemate.Gender === "Female" || housemate.Gender === "Mix" || housemate.Gender === void 0 || housemate.Gender === null;
-        has_grads = housemate.GradType === "Graduate" || housemate.GradType === "Mix" || housemate.GradType === void 0 || housemate.GradType === null;
-        has_undergrads = housemate.GradType === "Undergraduate" || housemate.GradType === "Mix" || housemate.GradType === void 0 || housemate.GradType === null;
-        has_students_only = housemate.Enrolled === true || housemate.Enrolled === void 0 || housemate.Enrolled === null;
+        has_males = true;
+        has_females = true;
+        has_grads = true;
+        has_undergrads = true;
+        has_students_only = false;
+        if (housemate !== void 0 && housemate !== null) {
+          has_males = housemate.Gender === "Male" || housemate.Gender === "Mix" || housemate.Gender === void 0 || housemate.Gender === null;
+          has_females = housemate.Gender === "Female" || housemate.Gender === "Mix" || housemate.Gender === void 0 || housemate.Gender === null;
+          has_grads = housemate.GradType === "Graduate" || housemate.GradType === "Mix" || housemate.GradType === void 0 || housemate.GradType === null;
+          has_undergrads = housemate.GradType === "Undergraduate" || housemate.GradType === "Mix" || housemate.GradType === void 0 || housemate.GradType === null;
+          has_students_only = housemate.Enrolled === true || housemate.Enrolled === void 0 || housemate.Enrolled === null;
+        }
         bathrooms_match = (l.BathroomType === bathroom) || (bathroom !== "Private" && bathroom !== "Shared");
         utilities_included_match = !utilities || (utilities && l.UtilityCost === 0);
         no_security_deposit_match = !no_security_deposit || (no_security_deposit && l.DepositAmount === 0);

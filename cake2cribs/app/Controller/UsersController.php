@@ -1,5 +1,4 @@
 <?php
-
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array();
@@ -15,7 +14,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('add');
+		//$this->Auth->allow('add');
 		$this->Auth->allow('verify');
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
@@ -23,7 +22,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ajaxLogin');
         $this->Auth->allow('ajaxRegister');
 	}
-
+/*
 	public function login() {
         if ($this->Auth->loggedIn())
         {
@@ -31,19 +30,7 @@ class UsersController extends AppController {
         }
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-                /*
-                THIS IS WHAT *NOT* TO DO 
-                Auth has methods to retrieve user
-
-                //write userid to session for other controllers to use
-                //writes groupid to session data, implement checks to 
-                //  prevent abuse
-
-                $this->Session->write('User.id', $this->User->id);
-                $this->Session->write('User.group_id', $this->User->group_id);
-                */
-                //redirects to user page
-				//$this->redirect($this->Auth->redirect(''));
+      
                 
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
@@ -60,8 +47,11 @@ class UsersController extends AppController {
 		}
 
 	}
+    */
 
     public function ajaxLogin() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
@@ -107,7 +97,7 @@ class UsersController extends AppController {
         }
     }
 
-	public function index() {
+	/*public function index() {
 		$this->User->recursive = 0;
         $this->Auth->deny('index');
 		$this->set('users',$this->paginate());
@@ -116,17 +106,17 @@ class UsersController extends AppController {
         $this->set('firstName', $this->Auth->user('first_name'));
         //test email
         
-	}
+	}*/
 
-	public function view($id = null) {
+	/*public function view($id = null) {
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
 			throw new NotFoundException(__('Invalid user'));
 		}
 		$this->set('user', $this->User->read(null, $id));
-	}
+	}*/
 
-	public function add() {
+	/*public function add() {
 
 		if ($this->request->is('post')) {
 			$this->User->create();
@@ -161,9 +151,11 @@ class UsersController extends AppController {
 				$this->Session->setFlash(__('An error occurred during registration. Please try again.'));
 			}
 		}
-	}
+	}*/
 
     public function ajaxRegister() {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
          $this->layout = 'ajax';
         if($this->Auth->loggedIn())
         {
@@ -239,56 +231,55 @@ class UsersController extends AppController {
     */
 
     public function resetpassword() {
+        $response = null;
+        if ($this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
+        {
+            //finding user by email
+            //$this->User->read(null, $this->request->data['User']['email']);
+            $user = $this->User->find('first', array( 
+                'conditions' => array(
+                    'User.email' => $this->request->data['User']['email'])
+                ));
+            $this->User->id = $user['User']['id'];
 
-        
-            if ($this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
-            {
-                //finding user by email
-                //$this->User->read(null, $this->request->data['User']['email']);
-                $user = $this->User->find('first', array( 
-                    'conditions' => array(
-                        'User.email' => $this->request->data['User']['email'])
-                    ));
-                $this->User->id = $user['User']['id'];
 
-
-                if (!$this->User->exists()) {
-                    //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
-                    $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-                    $this->redirect('/users/resetpassword');
-                }
-                //set password reset token to a unique and random string
-                $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
-                //save the password reset token to the request data
-                $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
-                //save date of request
-                $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
-                
-                //email stuff
-                $this->Email->smtpOptions = array(
-                  'port'=>'587',
-                  'timeout'=>'30',
-                  'host' => 'smtp.sendgrid.net',
-                  'username'=>'cribsadmin',
-                  'password'=>'lancPA*travMInj',
-                  'client' => 'a2cribs.com'
-                );
-                $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-                $this->Email->to = $this->User->field('email');
-                $this->set('name', $this->User->first_name);
-                $this->Email->subject = 'Please reset your password';
-                $this->Email->template = 'forgotpassword';
-                $this->Email->sendAs = 'both';
-                
-                $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
-                $this->set('id',$this->User->id);
-                $this->Email->send();
-                //end email portion
-                //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
+            if (!$this->User->exists()) {
+                //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
                 $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-                //$this->redirect(array('action' => 'index'));
+                $this->redirect('/users/resetpassword');
             }
+            //set password reset token to a unique and random string
+            $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
+            //save the password reset token to the request data
+            $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
+            //save date of request
+            $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
+            
+            //email stuff
+            $this->Email->smtpOptions = array(
+              'port'=>'587',
+              'timeout'=>'30',
+              'host' => 'smtp.sendgrid.net',
+              'username'=>'cribsadmin',
+              'password'=>'lancPA*travMInj',
+              'client' => 'a2cribs.com'
+            );
+            $this->Email->delivery = 'smtp';
+            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+            $this->Email->to = $this->User->field('email');
+            $this->set('name', $this->User->first_name);
+            $this->Email->subject = 'Please reset your password';
+            $this->Email->template = 'forgotpassword';
+            $this->Email->sendAs = 'both';
+            
+            $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
+            $this->set('id',$this->User->id);
+            $this->Email->send();
+            //end email portion
+            //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
+            $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
+            //$this->redirect(array('action' => 'index'));
+        }
         
         if ($this->request->query['id']!='')
         {
@@ -339,10 +330,8 @@ class UsersController extends AppController {
                 $this->Session->setFlash('There was a problem verifying the account.');
             }
         }
-        
-
-
     }
+
     public function verify() {
     	//this functionality is completed
 
@@ -481,7 +470,7 @@ class UsersController extends AppController {
 
         
     }
-    public function account() {
+   /* public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));
         $this->set('last_name', $this->Auth->user('last_name'));
 
@@ -512,7 +501,7 @@ class UsersController extends AppController {
             }
             else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            */
+            
             if($this->request->data['User']['first_name'] == '')
             {
                  $this->request->data['User']['first_name'] = $this->Auth->user('first_name');
@@ -559,17 +548,16 @@ class UsersController extends AppController {
                 
             } else {
                 $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            */
+            
             //}
         } 
         //
        
     }
-
+*/
     public function ajaxEditUser(){
-        // if(!$this->request->is('post')){
-        //     throw new NotFoundException();
-        // }
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $user = $this->User->get($this->Auth->User('id'));
         $first_name = $this->request->data['first_name'];
         $last_name = $this->request->data['last_name'];
@@ -599,6 +587,8 @@ class UsersController extends AppController {
 
     public function getTwitterFollowers($user_id)
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         App::import('Vendor', 'twitter/twitteroauth');
         App::import('Vendor', 'twitter/twconfig');
 

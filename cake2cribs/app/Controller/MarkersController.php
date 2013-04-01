@@ -9,6 +9,8 @@ class MarkersController extends AppController {
 
 	public function UpdateCache()
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 		$this->Marker->UpdateCache();
 	}
 }

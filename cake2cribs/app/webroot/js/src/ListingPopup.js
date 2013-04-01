@@ -118,12 +118,14 @@ ListingPopup class
           $('#favorite-btn').removeClass("btn-danger");
         }
       }
-      content.find('.housemate-count').text(housemates.Quantity);
-      content.find('.housemate-enrolled').text(housemates.Enrolled ? "Yes" : "No");
-      content.find('.housemate-type').text(housemates.GradType);
-      content.find('.housemate-major').text(housemates.Major);
-      content.find('.housemate-gender').text(housemates.Gender);
-      content.find('.housemate-year').text(housemates.Year);
+      if (housemates !== void 0 && housemates !== null) {
+        content.find('.housemate-count').text(housemates.Quantity);
+        content.find('.housemate-enrolled').text(housemates.Enrolled ? "Yes" : "No");
+        content.find('.housemate-type').text(housemates.GradType);
+        content.find('.housemate-major').text(housemates.Major);
+        content.find('.housemate-gender').text(housemates.Gender);
+        content.find('.housemate-year').text(housemates.Year);
+      }
       content.find('.utilities-cost').text(sublet.UtilityCost === 0 ? "Included" : "$" + sublet.UtilityCost);
       content.find('.deposit-cost').text(sublet.DepositAmount === 0 ? "None" : "$" + sublet.DepositAmount);
       content.find('.additional-fee').text(sublet.AdditionalFeesAmount === 0 ? "None" : "$" + sublet.AdditionalFeesAmount);

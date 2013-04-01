@@ -61,6 +61,9 @@ class MapController extends AppController {
   public function LoadTypeTables()
   {
     //CakeLog::write("sessionValues", "in loadTypeTables: " . print_r($this->getSessionValues(), true));
+    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+        return;
+
     $buildings = $this->BuildingType->LoadAll();
     $bathrooms = $this->BathroomType->LoadAll();
     $genders = $this->GenderType->LoadAll();
@@ -78,6 +81,8 @@ class MapController extends AppController {
 	}
 
 	public function LoadMarkers($school_id) {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 		$target_lat_long = $this->University->getTargetLatLong($school_id);
 		$markers = $this->Marker->getAllMarkers($target_lat_long);
 		$this->layout = 'ajax';
@@ -86,6 +91,8 @@ class MapController extends AppController {
 
   public function LoadHoverData()
   {
+    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+        return;
     $hover_data = $this->Sublet->LoadHoverData();
     $this->layout = 'ajax';
     $response = json_encode($hover_data);

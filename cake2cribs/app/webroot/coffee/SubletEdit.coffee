@@ -24,8 +24,8 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates = $('#SubletFlexibleDates').is(':checked')
 		A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms = $('#SubletNumberBedrooms').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom = $('#SubletPricePerBedroom').val()
-		A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = $('#SubletShortDescription').val()
-		A2Cribs.Cache.SubletEditInProgress.Sublet.description = $('#SubletShortDescription').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = $('#SubletDescription').val()
+		A2Cribs.Cache.SubletEditInProgress.Sublet.description = $('#SubletDescription').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms = $('#SubletNumberBathrooms').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id = $('#SubletBathroomTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityTypeId').val()
@@ -46,7 +46,7 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val()
 		#TODO: ADD A FIELD AND GET THIS ACTUAL VALUE
-		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateGenderTypeId").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.type = "Sophomore"
 
 	###
 	Populates fields in step 1 with data loaded from cache
@@ -84,7 +84,7 @@ class A2Cribs.SubletEdit
 		$('#SubletFlexibleDates').val(A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates)
 		$('#SubletNumberBedrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms)
 		$('#SubletPricePerBedroom').val(A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom)
-		$('#SubletShortDescription').val(A2Cribs.Cache.SubletEditInProgress.Sublet.description)
+		$('#SubletDescription').val(A2Cribs.Cache.SubletEditInProgress.Sublet.description)
 		$('#SubletNumberBathrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms)
 		$('#SubletBathroomTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id)
 		$('#SubletUtilityTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id)
@@ -97,14 +97,16 @@ class A2Cribs.SubletEdit
 		$('#SubletAdditionalFeesAmount').val(A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_amount)
 
 	@InitStep3: () ->
-		if A2Cribs.Cache.SubletData.Housemate.length == 0
+		if A2Cribs.Cache.SubletEditInProgress.Housemate == null or A2Cribs.Cache.SubletEditInProgress.Housemate == undefined
 			return 
-		$("#HousemateQuantity").val(A2Cribs.Cache.SubletData.Housemate[0].quantity)
-		$("#HousemateEnrolled_").val(A2Cribs.Cache.SubletData.Housemate[0].enrolled)
-		$("#HousemateStudentTypeId").val(A2Cribs.Cache.SubletData.Housemate[0].student_type_id)
-		$("#HousemateMajor").val(A2Cribs.Cache.SubletData.Housemate[0].major)
-		$("#HousemateSeeking").val(A2Cribs.Cache.SubletData.Housemate[0].seeking)
-		$("#HousemateGenderTypeId").val(A2Cribs.Cache.SubletData.Housemate[0].gender_type_id)
+
+		$("#HousemateQuantity").val(A2Cribs.Cache.SubletEditInProgress.Housemate.quantity)
+		$("#HousemateEnrolled_").val(A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled)
+		$("#HousemateStudentTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id)
+		$("#HousemateMajor").val(A2Cribs.Cache.SubletEditInProgress.Housemate.major)
+		$("#HousemateSeeking").val(A2Cribs.Cache.SubletEditInProgress.Housemate.seeking)
+		$("#HousemateGenderTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id)
+		$("#HousemateType").val(A2Cribs.Cache.SubletEditInProgress.Housemate.type)
 
 	###
 	Fully populates A2Cribs.Cache.SubletData with data loaded from database
@@ -168,6 +170,7 @@ class A2Cribs.SubletEdit
 			A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = h.seeking
 			A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = h.gender_type_id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.type = h.type
+			A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = h.quantity
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format

@@ -13,8 +13,6 @@ class A2Cribs.SubletAdd
 			else if ($('#SubletName').val().length >= 249)
 				A2Cribs.UIManager.Alert "Your alternate name is too long."
 			else
-				e.preventDefault()
-				#$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
 				@subletAddStep1()
 
 		$("#backToStep2").click (e) =>
@@ -36,7 +34,7 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
 			else if (!$('#SubletPricePerBedroom').val() || $('#SubletPricePerBedroom').val() < 0 || $('#SubletPricePerBedroom').val() >=20000)
 				A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
-			else if ($('#SubletShortDescription').val().length >=161)
+			else if ($('#SubletDescription').val().length >=161)
 				A2Cribs.UIManager.Alert "Please keep the short description under 160 characters."
 			else if (!$('#SubletNumberBathrooms').val() || $('#SubletNumberBathrooms').val()<0 || $('#SubletNumberBathrooms').val() >=30)
 				A2Cribs.UIManager.Alert "Please enter a valid number of bathrooms."
@@ -77,36 +75,11 @@ class A2Cribs.SubletAdd
 	@subletAddStep1:() ->
 		A2Cribs.SubletEdit.CacheStep1Data()
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
-		#validations go here
-		#A2Cribs.SubletAdd.Step1Data = request_data
-
-		###$.post url, request_data, (response) =>
-			console.log(response)
-			data = JSON.parse response
-			console.log data
-			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add2"});
-			#window.location.href= '/dashboard'
-			#if data.registerStatus == 1
-			#	window.location.href= '/dashboard'
-			#else
-			#	$('#registerStatus').empty()###
 
 	@subletAddStep2:() ->
 		#validations go here
 		A2Cribs.SubletEdit.CacheStep2Data()
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
-
-		###$.post url, request_data, (response) =>
-			console.log(response)
-			data = JSON.parse response
-			console.log data
-			console.log "Done with step 2"
-			$('#server-notice').dialog2("options", {content:"Sublets/ajax_add3"});
-			#window.location.href= '/dashboard'
-			#if data.registerStatus == 1
-			#	window.location.href= '/dashboard'
-			#else
-			#	$('#registerStatus').empty()###
 
 	@subletAddStep3:() ->
 		A2Cribs.SubletEdit.CacheStep3Data()
@@ -121,11 +94,6 @@ class A2Cribs.SubletAdd
 			else
 				A2Cribs.UIManager.Alert data.error
 			$('#server-notice').dialog2("close");
-			#window.location.href= '/dashboard'
-			#if data.registerStatus == 1
-			#	window.location.href= '/dashboard'
-			#else
-			#	$('#registerStatus').empty()
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1

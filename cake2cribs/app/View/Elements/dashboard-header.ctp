@@ -32,8 +32,8 @@
 	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
-		<li><a href="#">Full-Year Leases</a></li>
-		<li><a href="#">Parking</a></li>
+		<li><a href="#" onclick="A2Cribs.UIManager.Alert('Full-Year Leases are coming soon!');">Full-Year Leases</a></li>
+		<li><a href="#" onclick="A2Cribs.UIManager.Alert('Parking is coming soon!');">Parking</a></li>
 	</ul>
 	<ul id="right-options" class="inline unstyled pull-right">
 		<li><a href="#about-page" data-toggle="modal">About</a></li>

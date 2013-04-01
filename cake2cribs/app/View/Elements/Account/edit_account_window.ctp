@@ -1,5 +1,5 @@
 <div id = 'edit_account_window'>
-	<form class="form-horizontal">
+	<form id="accountInfoForm" class="form-horizontal">
 	  <div class="control-group">
 	    <label class="control-label" for="first_name">First Name:</label>
 	    <div class="controls">
@@ -16,6 +16,35 @@
 	  	    <div class="controls">
 	  			<button id = 'save_btn' type="button" class="btn">Save changes</button>
 	  		</div>
+	  </div>
+	</form>
+	<form id="passwordForm" class="form-horizontal">
+	  <div class="control-group">
+	    <label class="control-label" for="new_password">New Password:</label>
+	    <div class="controls">
+	      <input type="password" id="new_password">
+	    </div>
+	  </div>
+	  <div class="control-group">
+	    <label class="control-label" for="confirm_password">Confirm Password:</label>
+	    <div class="controls">
+	      <input type="password" id="confirm_password">
+	    </div>
+	  </div>
+	  <div class="control-group">
+	  	    <div class="controls">
+	  			<button id="changePasswordButton" type="button" class="btn">Change password</button>
+	  		</div>
+	  </div>
+	</form>
+	</form>
+	<form id="verifyUniversityForm" class="form-horizontal">
+	  <div class="control-group">
+	    <label class="control-label" for="verify_university">Verify University Email:</label>
+	    <div class="controls">
+	      <input type="text" id="university_email" placeholder="Enter a valid .edu email address">
+	      <button id="VerifyUniversityButton">Verify</button>
+	    </div>
 	  </div>
 	</form>
 </div>

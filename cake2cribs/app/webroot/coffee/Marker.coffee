@@ -49,11 +49,17 @@ class A2Cribs.Marker
 			#Housemates
 			housemate_id = A2Cribs.Cache.SubletIdToHousemateIdsMap[subletId]
 			housemate = A2Cribs.Cache.IdToHousematesMap[housemate_id]
-			has_males = housemate.Gender == "Male" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
-			has_females = housemate.Gender == "Female" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
-			has_grads = housemate.GradType == "Graduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
-			has_undergrads = housemate.GradType == "Undergraduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
-			has_students_only = housemate.Enrolled == true or housemate.Enrolled == undefined or housemate.Enrolled == null
+			has_males = true
+			has_females = true
+			has_grads = true
+			has_undergrads = true
+			has_students_only = false
+			if housemate != undefined and housemate != null
+				has_males = housemate.Gender == "Male" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+				has_females = housemate.Gender == "Female" or housemate.Gender == "Mix" or housemate.Gender == undefined or housemate.Gender == null
+				has_grads = housemate.GradType == "Graduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+				has_undergrads = housemate.GradType == "Undergraduate" or housemate.GradType == "Mix" or housemate.GradType == undefined or housemate.GradType == null
+				has_students_only = housemate.Enrolled == true or housemate.Enrolled == undefined or housemate.Enrolled == null
 
 			#Extra Filters
 

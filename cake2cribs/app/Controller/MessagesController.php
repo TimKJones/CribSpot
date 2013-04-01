@@ -97,6 +97,8 @@
 
     //Ajax function to get all the conversations the user has going on
     public function getConversations(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $user = $this->Auth->User();
         $only_unread = 0;
         if(array_key_exists('only_unread', $this->request->query)){
@@ -110,6 +112,8 @@
 
     // Ajax function to get a json response with the number of unread messages and conversations a user has
     public function getUnreadCount(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $user = $this->Auth->User();
         $unread_messages = $this->UnreadMessage->getUnreadMessagesCount($user);
         $unread_conversations = $this->UnreadMessage->getUnreadConversationCount($user);
@@ -127,6 +131,8 @@
 
     // Ajax function to get all the messages in a conversation
     public function getMessages($conv_id, $page=1){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $user = $this->Auth->User();
         $messages = null;
         $limit = 15;
