@@ -37,6 +37,7 @@
 		echo $this->Html->script('custom-bootstrap');
 		echo $this->Html->script('markerclusterer_packed.js');
 		echo $this->Html->script('google_plus1');
+		echo $this->Html->script('google_analytics');
 		echo $this->Html->script('infobubble.js');
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Map');
