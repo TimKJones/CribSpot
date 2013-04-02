@@ -3,20 +3,13 @@
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
 
-<div class="top-bar">
-    <ul id="left-options" class="inline unstyled pull-left">
 
-    <?php 
-    if ($this->Session->read('Auth.User.id') == 0)
-        echo '<li><a href="#myModal" data-toggle="modal">Login</a></li>';
-    else
-        echo '<li><a href="/dashboard">My Dashboard</a></li>';
-    ?>
-    </ul>
+<?php echo $this->element('popups'); ?>
+<div class="top-bar">
     <ul id="right-options" class="inline unstyled pull-right">
         <li><a href="#about-page" data-toggle="modal">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#help">Help</a></li>
+        <li><a href="#contact-page" data-toggle="modal">Contact</a></li>
+        <li><a href="#help-page" data-toggle="modal">Help</a></li>
     </ul>
 </div>
 
@@ -25,7 +18,7 @@
 <?php echo $this->Html->script('jquery.noisy.min'); ?>
 <?php 
     $this->Js->buffer('
-            $("#myModal").removeClass("hide fade");
+            $("#myModal").removeClass("hide fade").css("z-index", 0);
     ');
 ?>
 <script>
