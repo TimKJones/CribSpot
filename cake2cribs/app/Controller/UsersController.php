@@ -48,6 +48,32 @@ class UsersController extends AppController {
 
 	}
     */
+    public function ajaxChangePassword(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+        $user = $this->User->get($this->Auth->User('id'));
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        if(empty($new_password) or empty($confirm_password) or $confirm_password != $new_password){
+            $json = json_encode(array(
+                'success' => 0,
+                'message' => "There was an error changing your password"
+            ));
+        }else{
+            $data = array('id' => $user['User']['id'], 'password' => $new_password);
+            $user = $this->User->edit($data);
+            $json = json_encode(array(
+                'success' => 1,
+                'user' => json_encode($user)
+            ));  
+        }
+
+        $this->layout = 'ajax';
+        $this->set('response', $json);
+        return;
+        
+    }
+
 
     public function ajaxLogin() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)

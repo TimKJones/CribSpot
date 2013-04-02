@@ -41,9 +41,29 @@ class A2Cribs.Account
 		$('.veridd').each (index, element)=>
 			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})
 
-
+		$('#changePasswordButton').click =>
+			@ChangePassword()
 	@Direct: (directive)->
 
+
+	@ChangePassword: () ->
+		$('#changePasswordButton').attr 'disabled','disabled'
+		new_password = $('#new_password').val()
+		confirm_password = $('#confirm_password').val()
+		data = {
+			'new_password' : new_password,
+			'confirm_password': confirm_password
+		}
+
+		$.post myBaseUrl + 'users/ajaxChangePassword', data, (response) ->
+			json_response = JSON.parse(response)
+
+			if json_response.success == 1
+				alertify.success('Password Changed', 1500)
+			else
+				alertify.error('Password Failed to Change: ' + json_response.message, 1500)
+
+			$('#changePasswordButton').removeAttr 'disabled'
 	@SaveAccount:()->
 		$('#save_btn').attr 'disabled','disabled'
 		first_name = $('#first_name_input').val()
@@ -64,7 +84,6 @@ class A2Cribs.Account
 
 
 			$('#save_btn').removeAttr 'disabled'
-
 
 
 	@FacebookConnect:()->
