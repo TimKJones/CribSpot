@@ -1,4 +1,5 @@
 <?php
+	echo $this->Html->script('src/VerifyManager');
 	$this->set('title_for_layout', 'Cribspot Sublet');
 	echo '<div id="container">';
 		echo $this->element('header');
@@ -24,6 +25,8 @@
         		$("#addressSearchSubmit").click();
     		}
 		});
+
+		A2Cribs.VerifyManager.init('.$user.');
 	'
 
 	);

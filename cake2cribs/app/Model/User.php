@@ -191,5 +191,14 @@ class User extends AppModel {
 		return $this->find('first', array('conditions'=>'User.id='.$user_id));
 	}
 	
+
+	//Returns a user object will all the sensitive information removed
+	public function getSafe($user_id){
+		$options = array();
+		$options['conditions'] = array('User.id'=>$user_id);
+		$options['fields'] = array ('User.first_name', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
+		$options['recursive'] = -1;
+		return $this->find('first', $options);
+	}
 }
 ?>
