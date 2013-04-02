@@ -2,7 +2,6 @@
 <?php echo $this->Html->css('users'); ?>
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
-<?php echo $this->Html->script('src/Account'); ?>
 
 
 <?php echo $this->element('popups'); ?>

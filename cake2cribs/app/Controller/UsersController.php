@@ -368,7 +368,7 @@ class UsersController extends AppController {
             //end email portion
             //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
             $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-            //$this->redirect(array('action' => 'index'));
+            $this->redirect(array('action' => 'login'));
         }
         
         if ($this->request->query['id']!='')
