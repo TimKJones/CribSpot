@@ -4,7 +4,6 @@
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php //echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>
-<?php echo $this->Html->css('ajax_add3'); ?>
 
 <div class="sublet-register">
 	<?php 
