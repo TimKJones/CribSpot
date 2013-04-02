@@ -15,6 +15,7 @@ class SubletsController extends AppController {
         $this->Auth->allow('ajax_add2');
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
+        $this->Auth->allow('getSubletDataById');
     }
 
 	public function index() {
@@ -23,6 +24,37 @@ class SubletsController extends AppController {
           //  'contain' => 'BuildingType');
 		$this->set('sublets',$this->paginate('Sublet'));
 	}
+
+    /*
+        Retrieves sublet_data for $sublet_id
+    */
+    public function getSubletDataById($sublet_id)
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $user_id = $this->Auth->User('id');
+        if ($user_id == 0)
+        {
+            $this->Session->setFlash(__('You must log in to edit sublets.'));
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+        }
+
+        if ($sublet_id == null)
+            throw new NotFoundException();
+
+        if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
+            throw new NotFoundException(); 
+
+         $this->Sublet->id = $sublet_id;
+         $sublet_data = $this->Sublet->read();
+         unset($sublet_data['User']['password']);
+         unset($sublet_data['User']['password_reset_token']);
+         unset($sublet_data['User']['vericode']);
+         $this->layout = 'ajax';
+         $this->set("response", json_encode($sublet_data));
+    }
+
     public function getSubletsAjax() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
@@ -390,7 +422,7 @@ class SubletsController extends AppController {
         if ($user_id == 0)
         {
             $this->Session->setFlash(__('You must log in to edit sublets.'));
-            $this->redirect(array('controller' => 'users', 'action' => 'login'));
+            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
 
         if ($sublet_id == null)

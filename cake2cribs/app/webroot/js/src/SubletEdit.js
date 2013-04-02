@@ -215,6 +215,28 @@
     };
 
     /*
+    	Retrieves all necessary sublet data and then pulls up the modal for edit sublet
+    */
+
+    SubletEdit.EditSublet = function(sublet_id) {
+      var _this = this;
+      return $.ajax({
+        url: myBaseUrl + "Sublets/getSubletDataById/" + sublet_id,
+        type: "GET",
+        success: function(subletData) {
+          subletData = JSON.parse(subletData);
+          A2Cribs.Cache.SubletData = subletData;
+          A2Cribs.SubletEdit.Init();
+          return $('<div/>').dialog2({
+            title: "Edit " + subletData.Marker.street_address,
+            content: "/Sublets/ajax_add",
+            id: "server-notice"
+          });
+        }
+      });
+    };
+
+    /*
     	Replaces '/' with '-' to make convertible to mysql datetime format
     */
 
