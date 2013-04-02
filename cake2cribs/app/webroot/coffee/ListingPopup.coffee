@@ -99,6 +99,9 @@ class A2Cribs.ListingPopup
 		content.find('.utilities-cost').text if sublet.UtilityCost is 0 then "Included" else "$" + sublet.UtilityCost
 		content.find('.deposit-cost').text if sublet.DepositAmount is 0 then "None" else "$" + sublet.DepositAmount
 		content.find('.additional-fee').text if sublet.AdditionalFeesAmount is 0 then "None" else "$" + sublet.AdditionalFeesAmount
+
+		# Pull in verification information for this sublet lister
+		@loadVerificationInfo(subletId, content)
 		
 		$(".listing-popup:first").unwrap()
 
@@ -110,6 +113,14 @@ class A2Cribs.ListingPopup
 		range += rmonth[startSplit[1] - 1]
 		range += " " + parseInt(startSplit[2]) + ", " + startSplit[0] + " to "
 		range + rmonth[endSplit[1] - 1] + " " + parseInt(endSplit[2]) + ", " + endSplit[0]
+
+
+	loadVerificationInfo: (sublet_id, content)->
+		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
+		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
+			# Fill in UI LOGIC HERE
+			console.log(verification_info)
+
 
 
 
