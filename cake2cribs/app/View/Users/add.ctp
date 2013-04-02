@@ -12,6 +12,11 @@
     </ul>
 </div>
 
+<div id="header" class="container">
+    <a href="/"><div class="main-logo pull-left"></div></a>
+</div>
+
+
 <div class ="side-by-side">
 <?= $this->element('login'); ?>
 <?= $this->element('register'); ?>

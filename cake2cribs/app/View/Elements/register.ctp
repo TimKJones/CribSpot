@@ -21,6 +21,7 @@
 				<input type="text" id="inputLastName" name="last_name" placeholder="Last name">
 				<button type="submit" id="submitButton" class="btn">Register</button>
 			</form>
+			<?= $this->Html->link('Already Have an Account? Sign In' , array('controller' => 'users', 'action' => 'login')); ?>
 		</div>
 		<div id="modal-bottom">
 			<div id="modal-slogan">#SUBLETPROBS</div>

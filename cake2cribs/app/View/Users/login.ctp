@@ -13,12 +13,16 @@
     </ul>
 </div>
 
+<div id="header" class="container">
+    <a href="/"><div class="main-logo pull-left"></div></a>
+</div>
+
 <?= $this->element('login'); ?>
 
 <?php echo $this->Html->script('jquery.noisy.min'); ?>
 <?php 
     $this->Js->buffer('
-            $("#myModal").removeClass("hide fade").css("z-index", 0);
+            $("#myModal").removeClass("hide fade").css("z-index", 0).css("top", "90px");
     ');
 ?>
 <script>

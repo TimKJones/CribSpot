@@ -18,6 +18,7 @@
 				<input type="password" id="inputPassword" name="password" placeholder="Password">
 				<button type="submit" id="submitButton" class="btn">Sign in</button>
 			</form>
+			<?= $this->Html->link('Don\'t Have An Account? Sign Up!' , array('controller' => 'users', 'action' => 'add')); ?>
 		</div>
 		<div id="modal-bottom">
 			<div id="modal-slogan">#SUBLETPROBS</div>
