@@ -1,0 +1,43 @@
+
+<?php
+	//echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
+	echo $this->Html->script('src/Login');
+?>
+
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-body">
+		<div id="modal-top">
+			<h2 id="modal-logo" class="text-center">Cribspot</h2>
+		</div>
+		<div id="modal-center">
+			<!--<div class="facebook-login-button">Login with Facebook</div>-->
+				<form id="passwordForm" class="form-horizontal">
+				  <div class="control-group">
+				    <label class="control-label" for="new_password">New Password:</label>
+				    <div class="controls">
+				      <input type="password" id="new_password">
+				    </div>
+				  </div>
+				  <div class="control-group">
+				    <label class="control-label" for="confirm_password">Confirm Password:</label>
+				    <div class="controls">
+				      <input type="password" id="confirm_password">
+				    </div>
+				  </div>
+				  <div class="control-group">
+				  	    <div class="controls">
+				  			<button id="changePasswordButton" type="button" class="btn">Change password</button>
+				  		</div>
+				  </div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var a = A2Cribs.Login;
+
+a.setupUI();
+</script>
