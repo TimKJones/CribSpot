@@ -2,7 +2,7 @@
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
   public $components = array('RequestHandler');
-  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType');
+  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -55,7 +55,11 @@ class MapController extends AppController {
 
 		$this->set("marker_id_to_open", $marker_id_to_open);
 		$this->set("sublet_data_for_tooltip", $subletData);
-
+        $user = null;
+        if($this->Auth->User()){
+            $user = $this->User->getSafe($this->Auth->User('id'));
+        }
+        $this->set('user', json_encode($user));
 		$this->InitFilterValues();
     CakeLog::write("sessionValues", "in map: " . print_r($this->Session->read(), true));
 	}

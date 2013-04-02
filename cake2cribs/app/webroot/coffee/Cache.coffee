@@ -155,7 +155,7 @@ class A2Cribs.Cache
 		@IdToMarkerMap[id] =  new A2Cribs.Marker(parseInt(id), m.street_address, m.alternate_name, unitType, m.latitude, m.longitude, m.city, m.state)
 
 	@CacheSubletOwner: (sublet_id, user) ->
-		owner = new A2Cribs.SubletOwner(user.first_name, user.facebook_userid, user.verified_university, user.twitter_followers)
+		owner = new A2Cribs.SubletOwner(user)
 		@SubletIdToOwnerMap[sublet_id] = owner
 
 	###

@@ -452,7 +452,7 @@ $log = $this->getDataSource()->getLog(false, false);
 		$university_verified = $University->getUniversityFromEmail('test@umich.edu');
 	 	$subletQuery = $this->find('all', array(
 	                     'conditions' => $conditions, 
-	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.facebook_userid', 'Housemate', 
+	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.verified', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'Housemate', 
 	                     	'Image.sublet_id', 'Image.image_path', 'Image.is_primary', 'Image.caption')
 	  	));
 
