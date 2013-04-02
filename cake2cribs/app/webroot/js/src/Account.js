@@ -53,12 +53,39 @@
           'trigger': 'hover'
         });
       });
-      return $('#changePasswordButton').click(function() {
+      $('#changePasswordButton').click(function() {
         return _this.ChangePassword();
+      });
+      return $('#VerifyUniversityButton').click(function() {
+        return _this.VerifyUniversity();
       });
     };
 
     Account.Direct = function(directive) {};
+
+    Account.VerifyUniversity = function() {
+      var data, university_email;
+      $('#VerifyUniversityButton').attr('disabled', 'disabled');
+      university_email = $('#university_email').val();
+      data = {
+        'university_email': university_email
+      };
+      if (university_email.search('.edu') !== -1) {
+        return $.post(myBaseUrl + 'users/verifyUniversity', data, function(response) {
+          var json_response;
+          console.log(data);
+          json_response = JSON.parse(response);
+          if (json_response.success === 1) {
+            alertify.success('Please check your email for a verification link.', 1500);
+          } else {
+            alertify.error('Verification not successful: ' + json_response.message, 1500);
+          }
+          return $('#VerifyUniversityButton').removeAttr('disabled');
+        });
+      } else {
+        return alertify.error('Please enter a university email.', 1500);
+      }
+    };
 
     Account.ChangePassword = function() {
       var confirm_password, data, new_password;

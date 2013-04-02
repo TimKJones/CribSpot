@@ -20,6 +20,7 @@
 			
 		</div>
 		<div class = 'span6' id = 'middle_content'>
+			<?php echo $this->Session->flash(); ?>
 			<div class = 'account-content hidden'>
 				<?php echo $this->element('Account/edit_account_window', $user) ?>
 			</div>

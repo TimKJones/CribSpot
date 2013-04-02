@@ -43,8 +43,34 @@ class A2Cribs.Account
 
 		$('#changePasswordButton').click =>
 			@ChangePassword()
+		$('#VerifyUniversityButton').click =>
+			@VerifyUniversity()
+
 	@Direct: (directive)->
 
+	@VerifyUniversity: () ->
+		$('#VerifyUniversityButton').attr 'disabled', 'disabled'
+		university_email = $('#university_email').val() 
+		data = {
+			'university_email': university_email
+		}
+		if ( university_email.search('.edu') != -1)
+			
+			$.post myBaseUrl + 'users/verifyUniversity', data, (response) ->
+				console.log(data)
+				json_response = JSON.parse(response)
+
+				if json_response.success == 1
+					alertify.success('Please check your email for a verification link.', 1500)
+				else
+					alertify.error('Verification not successful: ' + json_response.message, 1500)
+
+				$('#VerifyUniversityButton').removeAttr 'disabled'
+		else
+			alertify.error('Please enter a university email.', 1500)
+			
+
+		
 
 	@ChangePassword: () ->
 		$('#changePasswordButton').attr 'disabled','disabled'
