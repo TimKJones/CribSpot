@@ -48,6 +48,32 @@ class UsersController extends AppController {
 
 	}
 
+    public function ajaxChangePassword(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+        $user = $this->User->get($this->Auth->User('id'));
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        if(empty($new_password) or empty($confirm_password) or $confirm_password != $new_password){
+            $json = json_encode(array(
+                'success' => 0,
+                'message' => "There was an error changing your password"
+            ));
+        }else{
+            $data = array('id' => $user['User']['id'], 'password' => $new_password);
+            $user = $this->User->edit($data);
+            $json = json_encode(array(
+                'success' => 1,
+                'user' => json_encode($user)
+            ));  
+        }
+
+        $this->layout = 'ajax';
+        $this->set('response', $json);
+        return;
+        
+    }
+
     public function ajaxLogin() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
@@ -378,25 +404,37 @@ class UsersController extends AppController {
     }
 
     public function verifyUniversity() {
-        $this->User->id = $this->Auth->user('id');
-        if ($this->User->field('university_verified') == 1)
-        {
-            $university = $this->User->University->findById($this->User->field('university_id'));
-            $this->Session->setFlash(__('You are already verified with '. $university['University']['name']));
-            $this->redirect('/users');
-        }
-         if ($this->request->data['User']['email']!= '')
+        
+        
+         if ($this->request->data['university_email']!= '')
          {
+            if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+            $user = $this->User->get($this->Auth->User('id'));
+            $university_email = $this->request->data['university_email'];
+            if ($user['User']['university_verified'] == 1)
+            {
+                $json = json_encode(array(
+                    'success' => 0,
+                    'message' => "You are already associated with a university."
+                ));  
+                $this->layout = 'ajax';
+                $this->set('response', $json);
+                return;
+            }
+            else
+            {
+
+
             //finding user by email
                 //$this->User->read(null, $this->request->data['User']['email']);
      
             //set password reset token to a unique and random string
-            $this->request->data['User']['vericode'] = uniqid(rand(),true);
 
             //save the password reset token to the request data
-            $this->User->saveField('vericode', $this->request->data['User']['vericode']);
-            $this->User->id = $this->Auth->user('id');
-            
+
+            $data = array('id' => $user['User']['id'], 'vericode' =>uniqid(rand(),true) );
+            $user = $this->User->edit($data);
             
                 //send verification email
                 $this->Email->smtpOptions = array(
@@ -409,32 +447,37 @@ class UsersController extends AppController {
                 );
                 $this->Email->delivery = 'smtp';
                 $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-                $this->Email->to = $this->Auth->user('email');
+                $this->Email->to = $university_email   ;
                 $this->set('name', $this->Auth->user('first_name'));
                 $this->Email->subject = 'Please verify your Cribspot account\'s university association!';
                 $this->Email->template = 'university_verification';
                 $this->Email->sendAs = 'both';
-                $this->set('vericode', $this->request->data['User']['vericode']);
-                $this->set('email', $this->request->data['User']['email']);
+                $this->set('vericode', $user['User']['vericode']);
+                $this->set('email', $university_email);
                 $this->set('id',$this->Auth->user('id'));
                 $this->Email->send();
-                $this->Session->setFlash(__('Please check your email for a verification link to verify your university.'));
-                $this->redirect('/users');
+                $json = json_encode(array(
+                    'success' => 1,
+                    'message' => "Please check your email for a verification link."
+                ));
+            }
+            $this->layout = 'ajax';
+            $this->set('response', $json);
          }
         
-        if ($this->request->query['id']!='')
+        else if ($this->request->query['id']!='')
         {
             $email = $this->request->query['email'];
             $this->User->id = $this->request->query['id'];
             if ($this->User->field('id') != $this->request->query['id']) {
                 throw new NotFoundException(__('There was an error verifying your account.'));
                 //$this->redirect('login');
-                $this->redirect('/users');
+                $this->redirect('/dashboard');
             }
              else if ($this->Auth->user('university_verified') == 1)
             {
                 $this->Session->setFlash('You cannot associate yourself with more than one university. Please contact support.');
-                $this->redirect('/users');
+                $this->redirect('/dashboard');
             }
             else if( $this->request->query['vericode'] == $this->User->field('vericode'))
             {
@@ -463,13 +506,10 @@ class UsersController extends AppController {
                 //$this->Auth->login();
                 //$this->redirect('account');
                 //$this->redirect(array('action' => 'index'));
-
-        }
-        else {
-            $this->Session->setFlash('There was a problem verifying the account.');
+            $this->redirect('/dashboard');
         }
 
-        
+
     }
    /* public function account() {
         $this->set('first_name', $this->Auth->user('first_name'));

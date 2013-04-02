@@ -45,6 +45,9 @@
 
 
 	 		$user = $this->User->get($this->Auth->User('id'));
+	 		unset($user['User']['password']);
+         	unset($user['User']['password_reset_token']);
+         	unset($user['User']['vericode']);
 	 		$json_user = json_encode($user['User']);
 	 		$this->User->University->id = $user['User']['university_id'];
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));

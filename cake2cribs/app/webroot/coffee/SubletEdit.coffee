@@ -181,6 +181,23 @@ class A2Cribs.SubletEdit
 			A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = h.quantity
 
 	###
+	Retrieves all necessary sublet data and then pulls up the modal for edit sublet
+	###
+	@EditSublet:(sublet_id) ->
+		$.ajax
+			url: myBaseUrl + "Sublets/getSubletDataById/" + sublet_id
+			type: "GET"
+			success: (subletData) =>
+				subletData = JSON.parse subletData
+				A2Cribs.Cache.SubletData = subletData
+				A2Cribs.SubletEdit.Init()
+				$('<div/>').dialog2({
+				    title: "Edit " + subletData.Marker.street_address, 
+				    content: "/Sublets/ajax_add", 
+				    id: "server-notice"
+				})
+
+	###
 	Replaces '/' with '-' to make convertible to mysql datetime format
 	###
 	@GetMysqlDateFormat: (dateString) ->
