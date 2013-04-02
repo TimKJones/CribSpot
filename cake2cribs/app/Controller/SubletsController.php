@@ -8,6 +8,7 @@ class SubletsController extends AppController {
         parent::beforeFilter();
         $this->Auth->allow('index');
         $this->Auth->allow('view');
+        $this->Auth->allow('show');
         $this->Auth->allow('getSubletsAjax');
         $this->Auth->allow('userView');
         $this->Auth->allow('ajax_add');

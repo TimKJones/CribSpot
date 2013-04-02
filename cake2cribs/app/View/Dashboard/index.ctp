@@ -1,9 +1,10 @@
 <?php echo $this->element('dashboard-header'); ?>
+<?php echo $this->element('popups'); ?>
+
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
 <?php echo $this->Html->script('src/Message'); ?>
 <?php echo $this->Html->script('src/VerifyManager'); ?>
-<?php echo $this->Html->script('bootstrap'); ?>
 
 <?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->css('messages'); ?>
