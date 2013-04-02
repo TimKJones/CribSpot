@@ -21,6 +21,8 @@ class UsersController extends AppController {
         $this->Auth->allow('getTwitterFollowers');
         $this->Auth->allow('ajaxLogin');
         $this->Auth->allow('ajaxRegister');
+        $this->Auth->allow('ajaxChangePassword');
+        $this->Auth->allow('ResetPasswordRedirect');
 	}
 
 	public function login() {
@@ -48,19 +50,81 @@ class UsersController extends AppController {
 
 	}
 
-    public function ajaxChangePassword(){
+    /*
+    User is directed here from the "reset password" link in their email.
+    */
+    public function ResetPasswordRedirect()
+    {
+        if (!array_key_exists('id', $this->request->query) || !array_key_exists('reset_token', $this->request->query))
+            $this->redirect('/');
+        $id = $this->request->query['id'];
+        $reset_token = $this->request->query['reset_token'];
+        $this->User->id = $this->request->query['id'];
+
+        $this->set('id', $id);
+        $this->set('reset_token', $reset_token);
+    }
+
+    /*
+    Reset password via ajax from the page the user is directed to from the reset password email
+    */
+    public function ajaxResetPasswordRedirect()
+    {
+
+    }
+
+    public function ajaxChangePassword() 
+    {
+        $this->layout = 'ajax';
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-        $user = $this->User->get($this->Auth->User('id'));
+        $success = 0;
+        $user = null;
+        if ($this->Auth->User('id') != null && $this->Auth->User('id') != 0)
+        {
+            // coming from dashboard account settings
+            $user = $this->User->get($this->Auth->User('id'));
+            $user = $user['User']['id'];
+        }
+        else // coming from email 'change password' link
+            $user = $this->request->data['id'];
+
         $new_password = $this->request->data['new_password'];
         $confirm_password = $this->request->data['confirm_password'];
+        $reset_token = $this->request->data['reset_token'];
+
+        $json = json_encode(array(
+                'success' => 0,
+                'message' => "There was an error changing your password"
+        ));
+        if ($user != null && $reset_token != null)
+        {
+            /* coming from user who is not logged in
+               Make sure the reset_token matches up with the id.
+            */
+            $credentials_correct = $this->User->find('first', array(
+                'fields' => array('id'),
+                'conditions' => array('User.id' => $user, 'User.password_reset_token' => $reset_token)
+            ));
+
+            if ($credentials_correct == null)
+            {
+                $success = 0;
+                $json = json_encode(array(
+                    'success' => 0,
+                    'user' => null
+                )); 
+                $this->set('response', $json);
+                return;
+            }
+        }
         if(empty($new_password) or empty($confirm_password) or $confirm_password != $new_password){
             $json = json_encode(array(
                 'success' => 0,
                 'message' => "There was an error changing your password"
             ));
         }else{
-            $data = array('id' => $user['User']['id'], 'password' => $new_password);
+            $data = array('id' => $user, 'password' => $new_password);
             $user = $this->User->edit($data);
             $json = json_encode(array(
                 'success' => 1,
@@ -68,7 +132,6 @@ class UsersController extends AppController {
             ));  
         }
 
-        $this->layout = 'ajax';
         $this->set('response', $json);
         return;
         
@@ -613,6 +676,7 @@ class UsersController extends AppController {
 
             $data = array('id' => $user['User']['id'], 'first_name' => $first_name, 'last_name' => $last_name);
             $user = $this->User->edit($data);
+
 
             $json = json_encode(array(
                 'success' => 1,

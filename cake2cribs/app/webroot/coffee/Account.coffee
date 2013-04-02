@@ -42,7 +42,7 @@ class A2Cribs.Account
 			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})
 
 		$('#changePasswordButton').click =>
-			@ChangePassword()
+			@ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val())
 		$('#VerifyUniversityButton').click =>
 			@VerifyUniversity()
 
@@ -72,24 +72,29 @@ class A2Cribs.Account
 
 		
 
-	@ChangePassword: () ->
-		$('#changePasswordButton').attr 'disabled','disabled'
-		new_password = $('#new_password').val()
-		confirm_password = $('#confirm_password').val()
+	@ChangePassword: (change_password_button, new_password, confirm_password, id=null, reset_token=null) ->
+		change_password_button.attr 'disabled','disabled'
 		data = {
 			'new_password' : new_password,
-			'confirm_password': confirm_password
+			'confirm_password': confirm_password,
+			'id': id,
+			'reset_token': reset_token
 		}
 
 		$.post myBaseUrl + 'users/ajaxChangePassword', data, (response) ->
 			json_response = JSON.parse(response)
 
 			if json_response.success == 1
-				alertify.success('Password Changed', 1500)
+				if id == null and reset_token == null
+					alertify.success('Password Changed', 1500)
+				else
+					#redirect user to dashboard
+					window.location.href = '/dashboard'
 			else
 				alertify.error('Password Failed to Change: ' + json_response.message, 1500)
 
-			$('#changePasswordButton').removeAttr 'disabled'
+			change_password_button.removeAttr 'disabled'
+
 	@SaveAccount:()->
 		$('#save_btn').attr 'disabled','disabled'
 		first_name = $('#first_name_input').val()
