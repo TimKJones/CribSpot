@@ -45,7 +45,6 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Housemate.major = $("#HousemateMajor").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val()
-		#TODO: ADD A FIELD AND GET THIS ACTUAL VALUE
 		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateMajor").val()
 
 	###

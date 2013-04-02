@@ -218,7 +218,6 @@ class SubletsController extends AppController {
         {
             $sublet['marker_id'] = $marker_id;
             $sublet['is_finished'] = 1;
-            $sublet['flexible_dates'] = 1; //TODO: get this from js
             $sublet['user_id'] = $this->Auth->User('id');
 
             $sublet_id = $this->Sublet->SaveSublet($sublet);

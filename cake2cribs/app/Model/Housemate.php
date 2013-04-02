@@ -99,6 +99,11 @@ class Housemate extends AppModel {
 
 	public function SaveHousemate($housemate)
 	{
+		if ($housemate['enrolled'] == "true")
+			$housemate['enrolled'] = 1;
+		else
+			$housemate['enrolled'] = 0;
+
   		$housemate_to_save = array('Housemate' => $housemate);
   		if ($this->save($housemate_to_save))
   			return $this->id;

@@ -594,14 +594,9 @@ $log = $this->getDataSource()->getLog(false, false);
 	*/
 	function SaveSublet($sublet)
 	{
-		if ($sublet['ac'])
-			$sublet['ac'] = 1;
-		else
-			$sublet['ac'] = 0;
-		if ($sublet['parking'])
-			$sublet['parking'] = 1;
-		else
-			$sublet['parking'] = 0;
+		$sublet['ac'] = $sublet['ac'] == "true";
+		$sublet['parking'] = $sublet['parking'] == "true";
+		$sublet['flexible_dates'] = $sublet['flexible_dates'] == "true";
 
   		$sublet_to_save = array('Sublet' => $sublet);
   		if ($this->save($sublet_to_save))
