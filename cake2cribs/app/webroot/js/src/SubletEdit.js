@@ -52,7 +52,7 @@
       A2Cribs.Cache.SubletEditInProgress.Housemate.major = $("#HousemateMajor").val();
       A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val();
       A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val();
-      return A2Cribs.Cache.SubletEditInProgress.Housemate.type = "Sophomore";
+      return A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateMajor").val();
     };
 
     /*
@@ -89,6 +89,9 @@
       var beginDate, endDate, formattedBeginDate, formattedEndDate;
       $('#SubletDateBegin').val("");
       $('#SubletDateEnd').val("");
+      $('#SubletFlexibleDates').prop("checked", true);
+      $('#SubletParking').prop("checked", false);
+      $('#SubletAc').prop("checked", false);
       if (A2Cribs.Cache.SubletEditInProgress.Sublet === null || A2Cribs.Cache.SubletEditInProgress.Sublet === void 0) {
         return;
       }
@@ -102,7 +105,9 @@
       }
       $('#SubletDateBegin').val(formattedBeginDate);
       $('#SubletDateEnd').val(formattedEndDate);
-      $('#SubletFlexibleDates').val(A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates);
+      if (A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates !== null) {
+        $('#SubletFlexibleDates').prop('checked', A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates);
+      }
       $('#SubletNumberBedrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms);
       $('#SubletPricePerBedroom').val(A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom);
       $('#SubletDescription').val(A2Cribs.Cache.SubletEditInProgress.Sublet.description);
@@ -110,8 +115,8 @@
       $('#SubletBathroomTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id);
       $('#SubletUtilityTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id);
       $('#SubletUtilityCost').val(A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id);
-      $('#SubletParking').val(A2Cribs.Cache.SubletEditInProgress.Sublet.parking);
-      $('#SubletAc').val(A2Cribs.Cache.SubletEditInProgress.Sublet.ac);
+      $('#SubletParking').prop("checked", A2Cribs.Cache.SubletEditInProgress.Sublet.parking);
+      $('#SubletAc').prop("checked", A2Cribs.Cache.SubletEditInProgress.Sublet.ac);
       $('#SubletFurnishedTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.furnished_type_id);
       $('#SubletDepositAmount').val(A2Cribs.Cache.SubletEditInProgress.Sublet.deposit_amount);
       $('#SubletAdditionalFeesDescription').val(A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_description);
@@ -119,11 +124,12 @@
     };
 
     SubletEdit.InitStep3 = function() {
+      $("#HousemateEnrolled").prop("checked", false);
       if (A2Cribs.Cache.SubletEditInProgress.Housemate === null || A2Cribs.Cache.SubletEditInProgress.Housemate === void 0) {
         return;
       }
       $("#HousemateQuantity").val(A2Cribs.Cache.SubletEditInProgress.Housemate.quantity);
-      $("#HousemateEnrolled_").val(A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled);
+      $("#HousemateEnrolled").prop("checked", A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled);
       $("#HousemateStudentTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id);
       $("#HousemateMajor").val(A2Cribs.Cache.SubletEditInProgress.Housemate.major);
       $("#HousemateSeeking").val(A2Cribs.Cache.SubletEditInProgress.Housemate.seeking);
