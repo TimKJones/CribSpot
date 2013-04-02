@@ -14,7 +14,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		//$this->Auth->allow('add');
+		$this->Auth->allow('add');
 		$this->Auth->allow('verify');
         $this->Auth->allow('resetpassword');
         $this->Auth->deny('index');
@@ -22,11 +22,11 @@ class UsersController extends AppController {
         $this->Auth->allow('ajaxLogin');
         $this->Auth->allow('ajaxRegister');
 	}
-/*
+
 	public function login() {
         if ($this->Auth->loggedIn())
         {
-            $this->redirect('/dashbaord');
+            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
@@ -34,11 +34,11 @@ class UsersController extends AppController {
                 
                 if ($this->Auth->user('verified') == 0) {
                     $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
-                    $this->redirect('/dashboard');
+                    $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
                 }
                 else {
                     $this->Session->setFlash(__('You were successfully logged in.'));
-                $this->redirect('/dashboard');    
+                    $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));    
                 }
                 
 			} else {
@@ -47,7 +47,6 @@ class UsersController extends AppController {
 		}
 
 	}
-    */
 
     public function ajaxLogin() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
@@ -116,8 +115,10 @@ class UsersController extends AppController {
 		$this->set('user', $this->User->read(null, $id));
 	}*/
 
-	/*public function add() {
+	public function add() {
 
+        if ($this->Auth->loggedIn())
+            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
 		if ($this->request->is('post')) {
 			$this->User->create();
 			$this->request->data['User']['verified'] = 0;
@@ -146,12 +147,12 @@ class UsersController extends AppController {
                 $this->set('id',$this->User->id);
                 $this->Email->send();
 				$this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
-				$this->redirect('/dashboard');
+				$this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('An error occurred during registration. Please try again.'));
 			}
 		}
-	}*/
+	}
 
     public function ajaxRegister() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
