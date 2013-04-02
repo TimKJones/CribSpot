@@ -1,6 +1,7 @@
 
 <?php
 	//echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
+	echo $this->Html->script('src/Account');
 	echo $this->Html->script('src/Login');
 ?>
 
@@ -27,7 +28,7 @@
 				  </div>
 				  <div class="control-group">
 				  	    <div class="controls">
-				  			<button id="changePasswordButton" type="button" class="btn">Change password</button>
+				  			<button id="ResetPasswordButton" type="button" class="btn">Change password</button>
 				  		</div>
 				  </div>
 			</form>
@@ -40,4 +41,8 @@
 var a = A2Cribs.Login;
 
 a.setupUI();
+$("#ResetPasswordButton").click(function() {
+    $("#passwordForm").submit();
+    document.location.href = '/users/login?password_reset_redirect=true';
+});
 </script>

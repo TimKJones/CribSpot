@@ -33,4 +33,8 @@ $('body').noisy({
     'fallback' : '', 
     'monochrome' : true
 }).css('background-color', '#eeecec');
+
+
+if (document.URL.indexOf("password_reset_redirect") != -1)
+    A2Cribs.UIManager.Alert("An email has been sent to the email address on file with a link to reset your password.");
 </script>
