@@ -59,7 +59,7 @@ class A2Cribs.ListingPopup
 						'background-image': 'url(' + image.Path + ')'
 		else
 			content.find('#main-photo').css
-						'background-image': 'url(/img/tooltip/default_house.png)'
+						'background-image': 'url(/img/tooltip/default_house_large.jpg)'
 
 		content.find('.facebook-share').attr 'onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')'
 		content.find('.twitter-share').attr 'href', A2Cribs.ShareManager.GetTwitterShareUrl(school, short_address, subletId)
