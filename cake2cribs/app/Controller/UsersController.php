@@ -17,6 +17,7 @@ class UsersController extends AppController {
 		$this->Auth->allow('add');
 		$this->Auth->allow('verify');
         $this->Auth->allow('resetpassword');
+        $this->Auth->allow('ajaxResetPassword');
         $this->Auth->deny('index');
         $this->Auth->allow('getTwitterFollowers');
         $this->Auth->allow('ajaxLogin');
@@ -328,6 +329,68 @@ class UsersController extends AppController {
         $this->redirect(array('action' => 'index'));
     }
     */
+
+    public function ajaxResetPassword()
+    {
+        $this->layout = 'ajax';
+        $response = null;
+        if ($this->request->data['email']!= '') // if id is not found in post, indicates user is using password reset form
+        {
+            //finding user by email
+            $user = $this->User->find('first', array( 
+                'conditions' => array(
+                    'User.email' => $this->request->data['email'])
+                ));
+
+            $this->User->id = $user['User']['id'];
+
+
+            if (!$this->User->exists()) {
+                //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
+                $response = array(
+                    'success' => 0,
+                    'message' => 'Reset password failed. Contact help@cribspot.com if the error persists.'
+                );
+                $this->set('response', json_encode($response));
+                return;
+            }
+
+            //set password reset token to a unique and random string
+            $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
+            //save the password reset token to the request data
+            $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
+            //save date of request
+            $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
+            
+            //email stuff
+            $this->Email->smtpOptions = array(
+              'port'=>'587',
+              'timeout'=>'30',
+              'host' => 'smtp.sendgrid.net',
+              'username'=>'cribsadmin',
+              'password'=>'lancPA*travMInj',
+              'client' => 'a2cribs.com'
+            );
+            $this->Email->delivery = 'smtp';
+            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+            $this->Email->to = $this->User->field('email');
+            $this->set('name', $this->User->first_name);
+            $this->Email->subject = 'Please reset your password';
+            $this->Email->template = 'forgotpassword';
+            $this->Email->sendAs = 'both';
+            
+            $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
+            $this->set('id',$this->User->id);
+            $this->Email->send();
+            //end email portion
+            $response = array(
+                'success' => 1,
+                'message' => 'Check your email for instructions on how to reset your password.'
+            );
+            
+            $this->set('response', json_encode($response));
+        }
+    }
 
     public function resetpassword() {
         $response = null;

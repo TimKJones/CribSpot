@@ -128,6 +128,17 @@ class A2Cribs.Account
 			# This may be bad if verify Facebook fails
 			document.location.href = '/account'
 
+	@SubmitResetPassword: (email) ->
+		data = 'email=' + $("#UserEmail").val()
+		$.post '/users/ajaxResetPassword', data, (response) =>
+			data = JSON.parse response
+			if data.success == 1
+				document.location.href = '/users/login?password_reset_redirect=true'
+				return false
+			else
+	        	alertify.error('Email address is invalid.', 1500)
+	        	return false
+
 	# @JSLoginCallback: (response) ->
 	# 	if response.authResponse
 	# 		FB.api('/me', A2Cribs.FacebookManager.APICallback)

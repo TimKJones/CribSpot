@@ -1,6 +1,7 @@
 <?php echo $this->Html->css('bootstrap'); ?>
 <?php echo $this->Html->css('font-awesome'); ?>
 <?php echo $this->Html->css('users'); ?>
+<?php echo $this->Html->script("src/Account"); ?>
 <?php echo $this->element('header'); ?>
 
 <?php echo $this->Session->flash('auth'); ?>
@@ -29,8 +30,9 @@ $('body').noisy({
     'monochrome' : true
 }).css('background-color', '#eeecec');
 
-$("#UserResetpasswordForm").submit(function() {
-    document.location.href = '/users/login?password_reset_redirect=true';
+$("#UserResetpasswordForm").submit(function(e) {
+    A2Cribs.Account.SubmitResetPassword($("#UserEmail").val());
+    e.preventDefault();
     return false;
 });
 </script>
