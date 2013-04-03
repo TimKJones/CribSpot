@@ -114,10 +114,10 @@ class A2Cribs.ListingPopup
 
 
 	loadVerificationInfo: (sublet_id, content)->
-		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
-		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
+		#user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
+		#A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
 			# Fill in UI LOGIC HERE
-			console.log(verification_info)
+			#console.log(verification_info)
 
 
 
