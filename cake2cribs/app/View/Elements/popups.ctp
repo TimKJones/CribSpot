@@ -11,4 +11,5 @@
 	echo $this->element('about');
 	echo $this->element('contact');
 	echo $this->element('help');
+	echo $this->element("report_bug");
 ?>
