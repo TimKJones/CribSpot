@@ -124,7 +124,7 @@ class A2Cribs.Messages
 			if verification_info.verified_edu
 				veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified')
 			else
-				$('.participant-university').append("No Associated University")
+				$('.participant-university').html("No Associated University")
 
 			if verification_info.verified_fb
 				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
