@@ -228,9 +228,6 @@
 			$(".btn-active").removeClass("active btn-active btn-primary");
 			$(this).addClass("active btn-active btn-primary");
 		});
-		$("#favorite-btn").click(function() {
-			$(this).toggleClass("active btn-danger");
-		});
 		$(".preview-thumbnail").click(function() {
 			var image = $(this).css("background-image");
 			$("#main-photo").css("background-image", image);
