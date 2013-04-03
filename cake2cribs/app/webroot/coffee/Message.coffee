@@ -234,13 +234,13 @@ class A2Cribs.Messages
 		$.post url, request_data, (response)=>			
 			data = JSON.parse response
 			if data.success == 1
-				Alertify.log.create("success", "Conversation deleted", 2);
+				alertify.success 'Conversation deleted', 1500
 				@CurrentConversation = -1
 				@CurrentParticipantID = -1
 				A2Cribs.Dashboard.HideContent('messages')
 				@refresh()
 			else
-				Alertify.log.create("error", "Failed to delete the conversation", 2);
+				alertify.error 'Failed to delete the conversation', 1500
 
 	@Direct: (directive)->
 		
