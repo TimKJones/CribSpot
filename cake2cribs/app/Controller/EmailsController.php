@@ -57,7 +57,7 @@ class EmailsController extends AppController {
         $this->set('name', $user['User']['first_name']);
         $this->Email->subject = 'Thanks for posting on Cribspot ' . $user['User']['first_name'] . '! Register to view your listing';
         //$this->Email->template = 'registration';
-        $message = "Hi " . $user['User']['first_name'] . ",<br/><br/>You recently filled out a Google doc containing your sublet information for priority access on Cribspot. To view and edit your sublet, you must finish registering.  Click <a href='localhost/users/ResetPasswordRedirect?id=" . $user["User"]['id'] . "&reset_token=" . $user["User"]['password_reset_token'] . "'>here</a> to set your password.";
+        $message = "Hi " . $user['User']['first_name'] . ",<br/><br/>You recently filled out a Google doc containing your sublet information for priority access on Cribspot. To view and edit your sublet, you must finish registering.  Click <a href='www.cribspot.com/users/ResetPasswordRedirect?id=" . $user["User"]['id'] . "&reset_token=" . $user["User"]['password_reset_token'] . "'>here</a> to set your password.";
         $this->Email->sendAs = 'html';
         $this->set('id',$this->User->id);
         $this->Email->send($message);

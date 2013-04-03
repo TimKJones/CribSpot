@@ -93,8 +93,8 @@ Email verification (This email address will be the email for the person posting 
   window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
-      appId      : '148187588666959', // App ID from the App Dashboard
-      channelUrl : 'http://localhost/channel.html', // Channel File for x-domain communication
+      appId      : '450938858319396', // App ID from the App Dashboard
+      channelUrl : 'http://www.cribspot.com/channel.html', // Channel File for x-domain communication
       status     : true, // check the login status upon init?
       cookie     : true, // set sessions cookies to allow your server to access the session?
       xfbml      : true  // parse XFBML tags on this page?

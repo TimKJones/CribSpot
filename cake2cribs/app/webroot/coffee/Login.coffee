@@ -1,6 +1,6 @@
 class A2Cribs.Login
 
-	@LANDING_URL = "localhost"
+	@LANDING_URL = "cribspot.com"
 	@HTTP_PREFIX = "http://"
 
 

@@ -20,7 +20,7 @@ class VerifyController extends AppController {
 		$loginUrl = $this->facebook->getLoginUrl(
 			array(
 				'scope' => 'email',
-				'redirect_uri' => 'http://localhost/verify?facebook_verified=true'
+				'redirect_uri' => 'http://cribspot.com/verify?facebook_verified=true'
 				));
 		$logoutUrl = $this->facebook->getLogoutUrl();
 			$this->set('loginUrl', $loginUrl);
@@ -148,7 +148,7 @@ class VerifyController extends AppController {
 		App::uses('Xml', 'Utility');
 
 		$twitteroauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
-		$request_token = $twitteroauth->getRequestToken('http://127.0.0.1/verify?twitter_confirmed=true');
+		$request_token = $twitteroauth->getRequestToken('http://cribspot.com/verify?twitter_confirmed=true');
 		//echo debug($twitteroauth);
 		// Requesting authentication tokens, the parameter is the URL we will be redirected to
 		//$request_token = $twitteroauth->getRequestToken('');
@@ -211,7 +211,7 @@ class VerifyController extends AppController {
 	function GetLoggedInUserFacebookId()
 	{
 		$this->layout = 'ajax';
-		$this->set("response", "552918161"); // this is Evan's id, temporarily
+		$this->set("response", ""); // this is Evan's id, temporarily
 	}
 
 	function GetTwitterFollowers($twitter_id)
