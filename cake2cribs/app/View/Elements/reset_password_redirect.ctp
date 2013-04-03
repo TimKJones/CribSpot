@@ -13,7 +13,7 @@
 		</div>
 		<div id="modal-center">
 			<!--<div class="facebook-login-button">Login with Facebook</div>-->
-				<form id="passwordForm" class="form-horizontal">
+				<form id="passwordForm" action="ajaxChangePassword" method="POST" class="form-horizontal">
 				  <div class="control-group">
 				    <label class="control-label" for="new_password">New Password:</label>
 				    <div class="controls">
@@ -41,8 +41,12 @@
 var a = A2Cribs.Login;
 
 a.setupUI();
-$("#ResetPasswordButton").click(function() {
-    $("#passwordForm").submit();
-    document.location.href = '/users/login?password_reset_redirect=true';
+$(document).ready(function () {
+	var id = <?php echo $id; ?>;
+	var reset_token = "<?php echo $reset_token; ?>";
+	$("#ResetPasswordButton").click(function() {
+		A2Cribs.Account.ChangePassword($("#ResetPasswordButton"), $("#new_password").val(), $("#confirm_password").val(), id, reset_token, '/users/login?password_changed=true');
+	    //document.location.href = '/users/login?password_reset_redirect=true';
+	});
 });
 </script>

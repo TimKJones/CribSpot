@@ -28,5 +28,10 @@ $('body').noisy({
     'fallback' : '', 
     'monochrome' : true
 }).css('background-color', '#eeecec');
+
+$("#UserResetpasswordForm").submit(function() {
+    document.location.href = '/users/login?password_reset_redirect=true';
+    return false;
+});
 </script>
 

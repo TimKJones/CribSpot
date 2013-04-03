@@ -37,4 +37,6 @@ $('body').noisy({
 
 if (document.URL.indexOf("password_reset_redirect") != -1)
     A2Cribs.UIManager.Alert("An email has been sent to the email address on file with a link to reset your password.");
+else if (document.URL.indexOf("password_changed") != -1)
+    A2Cribs.UIManager.Alert("Your password has been successfully changed. Please enter your new login credentials.");
 </script>

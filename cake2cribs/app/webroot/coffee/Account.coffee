@@ -72,7 +72,7 @@ class A2Cribs.Account
 
 		
 
-	@ChangePassword: (change_password_button, new_password, confirm_password, id=null, reset_token=null) ->
+	@ChangePassword: (change_password_button, new_password, confirm_password, id=null, reset_token=null, redirect=null) ->
 		change_password_button.attr 'disabled','disabled'
 		data = {
 			'new_password' : new_password,
@@ -87,6 +87,8 @@ class A2Cribs.Account
 			if json_response.success == 1
 				if id == null and reset_token == null
 					alertify.success('Password Changed', 1500)
+					if redirect != null
+						window.location.href = redirect
 				else
 					#redirect user to dashboard
 					window.location.href = '/dashboard'

@@ -183,7 +183,10 @@ class User extends AppModel {
 	}
 
 	public function edit($data){
-		$this->save($data);
+		if (!$this->save($data))
+			CakeLog::write("saveUser", print_r($this->validationErrors, true));
+		else
+			CakeLog::write("saveUser", print_r($data, true));
 		return $this->read();
 	}
 

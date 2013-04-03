@@ -75,11 +75,24 @@ class UsersController extends AppController {
 
     public function ajaxChangePassword() 
     {
+
         $this->layout = 'ajax';
+        $new_password = null;
+        $confirm_password = null;
+        $reset_token = null;
+
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        $reset_token = $this->request->data['reset_token'];
+        CakeLog::write("saveUser", "new password: " . $new_password);
+        CakeLog::write("saveUser", "confirm password: " . $confirm_password);
+        CakeLog::write("saveUser", "reset_token: " . $reset_token);
+
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-        $success = 0;
+
         $user = null;
+
         if ($this->Auth->User('id') != null && $this->Auth->User('id') != 0)
         {
             // coming from dashboard account settings
@@ -87,16 +100,10 @@ class UsersController extends AppController {
             $user = $user['User']['id'];
         }
         else // coming from email 'change password' link
+        {
             $user = $this->request->data['id'];
+        }
 
-        $new_password = $this->request->data['new_password'];
-        $confirm_password = $this->request->data['confirm_password'];
-        $reset_token = $this->request->data['reset_token'];
-
-        $json = json_encode(array(
-                'success' => 0,
-                'message' => "There was an error changing your password"
-        ));
         if ($user != null && $reset_token != null)
         {
             /* coming from user who is not logged in
@@ -112,7 +119,7 @@ class UsersController extends AppController {
                 $success = 0;
                 $json = json_encode(array(
                     'success' => 0,
-                    'user' => null
+                    'message' => 'There was an error changing your password.'
                 )); 
                 $this->set('response', $json);
                 return;
@@ -123,12 +130,14 @@ class UsersController extends AppController {
                 'success' => 0,
                 'message' => "There was an error changing your password"
             ));
-        }else{
+        }
+        else
+        {
             $data = array('id' => $user, 'password' => $new_password);
-            $user = $this->User->edit($data);
+            $this->User->edit($data);
             $json = json_encode(array(
                 'success' => 1,
-                'user' => json_encode($user)
+                'user' => $user
             ));  
         }
 
