@@ -18,7 +18,18 @@
 				<input type="password" id="inputPassword" name="password" placeholder="Password">
 				<button type="submit" id="submitButton" class="btn">Sign in</button>
 			</form>
-			<?= $this->Html->link('Don\'t Have An Account? Sign Up!' , array('controller' => 'users', 'action' => 'add')); ?>
+			<table>
+				<tr>
+					<td>
+						<?= $this->Html->link('Forgot Your Password?' , array('controller' => 'users', 'action' => 'resetpassword')); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?= $this->Html->link('Don\'t Have An Account? Sign Up!' , array('controller' => 'users', 'action' => 'add')); ?>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div id="modal-bottom">
 			<div id="modal-slogan">#SUBLETPROBS</div>

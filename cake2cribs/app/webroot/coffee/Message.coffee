@@ -124,7 +124,7 @@ class A2Cribs.Messages
 			if verification_info.verified_edu
 				veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified')
 			else
-				$('.participant-university').append("No Associated University")
+				$('.participant-university').html("No Associated University")
 
 			if verification_info.verified_fb
 				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
@@ -234,13 +234,13 @@ class A2Cribs.Messages
 		$.post url, request_data, (response)=>			
 			data = JSON.parse response
 			if data.success == 1
-				Alertify.log.create("success", "Conversation deleted", 2);
+				alertify.success 'Conversation deleted', 1500
 				@CurrentConversation = -1
 				@CurrentParticipantID = -1
 				A2Cribs.Dashboard.HideContent('messages')
 				@refresh()
 			else
-				Alertify.log.create("error", "Failed to delete the conversation", 2);
+				alertify.error 'Failed to delete the conversation', 1500
 
 	@Direct: (directive)->
 		

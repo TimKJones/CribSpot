@@ -24,7 +24,7 @@
 
 	<?php if ($this->Session->read('Auth.User.id')==0)
 			{
-				echo '<a class="post-button inline pull-left" href="#myModal" data-toggle="modal">POST A SUBLET</a>';
+				echo '<a class="post-button inline pull-left" href="#signupModal" data-toggle="modal">POST A SUBLET</a>';
 			}
 			else
 				echo '<a id="subletAddSteps" class="post-button inline pull-left" href="#" >POST A SUBLET</a>';
@@ -193,30 +193,18 @@
 		}).on("changeDate", function(ev) {
     		A2Cribs.FilterManager.ApplyFilter(ev);
     	}).data("datepicker");
-		A2Cribs.PageHeader.renderUnreadConversationsCount();	
+		A2Cribs.PageHeader.renderUnreadConversationsCount();
+		$("#subletAddSteps").click(function(event) {
+			A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
+			$("<div/>").dialog2({
+				title: "Post a sublet", 
+				content: "/Sublets/ajax_add", 
+				id: "server-notice"
+			});
+
+			event.preventDefault();
+		});
+		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
 	');
 ?>
 
-<script type="text/javascript">
-    $(function() {
-        $('#subletAddSteps').click(function(event) {
-        	A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
-            $('<div/>').dialog2({
-                title: "Post a sublet", 
-                content: "/Sublets/ajax_add", 
-                id: "server-notice"
-            });
-
-            event.preventDefault();
-        });
-    });
-
-     $("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
-     //$(".wheneverButton").click(A2Cribs.FilterManager.WheneverButtonClicked);
-/*
-    $("#endDate").datepicker().on('changeDate', function(ev) {
-    	alert('changed');
-    }*/
-
-  //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
-</script>

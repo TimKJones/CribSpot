@@ -17,6 +17,7 @@ class A2Cribs.ListingPopup
 	###
 	Open: (subletId) ->
 		if subletId?
+			A2Cribs.Map.ClickBubble.Close()
 			@SetContent subletId
 			$("#overview-btn").click();
 			@modal.modal 'show'
@@ -78,17 +79,14 @@ class A2Cribs.ListingPopup
 		subletId = sublet.SubletId
 		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
 		if is_favorite
-			content.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ')'
+			content.find('#favorite-btn').attr 'title', 'Delete from Favorites'
+			content.find('#favorite-btn').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ', this)'
 			$('#favorite-btn').addClass "active"
-			$('#favorite-btn').addClass "btn-danger"
 		else
-			content.find('.favorite-clickable').attr 'title', 'Add to Favorites'
-			content.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ')'
-			if $('#favorite-btn').hasClass "active"
-				$('#favorite-btn').removeClass "active"
-			if $('#favorite-btn').hasClass "btn-danger"
-				$('#favorite-btn').removeClass "btn-danger"
+			content.find('#favorite-btn').attr 'title', 'Add to Favorites'
+			content.find('#favorite-btn').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ', this)'
+			$('#favorite-btn').removeClass "active"
+
 		if housemates != undefined and housemates != null
 			content.find('.housemate-count').text housemates.Quantity
 			content.find('.housemate-enrolled').text if housemates.Enrolled then "Yes" else "No"
