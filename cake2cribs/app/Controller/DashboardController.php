@@ -1,7 +1,7 @@
 <?php
 	class DashboardController extends AppController {
 		public $helpers = array('Html');
-		public $uses = array('User');
+		public $uses = array('User', 'Sublet');
 		public $components= array('Session','Auth', 'Cookie');
 
 		function beforeFilter(){
@@ -43,6 +43,8 @@
 	 			$directive = array('classname'=>null);
 	 		}
 
+	 		//load sublets for this user
+	 		$sublets = $this->Sublet->getSubletDataByUserId($this->Auth->User('id'));
 
 	 		$user = $this->User->get($this->Auth->User('id'));
 	 		unset($user['User']['password']);
@@ -52,5 +54,6 @@
 	 		$this->User->University->id = $user['User']['university_id'];
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
 	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user, 'user_json'=>$json_user));
+	 		$this->set('sublets', $sublets);
 	 	}
 	}

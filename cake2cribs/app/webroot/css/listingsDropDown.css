@@ -1,0 +1,17 @@
+.listings_list
+{
+	margin-top: 7px;
+	margin-bottom: 10px;
+	background-color: #CED8F6;
+	height: 25px;
+	width: 100%;
+	line-height: 25px;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight: 400;
+}
+
+.listings_list:hover
+{
+	cursor:pointer;
+	background-color:#819FF7;
+}

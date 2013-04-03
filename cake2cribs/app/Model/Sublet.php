@@ -617,6 +617,19 @@ $log = $this->getDataSource()->getLog(false, false);
 		return $user_owns_sublet_query != null;
 	}
 
+	function getSubletDataByUserId($user_id)
+	{
+		if ($user_id == null || $user_id == 0)
+			return null;
+
+		$sublets = $this->find('all', array(
+			'fields' => array('Sublet.id', 'Marker.street_address'),
+			'conditions' => array('Sublet.user_id' => $user_id)
+		));
+
+		return $sublets;
+	}
+
 	
 }
 ?>

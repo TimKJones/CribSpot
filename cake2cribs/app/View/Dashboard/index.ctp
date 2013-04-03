@@ -25,9 +25,6 @@
 			<div class = 'account-content hidden'>
 				<?php echo $this->element('Account/edit_account_window', $user) ?>
 			</div>
-			<div class = 'listings-content hidden'>
-				Listings
-			</div>
 			<div class = 'messages-content hidden'>
 			 	<?php echo $this->element('Messages/message_window', $user) ?>
 			</div>
@@ -36,10 +33,6 @@
 		<div class = 'span3' id = 'right_content'>
 			<div class = 'account-content hidden'>
 				<?php echo $this->element('Account/user_info') ?>
-			</div>
-			<div class = 'listings-content hidden'>
-				Listings
-				<?php echo $this->element('Sublets/ajax_add') ?>
 			</div>
 			<div class = 'messages-content hidden'>
 				<?php echo $this->element('Messages/participant_info') ?>
