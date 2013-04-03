@@ -7,3 +7,8 @@
 {
 	margin-top:-30px;
 }
+.modal-body.opened
+{
+	min-height:300px;
+	min-width:400px;
+}

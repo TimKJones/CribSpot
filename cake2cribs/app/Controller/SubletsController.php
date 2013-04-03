@@ -216,6 +216,11 @@ class SubletsController extends AppController {
       //  $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
     }
 
+    public function ajax_add4()
+    {
+
+    }
+
     public function ajax_submit_sublet()
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
@@ -263,7 +268,10 @@ class SubletsController extends AppController {
         if ($marker_id == null || $sublet_id == null || $housemate_id == null)
             $response = array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists.');
         else
+        {
             $response = array('status' => 'Your sublet was saved successfully!');
+            $response['newid'] = $sublet_id;
+        }
 
         $this->layout = 'ajax';
         $this->set('response', json_encode($response));

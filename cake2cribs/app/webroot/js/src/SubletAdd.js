@@ -59,9 +59,13 @@
         } else if ($('#HousemateMajor').val().length >= 254) {
           return A2Cribs.UIManager.Alert("Please keep the majors description under 255 characters.");
         } else {
+          A2Cribs.SubletEdit.CacheStep3Data();
           e.preventDefault();
           return _this.subletAddStep3();
         }
+      });
+      $("#finishShare").click(function(e) {
+        return $('#server-notice').dialog2("close");
       });
       oldBeginDate = new Date($('#SubletDateBegin').val());
       $('#SubletDateBegin').val(oldBeginDate.toDateString());
@@ -78,6 +82,12 @@
     SubletAdd.backToStep2 = function() {
       return $('#server-notice').dialog2("options", {
         content: "/Sublets/ajax_add2"
+      });
+    };
+
+    SubletAdd.backToStep3 = function() {
+      return $('#server-notice').dialog2("options", {
+        content: "/Sublets/ajax_add3"
       });
     };
 
@@ -98,7 +108,6 @@
     SubletAdd.subletAddStep3 = function() {
       var url,
         _this = this;
-      A2Cribs.SubletEdit.CacheStep3Data();
       url = "/sublets/ajax_submit_sublet";
       return $.post(url, A2Cribs.Cache.SubletEditInProgress, function(response) {
         var data;
@@ -106,10 +115,13 @@
         console.log(data.status);
         if (data.status) {
           A2Cribs.UIManager.Alert(data.status);
+          A2Cribs.ShareManager.SavedListing = data.newid;
+          return $('#server-notice').dialog2("options", {
+            content: "/Sublets/ajax_add4"
+          });
         } else {
-          A2Cribs.UIManager.Alert(data.error);
+          return A2Cribs.UIManager.Alert(data.error);
         }
-        return $('#server-notice').dialog2("close");
       });
     };
 

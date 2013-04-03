@@ -14,7 +14,8 @@ class A2Cribs.ShareManager
 		url = 'http://cribspot.com/sublet/' + university_encoded + '/' + address_encoded + '/' + sublet_id
 		return url
 
-	@ShareListingOnFacebook: (university_encoded=null, address_encoded=null, sublet_id=null) ->
+	@ShareListingOnFacebook: (university_encoded=null, address_encoded=null, sublet_id=null, description=null) ->
+
 		url = A2Cribs.ShareManager.GetShareUrl(university_encoded, address_encoded, sublet_id)
 
 		###sublet = null
@@ -22,14 +23,20 @@ class A2Cribs.ShareManager
 			sublet = A2Cribs.Map.IdToListingMap[sublet_id]
 		else
 			A2Cribs.Map.GetSubletData sublet_id###
+		address = null
+		if description == null
+			address = A2Cribs.Cache.IdToMarkerMap[A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId].Address
+			description = A2Cribs.Cache.IdToSubletMap[sublet_id].Description
+		else
+			address = address_encoded.split("_").join(" ")
 
 		fbObj = 
 			method: 'feed'
 			link: url
 			picture: 'http://54.225.226.210/img/header/logo.png'
-			name: A2Cribs.Cache.IdToMarkerMap[A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId].Address
+			name: address
 			caption: 'Check out this listing on Cribspot!'
-			description: A2Cribs.Cache.IdToSubletMap[sublet_id].Description
+			description: description
 		FB.ui fbObj
 
 	@GetTwitterShareUrl: (university_encoded=null, address_encoded=null, sublet_id=null) ->

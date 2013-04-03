@@ -45,7 +45,7 @@ class A2Cribs.SubletAdd
 			else if ($('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
 				A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
 			else
-				A2Cribs.SubletAdd.subletAddStep2()
+				A2Cribs.SubletAdd.subletAddStep2()				
  
 		$('#finishSubletAdd').click (e) =>
 			if (!$('#HousemateQuantity').val() || $('#HousemateQuantity').val() >= 50 || $('#HousemateQuantity').val() < 0)
@@ -53,8 +53,13 @@ class A2Cribs.SubletAdd
 			else if ($('#HousemateMajor').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
 			else
+				A2Cribs.SubletEdit.CacheStep3Data()
 				e.preventDefault()
 				@subletAddStep3()
+
+		$("#finishShare").click (e) =>
+			$('#server-notice').dialog2("close");
+
 		#refresh UI dates
 		oldBeginDate = new Date($('#SubletDateBegin').val())
 		$('#SubletDateBegin').val(oldBeginDate.toDateString())
@@ -69,6 +74,9 @@ class A2Cribs.SubletAdd
 	@backToStep2: () ->
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
 
+	@backToStep3: () ->
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
+
 	@subletAddStep1:() ->
 		A2Cribs.SubletEdit.CacheStep1Data()
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
@@ -79,7 +87,6 @@ class A2Cribs.SubletAdd
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
 
 	@subletAddStep3:() ->
-		A2Cribs.SubletEdit.CacheStep3Data()
 		url = "/sublets/ajax_submit_sublet"
 
 		#validations go here
@@ -88,9 +95,11 @@ class A2Cribs.SubletAdd
 			console.log data.status
 			if (data.status)
 				A2Cribs.UIManager.Alert data.status
+				A2Cribs.ShareManager.SavedListing = data.newid
+				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
+
 			else
 				A2Cribs.UIManager.Alert data.error
-			$('#server-notice').dialog2("close");
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1
