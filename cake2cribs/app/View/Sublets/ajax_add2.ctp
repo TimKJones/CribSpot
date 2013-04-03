@@ -72,7 +72,7 @@ echo $this->Html->css('datepicker');
         );*/
 
         echo "<div class = 'row-fluid'>";
-        echo $this->Form->label('description', 'Description:', 'span3');
+        echo $this->Form->label('description', 'Description (160 character limit):', 'span3');
         echo $this->Form->textarea('description', array(
                 'div'=>'subin',
                 'placeholder'=>"Description of the property",
@@ -81,12 +81,6 @@ echo $this->Html->css('datepicker');
         );
         echo "</div>";
 
-		echo $this->Form->input('number_bathrooms', array(
-        	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Number of Bathrooms:'),
-        	'class'=>'span9'
-        	)
-        );
 		echo $this->Form->input('bathroom_type_id', array(
         	'div'=>'row-fluid subin',
         	'label'=> array('class'=>'span3','text'=>'Bathroom Type: '),
@@ -124,7 +118,7 @@ echo $this->Html->css('datepicker');
         	)
         ); 
         echo "<div class = 'row-fluid'>";
-        echo $this->Form->label('additional_fees_description', 'Additional Fees Description:', 'span3');
+        echo $this->Form->label('additional_fees_description', 'Additional Fees Description*:', 'span3');
         echo $this->Form->textarea('additional_fees_description', array(
                 'div'=>'subin',
                 'placeholder'=>"Describe any additional fees here.",
@@ -138,9 +132,9 @@ echo $this->Html->css('datepicker');
         	)
         ); 
 	?>
+    <i>* indicates an optional field</i><br/>
 	<a href="#" id="goToStep1">Back</a>
-        <a href="#" id="goToStep3" style="float:right">Next</a>
-
+    <a href="#" id="goToStep3" style="float:right">Next</a>
 </div>
 <script>
 $.datepicker.setDefaults($.datepicker.regional['nl']);

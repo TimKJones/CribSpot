@@ -36,8 +36,6 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
 			else if ($('#SubletDescription').val().length >=161)
 				A2Cribs.UIManager.Alert "Please keep the short description under 160 characters."
-			else if (!$('#SubletNumberBathrooms').val() || $('#SubletNumberBathrooms').val()<0 || $('#SubletNumberBathrooms').val() >=30)
-				A2Cribs.UIManager.Alert "Please enter a valid number of bathrooms."
 			else if (!$('#SubletUtilityCost').val() || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
 				A2Cribs.UIManager.Alert "Please enter a valid utility cost."
 			else if (!$('#SubletDepositAmount').val() || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
@@ -54,10 +52,9 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please enter a valid housemate quantity."
 			else if ($('#HousemateMajor').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
-			else if ($('#HousemateSeeking').val().length >= 254)
-				A2Cribs.UIManager.Alert "Please keep the description of who you're seeking under 255 characters."
-			e.preventDefault()
-			@subletAddStep3()
+			else
+				e.preventDefault()
+				@subletAddStep3()
 		#refresh UI dates
 		oldBeginDate = new Date($('#SubletDateBegin').val())
 		$('#SubletDateBegin').val(oldBeginDate.toDateString())

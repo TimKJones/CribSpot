@@ -26,7 +26,6 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom = $('#SubletPricePerBedroom').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = $('#SubletDescription').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.description = $('#SubletDescription').val()
-		A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms = $('#SubletNumberBathrooms').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id = $('#SubletBathroomTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id = $('#SubletUtilityTypeId').val()
 		A2Cribs.Cache.SubletEditInProgress.Sublet.utility_cost = $('#SubletUtilityCost').val()
@@ -43,9 +42,8 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = $("#HousemateEnrolled").is(':checked')
 		A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = $("#HousemateStudentTypeId").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.major = $("#HousemateMajor").val()
-		A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = $("#HousemateSeeking").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val()
-		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateMajor").val()
+		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateType").val()
 
 	###
 	Populates fields in step 1 with data loaded from cache
@@ -92,7 +90,6 @@ class A2Cribs.SubletEdit
 		$('#SubletNumberBedrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bedrooms)
 		$('#SubletPricePerBedroom').val(A2Cribs.Cache.SubletEditInProgress.Sublet.price_per_bedroom)
 		$('#SubletDescription').val(A2Cribs.Cache.SubletEditInProgress.Sublet.description)
-		$('#SubletNumberBathrooms').val(A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms)
 		$('#SubletBathroomTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.bathroom_type_id)
 		$('#SubletUtilityTypeId').val(A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id)
 		$('#SubletUtilityCost').val(A2Cribs.Cache.SubletEditInProgress.Sublet.utility_type_id)
@@ -112,7 +109,6 @@ class A2Cribs.SubletEdit
 		$("#HousemateEnrolled").prop("checked", A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled)
 		$("#HousemateStudentTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id)
 		$("#HousemateMajor").val(A2Cribs.Cache.SubletEditInProgress.Housemate.major)
-		$("#HousemateSeeking").val(A2Cribs.Cache.SubletEditInProgress.Housemate.seeking)
 		$("#HousemateGenderTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id)
 		$("#HousemateType").val(A2Cribs.Cache.SubletEditInProgress.Housemate.type)
 
@@ -144,7 +140,6 @@ class A2Cribs.SubletEdit
 			A2Cribs.Cache.SubletEditInProgress.Sublet.payment_type_id = parseInt(s.payment_type_id)
 			A2Cribs.Cache.SubletEditInProgress.Sublet.short_description = s.short_description
 			A2Cribs.Cache.SubletEditInProgress.Sublet.description = s.description
-			A2Cribs.Cache.SubletEditInProgress.Sublet.number_bathrooms = parseInt(s.number_bathrooms)
 			A2Cribs.Cache.SubletEditInProgress.Sublet.utility_cost = parseInt(s.utility_cost)
 			A2Cribs.Cache.SubletEditInProgress.Sublet.deposit_amount = s.deposit_amount
 			A2Cribs.Cache.SubletEditInProgress.Sublet.additional_fees_description = s.additional_fees_description
@@ -175,7 +170,6 @@ class A2Cribs.SubletEdit
 			A2Cribs.Cache.SubletEditInProgress.Housemate.enrolled = h.enrolled
 			A2Cribs.Cache.SubletEditInProgress.Housemate.student_type_id = h.student_type_id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.major = h.major
-			A2Cribs.Cache.SubletEditInProgress.Housemate.seeking = h.seeking
 			A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = h.gender_type_id
 			A2Cribs.Cache.SubletEditInProgress.Housemate.type = h.type
 			A2Cribs.Cache.SubletEditInProgress.Housemate.quantity = h.quantity

@@ -37,19 +37,21 @@
 
       <?php echo $this->Form->input('name', array(
         'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Property Name (optional):'),
+        'label'=> array('class'=>'span3','text'=>'Property Name*:'),
         'class'=>'span9'
         )
       ); ?>
       <?php echo $this->element('correctPinLocationMap'); ?>
       <?php echo $this->Form->input('unit_number', array(
         'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Unit Number:'),
+        'label'=> array('class'=>'span3','text'=>'Unit Number*:'),
         'class'=>'span9'
         // 'label'=> 'Building Type:',
         )
 
       );?>
+
+      <i>* indicates an optional field</i>
 
       <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
     </div>

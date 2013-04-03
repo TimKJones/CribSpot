@@ -150,20 +150,6 @@ class Sublet extends AppModel {
 				'message' => 'Must be less than 160 characters'
 				)
 			),
-		
-		//section for numberBathrooms
-		//naturalnumber, required.
-		//complete
-		'number_bathrooms' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'The number of bathrooms is required.'
-				),
-			'isNumber' => array(
-				'rule' => array('naturalNumber',true),
-				'message' => 'Invalid number of bathrooms.'
-				)
-			),
 		//section for bathroomType
 		//naturalnumber, required.
 		//complete

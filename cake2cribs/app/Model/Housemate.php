@@ -62,15 +62,6 @@ class Housemate extends AppModel {
 				'message' => 'Must be between 1 and 250 characters'
 				)
 			),
-		//section for seeking
-		//must be between 1 and 250 characters
-		//completed
-		'seeking' => array(
-			'between' => array(
-				'rule' => array('between',1,250),
-				'message' => 'Must be between 1 and 250 characters'
-				)
-			),
 		'gender_type_id' => array(
 			'isNumber' => array(
 				'rule' => array('naturalNumber',true),

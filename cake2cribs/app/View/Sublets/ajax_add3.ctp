@@ -10,7 +10,7 @@
 	echo $this->Form->create('Housemate'); 
 	echo $this->Form->input('quantity', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Housemates:'),
+        	'label'=> array('class'=>'span3','text'=>'Anticipated Housemates:'),
         	'class'=>'span9',
         	)
         ); 
@@ -24,7 +24,7 @@
         ); 
 	echo $this->Form->input('major', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Majors:'),
+        	'label'=> array('class'=>'span3','text'=>'Majors:*'),
         	'class'=>'span9',
         	)
         );
@@ -37,19 +37,11 @@
         	)
         );
 	
-	echo "<div class = 'row-fluid'>";
-	echo $this->Form->label('seeking', 'Seeking:', 'span3');
-	echo $this->Form->textarea('seeking', array(
-        	'div'=>'subin',
-        	'placeholder'=>"What do you look for in a subletter?",
-        	'class'=>'span9'
-        	)
-        );
 	echo "</div>";
 	
 	echo $this->Form->input('gender_type_id', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Gender Type:'),
+        	'label'=> array('class'=>'span3','text'=>'Gender:'),
         	'class'=>'span9',
         	)
         ); 
@@ -65,6 +57,7 @@
 
 
 		<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
+                <i>* indicates an optional field</i><br/>
                 <a href="#" id="backToStep2">Back</a>
 		<a href="#" id="finishSubletAdd" style="float:right">Finish</a>
 	</div>

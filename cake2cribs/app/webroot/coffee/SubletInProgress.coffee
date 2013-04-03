@@ -12,7 +12,6 @@ class A2Cribs.SubletInProgress
 			payment_type_id:null
 			short_description: null
 			description: null
-			number_bathrooms: null
 			bathroom_type_id: null
 			building_type_id: null
 			utility_type_id: null
@@ -43,6 +42,5 @@ class A2Cribs.SubletInProgress
 			enrolled: null
 			student_type_id: null
 			major: null
-			seeking: null
 			gender_type_id: null
 			type: null
