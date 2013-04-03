@@ -104,7 +104,7 @@
 
 			<ul class="dropdown-menu">
 				<li><a href="/dashboard"><i class="icon-dashboard"></i> My Dashboard</a></li>
-				<li><a href="#"><i class="icon-edit"></i> Edit My Listing</a></li>
+				<li><a href="/dashboard"><i class="icon-edit"></i> Edit My Listings</a></li>
 				<li><a href="/dashboard"><i class="icon-cogs"></i> Account Settings</a></li>
 				<li class="divider"></li>
 				<li><a href="/users/logout"><i class="icon-signout"></i> Logout</a></li>
