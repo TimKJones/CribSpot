@@ -140,7 +140,7 @@ class Sublet extends AppModel {
 		//no validations besides escaping special characters
 		'description' => array(
 			'between' => array(
-				'rule' => array('between',1,1000),
+				'rule' => array('between',0,1000),
 				'message' => 'Must be between 0 and 1000 characters'
 				)
 			),
