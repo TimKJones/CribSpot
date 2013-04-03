@@ -44,8 +44,6 @@ a:hover{
 	height: 100%;
 	position: relative;
 	min-width: 250px;
-	/* I ADDED THIS AS A TEMP FIX */
-	margin-top:70px;
 }
 
 

@@ -107,7 +107,7 @@
 			// NOTE: this is a workaround so that I (Michael Stratman) can get the redirect url to work
 			// I run the application out of port 8888 since I have multiple application servers running on my machine at once
 			// I need to specify a port number
-			$request_token = $twitteroauth->getRequestToken('http://54.225.226.210/account/verifyTwitter');
+			$request_token = $twitteroauth->getRequestToken('http://www.cribspot.com/account/verifyTwitter');
 			
 			//echo debug($twitteroauth);
 			// Requesting authentication tokens, the parameter is the URL we will be redirected to
@@ -163,7 +163,7 @@
 			App::uses('Xml', 'Utility');
 	 		$twitteroauth = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
 
-			$request_token = $twitteroauth->getRequestToken('http://54.225.226.210/account/verifyTwitter');
+			$request_token = $twitteroauth->getRequestToken('http://www.cribspot.com/account/verifyTwitter');
 			
 			if (array_key_exists('oauth_token', $request_token) && array_key_exists('oauth_token_secret', $request_token))
 			{	

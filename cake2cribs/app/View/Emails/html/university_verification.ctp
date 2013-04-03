@@ -342,7 +342,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         <p style="margin-bottom:15px;" >
 
-    <strong>Please click</strong> <a href="http://54.225.226.210/users/verifyUniversity?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>&email=<?php echo $email; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;"> here </a> <strong>to verify your university association.</strong></p>
+    <strong>Please click</strong> <a href="http://www.cribspot.com/users/verifyUniversity?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>&email=<?php echo $email; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;"> here </a> <strong>to verify your university association.</strong></p>
 
                                     </div>
 

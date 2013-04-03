@@ -342,7 +342,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
-    <strong>Don't worry, we've got you covered. Just click</strong> <a href="http://54.225.226.210/users/ResetPasswordRedirect?id=<?php echo $id; ?>&reset_token=<?php echo $password_reset_token; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to reset your password.</strong></p>
+    <strong>Don't worry, we've got you covered. Just click</strong> <a href="http://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&reset_token=<?php echo $password_reset_token; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to reset your password.</strong></p>
 
                                     </div>
 
