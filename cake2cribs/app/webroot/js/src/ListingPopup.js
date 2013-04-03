@@ -78,7 +78,7 @@ ListingPopup class
         }
       } else {
         content.find('#main-photo').css({
-          'background-image': 'url(/img/tooltip/default_house.png)'
+          'background-image': 'url(/img/tooltip/default_house_large.jpg)'
         });
       }
       content.find('.facebook-share').attr('onclick', 'A2Cribs.ShareManager.ShareListingOnFacebook("' + school + '","' + short_address + '", ' + subletId + ')');
