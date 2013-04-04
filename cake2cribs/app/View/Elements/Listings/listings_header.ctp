@@ -1,3 +1,4 @@
+
 <?php echo $this->Html->css("listingsDropDown"); ?>
 <div id = 'listings-content-header' class = 'content-header minimized' classname = 'listings'>
 	<span>My Listings</span>
@@ -6,18 +7,26 @@
 </div>
 <div class = 'drop-down'>
 	<div class = 'drop-down-list listings_list'>
-<?php
-	for ($i = 0; $i < count($sublets); $i++)
-	{
-		echo '<div id="' . $sublets[$i]['Sublet']['id'] . '" class="listing_list_item" >' . $sublets[$i]['Marker']['street_address'] . '</div>';
-	}
-?>
 	
-</div>
+		<?php
+		foreach($sublets as $sublet)
+		{?>
+			<?php 
+				$id = $sublet['Sublet']['id'];
+			?>
+				<div id = '<?php echo $id; ?>' class="listing-list-item">
+						<?php echo $sublet['Marker']['street_address']; ?>
+				</div>
+
+			<!-- echo $this->element('Listings/listings_header', $sublet); -->
+		<?php }
+		?>
+	
+	</div>
 </div>
 <script>
 $(document).ready(function(){
-	$('.listing_list_item').click(function(e){
+	$('.listing-list-item').click(function(e){
 		A2Cribs.SubletEdit.EditSublet(e.target.id);
 	});	
 });
