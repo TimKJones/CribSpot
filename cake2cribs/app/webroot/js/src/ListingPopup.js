@@ -164,7 +164,7 @@ ListingPopup class
           $("#universityVerified").removeClass("verified");
           $("#universityVerified").addClass("unverified");
         }
-        if (verification_info.verified_email) {
+        if (verification_info.verified_email || verification_info.verified_edu) {
           $("#emailVerified").removeClass("unverified");
           $("#emailVerified").addClass("verified");
         } else {

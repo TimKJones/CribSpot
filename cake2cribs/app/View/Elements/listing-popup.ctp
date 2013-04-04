@@ -178,7 +178,7 @@
 				<td><i id="emailVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 			<tr>
-				<td><i class="verify-text">@umich.edu</i></td>
+				<td><i class="verify-text">University Email</i></td>
 				<td><i id="universityVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 			<tr>
