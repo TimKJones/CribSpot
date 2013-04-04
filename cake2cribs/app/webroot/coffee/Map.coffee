@@ -84,30 +84,7 @@ class A2Cribs.Map
 		else
 			@MapCenter = new google.maps.LatLng(latitude, longitude);
 
-		style = [
-			{
-				"featureType": "landscape",
-				"stylers": [
-					{ "hue": "#005eff" }
-				]
-			},{
-				"featureType": "road",
-				"stylers": [
-					{ "hue": "#00ff19" }
-				]
-			},{
-				"featureType": "water",
-				"stylers": [
-					{ "saturation": 99 }
-				]
-			},{
-				"featureType": "poi",
-				"stylers": [
-					{ "hue": "#0044ff" },
-					{ "lightness": 32 }
-				]
-			}
-		]
+		style = []
 		@MapOptions =
   			zoom: zoom
   			center: A2Cribs.Map.MapCenter
