@@ -30,7 +30,7 @@
 			echo $user['University']['name'];
 		}
 		else{
-			echo 'University <a href="/users/verifyUniversity">Verify?</a>';
+			echo 'University <a id="VerifyLink" >Verify?</a>';
 	      	
 
 		}
@@ -43,3 +43,19 @@
 		<i class = 'tw icon-twitter-sign'></i>Twitter <i class = 'unverified icon-ok-sign'></i>
 	</div>
 </div>
+
+<style>
+#VerifyLink:hover
+{
+	cursor:pointer;
+}
+</style>
+
+<script>
+$(document).ready(function(){
+	$("#VerifyLink").click(function(){
+		A2Cribs.UIManager.Alert("To verify your university, go to 'My Account Settings' in the Dashboard.");
+	});
+});
+
+</script>
