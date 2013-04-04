@@ -29,6 +29,8 @@ class MapController extends AppController {
             if (is_numeric($school_name))
                 $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
             $school_name = str_replace("_", " ", $school_name);
+            $this->Session->write("currentUniversity", $school_name);
+            CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
             $id = $this->University->getIdfromName($school_name);
             if ($id == null)
                 throw new NotFoundException();  
@@ -61,7 +63,6 @@ class MapController extends AppController {
         }
         $this->set('user', json_encode($user));
 		$this->InitFilterValues();
-    CakeLog::write("sessionValues", "in map: " . print_r($this->Session->read(), true));
 	}
 
   public function LoadTypeTables()

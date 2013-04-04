@@ -11,6 +11,7 @@
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
 
+<a href="<?php echo $mapUrl; ?>"<div id="backToMap"></div></a>
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>

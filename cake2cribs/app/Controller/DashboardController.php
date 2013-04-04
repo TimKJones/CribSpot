@@ -55,5 +55,12 @@
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
 	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user, 'user_json'=>$json_user));
 	 		$this->set('sublets', $sublets);
+
+	 		$mapUrl = '/';
+	 		if ($this->Session->read("currentUniversity") != null)
+	 			$mapUrl = '/map/sublet/' . $this->Session->read("currentUniversity");
+
+	 		$this->set('mapUrl', $mapUrl);
+	 		CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
 	 	}
 	}
