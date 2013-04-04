@@ -161,3 +161,7 @@ class A2Cribs.ListingPopup
 			else
 				$("#twitterVerified").removeClass("verified");
 				$("#twitterVerified").addClass("unverified");
+
+			if verification_info.verified_fb
+				pic_url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480"
+				$("#tooltipUserPicture").attr("src", pic_url)

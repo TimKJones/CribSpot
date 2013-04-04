@@ -141,6 +141,7 @@ ListingPopup class
       }
       user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id];
       return A2Cribs.VerifyManager.getVerificationFor(user).then(function(verification_info) {
+        var pic_url;
         if (parseInt(verification_info.mut_friends) === 0 || verification_info.mut_friends === void 0 || verification_info.mut_friends === null) {
           $(".facebookFriendLabel").html("Total Friends:");
           if (verification_info.tot_friends !== null && !isNaN(verification_info.tot_friends)) {
@@ -180,10 +181,14 @@ ListingPopup class
         }
         if (verification_info.verified_tw) {
           $("#twitterVerified").removeClass("unverified");
-          return $("#twitterVerified").addClass("verified");
+          $("#twitterVerified").addClass("verified");
         } else {
           $("#twitterVerified").removeClass("verified");
-          return $("#twitterVerified").addClass("unverified");
+          $("#twitterVerified").addClass("unverified");
+        }
+        if (verification_info.verified_fb) {
+          pic_url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
+          return $("#tooltipUserPicture").attr("src", pic_url);
         }
       });
     };
