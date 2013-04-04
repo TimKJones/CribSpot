@@ -16,6 +16,9 @@ class MapController extends AppController {
 
 	public function sublet($school_name = null, $address = null, $sublet_id = null)
 	{
+        if ($school_name == null)
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+
         /* -1 Code means do not open the tooltip */
         if (($address == null && $sublet_id != null) || 
             ($address != null && $sublet_id == null))
