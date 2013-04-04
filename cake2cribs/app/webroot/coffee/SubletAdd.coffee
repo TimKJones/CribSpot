@@ -68,6 +68,17 @@ class A2Cribs.SubletAdd
 
 
 
+	@InitPostingProcess:(e=null) ->
+		A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress()
+		$("<div/>").dialog2({
+			title: "Post a sublet", 
+			content: "/Sublets/ajax_add", 
+			id: "server-notice"
+		});
+
+		if (e != null)
+			e.preventDefault();
+
 	@backToStep1: () ->
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add"});
 

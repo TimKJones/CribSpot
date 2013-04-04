@@ -73,6 +73,17 @@
       return $('#SubletDateEnd').val(oldEndDate.toDateString());
     };
 
+    SubletAdd.InitPostingProcess = function(e) {
+      if (e == null) e = null;
+      A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
+      $("<div/>").dialog2({
+        title: "Post a sublet",
+        content: "/Sublets/ajax_add",
+        id: "server-notice"
+      });
+      if (e !== null) return e.preventDefault();
+    };
+
     SubletAdd.backToStep1 = function() {
       return $('#server-notice').dialog2("options", {
         content: "/Sublets/ajax_add"

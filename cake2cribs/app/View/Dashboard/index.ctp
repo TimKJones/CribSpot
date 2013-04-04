@@ -41,6 +41,8 @@
 </div>
 
 <script>
+
+
 	// // A2Cribs.Messages.init();
 
 	// window.fbAsyncInit = function() {
@@ -95,6 +97,10 @@
 	a.init(<?php echo $user_json;?>);
 	a.setupUI();
 	
+
+// check for url parameter to init post action
+if (document.URL.indexOf("post_redirect") != -1)
+    A2Cribs.SubletAdd.InitPostingProcess();
 
 
 </script>

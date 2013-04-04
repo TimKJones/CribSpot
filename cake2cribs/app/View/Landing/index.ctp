@@ -43,7 +43,9 @@
 		<form id="school-form">
 			<?php
 			if ($this->Session->read('Auth.User.id') == 0)
-				echo '<a href="#signupModal" id="post-btn" class="btn add-on" data-toggle="modal">POST</a>';
+			{
+				echo '<a id="post-btn" onclick="A2Cribs.Register.InitRegister(' . "'/post')" . '" class="btn add-on" data-toggle="modal">POST</a>';
+			}
 			else
 				echo '<a id="post-btn" class="subletAddSteps btn add-on" href="#" >POST</a>';
 			?>
