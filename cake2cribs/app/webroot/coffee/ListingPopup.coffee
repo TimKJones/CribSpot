@@ -114,10 +114,23 @@ class A2Cribs.ListingPopup
 
 
 	loadVerificationInfo: (sublet_id, content)->
-		#user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
-		#A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
-			# Fill in UI LOGIC HERE
-			#console.log(verification_info)
+		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
+		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
+			if parseInt(verification_info.mut_friends) == 0 or verification_info.mut_friends == undefined or verification_info.mut_friends == null
+				$("#facebookFriendLabel").html("Total Friends:")
+				if verification_info.tot_friends != null and !isNaN(verification_info.tot_friends)
+					$("#numFacebookFriends").html(verification_info.tot_friends)
+				else
+					$("#numFacebookFriends").html("--")
+			else
+				$("#facebookFriendLabel").html("Mutual Friends:")
+				$("#numFacebookFriends").html(verification_info.mut_friends)
+
+			if verification_info.tot_followers != null and !isNaN(verification_info.tot_followers)
+				$("#numTwitterFollowers").html(verification_info.tot_followers)
+			else
+				$("#numTwitterFollowers").html("--")
+				
 
 
 

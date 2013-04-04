@@ -70,17 +70,17 @@
 					<div class="small-line-height inline float-left">
 						<i class="med-small-text">Facebook</i>
 						<br>
-						<i class="small-text">Mutual Friends:</i>
+						<i class="small-text" id="facebookFriendLabel">Mutual Friends:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>
+					<i class="med-large-text large-line-height" id="numFacebookFriends">--</i>
 				</td>
 				<td>
 					<div class="small-line-height inline float-left">
 						<i class="med-small-text">Twitter</i>
 						<br>
-						<i class="small-text">Followers:</i>
+						<i class="small-text" >Followers:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>					
+					<i class="med-large-text large-line-height" id="numTwitterFollowers">--</i>					
 				</td>
 			</tr>
 		</table>

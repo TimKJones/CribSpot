@@ -142,7 +142,7 @@ class A2Cribs.VerifyManager
 				type:"GET"
 				success: (response)=>
 					data = JSON.parse(response)
-					defered(data.follwers_count)
+					defered.resolve(data.followers_count)
 		
 			return defered.promise()
 		else

@@ -133,7 +133,28 @@ ListingPopup class
       return range + rmonth[endSplit[1] - 1] + " " + parseInt(endSplit[2]) + ", " + endSplit[0];
     };
 
-    ListingPopup.prototype.loadVerificationInfo = function(sublet_id, content) {};
+    ListingPopup.prototype.loadVerificationInfo = function(sublet_id, content) {
+      var user;
+      user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id];
+      return A2Cribs.VerifyManager.getVerificationFor(user).then(function(verification_info) {
+        if (parseInt(verification_info.mut_friends) === 0 || verification_info.mut_friends === void 0 || verification_info.mut_friends === null) {
+          $("#facebookFriendLabel").html("Total Friends:");
+          if (verification_info.tot_friends !== null && !isNaN(verification_info.tot_friends)) {
+            $("#numFacebookFriends").html(verification_info.tot_friends);
+          } else {
+            $("#numFacebookFriends").html("--");
+          }
+        } else {
+          $("#facebookFriendLabel").html("Mutual Friends:");
+          $("#numFacebookFriends").html(verification_info.mut_friends);
+        }
+        if (verification_info.tot_followers !== null && !isNaN(verification_info.tot_followers)) {
+          return $("#numTwitterFollowers").html(verification_info.tot_followers);
+        } else {
+          return $("#numTwitterFollowers").html("--");
+        }
+      });
+    };
 
     return ListingPopup;
 
