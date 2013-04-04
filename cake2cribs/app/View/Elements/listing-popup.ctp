@@ -90,7 +90,7 @@
 			<h1>Description:</h1>
 			<p>This is my house and I think it's awesome. There is a pool in the back and lots of showers. I really love showering and trees.</p>
 		</div>
-		<i class="icon-map-marker icon-large"></i><i class="full-address">1001 Vaughn Street, Ann Arbor, MI 48104</i>
+		<i class="icon-map-marker icon-large"></i><i class="full-address"> 1001 Vaughn Street, Ann Arbor, MI 48104</i>
 	</div>
 	<div id="details" class="side-pane">
 		<h1>Additional Details:</h1>
