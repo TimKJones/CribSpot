@@ -5,13 +5,7 @@ This is a temporary class containing functionality used to initialize the users 
 class EmailsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('User');
-	public $components= array('Email', 'RequestHandler');
-
-    public function beforeFilter(){
-    parent::beforeFilter();
-    $this->Auth->allow('InitializeCorrectionEmail');
-    }
-    
+	public $components= array('Email', 'RequestHandler');   
 
 
     public function InitializeNewUsers()
