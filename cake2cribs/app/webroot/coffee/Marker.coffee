@@ -73,7 +73,7 @@ class A2Cribs.Marker
 			  ((l.PricePerBedroom >= min_rent and
 			  l.PricePerBedroom <= max_rent)) and
 			  (l.Bedrooms >= beds) and
-			  ((sublet_start_date >= start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date)) and
+			  ((start_date >= sublet_start_date) or !A2Cribs.Marker.IsValidDate(start_date)) and ((sublet_end_date >= end_date) or !A2Cribs.Marker.IsValidDate(end_date)) and
 			  ((female and has_females) or (male and has_males)) and 
 			  ((undergrad and has_undergrads) or (grad and has_grads)) and 
 			  (!students_only or (students_only and has_students_only)) and 
