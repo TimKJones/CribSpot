@@ -53,7 +53,7 @@
 		</div>
 		<div class="medium-line-height margin-above">
 			<a href="" class="thumbnail">
-				<img src="/img/head_small.jpg" alt="Jason">
+				<img src="/img/head_small.jpg" alt="No picture" id="tooltipUserPicture">
 			</a>
 			<div class="post-info ellipsis">
 				<i class="small-text">Posted By:</i>
