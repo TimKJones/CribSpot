@@ -47,7 +47,7 @@
       fbObj = {
         method: 'feed',
         link: url,
-        picture: 'http://www.cribspot.com/img/header/logo.png',
+        picture: 'http://www.cribspot.com/img/upright_logo.png',
         name: address,
         caption: 'Check out this listing on Cribspot!',
         description: description
