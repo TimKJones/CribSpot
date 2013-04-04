@@ -114,7 +114,8 @@ class A2Cribs.ListingPopup
 
 
 	loadVerificationInfo: (sublet_id, content)->
-		if A2Cribs.marker_id_to_open > 0
+		if !A2Cribs.FBInitialized && A2Cribs.marker_id_to_open > 0
+			A2Cribs.FBInitialized =true
 			return
 		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
 		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
