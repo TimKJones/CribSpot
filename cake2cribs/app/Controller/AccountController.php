@@ -64,6 +64,7 @@
 	 				'message'=>"Data verification failed",
 	 				));
 	 			$this->set('response',$json_response);
+	 			CakeLog::write("verifyFB" , "error 1: secret = " . $secret . "; signed_request = " . $signed_request . "; data = " . $data);
 	 			return;
 	 		}
 	 		// $data = json_decode($jsondata);
@@ -72,6 +73,7 @@
 	 		$data = array('id'=>$user['User']['id'], 'facebook_userid'=>$fb_id);
 	 		try{
 	 			$user = $this->User->edit($data);
+	 			CakeLog::write("verifyFB" , "save successful");
 	 			$this->redirect('/account');
 	 		} catch (Exception $e){
 	 			// Saving the user model failed
@@ -80,6 +82,7 @@
 	 				'message'=>"Saving the user failed",
 	 				));
 	 			$this->set('response',$json_response);
+	 			CakeLog::write("verifyFB" , "error 2");
 	 			return;
 	 		}
 
@@ -90,6 +93,7 @@
  				'message'=>"User Verified"
  				));
  			$this->set('response',$json_response);
+ 			CakeLog::write("verifyFB" , "success");
  			return;
 
 	 	}

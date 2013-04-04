@@ -144,6 +144,9 @@ class Marker extends AppModel {
 		Cache::write('markers', $this->find('all'));
 	}
 
+	/*
+	Finds marker_id by street_address
+	*/
 	public function FindMarkerId($marker)
 	{
 		$street_address = $marker['street_address'];

@@ -42,7 +42,7 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please enter a valid deposit amount."
 			else if ($('#SubletAdditionalFeesDescription').val().length >=161)
 				A2Cribs.UIManager.Alert "Please keep the additional fees description under 160 characters."
-			else if ($('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
+			else if (!$('#SubletAdditionalFeesAmount').val() || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
 				A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
 			else
 				A2Cribs.SubletAdd.subletAddStep2()				
@@ -67,6 +67,17 @@ class A2Cribs.SubletAdd
 		$('#SubletDateEnd').val(oldEndDate.toDateString())
 
 
+
+	@InitPostingProcess:(e=null) ->
+		A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress()
+		$("<div/>").dialog2({
+			title: "Post a sublet", 
+			content: "/Sublets/ajax_add", 
+			id: "server-notice"
+		});
+
+		if (e != null)
+			e.preventDefault();
 
 	@backToStep1: () ->
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add"});

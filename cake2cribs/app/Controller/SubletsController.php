@@ -234,10 +234,9 @@ class SubletsController extends AppController {
         CakeLog::write("savingHousemate", print_r($housemate, true));
 
         $marker['building_type_id'] = $sublet['building_type_id'];
-        if ($marker['marker_id'] == null)
-        {   
-            unset($marker['marker_id']);
-        }
+
+        unset($marker['marker_id']);
+        
         if ($sublet['id'] == null)
         {
             unset($sublet['id']);

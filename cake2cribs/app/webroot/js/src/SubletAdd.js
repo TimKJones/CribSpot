@@ -47,7 +47,7 @@
           return A2Cribs.UIManager.Alert("Please enter a valid deposit amount.");
         } else if ($('#SubletAdditionalFeesDescription').val().length >= 161) {
           return A2Cribs.UIManager.Alert("Please keep the additional fees description under 160 characters.");
-        } else if ($('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+        } else if (!$('#SubletAdditionalFeesAmount').val() || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
           return A2Cribs.UIManager.Alert("Please enter a valid additional fees amount.");
         } else {
           return A2Cribs.SubletAdd.subletAddStep2();
@@ -71,6 +71,17 @@
       $('#SubletDateBegin').val(oldBeginDate.toDateString());
       oldEndDate = new Date($('#SubletDateEnd').val());
       return $('#SubletDateEnd').val(oldEndDate.toDateString());
+    };
+
+    SubletAdd.InitPostingProcess = function(e) {
+      if (e == null) e = null;
+      A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
+      $("<div/>").dialog2({
+        title: "Post a sublet",
+        content: "/Sublets/ajax_add",
+        id: "server-notice"
+      });
+      if (e !== null) return e.preventDefault();
     };
 
     SubletAdd.backToStep1 = function() {

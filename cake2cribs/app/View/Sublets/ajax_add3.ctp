@@ -4,6 +4,7 @@
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php //echo $this->Html->script('src/SubletAdd'); ?>
 <?php echo $this->Html->css('account'); ?>
+<?php echo $this->Html->css("ajax_add3"); ?>
 
 <div class="sublet-register">
 	<?php 
@@ -58,6 +59,7 @@
 
 		<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
                 <i>* indicates an optional field</i><br/>
+                <div id="photosComingSoon"></div>
                 <a href="#" id="backToStep2">Back</a>
 		<a href="#" id="finishSubletAdd" style="float:right">Finish</a>
 	</div>

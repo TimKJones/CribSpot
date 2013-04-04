@@ -1,13 +1,17 @@
 class A2Cribs.Register
-
-
+	@RedirectUrl = null
 
 	@setupUI:() ->
 		$('#registerForm').submit (e) =>
 			e.preventDefault()
 			@cribspotRegister() 
 
-
+	###
+	Open register modal and feed a specific url to redirect to after register is successful
+	###
+	@InitRegister: (url=null) ->
+		$("#signupModal").modal("show")
+		A2Cribs.Register.RedirectUrl = '/dashboard?post_redirect=true'
 
 			
 	@cribspotRegister:() ->
@@ -28,7 +32,12 @@ class A2Cribs.Register
 			data = JSON.parse response
 			console.log data
 			if data.registerStatus == 1
-				window.location.href= '/dashboard'
+				if A2Cribs.Register.RedirectUrl != null
+					url =  A2Cribs.Register.RedirectUrl
+					A2Cribs.Register.RedirectUrl = null
+					window.location.href = url
+				else
+					window.location.href= '/dashboard'
 			else
 				$('#registerStatus').empty()
 			

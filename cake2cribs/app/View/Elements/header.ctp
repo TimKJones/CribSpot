@@ -197,14 +197,7 @@
     	}).data("datepicker");
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 		$("#subletAddSteps").click(function(event) {
-			A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
-			$("<div/>").dialog2({
-				title: "Post a sublet", 
-				content: "/Sublets/ajax_add", 
-				id: "server-notice"
-			});
-
-			event.preventDefault();
+			A2Cribs.SubletAdd.InitPostingProcess(event);
 		});
 		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
 	');
