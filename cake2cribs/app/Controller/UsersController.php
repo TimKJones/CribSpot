@@ -394,7 +394,9 @@ class UsersController extends AppController {
 
     public function resetpassword() {
         $response = null;
-        if ($this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
+        if (array_key_exists('User', $this->request->data) && 
+        array_key_exists('email', $this->request->data['User']) && 
+        $this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
         {
             //finding user by email
             //$this->User->read(null, $this->request->data['User']['email']);
@@ -443,7 +445,7 @@ class UsersController extends AppController {
             $this->redirect(array('action' => 'login'));
         }
         
-        if ($this->request->query['id']!='')
+        if (array_key_exists('id', $this->request->query) && $this->request->query['id']!='')
         {
             $this->User->id = $this->request->query['id'];
             $password_reset_token = $this->request->query['password_reset_token'];

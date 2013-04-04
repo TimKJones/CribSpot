@@ -1,6 +1,7 @@
 <?php echo $this->Html->css('bootstrap'); ?>
 <?php echo $this->Html->css('font-awesome'); ?>
 <?php echo $this->Html->css('users'); ?>
+<?php echo $this->Html->css('resetpassword'); ?>
 <?php echo $this->Html->script("src/Account"); ?>
 <?php echo $this->element('header'); ?>
 
