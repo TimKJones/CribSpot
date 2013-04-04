@@ -114,6 +114,8 @@ class A2Cribs.ListingPopup
 
 
 	loadVerificationInfo: (sublet_id, content)->
+		if A2Cribs.marker_id_to_open > 0
+			return
 		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
 		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
 			if parseInt(verification_info.mut_friends) == 0 or verification_info.mut_friends == undefined or verification_info.mut_friends == null

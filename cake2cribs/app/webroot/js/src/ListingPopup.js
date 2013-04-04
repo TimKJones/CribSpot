@@ -135,6 +135,7 @@ ListingPopup class
 
     ListingPopup.prototype.loadVerificationInfo = function(sublet_id, content) {
       var user;
+      if (A2Cribs.marker_id_to_open > 0) return;
       user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id];
       return A2Cribs.VerifyManager.getVerificationFor(user).then(function(verification_info) {
         if (parseInt(verification_info.mut_friends) === 0 || verification_info.mut_friends === void 0 || verification_info.mut_friends === null) {
