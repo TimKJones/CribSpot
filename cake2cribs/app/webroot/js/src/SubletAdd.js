@@ -47,7 +47,7 @@
           return A2Cribs.UIManager.Alert("Please enter a valid deposit amount.");
         } else if ($('#SubletAdditionalFeesDescription').val().length >= 161) {
           return A2Cribs.UIManager.Alert("Please keep the additional fees description under 160 characters.");
-        } else if ($('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+        } else if (!$('#SubletAdditionalFeesAmount').val() || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
           return A2Cribs.UIManager.Alert("Please enter a valid additional fees amount.");
         } else {
           return A2Cribs.SubletAdd.subletAddStep2();
