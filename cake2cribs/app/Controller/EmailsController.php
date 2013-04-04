@@ -30,7 +30,7 @@ class EmailsController extends AppController {
 
     public function InitializeCorrectionEmail()
     {
-        // get all user_ids
+        // get all user_idsss
         $user_ids_list = $this->User->find('all', array(
             'fields' => array("id")
         ));
