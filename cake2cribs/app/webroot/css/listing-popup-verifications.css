@@ -1,0 +1,11 @@
+.verified{
+	font-size: 20px;
+	color: #68c613;
+	background-color: #f6f6f6;
+}
+
+.unverified{
+	font-size: 20px;
+	color: #bd1d1c;	
+	background-color: #f6f6f6;
+}

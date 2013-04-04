@@ -117,21 +117,44 @@ class A2Cribs.ListingPopup
 		user = A2Cribs.Cache.SubletIdToOwnerMap[sublet_id]
 		A2Cribs.VerifyManager.getVerificationFor(user).then (verification_info)->
 			if parseInt(verification_info.mut_friends) == 0 or verification_info.mut_friends == undefined or verification_info.mut_friends == null
-				$("#facebookFriendLabel").html("Total Friends:")
+				$(".facebookFriendLabel").html("Total Friends:")
 				if verification_info.tot_friends != null and !isNaN(verification_info.tot_friends)
-					$("#numFacebookFriends").html(verification_info.tot_friends)
+					$(".numFacebookFriends").html(verification_info.tot_friends)
 				else
-					$("#numFacebookFriends").html("--")
+					$(".numFacebookFriends").html("--")
 			else
-				$("#facebookFriendLabel").html("Mutual Friends:")
-				$("#numFacebookFriends").html(verification_info.mut_friends)
+				$(".facebookFriendLabel").html("Mutual Friends:")
+				$(".numFacebookFriends").html(verification_info.mut_friends)
 
 			if verification_info.tot_followers != null and !isNaN(verification_info.tot_followers)
-				$("#numTwitterFollowers").html(verification_info.tot_followers)
+				$(".numTwitterFollowers").html(verification_info.tot_followers)
 			else
-				$("#numTwitterFollowers").html("--")
-				
+				$(".numTwitterFollowers").html("--")
 
+			if verification_info.verified_edu
+				$("#universityVerified").removeClass("unverified");
+				$("#universityVerified").addClass("verified");
+			else
+				$("#universityVerified").removeClass("verified");
+				$("#universityVerified").addClass("unverified");
 
+			if verification_info.verified_email
+				$("#emailVerified").removeClass("unverified");
+				$("#emailVerified").addClass("verified");
+			else
+				$("#emailVerified").removeClass("verified");
+				$("#emailVerified").addClass("unverified");
 
+			if verification_info.verified_fb
+				$("#fbVerified").removeClass("unverified");
+				$("#fbVerified").addClass("verified");
+			else
+				$("#fbVerified").removeClass("verified");
+				$("#fbVerified").addClass("unverified");
 
+			if verification_info.verified_tw
+				$("#twitterVerified").removeClass("unverified");
+				$("#twitterVerified").addClass("verified");
+			else
+				$("#twitterVerified").removeClass("verified");
+				$("#twitterVerified").addClass("unverified");
