@@ -32,6 +32,8 @@
 		echo $this->Html->script('jquery.dialog2');
 		echo $this->Html->script('jquery.dialog2.helpers');
 
+		echo $this->Html->script('restrict_browsers');
+
 		echo $this->Html->script('jquery.form');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('custom-bootstrap');
@@ -86,9 +88,9 @@
 
 		/* Meta Data */
 		echo $this->Html->meta('keywords',
-			'ann arbor housing, ann arbor apartments, student housing, university of michigan housing, umich housing, ann arbor rentals, ann arbor subleases, UM housing, a2cribs, off-campus housing'
+			'ann arbor housing, ann arbor apartments, student housing, university of michigan housing, umich housing, ann arbor rentals, ann arbor subleases, UM housing, cribspot, a2cribs, off-campus housing'
 		);
-		echo $this->Html->meta('description', 'A2 Cribs is a free service tailored towards college students searching for rentals and sublets. We make it simple and quick to filter thousands of listings by price, beds, fall/spring leases, etc.');
+		echo $this->Html->meta('description', 'Cribspot is a free service tailored towards college students searching for rentals and sublets. We make it simple and quick to filter thousands of listings by price, beds, fall/spring leases, etc.');
 		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=2', array('type' => 'icon'));
 
 		/* Fetch data */
