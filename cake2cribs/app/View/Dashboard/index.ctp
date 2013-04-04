@@ -1,3 +1,5 @@
+
+
 <?php echo $this->element('dashboard-header'); ?>
 <?php echo $this->element('popups'); ?>
 
@@ -13,12 +15,13 @@
 
 <a href="<?php echo $mapUrl; ?>"<div id="backToMap"></div></a>
 
+
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
 		<div class = 'span3' id = 'left_content'>
-			<?php echo $this->element('Account/account_settings_header')?>
-			<?php echo $this->element('Listings/listings_header')?>
-			<?php echo $this->element('Messages/conversations_header')?>
+			<?php echo $this->element('Account/account_settings_header');?>
+			<?php echo $this->element('Listings/listings_header', $sublets);?>
+			<?php echo $this->element('Messages/conversations_header');?>
 			
 		</div>
 		<div class = 'span6' id = 'middle_content'>
