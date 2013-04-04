@@ -28,9 +28,8 @@ class MapController extends AppController {
         {
             if (is_numeric($school_name))
                 $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
-            $school_name = str_replace("_", " ", $school_name);
             $this->Session->write("currentUniversity", $school_name);
-            CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
+            $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
             if ($id == null)
                 throw new NotFoundException();  
