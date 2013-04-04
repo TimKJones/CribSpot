@@ -26,8 +26,8 @@
 			<br>
 			<i class="icon-building"></i><i class="building-type bold-text">House</i>
 			<div class="extended-buttons">
-				<a href="#" class="listing-popup-link"><i class="icon-plus"></i></a>
-				<a href="#" class="listing-message"><i class="icon-comments"></i></a>
+				<a href="#" class="listing-popup-link" title="Detailed View"><i class="icon-plus"></i></a>
+				<a href="#" class="listing-message" title="Message this user"><i class="icon-comments"></i></a>
 				<a href="#" class="favorite-clickable"><i class="icon-heart"></i></a>
 			</div>
 		</div>
