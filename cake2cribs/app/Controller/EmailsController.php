@@ -7,11 +7,6 @@ class EmailsController extends AppController {
 	public $uses = array('User');
 	public $components= array('Email', 'RequestHandler');
 
-    public function beforeFilter(){
-    parent::beforeFilter();
-     $this->Auth->allow('InitializeNewUsers');
-    }
-
     public function InitializeNewUsers()
     {
         // get all user_ids
