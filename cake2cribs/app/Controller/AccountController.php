@@ -64,7 +64,7 @@
 	 				'message'=>"Data verification failed",
 	 				));
 	 			$this->set('response',$json_response);
-	 			CakeLog::write("verifyFB" , "error 1");
+	 			CakeLog::write("verifyFB" , "error 1: secret = " . $secret . "; signed_request = " . $signed_request . "; data = " . $data);
 	 			return;
 	 		}
 	 		// $data = json_decode($jsondata);
