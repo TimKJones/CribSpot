@@ -13,6 +13,7 @@
 .listings_list{
 	height: 250px;
 	overflow: auto; 
+	border-bottom: 1px solid #cacaca;
 }
 
 .listing-list-item{
