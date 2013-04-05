@@ -95,18 +95,13 @@
 				echo '<a class="btn btn-link" href="#signupModal" data-toggle="modal">SIGN UP</a>';
 				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
 			}
-			else{
-				$pic_url = "/img/head_large.jpg";
-				if($AuthUser['facebook_userid']){
-					$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_userid']."/picture?width=80&height=80";
-				}
+			else
 				echo '
 					<a class="btn btn-link" data-toggle="dropdown" href="#">
-						<img src="'.$pic_url.'" class="img-polaroid">
+						<img src="/img/head_large.jpg" class="img-polaroid">
 						<strong>Hello!</strong>
 						<span class="caret"></span>
-					</a>';
-			}
+					</a>'
 			?>
 
 			<ul class="dropdown-menu">
