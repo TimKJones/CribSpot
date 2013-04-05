@@ -1,5 +1,5 @@
 class A2Cribs.Dashboard
-	
+
 	@SetupUI:()->
 		$(window).resize =>
 			@SizeContent()

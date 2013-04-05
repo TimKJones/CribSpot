@@ -451,7 +451,6 @@ $log = $this->getDataSource()->getLog(false, false);
 	  		/*$twitter_followers = $User->getTwitterFollowersCount($subletQuery[$i]['User']['id']);
 	  		//$followers_array = array('twitter_followers' => $twitter_followers);
 	  		$subletQuery[$i]['User']['twitter_followers'] = $twitter_followers;*/
-	  		unset($subletQuery[$i]['User']['id']);
 	  	}
 	  	
 	  	CakeLog::write("loadMarkerData",  print_r($subletQuery, true));

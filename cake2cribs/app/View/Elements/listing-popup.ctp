@@ -1,4 +1,5 @@
 <?= $this->Html->css('/less/listing-popup.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('listing-popup-verifications'); ?>
 
 <div class="listing-popup modal hide fade">
 	<div id="sublet-id" class="hide"></div>
@@ -52,7 +53,7 @@
 		</div>
 		<div class="medium-line-height margin-above">
 			<a href="" class="thumbnail">
-				<img src="/img/head_small.jpg" alt="Jason">
+				<img src="/img/head_small.jpg" alt="No picture" id="tooltipUserPicture">
 			</a>
 			<div class="post-info ellipsis">
 				<i class="small-text">Posted By:</i>
@@ -70,17 +71,17 @@
 					<div class="small-line-height inline float-left">
 						<i class="med-small-text">Facebook</i>
 						<br>
-						<i class="small-text">Mutual Friends:</i>
+						<i class="small-text facebookFriendLabel">Mutual Friends:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>
+					<i class="med-large-text large-line-height numFacebookFriends">--</i>
 				</td>
 				<td>
 					<div class="small-line-height inline float-left">
 						<i class="med-small-text">Twitter</i>
 						<br>
-						<i class="small-text">Followers:</i>
+						<i class="small-text" >Followers:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>					
+					<i class="med-large-text large-line-height numTwitterFollowers">--</i>					
 				</td>
 			</tr>
 		</table>
@@ -157,9 +158,9 @@
 					<div class="small-line-height inline float-left">
 						<i class="med-small-text">Facebook</i>
 						<br>
-						<i class="small-text">Mutual Friends:</i>
+						<i class="small-text facebookFriendLabel">Mutual Friends:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>
+					<i class="med-large-text large-line-height numFacebookFriends">--</i>
 				</td>
 				<td>
 					<div class="small-line-height inline float-left">
@@ -167,26 +168,26 @@
 						<br>
 						<i class="small-text">Followers:</i>
 					</div>
-					<i class="med-large-text large-line-height">--</i>					
+					<i class="med-large-text large-line-height numTwitterFollowers">--</i>					
 				</td>
 			</tr>
 		</table>
 		<table id="verify-table" class="table table-bordered margin-above">
 			<tr>
 				<td><i class="verify-text">Email Address</i></td>
-				<td><i class="verify-text">---</i></td>
+				<td><i id="emailVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 			<tr>
-				<td><i class="verify-text">@umich.edu</i></td>
-				<td><i class="verify-text">---</i></td>
+				<td><i class="verify-text">University Email</i></td>
+				<td><i id="universityVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 			<tr>
 				<td><i class="verify-text">Facebook</i></td>
-				<td><i class="verify-text">---</i></td>
+				<td><i id="fbVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 			<tr>
 				<td><i class="verify-text">Twitter</i></td>
-				<td><i class="verify-text">---</i></td>
+				<td><i id="twitterVerified" class="unverified icon-ok-sign"></i></td>
 			</tr>
 		</table>
 		<!--<i class="med-small-text">You must sign up or logged in to message!</i>-->
