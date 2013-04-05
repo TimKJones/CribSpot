@@ -1,8 +1,13 @@
 class A2Cribs.SubletEdit
-
+	# @EditingASublet = false
 	@Init: (subletData) ->
 		A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress() 
 		A2Cribs.SubletEdit.InitLoadedSubletData();	
+		# $("#addressToMark").attr 'disabled', 'disabled'
+
+		# A2Cribs.CorrectMarker.Disable()
+
+		# @EditingASublet = true
 
 	@CacheStep1Data: () ->
 		A2Cribs.Cache.SubletEditInProgress.Sublet.university_id = parseInt(A2Cribs.CorrectMarker.SelectedUniversity.id)
@@ -47,22 +52,36 @@ class A2Cribs.SubletEdit
 
 	###
 	Populates fields in step 1 with data loaded from cache
+
+	this function is also used to load in cached values while going between steps in adding sublet
+
 	###
-	@InitStep1: () ->
+	@InitStep1: (editing_sublet=false) ->
 		subletData = A2Cribs.Cache.SubletEditInProgress
 		if subletData.Sublet != null and subletData.Sublet != undefined
 			$('#universityName').val(subletData.Sublet.university_name)
 			$('#SubletUnitNumber').val(subletData.Sublet.unit_number)
 		if subletData.Marker != null and subletData.Marker != undefined
 			$('#SubletBuildingTypeId').val(subletData.Marker.building_type_id)
+			
+			if editing_sublet == true
+				# Disable the address and map fields so the user can't change the location of the sublet
+				# There will also be server side logic that will also prevent this.
+				$("#addressToMark").val(subletData.Marker.street_address).attr 'disabled', 'disabled'
+				A2Cribs.CorrectMarker.Disable()
+			
+			else
+				$("#addressToMark").val(subletData.Marker.street_address)
+
 			$('#SubletName').val(subletData.Marker.alternate_name)
-			$("#addressToMark").val(subletData.Marker.street_address)
 			$("#formattedAddress").val(subletData.Marker.street_address)
 			$('#updatedLat').val(subletData.Marker.latitude)
 			$('#updatedLong').val(subletData.Marker.longitude)
 			$("#city").val(subletData.Marker.city)
 			$("#state").val(subletData.Marker.state)
 			$("#postal").val(subletData.Marker.zip)
+		
+
 		if subletData.Sublet.university_name != null and subletData.Sublet.university_name != undefined
 			A2Cribs.CorrectMarker.FindSelectedUniversity()
 		if subletData.Marker.street_address != null and subletData.Marker.street_address != undefined

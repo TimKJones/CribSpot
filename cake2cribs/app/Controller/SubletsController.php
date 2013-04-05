@@ -52,6 +52,7 @@ class SubletsController extends AppController {
          unset($sublet_data['User']['password']);
          unset($sublet_data['User']['password_reset_token']);
          unset($sublet_data['User']['vericode']);
+
          $this->layout = 'ajax';
          $this->set("response", json_encode($sublet_data));
     }
@@ -221,6 +222,13 @@ class SubletsController extends AppController {
 
     }
 
+
+    // TODO: This function is used to in sublet creation and sublet editing, it
+    //       needs to be split into to distinct functions or else this function
+    //       is going to be littered with if/else statements.
+    //                                  -Mike Stratman (3/5/13)
+
+
     public function ajax_submit_sublet()
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
@@ -234,18 +242,30 @@ class SubletsController extends AppController {
         CakeLog::write("savingHousemate", print_r($housemate, true));
 
         $marker['building_type_id'] = $sublet['building_type_id'];
-
-        unset($marker['marker_id']);
         
         if ($sublet['id'] == null)
         {
             unset($sublet['id']);
         }
+
         if ($housemate['id'] == null)
         {
             unset($housemate['id']);
         }
-        $marker_id = $this->Marker->FindMarkerId($marker);
+
+        if( $marker['marker_id'] ){
+            //Editing a prexisting sublet so we just forward along the existing
+            //Marker information
+            $marker_id = $marker['marker_id'];
+
+        }else{
+            //Since there was no marker defined we need to find a marker
+            //findMarker will create a marker if it doesn't find one by 
+            //the street address passed in the marker
+            unset($marker['marker_id']);
+            $marker_id = $this->Marker->FindMarkerId($marker);
+        }
+
         $sublet_id = null;
         $housemate_id = null;
         $response = null;
@@ -418,7 +438,8 @@ class SubletsController extends AppController {
         $this->set('response',json_encode($this->Session->read('SubletInProgress')));
         
     }
-
+    
+    // Hey is this function used for anything anymore? - Mike Stratman (4-5-13)
 	public function edit() 
     {
         $sublet_id = $this->request->query['id'];
@@ -458,6 +479,7 @@ class SubletsController extends AppController {
         }   
 
         if ($this->request->is('post') || $this->request->is('put')) {
+
             if ($this->Sublet->save($this->request->data)) {
                 $this->Session->setFlash(__('The sublet has been saved'));
             } else {

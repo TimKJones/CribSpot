@@ -11,6 +11,8 @@
 
     CorrectMarker.Geocoder = null;
 
+    CorrectMarker.Enabled = true;
+
     CorrectMarker.Init = function() {
       var MapOptions;
       this.AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
@@ -27,7 +29,36 @@
         map: A2Cribs.CorrectMarker.Map,
         visible: false
       });
-      return this.Geocoder = new google.maps.Geocoder();
+      this.Geocoder = new google.maps.Geocoder();
+      if (!this.Enabled) {
+        return this.Disable();
+      }
+    };
+
+    CorrectMarker.Disable = function() {
+      if ((this.Map != null)) {
+        return this.Map.setOptions({
+          draggable: false,
+          zoomControl: false,
+          scrollwheel: false,
+          disableDoubleClickZoom: true
+        });
+      } else {
+        return this.Enabled = false;
+      }
+    };
+
+    CorrectMarker.Enable = function() {
+      if ((this.Map != null)) {
+        return this.Map.setOptions({
+          draggable: true,
+          zoomControl: true,
+          scrollwheel: true,
+          disableDoubleClickZoom: false
+        });
+      } else {
+        return this.Enabled = true;
+      }
     };
 
     CorrectMarker.UpdateLatLong = function(e) {

@@ -83,12 +83,20 @@ class AppController extends Controller {
     	));
 
 		$this->__initLogin();
+
 	}
 
 	public function beforeRender()
 	{
 		// Set the jsVars array which holds the variables to be used in js
         $this->set('jsVars', $this->_jsVars);
+
+		if($this->Auth->User()){
+			$Users = ClassRegistry::init('User');
+			$safe_user = $Users->getSafe($this->Auth->User('id'));
+
+			$this->set('AuthUser', $safe_user['User']);
+		}
 	}
 
 /*Facebook stuff - maybe should be in another controller? */

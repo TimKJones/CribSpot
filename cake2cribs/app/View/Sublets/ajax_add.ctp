@@ -98,6 +98,7 @@
         A2Cribs.CorrectMarker.FindAddress();
         $("#SubletUnitNumber").val(A2Cribs.Cache.Step1Data.Sublet.unit_number);
       }
+
     });
 
         A2Cribs.CorrectMarker.Init();
@@ -109,20 +110,30 @@
             a.setupUI();
             google.maps.event.trigger(A2Cribs.CorrectMarker.Map, 'resize');
            
-schoolList = [];
-for (var i = 0; i < universities.length; i++)
-    schoolList.push(universities[i].University.name);
-    A2Cribs.CorrectMarker.universitiesMap = universities;
-    $("#universityName").typeahead({
-        source: schoolList
-    });
+    schoolList = [];
+    for (var i = 0; i < universities.length; i++)
+        schoolList.push(universities[i].University.name);
+        A2Cribs.CorrectMarker.universitiesMap = universities;
+        $("#universityName").typeahead({
+            source: schoolList
+        });
 
-    $("#universityName").focusout(function() {
-      A2Cribs.CorrectMarker.FindSelectedUniversity();
-    });
+        $("#universityName").focusout(function() {
+          A2Cribs.CorrectMarker.FindSelectedUniversity();
+        });
 
-    if (A2Cribs.Cache.SubletEditInProgress == null || A2Cribs.Cache.SubletEditInProgress == undefined)
+    //Hack to know if you are editing a sublet or not, since all this code is so intertwined.
+    var editing_sublet = false;
+    if (A2Cribs.Cache.SubletEditInProgress == null || A2Cribs.Cache.SubletEditInProgress == undefined){
       A2Cribs.SubletEdit.Init();
-    A2Cribs.SubletEdit.InitStep1();
+      editing_sublet = true;
+    }
+    A2Cribs.SubletEdit.InitStep1(editing_sublet);
+      
+
+    // To clarify, we call subletedit function regardless of whether its an add or edit
+    // This function basically loads in values from the cache into the form these values could come from
+    // the sever in case of editing a sublet or from when you were previously on this step and went back
+
 
 </script>
