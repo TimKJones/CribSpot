@@ -76,6 +76,9 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text if sublet.Furnished is 3 then "No" else "Yes"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
+
+		
+
 		subletId = sublet.SubletId
 		is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
 		if is_favorite
@@ -163,5 +166,10 @@ class A2Cribs.ListingPopup
 				$("#twitterVerified").addClass("unverified");
 
 			if verification_info.verified_fb
+
 				pic_url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480"
-				$("#tooltipUserPicture").attr("src", pic_url)
+				$(".user_contact_pic").attr("src", pic_url)
+
+			else
+				# Set to default img, if we move to using sprites this code may need to be changed
+				$(".user_contact_pic").attr 'src', "/img/head_large.jpg"
