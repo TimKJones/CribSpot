@@ -202,12 +202,15 @@
     // Ajax function that will "Delete the conversation" basically just hides it from the user
     // responded with a json object indicating success
     public function deleteConversation(){
+        
         if(!$this->request->isPost()){
             throw new NotFoundException();
         }
         $user = $this->Auth->User();
         $data = $this->request->data;
+
         $conv_id = $data['conv_id'];
+        
         if(!$this->Conversation->isUserParticipant($conv_id, $user)){
              $json = json_encode(array(
                 'success' => 0,
@@ -221,7 +224,7 @@
         // if the other participant ever messages this user again
         // the post will be come visible again
 
-        $options['condtions'] = array('Conversation.conversation_id'=>$conv_id);
+        $options['conditions'] = array('Conversation.conversation_id'=>$conv_id);
         $conversation = $this->Conversation->find('first', $options);
         $this->Conversation->hideConversation($conversation, $user);
 

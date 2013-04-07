@@ -185,9 +185,14 @@ class Conversation extends AppModel {
 			$conversation['Conversation']['visible1'] = 0;
 		}else if($conversation['Participant2']['id'] == $user['id']){
 			$conversation['Conversation']['visible2'] = 0;
+		}else{
+			CakeLog::write("Conversation.php", "Conversation ".$conversation['Conversation']['conversation_id']. " was attempted to be hidden by user: ". $user['id']);	
 		}
+		
 
-		$this->save($conversation['Conversation']);
+		if(!$this->save($conversation)){
+			 CakeLog::write("Conversation.php", "Hiding Conversation Failed: " . $this->validationErrors);
+		}
 	}
 
 
