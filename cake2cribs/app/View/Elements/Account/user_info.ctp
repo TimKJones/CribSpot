@@ -19,7 +19,7 @@
 
 <div id = 'my-verification-panel'>
 	<div id = 'veri-email'>
-		<i class = 'icon-envelope-alt'></i>Email Address<i class = 'veridd unverified icon-ok-sign'></i>
+		<i class = 'icon-envelope-alt'></i>Email Address<i class = 'veridd unverified icon-remove-sign'></i>
 	</div>
 	<div class = 'veri-dropdown'>
 		<a>Send Verification Email Again?</a>
@@ -34,13 +34,13 @@
 	      	
 
 		}
-		?><i class = 'unverified icon-ok-sign'></i>
+		?><i class = 'unverified icon-remove-sign'></i>
 	</div>
 	<div id = 'veri-fb'>
-		<i class = 'fb icon-facebook-sign'></i>Facebook<i class = 'unverified icon-ok-sign'></i>
+		<i class = 'fb icon-facebook-sign'></i>Facebook<i class = 'unverified icon-remove-sign'></i>
 	</div>
 	<div id = 'veri-tw'>
-		<i class = 'tw icon-twitter-sign'></i>Twitter <i class = 'unverified icon-ok-sign'></i>
+		<i class = 'tw icon-twitter-sign'></i>Twitter <i class = 'unverified icon-remove-sign'></i>
 	</div>
 </div>
 
