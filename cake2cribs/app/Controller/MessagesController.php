@@ -13,20 +13,19 @@
             $this->redirect(array('controller'=>'users', 'action'=>'login'));
         }
     }
-    
+
     //Shows the base messages page
     public function index($conv_id=null){
         $directive['classname'] = 'messages';
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
-        
+
     }
     //Redirects to the dashboard automatically opening the specified
     //conversation
-    public function view($conv_id){   
+    public function view($conv_id){
         $user = $this->Auth->User();
-        
         if(!$this->Conversation->isUserParticipant($conv_id, $this->Auth->User())){
             throw new NotFoundException();
         }
@@ -78,17 +77,24 @@
         CakeLog::write("sendMessage", "2");
         $message = $this->Message->read();
         CakeLog::write("sendMessage", "3");
-        $options['condtions'] = array('Conversation.conversation_id'=>$message['Message']['conversation_id']);
+        $options['conditions'] = array('Conversation.conversation_id'=>$message['Message']['conversation_id']);
         $conversation = $this->Conversation->find('first', $options);
         CakeLog::write("sendMessage", "4");
         $participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
-        CakeLog::write("sendMessage", "5");
+        if ($participant == null) {
+            CakeLog::write("sendMessage", "Participant is empty");
+            $json = json_encode(array('success'=>false));
+        }else{
+            CakeLog::write("sendMessage", "5");
+            CakeLog::write("sendMessage", print_r($participant, true));
+            $this->emailUserAboutMessage($participant['email'], $user, $conversation);
+            CakeLog::write("sendMessage", "6");   
+            $json = json_encode(array('success'=>$msg_id > 0)); 
+        }
+        
 
-        $this->emailUserAboutMessage($participant['email'], $user, $conversation);
-        CakeLog::write("sendMessage", "6");
 
-
-        $json = json_encode(array('success'=>$msg_id > 0));
+        
         $this->layout = 'ajax';
         $this->set('response', $json);
 

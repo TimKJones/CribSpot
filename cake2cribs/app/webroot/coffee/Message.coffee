@@ -137,7 +137,7 @@ class A2Cribs.Messages
 					veripanel.find('#participant-friends').html("- #{verification_info.tot_friends} friends")
 
 			if verification_info.verified_tw
-				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')  
 				if verification_info.tot_followers?
 					veripanel.find("#participant-followers").html("- #{verification_info.tot_followers} followers")
 
@@ -222,6 +222,9 @@ class A2Cribs.Messages
 			@refreshMessages()
 			@refreshConversations()			
 			$('#message_text textarea').val('') # Clear the reply text field
+			response = JSON.parse(data);
+			if data?.success == false
+				alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
 		.always ()=>
 			$('#send_reply').removeAttr 'disabled'
 		false
