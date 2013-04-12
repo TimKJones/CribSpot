@@ -2,7 +2,7 @@
 {
 	margin-top: 7px;
 	margin-bottom: 10px;
-	height: 25px;
+	/*height: 25px;*/
 	width: 100%;
 	line-height: 25px;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -11,8 +11,9 @@
 
 
 .listings_list{
-	height: 250px;
+	max-height: 250px;
 	overflow: auto; 
+	border-bottom: 1px solid #cacaca;
 }
 
 .listing-list-item{

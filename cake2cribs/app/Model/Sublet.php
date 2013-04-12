@@ -253,7 +253,7 @@ class Sublet extends AppModel {
 	private function getFilteredQueryConditions($params)
 	{
 		$conditions = array();
-CakeLog::write("urlParams", "in func: " . print_r($params, true));
+		CakeLog::write("urlParams", "in func: " . print_r($params, true));
 		$building_type_id_OR = array();
 		if ($params['house'] == "true")
 			array_push($building_type_id_OR, $this->getBuildingTypeId('House'));
@@ -304,7 +304,7 @@ CakeLog::write("urlParams", "in func: " . print_r($params, true));
 			array_push($conditions, array(
 				'Housemate.enrolled' => true));
 
-CakeLog::write("filterConditions", "params: " . print_r($params, true));
+		CakeLog::write("filterConditions", "params: " . print_r($params, true));
 
 		array_push($conditions, array('OR' => array(
 			array('Marker.building_type_id' => $building_type_id_OR),
@@ -405,7 +405,7 @@ CakeLog::write("filterConditions", "params: " . print_r($params, true));
 			array_push($formattedIdList, $markerIdList[$i]['Sublet']['marker_id']);
 
 
-$log = $this->getDataSource()->getLog(false, false); 
+		$log = $this->getDataSource()->getLog(false, false); 
 	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
@@ -426,7 +426,6 @@ $log = $this->getDataSource()->getLog(false, false);
 	 	$subletQuery = $this->find('first', array(
 	                     'conditions' => $conditions
 	  	));
-
 	 	return $subletQuery;
 	}
 
@@ -593,6 +592,13 @@ $log = $this->getDataSource()->getLog(false, false);
 		}
 	}
 
+	//Updates the sublet with the new info provided
+	// Makes sure some fields don't change like marker_id, street address etc...
+
+	function editSublet($sublet, $data){
+
+	}
+
 	function getLastQuery()
 	{
 		$dbo = $this->getDatasource();
@@ -628,6 +634,8 @@ $log = $this->getDataSource()->getLog(false, false);
 
 		return $sublets;
 	}
+
+
 
 	
 }

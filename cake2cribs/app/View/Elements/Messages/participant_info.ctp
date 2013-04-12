@@ -10,16 +10,16 @@
 	
 	<div id = 'verification-panel'>
 		<div id = 'veri-email'>
-			<i class = 'icon-envelope-alt'></i>Email Address<i class = 'unverified icon-ok-sign'></i>
+			<i class = 'icon-envelope-alt'></i>Email Address<i class = 'unverified icon-remove-sign'></i>
 		</div>
 		<div id = 'veri-edu'>
-			<img src = '/img/university_icon.png' class = 'icon-edu'></img><span class ='participant-university'></span><i class = 'unverified icon-ok-sign'></i>
+			<img src = '/img/university_icon.png' class = 'icon-edu'></img><span class ='participant-university'></span><i class = 'unverified icon-remove-sign'></i>
 		</div>
 		<div id = 'veri-fb'>
-			<i class = 'fb icon-facebook-sign'></i>Facebook <span id ='participant-friends'></span><i class = 'unverified icon-ok-sign'></i>
+			<i class = 'fb icon-facebook-sign'></i>Facebook <span id ='participant-friends'></span><i class = 'unverified icon-remove-sign'></i>
 		</div>
 		<div id = 'veri-tw'>
-			<i class = 'tw icon-twitter-sign'></i>Twitter <span href = '#' id ='participant-followers'></a><i class = 'unverified icon-ok-sign'></i>
+			<i class = 'tw icon-twitter-sign'></i>Twitter <span href = '#' id ='participant-followers'></a><i class = 'unverified icon-remove-sign'></i>
 		</div>
 	</div>
 </div>

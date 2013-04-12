@@ -95,13 +95,18 @@
 				echo '<a class="btn btn-link" href="#signupModal" data-toggle="modal">SIGN UP</a>';
 				echo '<a class="btn btn-link" href="#myModal" data-toggle="modal">LOGIN</a>';
 			}
-			else
+			else{
+				$pic_url = "/img/head_large.jpg";
+				if($AuthUser['facebook_userid']){
+					$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_userid']."/picture?width=80&height=80";
+				}
 				echo '
 					<a class="btn btn-link" data-toggle="dropdown" href="#">
-						<img src="/img/head_large.jpg" class="img-polaroid">
+						<img src="'.$pic_url.'" class="img-polaroid">
 						<strong>Hello!</strong>
 						<span class="caret"></span>
-					</a>'
+					</a>';
+			}
 			?>
 
 			<ul class="dropdown-menu">
@@ -202,4 +207,3 @@
 		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
 	');
 ?>
-

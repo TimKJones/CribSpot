@@ -53,7 +53,7 @@
 		</div>
 		<div class="medium-line-height margin-above">
 			<a href="" class="thumbnail">
-				<img src="/img/head_small.jpg" alt="No picture" id="tooltipUserPicture">
+				<img class = 'user_contact_pic' src="/img/head_small.jpg" alt="No picture" id="tooltipUserPicture">
 			</a>
 			<div class="post-info ellipsis">
 				<i class="small-text">Posted By:</i>
@@ -140,8 +140,10 @@
 	</div>
 	<div id="contact" class="side-pane">
 		<div class="medium-line-height margin-above user-info">
-			<a href="" class="thumbnail float-left">
-				<img src="/img/head_large.jpg" alt="Jason">
+			<a href = '#' class="thumbnail float-left">
+				<!-- This value actually being set in the listingpopup.coffee
+				don't rely on the this src to be valid -->
+				<img class = 'user_contact_pic' src="/img/head_large.jpg" alt="Jason">
 			</a>
 			<div class="post-info inline float-left ellipsis">
 				<i class="small-text">Posted By:</i>

@@ -2,6 +2,7 @@ class A2Cribs.CorrectMarker
 	@Map = null;
 	@Marker = null
 	@Geocoder = null
+	@Enabled = true;
 
 	@Init: ()->
 		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378)
@@ -18,6 +19,27 @@ class A2Cribs.CorrectMarker
 			visible: false
 		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
 		@Geocoder = new google.maps.Geocoder()
+
+		# a call to @Disable or @Enable may have been executed prior to init. Example: SubletEdit.Init()
+		# So now that the map is now loaded we can disable it if we need to
+		if not @Enabled
+			@Disable()
+
+	# Makes the map display only, useful for cases of displaying a property location without 
+	# Giving the user the option to move the map or change the lat lon, used in sublet editting
+	@Disable: ()->
+		if(@Map?)
+			@Map.setOptions({draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: true});
+		else
+			@Enabled = false;
+
+	# Reverses what was done in disable
+	@Enable: ()->
+		if(@Map?)
+			@Map.setOptions({draggable: true, zoomControl: true, scrollwheel: true, disableDoubleClickZoom: false});		
+		else
+			@Enabled = true;
+		
 
 
 	@UpdateLatLong: (e) ->

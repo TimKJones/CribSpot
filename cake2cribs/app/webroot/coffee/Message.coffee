@@ -119,10 +119,10 @@ class A2Cribs.Messages
 			veripanel = $('#verification-panel')
 
 			if verification_info.verified_email
-				veripanel.find('#veri-email  i:last-child').removeClass('unverified').addClass('verified')
+				veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
 
 			if verification_info.verified_edu
-				veripanel.find('#veri-edu  i:last-child').removeClass('unverified').addClass('verified')
+				veripanel.find('#veri-edu  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
 			else
 				$('.participant-university').html("No Associated University")
 
@@ -130,13 +130,14 @@ class A2Cribs.Messages
 				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
 				console.log(url)
 				$('#p_pic').attr 'src', url
-				veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified')
+				veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
 				if verification_info.mut_friends?
 					veripanel.find('#participant-friends').html("- #{verification_info.mut_friends} mutual")
 				else if verification_info.tot_friends?
 					veripanel.find('#participant-friends').html("- #{verification_info.tot_friends} friends")
 
 			if verification_info.verified_tw
+				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')  
 				if verification_info.tot_followers?
 					veripanel.find("#participant-followers").html("- #{verification_info.tot_followers} followers")
 
@@ -221,6 +222,9 @@ class A2Cribs.Messages
 			@refreshMessages()
 			@refreshConversations()			
 			$('#message_text textarea').val('') # Clear the reply text field
+			response = JSON.parse(data);
+			if data?.success == false
+				alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
 		.always ()=>
 			$('#send_reply').removeAttr 'disabled'
 		false
@@ -232,7 +236,12 @@ class A2Cribs.Messages
 		}
 
 		$.post url, request_data, (response)=>			
-			data = JSON.parse response
+			try
+				data = JSON.parse response
+			catch e
+				alertify.error 'Failed to delete the conversation', 1500
+				return
+
 			if data.success == 1
 				alertify.success 'Conversation deleted', 1500
 				@CurrentConversation = -1
