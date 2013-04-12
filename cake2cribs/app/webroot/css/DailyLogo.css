@@ -1,0 +1,14 @@
+#DailyLogo
+{
+	background-image: url(/img/header/daily_goldbox.png);
+	position:absolute;
+	height:55px;
+	width:485px;
+	left:50px;
+	bottom:4px;
+}
+
+#DailyLogo:hover
+{
+	cursor:pointer;
+}
