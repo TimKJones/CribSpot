@@ -20,6 +20,7 @@ class SubletsController extends AppController {
     }
 
 	public function index() {
+        $this->redirect(array('controller' => 'landing', 'action' => 'index'));
 		$this->Sublet->recursive = 0;
         //$this->paginate['Sublet'] = array (
           //  'contain' => 'BuildingType');
