@@ -77,5 +77,5 @@ f	Closes the tooltip, no animation
 	resolveDate: (minDate, maxDate) ->
 		minSplit = minDate.split "-"
 		maxSplit = maxDate.split "-"
-		parseInt(minSplit[1]) + "/" + parseInt(minSplit[2]) + "-" + parseInt(maxSplit[1]) + "/" + parseInt(maxSplit[2])
+		+minSplit[1] + "/" + +minSplit[2] + "-" + +maxSplit[1] + "/" + +maxSplit[2]
 
