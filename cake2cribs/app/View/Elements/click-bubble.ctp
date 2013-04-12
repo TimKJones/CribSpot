@@ -5,6 +5,7 @@
 		<i class="icon-map-marker icon-large"></i><i class="sublet-name">Willow Tree Apartments</i>
 		<div class="inline-block"><small>Listings: </small><div id="listing-count">5</div></div>
 	</div>
+	<a class="close-button" href="#" onclick="A2Cribs.Map.ClickBubble.Close();">X</a>
 
 	<div class="listings">
 	</div>
