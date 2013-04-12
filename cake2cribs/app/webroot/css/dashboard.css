@@ -183,10 +183,9 @@ a:hover{
 	background-position: 0 0; 
 	width: 150px; 
 	height: 38px;
-	z-index:1000;
 	position:absolute;
 	left:175px;
-	top:30px;	
+	top:6px;	
 }
 
 #backToMap:active

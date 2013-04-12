@@ -43,6 +43,7 @@
 </div>
 <div id="header" class="container">
 	<a href="/"><div class="main-logo pull-left"></div></a>
+	<a href="<?php echo $mapUrl; ?>"<div id="backToMap"></div></a>
 	<div id="personal-buttons" class="pull-right">
 		<div class="btn-group">
 			<a class="btn btn-link hide" data-toggle="dropdown" href="#">
