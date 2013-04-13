@@ -40,7 +40,7 @@ class ImagesController extends AppController {
 		}
     	CakeLog::write('imageDebug', "data: " . print_r($data, true));
 		//CakeLog::write("fileDebug", print_r($data, true));
-    	$response = $this->Image->AddImage($listing_id, $data, $this->Session->read('user'));
+    	$response = $this->Image->AddImage($listing_id, $data, $this->Auth->User('id'));
     	$errors = $response[0];
     	$filePath = $response[1];
 

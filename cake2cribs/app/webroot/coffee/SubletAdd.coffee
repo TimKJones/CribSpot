@@ -21,11 +21,11 @@ class A2Cribs.SubletAdd
 		$('#goToStep1').click (e) =>
 			@backToStep1()
 
-		$("#goToStep3").click (e) ->
+		$("#goToStep3").click (e) ->	
 			#begin the validations
 			parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
 			parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()))
-			todayDate = new Date();
+			todayDate = new Date()
 			if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 				A2Cribs.UIManager.Alert "Please enter a valid date."
 			else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
@@ -53,6 +53,8 @@ class A2Cribs.SubletAdd
 			else if ($('#HousemateMajor').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
 			else
+				if (!$('#HousemateType').val())
+					$('#HousemateType').val("")
 				A2Cribs.SubletEdit.CacheStep3Data()
 				e.preventDefault()
 				@subletAddStep3()

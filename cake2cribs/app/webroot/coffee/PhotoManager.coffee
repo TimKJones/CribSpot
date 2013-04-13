@@ -45,6 +45,7 @@ class A2Cribs.PhotoManager
 	@UpdateImageSources: (imageSources) ->
 		imageSources = JSON.parse imageSources
 		primary_image_index = 0
+		A2Cribs.PhotoManager.IdToPathMap = []
 
 		if imageSources[0] != null
 			primary_image_index = imageSources[0]

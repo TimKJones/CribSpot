@@ -59,6 +59,7 @@
         } else if ($('#HousemateMajor').val().length >= 254) {
           return A2Cribs.UIManager.Alert("Please keep the majors description under 255 characters.");
         } else {
+          if (!$('#HousemateType').val()) $('#HousemateType').val("");
           A2Cribs.SubletEdit.CacheStep3Data();
           e.preventDefault();
           return _this.subletAddStep3();

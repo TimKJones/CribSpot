@@ -66,6 +66,7 @@
       var cssSettings, i, imageContentDiv, nextSlot, primary_image_index, _ref, _results;
       imageSources = JSON.parse(imageSources);
       primary_image_index = 0;
+      A2Cribs.PhotoManager.IdToPathMap = [];
       if (imageSources[0] !== null) {
         primary_image_index = imageSources[0];
         A2Cribs.PhotoManager.CurrentPrimaryImageIndex = primary_image_index;
