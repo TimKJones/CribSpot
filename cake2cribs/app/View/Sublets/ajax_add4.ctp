@@ -1,41 +1,128 @@
 <!--<div> BLAH</div>
 <a class="ajax" href="/sublets/ajax_add" id="gotoscreen2">Go back </a> -->
-<?php echo $this->Html->css('SubletAddEditCommon'); ?>
-<?php echo $this->Html->css('ajax_add4'); ?>
 <?php echo $this->Html->css('jquery-ui'); ?>
 <?php //echo $this->Html->script('src/SubletAdd'); ?>
-<?php echo $this->Html->css('account'); ?>
+<?php echo $this->Html->css('UploadImage3'); ?>
+<?php echo $this->Html->css('ajax_add4'); ?>
+<?php echo $this->Html->script('jquery.fileupload'); ?>
+<?php echo $this->Html->script('jquery.iframe-transport'); ?>
 
-<div class="sublet-register">
-	<?php 
-	 
-	//echo $this->Form->input('description', array('value' => $savedDescription));
-	?>
-	
-	<div id="sublet_register_screen1">
-		<style> .datepicker { width: 17em; padding: .2em .2em 0; z-index: 9999 !important; } </style>
-		<input style="height:0px; top:-1000px; position:absolute" type="text" value="">
-		<div id="shareDiv">Share with your friends!</div>
-
-		<div class="share-buttons">
-			<a href="#" class="facebook-share"><div></div></a>
-			<a href="#" target="_blank" class="twitter-share"><div></div></a>
+	<div id="imagesWrapper">
+		<div class="imageContainer">
+			<div class="imageContent imageThumb topRow" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
 		</div>
-
-		<a href="#" id="finishShare">Finish</a>
+		<div class="imageContainer">
+			<div class="imageContent secondary imageThumb topRow" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary2" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+		</div>
+		<div class="imageContainer">
+			<div class="imageContent secondary imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary3" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+		</div>
+		<div class="imageContainer">
+			<div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary4" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+		</div>
+		<div class="imageContainer">
+			<div class="imageContent secondary imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+		</div>
+		<div class="imageContainer">
+			<div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
+			<button class="delete hide" id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
+			<button class="edit hide" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
+			<button class="primary hide" id="primary6" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
+		</div>
+		</div>
 	</div>
-</div>
+	<div id="leftColumn">
+		<div id="topSection">
+			<div id="topSectionTop">
+				<?php echo $this->Form->create("Image", array("type" => "file", "action" => "add", "enctype" => "multipart/form-data"));?>
+				  <legend><?php __("Add Image"); ?></legend>
+				  <fieldset>
+				  	<input class="fileInput" id="1" type="file" data-url="/Images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="false" data-form-data='{"script": "true"}'>
+				  </fieldset>
+				</form>
+			</div>
+		</div>
+		<div id="bottomSection">
+			<div id="imageContent0">
+				
+			</div>
+			<div id="caption">
+				Name: <input type="text" id="captionInput" placeholder="Edit picture name" onkeyup="A2Cribs.PhotoManager.CaptionKeyUp()" maxlength="25">
+				<span id="charactersLeft">25</span>
+				<button id="captionSubmit" onclick="A2Cribs.PhotoManager.SubmitCaption()">GO</button>
+			</div>
+		</div>
+	</div>
+	</div>
 
 <script>
 	var a = A2Cribs.SubletAdd;
 	a.setupUI();
-	var s = A2Cribs.Cache.SubletEditInProgress;
-	var address = s.Marker.street_address.split(" ").join("_");
-	var university = s.Sublet.university_name.split(" ").join("_");
 
-	$(".facebook-share").click(function(){
-		A2Cribs.ShareManager.ShareListingOnFacebook(university, address, parseInt(A2Cribs.ShareManager.SavedListing), s.Sublet.description);
-	})
+	// Initialize file upload plugin
+$(function () {
+  $('#ImageAddForm').fileupload({
+    singleFileUploads: true,
+    url: "/images/add"
+  });
+});
 
-	$(".twitter-share").attr('href', A2Cribs.ShareManager.GetTwitterShareUrl(university, address, parseInt(A2Cribs.ShareManager.SavedListing)));
+$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
+});
+
+$(function () {
+    $('#ImageAddForm').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+        },
+        progressall: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('#progress .bar').css(
+              'width',
+              progress + '%'
+          );
+      },
+      add: function(e, data) {
+        A2Cribs.PhotoManager.FindNextFreeDiv();
+        data.formData = {"imageSlot": A2Cribs.PhotoManager.NextImageSlot};
+      if (!data.formData.imageSlot) 
+          return false;
+
+      data.submit();
+    },
+      submit: function (e, data) {
+        
+      }
+    });
+});
+
+$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
+    
+});
+
+$(document).ready(function(){
+	A2Cribs.PhotoManager.LoadImages();
+    var options = {
+      beforeSubmit:  A2Cribs.PhotoManager.ShowRequest,
+      success:       A2Cribs.PhotoManager.ShowResponse,
+      url:       "Images/Edit/" + jsVars.edit_listing_id,  // your upload script
+      dataType:  "json"
+    };
+});
+
 </script>

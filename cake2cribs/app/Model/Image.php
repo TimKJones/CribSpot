@@ -54,12 +54,9 @@ class Image extends AppModel {
 
 				// create the folder if it does not exist
 				CakeLog::write("imageDebug", "folder: " . $folder);
-				if(!is_dir($folder)) {
+				if(!is_dir($folder))
 					$temp = mkdir($folder);
-					CakeLog::write("imageDebug", "folder return value: " . $temp == false);
-				}
-				else
-					CakeLog::write("imageDebug", "directory exists");
+					//TODO: check return value
 
 				if ($this->AddImageEntry($listing_id, $user_id, $filePath))
 				{
@@ -67,6 +64,7 @@ class Image extends AppModel {
 					if (!move_uploaded_file($file["tmp_name"][0], $filePath))
 					{
 						CakeLog::write('imageDebug', 'failed to move file to ' . $filePath);
+						array_push($errors, "IMAGE_NOT_SAVED");
 					}
 					else
 					{

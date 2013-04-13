@@ -295,6 +295,7 @@ class SubletsController extends AppController {
 
         $this->layout = 'ajax';
         $this->set('response', json_encode($response));
+        $this->Session->write("subletIdInProgress", $sublet_id);
     }
 
     public function ajax_add_create() {

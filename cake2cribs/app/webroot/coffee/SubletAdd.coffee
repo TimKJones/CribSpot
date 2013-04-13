@@ -47,7 +47,7 @@ class A2Cribs.SubletAdd
 			else
 				A2Cribs.SubletAdd.subletAddStep2()				
  
-		$('#finishSubletAdd').click (e) =>
+		$('#goToStep4').click (e) =>
 			if (!$('#HousemateQuantity').val() || $('#HousemateQuantity').val() >= 50 || $('#HousemateQuantity').val() < 0)
 				A2Cribs.UIManager.Alert "Please enter a valid housemate quantity."
 			else if ($('#HousemateMajor').val().length >= 254)
@@ -104,13 +104,16 @@ class A2Cribs.SubletAdd
 		$.post url, A2Cribs.Cache.SubletEditInProgress, (response) =>
 			data = JSON.parse response
 			console.log data.status
-			if (data.status)
-				A2Cribs.UIManager.Alert data.status
+			if data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
 				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
-
 			else
 				A2Cribs.UIManager.Alert data.error
+				$('#server-notice').dialog2("close");
+
+	@subletAddStep4:() ->
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add5"});
+
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1

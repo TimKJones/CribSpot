@@ -61,7 +61,7 @@
                 <i>* indicates an optional field</i><br/>
                 <div id="photosComingSoon"></div>
                 <a href="#" id="backToStep2">Back</a>
-		<a href="#" id="finishSubletAdd" style="float:right">Finish</a>
+		<a href="#" id="goToStep4" style="float:right">Next</a>
 	</div>
 </div>
 

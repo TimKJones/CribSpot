@@ -50,6 +50,7 @@ class A2Cribs.SubletEdit
 		A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id = $("#HousemateGenderTypeId").val()
 		A2Cribs.Cache.SubletEditInProgress.Housemate.type = $("#HousemateType").val()
 
+
 	###
 	Populates fields in step 1 with data loaded from cache
 
@@ -130,6 +131,9 @@ class A2Cribs.SubletEdit
 		$("#HousemateMajor").val(A2Cribs.Cache.SubletEditInProgress.Housemate.major)
 		$("#HousemateGenderTypeId").val(A2Cribs.Cache.SubletEditInProgress.Housemate.gender_type_id)
 		$("#HousemateType").val(A2Cribs.Cache.SubletEditInProgress.Housemate.type)
+
+	@InitStep4: () ->
+		
 
 	###
 	Fully populates A2Cribs.Cache.SubletData with data loaded from database

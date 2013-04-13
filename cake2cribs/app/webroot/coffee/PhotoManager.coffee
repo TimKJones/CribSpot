@@ -226,7 +226,7 @@ class A2Cribs.PhotoManager
 	###
 	Submit the caption for the currently previewed image.
 	###
-	@SubmitCaption: ->
+	@SubmitCaption: () ->
 		caption = $("#captionInput").val()
 		ind = A2Cribs.PhotoManager.CurrentPreviewImageIndex
 		#TODO: need to set IdToCaptionMap in callback to ensure that caption was accepted

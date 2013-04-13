@@ -3,7 +3,6 @@
 class ImagesController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Image');
-	var $listing_id = 5;
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -20,8 +19,15 @@ class ImagesController extends AppController {
 
 	function add($data = null)
 	{
-		//CakeLog::write('debug', "fileuploadDebug: " . print_r($this->request->data['imageSlot'], true));
-		//CakeLog::write('fileDebug', "params3: " . print_r($this, true));
+		$listing_id = $this->Session->read("subletIdInProgress");
+		if ($listing_id == null)
+		{
+			$errors = array("LISTING_ID_NOT_SET");
+			$errors = json_encode($errors);
+	    	$this->set('errors', $errors);
+	    	return $errors;
+		}
+
 		$this->set('errors', null);
 		$from_add_page = false;
 		if (!$data)
@@ -34,7 +40,7 @@ class ImagesController extends AppController {
 		}
     	CakeLog::write('imageDebug', "data: " . print_r($data, true));
 		//CakeLog::write("fileDebug", print_r($data, true));
-    	$response = $this->Image->AddImage($this->listing_id, $data, $this->Session->read('user'));
+    	$response = $this->Image->AddImage($listing_id, $data, $this->Session->read('user'));
     	$errors = $response[0];
     	$filePath = $response[1];
 
@@ -63,8 +69,18 @@ class ImagesController extends AppController {
 		$this->set('errors', $response);
 	}
 
+
 	function LoadImages($listing_id)
 	{
+		$listing_id = $this->Session->read("subletIdInProgress");
+		if ($listing_id == null)
+		{
+			$errors = array("LISTING_ID_NOT_SET");
+			$errors = json_encode($errors);
+	    	$this->set('errors', $errors);
+	    	return $errors;
+		}
+
 		$images = $this->Image->getImagesForListingId($listing_id);
 		$primary_image_index = $images[0] + 1; // in UI, index is offset by 1
 		$files = $images[1];
@@ -93,10 +109,16 @@ class ImagesController extends AppController {
 
 	function DeleteImage()
 	{
-		CakeLog::write('imageDebug', 'deleting');
-		CakeLog::write('imageDebug', 'params: ' . print_r($this->params[0], true));
+		$listing_id = $this->Session->read("subletIdInProgress");
+		if ($listing_id == null)
+		{
+			$errors = array("LISTING_ID_NOT_SET");
+			$errors = json_encode($errors);
+	    	$this->set('errors', $errors);
+	    	return $errors;
+		}
+		
 		$file = null;
-		$listing_id = $this->listing_id;
 		$image_slot = $this->params[0]['image_slot'];
 		$path = $this->Session->read('image' . $image_slot);
 		CakeLog::write('imageDebug', $path);
@@ -113,10 +135,18 @@ class ImagesController extends AppController {
 
 	function MakePrimary($image_slot)
 	{
-	//	CakeLog::write("makePrimary", print_r($this->Session, true));
+		$listing_id = $this->Session->read("subletIdInProgress");
+		if ($listing_id == null)
+		{
+			$errors = array("LISTING_ID_NOT_SET");
+			$errors = json_encode($errors);
+	    	$this->set('errors', $errors);
+	    	return $errors;
+		}
+
 		$path = $this->Session->read('image' . $image_slot);
 		CakeLog::write('makePrimary', "selectedPath: " . $path);
-		$this->Image->MakePrimary($this->listing_id, $path);
+		$this->Image->MakePrimary($listing_id, $path);
 	}
 
 	function uploadFile() 
