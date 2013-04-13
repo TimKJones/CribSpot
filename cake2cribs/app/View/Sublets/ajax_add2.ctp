@@ -23,7 +23,7 @@ echo $this->Html->css('datepicker');
                 echo "<div class = 'row-fluid'>";
 		echo $this->Form->input('date_begin', array(
                         'div'=>'subin',
-                        'label'=> array('class'=>'span3','text'=>'Start Date:'),
+                        'label'=> array('class'=>'span3','text'=>'Start Date*:'),
                         'class' => 'date-picker span3',
 			'data-html' => 'true', 
 			'data-placement' =>'bottom', 
@@ -34,7 +34,7 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('date_end', array(
 			'div'=>'subin',
-                        'label'=>array('class'=>'span3','text'=>'End Date:'),
+                        'label'=>array('class'=>'span3','text'=>'End Date*:'),
                         'class' => 'date-picker span3',
 			'data-html' => 'true', 
 			'data-placement' =>'top', 
@@ -49,7 +49,7 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('number_bedrooms', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Number of Bedrooms:'),
+        	'label'=> array('class'=>'span3','text'=>'Number of Bedrooms*:'),
         	'class'=>'span9'
         	)
         );
@@ -57,7 +57,7 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('price_per_bedroom', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Price Per Bedroom:'),
+        	'label'=> array('class'=>'span3','text'=>'Price Per Bedroom*:'),
         	'class'=>'span9'
         	)
         );
@@ -72,7 +72,7 @@ echo $this->Html->css('datepicker');
         );*/
 
         echo "<div class = 'row-fluid'>";
-        echo $this->Form->label('description', 'Description (160 character limit):', 'span3');
+        echo $this->Form->label('description', 'Description (160 character limit)*:', 'span3');
         echo $this->Form->textarea('description', array(
                 'div'=>'subin',
                 'placeholder'=>"Description of the property",
@@ -95,7 +95,7 @@ echo $this->Html->css('datepicker');
         );
 		echo $this->Form->input('utility_cost', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Utility Cost:'),
+        	'label'=> array('class'=>'span3','text'=>'Utility Cost*:'),
         	'class'=>'span9'
         	)
         ); 
@@ -113,12 +113,12 @@ echo $this->Html->css('datepicker');
 
 		echo $this->Form->input('deposit_amount',  array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Deposit Amount:'),
+        	'label'=> array('class'=>'span3','text'=>'Deposit Amount*:'),
         	'class'=>'span9'
         	)
         ); 
         echo "<div class = 'row-fluid'>";
-        echo $this->Form->label('additional_fees_description', 'Additional Fees Description*:', 'span3');
+        echo $this->Form->label('additional_fees_description', 'Additional Fees Description:', 'span3');
         echo $this->Form->textarea('additional_fees_description', array(
                 'div'=>'subin',
                 'placeholder'=>"Describe any additional fees here.",
@@ -127,12 +127,12 @@ echo $this->Html->css('datepicker');
         );
 		echo $this->Form->input('additional_fees_amount',  array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Additional Fees Amount:'),
+        	'label'=> array('class'=>'span3','text'=>'Additional Fees Amount*:'),
         	'class'=>'span9'
         	)
         ); 
 	?>
-    <i>* indicates an optional field</i><br/>
+    <i>* indicates a required field</i><br/>
 	<a href="#" id="goToStep1">Back</a>
     <a href="#" id="goToStep3" style="float:right">Next</a>
 </div>

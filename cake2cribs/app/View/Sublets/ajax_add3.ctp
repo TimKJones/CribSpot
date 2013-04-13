@@ -11,7 +11,7 @@
 	echo $this->Form->create('Housemate'); 
 	echo $this->Form->input('quantity', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Anticipated Housemates:'),
+        	'label'=> array('class'=>'span3','text'=>'Anticipated Housemates*:'),
         	'class'=>'span9',
         	)
         ); 
@@ -25,7 +25,7 @@
         ); 
 	echo $this->Form->input('major', array(
         	'div'=>'row-fluid subin',
-        	'label'=> array('class'=>'span3','text'=>'Majors:*'),
+        	'label'=> array('class'=>'span3','text'=>'Majors:'),
         	'class'=>'span9',
         	)
         );
@@ -58,8 +58,7 @@
 
 
 		<!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
-                <i>* indicates an optional field</i><br/>
-                <div id="photosComingSoon"></div>
+                <i>* indicates a required field</i><br/>
                 <a href="#" id="backToStep2">Back</a>
 		<a href="#" id="goToStep4" style="float:right">Next</a>
 	</div>

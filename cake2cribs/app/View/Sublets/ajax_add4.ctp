@@ -103,7 +103,10 @@ $(function () {
         A2Cribs.PhotoManager.FindNextFreeDiv();
         data.formData = {"imageSlot": A2Cribs.PhotoManager.NextImageSlot};
       if (!data.formData.imageSlot) 
-          return false;
+      {
+      	A2Cribs.PhotoManager.NextImageSlot = 1;
+        data.formData.imageSlot = A2Cribs.PhotoManager.NextImageSlot;
+      }
 
       data.submit();
     },
@@ -111,10 +114,6 @@ $(function () {
         
       }
     });
-});
-
-$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
-    
 });
 
 $(document).ready(function(){
