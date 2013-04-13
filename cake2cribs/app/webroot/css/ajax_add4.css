@@ -1,58 +1,16 @@
-.share-buttons
+.modal-body
 {
-	left: 155px;
-	right: 45%;
-	position: absolute;
-	height: 130px;
-	width: 400px;
+	max-width: 800px;
+	max-height: 600px;
 }
-.twitter-share
+.modal
 {
-	background-image: url(/img/social_sprite.png);
-	background-size: 100%;
-	height: 120px;
-	width: 120px;
-	display: inline-block;
-	background-position: 0 -544px;
+	margin-top:-30px;
+	width:710px;
+	height:535px;
 }
-.twitter-share:hover
+.modal-body.opened
 {
-	background-position: 0 -680px;
-}
-.facebook-share
-{
-	background-image: url(/img/social_sprite.png);
-	background-size: 100%;
-	height: 120px;
-	width: 120px;
-	display: inline-block;
-	background-position: 0 -272px;
-}
-
-.facebook-share:hover
-{
-	background-position: 0 -408px;
-}
-
-#sublet_register_screen1
-{
-	height:210px;
-}
-#shareDiv
-{
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	text-align: center;
-	font-size: 24px;
-}
-#backToStep3
-{
-	bottom: 0px;
-	position: absolute;
-	left:5px;
-}
-#finishShare
-{
-	bottom: 0px;
-	position: absolute;
-	right:5px;
+	min-height:300px;
+	min-width:468px;
 }

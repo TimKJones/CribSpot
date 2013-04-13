@@ -68,6 +68,8 @@
 			</div>
 		</div>
 	</div>
+	<a href="#" id="backToStep3">Back</a>
+	<a href="#" id="goToStep5" style="float:right">Next</a>
 	</div>
 
 <script>

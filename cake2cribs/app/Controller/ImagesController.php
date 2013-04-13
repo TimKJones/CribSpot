@@ -71,7 +71,7 @@ class ImagesController extends AppController {
 
 
 	function LoadImages($listing_id)
-	{
+	{	
 		$listing_id = $this->Session->read("subletIdInProgress");
 		if ($listing_id == null)
 		{

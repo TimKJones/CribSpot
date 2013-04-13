@@ -69,12 +69,12 @@ class Housemate extends AppModel {
 				)
 			),
 		//type
-		//must be between 1 and 250 characters, I have no idea what this is lol
+		//must be between 1 and 250 characters
 		//completed
 		'type' => array(
 			'between' => array(
-				'rule' => array('between',1,250),
-				'message' => 'Must be between 1 and 250 characters'
+				'rule' => array('between',0,250),
+				'message' => 'Must be less than 250 characters'
 				)
 			)
 	);

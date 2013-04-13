@@ -18,6 +18,9 @@ class A2Cribs.SubletAdd
 		$("#backToStep2").click (e) =>
 			@backToStep2()
 
+		$("#backToStep3").click (e) =>
+			@backToStep3()
+
 		$('#goToStep1').click (e) =>
 			@backToStep1()
 
@@ -53,11 +56,12 @@ class A2Cribs.SubletAdd
 			else if ($('#HousemateMajor').val().length >= 254)
 				A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
 			else
-				if (!$('#HousemateType').val())
-					$('#HousemateType').val("")
 				A2Cribs.SubletEdit.CacheStep3Data()
 				e.preventDefault()
 				@subletAddStep3()
+
+		$('#goToStep5').click (e) =>
+			@subletAddStep4()
 
 		$("#finishShare").click (e) =>
 			$('#server-notice').dialog2("close");

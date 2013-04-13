@@ -23,6 +23,9 @@
       $("#backToStep2").click(function(e) {
         return _this.backToStep2();
       });
+      $("#backToStep3").click(function(e) {
+        return _this.backToStep3();
+      });
       $('#goToStep1').click(function(e) {
         return _this.backToStep1();
       });
@@ -59,11 +62,13 @@
         } else if ($('#HousemateMajor').val().length >= 254) {
           return A2Cribs.UIManager.Alert("Please keep the majors description under 255 characters.");
         } else {
-          if (!$('#HousemateType').val()) $('#HousemateType').val("");
           A2Cribs.SubletEdit.CacheStep3Data();
           e.preventDefault();
           return _this.subletAddStep3();
         }
+      });
+      $('#goToStep5').click(function(e) {
+        return _this.subletAddStep4();
       });
       $("#finishShare").click(function(e) {
         return $('#server-notice').dialog2("close");

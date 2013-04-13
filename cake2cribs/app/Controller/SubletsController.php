@@ -223,6 +223,11 @@ class SubletsController extends AppController {
 
     }
 
+    public function ajax_add5()
+    {
+
+    }
+
 
     // TODO: This function is used to in sublet creation and sublet editing, it
     //       needs to be split into to distinct functions or else this function
