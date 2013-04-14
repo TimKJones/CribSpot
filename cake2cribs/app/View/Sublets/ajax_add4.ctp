@@ -76,47 +76,27 @@
 	var a = A2Cribs.SubletAdd;
 	a.setupUI();
 
-	// Initialize file upload plugin
-$(function () {
-  $('#ImageAddForm').fileupload({
-    singleFileUploads: true,
-    url: "/images/add"
-  });
-});
-
-$('#ImageAddForm').bind('fileuploadsubmit', function (e, data) {
-});
-
 $(function () {
     $('#ImageAddForm').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-        },
-        progressall: function (e, data) {
-          var progress = parseInt(data.loaded / data.total * 100, 10);
-          $('#progress .bar').css(
-              'width',
-              progress + '%'
-          );
-      },
-      add: function(e, data) {
-        A2Cribs.PhotoManager.FindNextFreeDiv();
-        data.formData = {"imageSlot": A2Cribs.PhotoManager.NextImageSlot};
-      if (!data.formData.imageSlot) 
-      {
-      	A2Cribs.PhotoManager.NextImageSlot = 1;
-        data.formData.imageSlot = A2Cribs.PhotoManager.NextImageSlot;
-      }
+    	dataType: 'json',
+    	add: function(e, data) {
+    		A2Cribs.PhotoManager.FindNextFreeDiv();
+    		data.formData = {"imageSlot": A2Cribs.PhotoManager.NextImageSlot};
+    		if (!data.formData.imageSlot)
+    		{
+    			A2Cribs.PhotoManager.NextImageSlot = 1;
+    			data.formData.imageSlot = A2Cribs.PhotoManager.NextImageSlot;
+    		}
 
-      data.submit();
-    },
-      submit: function (e, data) {
-        
-      }
+    		alert(data);
+    		data.submit();
+    		return false;
+    	}
     });
 });
 
 $(document).ready(function(){
+	alert("loading images");
 	A2Cribs.PhotoManager.LoadImages();
     var options = {
       beforeSubmit:  A2Cribs.PhotoManager.ShowRequest,
@@ -124,6 +104,10 @@ $(document).ready(function(){
       url:       "Images/Edit/" + jsVars.edit_listing_id,  // your upload script
       dataType:  "json"
     };
+});
+
+$("#ImageAddForm").submit(function() {
+	return false;
 });
 
 </script>

@@ -67,6 +67,7 @@
       imageSources = JSON.parse(imageSources);
       primary_image_index = 0;
       A2Cribs.PhotoManager.IdToPathMap = [];
+      A2Cribs.PhotoManager.IdToCaptionMap = [];
       if (imageSources[0] !== null) {
         primary_image_index = imageSources[0];
         A2Cribs.PhotoManager.CurrentPrimaryImageIndex = primary_image_index;
@@ -101,6 +102,10 @@
 
     PhotoManager.PreviewImage = function(obj) {
       var file, fr;
+      $('#ImageAddForm').fileupload({
+        singleFileUploads: true,
+        url: "/images/add"
+      });
       file = $("#" + obj.id)[0];
       if (obj.id === "0") {
         A2Cribs.PhotoManager.CurrentPhotoTarget = "previewDiv";

@@ -46,6 +46,7 @@ class A2Cribs.PhotoManager
 		imageSources = JSON.parse imageSources
 		primary_image_index = 0
 		A2Cribs.PhotoManager.IdToPathMap = []
+		A2Cribs.PhotoManager.IdToCaptionMap = []
 
 		if imageSources[0] != null
 			primary_image_index = imageSources[0]
@@ -80,6 +81,10 @@ class A2Cribs.PhotoManager
 			#$("#" + (i + 2)).css("visibility", "visible")
 
 	@PreviewImage: (obj)->
+		$('#ImageAddForm').fileupload({
+			singleFileUploads: true,
+			url: "/images/add"
+		});
 		file = $("#" + obj.id)[0]
 		if obj.id == "0"
 			A2Cribs.PhotoManager.CurrentPhotoTarget = "previewDiv"

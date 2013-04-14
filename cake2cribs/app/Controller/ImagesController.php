@@ -19,13 +19,17 @@ class ImagesController extends AppController {
 
 	function add($data = null)
 	{
+		CakeLog::write("imageDebug", "adding");
+		$this->layout = 'ajax';
 		$listing_id = $this->Session->read("subletIdInProgress");
+		CakeLog::write("imageDebug", "listing id is " . $listing_id);
 		if ($listing_id == null)
 		{
 			$errors = array("LISTING_ID_NOT_SET");
 			$errors = json_encode($errors);
 	    	$this->set('errors', $errors);
-	    	return $errors;
+	    	CakeLog::write("imageDebug", "failed in add at step 1");
+	    	return;
 		}
 
 		$this->set('errors', null);
@@ -53,7 +57,6 @@ class ImagesController extends AppController {
 
     	$errors = json_encode($errors);
     	$this->set('errors', $errors);
-    	return $errors;
 	}
 
 	function edit($listing_id)
@@ -72,13 +75,15 @@ class ImagesController extends AppController {
 
 	function LoadImages($listing_id)
 	{	
+		$this->layout = 'ajax';
 		$listing_id = $this->Session->read("subletIdInProgress");
 		if ($listing_id == null)
 		{
 			$errors = array("LISTING_ID_NOT_SET");
 			$errors = json_encode($errors);
 	    	$this->set('errors', $errors);
-	    	return $errors;
+	    	CakeLog::write("imageDebug", "failed in loadImages at step 1");
+	    	return;
 		}
 
 		$images = $this->Image->getImagesForListingId($listing_id);
@@ -102,20 +107,20 @@ class ImagesController extends AppController {
 		array_push($return_files, $secondary);
 		array_push($return_files, $captions);
 
-		$this->layout = 'ajax';
 		$this->set('response', json_encode($return_files));
 
 		}
 
 	function DeleteImage()
 	{
+		$this->layout="ajax";
 		$listing_id = $this->Session->read("subletIdInProgress");
 		if ($listing_id == null)
 		{
 			$errors = array("LISTING_ID_NOT_SET");
 			$errors = json_encode($errors);
 	    	$this->set('errors', $errors);
-	    	return $errors;
+	    	return;
 		}
 		
 		$file = null;
@@ -135,6 +140,7 @@ class ImagesController extends AppController {
 
 	function MakePrimary($image_slot)
 	{
+		$this->layout = 'ajax';
 		$listing_id = $this->Session->read("subletIdInProgress");
 		if ($listing_id == null)
 		{
@@ -178,6 +184,7 @@ class ImagesController extends AppController {
 
 	function SubmitCaption($caption, $image_slot)
 	{
+		$this->layout = 'ajax';	
 		CakeLog::write("addCaption", 'here0');
 		$user_id = $this->Auth->user('id');
 		CakeLog::write("addCaption", 'here1');
@@ -191,7 +198,6 @@ class ImagesController extends AppController {
 			return false; // RETURN ERROR MESSAGE
 
 		$response = $this->Image->SubmitCaption($caption, $user_id, $path);
-		$this->layout = 'ajax';
 		$this->set("response", $response);
 	}
 }
