@@ -59,6 +59,8 @@ class A2Cribs.SubletAdd
 
 		$("#finishShare").click (e) =>
 			$('#server-notice').dialog2("close");
+			if !isNaN A2Cribs.ShareManager.SavedListing
+				window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing
 
 		#refresh UI dates
 		oldBeginDate = new Date($('#SubletDateBegin').val())
@@ -73,7 +75,10 @@ class A2Cribs.SubletAdd
 		$("<div/>").dialog2({
 			title: "Post a sublet", 
 			content: "/Sublets/ajax_add", 
-			id: "server-notice"
+			id: "server-notice",
+			closeOnOverlayClick: false
+			closeOnEscape: false,
+			removeOnClose: false
 		});
 
 		if (e != null)
@@ -95,7 +100,7 @@ class A2Cribs.SubletAdd
 	@subletAddStep2:() ->
 		#validations go here
 		A2Cribs.SubletEdit.CacheStep2Data()
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
+		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3", });
 
 	@subletAddStep3:() ->
 		url = "/sublets/ajax_submit_sublet"
@@ -108,7 +113,6 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
 				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
-
 			else
 				A2Cribs.UIManager.Alert data.error
 

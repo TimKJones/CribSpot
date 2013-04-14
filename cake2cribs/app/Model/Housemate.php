@@ -59,7 +59,7 @@ class Housemate extends AppModel {
 		'major' => array(
 			'between' => array(
 				'rule' => array('between',0,250),
-				'message' => 'Must be between 0 and 250 characters'
+				'message' => 'Must be less than 250 characters'
 				)
 			),
 		'gender_type_id' => array(
@@ -73,8 +73,8 @@ class Housemate extends AppModel {
 		//completed
 		'type' => array(
 			'between' => array(
-				'rule' => array('between',1,250),
-				'message' => 'Must be between 1 and 250 characters'
+				'rule' => array('between',0,250),
+				'message' => 'Must be less than 250 characters'
 				)
 			)
 	);

@@ -207,7 +207,10 @@ class A2Cribs.SubletEdit
 				$('<div/>').dialog2({
 				    title: "Edit " + subletData.Marker.street_address, 
 				    content: "/Sublets/ajax_add", 
-				    id: "server-notice"
+				    id: "server-notice",
+				    closeOnOverlayClick: false
+					closeOnEscape: false,
+					removeOnClose: false
 				})
 
 	###
