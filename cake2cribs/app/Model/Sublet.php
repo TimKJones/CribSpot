@@ -434,7 +434,6 @@ class Sublet extends AppModel {
 		$conditions = array('Sublet.marker_id' => $marker_id);
 
 		$University = ClassRegistry::init("University");
-		$university_verified = $University->getUniversityFromEmail('test@umich.edu');
 	 	$subletQuery = $this->find('all', array(
 	                     'conditions' => $conditions, 
 	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.verified', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'Housemate', 
@@ -443,13 +442,9 @@ class Sublet extends AppModel {
 
 	  	for ($i = 0; $i < count($subletQuery); $i++)
 	  	{
+	  		$university_verified = $University->getUniversityFromEmail($subletQuery[$i]['User']['email']);
 	  		unset($subletQuery[$i]['User']['email']);
-	  		//$email = array('verified_university' => $university_verified);
 	  		$subletQuery[$i]['User']['verified_university'] = $university_verified;
-	  		$User = ClassRegistry::init("User");
-	  		/*$twitter_followers = $User->getTwitterFollowersCount($subletQuery[$i]['User']['id']);
-	  		//$followers_array = array('twitter_followers' => $twitter_followers);
-	  		$subletQuery[$i]['User']['twitter_followers'] = $twitter_followers;*/
 	  	}
 	  	
 	  	CakeLog::write("loadMarkerData",  print_r($subletQuery, true));

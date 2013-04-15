@@ -104,6 +104,8 @@
 // check for url parameter to init post action
 if (document.URL.indexOf("post_redirect") != -1)
     A2Cribs.SubletAdd.InitPostingProcess();
+else if (document.URL.indexOf("university_verified") != -1)
+    A2Cribs.UIManager.Alert("You have successfully been verified with a university!");
 
 
 </script>

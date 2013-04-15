@@ -195,25 +195,6 @@ class UsersController extends AppController {
         }
     }
 
-	/*public function index() {
-		$this->User->recursive = 0;
-        $this->Auth->deny('index');
-		$this->set('users',$this->paginate());
-        $this->set('id', $this->Auth->user('id'));
-        $this->User->id = $this->Auth->user('id');
-        $this->set('firstName', $this->Auth->user('first_name'));
-        //test email
-        
-	}*/
-
-	/*public function view($id = null) {
-		$this->User->id = $id;
-		if (!$this->User->exists()) {
-			throw new NotFoundException(__('Invalid user'));
-		}
-		$this->set('user', $this->User->read(null, $id));
-	}*/
-
 	public function add() {
 
         if ($this->Auth->loggedIn())
@@ -496,9 +477,8 @@ class UsersController extends AppController {
         }
     }
 
-    public function verify() {
-    	//this functionality is completed
 
+    public function verify() {
     	$this->User->id = $this->request->query['id'];
     	$vericode = $this->request->query['vericode'];
         if (!$this->User->exists()) {
@@ -541,9 +521,7 @@ class UsersController extends AppController {
     }
 
     public function verifyUniversity() {
-        
-        
-         if ($this->request->data['university_email']!= '')
+        if ($this->request->data['university_email']!= '')
          {
             if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
                 return;
@@ -564,7 +542,6 @@ class UsersController extends AppController {
 
 
             //finding user by email
-                //$this->User->read(null, $this->request->data['User']['email']);
      
             //set password reset token to a unique and random string
 
@@ -604,6 +581,7 @@ class UsersController extends AppController {
         
         else if ($this->request->query['id']!='')
         {
+            // User has been redirected from email link
             $email = $this->request->query['email'];
             $this->User->id = $this->request->query['id'];
             if ($this->User->field('id') != $this->request->query['id']) {
@@ -611,7 +589,7 @@ class UsersController extends AppController {
                 //$this->redirect('login');
                 $this->redirect('/dashboard');
             }
-             else if ($this->Auth->user('university_verified') == 1)
+            else if ($this->Auth->user('university_verified') == 1)
             {
                 $this->Session->setFlash('You cannot associate yourself with more than one university. Please contact support.');
                 $this->redirect('/dashboard');
@@ -626,6 +604,8 @@ class UsersController extends AppController {
                 {
                     $this->User->saveField('university_verified',1);
                     $this->User->saveField('university_id', $universities['University']['id']);
+                    $this->User->saveField('verified',1);
+                    $this->User->saveField('email',$email);
                     $this->Session->setFlash('You have been associated with '. $universities['University']['name'].'.');
                 }
                 else
@@ -643,96 +623,10 @@ class UsersController extends AppController {
                 //$this->Auth->login();
                 //$this->redirect('account');
                 //$this->redirect(array('action' => 'index'));
-            $this->redirect('/dashboard');
+            $this->redirect('/dashboard?university_verified=true');
         }
-
-
     }
-   /* public function account() {
-        $this->set('first_name', $this->Auth->user('first_name'));
-        $this->set('last_name', $this->Auth->user('last_name'));
 
-         $id = $this->Auth->user('id');
-        $this->User->id = $id;
-
-        // this user edit
-        
-        if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
-        }
-        if ($this->request->is('post') || $this->request->is('put')) {
-            //replace data of empty things
-            /*if ($this->request->data['User']['first_name'] != '')
-            {
-                if($this->User->saveField('first_name', $this->request->data['User']['first_name'], true))
-                {
-
-                $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-                $this->Session->setFlash(__('The user changes have been saved.'));
-                $this->redirect(array('action' => 'account'));
-                }
-                //$this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-                $this->Session->setFlash(__('There was an error updating your user.'));
-                $this->redirect(array('action' => 'account'));
-                
-
-            }
-            else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            
-            if($this->request->data['User']['first_name'] == '')
-            {
-                 $this->request->data['User']['first_name'] = $this->Auth->user('first_name');
-            }
-            if($this->request->data['User']['last_name'] == '')
-            {
-                 $this->request->data['User']['last_name'] = $this->Auth->user('last_name');
-            }
-            if($this->request->data['User']['email'] == '')
-            {
-                 $this->request->data['User']['email'] = $this->Auth->user('email');
-            }
-            //execute save based on this field
-            if($this->request->data['User']['password'] == '')
-            {
-                $this->User->save($this->request->data, true, array('first_name','last_name','email'));
-               $this->Session->setFlash('Your information was saved.');
-               $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-               unset($this->request->data['User']);
-                $this->set('first_name', $this->Auth->user('first_name'));
-                $this->set('last_name', $this->Auth->user('last_name'));
-                
-               
-            }
-            else if ($this->request->data['User']['password']!= '' )
-            {
-                $this->User->save($this->request->data, true, array('first_name','last_name','password'));
-                $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-                $this->Session->setFlash('Your information was saved.');
-                unset($this->request->data['User']);
-                $this->set('first_name', $this->Auth->user('first_name'));
-                $this->set('last_name', $this->Auth->user('last_name'));
-
-            }
-
-               
-
-            /*
-            if ($this->User->save($this->request->data)) {
-                $this->Session->setFlash(__('The user has been saved'));
-                $this->Session->write('Auth.first_name', $this->User->first_name);
-                $this->Session->write('Auth.last_name', $this->User->last_name);
-                $this->Session->write('Auth.email', $this->User->email);
-                
-            } else {
-                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-            
-            //}
-        } 
-        //
-       
-    }
-*/
     public function ajaxEditUser(){
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;

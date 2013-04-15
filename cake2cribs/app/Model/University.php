@@ -59,7 +59,10 @@ class University extends AppModel {
 			'conditions' => array('University.domain' => $domain))
 		);
 
-		return $university['University']['name'];
+		if ($university != null)
+			return $university['University']['name'];
+		else
+			return "";
 	}
 }
 ?>
