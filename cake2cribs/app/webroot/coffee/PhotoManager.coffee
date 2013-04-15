@@ -9,9 +9,9 @@ class A2Cribs.PhotoManager
 	@MAX_CAPTION_LENGTH = 25
 	@BACKSPACE = 8
 
-	@LoadImages:() ->
+	@LoadImages:(id) ->
 		$.ajax
-			url: myBaseUrl + "Images/LoadImages/" + jsVars.edit_listing_id
+			url: myBaseUrl + "Images/LoadImages/" + id
 			type: "GET"
 			success: A2Cribs.PhotoManager.UpdateImageSources
 
@@ -264,3 +264,6 @@ class A2Cribs.PhotoManager
 		$("#delete" + imageSlot).toggleClass("hide")
 		$("#primary" + imageSlot).toggleClass("hide")
 		$("#edit" + imageSlot).toggleClass("hide")
+
+	@DebugData: (data) ->
+		x = 5

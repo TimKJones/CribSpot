@@ -132,9 +132,11 @@
         console.log(data.status);
         if (data.status) {
           A2Cribs.ShareManager.SavedListing = data.newid;
-          return $('#server-notice').dialog2("options", {
-            content: "/Sublets/ajax_add4"
+          $('#server-notice').dialog2("options", {
+            content: "/Sublets/ajax_add4",
+            removeOnClose: true
           });
+          return A2Cribs.PhotoManager.LoadImages(A2Cribs.ShareManager.SavedListing);
         } else {
           A2Cribs.UIManager.Alert(data.error);
           return $('#server-notice').dialog2("close");
@@ -146,6 +148,11 @@
       return $('#server-notice').dialog2("options", {
         content: "/Sublets/ajax_add5"
       });
+    };
+
+    SubletAdd.DisableMarkerFields = function() {
+      $("#addressToMark").attr('disabled', 'disabled');
+      return A2Cribs.CorrectMarker.Disable();
     };
 
     SubletAdd.GetFormattedDate = function(date) {

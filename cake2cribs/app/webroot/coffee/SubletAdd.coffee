@@ -112,7 +112,11 @@ class A2Cribs.SubletAdd
 			console.log data.status
 			if data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
-				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
+				$('#server-notice').dialog2("options", {
+					content:"/Sublets/ajax_add4",
+					removeOnClose: true
+				});
+				A2Cribs.PhotoManager.LoadImages A2Cribs.ShareManager.SavedListing
 			else
 				A2Cribs.UIManager.Alert data.error
 				$('#server-notice').dialog2("close");
@@ -120,6 +124,11 @@ class A2Cribs.SubletAdd
 	@subletAddStep4:() ->
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add5"});
 
+	# Disable the address and map fields so the user can't change the location of the sublet
+	# There will also be server side logic that will also prevent this.
+	@DisableMarkerFields: () ->
+		$("#addressToMark").attr 'disabled', 'disabled'
+		A2Cribs.CorrectMarker.Disable()
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1

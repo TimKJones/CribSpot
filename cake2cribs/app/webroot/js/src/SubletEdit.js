@@ -69,12 +69,7 @@
       }
       if (subletData.Marker !== null && subletData.Marker !== void 0) {
         $('#SubletBuildingTypeId').val(subletData.Marker.building_type_id);
-        if (editing_sublet === true) {
-          $("#addressToMark").val(subletData.Marker.street_address).attr('disabled', 'disabled');
-          A2Cribs.CorrectMarker.Disable();
-        } else {
-          $("#addressToMark").val(subletData.Marker.street_address);
-        }
+        $("#addressToMark").val(subletData.Marker.street_address);
         $('#SubletName').val(subletData.Marker.alternate_name);
         $("#formattedAddress").val(subletData.Marker.street_address);
         $('#updatedLat').val(subletData.Marker.latitude);
@@ -150,7 +145,9 @@
 
     SubletEdit.InitLoadedSubletData = function() {
       var b, h, m, s, u;
-      if (A2Cribs.Cache.SubletData === void 0) return;
+      if (A2Cribs.Cache.SubletData === void 0 || A2Cribs.Cache.SubletData === null) {
+        return;
+      }
       s = A2Cribs.Cache.SubletData.Sublet;
       h = A2Cribs.Cache.SubletData.Housemate[0];
       m = A2Cribs.Cache.SubletData.Marker;

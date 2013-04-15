@@ -85,19 +85,6 @@
       window.universitiesArray = universitiesArray;
         
       }
-      else
-      {
-        $("#universityName").val(A2Cribs.Cache.Step1Data.Sublet.university);
-        A2Cribs.CorrectMarker.FindSelectedUniversity();
-        $("#SubletBuildingTypeId").val(A2Cribs.Cache.Step1Data.Sublet.building_type_id);
-        $("#SubletName").val(A2Cribs.Cache.Step1Data.Sublet.name);
-        $("#addressToMark").val(A2Cribs.Cache.Step1Data.Sublet.address);
-        latLng = new google.maps.LatLng(A2Cribs.Cache.Step1Data.Sublet.latitude, A2Cribs.Cache.Step1Data.Sublet.longitude)
-       // A2Cribs.CorrectMarker.CenterMap(latLng);
-        //A2Cribs.CorrectMarker.SetMarkerAtPosition(latLng);
-        A2Cribs.CorrectMarker.FindAddress();
-        $("#SubletUnitNumber").val(A2Cribs.Cache.Step1Data.Sublet.unit_number);
-      }
 
     });
 
@@ -123,13 +110,12 @@
         });
 
     //Hack to know if you are editing a sublet or not, since all this code is so intertwined.
-    var editing_sublet = false;
-    if (A2Cribs.Cache.SubletEditInProgress == null || A2Cribs.Cache.SubletEditInProgress == undefined){
-      A2Cribs.SubletEdit.Init();
-      editing_sublet = true;
+    if (A2Cribs.Cache.SubletEditInProgress != null && A2Cribs.Cache.SubletEditInProgress != undefined){
+      // editing sublet - disable marker fields
+      A2Cribs.SubletEdit.InitStep1();
+      A2Cribs.SubletAdd.DisableMarkerFields();  
     }
-    A2Cribs.SubletEdit.InitStep1(editing_sublet);
-      
+     
 
     // To clarify, we call subletedit function regardless of whether its an add or edit
     // This function basically loads in values from the cache into the form these values could come from

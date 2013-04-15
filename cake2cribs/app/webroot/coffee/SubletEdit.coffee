@@ -64,16 +64,7 @@ class A2Cribs.SubletEdit
 			$('#SubletUnitNumber').val(subletData.Sublet.unit_number)
 		if subletData.Marker != null and subletData.Marker != undefined
 			$('#SubletBuildingTypeId').val(subletData.Marker.building_type_id)
-			
-			if editing_sublet == true
-				# Disable the address and map fields so the user can't change the location of the sublet
-				# There will also be server side logic that will also prevent this.
-				$("#addressToMark").val(subletData.Marker.street_address).attr 'disabled', 'disabled'
-				A2Cribs.CorrectMarker.Disable()
-			
-			else
-				$("#addressToMark").val(subletData.Marker.street_address)
-
+			$("#addressToMark").val(subletData.Marker.street_address)
 			$('#SubletName').val(subletData.Marker.alternate_name)
 			$("#formattedAddress").val(subletData.Marker.street_address)
 			$('#updatedLat').val(subletData.Marker.latitude)
@@ -140,7 +131,7 @@ class A2Cribs.SubletEdit
 	Call from edit view
 	###
 	@InitLoadedSubletData: () ->
-		if A2Cribs.Cache.SubletData == undefined
+		if A2Cribs.Cache.SubletData == undefined || A2Cribs.Cache.SubletData == null
 			return
 
 		s = A2Cribs.Cache.SubletData.Sublet

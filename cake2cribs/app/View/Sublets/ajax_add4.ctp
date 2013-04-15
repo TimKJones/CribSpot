@@ -87,7 +87,8 @@ $(function () {
     			A2Cribs.PhotoManager.NextImageSlot = 1;
     			data.formData.imageSlot = A2Cribs.PhotoManager.NextImageSlot;
     		}
-
+    		
+    		A2Cribs.PhotoManager.DebugData(data);
     		data.submit();
     		return false;
     	}

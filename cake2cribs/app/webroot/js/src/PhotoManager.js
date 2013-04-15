@@ -22,9 +22,9 @@
 
     PhotoManager.BACKSPACE = 8;
 
-    PhotoManager.LoadImages = function() {
+    PhotoManager.LoadImages = function(id) {
       return $.ajax({
-        url: myBaseUrl + "Images/LoadImages/" + jsVars.edit_listing_id,
+        url: myBaseUrl + "Images/LoadImages/" + id,
         type: "GET",
         success: A2Cribs.PhotoManager.UpdateImageSources
       });
@@ -319,6 +319,11 @@
       $("#delete" + imageSlot).toggleClass("hide");
       $("#primary" + imageSlot).toggleClass("hide");
       return $("#edit" + imageSlot).toggleClass("hide");
+    };
+
+    PhotoManager.DebugData = function(data) {
+      var x;
+      return x = 5;
     };
 
     return PhotoManager;

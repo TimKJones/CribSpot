@@ -202,6 +202,8 @@
     	}).data("datepicker");
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 		$("#subletAddSteps").click(function(event) {
+			A2Cribs.Cache.SubletEditInProgress = null;
+        	A2Cribs.Cache.SubletData = null;
 			A2Cribs.SubletAdd.InitPostingProcess(event);
 		});
 		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
