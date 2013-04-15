@@ -28,3 +28,12 @@
 	cursor:pointer;
 	background-color:#819FF7;
 }
+
+.remove-property{
+	line-height: 25px;
+	font-size: 16px;
+	color: #4f5050;
+}
+.remove-property:hover{
+	color: #000;
+}

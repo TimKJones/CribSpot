@@ -6,6 +6,7 @@
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
 <?php echo $this->Html->script('src/Message'); ?>
+<?php echo $this->Html->script('src/PropertyManagement'); ?>
 <?php echo $this->Html->script('src/VerifyManager'); ?>
 
 <?php echo $this->Html->script('underscore'); ?>

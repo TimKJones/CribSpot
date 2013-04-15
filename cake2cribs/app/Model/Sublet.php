@@ -592,6 +592,48 @@ class Sublet extends AppModel {
 		}
 	}
 
+	/*
+		When we remove a sublet we don't want to delete the row's from the db
+		we simply want to hide the Sublet from showing up in the sublet fetching queries
+
+		Future: Move the old sublets into a sublet graveyard table so we can keep the size
+		of the main sublet tablet on a constant scale
+	*/
+	function removeSublet($sublet_id){
+		$sublet = $this->find('first', array('conditions'=>'Sublet.id='.$sublet_id));
+		if($sublet == null){
+			return false;
+		}
+		$sublet['Sublet']['visible'] = 0;
+		if(!$this->save($sublet)){
+			return false;
+		}
+
+		/*
+			We now need to see if the marker that this sublet linked to 
+			has any visible markers. If it doesn't have any markers, that is to 
+			say all properties for that marker are "removed", then we also want to make
+			then marker invisible
+		*/
+
+		$marker = $sublet['Marker'];
+
+		$options = array();
+		$options['conditions'] = array(
+			'Sublet.marker_id'=>$marker['marker_id'],
+			'Sublet.visible'=>1
+		);
+		$visible_sublets = $this->find('count', $options);
+		if($visible_sublets < 1){
+			$this->Marker->hide($marker);
+		}
+		
+
+
+		return true;
+
+	}
+
 	//Updates the sublet with the new info provided
 	// Makes sure some fields don't change like marker_id, street address etc...
 
@@ -629,7 +671,10 @@ class Sublet extends AppModel {
 
 		$sublets = $this->find('all', array(
 			'fields' => array('Sublet.id', 'Marker.street_address'),
-			'conditions' => array('Sublet.user_id' => $user_id)
+			'conditions' => array(
+				'Sublet.user_id' => $user_id,
+				'Sublet.visible' => 1
+				)
 		));
 
 		return $sublets;

@@ -93,9 +93,15 @@ class Marker extends AppModel {
 
 		$markers = Cache::read('markers');
 		$this->contain();
-		$markers = $this->find('all');
+
+		//Find all visible markers
+		$markers = $this->find('all', array('conditions'=>'Marker.visible=1'));
 		$filtered_markers = array();
 		CakeLog::write("loadMarkers", print_r($markers, true));
+		
+		// TODO change this functionality to use a custom sql query
+		// to eliminate the need to filter all the markers everytime
+
 		for ($i = 0; $i < count($markers); $i++)
 		{
 			$lat = $markers[$i]['Marker']['latitude'];
@@ -160,6 +166,15 @@ class Marker extends AppModel {
 	    	                 'fields' => 'Marker.marker_id'
 	  	));
 
+	  	if($markerMatch['Marker']['visible']==0){
+	  		//marker was previously made invisible so we
+	  		//need to make it visible again
+	  		$markerMatch['Marker']['visible']=1;
+	  		if(!$this->save($markerMatch)){
+	  			CakeLog::write("Marker", "Making marker ". $markerMath['Marker']['id'] ." invisible failed");
+	  		}
+	  	}
+
 	  	if ($markerMatch == null)
 	  	{
 	  		// create new marker
@@ -177,6 +192,12 @@ class Marker extends AppModel {
 	  	else
 	  		return $markerMatch['Marker']['marker_id'];
 	}
+
+	public function hide($marker){
+		$marker['visible'] = 0;
+		$this->save($marker);
+	}
+
 }
 
 ?>
