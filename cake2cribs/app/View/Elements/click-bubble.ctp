@@ -12,7 +12,7 @@
 
 	<div class="listing-block hide">
 		<div class="inline-block">
-			<a href="#"><img class="listing-image" src="/img/landing/house1.jpg" alt="C-House"></a>
+			<a href="#"><img class="listing-image" src="/img/tooltip/default_house.png" alt=""></a>
 		</div>
 		<div class="click-bubble-data">
 			<i class="single-content"><i class="icon-map-marker icon-large"></i><i class="sublet-name">Willow Tree Apartments</i><br></i>

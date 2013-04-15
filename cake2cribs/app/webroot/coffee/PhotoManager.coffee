@@ -112,11 +112,12 @@ class A2Cribs.PhotoManager
 		imageContentDiv = ""
 		if A2Cribs.PhotoManager.CurrentPhotoTarget == "secondary"
 			imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv()
+			if !imageContentDiv
+				A2Cribs.UIManager.Alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
+				return
 			num = imageContentDiv.substring(imageContentDiv.length-1)
 			A2Cribs.PhotoManager.IdToPathMap[num] = img
-			if !imageContentDiv
-				alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
-				return
+
 			A2Cribs.PhotoManager.ApplyAddPhotoUI num
 		else
 			imageContentDiv = "#imageContent0"
@@ -244,8 +245,9 @@ class A2Cribs.PhotoManager
 	@SubmitCaptionCallback: (response) ->
 		if response == "SUCCESS"
 			A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val()
+			A2Cribs.UIManager.Alert "Caption saved!"
 		else
-			alert "Error: Please use only numbers and letters."
+			A2Cribs.UIManager.Alert "There was an error saving your caption. Make sure you use only numbers and letters. If the error persists, contact help@cribspot.com"
 
 	###
 	Update visibility of buttons for image after added to slot imageSlot

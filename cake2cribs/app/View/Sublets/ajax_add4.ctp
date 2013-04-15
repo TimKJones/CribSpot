@@ -88,7 +88,6 @@ $(function () {
     			data.formData.imageSlot = A2Cribs.PhotoManager.NextImageSlot;
     		}
 
-    		alert(data);
     		data.submit();
     		return false;
     	}
@@ -96,14 +95,7 @@ $(function () {
 });
 
 $(document).ready(function(){
-	alert("loading images");
 	A2Cribs.PhotoManager.LoadImages();
-    var options = {
-      beforeSubmit:  A2Cribs.PhotoManager.ShowRequest,
-      success:       A2Cribs.PhotoManager.ShowResponse,
-      url:       "Images/Edit/" + jsVars.edit_listing_id,  // your upload script
-      dataType:  "json"
-    };
 });
 
 $("#ImageAddForm").submit(function() {

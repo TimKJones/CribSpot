@@ -18,10 +18,12 @@
 		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div class="photo-region">
-		<div id="main-photo" style="background-image:url(/img/landing/house1.jpg);"></div>
+		<div id="main-photo" style="background-image:url(/img/tooltip/default_house_large.jpg);"></div>
 		<div id="photo-description">No Photos Available</div>
 		<div class="photos">
-			<a href="#" class="preview-thumbnail" style="background-image:url(/img/landing/house2.jpg);"></a>
+			<a href="#" class="preview-thumbnail" style="background-image:url(/img/tooltip/default_house_large.jpg);"></a>
+			<a href="#" class="preview-thumbnail" style="background-image:url(/img/tooltip/default_house_large.jpg);"></a>
+			<a href="#" class="preview-thumbnail" style="background-image:url(/img/tooltip/default_house_large.jpg);"></a>
 		</div>
 	</div>
 	<div id="overview" class="side-pane">
@@ -89,52 +91,52 @@
 
 		<div class="short-description">
 			<h1>Description:</h1>
-			<p>This is my house and I think it's awesome. There is a pool in the back and lots of showers. I really love showering and trees.</p>
+			<p></p>
 		</div>
-		<i class="icon-map-marker icon-large"></i><i class="full-address"> 1001 Vaughn Street, Ann Arbor, MI 48104</i>
+		<i class="icon-map-marker icon-large"></i><i class="full-address"></i>
 	</div>
 	<div id="details" class="side-pane">
 		<h1>Additional Details:</h1>
 		<table class="medium-line-height">
 			<tr>
-				<td><div><i class="small-text">Bathroom:</i><br><i class="medium-text bath-type">Private</i></div></td>
-				<td><div><i class="small-text">Parking:</i><br><i class="medium-text parking-avail">Available</i></div></td>
-				<td><div><i class="small-text">A/C:</i><br><i class="medium-text ac-avail">Yes</i></div></td>
+				<td><div><i class="small-text">Bathroom:</i><br><i class="medium-text bath-type"></i></div></td>
+				<td><div><i class="small-text">Parking:</i><br><i class="medium-text parking-avail"></i></div></td>
+				<td><div><i class="small-text">A/C:</i><br><i class="medium-text ac-avail"></i></div></td>
 			</tr>
 			<tr>
-				<td><div><i class="small-text">Furnished:</i><br><i class="medium-text furnish-avail">Fully</i></div></td>
+				<td><div><i class="small-text">Furnished:</i><br><i class="medium-text furnish-avail"></i></div></td>
 			</tr>
 		</table>
 		<h1>Anticipated Housemates:</h1>
 		<table class="medium-line-height">
 			<tr>
-				<td><div><i class="small-text">Estimated #:</i><br><i class="medium-text housemate-count">4</i></div></td>
-				<td><div><i class="small-text">Students:</i><br><i class="medium-text housemate-enrolled">Yes</i></div></td>
-				<td><div><i class="small-text">Type:</i><br><i class="medium-text housemate-type">Undergraduate</i></div></td>
+				<td><div><i class="small-text">Estimated #:</i><br><i class="medium-text housemate-count"></i></div></td>
+				<td><div><i class="small-text">Students:</i><br><i class="medium-text housemate-enrolled"></i></div></td>
+				<td><div><i class="small-text">Type:</i><br><i class="medium-text housemate-type"></i></div></td>
 			</tr>
 			<tr>
-				<td><div><i class="small-text">Gender:</i><br><i class="medium-text housemate-gender">Male</i></div></td>
-				<td><div><i class="small-text">Year:</i><br><i class="medium-text housemate-year">Seniors</i></div></td>
+				<td><div><i class="small-text">Gender:</i><br><i class="medium-text housemate-gender"></i></div></td>
+				<td><div><i class="small-text">Year:</i><br><i class="medium-text housemate-year"></i></div></td>
 			</tr>
 		</table>
-		<div class="medium-line-height"><i class="small-text">Majors:</i><br><i class="medium-text housemate-major">YOLO</i></div>
+		<div class="medium-line-height"><i class="small-text">Majors:</i><br><i class="medium-text housemate-major"></i></div>
 		<h1>Sublet Costs:</h1>
 		<table class="med-large-line-height">
 			<tr>
 				<td><i class="med-small-text">Price:</i></td>
-				<td><i class="medium-text">$</i><i class="medium-text bed-price">1,050</i></td>
+				<td><i class="medium-text">$</i><i class="medium-text bed-price"></i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Utilities:</i></td>
-				<td><i class="medium-text utilities-cost">Included</i></td>
+				<td><i class="medium-text utilities-cost"></i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Security Deposit:</i></td>
-				<td><i class="medium-text deposit-cost">$1,050</i></td>
+				<td><i class="medium-text deposit-cost"></i></td>
 			</tr>
 			<tr>
 				<td><i class="med-small-text">Other Fees:</i></td>
-				<td><i class="medium-text additional-fee">$1,050</i></td>
+				<td><i class="medium-text additional-fee"></i></td>
 			</tr>
 		</table>
 	</div>
@@ -231,7 +233,7 @@
 			$(".btn-active").removeClass("active btn-active btn-primary");
 			$(this).addClass("active btn-active btn-primary");
 		});
-		$(".preview-thumbnail").click(function() {
+		$(".preview-thumbnail").on("click", function() {
 			var image = $(this).css("background-image");
 			$("#main-photo").css("background-image", image);
 			return false;

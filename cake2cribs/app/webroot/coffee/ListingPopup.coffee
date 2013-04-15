@@ -51,9 +51,14 @@ class A2Cribs.ListingPopup
 		content.find('.photos').empty()
 		if A2Cribs.Cache.SubletIdToImagesMap[subletId]? and A2Cribs.Cache.SubletIdToImagesMap[subletId].length
 			for image in A2Cribs.Cache.SubletIdToImagesMap[subletId]
-				content.find('.photos').append
-				$('<a href="#" class="preview-thumbnail">').appendTo(content.find('.photos')).css
-					'background-image': image.Path
+				$('<a href="#" caption="' + image.Caption + '" class="preview-thumbnail">').appendTo(content.find('.photos')).css
+					'background-image': 'url(' + image.Path + ')'
+				$(".preview-thumbnail").on("click", ( ->
+					url = $(this).css("background-image");
+					$("#main-photo").css("background-image", url);
+					$("#photo-description").html($(this).attr("caption"))
+					return false;
+				));
 				if image.IsPrimary
 					content.find('#main-photo').css
 						'background-image': 'url(' + image.Path + ')'
@@ -76,7 +81,7 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text if sublet.Furnished is 3 then "No" else "Yes"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
-
+		content.find('#photo-description').text ""
 		
 
 		subletId = sublet.SubletId

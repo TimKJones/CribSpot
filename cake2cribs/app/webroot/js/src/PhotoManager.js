@@ -135,12 +135,12 @@
       imageContentDiv = "";
       if (A2Cribs.PhotoManager.CurrentPhotoTarget === "secondary") {
         imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv();
-        num = imageContentDiv.substring(imageContentDiv.length - 1);
-        A2Cribs.PhotoManager.IdToPathMap[num] = img;
         if (!imageContentDiv) {
-          alert("You have already uploaded a maximum of 6 images. Please delete an image before uploading another.");
+          A2Cribs.UIManager.Alert("You have already uploaded a maximum of 6 images. Please delete an image before uploading another.");
           return;
         }
+        num = imageContentDiv.substring(imageContentDiv.length - 1);
+        A2Cribs.PhotoManager.IdToPathMap[num] = img;
         A2Cribs.PhotoManager.ApplyAddPhotoUI(num);
       } else {
         imageContentDiv = "#imageContent0";
@@ -294,9 +294,10 @@
 
     PhotoManager.SubmitCaptionCallback = function(response) {
       if (response === "SUCCESS") {
-        return A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val();
+        A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val();
+        return A2Cribs.UIManager.Alert("Caption saved!");
       } else {
-        return alert("Error: Please use only numbers and letters.");
+        return A2Cribs.UIManager.Alert("There was an error saving your caption. Make sure you use only numbers and letters. If the error persists, contact help@cribspot.com");
       }
     };
 
