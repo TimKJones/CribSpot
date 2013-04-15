@@ -81,9 +81,7 @@ class A2Cribs.Messages
 			SelectedConversationDiv.addClass 'selected_conversation'
 			SelectedConversationDiv.removeClass 'unread_conversation' #Just in case it was unread
 
-			$('.conversation_list_item').each (index, element)=>
-				$(element).click (event)=>
-					@loadConversation(event)
+			@attachConversationListItemHandler() 
 
 	@toggleUnreadConversations:()->
 		@ViewOnlyUnread = $('#view_unread_cb').is ':checked' 
@@ -143,6 +141,7 @@ class A2Cribs.Messages
 
 
 	@loadConversation:(event)->
+
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
 		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
 
@@ -163,14 +162,14 @@ class A2Cribs.Messages
 		sublet_url = $('#cli_' + @CurrentConversation + ' a').attr 'href'
 		$('#listing_title').text(title).attr('href', sublet_url)
 
-
-		# @CurrentConversation = parseInt SelectedConversationDiv.attr 'convid'
 		@refreshParticipantInfo()
 		@refreshUnreadCount()
 		@refreshMessages()
 
 	@loadMessages:(page, align_bottom=false)->
 		url = myBaseUrl + "messages/getMessages/" + @CurrentConversation +  "/" + page + "/" 
+		
+		# We want to put a hold on loading
 		$.get url, (data, textStatus) =>
 			message_list = $('#message_list')
 			initial_height = message_list.innerHeight()
@@ -194,12 +193,23 @@ class A2Cribs.Messages
 			# See if there is more room to load content
 			$('#current_conversation').trigger 'scroll'
 
+			@attachConversationListItemHandler()
+			
 		.fail =>
 			@NumMessagePages = 0;
+		
+
+	@attachConversationListItemHandler:()->
+		# We use a one time event so the user can't stack a backlog 
+		# of loadConversation Events
+		# After a conversation is loaded events will be put in again.
+		$('.conversation_list_item').one 'click', (event)=>
+				@loadConversation(event)
 
 	@refreshMessages:(event)->
 		@NumMessagePages = 1
-		$('#message_list').html ''
+		message_list = $('#message_list')
+		message_list.html ''
 		@loadMessages(@NumMessagePages, true)
 	
 	@sendReply:(event)->
@@ -270,6 +280,9 @@ class A2Cribs.Messages
 		if not @CurrentParticipantID?
 			@CurrentParticipantID = -1
 		@ParticipantInfoCache = {}
+		# A flag to prevent users from continuously reloading
+		# the same conversation.
+		@LoadingMessages = false;
 
 
 
