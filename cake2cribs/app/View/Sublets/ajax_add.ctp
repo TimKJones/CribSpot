@@ -18,44 +18,46 @@
          max-width: none !important;
       }
   </style>
-  <div class = 'sublet-register container-fluid'>
-    <div id="search" class="input-append">
-      <label for="universityName" class="span3 span3" id="universityNameLabel">University: </label><input id="universityName" class="typeahead" type="text" autocomplete="off">
+  <div class = 'sublet-add-wrapper'>
+    <div class = 'sublet-register container-fluid'>
+      <div id="search" class="input-append">
+        <label for="universityName" class="span3 span3" id="universityNameLabel">University: </label><input id="universityName" class="typeahead" type="text" autocomplete="off">
+      </div>
+      <?php echo $this->Form->create('Sublet'); ?>
+      <fieldset>
+      <div id="sublet_register_screen1">
+        <?php echo $this->Form->input('building_type_id', array(
+          'div'=>'row-fluid subin',
+          'label'=> array('class'=>'span3','text'=>'Building Type:'),
+          'class'=>'span9'
+          // 'label'=> 'Building Type:',
+          )
+
+
+        );?>
+
+        <?php echo $this->Form->input('name', array(
+          'div'=>'row-fluid subin',
+          'label'=> array('class'=>'span3','text'=>'Property Name*:'),
+          'class'=>'span9'
+          )
+        ); ?>
+        <?php echo $this->element('correctPinLocationMap'); ?>
+        <?php echo $this->Form->input('unit_number', array(
+          'div'=>'row-fluid subin',
+          'label'=> array('class'=>'span3','text'=>'Unit Number*:'),
+          'class'=>'span9'
+          // 'label'=> 'Building Type:',
+          )
+
+        );?>
+
+        <i>* indicates an optional field</i>
+
+        <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
+      </div>
+      <a href="#" id="goToStep2" style="float:right">Next</a>
     </div>
-    <?php echo $this->Form->create('Sublet'); ?>
-    <fieldset>
-    <div id="sublet_register_screen1">
-      <?php echo $this->Form->input('building_type_id', array(
-        'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Building Type:'),
-        'class'=>'span9'
-        // 'label'=> 'Building Type:',
-        )
-
-
-      );?>
-
-      <?php echo $this->Form->input('name', array(
-        'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Property Name*:'),
-        'class'=>'span9'
-        )
-      ); ?>
-      <?php echo $this->element('correctPinLocationMap'); ?>
-      <?php echo $this->Form->input('unit_number', array(
-        'div'=>'row-fluid subin',
-        'label'=> array('class'=>'span3','text'=>'Unit Number*:'),
-        'class'=>'span9'
-        // 'label'=> 'Building Type:',
-        )
-
-      );?>
-
-      <i>* indicates an optional field</i>
-
-      <!--<a class="ajax" href="/sublets/ajax_add2" id="gotoscreen2">Go next </a> -->
-    </div>
-    <a href="#" id="goToStep2" style="float:right">Next</a>
   </div>
    <script>
    var universitiesMap = [];

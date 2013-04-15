@@ -204,7 +204,7 @@ class A2Cribs.SubletEdit
 				subletData = JSON.parse subletData
 				A2Cribs.Cache.SubletData = subletData
 				A2Cribs.SubletEdit.Init()
-				$('<div/>').dialog2({
+				modal_body = $('<div/>').dialog2({
 				    title: "Edit " + subletData.Marker.street_address, 
 				    content: "/Sublets/ajax_add", 
 				    id: "server-notice",
@@ -212,6 +212,16 @@ class A2Cribs.SubletEdit
 					closeOnEscape: false,
 					removeOnClose: false
 				})
+				# Resize the modal window to fit the screen
+				# NOTE: This needs to be refactored a ton
+				A2Cribs.SubletAdd.resizeModal(modal_body)
+				# Also setup a window handler so that when the window is resized the modal is sized too
+				$(window).resize ()=>
+					A2Cribs.SubletAdd.resizeModal(modal_body)
+
+			error: ()=>
+				alertify.error("An error occured while loading your sublet data, please try again.", 2000)
+
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format
