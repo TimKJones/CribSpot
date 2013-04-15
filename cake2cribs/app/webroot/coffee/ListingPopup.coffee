@@ -49,6 +49,9 @@ class A2Cribs.ListingPopup
 		short_address = marker.Address.split(" ").join "_"
 
 		content.find('.photos').empty()
+		content.find('#main-photo').css
+						'background-image': 'url(/img/tooltip/default_house_large.jpg)'
+		content.find('#photo-description').text ""
 		if A2Cribs.Cache.SubletIdToImagesMap[subletId]? and A2Cribs.Cache.SubletIdToImagesMap[subletId].length
 			for image in A2Cribs.Cache.SubletIdToImagesMap[subletId]
 				$('<a href="#" caption="' + image.Caption + '" class="preview-thumbnail">').appendTo(content.find('.photos')).css
@@ -62,6 +65,8 @@ class A2Cribs.ListingPopup
 				if image.IsPrimary
 					content.find('#main-photo').css
 						'background-image': 'url(' + image.Path + ')'
+					content.find('#photo-description').text image.Caption
+
 		else
 			content.find('#main-photo').css
 						'background-image': 'url(/img/tooltip/default_house_large.jpg)'
@@ -81,7 +86,6 @@ class A2Cribs.ListingPopup
 		content.find('.furnish-avail').text if sublet.Furnished is 3 then "No" else "Yes"
 		content.find('.first-name').text A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName
 		content.find('.short-description').find('p').text sublet.Description
-		content.find('#photo-description').text ""
 		
 
 		subletId = sublet.SubletId

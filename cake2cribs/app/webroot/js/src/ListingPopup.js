@@ -62,6 +62,10 @@ ListingPopup class
       school = A2Cribs.FilterManager.CurrentSchool.split(" ").join("_");
       short_address = marker.Address.split(" ").join("_");
       content.find('.photos').empty();
+      content.find('#main-photo').css({
+        'background-image': 'url(/img/tooltip/default_house_large.jpg)'
+      });
+      content.find('#photo-description').text("");
       if ((A2Cribs.Cache.SubletIdToImagesMap[subletId] != null) && A2Cribs.Cache.SubletIdToImagesMap[subletId].length) {
         _ref = A2Cribs.Cache.SubletIdToImagesMap[subletId];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -80,6 +84,7 @@ ListingPopup class
             content.find('#main-photo').css({
               'background-image': 'url(' + image.Path + ')'
             });
+            content.find('#photo-description').text(image.Caption);
           }
         }
       } else {
@@ -102,7 +107,6 @@ ListingPopup class
       content.find('.furnish-avail').text(sublet.Furnished === 3 ? "No" : "Yes");
       content.find('.first-name').text(A2Cribs.Cache.SubletIdToOwnerMap[subletId].FirstName);
       content.find('.short-description').find('p').text(sublet.Description);
-      content.find('#photo-description').text("");
       subletId = sublet.SubletId;
       is_favorite = __indexOf.call(A2Cribs.Cache.FavoritesSubletIdsList, subletId) >= 0;
       if (is_favorite) {

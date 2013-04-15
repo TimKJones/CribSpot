@@ -91,13 +91,19 @@ class Image extends AppModel {
 			'is_primary' => 0
 		);
 
-		//CakeLog::write("addImageSql", print_r($newImage, true));
-
 		$conditions = array(
 			'Image.sublet_id' => $listing_id,
 			'Image.user_id' => $user_id,
 			'Image.image_path' => $filePath);
-		$test = $this->hasAny($conditions);
+
+		/* If no photos are set as primary for this sublet_id, set this photo as primary */
+		$primary_exists_conditions = array(
+			'Image.sublet_id' => $listing_id,
+			'Image.is_primary' => 1
+		);
+
+		if (!$this->hasAny($primary_exists_conditions))
+			$newImage['is_primary'] = 1;
 
 		if (!$this->hasAny($conditions))
 		{
