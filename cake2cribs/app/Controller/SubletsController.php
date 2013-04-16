@@ -133,6 +133,21 @@ class SubletsController extends AppController {
 		}
 	}
 
+    public function remove($sublet_id){
+        $user_owns_sublet = $this->Sublet->UserOwnsSublet($this->Auth->User('id'), $sublet_id);
+        if(!$user_owns_sublet){
+            throw new NotFoundException();
+        }
+        $success = $this->Sublet->removeSublet($sublet_id);
+        if(!$success){
+            CakeLog::write('Sublets', 'Removing sublet $sublet_id failed. User: '. $this->Auth->User('id'));
+            throw new NotFoundException();
+        }
+        // Need to change this to dashboard/listing or properties
+        $this->redirect('/dashboard/');
+
+    }
+
     public function ajax_add() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
@@ -489,29 +504,7 @@ class SubletsController extends AppController {
         }
     }
 
-   
-    //ADD ACCESS CONTROL FOR THE LOVE OF GOD
-    public function delete($id = null) {
-        if ($this->Auth->User('id') == null || $id == null)
-           throw new NotFoundException(); 
-
-        if (!$this->Sublet->UserOwnsSublet($this->Auth->User('id'), $id))
-            throw new NotFoundException();
-
-        if (!$this->request->is('post')) {
-            throw new MethodNotAllowedException();
-        }
-        $this->Sublet->id = $id;
-        if (!$this->Sublet->exists()) {
-            throw new NotFoundException(__('Invalid sublet'));
-        }
-        if ($this->Sublet->delete()) {
-            $this->Session->setFlash(__('Sublet deleted'));
-            $this->redirect(array('action' => 'index'));
-        }
-        $this->Session->setFlash(__('Sublet was not deleted'));
-        $this->redirect(array('action' => 'index'));
-    }
+  
 
 /*
 Returns a list of marker_ids that will be visible based on the current filter settings.

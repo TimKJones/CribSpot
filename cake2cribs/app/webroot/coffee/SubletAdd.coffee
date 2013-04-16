@@ -1,7 +1,21 @@
 class A2Cribs.SubletAdd
 	#@Step1Data = null
-
 	@setupUI:() ->
+		
+
+		# modal_total_height = $('.modal').height()
+		# page_height = window.innerHeight
+		# # We want some margin on the top and bottom of the modal to be around 20px
+		
+		# dif = page_height - modal_total_height - (margin * 2)
+		# console.log("window height: #{dif} modal_total_height: #{modal_total_height}")
+		# modal_body.css 'height', dif + 'px'
+
+
+		# $('sublet-register').css('height', '20px').css('overflow', 'hidden')
+
+
+
 		$('#goToStep2').click (e) =>
 			#begin the validations
 			if (!$('#formattedAddress').val())
@@ -72,17 +86,35 @@ class A2Cribs.SubletAdd
 
 	@InitPostingProcess:(e=null) ->
 		A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress()
-		$("<div/>").dialog2({
+		subletmodal = $("<div/>").dialog2({
 			title: "Post a sublet", 
 			content: "/Sublets/ajax_add", 
 			id: "server-notice",
-			closeOnOverlayClick: false
+			closeOnOverlayClick: false,
 			closeOnEscape: false,
-			removeOnClose: false
+			removeOnClose: false,
 		});
+
+		@resizeModal(subletmodal)
+
+		$(window).resize ()=>
+			@resizeModal(subletmodal)
 
 		if (e != null)
 			e.preventDefault();
+
+	@resizeModal:(modal_body)->
+		# We ened to size the modal window in a way that the full modal is displayed
+		# and the contents inside of it just scroll.
+
+		parent_modal = modal_body.parent('.modal')
+		margin = 20
+		
+		target_modal_size = window.innerHeight - (2 * margin)
+		header_footer_size = parent_modal.height() - modal_body.height()
+		new_body_height = target_modal_size-header_footer_size
+		modal_body.css 'height', new_body_height + 'px'
+
 
 	@backToStep1: () ->
 		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add"});
