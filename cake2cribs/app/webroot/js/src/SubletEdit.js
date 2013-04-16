@@ -9,7 +9,7 @@
       return A2Cribs.SubletEdit.InitLoadedSubletData();
     };
 
-    SubletEdit.CacheStep1Data = function() {
+    SubletEdit.CacheStep1Data = function()  {
       A2Cribs.Cache.SubletEditInProgress.Sublet.university_id = parseInt(A2Cribs.CorrectMarker.SelectedUniversity.id);
       A2Cribs.Cache.SubletEditInProgress.Sublet.university_name = $('#universityName').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.unit_number = $('#SubletUnitNumber').val();
