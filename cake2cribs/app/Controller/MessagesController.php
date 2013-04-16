@@ -29,13 +29,17 @@
         if(!$this->Conversation->isUserParticipant($conv_id, $this->Auth->User())){
             throw new NotFoundException();
         }
+        $options = array();
+        $options['conditions'] = array('Conversation.conversation_id'=>$conv_id);
+        $conversation = $this->Conversation->find('first', $options);
 
-        $conversation = $this->Conversation->find('first', array('conditions', 'conversation.conversation_id = $conv_id'));
 
-        if($conversation['Participant1']['id'] = $user['id']){
+        if($conversation['Participant1']['id'] == $user['id']){
             $participant_id = $conversation['Participant2']['id'];
-        }else{
+        }else if($conversation['Participant2']['id'] == $user['id']){
             $participant_id = $conversation['Participant1']['id'];
+        }else{
+            throw new NotFoundException();    
         }
 
         $directive['classname'] = 'messages';

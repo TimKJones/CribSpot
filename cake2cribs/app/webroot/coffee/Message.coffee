@@ -129,14 +129,14 @@ class A2Cribs.Messages
 				console.log(url)
 				$('#p_pic').attr 'src', url
 				veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-				if verification_info.mut_friends?
+				if verification_info.mut_friends? and not isNaN(verification_info.mut_friends)
 					veripanel.find('#participant-friends').html("- #{verification_info.mut_friends} mutual")
-				else if verification_info.tot_friends?
+				else if verification_info.tot_friends? and not isNaN(verification_info.tot_friends)
 					veripanel.find('#participant-friends').html("- #{verification_info.tot_friends} friends")
 
 			if verification_info.verified_tw
 				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')  
-				if verification_info.tot_followers?
+				if verification_info.tot_followers? and not isNaN(verification_info.tot_followers)
 					veripanel.find("#participant-followers").html("- #{verification_info.tot_followers} followers")
 
 
