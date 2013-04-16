@@ -14,7 +14,7 @@
       A2Cribs.Cache.SubletEditInProgress.Sublet.university_name = $('#universityName').val();
       A2Cribs.Cache.SubletEditInProgress.Sublet.unit_number = $('#SubletUnitNumber').val();
       A2Cribs.Cache.SubletEditInProgress.Marker.street_address = $("#formattedAddress").val();
-      A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt($('#SubletBuildingTypeId').val());
+      A2Cribs.Cache.SubletEditInProgress.Sublet.building_type_id = parseInt($('#SubletBuildingTypeId').val() );
       A2Cribs.Cache.SubletEditInProgress.Marker.building_type_id = parseInt($('#SubletBuildingTypeId').val());
       A2Cribs.Cache.SubletEditInProgress.Marker.alternate_name = $('#SubletName').val();
       A2Cribs.Cache.SubletEditInProgress.Marker.latitude = $('#updatedLat').val();

@@ -26,7 +26,7 @@
       $('#goToStep1').click(function(e) {
         return _this.backToStep1();
       });
-      $("#goToStep3").click(function(e) {
+      $("#goToStep3").click(function(e)  {
         var parsedBeginDate, parsedEndDate, todayDate;
         parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
         parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
