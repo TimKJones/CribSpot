@@ -26,7 +26,7 @@
       $('#goToStep1').click(function(e) {
         return _this.backToStep1();
       });
-      $("#goToStep3").click(function(e)  {
+      $("#goToStep3").click(function(e) {
         var parsedBeginDate, parsedEndDate, todayDate;
         parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
         parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
@@ -77,9 +77,11 @@
     };
 
     SubletAdd.InitPostingProcess = function(e) {
+      var subletmodal,
+        _this = this;
       if (e == null) e = null;
       A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
-      $("<div/>").dialog2({
+      subletmodal = $("<div/>").dialog2({
         title: "Post a sublet",
         content: "/Sublets/ajax_add",
         id: "server-notice",
@@ -87,7 +89,21 @@
         closeOnEscape: false,
         removeOnClose: false
       });
+      this.resizeModal(subletmodal);
+      $(window).resize(function() {
+        return _this.resizeModal(subletmodal);
+      });
       if (e !== null) return e.preventDefault();
+    };
+
+    SubletAdd.resizeModal = function(modal_body) {
+      var header_footer_size, margin, new_body_height, parent_modal, target_modal_size;
+      parent_modal = modal_body.parent('.modal');
+      margin = 20;
+      target_modal_size = window.innerHeight - (2 * margin);
+      header_footer_size = parent_modal.height() - modal_body.height();
+      new_body_height = target_modal_size - header_footer_size;
+      return modal_body.css('height', new_body_height + 'px');
     };
 
     SubletAdd.backToStep1 = function() {
