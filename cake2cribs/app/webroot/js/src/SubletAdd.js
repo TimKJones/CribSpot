@@ -32,7 +32,7 @@
       $("#goToStep3").click(function(e) {
         var parsedBeginDate, parsedEndDate, todayDate;
         parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
-        parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val() ));
+        parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
         todayDate = new Date();
         if (parsedBeginDate.toString() === "Invalid Date" || parsedEndDate.toString() === "Invalid Date") {
           return A2Cribs.UIManager.Alert("Please enter a valid date.");
@@ -82,44 +82,32 @@
     SubletAdd.InitPostingProcess = function(e) {
       if (e == null) e = null;
       A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
-      $("<div/>").dialog2({
-        title: "Post a sublet",
-        content: "/Sublets/ajax_add",
-        id: "server-notice"
-      });
+      this.OpenStep1();
       if (e !== null) return e.preventDefault();
     };
 
     SubletAdd.backToStep1 = function() {
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add"
-      });
+      return this.OpenStep1();
     };
 
     SubletAdd.backToStep2 = function() {
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add2"
-      });
+      return this.OpenStep2();
     };
 
     SubletAdd.backToStep3 = function() {
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add3"
-      });
+      return this.OpenStep3();
     };
 
     SubletAdd.subletAddStep1 = function() {
+      this.OpenStep2();
       A2Cribs.SubletEdit.CacheStep1Data();
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add2"
-      });
+      return this.OpenStep2();
     };
 
     SubletAdd.subletAddStep2 = function() {
+      this.OpenStep3();
       A2Cribs.SubletEdit.CacheStep2Data();
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add3"
-      });
+      return this.OpenStep3();
     };
 
     SubletAdd.subletAddStep3 = function() {
@@ -132,10 +120,7 @@
         console.log(data.status);
         if (data.status) {
           A2Cribs.ShareManager.SavedListing = data.newid;
-          $('#server-notice').dialog2("options", {
-            content: "/Sublets/ajax_add4",
-            removeOnClose: true
-          });
+          _this.OpenStep4();
           return A2Cribs.PhotoManager.LoadImages(A2Cribs.ShareManager.SavedListing);
         } else {
           A2Cribs.UIManager.Alert(data.error);
@@ -145,9 +130,7 @@
     };
 
     SubletAdd.subletAddStep4 = function() {
-      return $('#server-notice').dialog2("options", {
-        content: "/Sublets/ajax_add5"
-      });
+      return this.OpenStep5();
     };
 
     SubletAdd.DisableMarkerFields = function() {
@@ -164,6 +147,69 @@
       year = date.getUTCFullYear();
       return beginDateFormatted = month + "/" + day + "/" + year;
     };
+
+    /*
+    	For all open() functions, re-use existing modal if it has been created. Otherwise, create and save it.
+    */
+
+    SubletAdd.OpenStep1 = function() {
+      if (A2Cribs.Cache.Step1Modal !== void 0 && A2Cribs.Cache.Step1Modal !== null) {
+        A2Cribs.Cache.Step1Modal.dialog2('open');
+        return alert("already exists");
+      } else {
+        return A2Cribs.Cache.Step1Modal = $("<div/>").dialog2({
+          title: "Post a sublet",
+          content: "/Sublets/ajax_add",
+          id: "server-notice"
+        });
+      }
+    };
+
+    SubletAdd.OpenStep2 = function() {
+      if (A2Cribs.Cache.Step2Modal !== void 0 && A2Cribs.Cache.Step2Modal !== null) {
+        return A2Cribs.Cache.Step2Modal.dialog2('open');
+      } else {
+        return A2Cribs.Cache.Step2Modal = $('#server-notice').dialog2("options", {
+          content: "/Sublets/ajax_add2",
+          removeOnClose: false
+        });
+      }
+    };
+
+    SubletAdd.OpenStep3 = function() {
+      if (A2Cribs.Cache.Step3Modal !== void 0 && A2Cribs.Cache.Step3Modal !== null) {
+        return A2Cribs.Cache.Step3Modal.dialog2('open');
+      } else {
+        return A2Cribs.SubletAdd.Step3Modal = $('#server-notice').dialog2("options", {
+          content: "/Sublets/ajax_add3",
+          removeOnClose: false
+        });
+      }
+    };
+
+    SubletAdd.OpenStep4 = function() {
+      if (A2Cribs.Cache.Step4Modal !== void 0 && A2Cribs.Cache.Step4Modal !== null) {
+        return A2Cribs.Cache.Step4Modal.dialog2('open');
+      } else {
+        return A2Cribs.SubletAdd.Step4Modal = $('#server-notice').dialog2("options", {
+          content: "/Sublets/ajax_add4",
+          removeOnClose: false
+        });
+      }
+    };
+
+    SubletAdd.OpenStep5 = function() {
+      if (A2Cribs.Cache.Step5Modal !== void 0 && A2Cribs.Cache.Step5Modal !== null) {
+        return A2Cribs.Cache.Step5Modal.dialog2('open');
+      } else {
+        return A2Cribs.SubletAdd.Step5Modal = $('#server-notice').dialog2("options", {
+          content: "/Sublets/ajax_add5",
+          removeOnClose: false
+        });
+      }
+    };
+
+    SubletAdd.ClosePreviousModal = function() {};
 
     return SubletAdd;
 

@@ -1,6 +1,4 @@
 class A2Cribs.SubletAdd
-	#@Step1Data = null
-
 	@setupUI:() ->
 		$('#goToStep2').click (e) =>
 			#begin the validations
@@ -76,32 +74,30 @@ class A2Cribs.SubletAdd
 
 	@InitPostingProcess:(e=null) ->
 		A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress()
-		$("<div/>").dialog2({
-			title: "Post a sublet", 
-			content: "/Sublets/ajax_add", 
-			id: "server-notice"
-		});
+		@OpenStep1()
 
 		if (e != null)
 			e.preventDefault();
 
 	@backToStep1: () ->
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add"});
+		@OpenStep1()
 
 	@backToStep2: () ->
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
+		@OpenStep2()
 
 	@backToStep3: () ->
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
+		@OpenStep3()
 
 	@subletAddStep1:() ->
+		@OpenStep2()
 		A2Cribs.SubletEdit.CacheStep1Data()
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add2"});
+		@OpenStep2()
 
 	@subletAddStep2:() ->
+		@OpenStep3()
 		#validations go here
 		A2Cribs.SubletEdit.CacheStep2Data()
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add3"});
+		@OpenStep3()
 
 	@subletAddStep3:() ->
 		url = "/sublets/ajax_submit_sublet"
@@ -112,17 +108,14 @@ class A2Cribs.SubletAdd
 			console.log data.status
 			if data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
-				$('#server-notice').dialog2("options", {
-					content:"/Sublets/ajax_add4",
-					removeOnClose: true
-				});
+				@OpenStep4()
 				A2Cribs.PhotoManager.LoadImages A2Cribs.ShareManager.SavedListing
 			else
 				A2Cribs.UIManager.Alert data.error
 				$('#server-notice').dialog2("close");
 
 	@subletAddStep4:() ->
-		$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add5"});
+		@OpenStep5()
 
 	# Disable the address and map fields so the user can't change the location of the sublet
 	# There will also be server side logic that will also prevent this.
@@ -139,3 +132,69 @@ class A2Cribs.SubletAdd
 			day = "0" + day
 		year = date.getUTCFullYear()
 		beginDateFormatted = month + "/" + day + "/" + year
+
+	###
+	For all open() functions, re-use existing modal if it has been created. Otherwise, create and save it.
+	###
+	@OpenStep1: () ->
+		if A2Cribs.Cache.Step1Modal != undefined and A2Cribs.Cache.Step1Modal != null
+			A2Cribs.Cache.Step1Modal.dialog2('open')
+			alert "already exists"
+		else
+			A2Cribs.Cache.Step1Modal = $("<div/>").dialog2({
+				title: "Post a sublet", 
+				content: "/Sublets/ajax_add", 
+				id: "server-notice"
+			});
+
+		#A2Cribs.Cache.NextModal = A2Cribs.Cache.Step1Modal
+
+
+	@OpenStep2: () ->
+		if A2Cribs.Cache.Step2Modal != undefined and A2Cribs.Cache.Step2Modal != null
+			A2Cribs.Cache.Step2Modal.dialog2('open')
+		else
+			A2Cribs.Cache.Step2Modal = $('#server-notice').dialog2("options", {
+				content:"/Sublets/ajax_add2",
+				removeOnClose: false
+			});
+
+		#A2Cribs.Cache.NextModal = A2Cribs.Cache.Step2Modal
+
+	@OpenStep3: () ->
+		if A2Cribs.Cache.Step3Modal != undefined and A2Cribs.Cache.Step3Modal != null
+			A2Cribs.Cache.Step3Modal.dialog2('open')
+		else
+			A2Cribs.SubletAdd.Step3Modal = $('#server-notice').dialog2("options", {
+				content:"/Sublets/ajax_add3",
+				removeOnClose: false
+			});
+
+		#A2Cribs.Cache.NextModal = A2Cribs.Cache.Step3Modal
+
+	@OpenStep4: () ->
+		if A2Cribs.Cache.Step4Modal != undefined and A2Cribs.Cache.Step4Modal != null
+			A2Cribs.Cache.Step4Modal.dialog2('open')
+		else
+			A2Cribs.SubletAdd.Step4Modal = $('#server-notice').dialog2("options", {
+				content:"/Sublets/ajax_add4",
+				removeOnClose: false
+			})
+
+		#A2Cribs.Cache.NextModal = A2Cribs.Cache.Step4Modal
+
+	@OpenStep5: () ->	
+		if A2Cribs.Cache.Step5Modal != undefined and A2Cribs.Cache.Step5Modal != null
+			A2Cribs.Cache.Step5Modal.dialog2('open')
+		else	
+			A2Cribs.SubletAdd.Step5Modal = $('#server-notice').dialog2("options", {
+				content:"/Sublets/ajax_add5",
+				removeOnClose: false
+			});
+
+		#A2Cribs.Cache.NextModal = A2Cribs.Cache.Step5Modal
+
+	@ClosePreviousModal: () ->
+		#if A2Cribs.Cache.CurrentModal != undefined and A2Cribs.Cache.CurrentModal != null
+			#A2Cribs.Cache.CurrentModal.dialog2('close')
+			#A2Cribs.Cache.CurrentModal = A2Cribs.Cache.NextModal

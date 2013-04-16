@@ -123,3 +123,9 @@
 
 
 </script>
+
+<script>
+$(document).delegate(".modal", "dialog2.content-update", function() {
+  A2Cribs.SubletAdd.ClosePreviousModal();
+});
+</script>

@@ -199,11 +199,12 @@ class A2Cribs.SubletEdit
 				subletData = JSON.parse subletData
 				A2Cribs.Cache.SubletData = subletData
 				A2Cribs.SubletEdit.Init()
-				$('<div/>').dialog2({
+				A2Cribs.Cache.Step1Modal = $('<div/>').dialog2({
 				    title: "Edit " + subletData.Marker.street_address, 
 				    content: "/Sublets/ajax_add", 
-				    id: "server-notice"
+				    id: "server-notice",
 				})
+				A2Cribs.Cache.NextModal = A2Cribs.Cache.Step1Modal
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format

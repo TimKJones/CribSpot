@@ -13,10 +13,10 @@
 				<strong>Upload Images</strong>
 				<br>
 				<small>Please select an image you would like to upload.</small>
-				<?php echo $this->Form->create("Image", array("type" => "file", "action" => "add", "enctype" => "multipart/form-data"));?>
+				<?php echo $this->Form->create("Image", array("type" => "file", "action" => "add"));?>
 				  <legend><?php __("Add Image"); ?></legend>
 				  <fieldset>
-				  	<input class="fileInput" id="1" type="file" data-url="/Images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="false" data-form-data='{"script": "true"}'>
+				  	<input class="fileInput" id="1" type="file" data-url="/images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="true" data-form-data='{"script": "true"}'>
 				  </fieldset>
 				</form>
 			</div>

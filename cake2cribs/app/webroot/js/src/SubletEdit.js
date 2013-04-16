@@ -24,7 +24,7 @@
       return A2Cribs.Cache.SubletEditInProgress.Marker.zip = $('#postal').val();
     };
 
-    SubletEdit.CacheStep2Data = function()  {
+    SubletEdit.CacheStep2Data = function() {
       A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateBegin').val());
       A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateEnd').val());
       A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates = $('#SubletFlexibleDates').is(':checked');
@@ -223,11 +223,12 @@
           subletData = JSON.parse(subletData);
           A2Cribs.Cache.SubletData = subletData;
           A2Cribs.SubletEdit.Init();
-          return $('<div/>').dialog2({
+          A2Cribs.Cache.Step1Modal = $('<div/>').dialog2({
             title: "Edit " + subletData.Marker.street_address,
             content: "/Sublets/ajax_add",
             id: "server-notice"
           });
+          return A2Cribs.Cache.NextModal = A2Cribs.Cache.Step1Modal;
         }
       });
     };
