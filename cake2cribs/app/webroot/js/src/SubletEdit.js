@@ -221,10 +221,11 @@
         url: myBaseUrl + "Sublets/getSubletDataById/" + sublet_id,
         type: "GET",
         success: function(subletData) {
+          var modal_body;
           subletData = JSON.parse(subletData);
           A2Cribs.Cache.SubletData = subletData;
           A2Cribs.SubletEdit.Init();
-          return $('<div/>').dialog2({
+          modal_body = $('<div/>').dialog2({
             title: "Edit " + subletData.Marker.street_address,
             content: "/Sublets/ajax_add",
             id: "server-notice",
@@ -232,6 +233,13 @@
             closeOnEscape: false,
             removeOnClose: false
           });
+          A2Cribs.SubletAdd.resizeModal(modal_body);
+          return $(window).resize(function() {
+            return A2Cribs.SubletAdd.resizeModal(modal_body);
+          });
+        },
+        error: function() {
+          return alertify.error("An error occured while loading your sublet data, please try again.", 2000);
         }
       });
     };
