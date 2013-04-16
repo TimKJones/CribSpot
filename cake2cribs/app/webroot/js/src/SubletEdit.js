@@ -24,7 +24,7 @@
       return A2Cribs.Cache.SubletEditInProgress.Marker.zip = $('#postal').val();
     };
 
-    SubletEdit.CacheStep2Data = function() {
+    SubletEdit.CacheStep2Data = function()  {
       A2Cribs.Cache.SubletEditInProgress.Sublet.date_begin = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateBegin').val());
       A2Cribs.Cache.SubletEditInProgress.Sublet.date_end = A2Cribs.SubletEdit.GetMysqlDateFormat($('#SubletDateEnd').val());
       A2Cribs.Cache.SubletEditInProgress.Sublet.flexible_dates = $('#SubletFlexibleDates').is(':checked');

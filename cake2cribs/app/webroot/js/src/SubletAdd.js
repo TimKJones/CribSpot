@@ -32,7 +32,7 @@
       $("#goToStep3").click(function(e) {
         var parsedBeginDate, parsedEndDate, todayDate;
         parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
-        parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
+        parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val() ));
         todayDate = new Date();
         if (parsedBeginDate.toString() === "Invalid Date" || parsedEndDate.toString() === "Invalid Date") {
           return A2Cribs.UIManager.Alert("Please enter a valid date.");
