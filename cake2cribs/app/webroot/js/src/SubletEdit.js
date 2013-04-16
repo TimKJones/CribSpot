@@ -70,7 +70,6 @@
       if (subletData.Marker !== null && subletData.Marker !== void 0) {
         $('#SubletBuildingTypeId').val(subletData.Marker.building_type_id);
         if (editing_sublet === true) {
-          $("#addressToMark").val(subletData.Marker.street_address).attr('disabled', 'disabled');
           A2Cribs.CorrectMarker.Disable();
         } else {
           $("#addressToMark").val(subletData.Marker.street_address);

@@ -67,7 +67,7 @@ class A2Cribs.SubletEdit
 			if editing_sublet == true
 				# Disable the address and map fields so the user can't change the location of the sublet
 				# There will also be server side logic that will also prevent this.
-				$("#addressToMark").val(subletData.Marker.street_address).attr 'disabled', 'disabled'
+				#$("#addressToMark").val(subletData.Marker.street_address).attr 'disabled', 'disabled'
 				A2Cribs.CorrectMarker.Disable()
 			
 			else
