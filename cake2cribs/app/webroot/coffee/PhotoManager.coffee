@@ -9,6 +9,11 @@ class A2Cribs.PhotoManager
 	@MAX_CAPTION_LENGTH = 25
 	@BACKSPACE = 8
 
+	@setupUI:()->
+
+		$('.imageContainer').hover (event)=>
+			# $(event.currentTarget).find('.image-actions-container').fadeToggle('fast')
+
 	@LoadImages:(id) ->
 		$.ajax
 			url: myBaseUrl + "Images/LoadImages/" + id
@@ -16,7 +21,7 @@ class A2Cribs.PhotoManager
 			success: A2Cribs.PhotoManager.UpdateImageSources
 
 	@DeleteImageCallback: (id) ->
-		$('#imageContent' + id).html('');
+		$('#imageContent' + id).html('No Image');
 		$('#imageContent' + id).css('background-image', '');
 		#$("#" + id).css("visibility", "hidden")
 		#$("#add" + id).css("visibility", "visible")
@@ -60,9 +65,9 @@ class A2Cribs.PhotoManager
 		for i in [0..imageSources[1].length - 1] by 1
 			if imageSources[1][i] == null || imageSources[1][i] == undefined
 				continue
-			cssSettings = 
-				"background-size":  "160px 150px"
-				"background-image": "url(" + imageSources[1][i] + ")"
+			# cssSettings = 
+			# 	"background-size":  "160px 150px"
+			# 	"background-image": "url(" + imageSources[1][i] + ")"
 			imageContentDiv = "#imageContent"
 			nextSlot = i + 1
 			A2Cribs.PhotoManager.IdToPathMap[nextSlot] = imageSources[1][i]
@@ -74,7 +79,11 @@ class A2Cribs.PhotoManager
 			A2Cribs.PhotoManager.ApplyAddPhotoUI nextSlot
 			imageContentDiv = "#imageContent" + (nextSlot)
 			$(imageContentDiv).html("")
-			$(imageContentDiv).css(cssSettings)
+			
+			img = "<img src=#{imageSources[1][i]}></alt>"
+			$(imageContentDiv).html(img)
+
+			# $(imageContentDiv).css(cssSettings)
 			if nextSlot == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 				A2Cribs.PhotoManager.MakePrimaryUI primary_image_index
 			#$("#add" + (i + 2)).css("visibility", "hidden")
@@ -106,9 +115,9 @@ class A2Cribs.PhotoManager
 	@SetImage: (img) ->
 		if typeof img == "object" 
 			img = img.target.result; # file reader
-		cssSettings = 
-			"background-size":  "160px 150px"
-			"background-image": "url(" + img + ")"
+		# cssSettings = 
+		# 	"background-size":  "160px 150px"
+		# 	"background-image": "url(" + img + ")"
 		imageContentDiv = ""
 		if A2Cribs.PhotoManager.CurrentPhotoTarget == "secondary"
 			imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv()
@@ -121,11 +130,10 @@ class A2Cribs.PhotoManager
 			A2Cribs.PhotoManager.ApplyAddPhotoUI num
 		else
 			imageContentDiv = "#imageContent0"
-			cssSettings = 
-				"background-size":  "271px 280px"
-				"background-image": "url(" + img + ")"
-		$(imageContentDiv).html("")
-		$(imageContentDiv).css(cssSettings)
+			image = "<img src='#{img}''></img>"
+
+		$(imageContentDiv).html(image)
+		
 
 	###
 	Find the next free div in which to display the selected photo
@@ -220,14 +228,14 @@ class A2Cribs.PhotoManager
 	Update UI for image that is now primary
 	###
 	@MakePrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "yellow")
+		$("#primary" + divId).css("color", "#a5dcff")
 		$("#primary" + divId).attr("disabled", "disabled")
 
 	###
 	Update UI for image that is no longer primary
 	###
 	@MakeNotPrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "gray")
+		$("#primary" + divId).css("color", "#dbe0e0")
 		$("#primary" + divId).removeAttr("disabled")
 
 	###

@@ -6,49 +6,13 @@
 <?php echo $this->Html->css('ajax_add4'); ?>
 <?php echo $this->Html->script('jquery.fileupload'); ?>
 <?php echo $this->Html->script('jquery.iframe-transport'); ?>
-
-	<div id="imagesWrapper">
-		<div class="imageContainer">
-			<div class="imageContent imageThumb topRow" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		<div class="imageContainer">
-			<div class="imageContent secondary imageThumb topRow" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary2" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		<div class="imageContainer">
-			<div class="imageContent secondary imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary3" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		<div class="imageContainer">
-			<div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary4" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		<div class="imageContainer">
-			<div class="imageContent secondary imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		<div class="imageContainer">
-			<div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)">No Photo Selected</div>
-			<button class="delete hide" id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)">Remove</button>
-			<button class="edit hide" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)">Edit</button>
-			<button class="primary hide" id="primary6" onclick="A2Cribs.PhotoManager.MakePrimary(this)">*</button>
-		</div>
-		</div>
-	</div>
-	<div id="leftColumn">
-		<div id="topSection">
-			<div id="topSectionTop">
+<div class = 'photo-manager container-fluid'>
+	<div class = 'row-fluid'>		
+		<div id="leftColumn" class = 'span6'>
+			<div id="topSection">
+				<strong>Upload Images</strong>
+				<br>
+				<small>Please select an image you would like to upload.</small>
 				<?php echo $this->Form->create("Image", array("type" => "file", "action" => "add", "enctype" => "multipart/form-data"));?>
 				  <legend><?php __("Add Image"); ?></legend>
 				  <fieldset>
@@ -56,21 +20,82 @@
 				  </fieldset>
 				</form>
 			</div>
-		</div>
-		<div id="bottomSection">
-			<div id="imageContent0">
-				
+			<div id="bottomSection">
+				<div id="imageContent0">
+					Click on an image to edit it
+				</div>
+				<div id="caption">
+					<textarea type="text" id="captionInput" placeholder="Enter a Caption" onkeyup="A2Cribs.PhotoManager.CaptionKeyUp()" maxlength="25"></textarea>
+					<span id="charactersLeft">25</span>
+					<button class='btn' id="captionSubmit" onclick="A2Cribs.PhotoManager.SubmitCaption()">Save</button>
+				</div>
+
+				<a href="#" id="backToStep3">Back</a>
+				<a href="#" id="goToStep5">Next</a>
 			</div>
-			<div id="caption">
-				Name: <input type="text" id="captionInput" placeholder="Edit picture name" onkeyup="A2Cribs.PhotoManager.CaptionKeyUp()" maxlength="25">
-				<span id="charactersLeft">25</span>
-				<button id="captionSubmit" onclick="A2Cribs.PhotoManager.SubmitCaption()">GO</button>
+		</div>
+		<div id="imagesWrapper" class = 'span6'>
+			<div class="image-row row-fluid">
+				<div class="imageContainer span6">
+					<div class="imageContent imageThumb" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<i class="delete hide icon-trash " id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit1" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+					</div>
+				</div>
+				<div class="imageContainer span6">
+					<div class="imageContent secondary imageThumb" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<i class="delete hide icon-trash " id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit2" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary2" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+					</div>
+				</div>				
+			</div>
+			<div class="image-row row-fluid">
+				<div class="imageContainer span6">
+					<div class="imageContent imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<span>
+						<i class="delete hide icon-trash " id="delete3" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit3" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary3" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+						</span>
+					</div>
+				</div>
+				<div class="imageContainer span6">
+					<div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<i class="delete hide icon-trash " id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit4" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary4" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+					</div>
+				</div>				
+			</div>
+			<div class="image-row row-fluid">
+				<div class="imageContainer span6">
+					<div class="imageContent imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<i class="delete hide icon-trash " id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit5" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+					</div>
+				</div>
+				<div class="imageContainer span6">
+					<div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)">No Image</div>
+					<div class = 'image-actions-container'>
+						<i class="delete hide icon-trash " id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
+						<i class="edit hide icon-edit" id="edit6" onclick="A2Cribs.PhotoManager.EditImage(this)"></i>
+						<i class="primary hide icon-asterisk" id="primary6" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
+					</div>
+				</div>				
 			</div>
 		</div>
 	</div>
-	<a href="#" id="backToStep3">Back</a>
-	<a href="#" id="goToStep5" style="float:right">Next</a>
-	</div>
+
+	
+</div>
 
 <script>
 	var a = A2Cribs.SubletAdd;
@@ -96,7 +121,10 @@ $(function () {
 });
 
 $(document).ready(function(){
+
 	A2Cribs.PhotoManager.LoadImages();
+	A2Cribs.PhotoManager.setupUI();
+
 });
 
 $("#ImageAddForm").submit(function() {
