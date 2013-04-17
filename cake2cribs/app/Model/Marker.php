@@ -166,12 +166,17 @@ class Marker extends AppModel {
 	    	                 'fields' => 'Marker.marker_id'
 	  	));
 
-	  	if($markerMatch['Marker']['visible']==0){
+		CakeLog::write("markerMatch", print_r($markerMatch, true));
+	  	if($markerMatch != null && $markerMatch['Marker']['visible']==0){
 	  		//marker was previously made invisible so we
 	  		//need to make it visible again
 	  		$markerMatch['Marker']['visible']=1;
 	  		if(!$this->save($markerMatch)){
-	  			CakeLog::write("Marker", "Making marker ". $markerMath['Marker']['id'] ." invisible failed");
+	  			CakeLog::write("Marker", "Making marker ". $markerMatch['Marker']['marker_id'] ." visible failed");
+	  		}
+	  		else
+	  		{
+	  			CakeLog::write("Marker", "Making marker ". $markerMatch['Marker']['marker_id'] ." visible SUCCESS");
 	  		}
 	  	}
 
@@ -179,8 +184,10 @@ class Marker extends AppModel {
 	  	{
 	  		// create new marker
 	  		$marker_to_save = array('Marker' => $marker);
+	  		CakeLog::write("newMarker", print_r($marker_to_save, true));
 	  		if ($this->save($marker_to_save))
 	  		{
+	  			CakeLog::write("savingMarker", "SUCCESS: saved marker_id " . $this->id);
 	  			return $this->id;
 	  		}
 	  		else
