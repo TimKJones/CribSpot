@@ -171,7 +171,7 @@ class Marker extends AppModel {
 	  		//need to make it visible again
 	  		$markerMatch['Marker']['visible']=1;
 	  		if(!$this->save($markerMatch)){
-	  			CakeLog::write("Marker", "Making marker ". $markerMath['Marker']['id'] ." invisible failed");
+	  			CakeLog::write("Marker", "Making marker ". $markerMatch['Marker']['id'] ." invisible failed");
 	  		}
 	  	}
 
