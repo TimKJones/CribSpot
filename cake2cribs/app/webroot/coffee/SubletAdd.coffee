@@ -74,7 +74,7 @@ class A2Cribs.SubletAdd
 		$("#finishShare").click (e) =>
 			$('#server-notice').dialog2("close");
 			if !isNaN A2Cribs.ShareManager.SavedListing
-				window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing
+				window.location.href = "/sublets/show/" + A2Cribs.ShareManager.SavedListing
 
 		#refresh UI dates
 		oldBeginDate = new Date($('#SubletDateBegin').val())
