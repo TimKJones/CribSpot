@@ -39,9 +39,6 @@ class A2Cribs.SubletAdd
 			#begin the validations
 			parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
 			parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()))
-			console.log(parsedBeginDate)
-			console.log(parsedEndDate)
-			console.log(parsedBeginDate < parsedEndDate)
 			todayDate = new Date();
 			if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 				A2Cribs.UIManager.Alert "Please enter a valid date."
