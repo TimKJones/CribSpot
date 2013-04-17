@@ -431,7 +431,10 @@ class Sublet extends AppModel {
 
 	public function getSubletDataByMarkerId($marker_id)
 	{
-		$conditions = array('Sublet.marker_id' => $marker_id);
+		$conditions = array(
+			'Sublet.marker_id' => $marker_id,
+			'Sublet.visible' => 1,
+			);
 
 		$University = ClassRegistry::init("University");
 	 	$subletQuery = $this->find('all', array(
