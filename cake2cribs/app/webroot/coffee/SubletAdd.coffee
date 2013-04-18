@@ -138,15 +138,25 @@ class A2Cribs.SubletAdd
 		url = "/sublets/ajax_submit_sublet"
 
 		#validations go here
-		$.post url, A2Cribs.Cache.SubletEditInProgress, (response) =>
-			data = JSON.parse response
-			console.log data.status
-			if (data.status)
-				A2Cribs.UIManager.Alert data.status
-				A2Cribs.ShareManager.SavedListing = data.newid
-				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
-			else
-				A2Cribs.UIManager.Alert data.error
+
+		# use a flag to make sure we don't allow the user to double post listing 
+		if not @postingDataInProgress? or @postingDataInProgress == false
+			@postingDataInProgress = true
+			
+			$.post url, A2Cribs.Cache.SubletEditInProgress, (response) =>
+				data = JSON.parse response
+				console.log data.status
+				if (data.status)
+					A2Cribs.UIManager.Alert data.status
+					A2Cribs.ShareManager.SavedListing = data.newid
+					$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
+				else
+					A2Cribs.UIManager.Alert data.error
+
+				@postingDataInProgress = true
+
+		else
+			false # prevents double clicks the finish button
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1
