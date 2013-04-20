@@ -92,7 +92,7 @@ class A2Cribs.SubletAdd
 			id: "server-notice",
 			closeOnOverlayClick: false,
 			closeOnEscape: false,
-			removeOnClose: false,
+			removeOnClose: true
 		});
 
 		@resizeModal(subletmodal)

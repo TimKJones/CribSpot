@@ -87,7 +87,7 @@
         id: "server-notice",
         closeOnOverlayClick: false,
         closeOnEscape: false,
-        removeOnClose: false
+        removeOnClose: true
       });
       this.resizeModal(subletmodal);
       $(window).resize(function() {
