@@ -81,7 +81,7 @@
     $(function() {
         $('#subletAddSteps').click(function(event) {
             A2Cribs.SubletAdd.InitPostingProcess(event);
-            event.preventDefault();
+            event.preventDefault() ;
         });
     });
 /*
