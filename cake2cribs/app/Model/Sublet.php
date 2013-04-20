@@ -431,7 +431,10 @@ class Sublet extends AppModel {
 
 	public function getSubletDataByMarkerId($marker_id)
 	{
-		$conditions = array('Sublet.marker_id' => $marker_id);
+		$conditions = array(
+			'Sublet.marker_id' => $marker_id,
+			'Sublet.visible' => 1,
+			);
 
 		$University = ClassRegistry::init("University");
 	 	$subletQuery = $this->find('all', array(
@@ -455,8 +458,10 @@ class Sublet extends AppModel {
 	public function LoadHoverData()
 	{
 		$this->contain();
-		$hover_data = $this->find('all', array(
-			'fields' => array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end')));
+		$options = array();
+		$options['fields'] = array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end');
+		$options['conditions'] = array('Sublet.visible' => 1);
+		$hover_data = $this->find('all', $options);
 		return $hover_data;
 	}
 
