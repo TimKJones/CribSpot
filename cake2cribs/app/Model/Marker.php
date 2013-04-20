@@ -163,7 +163,7 @@ class Marker extends AppModel {
 							'Marker.state' => $state);
 		$markerMatch = $this->find('first', array(
 	                     'conditions' => $conditions,
-	    	                 'fields' => 'Marker.marker_id'
+	    	                 'fields' => array('Marker.marker_id', 'Marker.visible')
 	  	));
 
 		CakeLog::write("markerMatch", print_r($markerMatch, true));

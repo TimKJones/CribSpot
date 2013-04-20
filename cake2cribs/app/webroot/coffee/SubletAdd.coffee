@@ -46,7 +46,7 @@ class A2Cribs.SubletAdd
 				A2Cribs.UIManager.Alert "Please enter a valid date."
 			else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 				A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
-			else if (!$('#SubletPricePerBedroom').val() || $('#SubletPricePerBedroom').val() < 0 || $('#SubletPricePerBedroom').val() >=20000)
+			else if (!$('#SubletPricePerBedroom').val() || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
 				A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
 			else if ($('#SubletDescription').val().length >=161)
 				A2Cribs.UIManager.Alert "Please keep the short description under 160 characters."
@@ -92,7 +92,7 @@ class A2Cribs.SubletAdd
 			id: "server-notice",
 			closeOnOverlayClick: false,
 			closeOnEscape: false,
-			removeOnClose: false,
+			removeOnClose: true
 		});
 
 		@resizeModal(subletmodal)

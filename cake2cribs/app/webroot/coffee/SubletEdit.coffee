@@ -210,7 +210,7 @@ class A2Cribs.SubletEdit
 				    id: "server-notice",
 				    closeOnOverlayClick: false
 					closeOnEscape: false,
-					removeOnClose: false
+					removeOnClose: true
 				})
 				# Resize the modal window to fit the screen
 				# NOTE: This needs to be refactored a ton

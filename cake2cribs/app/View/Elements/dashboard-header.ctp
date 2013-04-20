@@ -80,13 +80,8 @@
 <script type="text/javascript">
     $(function() {
         $('#subletAddSteps').click(function(event) {
-            $('<div/>').dialog2({
-                title: "Post a sublet", 
-                content: "Sublets/ajax_add", 
-                id: "server-notice"
-            });
-
-            event.preventDefault();
+            A2Cribs.SubletAdd.InitPostingProcess(event);
+            event.preventDefault() ;
         });
     });
 /*
