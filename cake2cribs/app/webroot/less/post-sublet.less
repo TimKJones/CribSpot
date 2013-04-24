@@ -1,6 +1,8 @@
 .listing-popup
 {
 	@border-radius: 8px;
+	@font-size: 13px;
+	@line-height: 30px;
 	height: 400px;
 	width: 550px;
 	margin-left: -275px;
@@ -67,7 +69,55 @@
 		left: 0;
 		bottom: 0;
 		background-color: pink;
-		padding: 0;
+		.container-fluid
+		{
+			padding: 0;
+		}
+		label
+		{
+			font-size: @font-size;
+			line-height: @line-height;
+		}
+		input
+		{
+			font-size: @font-size;
+			font-weight: bold;
+		}
+		select
+		{
+			font-size: @font-size;
+			font-weight: bold;
+		}
+		#map-message
+		{
+			font-size: @font-size;
+			line-height: @font-size + 1;
+			padding: 10px;
+			margin-bottom: 10px;
+			background-color: white;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+			border: 1px solid #9b9b9b;
+		}
+		#map-message-arrow
+		{
+			float: right;
+			margin-top: -52px;
+			margin-right: -9px;
+		}
+		#map-background
+		{
+			background-color: white;
+			height: 270px;
+			padding: 10px;
+			#correctLocationMap
+			{
+				height: 100%;
+				width: 100%;
+			}
+		}
+		/*
 		.controls
 		{
 			margin-left: 115px;
@@ -117,6 +167,7 @@
 			font-size: 13px;
 			line-height: 18px;
 		}
+		*/
 	}
 
 	.modal-footer
@@ -129,6 +180,8 @@
 		background-color: red;
 		padding: 10px;
 	}
+
+	/*
 
 	.large-text
 	{
@@ -200,5 +253,6 @@
 		background-position: center center;
 		background-size: cover;
 	}
+	*/
 
 }

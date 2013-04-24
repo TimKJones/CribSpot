@@ -10,6 +10,10 @@ class A2Cribs.CorrectMarker
   			zoom: 15
   			center: @AnnArborCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
+  			mapTypeControl: false
+  			panControl: false
+  			zoomControl: false
+  			streetViewControl: false
 		@Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions)
 		google.maps.event.trigger(@Map, "resize");
 		@Marker = new google.maps.Marker
