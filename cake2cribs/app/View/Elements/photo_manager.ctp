@@ -19,7 +19,7 @@
                     <button id='upload_image' class = 'btn btn-primary'><i class = 'icon-plus-sign'></i> Upload Photos</button>
                 </div>
                 <div id ='explanation-text'>
-                    <strong>Don't have any photo's at the moment?</strong>
+                    <strong>Don't have any photos at the moment?</strong>
                     <br>
                     <small>You can always edit your listing by visiting the dashboard</small>
                 </div>

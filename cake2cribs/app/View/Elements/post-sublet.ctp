@@ -57,162 +57,148 @@
 			</div>
 		</div>
 		<div class="modal-body step" id="info-step">
-			<form class="form-inline" id="top-form">
-				<div>
-					<label for = 'start_date'><strong>Available From:</strong></label>
-					<div class="input-append">
-						<input type="text" class="input-small" name='start_date' placeholder="Start Date">
-						<span class="add-on"><i class="icon-calendar"></i></span>
-	            	</div>
-	            	-
-	            	<div class="input-append">
-						<input type="text" class="input-small" placeholder="End Date">
-						<span class="add-on"><i class="icon-calendar"></i></span>
-	            	</div>
-
-  					<label class="checkbox">
-    					<strong>Flexible Dates</strong><input type="checkbox"> 
-  					</label>
-	            </div>
-	            <br>
-				<div>
-					<label>
-						<strong>Bedrooms:</strong>
-						<select id="inputType" class="input-mini">
-							<option value="">1</option>
-							<option value="">2</option>
-							<option value="">3</option>
-						</select>
-					</label>
-					<label><strong>Price </strong><small><b>/Bed</b></small><strong>:</strong></label>
-					<div class="input-prepend">
-						<span class="add-on">$</span>
-						<input class="input-mini" id="appendedPrependedInput" type="text">
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<label class="span3"><strong>Available From:</strong></label>
+					<div class="span6">
+						<div class="row-fluid">
+							<input type="text" class="span5">
+							<div class="span2">-</div>
+							<input type="text" class="span5">							
+						</div>
 					</div>
-					<label>
-						<strong>Rate:</strong>
-						<select class="input-small">
-							<option>Monthly</option>
-						</select>
-					</label>
-				</div>
-				<br>
-				<div>
-					<label><strong>Unique Description:</strong></label>
-					<textarea rows="3" cols="1000"></textarea>
-				</div>
-			</form>
-			<form class="form-horizontal" id="bottom-form">
-				<h4>Additional Details (Optional)</h4>
-				<div class = 'row-fluid'>
-					<div class = 'span6'>
-						
-						
-						<div class="control-group">
-    						<label class="control-label" for="inputFurnished"><strong>Furnished:</strong></label>
-    						<div class="controls">
-      					
-      							<select class="input-mini" id='inputFurnished'>
-									<option value="">No</option>
-									<option value="">Paritally</option>
-									<option value="">Fully</option>
-								</select>
-
-    						</div>
-  						</div>
-
-						<div class="control-group">
-    						<label class="control-label" for="inputBathroom"><strong>Bathroom:</strong></label>
-    						<div class="controls">
-      					
-      							<select class="input-small" id='inputBathroom'>
-									<option>Included</option>
-									<option>Monthly Fee</option>
-								</select>
-
-    						</div>
-  						</div>
-  						<div class="control-group">
-    						<label class="control-label" for="inputParking"><strong>Parking:</strong></label>
-    						<div class="controls">
-      					
-      							<select class="input-small" id='inputParking'>
-									<option>Available</option>
-									<option>Monthly Fee</option>
-								</select>
-
-    						</div>
+					<div class="span3">
+						<div class="row-fluid">
+							<label class="span9"><strong>Flexible Dates:</strong></label>
+							<input type="checkbox">
 						</div>
-						
-						<div class="control-group">
-    						<label class="control-label" for="inputAC"><strong>A/C:</strong></label>
-    						<div class="controls">
-      							<select class="input-small" id='inputAC'>
-									<option>Available</option>
-									<option>Monthly Fee</option>
-								</select>
-    						</div>
-						</div>
-
 					</div>
-
-					<div class = 'span6'>
-						
-						<div class="control-group">
-    						<label class="control-label" for="inputDeposit"><strong>Deposit:</strong></label>
-    						<div class="controls">
-      							<div class="input-prepend">
-									<span class="add-on">$</span>
-									<input class="input-mini" id="inputDeposit" type="text">
-								</div>
-    						</div>
-						</div>
-
-
-						<div class="control-group">
-    						<label class="control-label" for="inputUtilties"><strong>Utilities:</strong></label>
-    						<div class="controls">
-      							<div class="input-prepend">
-									<span class="add-on">$</span>
-									<input class="input-mini" id="inputUtilties" type="text">
-								</div>
-    						</div>
-						</div>
-
-
-						<div class="control-group">
-    						<label class="control-label" for="inputOtherFees"><strong>Other Fees:</strong></label>
-    						<div class="controls">
-      							<select class="input-small">
-									<option>Yes</option>
-									<option>No</option>
-								</select>
-    						</div>
-						</div>
-						
-
-						<div class="control-group">
-    						<label class="control-label" for="inputExtraKeyCosts"><strong>Extra Key Costs:</strong></label>
-    						<div class="controls">
-      							<div class="input-prepend">
-									<span class="add-on">$</span>
-									<input class="input-mini" id="inputExtraKeyCosts" type="text">
-								</div>
-    						</div>
-						</div>	
-					
-					</div>
-					
-					
 				</div>
-
-				
-				
-				
-				
-				
-	
-			</form>
+				<div class="row-fluid">
+					<div class="span3">
+						<div class="row-fluid">
+							<label class="span8"><strong>Bedrooms:</strong></label>
+							<select id="inputType" class="span4">
+								<option value="">1</option>
+								<option value="">2</option>
+								<option value="">3</option>
+							</select>
+						</div>
+					</div>
+					<div class="span3">
+						<div class="row-fluid">
+							<label class="span6"><strong>Price</strong><small> /Bed</small><strong>:</strong></label>
+							<div class="input-prepend span6">
+								<span class="add-on span3">$</span>
+								<input class="span9" id="appendedPrependedInput" type="text">
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<select id="inputType" class="span4">
+								<option value="">Monthly</option>
+								<option value="">Total</option>
+							</select>							
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span3">Unique Description</div>
+					<textarea class="span9" rows="3"></textarea>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">Additional Details (Optional)</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Furnished:</strong></label>
+							<select class="span4">
+								<option value="">Partially</option>
+								<option value="">Yes</option>
+								<option value="">No</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Deposit:</strong></label>
+							<div class="input-prepend span4 pull-left">
+								<span class="add-on span1">$</span>
+								<input class="span10" id="appendedPrependedInput" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Parking:</strong></label>
+							<select class="span3">
+								<option value="">Yes</option>
+								<option value="">No</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Utilities:</strong></label>
+							<select class="span5">
+								<option value="">Monthly Fee</option>
+								<option value="">Included</option>
+								<option value="">Not Included</option>
+							</select>
+							<div class="input-prepend span3 pull-right">
+								<span class="add-on span1">$</span>
+								<input class="span8" id="appendedPrependedInput" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Bathroom:</strong></label>
+							<select class="span4">
+								<option value="">Public</option>
+								<option value="">Private</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>Other Fees:</strong></label>
+							<input type="text" class="span5">
+							<div class="input-prepend span3 pull-right">
+								<span class="add-on span1">$</span>
+								<input class="span8" id="appendedPrependedInput" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"><strong>A/C:</strong></label>
+							<select class="span3">
+								<option value="">Yes</option>
+								<option value="">No</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span4"></label>
+							<input type="text" class="span5">
+							<div class="input-prepend span3 pull-right">
+								<span class="add-on span1">$</span>
+								<input class="span8" id="appendedPrependedInput" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
@@ -285,6 +271,12 @@
 					<label class="span2"><strong>Majors:</strong></label>
 					<input type="text" class="span10">
 				</div>
+				<div class="row-fluid">
+					Longer Sublet Description (Optional)
+				</div>
+				<div class="row-fluid">
+					<textarea class="span12" rows="5"></textarea>
+				</div>
 			</div>
 
 			<div class="modal-footer">
@@ -308,7 +300,7 @@
 
 <?php 
 	$this->Js->buffer('
-		$("#addinfo-step").siblings().hide();
+		$("#info-step").siblings().hide();
 
 		$(".next-btn").click(function(){
 			$(this).closest(".step").hide().next(".step").show();
