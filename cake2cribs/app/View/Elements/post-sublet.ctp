@@ -129,7 +129,74 @@
 			</div>
 		</div>
 		<div class="modal-body step" id="addinfo-step">
-			Additional Info Step
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span12">
+						<strong>Housemate Information</strong>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span8"><strong>Estimated Housemates:</strong></label>
+							<select class="span3">
+								<option>0</option>
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5+</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span7"><strong>Are They Students?:</strong></label>
+							<select class="span4">
+								<option>Yes</option>
+								<option>No</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span4"><strong>Type:</strong></label>
+							<select class="span8">
+								<option>Undergrad</option>
+								<option>Graduate</option>
+							</select>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span4"><strong>Year:</strong></label>
+							<select class="span8">
+								<option>Freshman</option>
+								<option>Sophomore</option>
+								<option>Junior</option>
+								<option>Senior</option>
+							</select>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span5"><strong>Gender:</strong></label>
+							<select class="span6">
+								<option>Male</option>
+								<option>Female</option>
+								<option>Mixed</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<label class="span2"><strong>Majors:</strong></label>
+					<input type="text" class="span10">
+				</div>
+			</div>
+
 			<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
@@ -151,7 +218,7 @@
 
 <?php 
 	$this->Js->buffer('
-		$("#address-step").siblings().hide();
+		$("#addinfo-step").siblings().hide();
 		$(".next-btn").click(function(){
 			$(this).closest(".step").hide().next(".step").show();
 		});
