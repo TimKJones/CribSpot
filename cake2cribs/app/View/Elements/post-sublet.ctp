@@ -300,7 +300,7 @@
 
 <?php 
 	$this->Js->buffer('
-		$("#info-step").siblings().hide();
+		$("#address-step").siblings().hide();
 
 		$(".next-btn").click(function(){
 			$(this).closest(".step").hide().next(".step").show();
