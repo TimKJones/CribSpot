@@ -21,4 +21,4 @@
 
 <?php //echo $this->element('click-bubble'); ?>
 
-<?php echo $this->element('listing-popup'); ?>
+<?php echo $this->element('post-sublet'); ?>
