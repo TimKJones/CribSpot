@@ -3,8 +3,8 @@
 	@border-radius: 8px;
 	@font-size: 13px;
 	@line-height: 30px;
-	height: 400px;
-	width: 550px;
+	height: 600px;
+	width: 600px;
 	margin-left: -275px;
 	border-radius: @border-radius;
 	-webkit-border-radius: @border-radius;
@@ -64,11 +64,12 @@
 	.modal-body
 	{
 		position: absolute;
+		max-height: 800px;
 		top: 50px;
 		right: 0;
 		left: 0;
 		bottom: 0;
-		background-color: pink;
+
 		.container-fluid
 		{
 			padding: 0;
@@ -118,7 +119,9 @@
 				width: 100%;
 			}
 		}
-		/*
+		background-color: #f9f9f9;
+		padding: 0;
+
 		.controls
 		{
 			margin-left: 115px;
@@ -135,7 +138,7 @@
 		{
 			padding: 10px;
 			margin: 0;
-			border-bottom: solid grey 1px;
+			border-bottom:solid #737375 1px;
 		}
 		#bottom-form
 		{
@@ -150,6 +153,7 @@
 		label
 		{
 			font-size: 13px;
+			line-height: 13px;
 		}
 		input
 		{
@@ -168,7 +172,10 @@
 			font-size: 13px;
 			line-height: 18px;
 		}
-		*/
+
+		.inline{
+			display: inline;
+		}
 	}
 
 	.modal-footer
@@ -178,7 +185,7 @@
 		right: 0;
 		left: 0;
 		height: 30px;
-		background-color: red;
+		background-color: #e9e9e9;
 		padding: 10px;
 	}
 
@@ -254,6 +261,6 @@
 		background-position: center center;
 		background-size: cover;
 	}
-	*/
+*/
 
 }
