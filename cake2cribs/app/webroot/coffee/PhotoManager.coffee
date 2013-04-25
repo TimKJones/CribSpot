@@ -1,4 +1,5 @@
 class A2Cribs.PhotoManager
+
 	@CurrentPhotoTarget = "none"
 	@CurrentPrimaryImageIndex = 1
 	@CurrentPreviewImageIndex = 0
@@ -12,13 +13,22 @@ class A2Cribs.PhotoManager
 	@SetupUI:() ->
 		$('.imageContainer').hover (event)->
 			if $(event.currentTarget).find('img').length == 1
-				$(event.currentTarget).find('.image-actions-container').toggle()
+				if event.type == 'mouseenter'
+					$(event.currentTarget).find('.image-actions-container').show()
+				else
+					$(event.currentTarget).find('.image-actions-container').hide()
+				
 
 		$('#upload_image').click ()->
 			$('#real-file-input').click()
 
 		$('#saveCaption').click ()->
 			SubmitCaption()
+
+		$(".delete").tooltip {'selector': '','placement': 'bottom', 'title': 'Delete'}
+		$(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
+		$(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
+
 
 
 	@LoadImages:() ->
@@ -214,7 +224,7 @@ class A2Cribs.PhotoManager
 	@MakePrimary: (obj) ->
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
 		img = $("#imageContent" + photoNumber).css("background-image")
-		if img != "none" && img != undefined 
+		if $("#imageContent" + photoNumber).find('img').length != 0
 			A2Cribs.PhotoManager.MakeNotPrimaryUI A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 			A2Cribs.PhotoManager.MakePrimaryUI photoNumber
 			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = photoNumber
@@ -226,15 +236,14 @@ class A2Cribs.PhotoManager
 	Update UI for image that is now primary
 	###
 	@MakePrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "yellow")
-		$("#primary" + divId).attr("disabled", "disabled")
+		$("#primary" + divId).addClass('cur-primary')
 
 	###
 	Update UI for image that is no longer primary
 	###
 	@MakeNotPrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "gray")
-		$("#primary" + divId).removeAttr("disabled")
+		$("#primary" + divId).removeClass('cur-primary')
+		# $("#primary" + divId).removeAttr("disabled")
 
 	###
 	Submit the caption for the currently previewed image.

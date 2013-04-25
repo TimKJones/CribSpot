@@ -57,24 +57,24 @@
 				<div>
 					<label for = 'start_date'><strong>Available From:</strong></label>
 					<div class="input-append">
-						<input type="text" class="input-small" name='start_date' placeholder="Start Date">
+						<input id = 'SubletDateBegin' type="text" class="input-small" name='start_date' placeholder="Start Date">
 						<span class="add-on"><i class="icon-calendar"></i></span>
 	            	</div>
 	            	-
 	            	<div class="input-append">
-						<input type="text" class="input-small" placeholder="End Date">
+						<input id = 'SubletDateEnd' type="text" class="input-small" placeholder="End Date">
 						<span class="add-on"><i class="icon-calendar"></i></span>
 	            	</div>
 
   					<label class="checkbox">
-    					<strong>Flexible Dates</strong><input type="checkbox"> 
+    					<strong>Flexible Dates</strong><input id = 'SubletFlexibleDates' type="checkbox"> 
   					</label>
 	            </div>
 	            <br>
 				<div>
 					<label>
 						<strong>Bedrooms:</strong>
-						<select id="inputType" class="input-mini">
+						<select id="SubletNumberBedrooms" class="input-mini">
 							<option value="">1</option>
 							<option value="">2</option>
 							<option value="">3</option>
@@ -83,11 +83,11 @@
 					<label><strong>Price </strong><small><b>/Bed</b></small><strong>:</strong></label>
 					<div class="input-prepend">
 						<span class="add-on">$</span>
-						<input class="input-mini" id="appendedPrependedInput" type="text">
+						<input class="input-mini" id="SubletPricePerBedroom" type="text">
 					</div>
 					<label>
 						<strong>Rate:</strong>
-						<select class="input-small">
+						<select id = 'SubletRate' class="input-small">
 							<option>Monthly</option>
 						</select>
 					</label>
@@ -95,7 +95,7 @@
 				<br>
 				<div>
 					<label><strong>Unique Description:</strong></label>
-					<textarea rows="3" cols="1000"></textarea>
+					<textarea id = 'SubletDescription' rows="3" cols="1000"></textarea>
 				</div>
 			</form>
 			<form class="form-horizontal" id="bottom-form">
@@ -105,10 +105,10 @@
 						
 						
 						<div class="control-group">
-    						<label class="control-label" for="inputFurnished"><strong>Furnished:</strong></label>
+    						<label class="control-label" for="SubletFurnished"><strong>Furnished:</strong></label>
     						<div class="controls">
       					
-      							<select class="input-mini" id='inputFurnished'>
+      							<select class="input-mini" id='SubletFurnished'>
 									<option value="">No</option>
 									<option value="">Paritally</option>
 									<option value="">Fully</option>
@@ -118,10 +118,10 @@
   						</div>
 
 						<div class="control-group">
-    						<label class="control-label" for="inputBathroom"><strong>Bathroom:</strong></label>
+    						<label class="control-label" for="SubletBathroom"><strong>Bathroom:</strong></label>
     						<div class="controls">
       					
-      							<select class="input-small" id='inputBathroom'>
+      							<select class="input-small" id='SubletBathroom'>
 									<option>Included</option>
 									<option>Monthly Fee</option>
 								</select>
@@ -129,10 +129,10 @@
     						</div>
   						</div>
   						<div class="control-group">
-    						<label class="control-label" for="inputParking"><strong>Parking:</strong></label>
+    						<label class="control-label" for="SubletParking"><strong>Parking:</strong></label>
     						<div class="controls">
       					
-      							<select class="input-small" id='inputParking'>
+      							<select class="input-small" id='SubletParking'>
 									<option>Available</option>
 									<option>Monthly Fee</option>
 								</select>
@@ -141,9 +141,9 @@
 						</div>
 						
 						<div class="control-group">
-    						<label class="control-label" for="inputAC"><strong>A/C:</strong></label>
+    						<label class="control-label" for="SubletAC"><strong>A/C:</strong></label>
     						<div class="controls">
-      							<select class="input-small" id='inputAC'>
+      							<select class="input-small" id='SubletAC'>
 									<option>Available</option>
 									<option>Monthly Fee</option>
 								</select>
@@ -155,31 +155,31 @@
 					<div class = 'span6'>
 						
 						<div class="control-group">
-    						<label class="control-label" for="inputDeposit"><strong>Deposit:</strong></label>
+    						<label class="control-label" for="SubletDeposit"><strong>Deposit:</strong></label>
     						<div class="controls">
       							<div class="input-prepend">
 									<span class="add-on">$</span>
-									<input class="input-mini" id="inputDeposit" type="text">
+									<input class="input-mini" id="SubletDeposit" type="text">
 								</div>
     						</div>
 						</div>
 
 
 						<div class="control-group">
-    						<label class="control-label" for="inputUtilties"><strong>Utilities:</strong></label>
+    						<label class="control-label" for="SubletUtilities"><strong>Utilities:</strong></label>
     						<div class="controls">
       							<div class="input-prepend">
 									<span class="add-on">$</span>
-									<input class="input-mini" id="inputUtilties" type="text">
+									<input class="input-mini" id="SubletUtilities" type="text">
 								</div>
     						</div>
 						</div>
 
 
 						<div class="control-group">
-    						<label class="control-label" for="inputOtherFees"><strong>Other Fees:</strong></label>
+    						<label class="control-label" for="SubletOtherFees"><strong>Other Fees:</strong></label>
     						<div class="controls">
-      							<select class="input-small">
+      							<select id = 'SubletOtherFees' class="input-small">
 									<option>Yes</option>
 									<option>No</option>
 								</select>
@@ -188,11 +188,11 @@
 						
 
 						<div class="control-group">
-    						<label class="control-label" for="inputExtraKeyCosts"><strong>Extra Key Costs:</strong></label>
+    						<label class="control-label" for="SubletOtherKeyCosts"><strong>Extra Key Costs:</strong></label>
     						<div class="controls">
       							<div class="input-prepend">
 									<span class="add-on">$</span>
-									<input class="input-mini" id="inputExtraKeyCosts" type="text">
+									<input class="input-mini" id="SubletOtherKeyCosts" type="text">
 								</div>
     						</div>
 						</div>	

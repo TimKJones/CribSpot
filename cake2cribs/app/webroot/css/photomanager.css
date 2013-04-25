@@ -120,9 +120,9 @@ fieldset
 .image-actions-container{
     display: none;
     position: absolute;
-    bottom: 12px;
-    right: 12px;
-    left: 75px;
+    bottom: 0;
+    right: 5px;
+    left: 80px;
     /*border-bottom-left-radius: 5px;*/
     /*border-bottom-right-radius: 5px;*/
     /*opacity: .7;*/
@@ -195,6 +195,10 @@ fieldset
 
 .image-row{
     padding-top: 5px;
+}
+
+.cur-primary{
+    color: #006dcc;
 }
 
 #largeViewContainer{
