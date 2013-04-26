@@ -12,7 +12,7 @@
 		}
 		
 	 	public function getAll(){
-	 		$options['fields'] = array('University.name', 'University.id');
+	 		$options['fields'] = array('University.name', 'University.id', 'University.city', 'University.state', 'University.latitude', 'University.longitude');
 	 		$options['recursive'] = -1;
 	 		$options['orderby'] = array('University.name' => 'desc');
 	 		$universities = $this->University->find('all', $options);

@@ -15,6 +15,7 @@
 
     CorrectMarker.Init = function() {
       var MapOptions;
+      this.LoadUniversities();
       this.AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
       MapOptions = {
         zoom: 15,
@@ -108,25 +109,6 @@
             A2Cribs.CorrectMarker.Map.setZoom(18);
           }
           street_address = street_number + " " + street_name;
-          /*formatted_address = response[0].formatted_address
-          				first_comma = formatted_address.indexOf(',')
-          				street = formatted_address.substring(0, first_comma)
-          				street_number = street.substring(0, street.indexOf(' '))
-          				if isNaN(parseInt(street_number))
-          					A2Cribs.UIManager.Alert "Entered street address is not valid."
-          					$("#formattedAddress").text("")
-          					return
-          				else
-          					A2Cribs.CorrectMarker.Map.panTo response[0].geometry.location
-          					A2Cribs.CorrectMarker.Map.setZoom(18)
-          				second_comma = formatted_address.indexOf(',', first_comma + 1)
-          				city = formatted_address.substring(first_comma + 2, second_comma)
-          				remaining = formatted_address.substring(second_comma + 2)
-          				state = remaining.substring(0, remaining.indexOf(" "))
-          				remaining = remaining.substring(remaining.indexOf(" ") + 1)
-          				postal = remaining.substring(0,remaining.indexOf(","))
-          */
-
           $("#formattedAddress").val(street_address);
           $("#city").val(city);
           $("#state").val(state);
@@ -150,7 +132,7 @@
 
     CorrectMarker.FindAddress = function() {
       var address, request, u;
-      address = $("#addressToMark").val();
+      address = $("#formattedAddress").val();
       request = {
         location: A2Cribs.CorrectMarker.Map.getCenter(),
         radius: 8100,
@@ -169,20 +151,34 @@
     };
 
     CorrectMarker.FindSelectedUniversity = function() {
-      var selected, u, university, _i, _len, _ref;
+      var index, selected, u;
       selected = $("#universityName").val();
-      _ref = A2Cribs.CorrectMarker.universitiesMap;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        university = _ref[_i];
-        if (university.University.name === selected) {
-          A2Cribs.CorrectMarker.SelectedUniversity = university.University;
-          A2Cribs.Cache.SelectedUniversity = university.University;
-        }
-      }
-      if (A2Cribs.CorrectMarker.SelectedUniversity !== void 0) {
+      index = this.SchoolList.indexOf(selected);
+      if (index >= 0) {
+        A2Cribs.CorrectMarker.SelectedUniversity = this.universitiesMap[index].University;
+        A2Cribs.Cache.SelectedUniversity = this.universitiesMap[index].University;
         u = A2Cribs.CorrectMarker.SelectedUniversity;
         return A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
       }
+    };
+
+    CorrectMarker.LoadUniversities = function() {
+      return $.ajax({
+        url: "/University/getAll",
+        success: function(response) {
+          var university, _i, _len, _ref;
+          A2Cribs.CorrectMarker.universitiesMap = JSON.parse(response);
+          A2Cribs.CorrectMarker.SchoolList = [];
+          _ref = A2Cribs.CorrectMarker.universitiesMap;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            university = _ref[_i];
+            A2Cribs.CorrectMarker.SchoolList.push(university.University.name);
+          }
+          return $("#universityName").typeahead({
+            source: A2Cribs.CorrectMarker.SchoolList
+          });
+        }
+      });
     };
 
     return CorrectMarker;

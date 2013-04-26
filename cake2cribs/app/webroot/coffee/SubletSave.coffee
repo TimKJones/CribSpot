@@ -1,6 +1,7 @@
 class A2Cribs.SubletSave
 
 	@SetupUI: () ->
+		A2Cribs.CorrectMarker.Init()
 
 	###
 	Called before advancing steps
@@ -114,7 +115,7 @@ class A2Cribs.SubletSave
 	###
 	Populates all fields in all steps with sublet data loaded for a sublet edit.
 	###
-	@PopulateInputFields(subletData)
+	@PopulateInputFields: (subletData) ->
 		@InitEditStep1(subletData)
 		@InitEditStep2(subletData)
 		@InitEditStep3(subletData)
