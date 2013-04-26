@@ -203,7 +203,7 @@
     		</form>
     		<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
-				<button class="btn btn-inverse pull-right next-btn">Next</button>
+				<button class="btn btn-inversef pull-right next-btn">Next</button>
 			</div>		
     	</div>
 		<div class="modal-body step" id="addinfo-step">
@@ -303,15 +303,7 @@
 
 <?php 
 	$this->Js->buffer('
-		$("#address-step").siblings().hide();
-
-		$(".next-btn").click(function(){
-			$(this).closest(".step").hide().next(".step").show();
-		});
-		$(".back-btn").click(function(){
-			$(this).closest(".step").hide().prev(".step").show();
-		});
-
+		A2Cribs.SubletSave.SetupUI()
 	');
 ?>
 	

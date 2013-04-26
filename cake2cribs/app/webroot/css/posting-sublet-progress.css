@@ -15,10 +15,6 @@
 
 
 .prog-step p {
-    /*position: absolute;*/
-    /*display: block;
-    margin-left: auto;
-    margin-right: auto;*/
     text-align: center;
     /*top: 0;*/
     color: #dcdcdc;
@@ -26,13 +22,28 @@
 
 .prog-step i {
     position: absolute;
-    /*text-align: center;*/
     left: 35px;
-    /*right: 45px;*/
     top: 35px;
-    color: white;
     font-size: 18px;
 }
+
+.background-icon{
+    color: white;
+}
+
+.incomplete-step{
+    color: #e03434;
+}
+
+.current-step{
+    color: #d5d8e3;
+}
+
+.complete-step{
+    color: #5f9229;
+}
+
+
 
 .horz-bar{
     position: absolute;

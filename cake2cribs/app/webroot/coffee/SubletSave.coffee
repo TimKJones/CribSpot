@@ -1,6 +1,17 @@
 class A2Cribs.SubletSave
 
 	@SetupUI: () ->
+		@ProgressBar =  new A2Cribs.PostSubletProgress $('.post-sublet-progress'), 0
+
+		$("#address-step").siblings().hide();
+
+		$(".next-btn").click (event)=>
+			$(event.currentTarget).closest(".step").hide().next(".step").show()
+			@ProgressBar.next()
+		
+		$(".back-btn").click (event)=>
+			$(event.currentTarget).closest(".step").hide().prev(".step").show()
+			@ProgressBar.prev()
 
 	###
 	Called before advancing steps
