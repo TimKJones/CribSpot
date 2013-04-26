@@ -64,5 +64,14 @@ class University extends AppModel {
 		else
 			return "";
 	}
+
+	public function LoadAllUniversities()
+	{
+		$options['fields'] = array('University.name', 'University.id', 'University.city', 'University.state', 'University.latitude', 'University.longitude');
+ 		$options['recursive'] = -1;
+ 		$options['orderby'] = array('University.name' => 'desc');
+ 		$universities = $this->find('all', $options);
+ 		return $universities;
+	}
 }
 ?>

@@ -1,3 +1,7 @@
+.datepicker
+{
+	z-index: 10000;
+}
 .listing-popup
 {
 	@border-radius: 8px;
@@ -87,10 +91,17 @@
 		{
 			padding: 0;
 		}
+		.add-on
+		{
+			font-size: 13px;
+			font-weight: bold;
+		}
 		textarea
 		{
 			font-size: @font-size;
 			font-weight: bold;
+			outline: none;
+			resize: none;
 		}
 		label
 		{
@@ -107,6 +118,15 @@
 			font-size: @font-size;
 			font-weight: bold;
 			float: left;
+		}
+		p
+		{
+			margin: 0;
+			line-height: 13px;
+		}
+		#desc-char-left
+		{
+			font-style: normal;
 		}
 		#map-message
 		{
@@ -135,9 +155,20 @@
 			{
 				height: 100%;
 				width: 100%;
+				img { max-width: none !important; }
 			}
 		}
-
+		#SubletDateBegin
+		{
+			float: left;
+		}
+		#divider
+		{
+			margin: 0;
+			text-align: center;
+			font-size: 30px;
+			line-height: 25px;
+		}
 		#placeOnMap
 		{
 			display: block;

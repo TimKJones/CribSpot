@@ -1,26 +1,53 @@
 class A2Cribs.SubletSave
 
-	@SetupUI: () ->
-		@ProgressBar =  new A2Cribs.PostSubletProgress $('.post-sublet-progress'), 0
+	@SetupUI: (initialStep) ->
+
+		@CurrentStep = initialStep
+		$('.step').eq(@CurrentStep).siblings().hide()
+		@ProgressBar =  new A2Cribs.PostSubletProgress $('.post-sublet-progress'), initialStep
 
 		$("#address-step").siblings().hide();
 
 		$(".next-btn").click (event)=>
-			$(event.currentTarget).closest(".step").hide().next(".step").show()
-			@ProgressBar.next()
+			
+			if @Validate(@CurrentStep+1)
+				$(event.currentTarget).closest(".step").hide().next(".step").show()
+				@CurrentStep++
+				@ProgressBar.next()
+		
 		
 		$(".back-btn").click (event)=>
 			$(event.currentTarget).closest(".step").hide().prev(".step").show()
+			@CurrentStep--
 			@ProgressBar.prev()
+
+		A2Cribs.CorrectMarker.Init()
+
+		$("#SubletShortDescription").keyup ()->
+			if $(@).val().length >= 160
+				$(@).val($(@).val().substr(0, 160))
+			
+			$("#desc-char-left").text(160 - $(@).val().length)
+
+		$("#SubletDateBegin").datepicker();
+
+		$("#SubletDateEnd").datepicker();
+
+		$("#universityName").focusout ()->
+			A2Cribs.CorrectMarker.FindSelectedUniversity();
+
+		A2Cribs.Map.LoadTypeTables();
+		A2Cribs.SubletSave.PopulateInputFields();
+
 
 	###
 	Called before advancing steps
 	Returns true if validations pass; false otherwise
 	###
 	@Validate: (step_) ->
-		if step_ >= 1
+		###if step_ >= 1
 			if !@ValidateStep1()
-				return false
+				return false###
 		if step_ >= 2
 			if !@ValidateStep2()
 				return false
@@ -58,25 +85,28 @@ class A2Cribs.SubletSave
 		if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
 			A2Cribs.UIManager.Alert "Please enter a valid date."
 			return false
-		if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
+		if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 			A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
 			return false
-		if (!$('#SubletPricePerBedroom').val() || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
+		if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
 			A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
 			return false
-		if ($('#SubletDescription').val().length >=161)
-			A2Cribs.UIManager.Alert "Please keep the short description under 160 characters."
+		if $('#SubletShortDescription').val().length == 0 
+			A2Cribs.UIManager.Alert "Please enter a description."
 			return false
-		if (!$('#SubletUtilityCost').val() || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
+		if $('#SubletShortDescription').val().length >=161
+			A2Cribs.UIManager.Alert "Please keep the description under 160 characters."
+			return false
+		if (!$('#SubletUtilityCost').val()|| isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid utility cost."
 			return false
-		if (!$('#SubletDepositAmount').val() || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
+		if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid deposit amount."
 			return false
 		if ($('#SubletAdditionalFeesDescription').val().length >=161)
 			A2Cribs.UIManager.Alert "Please keep the additional fees description under 160 characters."
 			return false
-		if (!$('#SubletAdditionalFeesAmount').val() || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
+		if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
 			return false
 		
@@ -125,17 +155,34 @@ class A2Cribs.SubletSave
 	###
 	Populates all fields in all steps with sublet data loaded for a sublet edit.
 	###
-	@PopulateInputFields: (subletData)->
+	@PopulateInputFields: (subletData = null) ->
+		if subletData == null
+			# There is no data to load.
+			# Initialize autocomplete and reset all fields.
+			@InitUniversityAutocomplete()
+			@ResetAllInputFields()
+			return
+
 		@InitEditStep1(subletData)
 		@InitEditStep2(subletData)
 		@InitEditStep3(subletData)
 		@InitEditStep4(subletData)
 
 	###
-	Populates all inputs in step 1 with loaded sublet data
 	Initializes map and university input autocomplete
+	If subletData is not null, then we populate all inputs in step 1 with loaded sublet data
 	###
-	@InitEditStep1: (subletData) ->
+	@InitEditStep1: (subletData=null) ->
+		if subletData == null
+			return
+
+		#Load all universities and initialize autocomplete
+		@InitUniversityAutocomplete()		
+
+		#TODO: Load all types fields from database rather than have them hard-coded.
+
+		#Populate all fields with loaded data
+
 		if subletData.University != null and subletData.University != undefined
 			$('#universityName').val(subletData.University.name)
 			A2Cribs.CorrectMarker.FindSelectedUniversity()
@@ -162,6 +209,9 @@ class A2Cribs.SubletSave
 
 
 	@InitEditStep2: (subletData) ->
+		if subletData == null
+			return
+
 		$('#SubletDateBegin').val("")
 		$('#SubletDateEnd').val("")
 		$('#SubletFlexibleDates').prop("checked", true)
@@ -182,13 +232,13 @@ class A2Cribs.SubletSave
 			$('#SubletFlexibleDates').prop('checked', subletData.Sublet.flexible_dates)
 		$('#SubletNumberBedrooms').val(subletData.Sublet.number_bedrooms)
 		$('#SubletPricePerBedroom').val(subletData.Sublet.price_per_bedroom)
-		$('#SubletDescription').val(subletData.Sublet.description)
-		$('#SubletBathroomTypeId').val(subletData.Sublet.bathroom_type_id)
+		$('#SubletShortDescription').val(subletData.Sublet.short_description)
+		$('#SubletBathroomType').val(subletData.Sublet.bathroom_type_id)
 		$('#SubletUtilityTypeId').val(subletData.Sublet.utility_type_id)
 		$('#SubletUtilityCost').val(subletData.Sublet.utility_type_id)
 		$('#SubletParking').prop("checked", subletData.Sublet.parking)
 		$('#SubletAc').prop("checked", subletData.Sublet.ac)
-		$('#SubletFurnishedTypeId').val(subletData.Sublet.furnished_type_id)
+		$('#SubletFurnishedType').val(subletData.Sublet.furnished_type_id)
 		$('#SubletDepositAmount').val(subletData.Sublet.deposit_amount)
 		$('#SubletAdditionalFeesDescription').val(subletData.Sublet.additional_fees_description)
 		$('#SubletAdditionalFeesAmount').val(subletData.Sublet.additional_fees_amount)
@@ -197,22 +247,42 @@ class A2Cribs.SubletSave
 	Initialize step 3 - Housemate data
 	###
 	@InitEditStep3: (subletData) ->
+		if subletData == null
+			return
+
 		$("#HousemateEnrolled").prop("checked", false)
 		if subletData.Housemate == null or subletData.Housemate == undefined
 			return 
 
 		$("#HousemateQuantity").val(subletData.Housemate.quantity)
 		$("#HousemateEnrolled").prop("checked", subletData.Housemate.enrolled)
-		$("#HousemateStudentTypeId").val(subletData.Housemate.student_type_id)
+		$("#HousemateStudentType").val(subletData.Housemate.student_type_id)
 		$("#HousemateMajor").val(subletData.Housemate.major)
-		$("#HousemateGenderTypeId").val(subletData.Housemate.gender_type_id)
-		$("#HousemateType").val(subletData.Housemate.type)
+		$("#HousemateGenderType").val(subletData.Housemate.gender_type_id)
+		$("#HousemateYear").val(subletData.Housemate.year)
 
 	###
 	Initialize step 4 - Photos
 	###
 	@InitEditStep4: () ->
 		A2Cribs.PhotoManager.LoadImages()
+
+	###
+	Reset all input fields for a new sublet posting process
+	###
+	@ResetAllInputFields: () ->
+
+
+	@InitUniversityAutocomplete: () ->
+		$.ajax
+			url: myBaseUrl + "universities/loadAll"
+			success :(response) ->
+				A2Cribs.CorrectMarker.universitiesMap = JSON.parse response
+				A2Cribs.CorrectMarker.SchoolList = []
+				for university in A2Cribs.CorrectMarker.universitiesMap
+					A2Cribs.CorrectMarker.SchoolList.push university.University.name
+				$("#universityName").typeahead
+					source: A2Cribs.CorrectMarker.SchoolList
 
 ##################### End Edit Sublet Initialization #################################
 
@@ -248,8 +318,47 @@ class A2Cribs.SubletSave
 	Returns an object containing all sublet data from all 4 steps.
 	###
 	@GetSubletObject: () ->
-		
-		
+		subletObject =
+			Sublet:
+				id: $("#").val() #TODO: GET NAME OF HIDDEN SUBLET_ID INPUT
+				university_id: $("#").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
+				university_name: $("#universityName").val()
+				building_type_id: $('#buildingType').val()
+				date_begin: @GetMysqlDateFormat $('#SubletDateBegin').val()
+				date_end: @GetMysqlDateFormat $('#SubletDateEnd').val()
+				number_bedrooms: $('#SubletNumberBedrooms').val()
+				price_per_bedroom: $('#SubletPricePerBedroom').val()
+				payment_type_id: 1
+				short_description: $('#SubletShortDescription').val()
+				description: $('#SubletLongDescription').val()
+				bathroom_type_id: $('#SubletBathroomType').val()
+				building_type_id: $('#SubletBuildingType').val()
+				utility_type_id: $('#SubletUtilityTypeId').val()
+				utility_cost: $('#SubletUtilityCost').val()
+				deposit_amount: $('#SubletDepositAmount').val()
+				additional_fees_description: $('#SubletAdditionalFeesDescription').val()
+				additional_fees_amount: $('#SubletDepositAmount').val()
+				unit_number: $('#SubletUnitNumber').val()
+				flexible_dates: $('#SubletFlexibleDates').is(':checked')
+				furnished_type_id: $('#SubletFurnishedType').val()
+				ac: $('#ac').val() == "Yes"
+				parking: $('#parking').val() == "Yes"
+			Marker:
+				alternate_name: $('#SubletName').val()
+				street_address: $("#addressToMark").val()
+				building_type_id: $('#SubletBuildingTypeId').val()
+				city: $('#city').val()
+				state: $('#state').val()
+				zip: $('#postal').val()
+				latitude: $('#updatedLat').val()
+				longitude: $('#updatedLong').val()		
+			Housemate: 
+				quantity: $("#HousemateQuantity").val()
+				enrolled: $("#HousemateEnrolled").is(':checked')
+				student_type_id: $("#HousemateStudentType").val()
+				major: $("#HousemateMajor").val()
+				gender_type_id: $("#HousemateGenderType").val()
+				year: $("#HousemateYear").val()
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format
