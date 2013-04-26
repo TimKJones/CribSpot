@@ -54,7 +54,7 @@ class A2Cribs.SubletSave
 			A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
 			return false
 		if ($('#SubletDescription').val().length >=161)
-			A2Cribs.UIManager.Alert "Please keep the short description under 160 characters."
+			A2Cribs.UIManager.Alert "Please keep the description under 160 characters."
 			return false
 		if (!$('#SubletUtilityCost').val() || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid utility cost."
@@ -114,7 +114,7 @@ class A2Cribs.SubletSave
 	###
 	Populates all fields in all steps with sublet data loaded for a sublet edit.
 	###
-	@PopulateInputFields(subletData)
+	@PopulateInputFields: (subletData) ->
 		@InitEditStep1(subletData)
 		@InitEditStep2(subletData)
 		@InitEditStep3(subletData)
@@ -125,6 +125,9 @@ class A2Cribs.SubletSave
 	Initializes map and university input autocomplete
 	###
 	@InitEditStep1: (subletData) ->
+		#TODO: Load all universities and initialize autocomplete dealy
+		#TODO: Load all types fields from database rather than have them hard-coded.
+
 		if subletData.University != null and subletData.University != undefined
 			$('#universityName').val(subletData.University.name)
 			A2Cribs.CorrectMarker.FindSelectedUniversity()
@@ -237,8 +240,47 @@ class A2Cribs.SubletSave
 	Returns an object containing all sublet data from all 4 steps.
 	###
 	@GetSubletObject: () ->
-		
-		
+		subletObject =
+			Sublet:
+				id: $("#").val() #TODO: GET NAME OF HIDDEN SUBLET_ID INPUT
+				university_id: $("#").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
+				university_name: $("#universityName").val()
+				building_type_id: $('#SubletBuildingTypeId').val()
+				date_begin: @GetMysqlDateFormat $('#SubletDateBegin').val()
+				date_end: @GetMysqlDateFormat $('#SubletDateEnd').val()
+				number_bedrooms: $('#SubletNumberBedrooms').val()
+				price_per_bedroom: $('#SubletPricePerBedroom').val()
+				payment_type_id: 1
+				short_description: $('#SubletDescription').val()
+				description: $('#SubletDescription').val()
+				bathroom_type_id: $('#SubletBathroomTypeId').val()
+				building_type_id: $('#SubletBuildingTypeId').val()
+				utility_type_id: $('#SubletUtilityTypeId').val()
+				utility_cost: $('#SubletUtilityCost').val()
+				deposit_amount: $('#SubletDepositAmount').val()
+				additional_fees_description: $('#SubletAdditionalFeesDescription').val()
+				additional_fees_amount: $('#SubletDepositAmount').val()
+				unit_number: $('#SubletUnitNumber').val()
+				flexible_dates: $('#SubletFlexibleDates').is(':checked')
+				furnished_type_id: $('#SubletFurnishedTypeId').val()
+				ac: $('#SubletAc').is(':checked')
+				parking: $('#SubletParking').is(':checked')
+			Marker:
+				alternate_name: $('#SubletName').val()
+				street_address: $("#addressToMark").val()
+				building_type_id: $('#SubletBuildingTypeId').val()
+				city: $('#city').val()
+				state: $('#state').val()
+				zip: $('#postal').val()
+				latitude: $('#updatedLat').val()
+				longitude: $('#updatedLong').val()		
+			Housemate: 
+				quantity: $("#HousemateQuantity").val()
+				enrolled: $("#HousemateEnrolled").is(':checked')
+				student_type_id: $("#HousemateStudentTypeId").val()
+				major: $("#HousemateMajor").val()
+				gender_type_id: $("#HousemateGenderTypeId").val()
+				type: $("#HousemateType").val()
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format
