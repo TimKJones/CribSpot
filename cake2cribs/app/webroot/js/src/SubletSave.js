@@ -121,15 +121,13 @@
     };
 
     SubletSave.ValidateStep3 = function() {
-      if (!$('#HousemateQuantity').val() || $('#HousemateQuantity').val() >= 50 || $('#HousemateQuantity').val() < 0) {
-        A2Cribs.UIManager.Alert("Please enter a valid housemate quantity.");
-        return false;
-      } else if ($('#HousemateMajor').val().length >= 254) {
+      if ($('#HousemateMajor').val().length >= 254) {
         A2Cribs.UIManager.Alert("Please keep the majors description under 255 characters.");
         return false;
       } else if ($("#HousemateStudentType").val() !== "Graduate") {
         if ($("#HousemateYear").val() === "") {
           A2Cribs.UIManager.Alert("Please select a year for your housemates.");
+          return false;
         }
       }
       return true;
