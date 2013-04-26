@@ -5,7 +5,6 @@ class A2Cribs.CorrectMarker
 	@Enabled = true;
 
 	@Init: ()->
-		@LoadUniversities()
 		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378)
 		MapOptions =
   			zoom: 15

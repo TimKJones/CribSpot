@@ -8,6 +8,7 @@
 <?php echo $this->Html->script('src/Message'); ?>
 <?php echo $this->Html->script('src/PropertyManagement'); ?>
 <?php echo $this->Html->script('src/VerifyManager'); ?>
+<?php echo $this->Html->script('src/SubletSave'); ?>
 
 <?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->css('messages'); ?>

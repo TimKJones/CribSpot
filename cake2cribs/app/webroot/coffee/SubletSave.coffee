@@ -115,19 +115,33 @@ class A2Cribs.SubletSave
 	###
 	Populates all fields in all steps with sublet data loaded for a sublet edit.
 	###
-	@PopulateInputFields: (subletData) ->
+	@PopulateInputFields: (subletData = null) ->
+		if subletData == null
+			# There is no data to load.
+			# Initialize autocomplete and reset all fields.
+			@InitUniversityAutocomplete()
+			@ResetAllInputFields()
+			return
+
 		@InitEditStep1(subletData)
 		@InitEditStep2(subletData)
 		@InitEditStep3(subletData)
 		@InitEditStep4(subletData)
 
 	###
-	Populates all inputs in step 1 with loaded sublet data
 	Initializes map and university input autocomplete
+	If subletData is not null, then we populate all inputs in step 1 with loaded sublet data
 	###
-	@InitEditStep1: (subletData) ->
-		#TODO: Load all universities and initialize autocomplete dealy
+	@InitEditStep1: (subletData=null) ->
+		if subletData == null
+			return
+
+		#Load all universities and initialize autocomplete
+		@InitUniversityAutocomplete()		
+
 		#TODO: Load all types fields from database rather than have them hard-coded.
+
+		#Populate all fields with loaded data
 
 		if subletData.University != null and subletData.University != undefined
 			$('#universityName').val(subletData.University.name)
@@ -155,6 +169,9 @@ class A2Cribs.SubletSave
 
 
 	@InitEditStep2: (subletData) ->
+		if subletData == null
+			return
+
 		$('#SubletDateBegin').val("")
 		$('#SubletDateEnd').val("")
 		$('#SubletFlexibleDates').prop("checked", true)
@@ -190,6 +207,9 @@ class A2Cribs.SubletSave
 	Initialize step 3 - Housemate data
 	###
 	@InitEditStep3: (subletData) ->
+		if subletData == null
+			return
+			
 		$("#HousemateEnrolled").prop("checked", false)
 		if subletData.Housemate == null or subletData.Housemate == undefined
 			return 
@@ -206,6 +226,24 @@ class A2Cribs.SubletSave
 	###
 	@InitEditStep4: () ->
 		A2Cribs.PhotoManager.LoadImages()
+
+	###
+	Reset all input fields for a new sublet posting process
+	###
+	@ResetAllInputFields: () ->
+
+
+	@InitUniversityAutocomplete: () ->
+		$.ajax
+			url: myBaseUrl + "universities/loadAll"
+			success :(response) ->
+				A2Cribs.CorrectMarker.universitiesMap = JSON.parse response
+				A2Cribs.CorrectMarker.SchoolList = []
+				for university in A2Cribs.CorrectMarker.universitiesMap
+					A2Cribs.CorrectMarker.SchoolList.push university.University.name
+				$("#universityName").typeahead
+					source: A2Cribs.CorrectMarker.SchoolList
+
 
 ##################### End Edit Sublet Initialization #################################
 

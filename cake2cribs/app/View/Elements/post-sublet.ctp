@@ -1,7 +1,7 @@
 <?= $this->Html->css('/less/post-sublet.less?','stylesheet/less', array('inline' => false)); ?>
 <?= $this->Html->css('/less/checkbox.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('listing-popup-verifications'); ?>
-
+<?php echo $this->Html->script('src/SubletSave'); ?>
 
 <?= $this->Html->css('datepicker'); ?>
 <?= $this->Html->script('bootstrap-datepicker'); ?>
