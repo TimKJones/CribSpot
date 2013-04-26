@@ -13,48 +13,52 @@
 	</div>
 	<div>
 		<div class="modal-body step" id="address-step">
-			<form class="form-horizontal">
-				<div class="control-group">
-					<label class="control-label" for="inputSchool"><strong>College:</strong></label>
-					<div class="controls">
-						<input type="text" id="inputSchool" class="span2" placeholder="lol">
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span7">
+						<div class="row-fluid">
+							<label class="span3"><strong>College:</strong></label>
+							<input type="text" class="span9">
+						</div>
+						<div class="row-fluid">
+							<label class="span5"><strong>Building Name:</strong></label>
+							<input type="text" class="span7">
+						</div>
+						<div class="row-fluid">
+							<label class="span5"><strong>Street Address:</strong></label>
+							<input type="text" class="span7">
+						</div>
+						<div class="row-fluid">
+							<label class="span2"><strong>Type:</strong></label>
+							<select class="span5">
+								<option>Apartment</option>
+								<option>House</option>
+								<option>Duplex</option>
+							</select>
+							<button class="btn btn-info btn-small span5 pull-right"><i class="icon-map-marker icon-large"></i> Place on Map</button>
+						</div>
+						<div class="row-fluid">
+							<div class="span12" id="map-message">Please verify that the marker to the right is on the correct location. If not, please click and drag the marker to the correct spot on the map.</div>
+							<img id="map-message-arrow" src="/img/messages/arrow-right.png">
+						</div>
+						<div class="row-fluid">
+							<label class="span4"><strong>Unit Number:</strong></label>
+							<input type="text" class="span4">
+						</div>
+					</div>
+					<div class="span5">
+						<div class="row-fluid">
+							<div id="map-background" class="span12">
+								<div id="correctLocationMap"></div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="inputName"><strong>Building Name:</strong></label>
-					<div class="controls">
-						<input type="text" id="inputName" class="span2" placeholder="lol">
-					</div>
-				</div>
-				<div class="control-group">					
-					<label class="control-label" for="inputAddress"><strong>Street Address:</strong></label>
-					<div class="controls">
-						<input type="text" id="inputAddress" class="span2" placeholder="lol">
-						<button class="btn btn-primary" id="placeOnMap"><i class="icon-map-marker"></i> Place on Map</button>
-					</div>
-
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="inputType"><strong>Type:</strong></label>
-					<div class="controls">
-						<select id="inputType" class="span2">
-							<option value="">House</option>
-							<option value="">Apartment</option>
-							<option value="">Duplex</option>
-						</select>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="inputUnit"><strong>Unit Number:</strong></label>
-					<div class="controls">
-						<input type="text" id="inputUnit" class="span1" placeholder="lol">
-					</div>
-				</div>
-			</form>
+			</div>
 			<div class="modal-footer">
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
 			</div>
-		</div>
+		</div>	
 		<div class="modal-body step" id="info-step">
 			<form class="form-inline" id="top-form">
 				<div>
@@ -105,8 +109,6 @@
 				<h4>Additional Details (Optional)</h4>
 				<div class = 'row-fluid'>
 					<div class = 'span6'>
-						
-						
 						<div class="control-group">
     						<label class="control-label" for="SubletFurnished"><strong>Furnished:</strong></label>
     						<div class="controls">
@@ -151,12 +153,9 @@
 									<option>Monthly Fee</option>
 								</select>
     						</div>
-						</div>
-
-					</div>
-
-					<div class = 'span6'>
-						
+    					</div>
+    				</div>
+    				<div class = 'span6'>
 						<div class="control-group">
     						<label class="control-label" for="SubletDeposit"><strong>Deposit:</strong></label>
     						<div class="controls">
@@ -199,26 +198,90 @@
 								</div>
     						</div>
 						</div>	
-					
 					</div>
-					
-					
-				</div>
-
-				
-				
-				
-				
-				
-	
-			</form>
-			<div class="modal-footer">
+    			</div>
+    		</form>
+    		<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
-			</div>
-		</div>
+			</div>		
+    	</div>
 		<div class="modal-body step" id="addinfo-step">
-			Additional Info Step
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span12">
+						<strong>Housemate Information</strong>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span8"><strong>Estimated Housemates:</strong></label>
+							<select class="span3">
+								<option>0</option>
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5+</option>
+							</select>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="row-fluid">
+							<label class="span7"><strong>Are They Students?:</strong></label>
+							<select class="span4">
+								<option>Yes</option>
+								<option>No</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span4"><strong>Type:</strong></label>
+							<select class="span8">
+								<option>Undergrad</option>
+								<option>Graduate</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span4"><strong>Year:</strong></label>
+							<select class="span8">
+								<option>Freshman</option>
+								<option>Sophomore</option>
+								<option>Junior</option>
+								<option>Senior</option>
+							</select>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="row-fluid">
+							<label class="span5"><strong>Gender:</strong></label>
+							<select class="span6">
+								<option>Male</option>
+								<option>Female</option>
+								<option>Mixed</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<label class="span2"><strong>Majors:</strong></label>
+					<input type="text" class="span10">
+				</div>
+				<div class="row-fluid">
+					Longer Sublet Description (Optional)
+				</div>
+				<div class="row-fluid" id='cock-munch'>
+					<textarea class="span12" rows="5"></textarea>
+				</div>
+			</div>
+
 			<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
@@ -240,7 +303,8 @@
 
 <?php 
 	$this->Js->buffer('
-		$("#photo-step").siblings().hide();
+		$("#address-step").siblings().hide();
+
 		$(".next-btn").click(function(){
 			$(this).closest(".step").hide().next(".step").show();
 		});
