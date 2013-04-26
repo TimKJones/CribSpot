@@ -14,8 +14,10 @@
     */
 
     SubletSave.Validate = function(step_) {
-      if (step_ >= 1) if (!this.ValidateStep1()) return false;
-      if (step_ >= 2) if (!this.ValidateStep2()) return false;
+      /*if step_ >= 1
+      			if !@ValidateStep1()
+      				return false
+      */      if (step_ >= 2) if (!this.ValidateStep2()) return false;
       if (step_ >= 3) if (!this.ValidateStep3()) return false;
       return true;
     };
@@ -53,23 +55,27 @@
         A2Cribs.UIManager.Alert("Please enter a valid date.");
         return false;
       }
-      if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
+      if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
         A2Cribs.UIManager.Alert("Please enter a valid number of bedrooms.");
         return false;
       }
-      if (!$('#SubletPricePerBedroom').val() || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >= 20000) {
+      if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >= 20000) {
         A2Cribs.UIManager.Alert("Please enter a valid price per bedroom.");
         return false;
       }
-      if ($('#SubletDescription').val().length >= 161) {
+      if ($('#SubletShortDescription').val().length === 0) {
+        A2Cribs.UIManager.Alert("Please enter a description.");
+        return false;
+      }
+      if ($('#SubletShortDescription').val().length >= 161) {
         A2Cribs.UIManager.Alert("Please keep the description under 160 characters.");
         return false;
       }
-      if (!$('#SubletUtilityCost').val() || $('#SubletUtilityCost').val() < 0 || $('#SubletUtilityCost').val() >= 50000) {
+      if (!$('#SubletUtilityCost').val() || isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val() < 0 || $('#SubletUtilityCost').val() >= 50000) {
         A2Cribs.UIManager.Alert("Please enter a valid utility cost.");
         return false;
       }
-      if (!$('#SubletDepositAmount').val() || $('#SubletDepositAmount').val() < 0 || $('#SubletDepositAmount').val() >= 50000) {
+      if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val() < 0 || $('#SubletDepositAmount').val() >= 50000) {
         A2Cribs.UIManager.Alert("Please enter a valid deposit amount.");
         return false;
       }
@@ -77,7 +83,7 @@
         A2Cribs.UIManager.Alert("Please keep the additional fees description under 160 characters.");
         return false;
       }
-      if (!$('#SubletAdditionalFeesAmount').val() || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+      if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
         A2Cribs.UIManager.Alert("Please enter a valid additional fees amount.");
         return false;
       }
@@ -145,6 +151,7 @@
 
     SubletSave.InitEditStep1 = function(subletData) {
       if (subletData == null) subletData = null;
+      if (subletData === null) return;
       this.InitUniversityAutocomplete();
       if (subletData.University !== null && subletData.University !== void 0) {
         $('#universityName').val(subletData.University.name);
@@ -172,6 +179,7 @@
 
     SubletSave.InitEditStep2 = function(subletData) {
       var beginDate, endDate, formattedBeginDate, formattedEndDate;
+      if (subletData === null) return;
       $('#SubletDateBegin').val("");
       $('#SubletDateEnd').val("");
       $('#SubletFlexibleDates').prop("checked", true);
@@ -193,13 +201,13 @@
       }
       $('#SubletNumberBedrooms').val(subletData.Sublet.number_bedrooms);
       $('#SubletPricePerBedroom').val(subletData.Sublet.price_per_bedroom);
-      $('#SubletDescription').val(subletData.Sublet.description);
-      $('#SubletBathroomTypeId').val(subletData.Sublet.bathroom_type_id);
+      $('#SubletShortDescription').val(subletData.Sublet.short_description);
+      $('#SubletBathroomType').val(subletData.Sublet.bathroom_type_id);
       $('#SubletUtilityTypeId').val(subletData.Sublet.utility_type_id);
       $('#SubletUtilityCost').val(subletData.Sublet.utility_type_id);
       $('#SubletParking').prop("checked", subletData.Sublet.parking);
       $('#SubletAc').prop("checked", subletData.Sublet.ac);
-      $('#SubletFurnishedTypeId').val(subletData.Sublet.furnished_type_id);
+      $('#SubletFurnishedType').val(subletData.Sublet.furnished_type_id);
       $('#SubletDepositAmount').val(subletData.Sublet.deposit_amount);
       $('#SubletAdditionalFeesDescription').val(subletData.Sublet.additional_fees_description);
       return $('#SubletAdditionalFeesAmount').val(subletData.Sublet.additional_fees_amount);
@@ -210,14 +218,15 @@
     */
 
     SubletSave.InitEditStep3 = function(subletData) {
+      if (subletData === null) return;
       $("#HousemateEnrolled").prop("checked", false);
       if (subletData.Housemate === null || subletData.Housemate === void 0) return;
       $("#HousemateQuantity").val(subletData.Housemate.quantity);
       $("#HousemateEnrolled").prop("checked", subletData.Housemate.enrolled);
-      $("#HousemateStudentTypeId").val(subletData.Housemate.student_type_id);
+      $("#HousemateStudentType").val(subletData.Housemate.student_type_id);
       $("#HousemateMajor").val(subletData.Housemate.major);
-      $("#HousemateGenderTypeId").val(subletData.Housemate.gender_type_id);
-      return $("#HousemateType").val(subletData.Housemate.type);
+      $("#HousemateGenderType").val(subletData.Housemate.gender_type_id);
+      return $("#HousemateYear").val(subletData.Housemate.year);
     };
 
     /*
@@ -302,16 +311,16 @@
           id: $("#").val(),
           university_id: $("#").val(),
           university_name: $("#universityName").val(),
-          building_type_id: $('#SubletBuildingTypeId').val(),
+          building_type_id: $('#buildingType').val(),
           date_begin: this.GetMysqlDateFormat($('#SubletDateBegin').val()),
           date_end: this.GetMysqlDateFormat($('#SubletDateEnd').val()),
           number_bedrooms: $('#SubletNumberBedrooms').val(),
           price_per_bedroom: $('#SubletPricePerBedroom').val(),
           payment_type_id: 1,
-          short_description: $('#SubletDescription').val(),
-          description: $('#SubletDescription').val(),
-          bathroom_type_id: $('#SubletBathroomTypeId').val(),
-          building_type_id: $('#SubletBuildingTypeId').val(),
+          short_description: $('#SubletShortDescription').val(),
+          description: $('#SubletLongDescription').val(),
+          bathroom_type_id: $('#SubletBathroomType').val(),
+          building_type_id: $('#SubletBuildingType').val(),
           utility_type_id: $('#SubletUtilityTypeId').val(),
           utility_cost: $('#SubletUtilityCost').val(),
           deposit_amount: $('#SubletDepositAmount').val(),
@@ -319,9 +328,9 @@
           additional_fees_amount: $('#SubletDepositAmount').val(),
           unit_number: $('#SubletUnitNumber').val(),
           flexible_dates: $('#SubletFlexibleDates').is(':checked'),
-          furnished_type_id: $('#SubletFurnishedTypeId').val(),
-          ac: $('#SubletAc').is(':checked'),
-          parking: $('#SubletParking').is(':checked')
+          furnished_type_id: $('#SubletFurnishedType').val(),
+          ac: $('#ac').val() === "Yes",
+          parking: $('#parking').val() === "Yes"
         },
         Marker: {
           alternate_name: $('#SubletName').val(),
@@ -336,10 +345,10 @@
         Housemate: {
           quantity: $("#HousemateQuantity").val(),
           enrolled: $("#HousemateEnrolled").is(':checked'),
-          student_type_id: $("#HousemateStudentTypeId").val(),
+          student_type_id: $("#HousemateStudentType").val(),
           major: $("#HousemateMajor").val(),
-          gender_type_id: $("#HousemateGenderTypeId").val(),
-          type: $("#HousemateType").val()
+          gender_type_id: $("#HousemateGenderType").val(),
+          year: $("#HousemateYear").val()
         }
       };
     };

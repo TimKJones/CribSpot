@@ -6,6 +6,10 @@
 <?= $this->Html->css('datepicker'); ?>
 <?= $this->Html->script('bootstrap-datepicker'); ?>
 
+<script>
+A2Cribs.Map.LoadTypeTables();
+</script>
+
 
 <div class="listing-popup modal container-fluid">
 	<div id="sublet-id" class="hide"></div>
@@ -14,7 +18,7 @@
 		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div>
-		<div class="modal-body step" id="address-step">
+		<div class="modal-body step" id="address-step" step="1">
 			<div class="container-fluid">
 				<div class="row-fluid">
 					<div class="span7">
@@ -32,15 +36,15 @@
 						</div>
 						<div class="row-fluid">
 							<label class="span2"><strong>Type:</strong></label>
-							<select class="span5">
-								<option>Apartment</option>
+							<select id="buildingType" class="span5">
 								<option>House</option>
+								<option>Apartment</option>
 								<option>Duplex</option>
 							</select>
 							<button class="btn btn-info btn-small span5 pull-right" onclick="A2Cribs.CorrectMarker.FindAddress()"><i class="icon-map-marker icon-large"></i> Place on Map</button>
 						</div>
 						<div class="row-fluid">
-							<div class="span12" id="map-message">Please verify that the marker to the right is on the correct location. If not, please click and drag the marker to the correct spot on the map.</div>
+							<div class="span12" id="map-message">Please verify that the marker to the right is on the correct location. If not, click and drag the marker to the correct spot on the map.</div>
 							<img id="map-message-arrow" src="/img/messages/arrow-right.png">
 						</div>
 						<div class="row-fluid">
@@ -61,7 +65,7 @@
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
 			</div>
 		</div>
-		<div class="modal-body step" id="info-step">
+		<div class="modal-body step" id="info-step" step="2">
 			<div class="container-fluid">
 				<div class="row-fluid">
 					<label class="span3"><strong>Available From:</strong></label>
@@ -75,7 +79,7 @@
 					<div class="span3">
 						<div class="row-fluid">
 							<label class="span9"><strong>Flexible Dates:</strong></label>
-							<input type="checkbox">
+							<input id="SubletFlexibleDates" type="checkbox">
 						</div>
 					</div>
 				</div>
@@ -84,9 +88,9 @@
 						<div class="row-fluid">
 							<label class="span8"><strong>Bedrooms:</strong></label>
 							<select id="SubletNumberBedrooms" class="span4">
-								<option value="">1</option>
-								<option value="">2</option>
-								<option value="">3</option>
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
 							</select>
 						</div>
 					</div>
@@ -102,19 +106,19 @@
 					<div class="span6">
 						<div class="row-fluid">
 							<select id="inputType" class="span4">
-								<option value="">Monthly</option>
-								<option value="">Total</option>
+								<option>Monthly</option>
+								<option>Total</option>
 							</select>							
 						</div>
 					</div>
 				</div>
 				<div class="row-fluid">
 					<div class="span3">
-						<strong>Unique Description:</strong>
+						<strong>Short Description:</strong>
 						<p class="text-info"><small><strong>160 Character Max</strong></small></p>
 						<p class="text-error"><small><strong><i id="desc-char-left">160</i> Characters Left</strong></small></p>
 					</div>
-					<textarea id="SubletDescription" class="span9" rows="3"></textarea>
+					<textarea id="SubletShortDescription" class="span9" rows="3"></textarea>
 				</div>
 				<div class="row-fluid">
 					<div class="span6"><strong>Additional Details </strong><strong class="text-info">(Optional)</strong></div>
@@ -123,10 +127,10 @@
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Furnished:</strong></label>
-							<select class="span4">
-								<option value="">Partially</option>
-								<option value="">Yes</option>
-								<option value="">No</option>
+							<select id="SubletFurnishedType" class="span4">
+								<option>Fully</option>
+								<option>Partially</option>
+								<option>No</option>
 							</select>
 						</div>
 					</div>
@@ -144,23 +148,23 @@
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Parking:</strong></label>
-							<select class="span3">
-								<option value="">Yes</option>
-								<option value="">No</option>
+							<select id="parking" class="span3">
+								<option>Yes</option>
+								<option>No</option>
 							</select>
 						</div>
 					</div>
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Utilities:</strong></label>
-							<select id="SubletUtilityCost" class="span5">
-								<option value="">Monthly Fee</option>
-								<option value="">Included</option>
-								<option value="">Not Included</option>
+							<select id="SubletUtilityType" class="span5">
+								<option>Included</option>
+								<option>Monthly Fee</option>
+								<option>As Used</option>
 							</select>
 							<div class="input-prepend span3 pull-right">
 								<span class="add-on span1">$</span>
-								<input class="span8" id="appendedPrependedInput" type="text">
+								<input class="span8" id="SubletUtilityCost" type="text">
 							</div>
 						</div>
 					</div>
@@ -169,16 +173,16 @@
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Bathroom:</strong></label>
-							<select class="span4">
-								<option value="">Public</option>
-								<option value="">Private</option>
+							<select id="SubletBathroomType" class="span4">
+								<option>Private</option>
+								<option>Shared</option>
 							</select>
 						</div>
 					</div>
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Other Fees:</strong></label>
-							<input id="SubletAdditionalFeesDescription" type="text" class="span5">
+							<input id="SubletAdditionalFeesDescription" type="text" class="span5" placeholder="Description">
 							<div class="input-prepend span3 pull-right">
 								<span class="add-on span1">$</span>
 								<input class="span8" id="SubletAdditionalFeesAmount" type="text">
@@ -191,19 +195,9 @@
 						<div class="row-fluid">
 							<label class="span4"><strong>A/C:</strong></label>
 							<select class="span3">
-								<option value="">Yes</option>
-								<option value="">No</option>
+								<option>Yes</option>
+								<option>No</option>
 							</select>
-						</div>
-					</div>
-					<div class="span6">
-						<div class="row-fluid">
-							<label class="span4"></label>
-							<input type="text" class="span5">
-							<div class="input-prepend span3 pull-right">
-								<span class="add-on span1">$</span>
-								<input class="span8" id="appendedPrependedInput" type="text">
-							</div>
 						</div>
 					</div>
 				</div>
@@ -213,7 +207,7 @@
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
 			</div>
 		</div>
-		<div class="modal-body step" id="addinfo-step">
+		<div class="modal-body step" id="addinfo-step" step="3">
 			<div class="container-fluid">
 				<div class="row-fluid">
 					<div class="span12">
@@ -248,16 +242,18 @@
 					<div class="span4">
 						<div class="row-fluid">
 							<label class="span4"><strong>Type:</strong></label>
-							<select class="span8">
-								<option>Undergrad</option>
+							<select id="HousemateStudentType" class="span8">
 								<option>Graduate</option>
+								<option>Undergraduate</option>
+								<option>Mix</option>
+								<option>Other</option>
 							</select>
 						</div>
 					</div>
 					<div class="span4">
 						<div class="row-fluid">
 							<label class="span4"><strong>Year:</strong></label>
-							<select class="span8">
+							<select id="HousemateYear" class="span8">
 								<option>Freshman</option>
 								<option>Sophomore</option>
 								<option>Junior</option>
@@ -268,10 +264,10 @@
 					<div class="span4">
 						<div class="row-fluid">
 							<label class="span5"><strong>Gender:</strong></label>
-							<select class="span6">
+							<select id="HousemateGenderType" class="span6">
 								<option>Male</option>
 								<option>Female</option>
-								<option>Mixed</option>
+								<option>Mix</option>
 							</select>
 						</div>
 					</div>
@@ -284,7 +280,7 @@
 					<strong>Longer Sublet Description </strong><strong class="text-info">(Optional)</strong>
 				</div>
 				<div class="row-fluid">
-					<textarea class="span12" rows="5"></textarea>
+					<textarea id="SubletLongDescription" class="span12" rows="5"></textarea>
 				</div>
 			</div>
 
@@ -293,7 +289,7 @@
 				<button class="btn btn-inverse pull-right next-btn">Next</button>
 			</div>			
 		</div>
-		<div class="modal-body step" id="photo-step">
+		<div class="modal-body step" id="photo-step" step="4">
 			<?php echo $this->Element('photo_manager');?>
 			<div class="modal-footer">
 				<button class="btn btn-inverse pull-left back-btn">Back</button>
@@ -313,12 +309,13 @@
 		A2Cribs.SubletSave.SetupUI();
 
 		$(".next-btn").click(function(){
-			$(this).closest(".step").hide().next(".step").show();
+			if (A2Cribs.SubletSave.Validate(parseInt($(this).closest(".step").attr("step"))))
+				$(this).closest(".step").hide().next(".step").show();
 		});
 		$(".back-btn").click(function(){
 			$(this).closest(".step").hide().prev(".step").show();
 		});
-		$("#SubletDescription").keyup(function(){
+		$("#SubletShortDescription").keyup(function(){
 			if ($(this).val().length >= 160)
 			{
 				$(this).val($(this).val().substr(0, 160));
@@ -333,6 +330,8 @@
 			A2Cribs.CorrectMarker.FindSelectedUniversity();
 		});
 
+		A2Cribs.Map.LoadTypeTables();
+		A2Cribs.SubletSave.PopulateInputFields();
 	');
 ?>
 	
