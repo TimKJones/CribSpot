@@ -364,7 +364,6 @@
           short_description: $('#SubletShortDescription').val(),
           description: $('#SubletLongDescription').val(),
           bathroom_type_id: $('#SubletBathroomType').val(),
-          building_type_id: $('#SubletBuildingType').val(),
           utility_type_id: $('#SubletUtilityTypeId').val(),
           utility_cost: $('#SubletUtilityCost').val(),
           deposit_amount: $('#SubletDepositAmount').val(),
