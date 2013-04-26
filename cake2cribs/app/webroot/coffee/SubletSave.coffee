@@ -1,6 +1,7 @@
 class A2Cribs.SubletSave
 
 	@SetupUI: () ->
+		A2Cribs.CorrectMarker.Init()
 
 	###
 	Called before advancing steps

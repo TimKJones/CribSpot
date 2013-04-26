@@ -1,4 +1,5 @@
 class A2Cribs.PhotoManager
+
 	@CurrentPhotoTarget = "none"
 	@CurrentPrimaryImageIndex = 1
 	@CurrentPreviewImageIndex = 0
@@ -9,6 +10,27 @@ class A2Cribs.PhotoManager
 	@MAX_CAPTION_LENGTH = 25
 	@BACKSPACE = 8
 
+	@SetupUI:() ->
+		$('.imageContainer').hover (event)->
+			if $(event.currentTarget).find('img').length == 1
+				if event.type == 'mouseenter'
+					$(event.currentTarget).find('.image-actions-container').show()
+				else
+					$(event.currentTarget).find('.image-actions-container').hide()
+				
+
+		$('#upload_image').click ()->
+			$('#real-file-input').click()
+
+		$('#saveCaption').click ()->
+			SubmitCaption()
+
+		$(".delete").tooltip {'selector': '','placement': 'bottom', 'title': 'Delete'}
+		$(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
+		$(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
+
+
+
 	@LoadImages:() ->
 		$.ajax
 			url: myBaseUrl + "Images/LoadImages/" + jsVars.edit_listing_id
@@ -16,8 +38,8 @@ class A2Cribs.PhotoManager
 			success: A2Cribs.PhotoManager.UpdateImageSources
 
 	@DeleteImageCallback: (id) ->
-		$('#imageContent' + id).html('');
-		$('#imageContent' + id).css('background-image', '');
+		$('#imageContent' + id).html("<div class ='img-place-holder'></div>");
+		
 		#$("#" + id).css("visibility", "hidden")
 		#$("#add" + id).css("visibility", "visible")
 		if id == A2Cribs.PhotoManager.CurrentPreviewId
@@ -28,7 +50,6 @@ class A2Cribs.PhotoManager
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
 		if photoNumber == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 			A2Cribs.PhotoManager.MakeNotPrimaryUI photoNumber
-		A2Cribs.PhotoManager.ApplyRemovePhotoUI photoNumber
 
 		$.ajax
 			url: myBaseUrl + "Images/DeleteImage"
@@ -58,9 +79,9 @@ class A2Cribs.PhotoManager
 		for i in [0..imageSources[1].length - 1] by 1
 			if imageSources[1][i] == null || imageSources[1][i] == undefined
 				continue
-			cssSettings = 
-				"background-size":  "160px 150px"
-				"background-image": "url(" + imageSources[1][i] + ")"
+			# cssSettings = 
+			# 	"background-size":  "160px 150px"
+			# 	"background-image": "url(" + imageSources[1][i] + ")"
 			imageContentDiv = "#imageContent"
 			nextSlot = i + 1
 			A2Cribs.PhotoManager.IdToPathMap[nextSlot] = imageSources[1][i]
@@ -72,11 +93,16 @@ class A2Cribs.PhotoManager
 			A2Cribs.PhotoManager.ApplyAddPhotoUI nextSlot
 			imageContentDiv = "#imageContent" + (nextSlot)
 			$(imageContentDiv).html("")
-			$(imageContentDiv).css(cssSettings)
+
+			img = "<img src=#{imageSources[1][i]}></alt>"
+			$(imageContentDiv).html(img)
+
+			# $(imageContentDiv).css(cssSettings)
 			if nextSlot == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 				A2Cribs.PhotoManager.MakePrimaryUI primary_image_index
 			#$("#add" + (i + 2)).css("visibility", "hidden")
 			#$("#" + (i + 2)).css("visibility", "visible")
+
 
 	@PreviewImage: (obj)->
 		file = $("#" + obj.id)[0]
@@ -100,25 +126,23 @@ class A2Cribs.PhotoManager
 	@SetImage: (img) ->
 		if typeof img == "object" 
 			img = img.target.result; # file reader
-		cssSettings = 
-			"background-size":  "160px 150px"
-			"background-image": "url(" + img + ")"
+		# cssSettings = 
+		# 	"background-size":  "160px 150px"
+		# 	"background-image": "url(" + img + ")"
 		imageContentDiv = ""
 		if A2Cribs.PhotoManager.CurrentPhotoTarget == "secondary"
 			imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv()
+			if !imageContentDiv
+				A2Cribs.UIManager.Alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
+				return
 			num = imageContentDiv.substring(imageContentDiv.length-1)
 			A2Cribs.PhotoManager.IdToPathMap[num] = img
-			if !imageContentDiv
-				alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
-				return
-			A2Cribs.PhotoManager.ApplyAddPhotoUI num
 		else
 			imageContentDiv = "#imageContent0"
-			cssSettings = 
-				"background-size":  "271px 280px"
-				"background-image": "url(" + img + ")"
-		$(imageContentDiv).html("")
-		$(imageContentDiv).css(cssSettings)
+			
+		image = "<img src='#{img}''></img>"
+
+		$(imageContentDiv).html(image)
 
 	###
 	Find the next free div in which to display the selected photo
@@ -129,8 +153,7 @@ class A2Cribs.PhotoManager
 		freeDivId = 0
 		for i in [1..6] by 1
 				candidateDiv = imageDivPrefix + i
-				backgroundImg = $(candidateDiv).css("background-image")
-				if backgroundImg == "none" || backgroundImg == undefined
+				if $(candidateDiv).find('img').length == 0
 					imageContentDiv = candidateDiv
 					foundFreeDiv = true
 					#A2Cribs.PhotoManager.IdToPathMap[i] = img
@@ -201,7 +224,7 @@ class A2Cribs.PhotoManager
 	@MakePrimary: (obj) ->
 		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
 		img = $("#imageContent" + photoNumber).css("background-image")
-		if img != "none" && img != undefined 
+		if $("#imageContent" + photoNumber).find('img').length != 0
 			A2Cribs.PhotoManager.MakeNotPrimaryUI A2Cribs.PhotoManager.CurrentPrimaryImageIndex
 			A2Cribs.PhotoManager.MakePrimaryUI photoNumber
 			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = photoNumber
@@ -213,15 +236,14 @@ class A2Cribs.PhotoManager
 	Update UI for image that is now primary
 	###
 	@MakePrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "yellow")
-		$("#primary" + divId).attr("disabled", "disabled")
+		$("#primary" + divId).addClass('cur-primary')
 
 	###
 	Update UI for image that is no longer primary
 	###
 	@MakeNotPrimaryUI: (divId) ->
-		$("#primary" + divId).css("background-color", "gray")
-		$("#primary" + divId).removeAttr("disabled")
+		$("#primary" + divId).removeClass('cur-primary')
+		# $("#primary" + divId).removeAttr("disabled")
 
 	###
 	Submit the caption for the currently previewed image.
@@ -241,18 +263,18 @@ class A2Cribs.PhotoManager
 		else
 			alert "Error: Please use only numbers and letters."
 
-	###
-	Update visibility of buttons for image after added to slot imageSlot
-	###
-	@ApplyAddPhotoUI: (imageSlot) ->
-		$("#delete" + imageSlot).toggleClass("hide")
-		$("#primary" + imageSlot).toggleClass("hide")
-		$("#edit" + imageSlot).toggleClass("hide")
+	# ###
+	# Update visibility of buttons for image after added to slot imageSlot
+	# ###
+	# @ApplyAddPhotoUI: (imageSlot) ->
+	# 	$("#delete" + imageSlot).toggleClass("hide")
+	# 	$("#primary" + imageSlot).toggleClass("hide")
+	# 	$("#edit" + imageSlot).toggleClass("hide")
 
-	###
-	Update visibility of buttons for image after being removed
-	###
-	@ApplyRemovePhotoUI: (imageSlot) ->
-		$("#delete" + imageSlot).toggleClass("hide")
-		$("#primary" + imageSlot).toggleClass("hide")
-		$("#edit" + imageSlot).toggleClass("hide")
+	# ###
+	# Update visibility of buttons for image after being removed
+	# ###
+	# @ApplyRemovePhotoUI: (imageSlot) ->
+	# 	$("#delete" + imageSlot).toggleClass("hide")
+	# 	$("#primary" + imageSlot).toggleClass("hide")
+	# 	$("#edit" + imageSlot).toggleClass("hide")
