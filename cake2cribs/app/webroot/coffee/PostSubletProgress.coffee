@@ -16,7 +16,7 @@ class A2Cribs.PostSubletProgress
         @CurrentStep--
         @updatePositionUI()
 
-    updatePositionUI:()->
+    updatePositionUI:() ->
 
         current_step = '<i class="step-state current-step icon-circle-blank"></i>'
         completed_step = '<i class="step-state icon-circle background-icon"></i>
