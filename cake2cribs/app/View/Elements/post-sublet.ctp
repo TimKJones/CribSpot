@@ -6,6 +6,9 @@
 	<div id="sublet-id" class="hide"></div>
 	<div class="modal-header">
 		<i class="sublet-name title">Post Your Sublet</i>
+		<div class = 'progress-wrapper'>
+			<?php echo $this->element('post-sublet-progress');?>
+		</div>
 		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div>
