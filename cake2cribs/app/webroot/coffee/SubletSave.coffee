@@ -47,10 +47,10 @@ class A2Cribs.SubletSave
 	@Validate: (step_) ->
 		###if step_ >= 1
 			if !@ValidateStep1()
-				return false###
+				return false
 		if step_ >= 2
 			if !@ValidateStep2()
-				return false
+				return false###
 		if step_ >= 3
 			if !@ValidateStep3()
 				return false
@@ -119,6 +119,9 @@ class A2Cribs.SubletSave
 		else if ($('#HousemateMajor').val().length >= 254)
 			A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
 			return false
+		else if $("#HousemateStudentType").val() != "Graduate"
+			if  $("#HousemateYear").val() == ""
+				A2Cribs.UIManager.Alert "Please select a year for your housemates."
 		
 		return true
 
@@ -285,6 +288,15 @@ class A2Cribs.SubletSave
 					source: A2Cribs.CorrectMarker.SchoolList
 
 ##################### End Edit Sublet Initialization #################################
+
+	@UtilityChanged: () ->
+		if $("#SubletUtilityType").val() == "Included" 
+			$("#SubletUtilityCost").val("0")
+
+	@StudentTypeChanged: () ->
+		if $("#HousemateStudentType").val() == "Graduate" 
+			$("#HousemateYear").val(0)
+	
 
 	###
 	Submits sublet to backend to save

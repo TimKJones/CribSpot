@@ -4,8 +4,36 @@
 
     function SubletSave() {}
 
-    SubletSave.SetupUI = function() {
-      return A2Cribs.CorrectMarker.Init();
+    SubletSave.SetupUI = function(initialStep) {
+      var _this = this;
+      this.CurrentStep = initialStep;
+      $('.step').eq(this.CurrentStep).siblings().hide();
+      this.ProgressBar = new A2Cribs.PostSubletProgress($('.post-sublet-progress'), initialStep);
+      $("#address-step").siblings().hide();
+      $(".next-btn").click(function(event) {
+        if (_this.Validate(_this.CurrentStep + 1)) {
+          $(event.currentTarget).closest(".step").hide().next(".step").show();
+          _this.CurrentStep++;
+          return _this.ProgressBar.next();
+        }
+      });
+      $(".back-btn").click(function(event) {
+        $(event.currentTarget).closest(".step").hide().prev(".step").show();
+        _this.CurrentStep--;
+        return _this.ProgressBar.prev();
+      });
+      A2Cribs.CorrectMarker.Init();
+      $("#SubletShortDescription").keyup(function() {
+        if ($(this).val().length >= 160) $(this).val($(this).val().substr(0, 160));
+        return $("#desc-char-left").text(160 - $(this).val().length);
+      });
+      $("#SubletDateBegin").datepicker();
+      $("#SubletDateEnd").datepicker();
+      $("#universityName").focusout(function() {
+        return A2Cribs.CorrectMarker.FindSelectedUniversity();
+      });
+      A2Cribs.Map.LoadTypeTables();
+      return A2Cribs.SubletSave.PopulateInputFields();
     };
 
     /*
@@ -17,8 +45,10 @@
       /*if step_ >= 1
       			if !@ValidateStep1()
       				return false
-      */      if (step_ >= 2) if (!this.ValidateStep2()) return false;
-      if (step_ >= 3) if (!this.ValidateStep3()) return false;
+      		if step_ >= 2
+      			if !@ValidateStep2()
+      				return false
+      */      if (step_ >= 3) if (!this.ValidateStep3()) return false;
       return true;
     };
 
@@ -97,6 +127,10 @@
       } else if ($('#HousemateMajor').val().length >= 254) {
         A2Cribs.UIManager.Alert("Please keep the majors description under 255 characters.");
         return false;
+      } else if ($("#HousemateStudentType").val() !== "Graduate") {
+        if ($("#HousemateYear").val() === "") {
+          A2Cribs.UIManager.Alert("Please select a year for your housemates.");
+        }
       }
       return true;
     };
@@ -260,6 +294,18 @@
           });
         }
       });
+    };
+
+    SubletSave.UtilityChanged = function() {
+      if ($("#SubletUtilityType").val() === "Included") {
+        return $("#SubletUtilityCost").val("0");
+      }
+    };
+
+    SubletSave.StudentTypeChanged = function() {
+      if ($("#HousemateStudentType").val() === "Graduate") {
+        return $("#HousemateYear").val(0);
+      }
     };
 
     /*
