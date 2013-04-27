@@ -42,13 +42,12 @@
     */
 
     SubletSave.Validate = function(step_) {
-      /*if step_ >= 1
-      			if !@ValidateStep1()
-      				return false
-      		if step_ >= 2
-      			if !@ValidateStep2()
-      				return false
-      */      if (step_ >= 3) if (!this.ValidateStep3()) return false;
+      if (step_ >= 1) if (!this.ValidateStep1()) return false;
+      if (step_ >= 2) if (!this.ValidateStep2()) return false;
+      if (step_ >= 3) {
+        if (!this.ValidateStep3()) return false;
+        if (!this.SaveSublet()) return false;
+      }
       return true;
     };
 
@@ -322,11 +321,10 @@
         if (data.status) {
           A2Cribs.UIManager.Alert(data.status);
           A2Cribs.ShareManager.SavedListing = data.newid;
-          return $('#server-notice').dialog2("options", {
-            content: "/Sublets/ajax_add4"
-          });
+          return true;
         } else {
-          return A2Cribs.UIManager.Alert(data.error);
+          A2Cribs.UIManager.Alert(data.error);
+          return false;
         }
       });
     };
@@ -353,7 +351,7 @@
       return subletObject = {
         Sublet: {
           id: $("#").val(),
-          university_id: $("#").val(),
+          university_id: $("#universityId").val(),
           university_name: $("#universityName").val(),
           building_type_id: $('#buildingType').val(),
           date_begin: this.GetMysqlDateFormat($('#SubletDateBegin').val()),
@@ -364,7 +362,7 @@
           short_description: $('#SubletShortDescription').val(),
           description: $('#SubletLongDescription').val(),
           bathroom_type_id: $('#SubletBathroomType').val(),
-          utility_type_id: $('#SubletUtilityTypeId').val(),
+          utility_type_id: $('#SubletUtilityType').val(),
           utility_cost: $('#SubletUtilityCost').val(),
           deposit_amount: $('#SubletDepositAmount').val(),
           additional_fees_description: $('#SubletAdditionalFeesDescription').val(),
@@ -377,8 +375,8 @@
         },
         Marker: {
           alternate_name: $('#SubletName').val(),
-          street_address: $("#addressToMark").val(),
-          building_type_id: $('#SubletBuildingTypeId').val(),
+          street_address: $("#formattedAddress").val(),
+          building_type_id: $('#buildingType').val(),
           city: $('#city').val(),
           state: $('#state').val(),
           zip: $('#postal').val(),
