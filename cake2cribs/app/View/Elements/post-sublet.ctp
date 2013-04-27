@@ -25,27 +25,28 @@ A2Cribs.Map.LoadTypeTables();
 			<div class="container-fluid">
 				<div class="row-fluid">
 					<div class="span7">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span3"><strong>College:</strong></label>
-							<input id="universityName" type="text" class="span9">
+							<input id="universityName" type="text" class="span9 required" required>
 							<input type="hidden" id="universityId">
 						</div>
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span5"><strong>Building Name:</strong></label>
 							<input id="SubletName" type="text" class="span7">
 						</div>
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span5"><strong>Street Address:</strong></label>
-							<input id="formattedAddress" type="text" class="span7">
+							<input id="formattedAddress" type="text" class="span7 required" required>
 							<input type="hidden" id="city">
 							<input type="hidden" id="state">
 							<input type="hidden" id="postal">
 							<input type="hidden" id="updatedLat">
 							<input type="hidden" id="updatedLong">
 						</div>
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span2"><strong>Type:</strong></label>
-							<select id="buildingType" class="span5">
+							<select id="buildingType" class="span5 required" required>
+								<option></option>
 								<option>House</option>
 								<option>Apartment</option>
 								<option>Duplex</option>
@@ -56,7 +57,7 @@ A2Cribs.Map.LoadTypeTables();
 							<div class="span12" id="map-message">Please verify that the marker to the right is on the correct location. If not, click and drag the marker to the correct spot on the map.</div>
 							<img id="map-message-arrow" src="/img/messages/arrow-right.png">
 						</div>
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Unit Number:</strong></label>
 							<input id="SubletUnitNumber" type="text" class="span4">
 						</div>
@@ -79,10 +80,10 @@ A2Cribs.Map.LoadTypeTables();
 				<div class="row-fluid">
 					<label class="span3"><strong>Available From:</strong></label>
 					<div class="span6">
-						<div class="row-fluid">
-							<input id="SubletDateBegin" type="text" class="span5"placeholder = 'Start Date'>
+						<div class="row-fluid control-group">
+							<input id="SubletDateBegin" type="text" class="span5 required" placeholder = 'Start Date'>
 							<div class="span2" id="divider">-</div>
-							<input id="SubletDateEnd" type="text" class="span5" placeholder = 'End Date'>							
+							<input id="SubletDateEnd" type="text" class="span5 required" placeholder = 'End Date'>							
 						</div>
 					</div>
 					<div class="span3">
@@ -94,11 +95,12 @@ A2Cribs.Map.LoadTypeTables();
 				</div>
 				<div class="row-fluid">
 					<div class="span3">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span8"><strong>Bedrooms:</strong></label>
-							<select id="SubletNumberBedrooms" class="span4">
+							<select id="SubletNumberBedrooms" class="span4 required">
+								<option></option>
 <?php
-							for ($i=1; $i <=12; $i++)
+							for ($i=0; $i <=12; $i++)
 								echo '<option>' . $i . '</option>';
 ?>
 
@@ -106,9 +108,9 @@ A2Cribs.Map.LoadTypeTables();
 						</div>
 					</div>
 					<div class="span3">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span6"><strong>Price</strong><small> /Bed</small><strong>:</strong></label>
-							<div class="input-prepend span6">
+							<div class="input-prepend span6 required">
 								<span class="add-on span3">$</span>
 								<input class="span9" id="SubletPricePerBedroom" type="text">
 							</div>
@@ -118,21 +120,20 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<select id="inputType" class="span4">
 								<option>Monthly</option>
-								<option>Total</option>
 							</select>							
 						</div>
 					</div>
 				</div>
-				<div class="row-fluid">
+				<div class="row-fluid control-group">
 					<div class="span3">
 						<strong>Short Description:</strong>
 						<p class="text-info"><small><strong>160 Character Max</strong></small></p>
 						<p class="text-error"><small><strong><i id="desc-char-left">160</i> Characters Left</strong></small></p>
 					</div>
-					<textarea id="SubletShortDescription" class="span9" rows="3"></textarea>
+					<textarea id="SubletShortDescription" class="span9 required" rows="3"></textarea>
 				</div>
 				<div class="row-fluid">
-					<div class="span6"><strong>Additional Details </strong><strong class="text-info">(Optional)</strong></div>
+					<div class="span6"><strong>Additional Details </strong></div>
 				</div>
 				<div class="row-fluid">
 					<div class="span6">
@@ -160,6 +161,7 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span4"><strong>Parking:</strong></label>
 							<select id="parking" class="span3">
+								<option></option>
 								<option>Yes</option>
 								<option>No</option>
 							</select>
@@ -185,6 +187,7 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span4"><strong>Bathroom:</strong></label>
 							<select id="SubletBathroomType" class="span4">
+								<option></option>
 								<option>Private</option>
 								<option>Shared</option>
 							</select>
@@ -206,6 +209,7 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span4"><strong>A/C:</strong></label>
 							<select class="span3">
+								<option></option>
 								<option>Yes</option>
 								<option>No</option>
 							</select>

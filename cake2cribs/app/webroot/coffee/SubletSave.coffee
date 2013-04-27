@@ -21,6 +21,9 @@ class A2Cribs.SubletSave
 			@CurrentStep--
 			@ProgressBar.prev()
 
+		$(".required").focus (event)=>
+			$(event.target).parent().removeClass "error"
+
 		A2Cribs.CorrectMarker.Init()
 
 		$("#SubletShortDescription").keyup ()->
@@ -61,69 +64,89 @@ class A2Cribs.SubletSave
 
 
 	@ValidateStep1: () ->
+		isValid = yes
+		A2Cribs.UIManager.CloseLogs()
 		if (!$('#formattedAddress').val())
-			A2Cribs.UIManager.Alert "Please place your street address on the map using the Place On Map button."
-			return false
+			A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
+			$('#formattedAddress').parent().addClass "error"
+			isValid = no
 		if (!$('#universityName').val())
-			A2Cribs.UIManager.Alert "You need to select a university."
-			return false
+			A2Cribs.UIManager.Error "You need to select a university."
+			$('#universityName').parent().addClass "error"
+			isValid = no
+		if ($('#buildingType').val().length is 0)
+			A2Cribs.UIManager.Error "You need to select a building type."
+			$('#buildingType').parent().addClass "error"
+			isValid = no
 		if ($('#SubletUnitNumber').val().length >=249)
-			A2Cribs.UIManager.Alert "Your unit number is too long."
-			return false
+			A2Cribs.UIManager.Error "Your unit number is too long."
+			$('#SubletUnitNumber').parent().addClass "error"
+			isValid = no
 		if ($('#SubletName').val().length >= 249)
-			A2Cribs.UIManager.Alert "Your alternate name is too long."
-			return false
+			A2Cribs.UIManager.Error "Your alternate name is too long."
+			$('#SubletName').parent().addClass "error"
+			isValid = no
 		
-		return true
+		return isValid
 
 	@ValidateStep2: () ->
 		#begin the validations
-		parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()))
-		parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()))
+		isValid = yes
+		A2Cribs.UIManager.CloseLogs()
+		parsedBeginDate = new Date Date.parse($('#SubletDateBegin').val())
+		parsedEndDate = new Date Date.parse($('#SubletDateEnd').val())
 		todayDate = new Date();
 		if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
-			A2Cribs.UIManager.Alert "Please enter a valid date."
-			return false
-		if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
-			A2Cribs.UIManager.Alert "Please enter a valid date."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid date."
+			isValid = no
+		if parsedEndDate.valueOf() <= parsedBeginDate.valueOf() or parsedBeginDate.valueOf() <= todayDate.valueOf()
+			A2Cribs.UIManager.Error "Please enter a valid date."
+			isValid = no
 		if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
-			A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid number of bedrooms."
+			$('#SubletNumberBedrooms').parent().addClass "error"
+			isValid = no
 		if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
-			A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid price per bedroom."
+			$('#SubletPricePerBedroom').parent().addClass "error"
+			isValid = no
 		if $('#SubletShortDescription').val().length == 0 
-			A2Cribs.UIManager.Alert "Please enter a description."
-			return false
+			A2Cribs.UIManager.Error "Please enter a description."
+			$('#SubletShortDescription').parent().addClass "error"
+			isValid = no
 		if $('#SubletShortDescription').val().length >=161
-			A2Cribs.UIManager.Alert "Please keep the description under 160 characters."
-			return false
+			A2Cribs.UIManager.Error "Please keep the description under 160 characters."
+			isValid = no
 		if (!$('#SubletUtilityCost').val()|| isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
-			A2Cribs.UIManager.Alert "Please enter a valid utility cost."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid utility cost."
+			$('#SubletUtilityCost').parent().addClass "error"
+			isValid = no
 		if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
-			A2Cribs.UIManager.Alert "Please enter a valid deposit amount."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid deposit amount."
+			$('#SubletDepositAmount').parent().addClass "error"
+			isValid = no
 		if ($('#SubletAdditionalFeesDescription').val().length >=161)
-			A2Cribs.UIManager.Alert "Please keep the additional fees description under 160 characters."
-			return false
+			A2Cribs.UIManager.Error "Please keep the additional fees description under 160 characters."
+			$('#SubletAdditionalFeesDescription').parent().addClass "error"
+			isValid = no
 		if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
-			A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
-			return false
+			A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
+			$('#SubletAdditionalFeesAmount').parent().addClass "error"
+			isValid = no
 		
-		return true
+		return isValid
 
 	@ValidateStep3: () ->
+		isValid = yes
 		if ($('#HousemateMajor').val().length >= 254)
-			A2Cribs.UIManager.Alert "Please keep the majors description under 255 characters."
-			return false
-		else if $("#HousemateStudentType").val() != "Graduate"
+			A2Cribs.UIManager.Error "Please keep the majors description under 255 characters."
+			isValid = no
+		if $("#HousemateStudentType").val() != "Graduate"
 			if  $("#HousemateYear").val() == ""
-				A2Cribs.UIManager.Alert "Please select a year for your housemates."
-				return false
+				A2Cribs.UIManager.Error "Please select a year for your housemates."
+				isValid = no
 		
-		return true
+		return isValid
 
 	###
 	Retrieves all necessary sublet data and then pulls up the edit sublet interface
