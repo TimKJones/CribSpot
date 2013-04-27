@@ -45,16 +45,18 @@ class A2Cribs.SubletSave
 	Returns true if validations pass; false otherwise
 	###
 	@Validate: (step_) ->
-		###if step_ >= 1
+		if step_ >= 1
 			if !@ValidateStep1()
 				return false
 		if step_ >= 2
 			if !@ValidateStep2()
-				return false###
+				return false
 		if step_ >= 3
 			if !@ValidateStep3()
 				return false
-				
+			if !@SaveSublet()
+				return false
+
 		return true
 
 
@@ -308,9 +310,10 @@ class A2Cribs.SubletSave
 			if (data.status)
 				A2Cribs.UIManager.Alert data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
-				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
+				return true
 			else
 				A2Cribs.UIManager.Alert data.error
+				return false
 
 	###
 	Called when user finishes the final step of sublet add/edit.
@@ -331,7 +334,7 @@ class A2Cribs.SubletSave
 		subletObject =
 			Sublet:
 				id: $("#").val() #TODO: GET NAME OF HIDDEN SUBLET_ID INPUT
-				university_id: $("#").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
+				university_id: $("#universityId").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
 				university_name: $("#universityName").val()
 				building_type_id: $('#buildingType').val()
 				date_begin: @GetMysqlDateFormat $('#SubletDateBegin').val()
@@ -342,7 +345,7 @@ class A2Cribs.SubletSave
 				short_description: $('#SubletShortDescription').val()
 				description: $('#SubletLongDescription').val()
 				bathroom_type_id: $('#SubletBathroomType').val()
-				utility_type_id: $('#SubletUtilityTypeId').val()
+				utility_type_id: $('#SubletUtilityType').val()
 				utility_cost: $('#SubletUtilityCost').val()
 				deposit_amount: $('#SubletDepositAmount').val()
 				additional_fees_description: $('#SubletAdditionalFeesDescription').val()
@@ -354,8 +357,8 @@ class A2Cribs.SubletSave
 				parking: $('#parking').val() == "Yes"
 			Marker:
 				alternate_name: $('#SubletName').val()
-				street_address: $("#addressToMark").val()
-				building_type_id: $('#SubletBuildingTypeId').val()
+				street_address: $("#formattedAddress").val()
+				building_type_id: $('#buildingType').val()
 				city: $('#city').val()
 				state: $('#state').val()
 				zip: $('#postal').val()

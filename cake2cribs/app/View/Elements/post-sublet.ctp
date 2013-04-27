@@ -28,6 +28,7 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span3"><strong>College:</strong></label>
 							<input id="universityName" type="text" class="span9">
+							<input type="hidden" id="universityId">
 						</div>
 						<div class="row-fluid">
 							<label class="span5"><strong>Building Name:</strong></label>
@@ -36,6 +37,11 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span5"><strong>Street Address:</strong></label>
 							<input id="formattedAddress" type="text" class="span7">
+							<input type="hidden" id="city">
+							<input type="hidden" id="state">
+							<input type="hidden" id="postal">
+							<input type="hidden" id="updatedLat">
+							<input type="hidden" id="updatedLong">
 						</div>
 						<div class="row-fluid">
 							<label class="span2"><strong>Type:</strong></label>
@@ -91,9 +97,11 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span8"><strong>Bedrooms:</strong></label>
 							<select id="SubletNumberBedrooms" class="span4">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
+<?php
+							for ($i=1; $i <=12; $i++)
+								echo '<option>' . $i . '</option>';
+?>
+
 							</select>
 						</div>
 					</div>
@@ -160,14 +168,14 @@ A2Cribs.Map.LoadTypeTables();
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span4"><strong>Utilities:</strong></label>
-							<select id="SubletUtilityType" class="span5">
+							<select id="SubletUtilityType" onchange="A2Cribs.SubletSave.UtilityChanged()" class="span5">
 								<option>Included</option>
 								<option>Monthly Fee</option>
 								<option>As Used</option>
 							</select>
 							<div class="input-prepend span3 pull-right">
 								<span class="add-on span1">$</span>
-								<input class="span8" id="SubletUtilityCost" type="text">
+								<input class="span8" id="SubletUtilityCost" value="0" type="text">
 							</div>
 						</div>
 					</div>
@@ -222,12 +230,10 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span8"><strong>Estimated Housemates:</strong></label>
 							<select id="HousemateQuantity" class="span3">
-								<option>0</option>
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5+</option>
+<?php
+							for ($i=1; $i <=12; $i++)
+								echo '<option>' . $i . '</option>';
+?>
 							</select>
 						</div>
 					</div>
@@ -245,7 +251,7 @@ A2Cribs.Map.LoadTypeTables();
 					<div class="span4">
 						<div class="row-fluid">
 							<label class="span4"><strong>Type:</strong></label>
-							<select id="HousemateStudentType" class="span8">
+							<select id="HousemateStudentType" onchange="A2Cribs.SubletSave.StudentTypeChanged()" class="span8">
 								<option>Graduate</option>
 								<option>Undergraduate</option>
 								<option>Mix</option>
@@ -257,10 +263,12 @@ A2Cribs.Map.LoadTypeTables();
 						<div class="row-fluid">
 							<label class="span4"><strong>Year:</strong></label>
 							<select id="HousemateYear" class="span8">
+								<option></option>
 								<option>Freshman</option>
 								<option>Sophomore</option>
 								<option>Junior</option>
 								<option>Senior</option>
+								<option>Mix</option>
 							</select>
 						</div>
 					</div>
