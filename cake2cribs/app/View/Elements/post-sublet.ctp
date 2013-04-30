@@ -118,9 +118,7 @@ A2Cribs.Map.LoadTypeTables();
 					</div>
 					<div class="span6">
 						<div class="row-fluid">
-							<select id="inputType" class="span4">
-								<option>Monthly</option>
-							</select>							
+							<label class="span4"><strong>Per Month</strong></label>
 						</div>
 					</div>
 				</div>
@@ -137,9 +135,10 @@ A2Cribs.Map.LoadTypeTables();
 				</div>
 				<div class="row-fluid">
 					<div class="span6">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Furnished:</strong></label>
-							<select id="SubletFurnishedType" class="span4">
+							<select id="SubletFurnishedType" class="span4 required">
+								<option></option>
 								<option>Fully</option>
 								<option>Partially</option>
 								<option>No</option>
@@ -147,7 +146,7 @@ A2Cribs.Map.LoadTypeTables();
 						</div>
 					</div>
 					<div class="span6">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Deposit:</strong></label>
 							<div class="input-prepend span4 pull-left">
 								<span class="add-on span1">$</span>
@@ -158,9 +157,9 @@ A2Cribs.Map.LoadTypeTables();
 				</div>
 				<div class="row-fluid">
 					<div class="span6">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Parking:</strong></label>
-							<select id="parking" class="span3">
+							<select id="parking" class="span3 required">
 								<option></option>
 								<option>Yes</option>
 								<option>No</option>
@@ -168,9 +167,10 @@ A2Cribs.Map.LoadTypeTables();
 						</div>
 					</div>
 					<div class="span6">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Utilities:</strong></label>
-							<select id="SubletUtilityType" onchange="A2Cribs.SubletSave.UtilityChanged()" class="span5">
+							<select id="SubletUtilityType" onchange="A2Cribs.SubletSave.UtilityChanged()" class="span5 required">
+								<option></option>
 								<option>Included</option>
 								<option>Monthly Fee</option>
 								<option>As Used</option>
@@ -184,9 +184,9 @@ A2Cribs.Map.LoadTypeTables();
 				</div>
 				<div class="row-fluid">
 					<div class="span6">
-						<div class="row-fluid">
+						<div class="row-fluid control-group">
 							<label class="span4"><strong>Bathroom:</strong></label>
-							<select id="SubletBathroomType" class="span4">
+							<select id="SubletBathroomType" class="span4 required">
 								<option></option>
 								<option>Private</option>
 								<option>Shared</option>

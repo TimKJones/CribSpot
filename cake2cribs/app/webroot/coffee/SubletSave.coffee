@@ -98,9 +98,13 @@ class A2Cribs.SubletSave
 		todayDate = new Date();
 		if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 			A2Cribs.UIManager.Error "Please enter a valid date."
+			$('#SubletDateBegin').parent().addClass "error"
+			$('#SubletDateEnd').parent().addClass "error"
 			isValid = no
-		if parsedEndDate.valueOf() <= parsedBeginDate.valueOf() or parsedBeginDate.valueOf() <= todayDate.valueOf()
+		else if parsedEndDate.valueOf() <= parsedBeginDate.valueOf() or parsedBeginDate.valueOf() <= todayDate.valueOf()
 			A2Cribs.UIManager.Error "Please enter a valid date."
+			$('#SubletDateBegin').parent().addClass "error"
+			$('#SubletDateEnd').parent().addClass "error"
 			isValid = no
 		if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 			A2Cribs.UIManager.Error "Please enter a valid number of bedrooms."
@@ -108,14 +112,11 @@ class A2Cribs.SubletSave
 			isValid = no
 		if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
 			A2Cribs.UIManager.Error "Please enter a valid price per bedroom."
-			$('#SubletPricePerBedroom').parent().addClass "error"
+			$('#SubletPricePerBedroom').parent().parent().addClass "error"
 			isValid = no
-		if $('#SubletShortDescription').val().length == 0 
+		if $('#SubletShortDescription').val().length is 0 
 			A2Cribs.UIManager.Error "Please enter a description."
 			$('#SubletShortDescription').parent().addClass "error"
-			isValid = no
-		if $('#SubletShortDescription').val().length >=161
-			A2Cribs.UIManager.Error "Please keep the description under 160 characters."
 			isValid = no
 		if (!$('#SubletUtilityCost').val()|| isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
 			A2Cribs.UIManager.Error "Please enter a valid utility cost."
@@ -123,7 +124,7 @@ class A2Cribs.SubletSave
 			isValid = no
 		if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
 			A2Cribs.UIManager.Error "Please enter a valid deposit amount."
-			$('#SubletDepositAmount').parent().addClass "error"
+			$('#SubletDepositAmount').parent().parent().addClass "error"
 			isValid = no
 		if ($('#SubletAdditionalFeesDescription').val().length >=161)
 			A2Cribs.UIManager.Error "Please keep the additional fees description under 160 characters."
@@ -133,6 +134,23 @@ class A2Cribs.SubletSave
 			A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
 			$('#SubletAdditionalFeesAmount').parent().addClass "error"
 			isValid = no
+		if $("#SubletFurnishedType").val().length is 0
+			A2Cribs.UIManager.Error "Please describe the situation with the furniture."
+			$('#SubletFurnishedType').parent().addClass "error"
+			isValid = no
+		if $("#SubletUtilityType").val().length is 0
+			A2Cribs.UIManager.Error "Please describe the situation with the utilities."
+			$('#SubletUtilityType').parent().addClass "error"
+			isValid = no
+		if $("#parking").val().length is 0
+			A2Cribs.UIManager.Error "Please describe the situation with parking."
+			$('#parking').parent().addClass "error"
+			isValid = no
+		if $("#SubletBathroomType").val().length is 0
+			A2Cribs.UIManager.Error "Please describe the situation with your bathroom."
+			$('#SubletBathroomType').parent().addClass "error"
+			isValid = no
+
 		
 		return isValid
 
