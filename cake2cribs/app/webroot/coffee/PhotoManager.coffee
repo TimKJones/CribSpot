@@ -209,7 +209,7 @@ class A2Cribs.PhotoManager
 		if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
 			return true
 
-		alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
+		A2Cribs.UIManager.Alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
 		return false
 	###
 	if statusText == 'success'

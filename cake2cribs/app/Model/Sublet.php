@@ -680,7 +680,17 @@ class Sublet extends AppModel {
 		return $sublets;
 	}
 
-
+	/*
+	Returns true if the sublet with sublet_id has marker_id = $marker_id; false otherwise
+	*/
+	public function HasMarkerId($sublet_id, $marker_id)
+	{
+		$conditions = array('Sublet.id' => $sublet_id, 
+							'Sublet.marker_id' => $marker_id);
+		$this->contain();
+		$has_marker_id = $this->find('first', array('conditions' => $conditions, 'fields' => array('Sublet.id')));
+		return $has_marker_id != null;
+	}
 
 	
 }

@@ -1,8 +1,6 @@
 class A2Cribs.SubletAdd
-	#@Step1Data = null
 	@setupUI:() ->
 		
-
 		# modal_total_height = $('.modal').height()
 		# page_height = window.innerHeight
 		# # We want some margin on the top and bottom of the modal to be around 20px

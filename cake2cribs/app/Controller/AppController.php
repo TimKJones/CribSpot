@@ -182,4 +182,23 @@ Set userid in session as well as $this->loginUrl and $this->logoutUrl
 
 		return end($logs);
 	}
+
+	public function SendEmail($from, $to, $subject, $template, $sendAs)
+	{
+		$this->Email->smtpOptions = array(
+	          'port'=>'587',
+	          'timeout'=>'30',
+	          'host' => 'smtp.sendgrid.net',
+	          'username'=>'cribsadmin',
+	          'password'=>'lancPA*travMInj',
+	          'client' => 'a2cribs.com'
+		);
+	    $this->Email->delivery = 'smtp';
+	    $this->Email->from = $from;
+	    $this->Email->to = $to;
+	    $this->Email->subject = $subject;
+	    $this->Email->template = $template;
+	    $this->Email->sendAs = $sendAs;
+	    $this->Email->send();
+	}
 }

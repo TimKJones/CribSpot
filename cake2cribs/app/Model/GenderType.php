@@ -8,6 +8,8 @@ class GenderType extends AppModel {
 		'description' => 'alphaNumeric'
 	);
 
+	public $actsAs = array('Containable');
+
 	public function LoadAll()
 	{
 		$all = $this->find('all');

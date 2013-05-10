@@ -87,10 +87,10 @@ class A2Cribs.SubletSave
 		if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
 			A2Cribs.UIManager.Alert "Please enter a valid date."
 			return false
-		if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
+		if (!$('#SubletNumberBedrooms').val() || isNaN($("#SubletNumberBedrooms").val()) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 			A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
 			return false
-		if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
+		if (!$('#SubletPricePerBedroom').val() || isNaN($("#SubletPricePerBedroom").val()) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
 			A2Cribs.UIManager.Alert "Please enter a valid price per bedroom."
 			return false
 		if $('#SubletShortDescription').val().length == 0 
@@ -99,17 +99,17 @@ class A2Cribs.SubletSave
 		if $('#SubletShortDescription').val().length >=161
 			A2Cribs.UIManager.Alert "Please keep the description under 160 characters."
 			return false
-		if (!$('#SubletUtilityCost').val()|| isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
+		if (!$('#SubletUtilityCost').val()|| isNaN($("#SubletUtilityCost").val()) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid utility cost."
 			return false
-		if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
+		if (!$('#SubletDepositAmount').val() || isNaN($("#SubletDepositAmount").val()) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
 			A2Cribs.UIManager.Alert "Please enter a valid deposit amount."
 			return false
 		if ($('#SubletAdditionalFeesDescription').val().length >=161)
 			A2Cribs.UIManager.Alert "Please keep the additional fees description under 160 characters."
 			return false
-		if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
-			A2Cribs.UIManager.Alert "Please enter a valid additional fees amount."
+		if (!$('#SubletAdditionalFeesAmount').val() || isNaN($("#SubletAdditionalFeesAmount").val()) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
+			A2Cribs.UIManager.Alert "Please enter a valid 'Other fees' amount."
 			return false
 		
 		return true
@@ -333,7 +333,7 @@ class A2Cribs.SubletSave
 	@GetSubletObject: () ->
 		subletObject =
 			Sublet:
-				id: $("#").val() #TODO: GET NAME OF HIDDEN SUBLET_ID INPUT
+				id: $("#subletId").val()
 				university_id: $("#universityId").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
 				university_name: $("#universityName").val()
 				building_type_id: $('#buildingType').val()
@@ -356,6 +356,7 @@ class A2Cribs.SubletSave
 				ac: $('#ac').val() == "Yes"
 				parking: $('#parking').val() == "Yes"
 			Marker:
+				marker_id: $("#markerId").val()
 				alternate_name: $('#SubletName').val()
 				street_address: $("#formattedAddress").val()
 				building_type_id: $('#buildingType').val()

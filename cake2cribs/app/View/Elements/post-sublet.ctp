@@ -25,6 +25,9 @@ A2Cribs.Map.LoadTypeTables();
 			<div class="container-fluid">
 				<div class="row-fluid">
 					<div class="span7">
+						<input id="subletId" type="hidden">
+						<input id="housemateId" type="hidden">
+						<input id="markerId" type="hidden">
 						<div class="row-fluid">
 							<label class="span3"><strong>College:</strong></label>
 							<input id="universityName" type="text" class="span9">
@@ -196,7 +199,7 @@ A2Cribs.Map.LoadTypeTables();
 							<input id="SubletAdditionalFeesDescription" type="text" class="span5" placeholder="Description">
 							<div class="input-prepend span3 pull-right">
 								<span class="add-on span1">$</span>
-								<input class="span8" id="SubletAdditionalFeesAmount" type="text">
+								<input class="span8" id="SubletAdditionalFeesAmount" type="text" value="0">
 							</div>
 						</div>
 					</div>

@@ -84,11 +84,11 @@
         A2Cribs.UIManager.Alert("Please enter a valid date.");
         return false;
       }
-      if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
+      if (!$('#SubletNumberBedrooms').val() || isNaN($("#SubletNumberBedrooms").val()) || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
         A2Cribs.UIManager.Alert("Please enter a valid number of bedrooms.");
         return false;
       }
-      if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >= 20000) {
+      if (!$('#SubletPricePerBedroom').val() || isNaN($("#SubletPricePerBedroom").val()) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >= 20000) {
         A2Cribs.UIManager.Alert("Please enter a valid price per bedroom.");
         return false;
       }
@@ -100,11 +100,11 @@
         A2Cribs.UIManager.Alert("Please keep the description under 160 characters.");
         return false;
       }
-      if (!$('#SubletUtilityCost').val() || isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val() < 0 || $('#SubletUtilityCost').val() >= 50000) {
+      if (!$('#SubletUtilityCost').val() || isNaN($("#SubletUtilityCost").val()) || $('#SubletUtilityCost').val() < 0 || $('#SubletUtilityCost').val() >= 50000) {
         A2Cribs.UIManager.Alert("Please enter a valid utility cost.");
         return false;
       }
-      if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val() < 0 || $('#SubletDepositAmount').val() >= 50000) {
+      if (!$('#SubletDepositAmount').val() || isNaN($("#SubletDepositAmount").val()) || $('#SubletDepositAmount').val() < 0 || $('#SubletDepositAmount').val() >= 50000) {
         A2Cribs.UIManager.Alert("Please enter a valid deposit amount.");
         return false;
       }
@@ -112,8 +112,8 @@
         A2Cribs.UIManager.Alert("Please keep the additional fees description under 160 characters.");
         return false;
       }
-      if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
-        A2Cribs.UIManager.Alert("Please enter a valid additional fees amount.");
+      if (!$('#SubletAdditionalFeesAmount').val() || isNaN($("#SubletAdditionalFeesAmount").val()) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+        A2Cribs.UIManager.Alert("Please enter a valid 'Other fees' amount.");
         return false;
       }
       return true;
@@ -350,7 +350,7 @@
       var subletObject;
       return subletObject = {
         Sublet: {
-          id: $("#").val(),
+          id: $("#subletId").val(),
           university_id: $("#universityId").val(),
           university_name: $("#universityName").val(),
           building_type_id: $('#buildingType').val(),

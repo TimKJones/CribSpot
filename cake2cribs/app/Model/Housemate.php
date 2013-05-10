@@ -104,5 +104,14 @@ class Housemate extends AppModel {
   			return null;
 		}	
 	}
+
+	public function BelongsToSubletId($housemate_id, $sublet_id)
+	{
+		$conditions = array('Housemate.id' => $housemate_id, 
+							'Housemate.sublet_id' => $sublet_id);
+		$this->contain();
+		$has_sublet_id = $this->find('first', array('conditions' => $conditions, 'fields' => array('Housemate.id')));
+		return $has_sublet_id != null;
+	}
 }
 ?>
