@@ -9,12 +9,6 @@
     <div class = 'row-fluid'>       
         <div id="leftColumn" class = 'span6'>
             <div id="topSection">
-                <form action="/images/add" id="ImageAddForm" enctype="multipart/form-data" method="post" accept-charset="utf-8"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>
-                  <fieldset>
-                    <input id = 'real-file-input' class="fileInput" id="1" type="file" data-url="/images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="true" data-form-data="{&quot;script&quot;: &quot;true&quot;}">
-                  </fieldset>
-                </form>
-
                 <div class ='upload-field'>
                     <button id='upload_image' class = 'btn btn-primary'><i class = 'icon-plus-sign'></i> Upload Photos</button>
                 </div>
@@ -23,6 +17,11 @@
                     <br>
                     <small>You can always edit your listing by visiting the dashboard</small>
                 </div>
+                <form action="/images/add" id="ImageAddForm" enctype="multipart/form-data" method="post" accept-charset="utf-8"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>
+                  <fieldset>
+                    <input id = 'real-file-input' class="fileInput" id="1" type="file" data-url="/images/add" onchange="A2Cribs.PhotoManager.PreviewImage(this)" data-sequential-uploads="true" data-form-data="{&quot;script&quot;: &quot;true&quot;}">
+                  </fieldset>
+                </form>
 
             </div>
             <div id="bottomSection">
@@ -43,7 +42,7 @@
         </div>
         <div id="imagesWrapper" class = 'span6'>
             <div class="image-row row-fluid">
-                <div class="imageContainer span6">
+                <div class="imageContainer span5 offset1">
                     <div class="imageContent imageThumb" id="imageContent1" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <i class="delete icon-trash " id="delete1" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
@@ -51,7 +50,7 @@
                         <i class="primary icon-asterisk" id="primary1" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
                     </div>
                 </div>
-                <div class="imageContainer span6">
+                <div class="imageContainer span5">
                     <div class="imageContent secondary imageThumb" id="imageContent2" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <i class="delete icon-trash " id="delete2" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
@@ -61,7 +60,7 @@
                 </div>              
             </div>
             <div class="image-row row-fluid">
-                <div class="imageContainer span6">
+                <div class="imageContainer span5 offset1">
                     <div class="imageContent imageThumb" id="imageContent3" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <span>
@@ -71,7 +70,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="imageContainer span6">
+                <div class="imageContainer span5">
                     <div class="imageContent secondary imageThumb" id="imageContent4" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <i class="delete icon-trash " id="delete4" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
@@ -81,7 +80,7 @@
                 </div>              
             </div>
             <div class="image-row row-fluid">
-                <div class="imageContainer span6">
+                <div class="imageContainer span5 offset1">
                     <div class="imageContent imageThumb" id="imageContent5" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <i class="delete icon-trash " id="delete5" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>
@@ -89,7 +88,7 @@
                         <i class="primary icon-asterisk" id="primary5" onclick="A2Cribs.PhotoManager.MakePrimary(this)"></i>
                     </div>
                 </div>
-                <div class="imageContainer span6">
+                <div class="imageContainer span5">
                     <div class="imageContent secondary imageThumb" id="imageContent6" onclick="A2Cribs.PhotoManager.EditImage(this)"><div class ='img-place-holder'></div></div>
                     <div class = 'image-actions-container'>
                         <i class="delete icon-trash " id="delete6" onclick="A2Cribs.PhotoManager.DeleteImage(this)"></i>

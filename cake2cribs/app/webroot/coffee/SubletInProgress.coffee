@@ -13,7 +13,6 @@ class A2Cribs.SubletInProgress
 			short_description: null
 			description: null
 			bathroom_type_id: null
-			building_type_id: null
 			utility_type_id: null
 			utility_cost: null
 			deposit_amount: null

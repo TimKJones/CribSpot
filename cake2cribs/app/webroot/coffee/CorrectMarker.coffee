@@ -94,8 +94,8 @@ class A2Cribs.CorrectMarker
 				$("#updatedLat").val(response[0].geometry.location.lat())
 				$("#updatedLong").val(response[0].geometry.location.lng())		
 
-	@CenterMap: (lat, long) ->
-		@Map.setCenter(new google.maps.LatLng(lat, long))
+	@CenterMap: (lat, lng) ->
+		@Map.setCenter(new google.maps.LatLng(lat, lng))
 
 	@SetMarkerAtPosition: (latLng) ->
 		A2Cribs.CorrectMarker.Marker.setPosition(latLng)
