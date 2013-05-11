@@ -126,14 +126,16 @@ class A2Cribs.SubletSave
 			A2Cribs.UIManager.Error "Please enter a valid deposit amount."
 			$('#SubletDepositAmount').parent().parent().addClass "error"
 			isValid = no
-		if ($('#SubletAdditionalFeesDescription').val().length >=161)
+		descLength = $('#SubletAdditionalFeesDescription').val().length
+		if (descLength >=161)
 			A2Cribs.UIManager.Error "Please keep the additional fees description under 160 characters."
 			$('#SubletAdditionalFeesDescription').parent().addClass "error"
 			isValid = no
-		if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
-			A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
-			$('#SubletAdditionalFeesAmount').parent().addClass "error"
-			isValid = no
+		if descLength > 0 
+			if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
+				A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
+				$('#SubletAdditionalFeesAmount').parent().addClass "error"
+				isValid = no
 		if $("#SubletFurnishedType").val().length is 0
 			A2Cribs.UIManager.Error "Please describe the situation with the furniture."
 			$('#SubletFurnishedType').parent().addClass "error"
@@ -156,6 +158,14 @@ class A2Cribs.SubletSave
 
 	@ValidateStep3: () ->
 		isValid = yes
+		if $('#HousemateQuantity').val().length is 0
+			isValid = no
+		if $('#HousemateStudentType').val().length is 0
+			isValid = no
+		if $('#HousemateYear').val().length is 0
+			isValid = no
+		if $('#HousemateGenderType').val().length is 0
+			isValid = no
 		if ($('#HousemateMajor').val().length >= 254)
 			A2Cribs.UIManager.Error "Please keep the majors description under 255 characters."
 			isValid = no

@@ -103,7 +103,7 @@
     };
 
     SubletSave.ValidateStep2 = function() {
-      var isValid, parsedBeginDate, parsedEndDate, todayDate;
+      var descLength, isValid, parsedBeginDate, parsedEndDate, todayDate;
       isValid = true;
       A2Cribs.UIManager.CloseLogs();
       parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
@@ -145,15 +145,18 @@
         $('#SubletDepositAmount').parent().parent().addClass("error");
         isValid = false;
       }
-      if ($('#SubletAdditionalFeesDescription').val().length >= 161) {
+      descLength = $('#SubletAdditionalFeesDescription').val().length;
+      if (descLength >= 161) {
         A2Cribs.UIManager.Error("Please keep the additional fees description under 160 characters.");
         $('#SubletAdditionalFeesDescription').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
-        A2Cribs.UIManager.Error("Please enter a valid additional fees amount.");
-        $('#SubletAdditionalFeesAmount').parent().addClass("error");
-        isValid = false;
+      if (descLength > 0) {
+        if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+          A2Cribs.UIManager.Error("Please enter a valid additional fees amount.");
+          $('#SubletAdditionalFeesAmount').parent().addClass("error");
+          isValid = false;
+        }
       }
       if ($("#SubletFurnishedType").val().length === 0) {
         A2Cribs.UIManager.Error("Please describe the situation with the furniture.");
@@ -181,6 +184,18 @@
     SubletSave.ValidateStep3 = function() {
       var isValid;
       isValid = true;
+      if ($('#HousemateQuantity').val().length === 0) {
+        isValid = false;
+      }
+      if ($('#HousemateStudentType').val().length === 0) {
+        isValid = false;
+      }
+      if ($('#HousemateYear').val().length === 0) {
+        isValid = false;
+      }
+      if ($('#HousemateGenderType').val().length === 0) {
+        isValid = false;
+      }
       if ($('#HousemateMajor').val().length >= 254) {
         A2Cribs.UIManager.Error("Please keep the majors description under 255 characters.");
         isValid = false;
