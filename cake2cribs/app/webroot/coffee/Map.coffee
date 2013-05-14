@@ -42,6 +42,9 @@ class A2Cribs.Map
 	###
 	@LoadMarkers: ->
 		#TODO: Add Loading GIF Here
+		if A2Cribs.Map.CurentSchoolId == undefined
+			return
+			
 		$.ajax 
 			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId
 			type:"GET"

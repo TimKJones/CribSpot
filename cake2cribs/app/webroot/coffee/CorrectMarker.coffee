@@ -123,6 +123,7 @@ class A2Cribs.CorrectMarker
 			A2Cribs.Cache.SelectedUniversity = @universitiesMap[index].University;
 			u = A2Cribs.CorrectMarker.SelectedUniversity;
 			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
+			$("#universityId").val(index)
 
 
 	@LoadUniversities: () ->

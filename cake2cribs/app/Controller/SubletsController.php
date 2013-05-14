@@ -17,15 +17,8 @@ class SubletsController extends AppController {
         $this->Auth->allow('ApplyFilter');
         $this->Auth->allow('LoadMarkerData');
         $this->Auth->allow('getSubletDataById');
+        $this->Auth->allow('ajax_submit_sublet');
     }
-
-	public function index() {
-        $this->redirect(array('controller' => 'landing', 'action' => 'index'));
-		$this->Sublet->recursive = 0;
-        //$this->paginate['Sublet'] = array (
-          //  'contain' => 'BuildingType');
-		$this->set('sublets',$this->paginate('Sublet'));
-	}
 
     /*
         Retrieves sublet_data for $sublet_id
@@ -37,10 +30,7 @@ class SubletsController extends AppController {
 
         $user_id = $this->Auth->User('id');
         if ($user_id == 0)
-        {
-            $this->Session->setFlash(__('You must log in to edit sublets.'));
             $this->redirect(array('controller' => 'landing', 'action' => 'index'));
-        }
 
         if ($sublet_id == null)
             throw new NotFoundException();
@@ -56,22 +46,6 @@ class SubletsController extends AppController {
 
          $this->layout = 'ajax';
          $this->set("response", json_encode($sublet_data));
-    }
-
-    public function getSubletsAjax() {
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
-        $this->layout = 'ajax';
-        $this->RequestHandler->setContent('json'); 
-        $conditions  = array();
-        /*if ($this->request->query['id'] != NULL)
-        {
-       //     $conditions['Sublet.user_id'] = $this->request->query['id'];
-        }*/
-
-        $sublets = $this->Sublet->find('all');
-        $this->set('sublets', $sublets);
-        $this->set('_serialize','sublets');
     }
 
     function show($sublet_id){
@@ -151,37 +125,11 @@ class SubletsController extends AppController {
     public function ajax_add() {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-        Configure::write('debug', 0);
-        $sublet = $this->Sublet->find('first', array('conditions' => array('Sublet.user_id' => $this->Auth->user('id'))));
-        if ($sublet)
-        {
-            $this->Session->write('SubletInProgress.Sublet', $sublet['Sublet']);
-        }
-        $housemate = $this->Sublet->Housemate-> find('first', array('conditions' => array('Housemate.sublet_id' => $sublet['Sublet']['id'])));
-        if ($housemate)
-        {
-           $this->Session->write('SubletInProgress.Housemate', $housemate['Housemate']);
-        }
-        $marker = $this->Sublet->Marker->find('first', array('conditions' => array('marker_id' => $sublet['Marker']['marker_id'])));
-        if ($marker)
-        {
-            $this->Session->write('SubletInProgress.Sublet.address', $marker['Marker']['street_address']);
-            $this->Session->write('SubletInProgress.Sublet.name', $marker['Marker']['alternate_name']);
-            
-        }
-        
-        $canCreate = true;
-        $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state', 'latitude', 'longitude')));
 
+        $universities = $this->Sublet->University->find('all', array('fields' => array('id','name','city','state', 'latitude', 'longitude')));
         $buildingTypes = $this->Sublet->Marker->BuildingType->find('list');
-        //$utilityTypes = $this->Sublet->UtilityType->find('list');
-        //$bathroomTypes = $this->Sublet->BathroomType->find('list');
-        //$paymentTypes = $this->Sublet->PaymentType->find('list');
         $this->set(compact('universities'));
         $this->set(compact('buildingTypes'));
-        
-
-        
     }
 
     public function ajax_add2() {
@@ -195,26 +143,6 @@ class SubletsController extends AppController {
         $this->set(compact('furnishedTypes'));
         $this->set(compact('utilityTypes'));
         $this->set(compact('bathroomTypes'));
-        $this->set('savedDateBegin', $this->Session->read('SubletInProgress.Sublet.date_begin'));
-        $this->set('savedDateEnd', $this->Session->read('SubletInProgress.Sublet.date_end'));
-        $this->set('savedFlexibleDates', $this->Session->read('SubletInProgress.Sublet.flexible_dates'));
-        $this->set('savedNumberBedrooms', $this->Session->read('SubletInProgress.Sublet.number_bedrooms'));
-        $this->set('savedPricePerBedroom', $this->Session->read('SubletInProgress.Sublet.price_per_bedroom'));
-       // $this->set('savedPaymentTypeID', $this->Session->read('SubletInProgress.Sublet.payment_type_id'));
-        $this->set('savedShortDescription', $this->Session->read('SubletInProgress.Sublet.short_description'));
-        $this->set('savedBathroomTypeID', $this->Session->read('SubletInProgress.Sublet.bathroom_type_id'));
-        $this->set('savedUtilityTypeID', $this->Session->read('SubletInProgress.Sublet.utility_type_id'));
-        $this->set('savedUtilityCost', $this->Session->read('SubletInProgress.Sublet.utility_cost'));
-        $this->set('savedParking', $this->Session->read('SubletInProgress.Sublet.parking'));
-        $this->set('savedAC', $this->Session->read('SubletInProgress.Sublet.ac'));
-        $this->set('savedFurnishedTypeID', $this->Session->read('SubletInProgress.Sublet.furnished_type_id'));
-        $this->set('savedDepositAmount', $this->Session->read('SubletInProgress.Sublet.deposit_amount'));
-        $this->set('savedAdditionalFeesDescription', $this->Session->read('SubletInProgress.Sublet.additional_fees_description'));
-        $this->set('savedAdditionalFeesAmount', $this->Session->read('SubletInProgress.Sublet.additional_fees_amount'));
-
-
-
-
     }
 
     public function ajax_add3() {
@@ -224,13 +152,6 @@ class SubletsController extends AppController {
         $genderTypes = $this->Sublet->Housemate->GenderType->find('list');
         $this->set(compact('studentTypes'));
         $this->set(compact('genderTypes'));
-
-        $this->set('savedHousemateQuantity', $this->Session->read('SubletInProgress.Housemate.quantity'));
-        $this->set('savedHousemateEnrolled', $this->Session->read('SubletInProgress.Housemate.enrolled'));
-        $this->set('savedHousemateStudentType', $this->Session->read('SubletInProgress.Housemate.student_type'));
-        $this->set('savedHousemateMajor', $this->Session->read('SubletInProgress.Housemate.major'));
-        $this->set('savedHousemateGender', $this->Session->read('SubletInProgress.Housemate.gender'));
-      //  $this->set('savedDescription', $this->Session->read('SubletInProgress.Sublet.description'));
     }
 
     public function ajax_add4()
@@ -249,41 +170,82 @@ class SubletsController extends AppController {
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
+
+        $this->layout = 'ajax';
+
         $sublet = $this->request->data['Sublet'];
         $marker = $this->request->data['Marker'];
         $housemate = $this->request->data['Housemate'];
+        $sublet = $this->TranslateSubletTypeFields($sublet);
+        $marker = $this->TranslateMarkerTypeFields($marker);
+        $housemate = $this->TranslateHousemateTypeFields($housemate);
 
         CakeLog::write("savingSublet", print_r($sublet, true));
         CakeLog::write("savingMarker", print_r($marker, true));
         CakeLog::write("savingHousemate", print_r($housemate, true));
 
-        $marker['building_type_id'] = $sublet['building_type_id'];
-        
+        $marker['building_type_id'] = $sublet['building_type_id']; // copy this over until we consolidate
+                                                                   // to only storing in one table
         if ($sublet['id'] == null)
         {
+            // this is a new posting
             unset($sublet['id']);
-        }
-
-        if ($housemate['id'] == null)
-        {
             unset($housemate['id']);
+            unset($marker['id']);
+        }
+        else
+        {
+            // The user is editing a sublet
+            // Verify that user owns sublet
+            if (!$this->Sublet->UserOwnsSublet($this->Auth->User('id'), $sublet['id']))
+            {
+                $response = array('error' => 'Failed to save sublet. Error code: 1');
+                $this->set('response', json_encode($response));
+                return;
+            }
+
+            if ($housemate['id'] == null)
+            {
+                // We are editing a sublet, but no housemate_id was given
+                $response = array('error' => 'Failed to save sublet. Error code: 2');
+                $this->set('response', json_encode($response));
+                return;
+            }
+            else
+            {
+                // verify that this housemate has sublet_id equal to the submitted sublet_id
+                if (!$this->Housemate->BelongsToSubletId($housemate['id'], $sublet['id']))
+                {
+                    $response = array('error' => 'Failed to save sublet. Error code: 3');
+                    $this->set('response', json_encode($response));
+                    return;
+                }
+            }
+
+            if(array_key_exists('marker_id', $marker) && $marker['marker_id'])
+            {
+                // Verify that the sublet with the submitted sublet_id has marker_id equal to the submitted marker_id
+                if (!$this->Sublet->HasMarkerId($sublet['id'], $marker['marker_id']))
+                {
+                    $response = array('error' => 'Failed to save sublet. Error code: 4');
+                    $this->set('response', json_encode($response));
+                    return;
+                }
+            }
         }
 
-        if( $marker['marker_id'] ){
-            //Editing a prexisting sublet so we just forward along the existing
-            //Marker information
-            $marker_id = $marker['marker_id'];
-
-        }else{
+        if (!array_key_exists('marker_id', $marker) || !$marker['marker_id'])
+        {
             //Since there was no marker defined we need to find a marker
             //findMarker will create a marker if it doesn't find one by 
             //the street address passed in the marker
-            unset($marker['marker_id']);
-            $marker_id = $this->Marker->FindMarkerId($marker);
+            $marker['marker_id'] = $this->Marker->FindMarkerId($marker);
         }
+
 
         $sublet_id = null;
         $housemate_id = null;
+        $marker_id = $marker['marker_id'];
         $response = null;
         if ($marker_id != null)
         {
@@ -301,14 +263,23 @@ class SubletsController extends AppController {
         }
         
         if ($marker_id == null || $sublet_id == null || $housemate_id == null)
-            $response = array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists.');
+        {
+            $error_codes = '';
+            if ($marker_id == null)
+                $error_codes = $error_codes . '5 ';
+            if ($sublet_id == null)
+                $error_codes = $error_codes . '6 ';
+            if ($marker_id == null)
+                $error_codes = $error_codes . '7';
+
+            $response = array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists. Error code: ' . $error_codes);
+        }
         else
         {
             $response = array('status' => 'Your sublet was saved successfully!');
             $response['newid'] = $sublet_id;
         }
 
-        $this->layout = 'ajax';
         $this->set('response', json_encode($response));
     }
 
@@ -316,51 +287,8 @@ class SubletsController extends AppController {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
-        if ($this->request->data['CurrentStep'] == 1)
-        {
-            $this->Session->write('SubletInProgress.Sublet.address', $this->request->data['Sublet']['address']);
-            $this->Session->write('SubletInProgress.Sublet.building_type_id', $this->request->data['Sublet']['building_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.latitude', $this->request->data['Sublet']['latitude']);
-            $this->Session->write('SubletInProgress.Sublet.longitude', $this->request->data['Sublet']['longitude']);
-            $this->Session->write('SubletInProgress.Sublet.name', $this->request->data['Sublet']['name']);
-            $this->Session->write('SubletInProgress.Sublet.unit_number', $this->request->data['Sublet']['unit_number']);
-            $this->Session->write('SubletInProgress.Sublet.university', $this->request->data['Sublet']['university']);
-            $this->Session->write('SubletInProgress.Sublet.university_id', $this->request->data['Sublet']['university_id']);
-            $this->Session->write('SubletInProgress.Marker.street_address', $this->request->data['Sublet']['address']);
-            $this->Session->write('SubletInProgress.Marker.city', $this->request->data['Marker']['city']);
-            $this->Session->write('SubletInProgress.Marker.state', $this->request->data['Marker']['state']);
-            $this->Session->write('SubletInProgress.Marker.zip', $this->request->data['Marker']['zip']);
-
-        }
-        else if ($this->request->data['CurrentStep'] == 2)
-        {
-            $this->Session->write('SubletInProgress.Sublet.date_begin', $this->request->data['Sublet']['date_begin']);
-            $this->Session->write('SubletInProgress.Sublet.date_end', $this->request->data['Sublet']['date_end']);   
-            $this->Session->write('SubletInProgress.Sublet.flexible_dates', $this->request->data['Sublet']['flexible_dates']);
-            $this->Session->write('SubletInProgress.Sublet.number_bedrooms', $this->request->data['Sublet']['number_bedrooms']);
-            $this->Session->write('SubletInProgress.Sublet.price_per_bedroom', $this->request->data['Sublet']['price_per_bedroom']);
-           // $this->Session->write('SubletInProgress.Sublet.payment_type_id', $this->request->data['Sublet']['payment_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.short_description', $this->request->data['Sublet']['short_description']);
-            $this->Session->write('SubletInProgress.Sublet.bathroom_type_id', $this->request->data['Sublet']['bathroom_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.utility_type_id', $this->request->data['Sublet']['utility_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.utility_cost', $this->request->data['Sublet']['utility_cost']);
-            $this->Session->write('SubletInProgress.Sublet.parking', $this->request->data['Sublet']['parking']);
-            $this->Session->write('SubletInProgress.Sublet.ac', $this->request->data['Sublet']['ac']);
-            $this->Session->write('SubletInProgress.Sublet.furnished_type_id', $this->request->data['Sublet']['furnished_type_id']);
-            $this->Session->write('SubletInProgress.Sublet.deposit_amount', $this->request->data['Sublet']['deposit_amount']);
-            $this->Session->write('SubletInProgress.Sublet.additional_fees_description', $this->request->data['Sublet']['additional_fees_description']);
-            $this->Session->write('SubletInProgress.Sublet.additional_fees_amount', $this->request->data['Sublet']['additional_fees_amount']);
-            //$this->Session->write('SubletInProgress.Sublet.')
-        }
         else if ($this->request->data['CurrentStep'] == 3)
         {
-            //http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savemany-array-data-null-array-options-array
-            $this->Session->write('SubletInProgress.Housemate.quantity', $this->request->data['Housemate']['quantity']);
-            $this->Session->write('SubletInProgress.Housemate.enrolled', $this->request->data['Housemate']['enrolled']);
-            $this->Session->write('SubletInProgress.Housemate.student_type_id', $this->request->data['Housemate']['student_type_id']);
-            $this->Session->write('SubletInProgress.Housemate.major', $this->request->data['Housemate']['major']);
-            $this->Session->write('SubletInProgress.Housemate.gender_type_id', $this->request->data['Housemate']['gender_type_id']);
-           // $this->Session->write('SubletInProgress.Sublet.description', $this->request->data['Sublet']['description']);
             if ($this->request->data['Finish'] !=0)
             {
                 $this->Session->write('SubletInProgress.Sublet.user_id', $this->Auth->user('id'));
@@ -455,57 +383,6 @@ class SubletsController extends AppController {
         
     }
     
-    // Hey is this function used for anything anymore? - Mike Stratman (4-5-13)
-	public function edit() 
-    {
-        $sublet_id = $this->request->query['id'];
-        $user_id = $this->Auth->User('id');
-        if ($user_id == 0)
-        {
-            $this->Session->setFlash(__('You must log in to edit sublets.'));
-            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
-        }
-
-        if ($sublet_id == null)
-            throw new NotFoundException();
-
-        if (!$this->Sublet->UserOwnsSublet($user_id, $sublet_id))
-            throw new NotFoundException();
-
-        $buildingTypes = $this->Sublet->BuildingType->find('list');
-        $utilityTypes = $this->Sublet->UtilityType->find('list');
-        $bathroomTypes = $this->Sublet->BathroomType->find('list');
-        $paymentTypes = $this->Sublet->PaymentType->find('list');
-
-        // set sublet data
-        $this->Sublet->id = $this->request->query['id'];
-        $sublet_data = $this->Sublet->read();
-        $this->University->contain();
-        $universities = $this->University->find('all');
-
-        $this->set(compact('buildingTypes'));
-        $this->set(compact('utilityTypes'));
-        $this->set(compact('bathroomTypes'));
-        $this->set(compact('paymentTypes'));
-        $this->set('subletData', $sublet_data);
-        $this->set('universities', json_encode($universities));
-       
-        if (!$this->Sublet->exists()) {
-            throw new NotFoundException(__('Invalid sublet'));
-        }   
-
-        if ($this->request->is('post') || $this->request->is('put')) {
-
-            if ($this->Sublet->save($this->request->data)) {
-                $this->Session->setFlash(__('The sublet has been saved'));
-            } else {
-                $this->Session->setFlash(__('The sublet could not be saved. Please try again.'));
-            }
-        }
-    }
-
-  
-
 /*
 Returns a list of marker_ids that will be visible based on the current filter settings.
 */
@@ -536,10 +413,124 @@ Returns json encoded data.
         //$this->ClickAnalytic->AddClick($this->Session->read('user'), $marker_id, $filter_id);
     }
 
+
+    public function TranslateHousemateTypeFields($housemate)
+    {
+        $newHousemate = $housemate;
+        $newHousemate['student_type_id'] = $this->GetTypeId('StudentType', $housemate['student_type_id']);
+        $newHousemate['gender_type_id'] = $this->GetTypeId('GenderType', $housemate['gender_type_id']);
+        return $newHousemate;
+    }
+
+    public function TranslateSubletTypeFields($sublet)
+    {
+        $newSublet = $sublet;
+        $newSublet['building_type_id'] = $this->GetTypeId('BuildingType', $sublet['building_type_id']);
+        $newSublet['bathroom_type_id'] = $this->GetTypeId('BathroomType', $sublet['bathroom_type_id']);
+        $newSublet['utility_type_id'] = $this->GetTypeId('UtilityType', $sublet['utility_type_id']);
+        $newSublet['furnished_type_id'] = $this->GetTypeId('FurnishedType', $sublet['furnished_type_id']);
+        return $newSublet;
+    }
+
+    public function TranslateMarkerTypeFields($marker)
+    {
+        $newMarker = $marker;
+        //$newMarker['building_type_id'] = 
+        return $newMarker;  
+    }
+
+    public function GetTypeId($table, $string)
+    {
+        $studentTypes = null;
+        if ($table == 'StudentType')
+        {
+            if ($studentTypes = Cache::read('StudentTypes') === false)
+            {
+                $this->Sublet->Housemate->StudentType->contain();
+                $studentTypes = $this->Sublet->Housemate->StudentType->find('all');
+                Cache::write('StudentTypes', $studentTypes);
+                CakeLog::write("studentTypesCache", print_r($studentTypes, true));
+            }
+
+            return $this->TypeTableArraySearch($string, $studentTypes, 'StudentType');
+        }
+
+        $genderTypes = null;
+        if (($table == 'GenderType' && $genderTypes = Cache::read('GenderTypes')) === false)
+        {
+            $this->Sublet->Housemate->GenderType->contain();
+            $genderTypes = $this->Sublet->Housemate->GenderType->find('all');
+            Cache::write('GenderTypes', $genderTypes);
+            return $this->TypeTableArraySearch($string, $genderTypes, 'GenderType');
+        }
+
+        $buildingTypes = null;
+        if ($table == 'BuildingType')
+        {
+            if ($buildingTypes = Cache::read('BuildingTypes') === false)
+            {
+                $this->Sublet->Marker->BuildingType->contain();
+                $buildingTypes = $this->Marker->BuildingType->find('all');
+                Cache::write('BuildingTypes', $buildingTypes);
+            }
+
+            return $this->TypeTableArraySearch($string, $buildingTypes, 'BuildingType');
+        }
+
+        $bathroomTypes = null;
+        if (($table == 'BathroomType' && $bathroomTypes = Cache::read('BathroomTypes')) === false)
+        {
+            $this->Sublet->BathroomType->contain();
+            $bathroomTypes = $this->Sublet->BathroomType->find('all');
+            Cache::write('BathroomTypes', $bathroomTypes);
+            return $this->TypeTableArraySearch($string, $bathroomTypes, 'BathroomType');
+        }
+
+        $utilityTypes = null;
+        if (($table == 'UtilityType' && $utilityTypes = Cache::read('UtilityTypes')) === false)
+        {
+            $this->Sublet->UtilityType->contain();
+            $utilityTypes = $this->Sublet->UtilityType->find('all');
+            Cache::write('UtilityTypes', $utilityTypes);
+            return $this->TypeTableArraySearch($string, $utilityTypes, 'UtilityType');
+        }
+
+        $furnishedTypes = null;
+        if (($table == 'FurnishedType' && $furnishedTypes = Cache::read('FurnishedTypes')) === false)
+        {
+            $this->Sublet->FurnishedType->contain();
+            $furnishedTypes = $this->Sublet->FurnishedType->find('all');
+            Cache::write('FurnishedTypes', $furnishedTypes);
+            return $this->TypeTableArraySearch($string, $furnishedTypes, 'FurnishedType');
+        }
+        
+        return -1;
+    }
+
+    /*
+    returns the id of $string in $tableData; -1 if not found.
+    */
+    public function TypeTableArraySearch($string, $tableData, $tableName)
+    {
+        CakeLog::write("TypeTableArraySearch", print_r($tableData, true));
+        for ($i = 0; $i < count($tableData); $i++)
+        {
+            if ($tableData[$i][$tableName]['name'] == $string)
+                return $tableData[$i][$tableName]['id'];
+            else
+                CakeLog::write("TypeTableArraySearch", $tableData[$i][$tableName]['name'] . " != " . $string);
+        }
+
+        return -1;
+    }
+
+    /*
+    Stores current filter values in session.
+    This is not currently called, but should eventually for logging analytics, as well 
+    as for a more efficient filtering process.
+    */
     public function UpdateFilterValues($params)
     {
-       /* start_date, end_date, minRent, maxRent, beds, house, apt, unit_type_other, male, female, students_only, grad, undergrad,
-    bathroom_type, ac, parking, utilities_included, no_security_deposit*/
         /*
         If sliders are at either of these maximum values, ensure that results greater than the maximum value are also returned.
         */  

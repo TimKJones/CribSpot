@@ -254,25 +254,19 @@ class UsersController extends AppController {
         $this->request->data['User']['verified'] = 0;
         $this->request->data['User']['group_id'] = 1;
         $this->request->data['User']['vericode'] = uniqid();
-        if ($this->User->save($this->request->data)) {
-            $this->Email->smtpOptions = array(
-                  'port'=>'587',
-                  'timeout'=>'30',
-                  'host' => 'smtp.sendgrid.net',
-                  'username'=>'cribsadmin',
-                  'password'=>'lancPA*travMInj',
-                  'client' => 'a2cribs.com'
-                );
-            $this->Email->delivery = 'smtp';
-            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-            $this->Email->to = $this->request->data['User']['email'];
+        if ($this->User->save($this->request->data)) 
+        {
+            /* Send verification email */
+            $from = 'The Cribspot Team<team@cribspot.com>';
+            $to = $this->request->data['User']['email'];
+            $subject = 'Please verify your Cribspot account';
+            $template = 'registration';
+            $sendAs = 'both';
             $this->set('name', $this->request->data['User']['first_name']);
-            $this->Email->subject = 'Please verify your Cribspot account';
-            $this->Email->template = 'registration';
-            $this->Email->sendAs = 'both';
             $this->set('vericode', $this->request->data['User']['vericode']);
             $this->set('id',$this->User->id);
-            $this->Email->send();
+            $this->SendEmail($from, $to, $subject, $template, $sendAs);
+
             $this->Auth->login();
             $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
             $this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
@@ -293,23 +287,6 @@ class UsersController extends AppController {
             $this->set('response', $json);
         }
     }
-
-    /*public function delete($id = null) {
-        if (!$this->request->is('post')) {
-            throw new MethodNotAllowedException();
-        }
-        $this->User->id = $id;
-        if (!$this->User->exists()) {
-            throw new NotFoundException(__('Invalid user'));
-        }
-        if ($this->User->delete()) {
-            $this->Session->setFlash(__('User deleted'));
-            $this->redirect(array('action' => 'index'));
-        }
-        $this->Session->setFlash(__('User was not deleted'));
-        $this->redirect(array('action' => 'index'));
-    }
-    */
 
     public function ajaxResetPassword()
     {
@@ -343,27 +320,17 @@ class UsersController extends AppController {
             //save date of request
             $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
             
-            //email stuff
-            $this->Email->smtpOptions = array(
-              'port'=>'587',
-              'timeout'=>'30',
-              'host' => 'smtp.sendgrid.net',
-              'username'=>'cribsadmin',
-              'password'=>'lancPA*travMInj',
-              'client' => 'a2cribs.com'
-            );
-            $this->Email->delivery = 'smtp';
-            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-            $this->Email->to = $this->User->field('email');
+            /* Send reset password email */
+            $from = 'The Cribspot Team<team@cribspot.com>';
+            $to = $this->User->field('email');
+            $subject = 'Please reset your password';
+            $template = 'forgotpassword';
+            $sendAs = 'both';
             $this->set('name', $this->User->first_name);
-            $this->Email->subject = 'Please reset your password';
-            $this->Email->template = 'forgotpassword';
-            $this->Email->sendAs = 'both';
-            
             $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
             $this->set('id',$this->User->id);
-            $this->Email->send();
-            //end email portion
+            $this->SendEmail($from, $to, $subject, $template, $sendAs);
+
             $response = array(
                 'success' => 1,
                 'message' => 'Check your email for instructions on how to reset your password.'

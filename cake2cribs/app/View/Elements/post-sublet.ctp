@@ -7,7 +7,7 @@
 <?= $this->Html->script('bootstrap-datepicker'); ?>
 
 <script>
-A2Cribs.Map.LoadTypeTables();
+//A2Cribs.Map.LoadTypeTables();
 </script>
 
 
@@ -327,4 +327,3 @@ A2Cribs.Map.LoadTypeTables();
 		A2Cribs.SubletSave.SetupUI(0);
 	');
 ?>
-	

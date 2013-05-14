@@ -157,7 +157,8 @@
         A2Cribs.CorrectMarker.SelectedUniversity = this.universitiesMap[index].University;
         A2Cribs.Cache.SelectedUniversity = this.universitiesMap[index].University;
         u = A2Cribs.CorrectMarker.SelectedUniversity;
-        return A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
+        A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
+        return $("#universityId").val(index);
       }
     };
 

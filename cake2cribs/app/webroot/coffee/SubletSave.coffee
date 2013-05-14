@@ -152,8 +152,6 @@ class A2Cribs.SubletSave
 			A2Cribs.UIManager.Error "Please describe the situation with your bathroom."
 			$('#SubletBathroomType').parent().addClass "error"
 			isValid = no
-
-		
 		return isValid
 
 	@ValidateStep3: () ->
@@ -384,7 +382,7 @@ class A2Cribs.SubletSave
 	@GetSubletObject: () ->
 		subletObject =
 			Sublet:
-				id: $("#").val() #TODO: GET NAME OF HIDDEN SUBLET_ID INPUT
+				id: $("#subletId").val()
 				university_id: $("#universityId").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
 				university_name: $("#universityName").val()
 				building_type_id: $('#buildingType').val()
@@ -407,6 +405,7 @@ class A2Cribs.SubletSave
 				ac: $('#ac').val() == "Yes"
 				parking: $('#parking').val() == "Yes"
 			Marker:
+				marker_id: $("#markerId").val()
 				alternate_name: $('#SubletName').val()
 				street_address: $("#formattedAddress").val()
 				building_type_id: $('#buildingType').val()
