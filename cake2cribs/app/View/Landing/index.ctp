@@ -15,6 +15,7 @@
 
 <?php
 	echo $this->element('login');
+	echo $this->element('post-sublet');
 	echo $this->element('register');
 	echo $this->element('popups');
 ?>
@@ -47,7 +48,7 @@
 				echo '<a id="post-btn" onclick="A2Cribs.Register.InitRegister(' . "'/post')" . '" class="btn add-on" data-toggle="modal">POST</a>';
 			}
 			else
-				echo '<a id="post-btn" class="subletAddSteps btn add-on" href="#" >POST</a>';
+				echo '<a id="post-btn" class="subletAddSteps btn add-on" href="#post-sublet-modal" data-toggle="modal" onclick="A2Cribs.SubletSave.StartNewSublet()" >POST</a>';
 			?>
 			<input id="search-text" class="typeahead" placeholder="Search By University or City" type="text" autocomplete="off">
 			<button type="submit" id="search-btn" class="btn add-on"><i class="icon-search icon-2x"></i></button>
@@ -71,19 +72,4 @@
 	</div>
 </div>
 <div id="subprobs"><a id="subprobs" href="https://twitter.com/intent/tweet?button_hashtag=SUBLETPROBS&via=TheCribSpot">Tweet #SUBLETPROBS</a></div>
-
-<?php
-	$this->Js->buffer('
-		$(".subletAddSteps").click(function(event) {
-			A2Cribs.Cache.SubletEditInProgress = new A2Cribs.SubletInProgress();
-			$("<div/>").dialog2({
-				title: "Post a sublet", 
-				content: "/Sublets/ajax_add", 
-				id: "server-notice"
-			});
-
-			event.preventDefault();
-		});
-	');
-?>
 

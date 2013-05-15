@@ -136,5 +136,9 @@ class A2Cribs.CorrectMarker
 					A2Cribs.CorrectMarker.SchoolList.push university.University.name
 				$("#universityName").typeahead
 					source: A2Cribs.CorrectMarker.SchoolList
+
+	@ClearMarker: () ->
+		if A2Cribs.CorrectMarker.Marker?
+			A2Cribs.CorrectMarker.Marker.setVisible false
 				
 	

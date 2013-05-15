@@ -176,9 +176,6 @@ class SubletsController extends AppController {
         $sublet = $this->request->data['Sublet'];
         $marker = $this->request->data['Marker'];
         $housemate = $this->request->data['Housemate'];
-        $sublet = $this->TranslateSubletTypeFields($sublet);
-        $marker = $this->TranslateMarkerTypeFields($marker);
-        $housemate = $this->TranslateHousemateTypeFields($housemate);
 
         CakeLog::write("savingSublet", print_r($sublet, true));
         CakeLog::write("savingMarker", print_r($marker, true));
@@ -186,7 +183,8 @@ class SubletsController extends AppController {
 
         $marker['building_type_id'] = $sublet['building_type_id']; // copy this over until we consolidate
                                                                    // to only storing in one table
-        if ($sublet['id'] == null)
+        
+        if (!array_key_exists('id', $sublet) || !$sublet['id'])
         {
             // this is a new posting
             unset($sublet['id']);
@@ -242,7 +240,6 @@ class SubletsController extends AppController {
             $marker['marker_id'] = $this->Marker->FindMarkerId($marker);
         }
 
-
         $sublet_id = null;
         $housemate_id = null;
         $marker_id = $marker['marker_id'];
@@ -269,7 +266,7 @@ class SubletsController extends AppController {
                 $error_codes = $error_codes . '5 ';
             if ($sublet_id == null)
                 $error_codes = $error_codes . '6 ';
-            if ($marker_id == null)
+            if ($housemate_id == null)
                 $error_codes = $error_codes . '7';
 
             $response = array('error' => 'There was an error saving your sublet. Contact help@cribspot.com if the error persists. Error code: ' . $error_codes);
@@ -411,100 +408,6 @@ Returns json encoded data.
         /*TODO: NEED THIS TO BE DONE AFTER RETURNING MARKER_LIST TO CLIENT */
         //$filter_id = $this->FilterAnalytic->AddFilter($this->getSessionValues(), $marker_id);
         //$this->ClickAnalytic->AddClick($this->Session->read('user'), $marker_id, $filter_id);
-    }
-
-
-    public function TranslateHousemateTypeFields($housemate)
-    {
-        $newHousemate = $housemate;
-        $newHousemate['student_type_id'] = $this->GetTypeId('StudentType', $housemate['student_type_id']);
-        $newHousemate['gender_type_id'] = $this->GetTypeId('GenderType', $housemate['gender_type_id']);
-        return $newHousemate;
-    }
-
-    public function TranslateSubletTypeFields($sublet)
-    {
-        $newSublet = $sublet;
-        $newSublet['building_type_id'] = $this->GetTypeId('BuildingType', $sublet['building_type_id']);
-        $newSublet['bathroom_type_id'] = $this->GetTypeId('BathroomType', $sublet['bathroom_type_id']);
-        $newSublet['utility_type_id'] = $this->GetTypeId('UtilityType', $sublet['utility_type_id']);
-        $newSublet['furnished_type_id'] = $this->GetTypeId('FurnishedType', $sublet['furnished_type_id']);
-        return $newSublet;
-    }
-
-    public function TranslateMarkerTypeFields($marker)
-    {
-        $newMarker = $marker;
-        //$newMarker['building_type_id'] = 
-        return $newMarker;  
-    }
-
-    public function GetTypeId($table, $string)
-    {
-        $studentTypes = null;
-        if ($table == 'StudentType')
-        {
-            if ($studentTypes = Cache::read('StudentTypes') === false)
-            {
-                $this->Sublet->Housemate->StudentType->contain();
-                $studentTypes = $this->Sublet->Housemate->StudentType->find('all');
-                Cache::write('StudentTypes', $studentTypes);
-                CakeLog::write("studentTypesCache", print_r($studentTypes, true));
-            }
-
-            return $this->TypeTableArraySearch($string, $studentTypes, 'StudentType');
-        }
-
-        $genderTypes = null;
-        if (($table == 'GenderType' && $genderTypes = Cache::read('GenderTypes')) === false)
-        {
-            $this->Sublet->Housemate->GenderType->contain();
-            $genderTypes = $this->Sublet->Housemate->GenderType->find('all');
-            Cache::write('GenderTypes', $genderTypes);
-            return $this->TypeTableArraySearch($string, $genderTypes, 'GenderType');
-        }
-
-        $buildingTypes = null;
-        if ($table == 'BuildingType')
-        {
-            if ($buildingTypes = Cache::read('BuildingTypes') === false)
-            {
-                $this->Sublet->Marker->BuildingType->contain();
-                $buildingTypes = $this->Marker->BuildingType->find('all');
-                Cache::write('BuildingTypes', $buildingTypes);
-            }
-
-            return $this->TypeTableArraySearch($string, $buildingTypes, 'BuildingType');
-        }
-
-        $bathroomTypes = null;
-        if (($table == 'BathroomType' && $bathroomTypes = Cache::read('BathroomTypes')) === false)
-        {
-            $this->Sublet->BathroomType->contain();
-            $bathroomTypes = $this->Sublet->BathroomType->find('all');
-            Cache::write('BathroomTypes', $bathroomTypes);
-            return $this->TypeTableArraySearch($string, $bathroomTypes, 'BathroomType');
-        }
-
-        $utilityTypes = null;
-        if (($table == 'UtilityType' && $utilityTypes = Cache::read('UtilityTypes')) === false)
-        {
-            $this->Sublet->UtilityType->contain();
-            $utilityTypes = $this->Sublet->UtilityType->find('all');
-            Cache::write('UtilityTypes', $utilityTypes);
-            return $this->TypeTableArraySearch($string, $utilityTypes, 'UtilityType');
-        }
-
-        $furnishedTypes = null;
-        if (($table == 'FurnishedType' && $furnishedTypes = Cache::read('FurnishedTypes')) === false)
-        {
-            $this->Sublet->FurnishedType->contain();
-            $furnishedTypes = $this->Sublet->FurnishedType->find('all');
-            Cache::write('FurnishedTypes', $furnishedTypes);
-            return $this->TypeTableArraySearch($string, $furnishedTypes, 'FurnishedType');
-        }
-        
-        return -1;
     }
 
     /*

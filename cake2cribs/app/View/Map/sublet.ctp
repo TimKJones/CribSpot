@@ -7,7 +7,7 @@
 		echo $this->element('map');
 		echo $this->element('login');
 		echo $this->element('register');
-		//echo $this->element('legend');
+		echo $this->element('post-sublet');
 		//echo $this->element('favorites');
 
 		/* Hidden Elements */

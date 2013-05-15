@@ -1,17 +1,11 @@
 <?= $this->Html->css('/less/post-sublet.less?','stylesheet/less', array('inline' => false)); ?>
-<?= $this->Html->css('/less/checkbox.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->css('listing-popup-verifications'); ?>
+<?php echo $this->Html->css('listing-popup-verifications', null, array('inline' => false)); ?>
 <?php echo $this->Html->script('src/SubletSave'); ?>
 
-<?= $this->Html->css('datepicker'); ?>
+<?= $this->Html->css('datepicker', null, array('inline' => false)); ?>
 <?= $this->Html->script('bootstrap-datepicker'); ?>
 
-<script>
-//A2Cribs.Map.LoadTypeTables();
-</script>
-
-
-<div class="listing-popup modal container-fluid">
+<div id ="post-sublet-modal" class="post-popup modal hide fade container-fluid">
 	<div id="sublet-id" class="hide"></div>
 	<div class="modal-header">
 		<i class="sublet-name title">Post Your Sublet</i>
@@ -47,9 +41,9 @@
 							<label class="span2"><strong>Type:</strong></label>
 							<select id="buildingType" class="span5 required" required>
 								<option></option>
-								<option>House</option>
-								<option>Apartment</option>
-								<option>Duplex</option>
+								<option value="1">House</option>
+								<option value="2">Apartment</option>
+								<option value="3">Duplex</option>
 							</select>
 							<button class="btn btn-info btn-small span5 pull-right" onclick="A2Cribs.CorrectMarker.FindAddress()"><i class="icon-map-marker icon-large"></i> Place on Map</button>
 						</div>
@@ -99,11 +93,19 @@
 							<label class="span8"><strong>Bedrooms:</strong></label>
 							<select id="SubletNumberBedrooms" class="span4 required">
 								<option></option>
-<?php
-							for ($i=0; $i <=12; $i++)
-								echo '<option>' . $i . '</option>';
-?>
-
+								<option>0</option>
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+								<option>11</option>
+								<option>12</option>
 							</select>
 						</div>
 					</div>
@@ -139,9 +141,9 @@
 							<label class="span4"><strong>Furnished:</strong></label>
 							<select id="SubletFurnishedType" class="span4 required">
 								<option></option>
-								<option>Fully</option>
-								<option>Partially</option>
-								<option>No</option>
+								<option value="1">Fully</option>
+								<option value="2">Partially</option>
+								<option value="3">No</option>
 							</select>
 						</div>
 					</div>
@@ -171,9 +173,9 @@
 							<label class="span4"><strong>Utilities:</strong></label>
 							<select id="SubletUtilityType" onchange="A2Cribs.SubletSave.UtilityChanged()" class="span5 required">
 								<option></option>
-								<option>Included</option>
-								<option>Monthly Fee</option>
-								<option>As Used</option>
+								<option value="1">Included</option>
+								<option value="2">Monthly Fee</option>
+								<option value="3">As Used</option>
 							</select>
 							<div class="input-prepend span3 pull-right">
 								<span class="add-on span1">$</span>
@@ -188,8 +190,8 @@
 							<label class="span4"><strong>Bathroom:</strong></label>
 							<select id="SubletBathroomType" class="span4 required">
 								<option></option>
-								<option>Private</option>
-								<option>Shared</option>
+								<option value="1">Private</option>
+								<option value="2">Shared</option>
 							</select>
 						</div>
 					</div>
@@ -235,20 +237,29 @@
 							<label class="span8"><strong>Estimated Housemates:</strong></label>
 							<select id="HousemateQuantity" class="span3">
 								<option></option>
-<?php
-							for ($i=0; $i <=12; $i++)
-								echo '<option>' . $i . '</option>';
-?>
+								<option>0</option>
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+								<option>11</option>
+								<option>12</option>
 							</select>
 						</div>
 					</div>
 					<div class="span6">
 						<div class="row-fluid">
 							<label class="span7"><strong>Are They Students?:</strong></label>
-							<select class="span4">
-								<option></option>
-								<option>Yes</option>
-								<option>No</option>
+							<select id="HousemateEnrolled" class="span4">
+								<option value="0"></option>
+								<option value="1">Yes</option>
+								<option value="0">No</option>
 							</select>
 						</div>
 					</div>
@@ -258,11 +269,10 @@
 						<div class="row-fluid">
 							<label class="span4"><strong>Type:</strong></label>
 							<select id="HousemateStudentType" onchange="A2Cribs.SubletSave.StudentTypeChanged()" class="span8">
-								<option></option>
-								<option>Graduate</option>
-								<option>Undergraduate</option>
-								<option>Mix</option>
-								<option>Other</option>
+								<option value="0"></option>
+								<option value="1">Graduate</option>
+								<option value="2">Undergraduate</option>
+								<option value="3">Mix</option>
 							</select>
 						</div>
 					</div>
@@ -270,12 +280,12 @@
 						<div class="row-fluid">
 							<label class="span4"><strong>Year:</strong></label>
 							<select id="HousemateYear" class="span8">
-								<option></option>
-								<option>Freshman</option>
-								<option>Sophomore</option>
-								<option>Junior</option>
-								<option>Senior</option>
-								<option>Mix</option>
+								<option value="0"></option>
+								<option value="Freshman">Freshman</option>
+								<option value="Sophomore">Sophomore</option>
+								<option value="Junior">Junior</option>
+								<option value="Senior">Senior</option>
+								<option value="Mix">Mix</option>
 							</select>
 						</div>
 					</div>
@@ -283,10 +293,10 @@
 						<div class="row-fluid">
 							<label class="span5"><strong>Gender:</strong></label>
 							<select id="HousemateGenderType" class="span6">
-								<option></option>
-								<option>Male</option>
-								<option>Female</option>
-								<option>Mix</option>
+								<option value="0"></option>
+								<option value="1">Male</option>
+								<option value="2">Female</option>
+								<option value="3">Mix</option>
 							</select>
 						</div>
 					</div>

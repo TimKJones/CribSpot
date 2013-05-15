@@ -1,4 +1,20 @@
 class A2Cribs.SubletSave
+	@StartNewSublet: () ->
+		# Clear all old data
+		$('#post-sublet-modal').find('input:text').val '' # Erase all inputs
+		$('#post-sublet-modal').find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
+
+		# Clear photo
+
+		# Clear Marker
+		A2Cribs.CorrectMarker.ClearMarker()
+
+		# Reset Progress Bar
+		@ProgressBar.reset()
+
+		# Set Current Step to first
+		$('.step').eq(0).show()
+		$('.step').eq(0).siblings().hide()
 
 	@SetupUI: (initialStep) ->
 
@@ -37,10 +53,11 @@ class A2Cribs.SubletSave
 		$("#SubletDateEnd").datepicker();
 
 		$("#universityName").focusout ()->
-			A2Cribs.CorrectMarker.FindSelectedUniversity();
+			A2Cribs.CorrectMarker.FindSelectedUniversity()
 
-		A2Cribs.Map.LoadTypeTables();
-		A2Cribs.SubletSave.PopulateInputFields();
+		A2Cribs.Map.LoadTypeTables()
+		A2Cribs.SubletSave.PopulateInputFields()
+		A2Cribs.PhotoManager.SetupUI()
 
 
 	###
@@ -156,21 +173,22 @@ class A2Cribs.SubletSave
 
 	@ValidateStep3: () ->
 		isValid = yes
-		if $('#HousemateQuantity').val().length is 0
+		if $('#HousemateQuantity').val().length is 0 # Housemates quantity is empty
 			isValid = no
-		if $('#HousemateStudentType').val().length is 0
-			isValid = no
-		if $('#HousemateYear').val().length is 0
-			isValid = no
-		if $('#HousemateGenderType').val().length is 0
-			isValid = no
-		if ($('#HousemateMajor').val().length >= 254)
-			A2Cribs.UIManager.Error "Please keep the majors description under 255 characters."
-			isValid = no
-		if $("#HousemateStudentType").val() != "Graduate"
-			if  $("#HousemateYear").val() == ""
-				A2Cribs.UIManager.Error "Please select a year for your housemates."
-				isValid = no
+		else
+			if +$('#HousemateQuantity').val() isnt 0 # More than 1 Housemate
+				if $('#HousemateEnrolled option:selected').text().length is 0 # Check if enrolled is selected
+					isValid = no
+				else if +$('#HousemateEnrolled').val() is 1 # If the students are enrolled
+					if +$('#HousemateStudentType').val() is 0 # Check if student type selected
+						isValid = no
+					else if +$('#HousemateStudentType').val() isnt 1 # Is not Graduate
+						if +$('#HousemateYear').val() is 0 # Make sure year is selected
+							isValid = no
+					if +$('#HousemateGenderType').val() is 0 # Gender of housemate(s)
+						isValid = no
+					if $('#HousemateMajor').val().length >= 255 # Major of housemate(s)
+						isValid = no
 		
 		return isValid
 
@@ -416,7 +434,7 @@ class A2Cribs.SubletSave
 				longitude: $('#updatedLong').val()		
 			Housemate: 
 				quantity: $("#HousemateQuantity").val()
-				enrolled: $("#HousemateEnrolled").is(':checked')
+				enrolled: $("#HousemateEnrolled").val()
 				student_type_id: $("#HousemateStudentType").val()
 				major: $("#HousemateMajor").val()
 				gender_type_id: $("#HousemateGenderType").val()

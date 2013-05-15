@@ -1,6 +1,4 @@
-
-<?php echo $this->Html->css('jquery-ui'); ?>
-<?php echo $this->Html->css('photomanager'); ?>
+<?php echo $this->Html->css('photomanager', null, array('inline' => false)); ?>
 <?php echo $this->Html->script('jquery.fileupload'); ?>
 <?php echo $this->Html->script('jquery.iframe-transport'); ?>
 
@@ -100,9 +98,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(function(){
-        A2Cribs.PhotoManager.SetupUI();
-    });
-    </script>

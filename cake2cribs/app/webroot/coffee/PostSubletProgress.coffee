@@ -4,6 +4,10 @@ class A2Cribs.PostSubletProgress
         @MaxSteps = $('.prog-step').length - 1
         @updatePositionUI()
 
+    reset: () ->
+        @CurrentStep = 0
+        @updatePositionUI()
+
     next:()->
         if @CurrentStep == @MaxSteps
             return

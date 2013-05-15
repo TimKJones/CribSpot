@@ -68,10 +68,10 @@ class Housemate extends AppModel {
 				'message' => 'Invalid gender type.'
 				)
 			),
-		//type
-		//must be between 1 and 250 characters, I have no idea what this is lol
+		//year (Freshman, Sophomore, etc)
+		//must be between 1 and 250 characters
 		//completed
-		'type' => array(
+		'year' => array(
 			'between' => array(
 				'rule' => array('between',0,250),
 				'message' => 'Must be less than 250 characters'

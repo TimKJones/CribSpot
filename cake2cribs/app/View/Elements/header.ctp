@@ -27,7 +27,7 @@
 				echo '<a class="post-button inline pull-left" href="#signupModal" data-toggle="modal">POST A SUBLET</a>';
 			}
 			else
-				echo '<a id="subletAddSteps" class="post-button inline pull-left" href="#" >POST A SUBLET</a>';
+				echo '<a id="subletAddSteps" class="post-button inline pull-left" href="#post-sublet-modal" data-toggle="modal" onclick="A2Cribs.SubletSave.StartNewSublet()">POST A SUBLET</a>';
 	?>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
@@ -201,9 +201,6 @@
     		A2Cribs.FilterManager.ApplyFilter(ev);
     	}).data("datepicker");
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
-		$("#subletAddSteps").click(function(event) {
-			A2Cribs.SubletAdd.InitPostingProcess(event);
-		});
 		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
 	');
 ?>
