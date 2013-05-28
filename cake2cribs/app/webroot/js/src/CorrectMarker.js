@@ -14,29 +14,42 @@
     CorrectMarker.Enabled = true;
 
     CorrectMarker.Init = function() {
-      var MapOptions;
-      this.AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378);
+      var div;
+      this.LoadUniversities();
+      div = $('#post-sublet-modal').find('#correctLocationMap')[0];
+      this.CreateMap(div, 42.2808256, -83.7430378);
+      return this.Geocoder = new google.maps.Geocoder();
+    };
+
+    CorrectMarker.CreateMap = function(div, latitude, longitude, marker_visible, enabled) {
+      var MapOptions, center;
+      if (marker_visible == null) {
+        marker_visible = false;
+      }
+      if (enabled == null) {
+        enabled = true;
+      }
+      center = new google.maps.LatLng(latitude, longitude);
       MapOptions = {
         zoom: 15,
-        center: this.AnnArborCenter,
+        center: center,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControl: false,
         panControl: false,
         zoomControl: false,
         streetViewControl: false
       };
-      this.Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions);
-      google.maps.event.trigger(this.Map, "resize");
+      this.Map = new google.maps.Map(div, MapOptions);
       this.Marker = new google.maps.Marker({
-        draggable: true,
-        position: this.AnnArborCenter,
+        draggable: enabled,
+        position: center,
         map: A2Cribs.CorrectMarker.Map,
-        visible: false
+        visible: marker_visible
       });
-      this.Geocoder = new google.maps.Geocoder();
-      if (!this.Enabled) {
-        return this.Disable();
+      if (!enabled) {
+        this.Disable();
       }
+      return google.maps.event.trigger(this.Map, "resize");
     };
 
     CorrectMarker.Disable = function() {
@@ -158,7 +171,7 @@
         A2Cribs.Cache.SelectedUniversity = this.universitiesMap[index].University;
         u = A2Cribs.CorrectMarker.SelectedUniversity;
         A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
-        return $("#universityId").val(index);
+        return $("#universityId").val(A2Cribs.CorrectMarker.SchoolIDList[index]);
       }
     };
 
@@ -169,10 +182,12 @@
           var university, _i, _len, _ref;
           A2Cribs.CorrectMarker.universitiesMap = JSON.parse(response);
           A2Cribs.CorrectMarker.SchoolList = [];
+          A2Cribs.CorrectMarker.SchoolIDList = [];
           _ref = A2Cribs.CorrectMarker.universitiesMap;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             university = _ref[_i];
             A2Cribs.CorrectMarker.SchoolList.push(university.University.name);
+            A2Cribs.CorrectMarker.SchoolIDList.push(university.University.id);
           }
           return $("#universityName").typeahead({
             source: A2Cribs.CorrectMarker.SchoolList

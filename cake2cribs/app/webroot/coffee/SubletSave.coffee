@@ -1,220 +1,194 @@
 class A2Cribs.SubletSave
-	@StartNewSublet: () ->
-		# Clear all old data
-		$('#post-sublet-modal').find('input:text').val '' # Erase all inputs
-		$('#post-sublet-modal').find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
 
-		# Clear photo
+	setupUI: (div) ->
+		if not A2Cribs.Geocoder?
+			A2Cribs.Geocoder = new google.maps.Geocoder()
+		@div = div
+		@InitUniversityAutocomplete div
 
-		# Clear Marker
-		A2Cribs.CorrectMarker.ClearMarker()
-
-		# Reset Progress Bar
-		@ProgressBar.reset()
-
-		# Set Current Step to first
-		$('.step').eq(0).show()
-		$('.step').eq(0).siblings().hide()
-
-	@SetupUI: (initialStep) ->
-
-		@CurrentStep = initialStep
-		$('.step').eq(@CurrentStep).siblings().hide()
-		@ProgressBar =  new A2Cribs.PostSubletProgress $('.post-sublet-progress'), initialStep
-
-		$("#address-step").siblings().hide();
-
-		$(".next-btn").click (event)=>
-			
-			if @Validate(@CurrentStep+1)
-				$(event.currentTarget).closest(".step").hide().next(".step").show()
-				@CurrentStep++
-				@ProgressBar.next()
-		
-		
-		$(".back-btn").click (event)=>
-			$(event.currentTarget).closest(".step").hide().prev(".step").show()
-			@CurrentStep--
-			@ProgressBar.prev()
-
-		$(".required").focus (event)=>
-			$(event.target).parent().removeClass "error"
-
-		A2Cribs.CorrectMarker.Init()
-
-		$("#SubletShortDescription").keyup ()->
+		div.find("#SubletShortDescription").keyup ()->
 			if $(@).val().length >= 160
 				$(@).val($(@).val().substr(0, 160))
 			
-			$("#desc-char-left").text(160 - $(@).val().length)
+			div.find("#desc-char-left").text(160 - $(@).val().length)
 
-		$("#SubletDateBegin").datepicker();
+		div.find("#SubletDateBegin").datepicker();
 
-		$("#SubletDateEnd").datepicker();
+		div.find("#SubletDateEnd").datepicker();
 
-		$("#universityName").focusout ()->
-			A2Cribs.CorrectMarker.FindSelectedUniversity()
+		div.find("#universityName").focusout () =>
+			@FindSelectedUniversity div
+			@MiniMap.CenterMap @SelectedUniversity.latitude, @SelectedUniversity.longitude
+
+		div.on "shown", () =>
+			@MiniMap.Resize()
+
+		@MiniMap = new A2Cribs.MiniMap(div)
 
 		A2Cribs.Map.LoadTypeTables()
-		A2Cribs.SubletSave.PopulateInputFields()
 		A2Cribs.PhotoManager.SetupUI()
 
+
+	FindSelectedUniversity: (div)->
+		selected = div.find("#universityName").val()
+		index = A2Cribs.Cache.SchoolList.indexOf selected
+		if index >= 0
+			@SelectedUniversity = A2Cribs.Cache.universitiesMap[index].University;
+			div.find("#universityId").val(A2Cribs.Cache.SchoolIDList[index])
+
+	FindAddress: () ->
+		if @SelectedUniversity?
+			address = @div.find("#formattedAddress").val()
+			addressObj =
+				'address' : address + " " + @SelectedUniversity.city + ", " + @SelectedUniversity.state
+			A2Cribs.Geocoder.geocode addressObj, (response, status) =>
+				if status is google.maps.GeocoderStatus.OK and response[0].address_components.length >= 2
+					for component in response[0].address_components
+						for type in component.types
+							switch type
+								when "street_number" then street_number = component.short_name
+								when "route" then street_name = component.short_name
+								when "locality" then @div.find('#city').val component.short_name
+								when "administrative_area_level_1" then @div.find('#state').val component.short_name
+								when "postal_code" then @div.find('#zip').val component.short_name
+
+					if not street_number?
+						A2Cribs.UIManager.Alert "Entered street address is not valid."
+						$("#formattedAddress").text ""
+						return
+					
+					@MiniMap.SetMarkerPosition response[0].geometry.location
+					@div.find("#formattedAddress").val street_number + " " + street_name
 
 	###
 	Called before advancing steps
 	Returns true if validations pass; false otherwise
 	###
-	@Validate: (step_) ->
+	Validate: (step_, div) ->
 		if step_ >= 1
-			if !@ValidateStep1()
+			if not @ValidateStep1 div
 				return false
 		if step_ >= 2
-			if !@ValidateStep2()
+			if not @ValidateStep2 div
 				return false
 		if step_ >= 3
-			if !@ValidateStep3()
-				return false
-			if !@SaveSublet()
+			if not @ValidateStep3 div
 				return false
 
 		return true
 
 
-	@ValidateStep1: () ->
+	ValidateStep1: (div) ->
 		isValid = yes
 		A2Cribs.UIManager.CloseLogs()
-		if (!$('#formattedAddress').val())
+		if not div.find('#formattedAddress').val()
 			A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
-			$('#formattedAddress').parent().addClass "error"
+			div.find('#formattedAddress').parent().addClass "error"
 			isValid = no
-		if (!$('#universityName').val())
+		if not div.find('#universityName').val()
 			A2Cribs.UIManager.Error "You need to select a university."
-			$('#universityName').parent().addClass "error"
+			div.find('#universityName').parent().addClass "error"
 			isValid = no
-		if ($('#buildingType').val().length is 0)
+		if div.find('#buildingType').val().length is 0
 			A2Cribs.UIManager.Error "You need to select a building type."
-			$('#buildingType').parent().addClass "error"
+			div.find('#buildingType').parent().addClass "error"
 			isValid = no
-		if ($('#SubletUnitNumber').val().length >=249)
+		if div.find('#SubletUnitNumber').val().length >= 249
 			A2Cribs.UIManager.Error "Your unit number is too long."
-			$('#SubletUnitNumber').parent().addClass "error"
+			div.find('#SubletUnitNumber').parent().addClass "error"
 			isValid = no
-		if ($('#SubletName').val().length >= 249)
+		if div.find('#SubletName').val().length >= 249
 			A2Cribs.UIManager.Error "Your alternate name is too long."
-			$('#SubletName').parent().addClass "error"
+			div.find('#SubletName').parent().addClass "error"
 			isValid = no
 		
 		return isValid
 
-	@ValidateStep2: () ->
+	ValidateStep2: (div) ->
 		#begin the validations
 		isValid = yes
 		A2Cribs.UIManager.CloseLogs()
-		parsedBeginDate = new Date Date.parse($('#SubletDateBegin').val())
-		parsedEndDate = new Date Date.parse($('#SubletDateEnd').val())
+		parsedBeginDate = new Date Date.parse(div.find('#SubletDateBegin').val())
+		parsedEndDate = new Date Date.parse(div.find('#SubletDateEnd').val())
 		todayDate = new Date();
 		if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 			A2Cribs.UIManager.Error "Please enter a valid date."
-			$('#SubletDateBegin').parent().addClass "error"
-			$('#SubletDateEnd').parent().addClass "error"
+			div.find('#SubletDateBegin').parent().addClass "error"
+			div.find('#SubletDateEnd').parent().addClass "error"
 			isValid = no
 		else if parsedEndDate.valueOf() <= parsedBeginDate.valueOf() or parsedBeginDate.valueOf() <= todayDate.valueOf()
 			A2Cribs.UIManager.Error "Please enter a valid date."
-			$('#SubletDateBegin').parent().addClass "error"
-			$('#SubletDateEnd').parent().addClass "error"
+			div.find('#SubletDateBegin').parent().addClass "error"
+			div.find('#SubletDateEnd').parent().addClass "error"
 			isValid = no
-		if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
+		if (!div.find('#SubletNumberBedrooms').val() || isNaN(parseInt(div.find("#SubletNumberBedrooms").val())) || div.find('#SubletNumberBedrooms').val() <=0 || div.find('#SubletNumberBedrooms').val() >=30)
 			A2Cribs.UIManager.Error "Please enter a valid number of bedrooms."
-			$('#SubletNumberBedrooms').parent().addClass "error"
+			div.find('#SubletNumberBedrooms').parent().addClass "error"
 			isValid = no
-		if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >=20000)
+		if (!div.find('#SubletPricePerBedroom').val() || isNaN(parseInt(div.find("#SubletPricePerBedroom").val())) || div.find('#SubletPricePerBedroom').val() < 1 || div.find('#SubletPricePerBedroom').val() >=20000)
 			A2Cribs.UIManager.Error "Please enter a valid price per bedroom."
-			$('#SubletPricePerBedroom').parent().parent().addClass "error"
+			div.find('#SubletPricePerBedroom').parent().parent().addClass "error"
 			isValid = no
-		if $('#SubletShortDescription').val().length is 0 
+		if div.find('#SubletShortDescription').val().length is 0 
 			A2Cribs.UIManager.Error "Please enter a description."
-			$('#SubletShortDescription').parent().addClass "error"
+			div.find('#SubletShortDescription').parent().addClass "error"
 			isValid = no
-		if (!$('#SubletUtilityCost').val()|| isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val()<0 || $('#SubletUtilityCost').val() >=50000)
+		if (!div.find('#SubletUtilityCost').val()|| isNaN(parseInt(div.find("#SubletUtilityCost").val())) || div.find('#SubletUtilityCost').val()<0 || div.find('#SubletUtilityCost').val() >=50000)
 			A2Cribs.UIManager.Error "Please enter a valid utility cost."
-			$('#SubletUtilityCost').parent().addClass "error"
+			div.find('#SubletUtilityCost').parent().addClass "error"
 			isValid = no
-		if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val()<0 || $('#SubletDepositAmount').val() >=50000)
+		if (!div.find('#SubletDepositAmount').val() || isNaN(parseInt(div.find("#SubletDepositAmount").val())) || div.find('#SubletDepositAmount').val()<0 || div.find('#SubletDepositAmount').val() >=50000)
 			A2Cribs.UIManager.Error "Please enter a valid deposit amount."
-			$('#SubletDepositAmount').parent().parent().addClass "error"
+			div.find('#SubletDepositAmount').parent().parent().addClass "error"
 			isValid = no
-		descLength = $('#SubletAdditionalFeesDescription').val().length
+		descLength = div.find('#SubletAdditionalFeesDescription').val().length
 		if (descLength >=161)
 			A2Cribs.UIManager.Error "Please keep the additional fees description under 160 characters."
-			$('#SubletAdditionalFeesDescription').parent().addClass "error"
+			div.find('#SubletAdditionalFeesDescription').parent().addClass "error"
 			isValid = no
 		if descLength > 0 
-			if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val()<0 || $('#SubletAdditionalFeesAmount').val() >=50000)
+			if (!div.find('#SubletAdditionalFeesAmount').val() || isNaN(parseInt(div.find("#SubletAdditionalFeesAmount").val())) || div.find('#SubletAdditionalFeesAmount').val()<0 || div.find('#SubletAdditionalFeesAmount').val() >=50000)
 				A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
-				$('#SubletAdditionalFeesAmount').parent().addClass "error"
+				div.find('#SubletAdditionalFeesAmount').parent().addClass "error"
 				isValid = no
-		if $("#SubletFurnishedType").val().length is 0
+		if div.find("#SubletFurnishedType").val().length is 0
 			A2Cribs.UIManager.Error "Please describe the situation with the furniture."
-			$('#SubletFurnishedType').parent().addClass "error"
+			div.find('#SubletFurnishedType').parent().addClass "error"
 			isValid = no
-		if $("#SubletUtilityType").val().length is 0
+		if div.find("#SubletUtilityType").val().length is 0
 			A2Cribs.UIManager.Error "Please describe the situation with the utilities."
-			$('#SubletUtilityType').parent().addClass "error"
+			div.find('#SubletUtilityType').parent().addClass "error"
 			isValid = no
-		if $("#parking").val().length is 0
+		if div.find("#parking").val().length is 0
 			A2Cribs.UIManager.Error "Please describe the situation with parking."
-			$('#parking').parent().addClass "error"
+			div.find('#parking').parent().addClass "error"
 			isValid = no
-		if $("#SubletBathroomType").val().length is 0
+		if div.find("#SubletBathroomType").val().length is 0
 			A2Cribs.UIManager.Error "Please describe the situation with your bathroom."
-			$('#SubletBathroomType').parent().addClass "error"
+			div.find('#SubletBathroomType').parent().addClass "error"
 			isValid = no
 		return isValid
 
-	@ValidateStep3: () ->
+	ValidateStep3: (div) ->
 		isValid = yes
-		if $('#HousemateQuantity').val().length is 0 # Housemates quantity is empty
+		if div.find('#HousemateQuantity').val().length is 0 # Housemates quantity is empty
 			isValid = no
 		else
-			if +$('#HousemateQuantity').val() isnt 0 # More than 1 Housemate
-				if $('#HousemateEnrolled option:selected').text().length is 0 # Check if enrolled is selected
+			if +div.find('#HousemateQuantity').val() isnt 0 # More than 1 Housemate
+				if div.find('#HousemateEnrolled option:selected').text().length is 0 # Check if enrolled is selected
 					isValid = no
-				else if +$('#HousemateEnrolled').val() is 1 # If the students are enrolled
-					if +$('#HousemateStudentType').val() is 0 # Check if student type selected
+				else if +div.find('#HousemateEnrolled').val() is 1 # If the students are enrolled
+					if +div.find('#HousemateStudentType').val() is 0 # Check if student type selected
 						isValid = no
-					else if +$('#HousemateStudentType').val() isnt 1 # Is not Graduate
-						if +$('#HousemateYear').val() is 0 # Make sure year is selected
+					else if +div.find('#HousemateStudentType').val() isnt 1 # Is not Graduate
+						if +div.find('#HousemateYear').val() is 0 # Make sure year is selected
 							isValid = no
-					if +$('#HousemateGenderType').val() is 0 # Gender of housemate(s)
+					if +div.find('#HousemateGenderType').val() is 0 # Gender of housemate(s)
 						isValid = no
-					if $('#HousemateMajor').val().length >= 255 # Major of housemate(s)
+					if div.find('#HousemateMajor').val().length >= 255 # Major of housemate(s)
 						isValid = no
 		
 		return isValid
-
-	###
-	Retrieves all necessary sublet data and then pulls up the edit sublet interface
-	###
-	@EditSublet:(sublet_id) ->
-		$.ajax
-			url: myBaseUrl + "Sublets/getSubletDataById/" + sublet_id
-			type: "GET"
-			success: (subletData) =>
-				subletData = JSON.parse subletData
-				A2Cribs.SubletSave.PopulateInputFields(subletData)
-				###
-				TODO: Open Modal Here
-				###
-
-				# Resize the modal window to fit the screen
-				# NOTE: This needs to be refactored a ton
-				A2Cribs.SubletAdd.resizeModal(modal_body)
-				# Also setup a window handler so that when the window is resized the modal is sized too
-				$(window).resize ()=>
-					A2Cribs.SubletAdd.resizeModal(modal_body)
-
-			error: ()=>
-				alertify.error("An error occured while loading your sublet data, please try again.", 2000)
 
 
 ##########################################################################
@@ -225,134 +199,123 @@ class A2Cribs.SubletSave
 	###
 	Populates all fields in all steps with sublet data loaded for a sublet edit.
 	###
-	@PopulateInputFields: (subletData = null) ->
-		if subletData == null
-			# There is no data to load.
-			# Initialize autocomplete and reset all fields.
-			@InitUniversityAutocomplete()
-			@ResetAllInputFields()
+	@PopulateInputFields: (subletData, window_type) ->
+		if not subletData?
+			A2Cribs.UIManager.Alert  "An error occured while loading your sublet data, please try again."
 			return
 
-		@InitEditStep1(subletData)
-		@InitEditStep2(subletData)
-		@InitEditStep3(subletData)
-		@InitEditStep4(subletData)
+		div = $('#' + window_type)
+
+		@InitEditStep1 subletData, div
+		@InitEditStep2 subletData, div
+		@InitEditStep3 subletData, div
+		@InitEditStep4 subletData, div
 
 	###
 	Initializes map and university input autocomplete
 	If subletData is not null, then we populate all inputs in step 1 with loaded sublet data
 	###
-	@InitEditStep1: (subletData=null) ->
-		if subletData == null
-			return
+	@InitEditStep1: (subletData, div) ->
 
-		#Load all universities and initialize autocomplete
-		@InitUniversityAutocomplete()		
+		if subletData.University.name?
+			div.find('#universityName').val subletData.University.name
+			div.find("#universityName").prop 'disabled', true
+			div.find('#universityId').val subletData.University.id
 
-		#TODO: Load all types fields from database rather than have them hard-coded.
+		if subletData.Sublet?
+			div.find('#SubletUnitNumber').val subletData.Sublet.unit_number
+			div.find('#subletId').val subletData.Sublet.id
 
-		#Populate all fields with loaded data
-
-		if subletData.University != null and subletData.University != undefined
-			$('#universityName').val(subletData.University.name)
-			A2Cribs.CorrectMarker.FindSelectedUniversity()
-
-		if subletData.Sublet != null and subletData.Sublet != undefined
-			$('#SubletUnitNumber').val(subletData.Sublet.unit_number)
-
-		if subletData.Marker != null and subletData.Marker != undefined
-			$('#SubletBuildingTypeId').val(subletData.Marker.building_type_id)
-			$('#SubletName').val(subletData.Marker.alternate_name)
-			$("#formattedAddress").val(subletData.Marker.street_address)
-			$('#updatedLat').val(subletData.Marker.latitude)
-			$('#updatedLong').val(subletData.Marker.longitude)
-			$("#city").val(subletData.Marker.city)
-			$("#state").val(subletData.Marker.state)
-			$("#postal").val(subletData.Marker.zip)
-			$("#addressToMark").val(subletData.Marker.street_address)
-			if subletData.Marker.street_address != null and subletData.Marker.street_address != undefined
-				A2Cribs.CorrectMarker.FindAddress()
-
-		# Disable the address and map fields so the user can't change the location of the sublet
-		# There will also be server side logic that will also prevent this.
-		A2Cribs.CorrectMarker.Disable()
+		if subletData.Marker?
+			div.find('#buildingType').val subletData.Marker.building_type_id
+			div.find("#buildingType").prop 'disabled', true
+			div.find('#SubletName').val subletData.Marker.alternate_name
+			div.find("#SubletName").prop 'disabled', true
+			div.find("#formattedAddress").val subletData.Marker.street_address
+			div.find("#formattedAddress").prop 'disabled', true
+			div.find('#place_map_button').addClass 'disabled'
+			div.find('#updatedLat').val subletData.Marker.latitude
+			div.find('#updatedLong').val subletData.Marker.longitude
+			div.find("#city").val subletData.Marker.city
+			div.find("#state").val subletData.Marker.state
+			div.find("#postal").val subletData.Marker.zip
+			div.find("#addressToMark").val subletData.Marker.street_address
+			A2Cribs.CorrectMarker.CreateMap div.find('#correctLocationMap')[0], subletData.Marker.latitude, subletData.Marker.longitude, true, false
 
 
-	@InitEditStep2: (subletData) ->
-		if subletData == null
-			return
+	@InitEditStep2: (subletData, div) ->
+		if subletData.Sublet.date_begin? and subletData.Sublet.date_end?
+			beginDate = @GetFormattedDate new Date subletData.Sublet.date_begin
+			endDate = @GetFormattedDate new Date subletData.Sublet.date_end
+			div.find('#SubletDateBegin').val beginDate
+			div.find('#SubletDateEnd').val endDate
+		div.find('#SubletFlexibleDates').prop "checked", subletData.Sublet.flexible_dates
+		div.find('#SubletNumberBedrooms').val subletData.Sublet.number_bedrooms
+		div.find('#SubletPricePerBedroom').val subletData.Sublet.price_per_bedroom
+		div.find('#SubletShortDescription').val subletData.Sublet.short_description
+		div.find('#SubletBathroomType').val subletData.Sublet.bathroom_type_id
+		div.find('#SubletUtilityType').val subletData.Sublet.utility_type_id
+		div.find('#SubletUtilityCost').val subletData.Sublet.utility_type_id
 
-		$('#SubletDateBegin').val("")
-		$('#SubletDateEnd').val("")
-		$('#SubletFlexibleDates').prop("checked", true)
-		$('#SubletParking').prop("checked", false)
-		$('#SubletAc').prop("checked", false)
-		if subletData.Sublet == null or subletData.Sublet == undefined
-			return
+		div.find('#parking').val if subletData.Sublet.parking then "Yes" else "No"
+		div.find('#ac').val if subletData.Sublet.ac then "Yes" else "No"
 
-		if subletData.Sublet.date_begin != null
-			beginDate = new Date(subletData.Sublet.date_begin)
-			formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate)
-		if A2Cribs.Cache.SubletEditInProgress.Sublet.date_end != null
-			endDate = new Date(subletData.Sublet.date_end)
-			formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate)
-		$('#SubletDateBegin').val(formattedBeginDate)
-		$('#SubletDateEnd').val(formattedEndDate)
-		if subletData.Sublet.flexible_dates != null
-			$('#SubletFlexibleDates').prop('checked', subletData.Sublet.flexible_dates)
-		$('#SubletNumberBedrooms').val(subletData.Sublet.number_bedrooms)
-		$('#SubletPricePerBedroom').val(subletData.Sublet.price_per_bedroom)
-		$('#SubletShortDescription').val(subletData.Sublet.short_description)
-		$('#SubletBathroomType').val(subletData.Sublet.bathroom_type_id)
-		$('#SubletUtilityTypeId').val(subletData.Sublet.utility_type_id)
-		$('#SubletUtilityCost').val(subletData.Sublet.utility_type_id)
-		$('#SubletParking').prop("checked", subletData.Sublet.parking)
-		$('#SubletAc').prop("checked", subletData.Sublet.ac)
-		$('#SubletFurnishedType').val(subletData.Sublet.furnished_type_id)
-		$('#SubletDepositAmount').val(subletData.Sublet.deposit_amount)
-		$('#SubletAdditionalFeesDescription').val(subletData.Sublet.additional_fees_description)
-		$('#SubletAdditionalFeesAmount').val(subletData.Sublet.additional_fees_amount)
+		div.find('#SubletFurnishedType').val subletData.Sublet.furnished_type_id
+		div.find('#SubletDepositAmount').val subletData.Sublet.deposit_amount
+		div.find('#SubletAdditionalFeesDescription').val subletData.Sublet.additional_fees_description
+		div.find('#SubletAdditionalFeesAmount').val subletData.Sublet.additional_fees_amount
 
 	###
 	Initialize step 3 - Housemate data
 	###
-	@InitEditStep3: (subletData) ->
-		if subletData == null
-			return
+	@InitEditStep3: (subletData, div) ->
+		if subletData.Housemate?
+			if subletData.Housemate.length?
+				subletData.Housemate = subletData.Housemate[0]
+			div.find("#HousemateQuantity").val subletData.Housemate.quantity
+			div.find('#HousemateId').val subletData.Housemate.id
 
-		$("#HousemateEnrolled").prop("checked", false)
-		if subletData.Housemate == null or subletData.Housemate == undefined
-			return 
-
-		$("#HousemateQuantity").val(subletData.Housemate.quantity)
-		$("#HousemateEnrolled").prop("checked", subletData.Housemate.enrolled)
-		$("#HousemateStudentType").val(subletData.Housemate.student_type_id)
-		$("#HousemateMajor").val(subletData.Housemate.major)
-		$("#HousemateGenderType").val(subletData.Housemate.gender_type_id)
-		$("#HousemateYear").val(subletData.Housemate.year)
-
+			if +subletData.Housemate.quantity isnt 0 # More than 1 Housemate
+				div.find('#HousemateEnrolled').val subletData.Housemate.enrolled
+				div.find("#HousemateGenderType").val subletData.Housemate.gender_type_id
+				if subletData.Housemate.enrolled
+					div.find("#HousemateStudentType").val subletData.Housemate.student_type_id
+					div.find("#HousemateMajor").val subletData.Housemate.major
+					if subletData.Housemate.student_type_id isnt 1
+						div.find("#HousemateYear").val subletData.Housemate.year
 	###
 	Initialize step 4 - Photos
 	###
 	@InitEditStep4: () ->
 		A2Cribs.PhotoManager.LoadImages()
 
+	Reset: (div) ->
+		@ResetAllInputFields div
+
 	###
 	Reset all input fields for a new sublet posting process
 	###
-	@ResetAllInputFields: () ->
+	ResetAllInputFields: (div) ->
+		div.find('input:text').val '' # Erase all inputs
+		div.find('input:hidden').val '' # Erase all inputs
+		div.find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
 
-
-	@InitUniversityAutocomplete: () ->
+	InitUniversityAutocomplete: (div) ->
+		if A2Cribs.Cache.SchoolList?
+			div.find("#universityName").typeahead
+				source: A2Cribs.Cache.SchoolList
+			return
 		$.ajax
-			url: myBaseUrl + "universities/loadAll"
+			url: "/University/getAll"
 			success :(response) ->
-				A2Cribs.CorrectMarker.universitiesMap = JSON.parse response
-				A2Cribs.CorrectMarker.SchoolList = []
-				for university in A2Cribs.CorrectMarker.universitiesMap
-					A2Cribs.CorrectMarker.SchoolList.push university.University.name
-				$("#universityName").typeahead
-					source: A2Cribs.CorrectMarker.SchoolList
+				A2Cribs.Cache.universitiesMap = JSON.parse response
+				A2Cribs.Cache.SchoolList = []
+				A2Cribs.Cache.SchoolIDList = []
+				for university in A2Cribs.Cache.universitiesMap
+					A2Cribs.Cache.SchoolList.push university.University.name
+					A2Cribs.Cache.SchoolIDList.push university.University.id
+				div.find("#universityName").typeahead
+					source: A2Cribs.Cache.SchoolList
 
 ##################### End Edit Sublet Initialization #################################
 
@@ -369,13 +332,15 @@ class A2Cribs.SubletSave
 	Submits sublet to backend to save
 	Assumes all front-end validations have been passed.
 	###
-	@SaveSublet: () ->
+	Save: (subletObject) ->
 		url = "/sublets/ajax_submit_sublet"
-		$.post url, A2Cribs.SubletSave.GetSubletObject(), (response) =>
+		$.post url, subletObject, (response) =>
 			data = JSON.parse response
 			console.log data.status
-			if (data.status)
-				A2Cribs.UIManager.Alert data.status
+			if data.redirect?
+				window.location = data.redirect
+			if data.status?
+				A2Cribs.UIManager.Success data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
 				return true
 			else
@@ -383,67 +348,56 @@ class A2Cribs.SubletSave
 				return false
 
 	###
-	Called when user finishes the final step of sublet add/edit.
-	Closes sublet modal and redirects user to map with sublet popup open.
-	###
-	@FinishSubletSave: () ->
-		###
-		TODO: Close Modal
-		###
-		if !isNaN A2Cribs.ShareManager.SavedListing
-			window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing
-
-
-	###
 	Returns an object containing all sublet data from all 4 steps.
 	###
-	@GetSubletObject: () ->
+	GetSubletObject: (div) ->
 		subletObject =
 			Sublet:
-				id: $("#subletId").val()
-				university_id: $("#universityId").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
-				university_name: $("#universityName").val()
-				building_type_id: $('#buildingType').val()
-				date_begin: @GetMysqlDateFormat $('#SubletDateBegin').val()
-				date_end: @GetMysqlDateFormat $('#SubletDateEnd').val()
-				number_bedrooms: $('#SubletNumberBedrooms').val()
-				price_per_bedroom: $('#SubletPricePerBedroom').val()
+				id: div.find("#subletId").val()
+				university_id: div.find("#universityId").val() #TODO: MAKE THIS HIDDEN FIELD IN STEP1
+				university_name: div.find("#universityName").val()
+				building_type_id: div.find('#buildingType').val()
+				date_begin: @GetMysqlDateFormat div.find('#SubletDateBegin').val()
+				date_end: @GetMysqlDateFormat div.find('#SubletDateEnd').val()
+				number_bedrooms: div.find('#SubletNumberBedrooms').val()
+				price_per_bedroom: div.find('#SubletPricePerBedroom').val()
 				payment_type_id: 1
-				short_description: $('#SubletShortDescription').val()
-				description: $('#SubletLongDescription').val()
-				bathroom_type_id: $('#SubletBathroomType').val()
-				utility_type_id: $('#SubletUtilityType').val()
-				utility_cost: $('#SubletUtilityCost').val()
-				deposit_amount: $('#SubletDepositAmount').val()
-				additional_fees_description: $('#SubletAdditionalFeesDescription').val()
-				additional_fees_amount: $('#SubletDepositAmount').val()
-				unit_number: $('#SubletUnitNumber').val()
-				flexible_dates: $('#SubletFlexibleDates').is(':checked')
-				furnished_type_id: $('#SubletFurnishedType').val()
-				ac: $('#ac').val() == "Yes"
-				parking: $('#parking').val() == "Yes"
+				short_description: div.find('#SubletShortDescription').val()
+				description: div.find('#SubletLongDescription').val()
+				bathroom_type_id: div.find('#SubletBathroomType').val()
+				utility_type_id: div.find('#SubletUtilityType').val()
+				utility_cost: div.find('#SubletUtilityCost').val()
+				deposit_amount: div.find('#SubletDepositAmount').val()
+				additional_fees_description: div.find('#SubletAdditionalFeesDescription').val()
+				additional_fees_amount: div.find('#SubletDepositAmount').val()
+				unit_number: div.find('#SubletUnitNumber').val()
+				flexible_dates: div.find('#SubletFlexibleDates').is(':checked')
+				furnished_type_id: div.find('#SubletFurnishedType').val()
+				ac: div.find('#ac').val() == "Yes"
+				parking: div.find('#parking').val() == "Yes"
 			Marker:
-				marker_id: $("#markerId").val()
-				alternate_name: $('#SubletName').val()
-				street_address: $("#formattedAddress").val()
-				building_type_id: $('#buildingType').val()
-				city: $('#city').val()
-				state: $('#state').val()
-				zip: $('#postal').val()
-				latitude: $('#updatedLat').val()
-				longitude: $('#updatedLong').val()		
-			Housemate: 
-				quantity: $("#HousemateQuantity").val()
-				enrolled: $("#HousemateEnrolled").val()
-				student_type_id: $("#HousemateStudentType").val()
-				major: $("#HousemateMajor").val()
-				gender_type_id: $("#HousemateGenderType").val()
-				year: $("#HousemateYear").val()
+				marker_id: div.find("#markerId").val()
+				alternate_name: div.find('#SubletName').val()
+				street_address: div.find("#formattedAddress").val()
+				building_type_id: div.find('#buildingType').val()
+				city: div.find('#city').val()
+				state: div.find('#state').val()
+				zip: div.find('#postal').val()
+				latitude: div.find('#updatedLat').val()
+				longitude: div.find('#updatedLong').val()		
+			Housemate:
+				id: div.find("#HousemateId").val()
+				quantity: div.find("#HousemateQuantity").val()
+				enrolled: div.find("#HousemateEnrolled").val()
+				student_type_id: div.find("#HousemateStudentType").val()
+				major: div.find("#HousemateMajor").val()
+				gender_type_id: div.find("#HousemateGenderType").val()
+				year: div.find("#HousemateYear").val()
 
 	###
 	Replaces '/' with '-' to make convertible to mysql datetime format
 	###
-	@GetMysqlDateFormat: (dateString) ->
+	GetMysqlDateFormat: (dateString) ->
 		date = new Date(dateString)
 		month = date.getMonth() + 1
 		if month < 10
@@ -454,7 +408,7 @@ class A2Cribs.SubletSave
 		year = date.getUTCFullYear()
 		beginDateFormatted = year + "-" + month + "-" + day
 
-	@GetTodaysDate: () ->
+	GetTodaysDate: () ->
 		today = new Date()
 		dd = today.getDate()
 		mm = today.getMonth()+1
@@ -465,5 +419,15 @@ class A2Cribs.SubletSave
 			mm='0'+mm
 		today = mm+'/'+dd+'/'+yyyy
 		return today
+
+	GetFormattedDate:(date) ->
+		month = date.getMonth() + 1
+		if month < 10
+			month = "0" + month
+		day = date.getDate()
+		if day < 10
+			day = "0" + day
+		year = date.getUTCFullYear()
+		beginDateFormatted = month + "/" + day + "/" + year
 
 

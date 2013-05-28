@@ -109,7 +109,7 @@ class Housemate extends AppModel {
 	{
 		$conditions = array('Housemate.id' => $housemate_id, 
 							'Housemate.sublet_id' => $sublet_id);
-		$this->contain();
+		//$this->contain();
 		$has_sublet_id = $this->find('first', array('conditions' => $conditions, 'fields' => array('Housemate.id')));
 		return $has_sublet_id != null;
 	}

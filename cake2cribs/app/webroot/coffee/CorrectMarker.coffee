@@ -5,29 +5,33 @@ class A2Cribs.CorrectMarker
 	@Enabled = true;
 
 	@Init: ()->
-		@AnnArborCenter = new google.maps.LatLng(42.2808256, -83.7430378)
-		MapOptions =
-  			zoom: 15
-  			center: @AnnArborCenter
-  			mapTypeId: google.maps.MapTypeId.ROADMAP
-  			mapTypeControl: false
-  			panControl: false
-  			zoomControl: false
-  			streetViewControl: false
-		@Map = new google.maps.Map(document.getElementById('correctLocationMap'), MapOptions)
-		google.maps.event.trigger(@Map, "resize");
-		@Marker = new google.maps.Marker
-			draggable: true
-			position: @AnnArborCenter
-			map: A2Cribs.CorrectMarker.Map
-			visible: false
-		#A2Cribs.CorrectMarker.Marker.setMap(A2Cribs.CorrectMarker.Map)
+		@LoadUniversities()
+		div = $('#post-sublet-modal').find('#correctLocationMap')[0]
+		@CreateMap div, 42.2808256, -83.7430378
 		@Geocoder = new google.maps.Geocoder()
 
-		# a call to @Disable or @Enable may have been executed prior to init. Example: SubletEdit.Init()
-		# So now that the map is now loaded we can disable it if we need to
-		if not @Enabled
+	@CreateMap: (div, latitude, longitude, marker_visible = false, enabled = true) ->
+		center = new google.maps.LatLng latitude, longitude
+		MapOptions =
+			zoom: 15
+			center: center
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+			mapTypeControl: false
+			panControl: false
+			zoomControl: false
+			streetViewControl: false
+		@Map = new google.maps.Map div, MapOptions
+		@Marker = new google.maps.Marker
+			draggable: enabled
+			position: center
+			map: A2Cribs.CorrectMarker.Map
+			visible: marker_visible
+
+		if not enabled
 			@Disable()
+
+		google.maps.event.trigger @Map, "resize"
+
 
 	# Makes the map display only, useful for cases of displaying a property location without 
 	# Giving the user the option to move the map or change the lat lon, used in sublet editting
@@ -123,7 +127,7 @@ class A2Cribs.CorrectMarker
 			A2Cribs.Cache.SelectedUniversity = @universitiesMap[index].University;
 			u = A2Cribs.CorrectMarker.SelectedUniversity;
 			A2Cribs.CorrectMarker.CenterMap(u.latitude, u.longitude);
-			$("#universityId").val(index)
+			$("#universityId").val(A2Cribs.CorrectMarker.SchoolIDList[index])
 
 
 	@LoadUniversities: () ->
@@ -132,8 +136,10 @@ class A2Cribs.CorrectMarker
 			success :(response) ->
 				A2Cribs.CorrectMarker.universitiesMap = JSON.parse response
 				A2Cribs.CorrectMarker.SchoolList = []
+				A2Cribs.CorrectMarker.SchoolIDList = []
 				for university in A2Cribs.CorrectMarker.universitiesMap
 					A2Cribs.CorrectMarker.SchoolList.push university.University.name
+					A2Cribs.CorrectMarker.SchoolIDList.push university.University.id
 				$("#universityName").typeahead
 					source: A2Cribs.CorrectMarker.SchoolList
 
@@ -141,4 +147,3 @@ class A2Cribs.CorrectMarker
 		if A2Cribs.CorrectMarker.Marker?
 			A2Cribs.CorrectMarker.Marker.setVisible false
 				
-	
