@@ -194,7 +194,9 @@ ListingPopup class
         }
         if (verification_info.verified_fb) {
           pic_url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
-          return $("#tooltipUserPicture").attr("src", pic_url);
+          return $(".user_contact_pic").attr("src", pic_url);
+        } else {
+          return $(".user_contact_pic").attr('src', "/img/head_large.jpg");
         }
       });
     };

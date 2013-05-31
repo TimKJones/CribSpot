@@ -6,12 +6,12 @@ class Listing extends AppModel {
 	public $primaryKey = 'listing_id';
 	public $actsAs = array('Containable');
 	public $belongsTo  = array('Realtor', 'Marker');
-	public $hasMany = array(
-						'Favorite' => array(
-								'className' => 'Favorite', 
-								'foreignKey' => 'listing_id'
-						)
-	);
+	// public $hasMany = array(
+	// 					'Favorite' => array(
+	// 							'className' => 'Favorite', 
+	// 							'foreignKey' => 'listing_id'
+	// 					)
+	// );
 
 	public $validate = array(
 		'listing_id' => 'alphaNumeric', /*cant find an integer type, may have to do this through custom regular expression check*/

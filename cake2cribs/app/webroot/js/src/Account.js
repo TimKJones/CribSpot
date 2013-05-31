@@ -27,18 +27,18 @@
       my_verification_info = A2Cribs.VerifyManager.getMyVerification();
       veripanel = $('#my-verification-panel');
       if (my_verification_info.verified_email) {
-        veripanel.find('#veri-email i:last-child').removeClass('unverified').addClass('verified');
+        veripanel.find('#veri-email i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
       }
       if (my_verification_info.verified_edu) {
-        veripanel.find('#veri-edu i:last-child').removeClass('unverified').addClass('verified');
+        veripanel.find('#veri-edu i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
       }
       if (my_verification_info.verified_fb) {
-        veripanel.find('#veri-fb  i:last-child').removeClass('unverified').addClass('verified');
+        veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
       } else {
         $('#veri-fb').append("<a href = '#'>Verify?</a>").click(this.FacebookConnect);
       }
       if (my_verification_info.verified_tw) {
-        veripanel.find('#veri-tw i:last-child').removeClass('unverified').addClass('verified');
+        veripanel.find('#veri-tw i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
       } else {
         url = myBaseUrl + 'account/getTwitterVerificationUrl';
         $.get(url, function(response) {

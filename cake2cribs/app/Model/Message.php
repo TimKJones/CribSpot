@@ -30,8 +30,8 @@ class Message extends AppModel {
 			return -1;
 		}
 
-		$message_data = Array(
-			'Message' => Array(
+		$message_data = array(
+			'Message' => array(
 				'conversation_id' => $conv_id,
 				'user_id' => $user['id'],
 				'body' => $body

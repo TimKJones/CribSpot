@@ -2,7 +2,7 @@
 
 class FeaturedListing extends AppModel {
     public $name = 'FeaturedListing';
-    // public $actsAs = array('Containable');
+    public $actsAs = array('Containable');
     public $belongsTo = array('Listing', 'User');
     
     public $validate = array(
@@ -50,9 +50,9 @@ class FeaturedListing extends AppModel {
 
     public function get($up_lat, $low_lat, $up_long, $low_long, $date){
 
-        // $this->recursive = -1;
-        $conditions = array(
+        $this->contain('Listing', 'Listing.Marker', 'User');
 
+        $conditions = array(
         'conditions' => array(
             'and' => array(
                         array(

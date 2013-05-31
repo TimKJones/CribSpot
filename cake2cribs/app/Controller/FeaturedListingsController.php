@@ -24,7 +24,7 @@ class FeaturedListingsController extends AppController {
 
     $listings = $this->FeaturedListing->get($up_lat, $low_lat, $up_long, $low_long, $date);
 
-
+    $this->layout = 'ajax';
     $this->set('listings', $listings);
 
   }
