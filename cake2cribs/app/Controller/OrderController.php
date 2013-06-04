@@ -1,5 +1,5 @@
 <?php
-class OrdersController extends AppController {
+class OrderController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
   public $uses = array('Listing', 'User', 'FeaturedListing', 'Order');
@@ -7,6 +7,40 @@ class OrdersController extends AppController {
 
     private $WalletSellerID = "10354430150694430158";
     private $WalletSecretKey = "XWLZaH-bSdUGUJxlSZZVSg";
+    private $rules = array('FeaturedListings'=>array(
+                'costs'=>array( 
+                    'weekday'=>15.00,
+                    'weekend'=>5.00,
+                )
+            )
+        );
+
+    public function featuredListing($listing_id, $listing_id2){
+
+        $listing = $this->Listing->get($listing_id);
+        if($listing == null){
+            throw new NotFoundException();
+        }  
+        $listing2 = $this->Listing->get($listing_id2);
+        if($listing2 == null){
+            throw new NotFoundException();
+        }  
+
+
+
+        $listings = array($listing,$listing2); //wants array of listings to feature
+
+        
+        $this->set("rules_json", json_encode($this->rules));
+        $this->set("rules", $this->rules);
+        $this->set("listings", $listings);
+        // commented out is code that checks to see if the user owns the listing
+
+        // if($this->Auth->User('id') != $listing['User']['id']){
+        //     throw new NotFoundException();   
+        // }
+
+    }
 
     // Takes a post request containing data type and then a data object with all 
     // info to get a jwt generated for the purchase
@@ -99,6 +133,8 @@ class OrdersController extends AppController {
 
 
     private function getFeaturedListingRequest($data){
+        App::import('Vendor', 'Utilities/DateHelpers');
+
         $daily_rate = 15; // $15 a day
 
         $name = "Featured Listing on Cribspot.com for ". $data->duration. " days";
@@ -111,10 +147,17 @@ class OrdersController extends AppController {
         }
         
         $address = $listing['Marker']['street_address'];
-        $start_date = date("m-d-Y", $data->start/1000);
-        $end_date = date("m-d-Y", ($data->start/1000) + (24*60*60*$data->duration));
+        $start_date = date("m/d/Y", $data->start/1000);
+        $end_date = date("m/d/Y", ($data->start/1000) + (24*60*60*($data->duration-1)));
         $description = "$address will be featured from $start_date to $end_date";
-        $price = (string) ($daily_rate * $data->duration);
+
+        $weekdays = getWeekDays($start_date, $end_date);
+        $wd_price = $this->rules['FeaturedListings']['costs']['weekday'];
+        $we_price = $this->rules['FeaturedListings']['costs']['weekend'];   
+
+
+
+        $price = (string) (($wd_price * $weekdays) + ($we_price * ($data->duration - $weekdays)));
 
         $data->item_type = "FeaturedListing";
         
@@ -130,9 +173,7 @@ class OrdersController extends AppController {
         return $request;
     }
 
-    private function logOrder($request){
 
-    }
 
 
 

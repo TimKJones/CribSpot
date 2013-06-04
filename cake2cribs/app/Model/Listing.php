@@ -179,6 +179,12 @@ public function getAllListings()
 	return $this->find('all');
 }
 
+public function get($listing_id){
+	$this->contain('Marker');
+
+	return $this->find('first', array('conditions'=>'Listing.listing_id='.$listing_id));
+}
+
 }
 
 
