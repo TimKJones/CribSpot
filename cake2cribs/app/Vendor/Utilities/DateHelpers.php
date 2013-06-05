@@ -1,20 +1,27 @@
 <?//The function returns the no. of business days between two dates and it skips the holidays
-function getWeekDays($startDate,$endDate){
+function getWeekDays($startDate, $endDate){
     // do strtotime calculations just once
-    $endDate = strtotime($endDate);
-    $startDate = strtotime($startDate);
+    // $endDate = strtotime($endDate_);
+    // $startDate = strtotime($startDate_);
 
 
     //The total number of days between the two dates. We compute the no. of seconds and divide it to 60*60*24
     //We add one to inlude both dates in the interval.
+    $endDate-=86400;  # fix issue with days going too far ahead
     $days = ($endDate - $startDate) / 86400 + 1;
 
     $no_full_weeks = floor($days / 7);
     $no_remaining_days = fmod($days, 7);
 
     //It will return 1 if it's Monday,.. ,7 for Sunday
+
+    // debug(date("m/d/Y", $startDate));
+    // debug(date("m/d/Y", $endDate-86400));
     $the_first_day_of_week = date("N", $startDate);
     $the_last_day_of_week = date("N", $endDate);
+
+    // debug($the_first_day_of_week);
+    // debug($the_last_day_of_week);
 
     //---->The two can be equal in leap years when february has 29 days, the equal sign is added here
     //In the first case the whole interval is within a week, in the second case the interval falls in two weeks.
@@ -53,4 +60,19 @@ function getWeekDays($startDate,$endDate){
 
     return $workingDays;
 }
+
+function getDays($startDate, $endDate){
+
+    // do strtotime calculations just once
+    // debug($endDate);
+    // debug($startDate);
+
+
+    //The total number of days between the two dates. We compute the no. of seconds and divide it to 60*60*24
+    //We add one to inlude both dates in the interval.
+    $days = ($endDate - $startDate) / 86400;
+    // debug($days);
+    return $days;
+}
+
 ?>

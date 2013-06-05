@@ -2,7 +2,7 @@
 class OrderController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder');
   public $TAG = "OrdersController";
 
     private $WalletSellerID = "10354430150694430158";
@@ -49,14 +49,12 @@ class OrderController extends AppController {
         
 
         $type = $this->request->data['type'];
-        $data = json_decode($this->request->data['info']);
-
-        $data->user_id = $this->Auth->User('id');
+        $order = json_decode($this->request->data['order']);
 
         $request = null;
         switch($type){
             case "featured-listing":
-                $request = $this->getFeaturedListingRequest($data);
+                $request = $this->getFeaturedListingRequest($order);
                 $response['success'] = true;
 
                 break;
@@ -135,40 +133,71 @@ class OrderController extends AppController {
     private function getFeaturedListingRequest($data){
         App::import('Vendor', 'Utilities/DateHelpers');
 
-        $daily_rate = 15; // $15 a day
+        $total = 0;
+        $weekdays = 0;
+        $weekends = 0;
+        $days = 0;
 
-        $name = "Featured Listing on Cribspot.com for ". $data->duration. " days";
-        $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$data->listing_id));
-        // die(debug($listing));
-        if($listing == null){
-            // Listing not found return null;
-            CakeLog::write($TAG, "Listing " . $data->listing_id . " not found while trying to buy a featured listing");
-            return null;
-        }
-        
-        $address = $listing['Marker']['street_address'];
-        $start_date = date("m/d/Y", $data->start/1000);
-        $end_date = date("m/d/Y", ($data->start/1000) + (24*60*60*($data->duration-1)));
-        $description = "$address will be featured from $start_date to $end_date";
-
-        $weekdays = getWeekDays($start_date, $end_date);
         $wd_price = $this->rules['FeaturedListings']['costs']['weekday'];
-        $we_price = $this->rules['FeaturedListings']['costs']['weekend'];   
+        $we_price = $this->rules['FeaturedListings']['costs']['weekend'];  
 
+        // For each date range we want to validate that the listing exists.
+        // TODO: Have a list of unique listing_ids to avoid redundant querying
 
+        foreach($data as &$daterange){
+            $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$daterange->listing_id));
+            // die(debug($listing));
+            if($listing == null){
+                // Listing not found return null;
+                CakeLog::write($TAG, "Listing " . $daterange->listing_id . " not found while trying to buy a featured listing");
+                return null;
+            }
+            // DateTime's constructor takes in a unix timestamp with '@' prefixing it
+            // Date range's start and end are both in milliseconds
+            $start_date = date($daterange->start/1000);
+            $end_date = date($daterange->end/1000);
 
-        $price = (string) (($wd_price * $weekdays) + ($we_price * ($data->duration - $weekdays)));
+            $temp_days = getDays($start_date, $end_date);
+            if($temp_days <= 0){
+                // Invalid range
+                //Go to next iteration.
+                continue;
+            }
 
-        $data->item_type = "FeaturedListing";
+            $temp_weekdays = getWeekDays($start_date, $end_date);
+            $temp_weekends = $temp_days - $temp_weekdays;
+
+            $price = ($temp_weekdays * $wd_price) + ($temp_weekends * $we_price);
+            $daterange->price = $price;
+
+            $total += $price;
+            $weekdays += $temp_weekdays;
+            $weekends += $temp_weekends;
+            $days += $temp_days;
+
+        }
+
+        $name = "Featured Listing on Cribspot.com for $days days";
+        $description = "Weekdays: $weekdays x $".$wd_price."/day + Weekends: $weekends x $".$we_price."/day";
+
+        $order = array(
+            'total'=>$total,
+            'items'=>$data,
+            );
+
+        $user_id = $this->Auth->User('id');
+        $pendingOrder = $this->PendingOrder->add($order, $user_id);
         
-        $sellerData = json_encode($data);
-        
+        $sellerData = array(
+            'pendingOrder_id'=>$pendingOrder['PendingOrder']['id']
+            );
+
         $request = array(
             "name" => $name,
             "description" => $description,
-            "price" => $price,
+            "price" => $total,
             "currencyCode" => "USD",
-            "sellerData" => $sellerData
+            "sellerData" => json_encode($sellerData)
             );
         return $request;
     }

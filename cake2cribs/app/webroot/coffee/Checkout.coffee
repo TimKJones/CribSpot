@@ -1,12 +1,19 @@
 class A2Cribs.Checkout
     constructor:(@widget, @rules)->
-        console.log rules
+        
         @FeaturedListings = []
+        
+        # Create a FeaturedListringOrder instance for each one found on the dom
+
         $('.featured-listing-order-item').each (index, element)=>
             @FeaturedListings.push new FeaturedListingOrder($(element), @rules.FeaturedListings, @orderChanged)
 
+
         $(@widget).on 'priceChange', '.date-range', ()=> 
             @priceChanged()
+
+        $(@widget).on 'removeRange', '.featured-listing-order-item', (event, daterange)=>
+            @priceChanged()            
 
 
         $(@widget).find('.buy').click ()=> @startWalletFlow()
@@ -29,19 +36,35 @@ class A2Cribs.Checkout
 
         $(@widget).find('.total-tally').show()
 
+    getOrderRequest:()->
+        
+        request = []
+
+        for listing in @FeaturedListings
+            for id, daterange of listing.Ranges
+                #Only push on ranges that are valid,
+                #server side validation will also be done.
+                if daterange.days > 0
+                    request.push {
+                        listing_id: listing.listing_id
+                        start: daterange.start.getTime()
+                        end: daterange.end.getTime()
+                    }
+
+        console.log(request)
+        return request
+
+
+
     startWalletFlow:()->
         
-        fl = @FeaturedListings[0]
-        duration = A2Cribs.UtilityFunctions.getDaysBetweenDates(fl.start, fl.end)
-        listing_id = fl.listing_id
+        # fl = @FeaturedListings[0]
+        # duration = A2Cribs.UtilityFunctions.getDaysBetweenDates(fl.start, fl.end)
+        # listing_id = fl.listing_id
 
         data = {
             'type': 'featured-listing'
-            'info': JSON.stringify({
-                        'start': fl.start.getTime()
-                        'listing_id': listing_id
-                        'duration': duration
-                    })
+            'order': JSON.stringify @getOrderRequest()
         }
 
         url = '/order/getJwt'
@@ -60,22 +83,22 @@ class A2Cribs.Checkout
         constructor:(@item, @rules)->
             @address = @item.find('.address').text()
             @listing_id = @item.attr('id')
-            @start = null
-            @end = null
-            @days = null
-            @weekdays = null
-            @weekends = null
-
-            @Ranges = []
+            @nextRangeId = 0
+            @Ranges = {}
             @newRange()
             @item.find('.add-dates').click ()=>
                 @newRange()
+
+            @item.on 'removeRange', '.date-range', (event, daterange)=>
+                daterange.widget.remove()
+                delete @Ranges[daterange.id]
+                @item.trigger('removeRange', @)
 
         getOrderDetails:()-> 
             price = 0
             weekdays = 0
             weekends = 0 
-            for range in @Ranges
+            for id, range of @Ranges
                 price += range.getPrice()
                 weekdays += range.weekdays
                 weekends += range.weekends
@@ -86,7 +109,6 @@ class A2Cribs.Checkout
                 weekends: weekends
             }
                 
-
             return details
 
         newRange:()->
@@ -106,13 +128,13 @@ class A2Cribs.Checkout
                     ).appendTo(@item)
 
                 # @item.append(widget)
-
-                @Ranges.push new DateRange(widget, @rules)
+                id = @nextRangeId++
+                @Ranges[id] = new DateRange(widget, id, @rules)
 
 
         
         class DateRange
-            constructor: (@widget, @rules)->
+            constructor: (@widget, @id, @rules)->
                 @days = 0
                 @weekends = 0
                 @weekdays = 0
