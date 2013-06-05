@@ -3,7 +3,7 @@
 class Order extends AppModel {
     public $name = 'Order';
     public $actsAs = array('Containable');
-    public $uses = array('FeaturedListing', 'Order');
+    public $uses = array('FeaturedListing', 'Order', 'PendingOrder');
     // public $belongsTo = array('Listing', 'User');
     
     // public $validate = array(
@@ -23,22 +23,46 @@ class Order extends AppModel {
         the new item.
 
     */
-    public function logOrder($request){
+    public function logOrder($request, $wallet_order_id, $user_id){
+        $PendingOrder = ClassRegistry::init('PendingOrder');
 
         $seller_data = json_decode($request->sellerData);
+        
+        $pendingOrder_id = $seller_data->pendingOrder_id;
+        
+        $pendingOrder = $PendingOrder->find('first', array('conditions'=>
+            'PendingOrder.id='.$pendingOrder_id));
 
-        $item_type = $seller_data->item_type;
+        if($pendingOrder == null){
+            return null;
+        }
+
+        $order = json_decode($pendingOrder['PendingOrder']['order']);
+
+        $item_type = "FeaturedListing"; //Hack we don't have any other types right now
+                                        //and I don't feel like modifying all the order
+                                        //data passing around structures, in the future
+                                        //we may have more types
+
+        $price = $order->total;
+
+        if($order->user_id != $user_id){
+            throw new NotFoundException();
+        }
 
         // We do generic switch on type here for the various things you can buy
         // Creates the object that was purchased and we get the id for our generic fk
         
         switch($item_type){
             case "FeaturedListing":
-                
                 $FeaturedListing = ClassRegistry::init('FeaturedListing');
-                $featured_listing = $FeaturedListing->add($seller_data);
+                foreach ($order->items as $index => &$daterange) {
+                    $featured_listing = $FeaturedListing->add($daterange, $user_id);
+                    $item_id = $featured_listing['FeaturedListing']['id'];
+                    $order->items[$index]->featured_listing_id = $item_id;
 
-                $item_id = $featured_listing['FeaturedListing']['id'];
+                }
+                
 
                 break;
 
@@ -53,17 +77,21 @@ class Order extends AppModel {
             'description'=>$request->description,
             'price'=>floatval($request->price),
             'currency_code'=>$request->currencyCode,
-            'seller_data'=>$request->sellerData,
             'item_type'=>$item_type,
-            'item_id'=>$item_id,
+            'items'=>json_encode($order->items),
+            'user_id'=>$user_id,
+            'wallet_order_id'=>$wallet_order_id
         
         );
-
-        if(!$this->save($order_data)){
+        $this->create($order_data);
+        if(!$this->save()){
             die(debug($this->validationErrors));
         }
 
         $order = $this->read();
+        
+        if($order != null)
+            // $PendingOrder->delete($pendingOrder_id);
 
         return $order;
     }

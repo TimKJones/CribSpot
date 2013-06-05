@@ -50,30 +50,26 @@ class FeaturedListing extends AppModel {
 
     }
 
-    public function add($order_data){
+    public function add($daterange, $user_id){
         
         $listing = $this->Listing->find('first', array(
-            'conditions'=>'Listing.listing_id='.$order_data->listing_id)
+            'conditions'=>'Listing.listing_id='.$daterange->listing_id)
         );
 
         if($listing == null){
-            CakeLog::write($this->$TAG, "Listing " . $order_data->listing_id . " not found while trying to buy a featured listing");
+            CakeLog::write($this->$TAG, "Listing " . $order_data->listing_id . 
+                " not found while trying to buy a featured listing");
             return null;
         }
 
-        $duration = $order_data->duration;   
-
-        $now = time();
-
-        $start = $now + (60 * 60 * 24); // Start date is tomorrow
-        $start_date = date("Y-m-d", $start);
-        $end = $now + (60 * 60 * 24 * (1 + $duration)); // Expires duration num days from tomorrow
-        $end_date = date("Y-m-d", $end);
+        $start_date = date("Y-m-d", $daterange->start/1000);
+        $end_date = date("Y-m-d", $daterange->end/1000);
+        // debug($daterange);
+        // debug($start_date);
+        // debug($end_date);
 
         $latitude  = $listing['Marker']['latitude'];
         $longitude  = $listing['Marker']['longitude'];
-
-        $user_id = $order_data->user_id;
 
         $type = 1; //Only one type of featured listing right now
 
@@ -88,13 +84,12 @@ class FeaturedListing extends AppModel {
                 'longitude' => $longitude,
             )    
         );
-
-        if(!$this->save($featured_listing_data)){
+        $this->create($featured_listing_data);
+        if(!$this->save()){
             die(debug($this->validationErrors));
         }
 
         $featuredListing = $this->read();
-
         return $featuredListing;
     }
 

@@ -13,8 +13,8 @@ class PendingOrder extends AppModel {
                 'user_id'=>$user_id,
                 )
         );
-
-        if(!$this->save($pending_order_data)){
+        $this->create($pending_order_data);
+        if(!$this->save()){
             die(debug($this->validationErrors));
         }
 

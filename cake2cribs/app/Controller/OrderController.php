@@ -116,12 +116,14 @@ class OrderController extends AppController {
 
         $request = $jwt->request;
         $order_num = $jwt->response->orderId;
+
+        $user_id = $this->Auth->User('id');
         
-        $order = $this->Order->logOrder($request, $order_num);
+        $order = $this->Order->logOrder($request, $order_num, $user_id);
 
         if($order == null){
             //Something went wrong with the order
-
+            die();
         }
 
         $this->layout = 'ajax';
@@ -180,12 +182,13 @@ class OrderController extends AppController {
         $name = "Featured Listing on Cribspot.com for $days days";
         $description = "Weekdays: $weekdays x $".$wd_price."/day + Weekends: $weekends x $".$we_price."/day";
 
+        $user_id = $this->Auth->User('id');
         $order = array(
             'total'=>$total,
+            'user_id'=>$user_id,
             'items'=>$data,
             );
 
-        $user_id = $this->Auth->User('id');
         $pendingOrder = $this->PendingOrder->add($order, $user_id);
         
         $sellerData = array(
