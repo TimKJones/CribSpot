@@ -9,15 +9,26 @@
     padding-top: 10px;
     padding-bottom: 10px;
     border: 5px solid #DDD;
+    position: relative;
 
     .order-items{
-        
-
+        overflow: auto;
     }
 
     .order-receipt{
         background: red;
     }    
+
+    .total{
+        // line-height: 45px;
+        font-size: 18px;
+    }
+
+    .buy{
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+    }
 
 
 }
@@ -29,17 +40,35 @@
     }
 
     .date-input{
+        margin-top: 7.5px;
         width: 70px;
     }
 
     .date-range{
-        line-height: 30px;
+        line-height: 13px;
         height: 30px;
-
-        // background: blue;
     }
 
+    .remove-range{
+        color: #333;
+    }
 
+    .remove-range:hover{
+        text-decoration: none;
+        color: #ab2519;
+    }
+
+    .add-dates:hover{
+        cursor: pointer;
+    }
+
+    .date-range{
+        .price{
+            line-height: 45px;
+            font-size: 18px;
+        }    
+    }
+    
 
 
 }

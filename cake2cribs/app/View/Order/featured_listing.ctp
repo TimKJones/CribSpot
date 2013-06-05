@@ -23,7 +23,7 @@
             <div class = 'pull-right total-tally' style = 'display:none'>
                 <Strong>Weekdays: </strong><span class = 'weekdays'></span> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'] ."/day";?><br>
                 <Strong>Weekends: </strong><span class = 'weekends'></span> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'] ."/day";?><br>
-                <strong>Total: </strong><span class = 'total'></span>
+                <strong>Total: </strong><span class = 'pull-right total'></span>
             </div>
 
 
@@ -32,8 +32,8 @@
         <div class = 'span4'>
             <h3> How it works </h3> 
             <p>
-                Select the range of days that you want each of your properties to 
-                be featured on. 
+                Click on the calendar to add a range of dates that you wish to feature your listing. 
+                Then for each range select when you would like to feature your listing.
             </p>
             <p>
                 Once you are satisfied with your selections click Buy and complete our simple checkout flow where
