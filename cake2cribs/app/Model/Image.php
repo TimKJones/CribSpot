@@ -22,17 +22,25 @@ class Image extends AppModel {
 				'rule' => array('maxLength', 25)
 			)
 		)
-	);	
+	);
+
+	public function beforeValidate($options = array()) {
+		if (empty($this->data[$this->alias]['sublet_id'])) {
+			unset($this->validate['sublet_id']);
+		}
+
+		return true;
+	}
 
 	/* 
 	Create new row in images table for this image.
 	Move image to new location in img/sublets/[sublet_id]_img#
 	returns true on success, false on failure
 	*/
-	public function AddImage($listing_id, $file, $user_id)
+	public function AddImage($file, $user_id)
 	{
 		CakeLog::write("fileDebug", "file data: " . print_r($file, true));
-		$relative_path = 'img/sublets/' . $listing_id;
+		$relative_path = 'img/sublets';
 		$folder = WWW_ROOT . $relative_path;
 		$errors = array();
 		$filePath = null;
@@ -61,7 +69,9 @@ class Image extends AppModel {
 				else
 					CakeLog::write("imageDebug", "directory exists");
 
-				if ($this->AddImageEntry($listing_id, $user_id, $filePath))
+				$image_id = $this->AddImageEntry($user_id, $filePath);
+
+				if ($image_id != null)
 				{
 					// move file to folder named by its listing_id
 					if (!move_uploaded_file($file["tmp_name"][0], $filePath))
@@ -79,15 +89,15 @@ class Image extends AppModel {
 		}
 
 		CakeLog::write("fileDebug", "errors: " . print_r($errors, true));
-		$response = array();
-		array_push($response, $errors, $filePath);
+		$response = array('errors' => $errors, 'id' => $image_id);
+		CakeLog::write('imageDebug', "data: " . print_r($response, true));
 		return $response;
 	}
 
-	private function AddImageEntry($listing_id, $user_id, $filePath)
+	private function AddImageEntry($user_id, $filePath)
 	{
 		$newImage = array(
-			'sublet_id' => $listing_id, 
+			'sublet_id' => null, 
 			'user_id' => $user_id,
 			'image_path' => $filePath,
 			'is_primary' => 0
@@ -96,7 +106,7 @@ class Image extends AppModel {
 		//CakeLog::write("addImageSql", print_r($newImage, true));
 
 		$conditions = array(
-			'Image.sublet_id' => $listing_id,
+			'Image.sublet_id' => null,
 			'Image.user_id' => $user_id,
 			'Image.image_path' => $filePath);
 		$test = $this->hasAny($conditions);
@@ -107,15 +117,34 @@ class Image extends AppModel {
 			if (!$this->save($newImage))
 			{
 				//CakeLog::write("addImageSql", "FAILED TO SAVE IMAGE");
-				return false;
+				return null;
 			}
 
 			//CakeLog::write("addImageSql", "SUCCESSFULLY ADDED IMAGE ENTRY");
-			return true;
+			return $this->id;
 		}
 
 		//CakeLog::write("addImageSql", "IMAGE RECORD ALREADY EXISTS");
-		return false;
+		return null;
+	}
+
+	public function UpdateImageEntry($user_id, $sublet_id, $image)
+	{
+		CakeLog::write('imageDebug', "Image to be updated: " . print_r($image, true));
+		$owner = $this->find('first', array(
+			'fields' => array('user_id'), 
+			'conditions' => array('Image.image_id' => $image['image_id'])
+			)
+		);
+		if ($owner['Image']['user_id'] == $user_id)
+		{
+			foreach ($image as $key => $value)
+			{
+				$this->saveField($key, $value);
+			}
+			$this->saveField('sublet_id', $sublet_id);
+		}
+
 	}
 
 	public function getImagesForListingId($listing_id)

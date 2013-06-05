@@ -14,11 +14,12 @@
 
     EditSublet.prototype.setupUI = function() {
       var _this = this;
-      return this.div.find(".step-button").click(function(event) {
+      this.div.find(".step-button").click(function(event) {
         _this.div.find(".step-button").removeClass("active");
         $(event.currentTarget).closest(".step-button").addClass("active");
         return _this.GotoStep($(event.currentTarget).closest(".step-button").attr("step"));
       });
+      return EditSublet.__super__.setupUI.call(this, this.div);
     };
 
     EditSublet.prototype.Reset = function() {
@@ -39,7 +40,10 @@
           if (subletData.redirect != null) {
             window.location = subletData.redirect;
           }
+          _this.MiniMap.SetMarkerPosition(new google.maps.LatLng(subletData.Marker.latitude, subletData.Marker.longitude));
           _this.PopulateInputFields(subletData);
+          _this.PhotoManager.LoadImages(subletData.Image);
+          _this.DisableInputFields();
           return _this.Open();
         },
         error: function() {
@@ -64,7 +68,10 @@
     };
 
     EditSublet.prototype.Open = function() {
-      return this.div.parent().show();
+      var _this = this;
+      return this.div.parent().show('slow', function() {
+        return _this.MiniMap.Resize();
+      });
     };
 
     EditSublet.prototype.PopulateInputFields = function(subletData) {
@@ -81,9 +88,18 @@
             input = this.div.find("#" + k + "_" + p);
             if (input != null) {
               if ("checkbox" === input.attr("type")) {
-                _results1.push(input.prop("checked", q));
+                input.prop("checked", q);
+              } else if (input.hasClass("date_field")) {
+                input.val(this.GetFormattedDate(new Date(q)));
+              } else if (typeof q === 'boolean') {
+                input.val(+q);
               } else {
-                _results1.push(input.val(q));
+                input.val(q);
+              }
+              if (k === "Marker") {
+                _results1.push(input.prop('disabled', true));
+              } else {
+                _results1.push(void 0);
               }
             } else {
               _results1.push(void 0);
@@ -95,8 +111,20 @@
       return _results;
     };
 
+    EditSublet.prototype.DisableInputFields = function() {
+      this.MiniMap.SetEnabled(false);
+      this.div.find('#place_map_button').prop('disabled', true);
+      return this.div.find('#University_name').prop('disabled', true);
+    };
+
     EditSublet.prototype.GotoStep = function(step) {
-      return this.div.find('.step').eq(step).show().siblings().hide();
+      if (this.Validate()) {
+        return this.div.find('.step').eq(step).show().siblings().hide();
+      }
+    };
+
+    EditSublet.prototype.Validate = function() {
+      return EditSublet.__super__.Validate.call(this, 3);
     };
 
     return EditSublet;

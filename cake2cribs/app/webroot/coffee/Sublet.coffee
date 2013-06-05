@@ -1,9 +1,11 @@
+class A2Cribs.Sublet
+	constructor: (@SubletId, @UniversityId, @BuildingType, @Name, @StreetAddress, @City, @State, @StartDate, @EndDate, @Bedrooms, @PricePerBedroom, @Description, @BathroomType,@UtilityCost, @DepositAmount, @AdditionalFeesDescription, @AdditionalFeesAmount, @MarkerId, @FlexibleDates,@Furnished, @DateAdded, @Air, @Parking) ->
+
 A2Cribs.SubletObject =
 	Sublet:
 		id: 0
 		university_id: 0
 		university_name: 0
-		building_type_id: 0
 		date_begin: 0
 		date_end: 0
 		number_bedrooms: 0

@@ -1,7 +1,7 @@
 <?php
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array('Sublet', 'Marker', 'Housemate', 'University');
+	public $uses = array('Sublet', 'Marker', 'Housemate', 'University', 'Image');
 	public $components= array('RequestHandler', 'Auth', 'Session');
 
 	public function beforeFilter() {
@@ -188,12 +188,14 @@ class SubletsController extends AppController {
 		$sublet = $this->request->data['Sublet'];
 		$marker = $this->request->data['Marker'];
 		$housemate = $this->request->data['Housemate'];
+		$images = $this->request->data['Image'];
 
 		CakeLog::write("savingSublet", print_r($sublet, true));
 		CakeLog::write("savingMarker", print_r($marker, true));
 		CakeLog::write("savingHousemate", print_r($housemate, true));
+		CakeLog::write("imageDebug", print_r($images, true));
 
-		$marker['building_type_id'] = $sublet['building_type_id']; // copy this over until we consolidate
+		$sublet['building_type_id'] = $marker['building_type_id']; // copy this over until we consolidate
 																   // to only storing in one table
 		
 		if (!array_key_exists('id', $sublet) || !$sublet['id'])
@@ -201,7 +203,7 @@ class SubletsController extends AppController {
 			// this is a new posting
 			unset($sublet['id']);
 			unset($housemate['id']);
-			unset($marker['id']);
+			unset($marker['marker_id']);
 		}
 		else
 		{
@@ -252,6 +254,8 @@ class SubletsController extends AppController {
 			$marker['marker_id'] = $this->Marker->FindMarkerId($marker);
 		}
 
+		CakeLog::write("savingSublet", "Found Marker " . print_r($marker, true));
+
 		$sublet_id = null;
 		$housemate_id = null;
 		$marker_id = $marker['marker_id'];
@@ -268,6 +272,12 @@ class SubletsController extends AppController {
 				$housemate['sublet_id'] = $sublet_id;
 				CakeLog::write("savingHousemate", print_r($housemate, true));
 				$housemate_id = $this->Housemate->SaveHousemate($housemate);
+				// Save Images
+				if ($images!= null)
+				{
+					foreach ($images as $key => $value)
+						$this->Image->UpdateImageEntry($this->Auth->User('id'), $sublet_id, $value);
+				}
 			}
 		}
 		

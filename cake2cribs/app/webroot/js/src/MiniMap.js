@@ -52,6 +52,7 @@
     };
 
     MiniMap.prototype.SetMarkerPosition = function(location) {
+      this.center = location;
       this.Map.panTo(location);
       this.SetZoom(18);
       this.Marker.setPosition(location);
@@ -67,6 +68,26 @@
         'latitude': this.Marker.position.lat(),
         'longitude': this.Marker.position.lng()
       };
+    };
+
+    MiniMap.prototype.SetEnabled = function(value) {
+      if (value == null) {
+        value = true;
+      }
+      if (this.Map != null) {
+        this.Map.setOptions({
+          draggable: value,
+          zoomControl: value,
+          scrollwheel: value,
+          disableDoubleClickZoom: value
+        });
+      }
+      if (this.Marker != null) {
+        this.Marker.setOptions({
+          draggable: value
+        });
+      }
+      return this.Enabled = value;
     };
 
     return MiniMap;

@@ -1,17 +1,107 @@
 class A2Cribs.PhotoManager
+	class Photo
+		constructor: (@_div)->
+			@_imageId = -1
+			@_isEmpty = true
+			@_isPrimary = false
+			@_caption = ""
+			@_path = ""
+			@_preview = null
 
-	@CurrentPhotoTarget = "none"
-	@CurrentPrimaryImageIndex = 1
-	@CurrentPreviewImageIndex = 0
-	@CurrentPreviewId = 0
-	@IdToPathMap = []
-	@IdToCaptionMap = []
-	@NextImageSlot = 0
-	@MAX_CAPTION_LENGTH = 25
-	@BACKSPACE = 8
+		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary) ->
+			@_isEmpty = false
+			@_preview = "<img src='#{@_path}'></img>"
+			@_div.find(".imageContent").html @_preview
+			@SetPrimary isPrimary
 
-	@SetupUI:() ->
-		$('.imageContainer').hover (event)->
+		CreatePreview: (@_file) ->
+			if not Photo.IsAcceptableFileType @_file.name
+				return
+			@_isEmpty = no
+			reader = new FileReader
+			reader.onloadend = (img) => 
+				if typeof img == "object" 
+					img = img.target.result; # file reader
+					
+				@_preview = "<img src='#{img}'></img>"
+
+				@_div.find(".imageContent").html @_preview
+
+			reader.readAsDataURL @_file
+
+		GetPreview: ->
+			@_preview
+
+		SaveCaption: (caption) ->
+			@_caption = caption
+
+		GetCaption: ->
+			@_caption
+
+		GetImageId: ->
+			@_imageId
+
+		IsPrimary: ->
+			@_isPrimary
+
+		SetPrimary: (value) ->
+			@_isPrimary = value
+			if value
+				@_div.find(".primary").addClass 'cur-primary'
+			else
+				@_div.find(".primary").removeClass 'cur-primary'
+
+		SetId: (id) ->
+			@_imageId = id
+
+		IsEmpty: ->
+			@_isEmpty
+
+		Reset: ->
+			@_isEmpty = yes
+			@_div.find(".imageContent").html '<div class="img-place-holder"></div>'
+			@_div.find(".image-actions-container").hide()
+			@_isPrimary = no
+			@_caption = ""
+			@_path = ""
+			@_preview = null
+
+		GetObject: ->
+				image_id: @_imageId
+				caption: @_caption
+				is_primary: +@_isPrimary
+
+		@IsAcceptableFileType: (fileName) ->
+			indexOfDot = fileName.indexOf ".", fileName.length - 4
+			if indexOfDot == -1
+				return false
+
+			fileType = fileName.substring(indexOfDot + 1)
+			if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
+				return true
+
+			A2Cribs.UIManager.Alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
+			return false
+
+	@NUM_PREVIEWS = 6
+
+	constructor: (div) ->
+		@div = div
+		@SetupUI()
+
+		@CurrentPrimaryImage = 0
+		@CurrentPreviewImage = null
+		@CurrentImageLoading = null
+		@Photos = [];
+		@div.find(".imageContainer").each (index, div) =>
+			@Photos.push new Photo $(div)
+
+		@MAX_CAPTION_LENGTH = 25
+		@BACKSPACE = 8
+
+	SetupUI:() ->
+		that = @
+		@div.find('.imageContainer').hover (event) =>
 			if $(event.currentTarget).find('img').length == 1
 				if event.type == 'mouseenter'
 					$(event.currentTarget).find('.image-actions-container').show()
@@ -19,262 +109,114 @@ class A2Cribs.PhotoManager
 					$(event.currentTarget).find('.image-actions-container').hide()
 				
 
-		$('#upload_image').click ()->
-			$('#real-file-input').click()
+		@div.find('#upload_image').click () =>
+			@div.find('#real-file-input').click()
 
-		$('#saveCaption').click ()->
-			SubmitCaption()
+		@div.find(".imageContent").click (event) =>
+			index = +event.currentTarget.id.match(/\d+/g)[0]
+			@EditImage index - 1
 
-		$(".delete").tooltip {'selector': '','placement': 'bottom', 'title': 'Delete'}
-		$(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
-		$(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
+		@div.find(".edit").click (event) =>
+			index = +event.currentTarget.id.match(/\d+/g)[0]
+			@EditImage index - 1
 
+		@div.find(".delete").click (event) =>
+			index = +event.currentTarget.id.match(/\d+/g)[0]
+			@DeleteImage index - 1			
 
+		@div.find(".primary").click (event) =>
+			index = +event.currentTarget.id.match(/\d+/g)[0]
+			@MakePrimary index - 1
 
-	@LoadImages:() ->
-		$.ajax
-			url: myBaseUrl + "Images/LoadImages/" + jsVars.edit_listing_id
-			type: "GET"
-			success: A2Cribs.PhotoManager.UpdateImageSources
+		@div.find("#saveCaption").click () =>
+			if @CurrentPreviewImage?
+				@Photos[@CurrentPreviewImage].SaveCaption @div.find("#captionInput").val()
 
-	@DeleteImageCallback: (id) ->
-		$('#imageContent' + id).html("<div class ='img-place-holder'></div>");
-		
-		#$("#" + id).css("visibility", "hidden")
-		#$("#add" + id).css("visibility", "visible")
-		if id == A2Cribs.PhotoManager.CurrentPreviewId
-			$('#imageContent0').html('');
-			$('#imageContent0').css('background-image', '');
-
-	@DeleteImage: (obj) ->
-		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
-		if photoNumber == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
-			A2Cribs.PhotoManager.MakeNotPrimaryUI photoNumber
-
-		$.ajax
-			url: myBaseUrl + "Images/DeleteImage"
-			type: "GET"
-			data: "listing_id=" + jsVars.edit_listing_id + "&image_slot=" + photoNumber
-			success: A2Cribs.PhotoManager.DeleteImageCallback(photoNumber)
-
-	@ConfirmAddImage: (obj) ->
-		$("#EditPrimaryForm").submit()
-
-	@ConfirmAddImageCallback: (response) ->
-		alert response
-
-	@UpdateImageSources: (imageSources) ->
-		imageSources = JSON.parse imageSources
-		primary_image_index = 0
-
-		if imageSources[0] != null
-			primary_image_index = imageSources[0]
-			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = primary_image_index
-			
-			#$("#add1").css("visibility", "hidden")
-		#else
-			#$("#1").css("visibility", "hidden")
-			#$("#add1").css("visibility", "visibile")
-
-		for i in [0..imageSources[1].length - 1] by 1
-			if imageSources[1][i] == null || imageSources[1][i] == undefined
-				continue
-			# cssSettings = 
-			# 	"background-size":  "160px 150px"
-			# 	"background-image": "url(" + imageSources[1][i] + ")"
-			imageContentDiv = "#imageContent"
-			nextSlot = i + 1
-			A2Cribs.PhotoManager.IdToPathMap[nextSlot] = imageSources[1][i]
-			if i < imageSources[2].length
-				A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = imageSources[2][i]
+		@div.find("#captionInput").keyup () =>
+			curString = @div.find("#captionInput").val()
+			if curString.length == @MAX_CAPTION_LENGTH
+				@div.find("#charactersLeft").css("color", "red")
 			else
-				A2Cribs.PhotoManager.IdToCaptionMap[nextSlot] = ""
+				@div.find("#charactersLeft").css("color", "black")
 
-			A2Cribs.PhotoManager.ApplyAddPhotoUI nextSlot
-			imageContentDiv = "#imageContent" + (nextSlot)
-			$(imageContentDiv).html("")
+			@div.find("#charactersLeft").html(@MAX_CAPTION_LENGTH - curString.length)
 
-			img = "<img src=#{imageSources[1][i]}></alt>"
-			$(imageContentDiv).html(img)
+		@div.find(".delete").tooltip {'selector': '','placement': 'bottom', 'title': 'Delete'}
+		@div.find(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
+		@div.find(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
 
-			# $(imageContentDiv).css(cssSettings)
-			if nextSlot == A2Cribs.PhotoManager.CurrentPrimaryImageIndex
-				A2Cribs.PhotoManager.MakePrimaryUI primary_image_index
-			#$("#add" + (i + 2)).css("visibility", "hidden")
-			#$("#" + (i + 2)).css("visibility", "visible")
+		@div.find('#ImageAddForm').fileupload
+			url: '/images/add'
+			dataType: 'json'
+			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+			singleFileUploads: true
+			maxFileSize: 5000000 # 5 MB
+			loadImageMaxFileSize: 15000000 # 15MB
+			disableImageResize: false,
+			previewMaxWidth: 100
+			previewMaxHeight: 100
+			previewCrop: true
+		.on 'fileuploadadd', (e, data) =>
+			@div.find("#upload_image").button 'loading'
+			if (@CurrentImageLoading = @NextAvailablePhoto()) >= 0 and data.files? and data.files[0]?
+				@Photos[@CurrentImageLoading].CreatePreview data.files[0], 
+					@div.find "#imageContent" + (@CurrentImageLoading + 1)
+		.on 'fileuploaddone', (e, data) =>
+			@div.find("#upload_image").button 'reset'
+			if data.result.errors? and data.result.errors.length
+				A2Cribs.UIManager.Error "Failed to upload image!"
+				@Photos[@CurrentImageLoading].Reset()
+			else
+				@Photos[@CurrentImageLoading].SetId data.result.id
+		.on 'fileuploadfail', (e, data) =>
+			A2Cribs.UIManager.Error "Failed to upload image!"
+			@div.find("#upload_image").button 'reset'
+			@Photos[@CurrentImageLoading].Reset()
 
 
-	@PreviewImage: (obj)->
-		file = $("#" + obj.id)[0]
-		if obj.id == "0"
-			A2Cribs.PhotoManager.CurrentPhotoTarget = "previewDiv"
-		else
-			A2Cribs.PhotoManager.CurrentPhotoTarget = "secondary"
-		if file.files
-			file = file.files[0]
-			if !A2Cribs.PhotoManager.IsAcceptableFileType(file.name)
-				return
-			fr = new FileReader
-			fr.onloadend = A2Cribs.PhotoManager.SetImage
-			fr.readAsDataURL(file)
-		else
-			file = file.value
-			if !A2Cribs.PhotoManager.IsAcceptableFileType(file)
-				return
-			A2Cribs.PhotoManager.SetImage(file)
+	LoadImages:(images) ->
+		for image in images
+			next_photo = @NextAvailablePhoto()
+			@Photos[next_photo].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary
 
-	@SetImage: (img) ->
-		if typeof img == "object" 
-			img = img.target.result; # file reader
-		# cssSettings = 
-		# 	"background-size":  "160px 150px"
-		# 	"background-image": "url(" + img + ")"
-		imageContentDiv = ""
-		if A2Cribs.PhotoManager.CurrentPhotoTarget == "secondary"
-			imageContentDiv = A2Cribs.PhotoManager.FindNextFreeDiv()
-			if !imageContentDiv
-				A2Cribs.UIManager.Alert "You have already uploaded a maximum of 6 images. Please delete an image before uploading another."
-				return
-			num = imageContentDiv.substring(imageContentDiv.length-1)
-			A2Cribs.PhotoManager.IdToPathMap[num] = img
-		else
-			imageContentDiv = "#imageContent0"
-			
-		image = "<img src='#{img}''></img>"
+	NextAvailablePhoto: ->
+		for photo, i in @Photos
+			if photo.IsEmpty()
+				return i
+		return -1
 
-		$(imageContentDiv).html(image)
-
-	###
-	Find the next free div in which to display the selected photo
-	###
-	@FindNextFreeDiv: ->
-		imageDivPrefix = "#imageContent"
-		foundFreeDiv = false
-		freeDivId = 0
-		for i in [1..6] by 1
-				candidateDiv = imageDivPrefix + i
-				if $(candidateDiv).find('img').length == 0
-					imageContentDiv = candidateDiv
-					foundFreeDiv = true
-					#A2Cribs.PhotoManager.IdToPathMap[i] = img
-					freeDivId = i
-					A2Cribs.PhotoManager.NextImageSlot = freeDivId
-					break
-		if foundFreeDiv
-			return imageContentDiv
-		else
-			return false
-
-	@ShowRequest: (formData, jqForm, options) ->
-		alert formData
-		###fileToUploadValue = $('input[@name=fileToUpload]').fieldValue()
-		if !fileToUploadValue[0]
-			return false###
-		
-		return true
-
-	@ShowResponse: (data, statusText) ->
-		alert data
-
-	@EditImage: (obj) ->
-		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
-		A2Cribs.PhotoManager.CurrentPhotoTarget = "previewDiv"
-		A2Cribs.PhotoManager.CurrentPreviewId = photoNumber
-		img = A2Cribs.PhotoManager.IdToPathMap[photoNumber]
-		A2Cribs.PhotoManager.SetImage img
-		old = A2Cribs.PhotoManager.CurrentPreviewImageIndex
-		A2Cribs.PhotoManager.CurrentPreviewImageIndex = photoNumber
-		$("#captionInput").val(A2Cribs.PhotoManager.IdToCaptionMap[photoNumber])
-		$("#imageContainer" + photoNumber).removeClass("unselected")
-		$("#imageContainer" + photoNumber).addClass("selected")
-		$("#imageContainer" + old).removeClass("selected")
-		$("#imageContainer" + old).addClass("unselected")
-
-	@CaptionKeyUp: ->
-		curString = $("#captionInput").val()
-		if curString.length == A2Cribs.PhotoManager.MAX_CAPTION_LENGTH
-			$("#charactersLeft").html("0")
-			$("#charactersLeft").css("color", "red")
-
-		else
-			$("#charactersLeft").html(A2Cribs.PhotoManager.MAX_CAPTION_LENGTH - curString.length)
-			$("#charactersLeft").css("color", "black")
-
-	@IsAcceptableFileType: (fileName) ->
-		indexOfDot = fileName.indexOf ".", fileName.length - 4
-		if indexOfDot == -1
-			return false
-
-		fileType = fileName.substring(indexOfDot + 1)
-		if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
-			return true
-
-		A2Cribs.UIManager.Alert "Not a valid file type. Valid file types include 'jpg', jpeg', or 'png'."
-		return false
-	###
-	if statusText == 'success'
-		if data.img != ''
-			document.getElementById('result').innerHTML = '<img src="/upload/thumb/'+data.img+'" />';
-			document.getElementById('message').innerHTML = data.error;
-		else
-			document.getElementById('message').innerHTML = data.error;
-	else
-		document.getElementById('message').innerHTML = 'Unknown error!';###
-
-	@MakePrimary: (obj) ->
-		photoNumber = parseInt(obj.id.substring(obj.id.length-1))
-		img = $("#imageContent" + photoNumber).css("background-image")
-		if $("#imageContent" + photoNumber).find('img').length != 0
-			A2Cribs.PhotoManager.MakeNotPrimaryUI A2Cribs.PhotoManager.CurrentPrimaryImageIndex
-			A2Cribs.PhotoManager.MakePrimaryUI photoNumber
-			A2Cribs.PhotoManager.CurrentPrimaryImageIndex = photoNumber
-			$.ajax
-				url: myBaseUrl + "Images/MakePrimary/" + photoNumber 
-				type: "GET"
-
-	###
-	Update UI for image that is now primary
-	###
-	@MakePrimaryUI: (divId) ->
-		$("#primary" + divId).addClass('cur-primary')
-
-	###
-	Update UI for image that is no longer primary
-	###
-	@MakeNotPrimaryUI: (divId) ->
-		$("#primary" + divId).removeClass('cur-primary')
-		# $("#primary" + divId).removeAttr("disabled")
-
-	###
-	Submit the caption for the currently previewed image.
-	###
-	@SubmitCaption: ->
-		caption = $("#captionInput").val()
-		ind = A2Cribs.PhotoManager.CurrentPreviewImageIndex
-		#TODO: need to set IdToCaptionMap in callback to ensure that caption was accepted
+	DeleteImage: (index) ->
 		$.ajax
-			url: myBaseUrl + "Images/SubmitCaption/" + caption + "/" +  ind
+			url: myBaseUrl + "images/delete/" + @Photos[index].GetImageId()
 			type: "GET"
-			success: A2Cribs.PhotoManager.SubmitCaptionCallback
+			success: =>
+				@Photos[index].Reset()
+				if index is @CurrentPrimaryImage
+					for photo, i in @Photos
+						if not photo.IsEmpty()
+							@MakePrimary i
+				if index is @CurrentPreviewImage
+					@div.find("#imageContent0").html '<div class="img-place-holder"></div>'
 
-	@SubmitCaptionCallback: (response) ->
-		if response == "SUCCESS"
-			A2Cribs.PhotoManager.IdToCaptionMap[A2Cribs.PhotoManager.CurrentPreviewImageIndex] = $("#captionInput").val()
-		else
-			alert "Error: Please use only numbers and letters."
+	EditImage: (index) ->
+		if not @Photos[index].IsEmpty()
+			@CurrentPreviewImage = index
+			@div.find("#imageContent0").html @Photos[index].GetPreview()
+			@div.find("#captionInput").val @Photos[index].GetCaption()
 
-	# ###
-	# Update visibility of buttons for image after added to slot imageSlot
-	# ###
-	# @ApplyAddPhotoUI: (imageSlot) ->
-	# 	$("#delete" + imageSlot).toggleClass("hide")
-	# 	$("#primary" + imageSlot).toggleClass("hide")
-	# 	$("#edit" + imageSlot).toggleClass("hide")
+	MakePrimary: (index) ->
+		@Photos[@CurrentPrimaryImage].SetPrimary false
+		@Photos[@CurrentPrimaryImage = index].SetPrimary true
 
-	# ###
-	# Update visibility of buttons for image after being removed
-	# ###
-	# @ApplyRemovePhotoUI: (imageSlot) ->
-	# 	$("#delete" + imageSlot).toggleClass("hide")
-	# 	$("#primary" + imageSlot).toggleClass("hide")
-	# 	$("#edit" + imageSlot).toggleClass("hide")
+	Reset: ->
+		@div.find("#imageContent0").html '<div class="img-place-holder"></div>'
+		for photo in @Photos
+			photo.Reset()
+
+	GetPhotos: ->
+		results = []
+		for photo in @Photos
+			if not photo.IsEmpty()
+				results.push photo.GetObject()
+
+		if results.length is 0 then null else results 

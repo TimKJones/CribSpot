@@ -31,6 +31,7 @@ class A2Cribs.MiniMap
 		@Map.setCenter @center
 
 	SetMarkerPosition: (location) ->
+		@center = location
 		@Map.panTo location
 		@SetZoom 18
 		@Marker.setPosition(location)
@@ -42,4 +43,17 @@ class A2Cribs.MiniMap
 	GetMarkerPosition: () ->
 		'latitude' : @Marker.position.lat()
 		'longitude' : @Marker.position.lng()
+
+	SetEnabled: (value = true)->
+		if @Map?
+			@Map.setOptions
+				draggable: value
+				zoomControl: value
+				scrollwheel: value
+				disableDoubleClickZoom: value
+		if @Marker?
+			@Marker.setOptions
+				draggable: value
+
+		@Enabled = value;
 		

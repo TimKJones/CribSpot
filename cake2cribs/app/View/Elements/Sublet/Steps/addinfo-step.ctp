@@ -4,12 +4,12 @@
 			<strong>Housemate Information</strong>
 		</div>
 	</div>
-	<div id="HousemateId" class="hide"></div>
+	<input id="Housemate_id" type="hidden">
 	<div class="row-fluid">
 		<div class="span6">
 			<div class="row-fluid">
 				<label class="span8"><strong>Estimated Housemates:</strong></label>
-				<select id="HousemateQuantity" class="span3">
+				<select id="Housemate_quantity" class="span3">
 					<option></option>
 					<option>0</option>
 					<option>1</option>
@@ -30,7 +30,7 @@
 		<div class="span6">
 			<div class="row-fluid">
 				<label class="span7"><strong>Are They Students?:</strong></label>
-				<select id="HousemateEnrolled" class="span4">
+				<select id="Housemate_enrolled" class="span4">
 					<option></option>
 					<option value="1">Yes</option>
 					<option value="0">No</option>
@@ -42,7 +42,7 @@
 		<div class="span4">
 			<div class="row-fluid">
 				<label class="span4"><strong>Type:</strong></label>
-				<select id="HousemateStudentType" onchange="A2Cribs.SubletSave.StudentTypeChanged()" class="span8">
+				<select id="Housemate_student_type_id" class="span8">
 					<option value="0"></option>
 					<option value="1">Graduate</option>
 					<option value="2">Undergraduate</option>
@@ -53,7 +53,7 @@
 		<div class="span4">
 			<div class="row-fluid">
 				<label class="span4"><strong>Year:</strong></label>
-				<select id="HousemateYear" class="span8">
+				<select id="Housemate_year" class="span8">
 					<option value="0"></option>
 					<option value="Freshman">Freshman</option>
 					<option value="Sophomore">Sophomore</option>
@@ -66,7 +66,7 @@
 		<div class="span4">
 			<div class="row-fluid">
 				<label class="span5"><strong>Gender:</strong></label>
-				<select id="HousemateGenderType" class="span6">
+				<select id="Housemate_gender_type_id" class="span6">
 					<option value="0"></option>
 					<option value="1">Male</option>
 					<option value="2">Female</option>
@@ -77,12 +77,12 @@
 	</div>
 	<div class="row-fluid">
 		<label class="span2"><strong>Majors:</strong></label>
-		<input id="HousemateMajor" type="text" class="span10">
+		<input id="Housemate_major" type="text" class="span10">
 	</div>
 	<div class="row-fluid">
 		<strong>Longer Sublet Description </strong><strong class="text-info">(Optional)</strong>
 	</div>
 	<div class="row-fluid">
-		<textarea id="SubletLongDescription" class="span12" rows="5"></textarea>
+		<textarea id="Sublet_description" class="span12" rows="5"></textarea>
 	</div>
 </div>

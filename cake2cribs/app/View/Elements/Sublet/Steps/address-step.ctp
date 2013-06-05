@@ -5,7 +5,7 @@
 			<div class="row-fluid control-group">
 				<label class="span3"><strong>College:</strong></label>
 				<input id="University_name" type="text" class="span9 required" required>
-				<input type="hidden" id="University_id">
+				<input type="hidden" id="Sublet_university_id">
 			</div>
 			<div class="row-fluid control-group">
 				<label class="span5"><strong>Building Name:</strong></label>
@@ -14,6 +14,7 @@
 			<div class="row-fluid control-group">
 				<label class="span5"><strong>Street Address:</strong></label>
 				<input id="Marker_street_address" type="text" class="span7 required" required>
+				<input type="hidden" id="Marker_marker_id">
 				<input type="hidden" id="Marker_city">
 				<input type="hidden" id="Marker_state">
 				<input type="hidden" id="Marker_zip">
