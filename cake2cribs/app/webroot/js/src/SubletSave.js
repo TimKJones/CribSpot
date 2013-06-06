@@ -245,7 +245,9 @@
         if (data.status != null) {
           A2Cribs.UIManager.Success(data.status);
           A2Cribs.ShareManager.SavedListing = data.newid;
-          return success(data.newid);
+          if (success != null) {
+            return success(data.newid);
+          }
         } else {
           return A2Cribs.UIManager.Alert(data.error);
         }

@@ -191,7 +191,8 @@ class A2Cribs.SubletSave
 			if data.status?
 				A2Cribs.UIManager.Success data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
-				success data.newid
+				if success?
+					success data.newid
 			else
 				A2Cribs.UIManager.Alert data.error
 
