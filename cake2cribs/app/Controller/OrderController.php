@@ -15,6 +15,13 @@ class OrderController extends AppController {
             )
         );
 
+    public function myOrders(){
+
+        $user_id = $this->Auth->User('id');
+        $orders = $this->Order->find('all', array('conditions'=>"Order.user_id=$user_id"));
+        $this->set("orders", $orders);
+    }
+
     public function featuredListing($listing_id, $listing_id2){
 
         $listing = $this->Listing->get($listing_id);
@@ -85,6 +92,7 @@ class OrderController extends AppController {
         $this->set('response', json_encode($response));
 
     }
+
 
     public function getFl(){}
 

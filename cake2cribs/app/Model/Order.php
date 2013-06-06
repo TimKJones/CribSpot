@@ -60,6 +60,7 @@ class Order extends AppModel {
                     $featured_listing = $FeaturedListing->add($daterange, $user_id);
                     $item_id = $featured_listing['FeaturedListing']['id'];
                     $order->items[$index]->featured_listing_id = $item_id;
+                    $order->items[$index]->street_address = $featured_listing['FeaturedListing']['street_address'];
 
                 }
                 

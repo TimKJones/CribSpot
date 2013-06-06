@@ -76,6 +76,7 @@ class FeaturedListing extends AppModel {
         $featured_listing_data = array(
             'FeaturedListing' => array(
                 'listing_id' => $listing['Listing']['listing_id'],
+                'street_address' => $listing['Marker']['street_address'],
                 'user_id' => $user_id,
                 'start' => $start_date,
                 'end' => $end_date,
