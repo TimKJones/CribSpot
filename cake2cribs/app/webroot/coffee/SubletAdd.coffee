@@ -40,7 +40,7 @@ class A2Cribs.SubletAdd
 			todayDate = new Date();
 			if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
 				A2Cribs.UIManager.Alert "Please enter a valid date."
-			else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf())
+			else if (parsedEndDate <= parsedBeginDate || parsedBeginDate.valueOf() <= todayDate.valueOf())
 				A2Cribs.UIManager.Alert "Please enter a valid date."
 			else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <=0 || $('#SubletNumberBedrooms').val() >=30)
 				A2Cribs.UIManager.Alert "Please enter a valid number of bedrooms."
@@ -72,7 +72,7 @@ class A2Cribs.SubletAdd
 		$("#finishShare").click (e) =>
 			$('#server-notice').dialog2("close");
 			if !isNaN A2Cribs.ShareManager.SavedListing
-				window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing
+				window.location.href = "/sublets/show/" + A2Cribs.ShareManager.SavedListing
 
 		#refresh UI dates
 		oldBeginDate = new Date($('#SubletDateBegin').val())
@@ -136,15 +136,25 @@ class A2Cribs.SubletAdd
 		url = "/sublets/ajax_submit_sublet"
 
 		#validations go here
-		$.post url, A2Cribs.Cache.SubletEditInProgress, (response) =>
-			data = JSON.parse response
-			console.log data.status
-			if (data.status)
-				A2Cribs.UIManager.Alert data.status
-				A2Cribs.ShareManager.SavedListing = data.newid
-				$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
-			else
-				A2Cribs.UIManager.Alert data.error
+
+		# use a flag to make sure we don't allow the user to double post listing 
+		if not @postingDataInProgress? or @postingDataInProgress == false
+			@postingDataInProgress = true
+			
+			$.post url, A2Cribs.Cache.SubletEditInProgress, (response) =>
+				data = JSON.parse response
+				console.log data.status
+				if (data.status)
+					A2Cribs.UIManager.Alert data.status
+					A2Cribs.ShareManager.SavedListing = data.newid
+					$('#server-notice').dialog2("options", {content:"/Sublets/ajax_add4"});
+				else
+					A2Cribs.UIManager.Alert data.error
+
+				@postingDataInProgress = true
+
+		else
+			false # prevents double clicks the finish button
 
 	@GetFormattedDate:(date) ->
 		month = date.getMonth() + 1
