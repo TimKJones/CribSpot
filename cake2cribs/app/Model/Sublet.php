@@ -439,6 +439,7 @@ class Sublet extends AppModel {
 		$University = ClassRegistry::init("University");
 	 	$subletQuery = $this->find('all', array(
 	                     'conditions' => $conditions, 
+	                     'group' => 'Sublet.id',
 	                     'contain' => array('User.id', 'User.first_name', 'User.email', 'User.verified', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'Housemate', 
 	                     	'Image.sublet_id', 'Image.image_path', 'Image.is_primary', 'Image.caption')
 	  	));

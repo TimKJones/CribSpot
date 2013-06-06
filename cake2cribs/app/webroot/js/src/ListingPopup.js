@@ -115,11 +115,26 @@ ListingPopup class
       }
       if (housemates !== void 0 && housemates !== null) {
         content.find('.housemate-count').text(housemates.Quantity);
-        content.find('.housemate-enrolled').text(housemates.Enrolled ? "Yes" : "No");
-        content.find('.housemate-type').text(housemates.GradType);
-        content.find('.housemate-major').text(housemates.Major);
-        content.find('.housemate-gender').text(housemates.Gender);
-        content.find('.housemate-year').text(housemates.Year);
+        if (housemates.Quantity === 0) {
+          content.find('.housemate-enrolled').text("--");
+          content.find('.housemate-type').text("--");
+          content.find('.housemate-major').text("--");
+          content.find('.housemate-gender').text("--");
+          content.find('.housemate-year').text("--");
+        } else {
+          content.find('.housemate-enrolled').text(housemates.Enrolled ? "Yes" : "No");
+          if (!housemates.Enrolled) {
+            content.find('.housemate-type').text("--");
+            content.find('.housemate-major').text("--");
+            content.find('.housemate-gender').text("--");
+            content.find('.housemate-year').text("--");
+          } else {
+            content.find('.housemate-type').text(housemates.GradType);
+            content.find('.housemate-major').text(housemates.Major);
+            content.find('.housemate-gender').text(housemates.Gender);
+            content.find('.housemate-year').text(housemates.Year);
+          }
+        }
       }
       content.find('.utilities-cost').text(sublet.UtilityCost === 0 ? "Included" : "$" + sublet.UtilityCost);
       content.find('.deposit-cost').text(sublet.DepositAmount === 0 ? "None" : "$" + sublet.DepositAmount);
@@ -194,7 +209,9 @@ ListingPopup class
         }
         if (verification_info.verified_fb) {
           pic_url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
-          return $("#tooltipUserPicture").attr("src", pic_url);
+          return $(".user_contact_pic").attr("src", pic_url);
+        } else {
+          return $(".user_contact_pic").attr('src', "/img/head_large.jpg");
         }
       });
     };

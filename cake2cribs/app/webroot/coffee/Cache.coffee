@@ -112,24 +112,23 @@ class A2Cribs.Cache
 			@MarkerIdToHoverDataMap[marker_id] = hd
 
 	@CacheHousemates: (housemates) ->
-		if housemates ==  null || housemates == undefined
+		if not housemates?
 			return
 
 		sublet_id = null
-		if housemates[0] != undefined and housemates[0].sublet_id != undefined
-			sublet_id = parseInt housemates[0].sublet_id
+		if housemates.sublet_id?
+			sublet_id = parseInt housemates.sublet_id
 		else
 			return
 			
 		@SubletIdToHousemateIdsMap[sublet_id] = []
-		for h in housemates
-			h.id = parseInt h.id
-			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type_id]
-			gender = @GenderIdToNameMap[parseInt h.gender_type_id]
-			sublet_id = parseInt h.sublet_id
-			quantity = parseInt h.quantity
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender, quantity)
-			@SubletIdToHousemateIdsMap[sublet_id].push h.id
+		id = parseInt housemates.id
+		grad_status = @StudentTypeIdToNameMap[parseInt housemates.student_type_id]
+		gender = @GenderIdToNameMap[parseInt housemates.gender_type_id]
+		sublet_id = parseInt housemates.sublet_id
+		quantity = parseInt housemates.quantity
+		@IdToHousematesMap[id] = new A2Cribs.Housemate sublet_id, housemates.enrolled, housemates.major, housemates.seeking, grad_status, gender, quantity
+		@SubletIdToHousemateIdsMap[sublet_id].push id
 
 	@CacheImages: (imageList) ->
 		if imageList == undefined or imageList == null or imageList[0] == undefined
