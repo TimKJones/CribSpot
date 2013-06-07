@@ -52,6 +52,7 @@
       this.ProgressBar.reset();
       this.div.find('.step').eq(0).show();
       this.div.find('.step').eq(0).siblings().hide();
+      this.currentStep = 0;
       return PostSublet.__super__.Reset.call(this, this.div);
     };
 

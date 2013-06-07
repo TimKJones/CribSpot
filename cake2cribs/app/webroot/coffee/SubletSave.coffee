@@ -166,7 +166,7 @@ class A2Cribs.SubletSave
 		return isValid
 
 	Reset: () ->
-		@ResetAllInputFields
+		@ResetAllInputFields()
 		@PhotoManager.Reset()
 
 	###

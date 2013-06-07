@@ -207,7 +207,7 @@
     };
 
     SubletSave.prototype.Reset = function() {
-      this.ResetAllInputFields;
+      this.ResetAllInputFields();
       return this.PhotoManager.Reset();
     };
 
