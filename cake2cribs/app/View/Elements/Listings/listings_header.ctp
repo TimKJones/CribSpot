@@ -36,7 +36,7 @@ $(document).ready(function(){
 
 		}else{
 			//Otherwise we just let them edit the sublet
-			A2Cribs.SubletEdit.EditSublet(e.target.id);	
+			A2Cribs.EditSublet.Edit(e.target.id);	
 		}
 		
 	});	

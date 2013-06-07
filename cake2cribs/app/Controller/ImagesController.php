@@ -3,7 +3,6 @@
 class ImagesController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Image');
-	var $listing_id = 5;
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -20,8 +19,8 @@ class ImagesController extends AppController {
 
 	function add($data = null)
 	{
-		//CakeLog::write('debug', "fileuploadDebug: " . print_r($this->request->data['imageSlot'], true));
-		//CakeLog::write('fileDebug', "params3: " . print_r($this, true));
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
 		$this->set('errors', null);
 		$from_add_page = false;
 		if (!$data)
@@ -32,22 +31,41 @@ class ImagesController extends AppController {
 				$from_add_page = true;
 			}
 		}
-    	CakeLog::write('imageDebug', "data: " . print_r($data, true));
-		//CakeLog::write("fileDebug", print_r($data, true));
-    	$response = $this->Image->AddImage($this->listing_id, $data, $this->Session->read('user'));
-    	$errors = $response[0];
-    	$filePath = $response[1];
+		CakeLog::write('imageDebug', "data: " . print_r($data, true));
+		$response = $this->Image->AddImage($data, $this->Auth->User('id'));
+		$errors = $response['errors'];
 
-    	if (count($errors) == 0 && $this->request && $this->request->data && $this->request->data['imageSlot'])
-    	{
-    		$imageSlot = $this->request->data['imageSlot'];
-    		$this->Session->write("image" . $imageSlot, $filePath); 
-    		CakeLog::write('sessionDebug', $imageSlot . ": " . $filePath);
-    	}
+		if (count($errors) == 0 && $this->request && $this->request->data && $this->request->data['imageSlot'])
+		{
+			$imageSlot = $this->request->data['imageSlot'];
+			$this->Session->write("image" . $imageSlot, $filePath); 
+			CakeLog::write('sessionDebug', $imageSlot . ": " . $filePath);
+		}
+		$this->layout = 'ajax';
+		$this->set('response', json_encode($response));
+	}
 
-    	$errors = json_encode($errors);
-    	$this->set('errors', $errors);
-    	return $errors;
+	function delete($photo_id)
+	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+		$image = $this->Image->find('first', array(
+			'fields' => array('user_id', 'image_path'), 
+			'conditions' => array('Image.image_id' => $photo_id)
+			)
+		);
+		if ($image['Image']['user_id'] == $this->Auth->user('id'))
+		{
+			$this->Image->delete($photo_id);
+			unlink($image['Image']['image_path']);
+			$response = array("success" => "You have successfully deleted this image!");
+		}
+		else
+		{
+			$response = array("errors" => "You do not own this image!");
+		}
+		$this->layout = 'ajax';
+		$this->set('response', json_encode($response));
 	}
 
 	function edit($listing_id)
@@ -124,26 +142,26 @@ class ImagesController extends AppController {
 		$file = $this->data["Image"]["file"];
 		//$file = $this->data["Image"]["listing_id"];
 		$this->set('file', $file);
-	  	if ($file["error"] === UPLOAD_ERR_OK) {
-	    	$name = String::uuid(); 
-	    	/* 
-	    	TODO: ID NEEDS TO BE MODIFIED LATER AFTER ENTRY IS PUT INTO DB
-	    	*/
-	    	$file_path = WWW_ROOT."img/sublets/tmp/".$name;
-	    	if (move_uploaded_file($file["tmp_name"], $file_path)) {
-	    		$this->set("uploaded_img", "sublets/tmp/".$name);
-	    		/*$this->Image->AddImage($file*/
+		if ($file["error"] === UPLOAD_ERR_OK) {
+			$name = String::uuid(); 
+			/* 
+			TODO: ID NEEDS TO BE MODIFIED LATER AFTER ENTRY IS PUT INTO DB
+			*/
+			$file_path = WWW_ROOT."img/sublets/tmp/".$name;
+			if (move_uploaded_file($file["tmp_name"], $file_path)) {
+				$this->set("uploaded_img", "sublets/tmp/".$name);
+				/*$this->Image->AddImage($file*/
 
-		      /*$this->data["Image"]["id"] = $id;
-		      $this->data["Image"]["user_id"] = $this->Session->read('user_id');
-		      $this->data["Image"]["path"] = $file["name"];*/
-		     /* $this->data[‘Upload’][‘filesize’] = $file[‘size’];
-		      $this->data[‘Upload’][‘filemime’] = $file[‘type’];*/
-		      return true;
-	    	}
-	  	}
+			  /*$this->data["Image"]["id"] = $id;
+			  $this->data["Image"]["user_id"] = $this->Session->read('user_id');
+			  $this->data["Image"]["path"] = $file["name"];*/
+			 /* $this->data[‘Upload’][‘filesize’] = $file[‘size’];
+			  $this->data[‘Upload’][‘filemime’] = $file[‘type’];*/
+			  return true;
+			}
+		}
 
-	  	return false;
+		return false;
 	}
 
 	function SubmitCaption($caption, $image_slot)

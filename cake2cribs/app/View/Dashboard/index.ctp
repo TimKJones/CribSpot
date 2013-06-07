@@ -2,6 +2,7 @@
 
 <?php echo $this->element('dashboard-header'); ?>
 <?php echo $this->element('popups'); ?>
+<?php echo $this->element('post-sublet'); ?>
 
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
@@ -30,6 +31,9 @@
 			</div>
 			<div class = 'messages-content hidden'>
 			 	<?php echo $this->element('Messages/message_window', $user) ?>
+			</div>
+			<div class="sublet-content hide">
+				<?php echo $this->element('Sublet/edit_sublet_window', $user); ?>
 			</div>
 
 		</div>

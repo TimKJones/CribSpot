@@ -22,14 +22,7 @@
 <div class="top-bar">
 	<!-- <a id="sublet-post" href="#" class="post-button inline pull-left">POST A SUBLET</a> -->
 	<!-- <a id="sublet-post" class="post-button inline pull-left open-dialog" href="/users/verifyUniversity"> POST A SUBLET</a> -->
-
-	<?php if ($this->Session->read('Auth.User.id')==0)
-			{
-				echo '<a class="post-button inline pull-left" href="#myModal" data-toggle="modal">POST A SUBLET</a>';
-			}
-			else
-				echo '<a id="subletAddSteps" class="post-button inline pull-left" href="#" >POST A SUBLET</a>';
-	?>
+	<a id="subletAddSteps" class="post-button inline pull-left" href="#post-sublet-modal" data-toggle="modal" onclick="A2Cribs.PostSublet.Reset()">POST A SUBLET</a>
 	<ul id="left-options" class="inline unstyled pull-left">
 		<li class="active"><a href="#">Sublets</a></li>
 		<li><a href="#" onclick="A2Cribs.UIManager.Alert('Full-Year Leases are coming soon!');">Full-Year Leases</a></li>
@@ -76,19 +69,4 @@
 		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>
-
-<script type="text/javascript">
-    $(function() {
-        $('#subletAddSteps').click(function(event) {
-            A2Cribs.SubletAdd.InitPostingProcess(event);
-            event.preventDefault() ;
-        });
-    });
-/*
-    $("#endDate").datepicker().on('changeDate', function(ev) {
-    	alert('changed');
-    }*/
-
-  //  $("#price-filter").slider().on('slideStop', A2Cribs.FilterManager.ApplyFilter(ev));
-</script>
 

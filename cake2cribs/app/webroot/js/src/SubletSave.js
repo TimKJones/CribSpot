@@ -5,51 +5,35 @@
 
     function SubletSave() {}
 
-    SubletSave.StartNewSublet = function() {
-      $('#post-sublet-modal').find('input:text').val('');
-      $('#post-sublet-modal').find('select option:first-child').attr("selected", "selected");
-      A2Cribs.CorrectMarker.ClearMarker();
-      this.ProgressBar.reset();
-      $('.step').eq(0).show();
-      return $('.step').eq(0).siblings().hide();
-    };
-
-    SubletSave.SetupUI = function(initialStep) {
+    SubletSave.prototype.setupUI = function(div) {
       var _this = this;
-      this.CurrentStep = initialStep;
-      $('.step').eq(this.CurrentStep).siblings().hide();
-      this.ProgressBar = new A2Cribs.PostSubletProgress($('.post-sublet-progress'), initialStep);
-      $("#address-step").siblings().hide();
-      $(".next-btn").click(function(event) {
-        if (_this.Validate(_this.CurrentStep + 1)) {
-          $(event.currentTarget).closest(".step").hide().next(".step").show();
-          _this.CurrentStep++;
-          return _this.ProgressBar.next();
-        }
-      });
-      $(".back-btn").click(function(event) {
-        $(event.currentTarget).closest(".step").hide().prev(".step").show();
-        _this.CurrentStep--;
-        return _this.ProgressBar.prev();
-      });
-      $(".required").focus(function(event) {
-        return $(event.target).parent().removeClass("error");
-      });
-      A2Cribs.CorrectMarker.Init();
-      $("#SubletShortDescription").keyup(function() {
+      if (!(A2Cribs.Geocoder != null)) {
+        A2Cribs.Geocoder = new google.maps.Geocoder();
+      }
+      this.div = div;
+      div.find("#Sublet_short_description").keyup(function() {
         if ($(this).val().length >= 160) {
           $(this).val($(this).val().substr(0, 160));
         }
-        return $("#desc-char-left").text(160 - $(this).val().length);
+        return div.find("#desc-char-left").text(160 - $(this).val().length);
       });
-      $("#SubletDateBegin").datepicker();
-      $("#SubletDateEnd").datepicker();
-      $("#universityName").focusout(function() {
-        return A2Cribs.CorrectMarker.FindSelectedUniversity();
+      div.find("#Sublet_utility_type_id").change(function() {
+        if (+div.find("#Sublet_utility_type_id").val() === 1) {
+          return div.find("#Sublet_utility_cost").val("0");
+        }
       });
-      A2Cribs.Map.LoadTypeTables();
-      A2Cribs.SubletSave.PopulateInputFields();
-      return A2Cribs.PhotoManager.SetupUI();
+      div.find("#Housemate_student_type_id").change(function() {
+        if (+div.find("#Housemate_student_type_id").val() === 1) {
+          return _this.div.find("#Housemate_year").val(0);
+        }
+      });
+      div.find(".required").keydown(function() {
+        return $(this).parent().removeClass("error");
+      });
+      div.find(".date_field").datepicker();
+      this.MiniMap = new A2Cribs.MiniMap(div);
+      this.PhotoManager = new A2Cribs.PhotoManager(div);
+      return A2Cribs.Map.LoadTypeTables();
     };
 
     /*
@@ -58,7 +42,7 @@
     */
 
 
-    SubletSave.Validate = function(step_) {
+    SubletSave.prototype.Validate = function(step_) {
       if (step_ >= 1) {
         if (!this.ValidateStep1()) {
           return false;
@@ -73,145 +57,147 @@
         if (!this.ValidateStep3()) {
           return false;
         }
-        if (!this.SaveSublet()) {
-          return false;
-        }
       }
       return true;
     };
 
-    SubletSave.ValidateStep1 = function() {
+    SubletSave.prototype.ValidateStep1 = function() {
       var isValid;
       isValid = true;
       A2Cribs.UIManager.CloseLogs();
-      if (!$('#formattedAddress').val()) {
+      if (!this.div.find('#Marker_street_address').val()) {
         A2Cribs.UIManager.Error("Please place your street address on the map using the Place On Map button.");
-        $('#formattedAddress').parent().addClass("error");
+        this.div.find('#Marker_street_address').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#universityName').val()) {
+      if (!this.div.find('#University_name').val()) {
         A2Cribs.UIManager.Error("You need to select a university.");
-        $('#universityName').parent().addClass("error");
+        this.div.find('#University_name').parent().addClass("error");
         isValid = false;
       }
-      if ($('#buildingType').val().length === 0) {
+      if (this.div.find('#Marker_building_type_id').val().length === 0) {
         A2Cribs.UIManager.Error("You need to select a building type.");
-        $('#buildingType').parent().addClass("error");
+        this.div.find('#Marker_building_type_id').parent().addClass("error");
         isValid = false;
       }
-      if ($('#SubletUnitNumber').val().length >= 249) {
+      if (this.div.find('#Sublet_unit_number').val().length >= 249) {
         A2Cribs.UIManager.Error("Your unit number is too long.");
-        $('#SubletUnitNumber').parent().addClass("error");
+        this.div.find('#Sublet_unit_number').parent().addClass("error");
         isValid = false;
       }
-      if ($('#SubletName').val().length >= 249) {
+      if (this.div.find('#Marker_alternate_name').val().length >= 249) {
         A2Cribs.UIManager.Error("Your alternate name is too long.");
-        $('#SubletName').parent().addClass("error");
+        this.div.find('#Marker_alternate_name').parent().addClass("error");
         isValid = false;
       }
       return isValid;
     };
 
-    SubletSave.ValidateStep2 = function() {
+    SubletSave.prototype.ValidateStep2 = function() {
       var descLength, isValid, parsedBeginDate, parsedEndDate, todayDate;
       isValid = true;
       A2Cribs.UIManager.CloseLogs();
-      parsedBeginDate = new Date(Date.parse($('#SubletDateBegin').val()));
-      parsedEndDate = new Date(Date.parse($('#SubletDateEnd').val()));
+      parsedBeginDate = new Date(Date.parse(this.div.find('#Sublet_date_begin').val()));
+      parsedEndDate = new Date(Date.parse(this.div.find('#Sublet_date_end').val()));
       todayDate = new Date();
       if (parsedBeginDate.toString() === "Invalid Date" || parsedEndDate.toString() === "Invalid Date") {
         A2Cribs.UIManager.Error("Please enter a valid date.");
-        $('#SubletDateBegin').parent().addClass("error");
-        $('#SubletDateEnd').parent().addClass("error");
+        this.div.find('#Sublet_date_begin').parent().addClass("error");
+        this.div.find('#Sublet_date_end').parent().addClass("error");
         isValid = false;
-      } else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() || parsedBeginDate.valueOf() <= todayDate.valueOf()) {
+      } else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf()) {
         A2Cribs.UIManager.Error("Please enter a valid date.");
-        $('#SubletDateBegin').parent().addClass("error");
-        $('#SubletDateEnd').parent().addClass("error");
+        this.div.find('#Sublet_date_begin').parent().addClass("error");
+        this.div.find('#Sublet_date_end').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#SubletNumberBedrooms').val() || isNaN(parseInt($("#SubletNumberBedrooms").val())) || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
+      if (!this.div.find('#Sublet_number_bedrooms').val() || isNaN(parseInt(this.div.find("#Sublet_number_bedrooms").val())) || this.div.find('#Sublet_number_bedrooms').val() <= 0 || this.div.find('#Sublet_number_bedrooms').val() >= 30) {
         A2Cribs.UIManager.Error("Please enter a valid number of bedrooms.");
-        $('#SubletNumberBedrooms').parent().addClass("error");
+        this.div.find('#Sublet_number_bedrooms').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#SubletPricePerBedroom').val() || isNaN(parseInt($("#SubletPricePerBedroom").val())) || $('#SubletPricePerBedroom').val() < 1 || $('#SubletPricePerBedroom').val() >= 20000) {
+      if (!this.div.find('#Sublet_price_per_bedroom').val() || isNaN(parseInt(this.div.find("#Sublet_price_per_bedroom").val())) || this.div.find('#Sublet_price_per_bedroom').val() < 1 || this.div.find('#Sublet_price_per_bedroom').val() >= 20000) {
         A2Cribs.UIManager.Error("Please enter a valid price per bedroom.");
-        $('#SubletPricePerBedroom').parent().parent().addClass("error");
+        this.div.find('#Sublet_price_per_bedroom').parent().parent().addClass("error");
         isValid = false;
       }
-      if ($('#SubletShortDescription').val().length === 0) {
+      if (this.div.find('#Sublet_short_description').val().length === 0) {
         A2Cribs.UIManager.Error("Please enter a description.");
-        $('#SubletShortDescription').parent().addClass("error");
+        this.div.find('#Sublet_short_description').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#SubletUtilityCost').val() || isNaN(parseInt($("#SubletUtilityCost").val())) || $('#SubletUtilityCost').val() < 0 || $('#SubletUtilityCost').val() >= 50000) {
+      if (!this.div.find('#Sublet_utility_cost').val() || isNaN(parseInt(this.div.find("#Sublet_utility_cost").val())) || this.div.find('#Sublet_utility_cost').val() < 0 || this.div.find('#Sublet_utility_cost').val() >= 50000) {
         A2Cribs.UIManager.Error("Please enter a valid utility cost.");
-        $('#SubletUtilityCost').parent().addClass("error");
+        this.div.find('#Sublet_utility_cost').parent().addClass("error");
         isValid = false;
       }
-      if (!$('#SubletDepositAmount').val() || isNaN(parseInt($("#SubletDepositAmount").val())) || $('#SubletDepositAmount').val() < 0 || $('#SubletDepositAmount').val() >= 50000) {
+      if (!this.div.find('#Sublet_deposit_amount').val() || isNaN(parseInt(this.div.find("#Sublet_deposit_amount").val())) || this.div.find('#Sublet_deposit_amount').val() < 0 || this.div.find('#Sublet_deposit_amount').val() >= 50000) {
         A2Cribs.UIManager.Error("Please enter a valid deposit amount.");
-        $('#SubletDepositAmount').parent().parent().addClass("error");
+        this.div.find('#Sublet_deposit_amount').parent().parent().addClass("error");
         isValid = false;
       }
-      descLength = $('#SubletAdditionalFeesDescription').val().length;
+      descLength = this.div.find('#Sublet_additional_fees_description').val().length;
       if (descLength >= 161) {
         A2Cribs.UIManager.Error("Please keep the additional fees description under 160 characters.");
-        $('#SubletAdditionalFeesDescription').parent().addClass("error");
+        this.div.find('#Sublet_additional_fees_description').parent().addClass("error");
         isValid = false;
       }
       if (descLength > 0) {
-        if (!$('#SubletAdditionalFeesAmount').val() || isNaN(parseInt($("#SubletAdditionalFeesAmount").val())) || $('#SubletAdditionalFeesAmount').val() < 0 || $('#SubletAdditionalFeesAmount').val() >= 50000) {
+        if (!this.div.find('#Sublet_additional_fees_amount').val() || isNaN(parseInt(this.div.find("#Sublet_additional_fees_amount").val())) || this.div.find('#Sublet_additional_fees_amount').val() < 0 || this.div.find('#Sublet_additional_fees_amount').val() >= 50000) {
           A2Cribs.UIManager.Error("Please enter a valid additional fees amount.");
-          $('#SubletAdditionalFeesAmount').parent().addClass("error");
+          this.div.find('#Sublet_additional_fees_amount').parent().addClass("error");
           isValid = false;
         }
       }
-      if ($("#SubletFurnishedType").val().length === 0) {
+      if (this.div.find("#Sublet_furnished_type_id").val().length === 0) {
         A2Cribs.UIManager.Error("Please describe the situation with the furniture.");
-        $('#SubletFurnishedType').parent().addClass("error");
+        this.div.find('#Sublet_furnished_type_id').parent().addClass("error");
         isValid = false;
       }
-      if ($("#SubletUtilityType").val().length === 0) {
+      if (this.div.find("#Sublet_utility_type_id").val().length === 0) {
         A2Cribs.UIManager.Error("Please describe the situation with the utilities.");
-        $('#SubletUtilityType').parent().addClass("error");
+        this.div.find('#Sublet_utility_type_id').parent().addClass("error");
         isValid = false;
       }
-      if ($("#parking").val().length === 0) {
+      if (this.div.find("#Sublet_parking").val().length === 0) {
         A2Cribs.UIManager.Error("Please describe the situation with parking.");
-        $('#parking').parent().addClass("error");
+        this.div.find('#Sublet_parking').parent().addClass("error");
         isValid = false;
       }
-      if ($("#SubletBathroomType").val().length === 0) {
+      if (this.div.find("#Sublet_ac").val().length === 0) {
+        A2Cribs.UIManager.Error("Please describe the situation with parking.");
+        this.div.find('#Sublet_ac').parent().addClass("error");
+        isValid = false;
+      }
+      if (this.div.find("#Sublet_bathroom_type_id").val().length === 0) {
         A2Cribs.UIManager.Error("Please describe the situation with your bathroom.");
-        $('#SubletBathroomType').parent().addClass("error");
+        this.div.find('#Sublet_bathroom_type_id').parent().addClass("error");
         isValid = false;
       }
       return isValid;
     };
 
-    SubletSave.ValidateStep3 = function() {
+    SubletSave.prototype.ValidateStep3 = function() {
       var isValid;
       isValid = true;
-      if ($('#HousemateQuantity').val().length === 0) {
+      if (this.div.find('#Housemate_quantity').val().length === 0) {
         isValid = false;
       } else {
-        if (+$('#HousemateQuantity').val() !== 0) {
-          if ($('#HousemateEnrolled option:selected').text().length === 0) {
+        if (+this.div.find('#Housemate_quantity').val() !== 0) {
+          if (this.div.find('#Housemate_enrolled option:selected').text().length === 0) {
             isValid = false;
-          } else if (+$('#HousemateEnrolled').val() === 1) {
-            if (+$('#HousemateStudentType').val() === 0) {
+          } else if (+this.div.find('#Housemate_enrolled').val() === 1) {
+            if (+this.div.find('#Housemate_student_type_id').val() === 0) {
               isValid = false;
-            } else if (+$('#HousemateStudentType').val() !== 1) {
-              if (+$('#HousemateYear').val() === 0) {
+            } else if (+this.div.find('#Housemate_student_type_id').val() !== 1) {
+              if (+this.div.find('#Housemate_year').val() === 0) {
                 isValid = false;
               }
             }
-            if (+$('#HousemateGenderType').val() === 0) {
+            if (+this.div.find('#Housemate_gender_type_id').val() === 0) {
               isValid = false;
             }
-            if ($('#HousemateMajor').val().length >= 255) {
+            if (this.div.find('#Housemate_major').val().length >= 255) {
               isValid = false;
             }
           }
@@ -220,160 +206,9 @@
       return isValid;
     };
 
-    /*
-    	Retrieves all necessary sublet data and then pulls up the edit sublet interface
-    */
-
-
-    SubletSave.EditSublet = function(sublet_id) {
-      var _this = this;
-      return $.ajax({
-        url: myBaseUrl + "Sublets/getSubletDataById/" + sublet_id,
-        type: "GET",
-        success: function(subletData) {
-          subletData = JSON.parse(subletData);
-          A2Cribs.SubletSave.PopulateInputFields(subletData);
-          /*
-          				TODO: Open Modal Here
-          */
-
-          A2Cribs.SubletAdd.resizeModal(modal_body);
-          return $(window).resize(function() {
-            return A2Cribs.SubletAdd.resizeModal(modal_body);
-          });
-        },
-        error: function() {
-          return alertify.error("An error occured while loading your sublet data, please try again.", 2000);
-        }
-      });
-    };
-
-    /*
-    	Populates all fields in all steps with sublet data loaded for a sublet edit.
-    */
-
-
-    SubletSave.PopulateInputFields = function(subletData) {
-      if (subletData == null) {
-        subletData = null;
-      }
-      if (subletData === null) {
-        this.InitUniversityAutocomplete();
-        this.ResetAllInputFields();
-        return;
-      }
-      this.InitEditStep1(subletData);
-      this.InitEditStep2(subletData);
-      this.InitEditStep3(subletData);
-      return this.InitEditStep4(subletData);
-    };
-
-    /*
-    	Initializes map and university input autocomplete
-    	If subletData is not null, then we populate all inputs in step 1 with loaded sublet data
-    */
-
-
-    SubletSave.InitEditStep1 = function(subletData) {
-      if (subletData == null) {
-        subletData = null;
-      }
-      if (subletData === null) {
-        return;
-      }
-      this.InitUniversityAutocomplete();
-      if (subletData.University !== null && subletData.University !== void 0) {
-        $('#universityName').val(subletData.University.name);
-        A2Cribs.CorrectMarker.FindSelectedUniversity();
-      }
-      if (subletData.Sublet !== null && subletData.Sublet !== void 0) {
-        $('#SubletUnitNumber').val(subletData.Sublet.unit_number);
-      }
-      if (subletData.Marker !== null && subletData.Marker !== void 0) {
-        $('#SubletBuildingTypeId').val(subletData.Marker.building_type_id);
-        $('#SubletName').val(subletData.Marker.alternate_name);
-        $("#formattedAddress").val(subletData.Marker.street_address);
-        $('#updatedLat').val(subletData.Marker.latitude);
-        $('#updatedLong').val(subletData.Marker.longitude);
-        $("#city").val(subletData.Marker.city);
-        $("#state").val(subletData.Marker.state);
-        $("#postal").val(subletData.Marker.zip);
-        $("#addressToMark").val(subletData.Marker.street_address);
-        if (subletData.Marker.street_address !== null && subletData.Marker.street_address !== void 0) {
-          A2Cribs.CorrectMarker.FindAddress();
-        }
-      }
-      return A2Cribs.CorrectMarker.Disable();
-    };
-
-    SubletSave.InitEditStep2 = function(subletData) {
-      var beginDate, endDate, formattedBeginDate, formattedEndDate;
-      if (subletData === null) {
-        return;
-      }
-      $('#SubletDateBegin').val("");
-      $('#SubletDateEnd').val("");
-      $('#SubletFlexibleDates').prop("checked", true);
-      $('#SubletParking').prop("checked", false);
-      $('#SubletAc').prop("checked", false);
-      if (subletData.Sublet === null || subletData.Sublet === void 0) {
-        return;
-      }
-      if (subletData.Sublet.date_begin !== null) {
-        beginDate = new Date(subletData.Sublet.date_begin);
-        formattedBeginDate = A2Cribs.SubletAdd.GetFormattedDate(beginDate);
-      }
-      if (A2Cribs.Cache.SubletEditInProgress.Sublet.date_end !== null) {
-        endDate = new Date(subletData.Sublet.date_end);
-        formattedEndDate = A2Cribs.SubletAdd.GetFormattedDate(endDate);
-      }
-      $('#SubletDateBegin').val(formattedBeginDate);
-      $('#SubletDateEnd').val(formattedEndDate);
-      if (subletData.Sublet.flexible_dates !== null) {
-        $('#SubletFlexibleDates').prop('checked', subletData.Sublet.flexible_dates);
-      }
-      $('#SubletNumberBedrooms').val(subletData.Sublet.number_bedrooms);
-      $('#SubletPricePerBedroom').val(subletData.Sublet.price_per_bedroom);
-      $('#SubletShortDescription').val(subletData.Sublet.short_description);
-      $('#SubletBathroomType').val(subletData.Sublet.bathroom_type_id);
-      $('#SubletUtilityTypeId').val(subletData.Sublet.utility_type_id);
-      $('#SubletUtilityCost').val(subletData.Sublet.utility_type_id);
-      $('#SubletParking').prop("checked", subletData.Sublet.parking);
-      $('#SubletAc').prop("checked", subletData.Sublet.ac);
-      $('#SubletFurnishedType').val(subletData.Sublet.furnished_type_id);
-      $('#SubletDepositAmount').val(subletData.Sublet.deposit_amount);
-      $('#SubletAdditionalFeesDescription').val(subletData.Sublet.additional_fees_description);
-      return $('#SubletAdditionalFeesAmount').val(subletData.Sublet.additional_fees_amount);
-    };
-
-    /*
-    	Initialize step 3 - Housemate data
-    */
-
-
-    SubletSave.InitEditStep3 = function(subletData) {
-      if (subletData === null) {
-        return;
-      }
-      $("#HousemateEnrolled").prop("checked", false);
-      if (subletData.Housemate === null || subletData.Housemate === void 0) {
-        return;
-      }
-      $("#HousemateQuantity").val(subletData.Housemate.quantity);
-      $("#HousemateEnrolled").prop("checked", subletData.Housemate.enrolled);
-      $("#HousemateStudentType").val(subletData.Housemate.student_type_id);
-      $("#HousemateMajor").val(subletData.Housemate.major);
-      $("#HousemateGenderType").val(subletData.Housemate.gender_type_id);
-      return $("#HousemateYear").val(subletData.Housemate.year);
-    };
-
-    /*
-    	Initialize step 4 - Photos
-    */
-
-
-    SubletSave.InitEditStep4 = function() {
-      return A2Cribs.PhotoManager.LoadImages();
+    SubletSave.prototype.Reset = function() {
+      this.ResetAllInputFields;
+      return this.PhotoManager.Reset();
     };
 
     /*
@@ -381,37 +216,10 @@
     */
 
 
-    SubletSave.ResetAllInputFields = function() {};
-
-    SubletSave.InitUniversityAutocomplete = function() {
-      return $.ajax({
-        url: myBaseUrl + "universities/loadAll",
-        success: function(response) {
-          var university, _i, _len, _ref;
-          A2Cribs.CorrectMarker.universitiesMap = JSON.parse(response);
-          A2Cribs.CorrectMarker.SchoolList = [];
-          _ref = A2Cribs.CorrectMarker.universitiesMap;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            university = _ref[_i];
-            A2Cribs.CorrectMarker.SchoolList.push(university.University.name);
-          }
-          return $("#universityName").typeahead({
-            source: A2Cribs.CorrectMarker.SchoolList
-          });
-        }
-      });
-    };
-
-    SubletSave.UtilityChanged = function() {
-      if ($("#SubletUtilityType").val() === "Included") {
-        return $("#SubletUtilityCost").val("0");
-      }
-    };
-
-    SubletSave.StudentTypeChanged = function() {
-      if ($("#HousemateStudentType").val() === "Graduate") {
-        return $("#HousemateYear").val(0);
-      }
+    SubletSave.prototype.ResetAllInputFields = function() {
+      this.div.find('input:text').val('');
+      this.div.find('input:hidden').val('');
+      return this.div.find('select option:first-child').attr("selected", "selected");
     };
 
     /*
@@ -420,38 +228,28 @@
     */
 
 
-    SubletSave.SaveSublet = function() {
+    SubletSave.prototype.Save = function(subletObject, success) {
       var url,
         _this = this;
+      if (success == null) {
+        success = null;
+      }
       url = "/sublets/ajax_submit_sublet";
-      return $.post(url, A2Cribs.SubletSave.GetSubletObject(), function(response) {
+      return $.post(url, subletObject, function(response) {
         var data;
         data = JSON.parse(response);
         console.log(data.status);
-        if (data.status) {
-          A2Cribs.UIManager.Alert(data.status);
+        if (data.redirect != null) {
+          window.location = data.redirect;
+        }
+        if (data.status != null) {
+          A2Cribs.UIManager.Success(data.status);
           A2Cribs.ShareManager.SavedListing = data.newid;
-          return true;
+          return success(data.newid);
         } else {
-          A2Cribs.UIManager.Alert(data.error);
-          return false;
+          return A2Cribs.UIManager.Alert(data.error);
         }
       });
-    };
-
-    /*
-    	Called when user finishes the final step of sublet add/edit.
-    	Closes sublet modal and redirects user to map with sublet popup open.
-    */
-
-
-    SubletSave.FinishSubletSave = function() {
-      /*
-      		TODO: Close Modal
-      */
-      if (!isNaN(A2Cribs.ShareManager.SavedListing)) {
-        return window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing;
-      }
     };
 
     /*
@@ -459,53 +257,29 @@
     */
 
 
-    SubletSave.GetSubletObject = function() {
-      var subletObject;
-      return subletObject = {
-        Sublet: {
-          id: $("#subletId").val(),
-          university_id: $("#universityId").val(),
-          university_name: $("#universityName").val(),
-          building_type_id: $('#buildingType').val(),
-          date_begin: this.GetMysqlDateFormat($('#SubletDateBegin').val()),
-          date_end: this.GetMysqlDateFormat($('#SubletDateEnd').val()),
-          number_bedrooms: $('#SubletNumberBedrooms').val(),
-          price_per_bedroom: $('#SubletPricePerBedroom').val(),
-          payment_type_id: 1,
-          short_description: $('#SubletShortDescription').val(),
-          description: $('#SubletLongDescription').val(),
-          bathroom_type_id: $('#SubletBathroomType').val(),
-          utility_type_id: $('#SubletUtilityType').val(),
-          utility_cost: $('#SubletUtilityCost').val(),
-          deposit_amount: $('#SubletDepositAmount').val(),
-          additional_fees_description: $('#SubletAdditionalFeesDescription').val(),
-          additional_fees_amount: $('#SubletDepositAmount').val(),
-          unit_number: $('#SubletUnitNumber').val(),
-          flexible_dates: $('#SubletFlexibleDates').is(':checked'),
-          furnished_type_id: $('#SubletFurnishedType').val(),
-          ac: $('#ac').val() === "Yes",
-          parking: $('#parking').val() === "Yes"
-        },
-        Marker: {
-          marker_id: $("#markerId").val(),
-          alternate_name: $('#SubletName').val(),
-          street_address: $("#formattedAddress").val(),
-          building_type_id: $('#buildingType').val(),
-          city: $('#city').val(),
-          state: $('#state').val(),
-          zip: $('#postal').val(),
-          latitude: $('#updatedLat').val(),
-          longitude: $('#updatedLong').val()
-        },
-        Housemate: {
-          quantity: $("#HousemateQuantity").val(),
-          enrolled: $("#HousemateEnrolled").val(),
-          student_type_id: $("#HousemateStudentType").val(),
-          major: $("#HousemateMajor").val(),
-          gender_type_id: $("#HousemateGenderType").val(),
-          year: $("#HousemateYear").val()
+    SubletSave.prototype.GetSubletObject = function() {
+      var input, k, p, q, v, _ref;
+      _ref = A2Cribs.SubletObject;
+      for (k in _ref) {
+        v = _ref[k];
+        for (p in v) {
+          q = v[p];
+          console.log(k + "_" + p);
+          A2Cribs.SubletObject[k][p] = 0;
+          input = this.div.find("#" + k + "_" + p);
+          if (input != null) {
+            if ("checkbox" === input.attr("type")) {
+              A2Cribs.SubletObject[k][p] = input.prop("checked");
+            } else if (input.hasClass("date_field")) {
+              A2Cribs.SubletObject[k][p] = this.GetMysqlDateFormat(input.val());
+            } else {
+              A2Cribs.SubletObject[k][p] = input.val();
+            }
+          }
         }
-      };
+      }
+      A2Cribs.SubletObject.Image = this.PhotoManager.GetPhotos();
+      return A2Cribs.SubletObject;
     };
 
     /*
@@ -513,7 +287,7 @@
     */
 
 
-    SubletSave.GetMysqlDateFormat = function(dateString) {
+    SubletSave.prototype.GetMysqlDateFormat = function(dateString) {
       var beginDateFormatted, date, day, month, year;
       date = new Date(dateString);
       month = date.getMonth() + 1;
@@ -528,7 +302,7 @@
       return beginDateFormatted = year + "-" + month + "-" + day;
     };
 
-    SubletSave.GetTodaysDate = function() {
+    SubletSave.prototype.GetTodaysDate = function() {
       var dd, mm, today, yyyy;
       today = new Date();
       dd = today.getDate();
@@ -542,6 +316,20 @@
       }
       today = mm + '/' + dd + '/' + yyyy;
       return today;
+    };
+
+    SubletSave.prototype.GetFormattedDate = function(date) {
+      var beginDateFormatted, day, month, year;
+      month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      day = date.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      year = date.getUTCFullYear();
+      return beginDateFormatted = month + "/" + day + "/" + year;
     };
 
     return SubletSave;

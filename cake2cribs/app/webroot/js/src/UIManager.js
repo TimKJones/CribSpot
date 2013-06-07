@@ -13,6 +13,10 @@
       return alertify.error(message);
     };
 
+    UIManager.Success = function(message) {
+      return alertify.success(message);
+    };
+
     UIManager.CloseLogs = function() {
       return $('.alertify-log').remove();
     };
