@@ -21,6 +21,15 @@
 }
 
 
+.toggle-details i{
+    font-size: 10px;
+    line-height: 18px;
+}
+.toggle-details:hover{
+    text-decoration: none;
+}
+
+
 
 .total{
     position: absolute;

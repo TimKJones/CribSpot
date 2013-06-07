@@ -13,7 +13,7 @@
                         <strong><?php echo $order['Order']['name'];?></strong>
                         <span class = 'pull-right'> <?php echo $date->format('m/d/Y');?></span>
                         <br>
-                        <a href = '#' class ='toggle-details'>Show Details</a>
+                        <a href = '#' class ='toggle-details'><i class = 'icon-plus'></i> Show Details</a>
                     </div>
                     <div class = 'order-details' style = 'display:none'>
                         
@@ -30,7 +30,7 @@
                                 <?php 
                                     $start = date("m/d/Y", $item->start/1000);
                                     $end = date("m/d/Y", $item->end/1000); 
-                                    echo "From $start To $end";
+                                    echo "$start - $end";
                                 ?> 
 
                             </div>
@@ -58,11 +58,11 @@
                 if(visible){
                     // Hide the details
                     order_details.hide();
-                    $(event.target).html('Show Details');
+                    $(event.target).html("<i class = 'icon-plus'></i> Show Details");
                 }else{
                     //Show
                     order_details.show();
-                    $(event.target).html('Hide Details');
+                    $(event.target).html("<i class = 'icon-minus'></i> Hide Details");
                 }
             }
         });
