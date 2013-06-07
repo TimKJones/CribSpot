@@ -675,7 +675,8 @@ class Sublet extends AppModel {
 			'conditions' => array(
 				'Sublet.user_id' => $user_id,
 				'Sublet.visible' => 1
-				)
+				),
+			'group' => 'Sublet.id',
 		));
 
 		return $sublets;
