@@ -177,6 +177,9 @@ class A2Cribs.SubletSave
 		@div.find('input:hidden').val '' # Erase all inputs
 		@div.find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
 
+		# Need to input payment type since field is hidden
+		@div.find("#Sublet_payment_type_id").val "1"
+
 	###
 	Submits sublet to backend to save
 	Assumes all front-end validations have been passed.

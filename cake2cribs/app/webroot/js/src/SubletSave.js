@@ -219,7 +219,8 @@
     SubletSave.prototype.ResetAllInputFields = function() {
       this.div.find('input:text').val('');
       this.div.find('input:hidden').val('');
-      return this.div.find('select option:first-child').attr("selected", "selected");
+      this.div.find('select option:first-child').attr("selected", "selected");
+      return this.div.find("#Sublet_payment_type_id").val("1");
     };
 
     /*
