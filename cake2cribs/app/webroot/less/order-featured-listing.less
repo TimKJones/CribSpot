@@ -1,19 +1,26 @@
 @widget_width : 600px;
-@widget_height : 400px;
+@widget_height : 450px;
 
 
+@font-face {
+    font-family: ReklameScript;
+    src: local(ReklameScript), url('/font/ReklameScript-Regular_DEMO.otf') format('opentype');
+}
+    
 .checkout-flow{
 
     width: @widget_width;
     height: @widget_height;
     padding-top: 10px;
     padding-bottom: 10px;
-    border: 5px solid #DDD;
+    border-radius: 10px;
+    border: solid 2px #aeaeae;
     position: relative;
+    background: #f7f7f7;
+    
 
     .order-items{
-        overflow: auto;
-        max-height: 300px;
+
     }
 
     .order-receipt{
@@ -29,9 +36,125 @@
         position: absolute;
         bottom: 5px;
         left: 5px;
+    }   
+    .left-sec{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        width: 350px; 
+        padding: 10px;
+
+        .total-tally{
+            width: 150px;
+            padding-left: 15px;
+            span{
+                color: #7a7a7a;
+            }
+            .total{
+                color: #4ae05c;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .right-sec{
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 250px;        
+        background: #f2f3f3;
+        padding: 10px;
+        border-left: solid 2px #aeaeae;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+
+        .title{
+            font-family:ReklameScript;
+            font-size:26px;
+            text-align: center;
+            display: block;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        p{
+            color: #7a7a7a;
+        }
+        .rates{
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .rates-box{
+            position: relative;
+            height: 72px;
+            width: 240px;
+            color: #424242;
+            
+            span > div{
+                text-align: center;
+            }
+
+            .weekdays-price{
+                padding-top: 10px;
+                
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 120px;
+
+                border: 2px solid #e6e4d2;
+                background: #fdfbea;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
+
+            
+            .weekends-price{
+                padding-top: 10px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 120px;
+                
+                border: 2px solid #e6e4d2;
+                background: #f9f4cb;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+
+            }
+
+            .big-price{
+                color: #f55d73;
+                font-size: 24px;
+                font-weight: bold;
+            }
+        }
+        
+
+
+    }
+
+    i.close-checkout{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: #bbbbbb;
+        font-size: 25px;
+    }
+    i.close-checkout:hover{
+        cursor: pointer;
     }
 
 
+}
+
+.mdp{
+    // width: 400px;
 }
 
 .featured-listing-order-item{
@@ -39,35 +162,10 @@
     .address{
         font-size: 18px;
     }
+    
+    .mdp{
 
-    .date-input{
-        margin-top: 7.5px;
-        width: 70px;
-    }
-
-    .date-range{
-        line-height: 13px;
-        height: 30px;
-    }
-
-    .remove-range{
-        color: #333;
-    }
-
-    .remove-range:hover{
-        text-decoration: none;
-        color: #ab2519;
-    }
-
-    .add-dates:hover{
-        cursor: pointer;
-    }
-
-    .date-range{
-        .price{
-            line-height: 45px;
-            font-size: 18px;
-        }    
+        // margin:20px;
     }
     
 

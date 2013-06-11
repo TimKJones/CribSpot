@@ -1,58 +1,83 @@
 <?php echo $this->Html->script('less.js'); ?>
 
 <?php $this->Html->css('/less/order-featured-listing.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->css('datepicker'); ?>
+<?php echo $this->Html->css('multi-date-picker'); ?>
 
+<?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
 
-<?php echo $this->Html->script('bootstrap-datepicker'); ?>
 <?php echo $this->Html->script('src/Checkout'); ?>
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
-<div class = 'checkout-flow featured-listings-flow container-fluid'>
-    <div class = 'row-fluid'>
-        <div class = 'span8'>
-            <div class= 'order-items'>
-                <?php 
-                foreach($listings as $listing){
-                    echo $this->element('Order/featured-listing-item', array(
-                        'listing'=> $listing));
-                }
-                ?>
-            </div>
-            <hr>
-            <div class = 'pull-right total-tally' style = 'display:none'>
-                <Strong>Weekdays: </strong><span class = 'weekdays'></span> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'] ."/day";?><br>
-                <Strong>Weekends: </strong><span class = 'weekends'></span> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'] ."/day";?><br>
-                <strong>Total: </strong><span class = 'pull-right total'></span>
-            </div>
-
-
+<div class = 'checkout-flow featured-listings-flow'>
+    <div class = 'left-sec'>
+        <div class= 'order-items'>
+            <?php 
+            foreach($listings as $listing){
+                echo $this->element('Order/featured-listing-item', array(
+                    'listing'=> $listing));
+            }
+            ?>
         </div>
-
-        <div class = 'span4'>
-            <h3> How it works </h3> 
-            <p>
-                Click on the calendar to add a range of dates that you wish to feature your listing. 
-                Then for each range select when you would like to feature your listing.
-            </p>
-            <p>
-                Once you are satisfied with your selections click Buy and complete our simple checkout flow where
-                you can pay for listings via Credit Card.
-            </p>
-            <h3>Rates</h3>
-            <strong><?php echo "$". $rules['FeaturedListings']['costs']['weekday'] ."/per weekday\n";?></strong>
-            <br>
-            <strong><?php echo "$" . $rules['FeaturedListings']['costs']['weekend']. "/per weekend.";?></strong>
-        </div>
+        <table class = 'total-tally'>
+            <tr>
+                <td>Weekdays:</td>
+                <td><strong class = 'weekdays'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></strong></td>
+            </tr>
+            <tr>
+                <td>Weekends:</td>
+                <td><strong class = 'weekends'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'];?></strong></td>
+            </tr>
+            <tr>
+                <td><strong>Total: </td>
+                <td></strong><span class = 'total'>$0</span></td>
+            </tr>
+        </table>
         <button class = 'btn buy'>Buy</button>
     </div>
-    
 
+    <div class = 'span5 right-sec'>
+        <i class = 'close-checkout icon-remove-circle'></i>
+        <div class = 'title'> How It Works </div> 
+        <p>
+            Click on the calendar to select any
+            days that you wish to feature your
+            listing. You may select day by day, or 
+            you can select a day, hold shift, and 
+            then select a future date to select a 
+            range of dates.
+        </p>
+        <p>
+            Once you’re satisified with your
+            selections, click Buy Now to complete 
+            our simple checkout flow where you 
+            can pay for listings via credit card. You 
+            may also add your listing to your cart
+            if you wish to feature additional listings.   
+        </p>
+        <div class = 'rates'>
+            <strong>Advertising Rates:</strong>
+            <div class = 'rates-box'>
+                <span class = 'weekdays-price'>
+                    <div>Weekdays</div>
+                    <div>
+                    <span class = 'big-price'><?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></span> /day
+                    </div>
+                </span>
+                <span class = 'weekends-price'>
+                    <div>Weekends</div>
+                    <div>
+                        <span class = 'big-price'><?php echo "$" . $rules['FeaturedListings']['costs']['weekend'];?></span> /day
+                    </div>
+                </span>
+            </div>
+        </div>
+    </div>    
 </div>
 
 <script>
+    var Checkout;
     $(function(){
-        var Checkout = new A2Cribs.Checkout($('.checkout-flow')[0], <?php echo $rules_json;?>);
+        Checkout = new A2Cribs.Checkout($('.checkout-flow')[0], <?php echo $rules_json;?>);
     });
 
 </script>

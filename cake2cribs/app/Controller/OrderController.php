@@ -22,20 +22,22 @@ class OrderController extends AppController {
         $this->set("orders", $orders);
     }
 
-    public function featuredListing($listing_id, $listing_id2){
+    public function featuredListing($listing_id, $listing_id2=null){
 
         $listing = $this->Listing->get($listing_id);
         if($listing == null){
             throw new NotFoundException();
         }  
-        $listing2 = $this->Listing->get($listing_id2);
-        if($listing2 == null){
-            throw new NotFoundException();
-        }  
+        // $listing2 = $this->Listing->get($listing_id2);
+        // if($listing2 == null){
+        //     throw new NotFoundException();
+        // }  
 
 
 
-        $listings = array($listing,$listing2); //wants array of listings to feature
+        // $listings = array($listing,$listing2); //wants array of listings to feature
+        $listings = array($listing);
+
 
         
         $this->set("rules_json", json_encode($this->rules));
@@ -152,38 +154,40 @@ class OrderController extends AppController {
         $we_price = $this->rules['FeaturedListings']['costs']['weekend'];  
 
         // For each date range we want to validate that the listing exists.
-        // TODO: Have a list of unique listing_ids to avoid redundant querying
 
-        foreach($data as &$daterange){
-            $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$daterange->listing_id));
+        foreach($data as &$featuredlisting){
+
+            $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$featuredlisting->listing_id));
             // die(debug($listing));
             if($listing == null){
                 // Listing not found return null;
-                CakeLog::write($TAG, "Listing " . $daterange->listing_id . " not found while trying to buy a featured listing");
+                CakeLog::write($TAG, "Listing " . $featuredlisting->listing_id . " not found while trying to buy a featured listing");
                 return null;
             }
-            // DateTime's constructor takes in a unix timestamp with '@' prefixing it
-            // Date range's start and end are both in milliseconds
-            $start_date = date($daterange->start/1000);
-            $end_date = date($daterange->end/1000);
 
-            $temp_days = getDays($start_date, $end_date);
-            if($temp_days <= 0){
-                // Invalid range
-                //Go to next iteration.
-                continue;
+
+            $temp_weekends = 0;
+            $temp_weekdays = 0;
+            $temp_price = 0;
+
+            foreach($featuredlisting->dates as $date){
+                $day = date("N", strtotime($date));
+
+                if($day > 5){
+                    //Sat or Sun
+                    $temp_weekends++;
+                }else{
+                    $temp_weekdays++;
+                }
+                $days++;
             }
 
-            $temp_weekdays = getWeekDays($start_date, $end_date);
-            $temp_weekends = $temp_days - $temp_weekdays;
-
-            $price = ($temp_weekdays * $wd_price) + ($temp_weekends * $we_price);
-            $daterange->price = $price;
-
-            $total += $price;
+            $temp_price = ($temp_weekdays * $wd_price) + ($temp_weekends * $we_price);
+            $featuredlisting->price = $temp_price;
+            
             $weekdays += $temp_weekdays;
             $weekends += $temp_weekends;
-            $days += $temp_days;
+            $total += $temp_price;
 
         }
 

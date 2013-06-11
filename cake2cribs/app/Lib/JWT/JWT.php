@@ -20,6 +20,7 @@ class JWT
     public static function decode($jwt, $key = null, $verify = true)
     {
         $tks = explode('.', $jwt);
+
         if (count($tks) != 3) {
             throw new UnexpectedValueException('Wrong number of segments');
         }

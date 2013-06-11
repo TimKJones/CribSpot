@@ -34,7 +34,7 @@
         todayDate = new Date();
         if (parsedBeginDate.toString() === "Invalid Date" || parsedEndDate.toString() === "Invalid Date") {
           return A2Cribs.UIManager.Alert("Please enter a valid date.");
-        } else if (parsedEndDate.valueOf() <= parsedBeginDate.valueOf() && parsedBeginDate.valueOf() <= todayDate.valueOf()) {
+        } else if (parsedEndDate <= parsedBeginDate || parsedBeginDate.valueOf() <= todayDate.valueOf()) {
           return A2Cribs.UIManager.Alert("Please enter a valid date.");
         } else if (!$('#SubletNumberBedrooms').val() || $('#SubletNumberBedrooms').val() <= 0 || $('#SubletNumberBedrooms').val() >= 30) {
           return A2Cribs.UIManager.Alert("Please enter a valid number of bedrooms.");
@@ -68,7 +68,7 @@
       $("#finishShare").click(function(e) {
         $('#server-notice').dialog2("close");
         if (!isNaN(A2Cribs.ShareManager.SavedListing)) {
-          return window.location.href = "/sublet/" + A2Cribs.ShareManager.SavedListing;
+          return window.location.href = "/sublets/show/" + A2Cribs.ShareManager.SavedListing;
         }
       });
       oldBeginDate = new Date($('#SubletDateBegin').val());
@@ -147,20 +147,26 @@
       var url,
         _this = this;
       url = "/sublets/ajax_submit_sublet";
-      return $.post(url, A2Cribs.Cache.SubletEditInProgress, function(response) {
-        var data;
-        data = JSON.parse(response);
-        console.log(data.status);
-        if (data.status) {
-          A2Cribs.UIManager.Alert(data.status);
-          A2Cribs.ShareManager.SavedListing = data.newid;
-          return $('#server-notice').dialog2("options", {
-            content: "/Sublets/ajax_add4"
-          });
-        } else {
-          return A2Cribs.UIManager.Alert(data.error);
-        }
-      });
+      if (!(this.postingDataInProgress != null) || this.postingDataInProgress === false) {
+        this.postingDataInProgress = true;
+        return $.post(url, A2Cribs.Cache.SubletEditInProgress, function(response) {
+          var data;
+          data = JSON.parse(response);
+          console.log(data.status);
+          if (data.status) {
+            A2Cribs.UIManager.Alert(data.status);
+            A2Cribs.ShareManager.SavedListing = data.newid;
+            $('#server-notice').dialog2("options", {
+              content: "/Sublets/ajax_add4"
+            });
+          } else {
+            A2Cribs.UIManager.Alert(data.error);
+          }
+          return _this.postingDataInProgress = true;
+        });
+      } else {
+        return false;
+      }
     };
 
     SubletAdd.GetFormattedDate = function(date) {

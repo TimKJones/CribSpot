@@ -50,23 +50,17 @@ class FeaturedListing extends AppModel {
 
     }
 
-    public function add($daterange, $user_id){
+    public function add($listing_id, $date, $user_id){
         
         $listing = $this->Listing->find('first', array(
-            'conditions'=>'Listing.listing_id='.$daterange->listing_id)
+            'conditions'=>'Listing.listing_id='.$listing_id)
         );
 
         if($listing == null){
-            CakeLog::write($this->$TAG, "Listing " . $order_data->listing_id . 
+            CakeLog::write($this->$TAG, "Listing " . $listing_id . 
                 " not found while trying to buy a featured listing");
             return null;
         }
-
-        $start_date = date("Y-m-d", $daterange->start/1000);
-        $end_date = date("Y-m-d", $daterange->end/1000);
-        // debug($daterange);
-        // debug($start_date);
-        // debug($end_date);
 
         $latitude  = $listing['Marker']['latitude'];
         $longitude  = $listing['Marker']['longitude'];
@@ -78,8 +72,7 @@ class FeaturedListing extends AppModel {
                 'listing_id' => $listing['Listing']['listing_id'],
                 'street_address' => $listing['Marker']['street_address'],
                 'user_id' => $user_id,
-                'start' => $start_date,
-                'end' => $end_date,
+                'date'=>date('Y-m-d', strtotime($date)),
                 'type' => $type,
                 'latitude' => $latitude,
                 'longitude' => $longitude,

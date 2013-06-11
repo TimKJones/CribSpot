@@ -56,11 +56,16 @@ class Order extends AppModel {
         switch($item_type){
             case "FeaturedListing":
                 $FeaturedListing = ClassRegistry::init('FeaturedListing');
-                foreach ($order->items as $index => &$daterange) {
-                    $featured_listing = $FeaturedListing->add($daterange, $user_id);
-                    $item_id = $featured_listing['FeaturedListing']['id'];
-                    $order->items[$index]->featured_listing_id = $item_id;
-                    $order->items[$index]->street_address = $featured_listing['FeaturedListing']['street_address'];
+
+                foreach ($order->items as $index => &$item) {
+                    $item->featured_listing_ids = array();
+                    foreach ($item->dates as $date) {
+                        $featured_listing = $FeaturedListing->add($item->listing_id, $date, $user_id);
+                        $item_id = $featured_listing['FeaturedListing']['id'];
+                        array_push($item->featured_listing_ids, $item_id);
+                    }
+                    
+                    $item->street_address = $featured_listing['FeaturedListing']['street_address'];
 
                 }
                 

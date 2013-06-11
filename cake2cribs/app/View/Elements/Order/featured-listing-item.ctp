@@ -5,17 +5,22 @@
 ?>
 
 <div class = 'featured-listing-order-item' id = '<?php echo $listing_id; ?>'>
-    <div class = 'row-fluid'>
-        <div class = 'span12'>
+    <div class = ''>
+        <div class = ''>
             <span class = 'address'><?php echo $address; ?></span>
-            <span class = 'add-dates'>
-                <i class = 'icon-plus icon-small'></i>
-                <i class = 'icon-calendar'></i>
-            </span>
         </div>
-        
     </div>
-    
+    <p>Add Dates:</p>
+    <div class = 'mdp'>
+    </div>
+<!--     <div class = 'row-fluid'>
+        
+        <div class = 'span12'>
+            
+            
+        </div>
+
+    </div> -->
 
     <!-- <span class = 'pull-right pricing' style = 'display:none'>
         <Strong>Weekdays: </strong><span class = 'weekdays'></span>
