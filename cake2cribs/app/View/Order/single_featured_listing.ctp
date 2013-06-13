@@ -5,34 +5,21 @@
 
 <?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
 
-<?php echo $this->Html->script('src/Checkout'); ?>
+
+<?php echo $this->Html->script('src/Order'); ?>
+<?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
+
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
-<div class = 'checkout-flow featured-listings-flow'>
+
+<div class = 'order-window'>
     <div class = 'left-sec'>
         <div class= 'order-items'>
-            <?php 
-            foreach($listings as $listing){
-                echo $this->element('Order/featured-listing-item', array(
-                    'listing'=> $listing));
-            }
-            ?>
+            <?php echo $this->element('Order/featured-listing-item', array(
+                    'listing'=> $listing)); ?>
         </div>
-        <table class = 'total-tally'>
-            <tr>
-                <td>Weekdays:</td>
-                <td><strong class = 'weekdays'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></strong></td>
-            </tr>
-            <tr>
-                <td>Weekends:</td>
-                <td><strong class = 'weekends'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'];?></strong></td>
-            </tr>
-            <tr>
-                <td><strong>Total: </td>
-                <td></strong><span class = 'total'>$0</span></td>
-            </tr>
-        </table>
-        <button class = 'btn buy'>Buy</button>
+        
+        <button class = 'btn' id = 'buy'>Buy</button>
     </div>
 
     <div class = 'span5 right-sec'>
@@ -75,9 +62,20 @@
 </div>
 
 <script>
-    var Checkout;
+    var FeaturedListing;
     $(function(){
-        Checkout = new A2Cribs.Checkout($('.checkout-flow')[0], <?php echo $rules_json;?>);
+
+        FeaturedListing = new A2Cribs.Order.FeaturedListing(
+            $('.featured-listing-order-item').first(), <?php echo $rules_json;?>);
+
+        $('#buy').click(function(){
+            A2Cribs.Order.Buy([FeaturedListing.getOrderItem()]);
+        });
+
+        $('#addToCart').click(function(){
+            A2Cribs.Order.addToCart([FeaturedListing.getOrderItem()]);
+        });
+
     });
 
 </script>

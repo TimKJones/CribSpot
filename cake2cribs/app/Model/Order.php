@@ -38,53 +38,49 @@ class Order extends AppModel {
         }
 
         $order = json_decode($pendingOrder['PendingOrder']['order']);
-
-        $item_type = "FeaturedListing"; //Hack we don't have any other types right now
-                                        //and I don't feel like modifying all the order
-                                        //data passing around structures, in the future
-                                        //we may have more types
+        
 
         $price = $order->total;
 
         if($order->user_id != $user_id){
-            throw new NotFoundException();
+            throw new Exception("Order's user and logged in user don't match");
         }
 
-        // We do generic switch on type here for the various things you can buy
-        // Creates the object that was purchased and we get the id for our generic fk
-        
-        switch($item_type){
-            case "FeaturedListing":
-                $FeaturedListing = ClassRegistry::init('FeaturedListing');
+        foreach($order->orderItems as &$orderItem){
 
-                foreach ($order->items as $index => &$item) {
-                    $item->featured_listing_ids = array();
-                    foreach ($item->dates as $date) {
-                        $featured_listing = $FeaturedListing->add($item->listing_id, $date, $user_id);
+            // We do generic switch on type here for the various things you can buy
+            // Creates the object that was purchased and we get the id for our generic fk
+            switch($orderItem->type){
+                case "FeaturedListing":
+                    $FeaturedListing = ClassRegistry::init('FeaturedListing');
+                    $orderItem->item->featured_listing_ids = array();
+                    foreach ($orderItem->item->dates as $date) {
+                        $featured_listing = $FeaturedListing->add($orderItem->item->listing_id, $date, $user_id);
                         $item_id = $featured_listing['FeaturedListing']['id'];
-                        array_push($item->featured_listing_ids, $item_id);
+                        array_push($orderItem->item->featured_listing_ids, $item_id);
                     }
                     
-                    $item->street_address = $featured_listing['FeaturedListing']['street_address'];
+                    $orderItem->item->street_address = $featured_listing['FeaturedListing']['street_address'];
 
-                }
-                
 
-                break;
 
-            default:
+                    break;
 
-                break;
+                default:
+
+                    break;
+            }
         }
 
+        
+        // die(debug(json_encode($order->orderItems)));
         $order_data['Order'] = array(
         
             'name'=>$request->name,
             'description'=>$request->description,
             'price'=>floatval($request->price),
             'currency_code'=>$request->currencyCode,
-            'item_type'=>$item_type,
-            'items'=>json_encode($order->items),
+            'orderItems'=>json_encode($order->orderItems),
             'user_id'=>$user_id,
             'wallet_order_id'=>$wallet_order_id
         

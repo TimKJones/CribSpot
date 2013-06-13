@@ -28,10 +28,17 @@
                                 <br>
                                 <i class = 'icon-calendar'></i>
                                 <?php 
-                                    $start = date("m/d/Y", $item->start/1000);
-                                    $end = date("m/d/Y", $item->end/1000); 
-                                    echo "$start - $end";
-                                ?> 
+                                    $date_str = "";
+                                    foreach($item->dates as $index => $date){
+                                        if($index == 0){
+                                            //Proper coma usage
+                                            $date_str = $date;
+                                        }else{
+                                            $date_str = $date_str . ", ". $date;
+                                        }
+                                    }
+                                    echo "<span>$date_str</span>";
+                                ?>
 
                             </div>
                         <?php }?>

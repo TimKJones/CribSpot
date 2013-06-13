@@ -18,7 +18,7 @@ class FeaturedListingsController extends AppController {
     
     // If day is null we use today's date
     if($day == null){
-      $day = time() + (24*60*60);
+      $day = time();
     }
     $date = date("Y-m-d", $day);
 

@@ -13,6 +13,20 @@
     <p>Add Dates:</p>
     <div class = 'mdp'>
     </div>
+    <table class = 'total-tally'>
+            <tr>
+                <td>Weekdays:</td>
+                <td><strong class = 'weekdays'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></strong></td>
+            </tr>
+            <tr>
+                <td>Weekends:</td>
+                <td><strong class = 'weekends'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'];?></strong></td>
+            </tr>
+            <tr>
+                <td><strong>Price: </td>
+                <td></strong><span class = 'price'>$0</span></td>
+            </tr>
+    </table>
 <!--     <div class = 'row-fluid'>
         
         <div class = 'span12'>

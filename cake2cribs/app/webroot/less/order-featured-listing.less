@@ -7,7 +7,7 @@
     src: local(ReklameScript), url('/font/ReklameScript-Regular_DEMO.otf') format('opentype');
 }
     
-.checkout-flow{
+.order-window{
 
     width: @widget_width;
     height: @widget_height;
@@ -20,7 +20,6 @@
     
 
     .order-items{
-
     }
 
     .order-receipt{
@@ -44,18 +43,6 @@
         top: 0;
         width: 350px; 
         padding: 10px;
-
-        .total-tally{
-            width: 150px;
-            padding-left: 15px;
-            span{
-                color: #7a7a7a;
-            }
-            .total{
-                color: #4ae05c;
-                font-weight: bold;
-            }
-        }
     }
 
     .right-sec{
@@ -167,6 +154,18 @@
 
         // margin:20px;
     }
+
+    .total-tally{
+            width: 150px;
+            padding-left: 15px;
+            span{
+                color: #7a7a7a;
+            }
+            .price{
+                color: #4ae05c;
+                font-weight: bold;
+            }
+        }
     
 
 
