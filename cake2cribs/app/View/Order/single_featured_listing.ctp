@@ -1,6 +1,6 @@
 <?php echo $this->Html->script('less.js'); ?>
 
-<?php $this->Html->css('/less/order-featured-listing.less?','stylesheet/less', array('inline' => false)); ?>
+<?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('multi-date-picker'); ?>
 
 <?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
@@ -9,7 +9,6 @@
 <?php echo $this->Html->script('src/Order'); ?>
 <?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
 
-<script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 
 <div class = 'order-window'>
@@ -20,6 +19,7 @@
         </div>
         
         <button class = 'btn' id = 'buy'>Buy</button>
+        <button class = 'btn' id = 'addToCart'>Add To Cart</button>
     </div>
 
     <div class = 'span5 right-sec'>
@@ -73,7 +73,7 @@
         });
 
         $('#addToCart').click(function(){
-            A2Cribs.Order.addToCart([FeaturedListing.getOrderItem()]);
+            A2Cribs.Order.AddToCart([FeaturedListing.getOrderItem()]);
         });
 
     });

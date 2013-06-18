@@ -6,6 +6,15 @@ class ShoppingCartController extends AppController {
   public $uses = array('User', 'ShoppingCart');
   public $TAG = "ShoppingCartController";
 
+
+  public function index(){
+    $user_id = $this->Auth->User("id");
+    $cart = $this->ShoppingCart->get($user_id);
+    $this->set('orderItems', json_decode($cart['ShoppingCart']['items']));
+    // die(debug($cart));
+  }
+
+
   /*
     Receives a post request containing a order_items json array to add to the users cart
   */
@@ -15,9 +24,10 @@ class ShoppingCartController extends AppController {
       throw new NotFoundException();
     }
 
-    $orderItem = json_decode($this->request->data('orderItem'));
+    $orderItems = json_decode($this->request->data('orderItems'));
+
     $user_id = $this->Auth->User("id");
-    $this->ShoppingCart->add($orderItem, $user_id);
+    $this->ShoppingCart->add($orderItems, $user_id);
 
     $this->layout = 'ajax';
     $response = array('success'=>true);
@@ -81,14 +91,6 @@ class ShoppingCartController extends AppController {
     $this->set('response', json_encode($response));
 
   }
-
-  public function get(){
-    $user_id = $this->Auth->User("id");
-    $cart = $this->ShoppingCart->get($user_id);
-    die(debug($cart));
-  }
-
-
 
 }
 

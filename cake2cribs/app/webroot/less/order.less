@@ -165,8 +165,42 @@
                 color: #4ae05c;
                 font-weight: bold;
             }
+    }
+}
+
+table.orderItems{
+    padding-right: 40px;
+    width: @widget_width;
+    tr {
+        padding: 5px;
+        border-bottom: 2px solid #ddd;
+        height:auto;
+        
+        .actions > a{
+            font-size: 12px;
+            padding: 2px;
+            color: #333;
+            text-decoration: none;
+            
+            :hover{
+                color: #666;
+            };
         }
+        
+    }
+
+    tr:first-of-type{
+        border-top: 2px solid #ddd;
+    }
+
     
+    
+    tr.fl-cart-item{
+        .address{
+            font-size: 15px;
+        }
+    }
 
 
 }
+

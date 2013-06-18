@@ -17,8 +17,37 @@
       data = {
         'orderItems': JSON.stringify(orderItems)
       };
-      url = "${myBaseUrl}/order/getJwt";
+      url = "" + myBaseUrl + "order/getJwt";
       return $.post(url, data, function(response_raw) {
+        var response;
+        response = JSON.parse(response_raw);
+        if (!response.success) {
+          console.log(response.message);
+        }
+        return google.payments.inapp.buy({
+          parameters: {},
+          jwt: response.jwt,
+          success: function() {
+            return alert("success");
+          },
+          failture: function() {
+            return alert("fail");
+          }
+        });
+      });
+    };
+
+    Order.BuyCart = function(successHandler, failHandler) {
+      var url,
+        _this = this;
+      if (successHandler == null) {
+        successHandler = null;
+      }
+      if (failHandler == null) {
+        failHandler = null;
+      }
+      url = "" + myBaseUrl + "order/buyCart";
+      return $.post(url, function(response_raw) {
         var response;
         response = JSON.parse(response_raw);
         if (!response.success) {
@@ -43,11 +72,10 @@
       data = {
         'orderItems': JSON.stringify(orderItems)
       };
-      url = "${myBaseUrl}/shoppingCart/add";
+      url = myBaseUrl + "shoppingCart/add";
       return $.post(url, data, function(response_raw) {
         var response;
         response = JSON.parse(response_raw);
-        alertify.success('Bug report sent. Thank You!', 1500);
         if (response.success) {
           return alertify.success('Added to cart', 1500);
         } else {

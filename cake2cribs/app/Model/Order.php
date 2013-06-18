@@ -61,7 +61,7 @@ class Order extends AppModel {
                     }
                     
                     $orderItem->item->street_address = $featured_listing['FeaturedListing']['street_address'];
-
+                    
 
 
                     break;

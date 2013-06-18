@@ -7,11 +7,14 @@ class ShoppingCart extends AppModel {
     public $uses = array('User');
     public $belongsTo = array('User');
 
-    public function add($orderItem, $user_id){
+    public function add($orderItems, $user_id){
         $cart = $this->get($user_id);
         $items = json_decode($cart['ShoppingCart']['items']);
 
-        array_push($items, $orderItem);
+        foreach($orderItems as $orderItem){
+            array_push($items, $orderItem);    
+        }
+        
         $cart['ShoppingCart']['items'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));

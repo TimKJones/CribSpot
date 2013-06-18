@@ -131,8 +131,7 @@
 						}
 						
 						if(this.multiDatesPicker.originalOnSelect && dateText)
-							this.multiDatesPicker.original
-						.call(this, dateText, inst);
+							this.multiDatesPicker.originalOnSelect.call(this, dateText, inst);
 						
 						// START aqisnotliquid
 						// Allows for the following tags to act as altField - input, textarea, p, span, div

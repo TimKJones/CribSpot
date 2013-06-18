@@ -2,7 +2,7 @@
 class OrderController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder', 'ShoppingCart');
   public $TAG = "OrdersController";
 
     private $WalletSellerID = "10354430150694430158";
@@ -42,65 +42,88 @@ class OrderController extends AppController {
 
     }
 
-    // Takes a post request containing data type and then a data object with all 
-    // info to get a jwt generated for the purchase
+    
+
+    //Accepts an order item and creates a jwt to buy it, used to one click buy
+    // a featured listing for example
+    public function buyItem(){
+        $order_item = $this->request->data('orderItem');
+        $response = $this->getJwt(array($order_item));
+        $this->layout = 'ajax';
+        $this->set('response', json_encode($response)); 
+    }
+
+    //Returns a jwt for the users entire shopping cart.
+    public function buyCart(){
+        $cart = $this->ShoppingCart->get($this->Auth->User('id'));
+        $orderItems = json_decode($cart['ShoppingCart']['items']);
+        $response = $this->getJwt($orderItems);
+        $this->layout = 'ajax';
+        $this->set('response', json_encode($response));
+    }
+
+    // Takes an array of order items and returns a google wallet jwt
+    // also creates a pending order to be used when the purchased goes through.
     // JWT spec found here https://developers.google.com/commerce/wallet/digital/docs/jsreference#jwt
-    public function getJwt(){
-        
-        $orderItems = json_decode($this->request->data['orderItems']);
+    private function getJwt($orderItems){
+        $response = array();
+       
 
 
         $request = null;
         $total = 0;
         $weekends = 0;
         $weekdays = 0;
-        foreach($orderItems as &$orderItem){
-            switch($orderItem->type){
-                case "FeaturedListing":
-                    
-                    $pricing_info = $this->getFeaturedListingPrice($orderItem->item);
-                    $total += $pricing_info['Price'];
-                    $orderItem->price = $pricing_info['Price'];
-                    $weekends += $pricing_info['Weekends'];
-                    $weekdays += $pricing_info['Weekdays'];
+        try{
+            foreach($orderItems as &$orderItem){
+                switch($orderItem->type){
+                    case "FeaturedListing":
+                        
+                        $pricing_info = $this->getFeaturedListingPrice($orderItem->item);
+                        $total += $pricing_info['Price'];
+                        $orderItem->price = $pricing_info['Price'];
+                        $weekends += $pricing_info['Weekends'];
+                        $weekdays += $pricing_info['Weekdays'];
+                        break;
+                    default:
+                        throw new Exception("Type didn't match any valid type");
+                }
+            }        
+            $wd_price = $this->rules['FeaturedListings']['costs']['weekday'];
+            $we_price = $this->rules['FeaturedListings']['costs']['weekend'];  
 
-                    $response['success'] = true;
+            $name = "Featured Listing on Cribspot.com";
+            $description = "Weekdays: $weekdays x $".$wd_price."/day + Weekends: $weekends x $".$we_price."/day";
 
-                    break;
-                default:
-                    $response['success'] = false;
-                    $response['message'] = "Type didn't match any valid type";
-            }
+            $user_id = $this->Auth->User('id');
+            $order = array(
+                'total'=>$total,
+                'user_id'=>$user_id,
+                'orderItems'=>$orderItems,
+                );
+
+            $pendingOrder = $this->PendingOrder->add($order, $user_id);
+            
+            $sellerData = array(
+                'pendingOrder_id'=>$pendingOrder['PendingOrder']['id']
+                );
+
+            $request = array(
+                "name" => $name,
+                "description" => $description,
+                "price" => $total,
+                "currencyCode" => "USD",
+                "sellerData" => json_encode($sellerData)
+                );
+            
+            $response['success'] = true;
+        }catch(Exception $e){
+            $response['success']= false;
+            $response['message'] = $e->getMessage();
         }
-
-        $wd_price = $this->rules['FeaturedListings']['costs']['weekday'];
-        $we_price = $this->rules['FeaturedListings']['costs']['weekend'];  
-
-        $name = "Featured Listing on Cribspot.com";
-        $description = "Weekdays: $weekdays x $".$wd_price."/day + Weekends: $weekends x $".$we_price."/day";
-
-        $user_id = $this->Auth->User('id');
-        $order = array(
-            'total'=>$total,
-            'user_id'=>$user_id,
-            'orderItems'=>$orderItems,
-            );
-
-        $pendingOrder = $this->PendingOrder->add($order, $user_id);
-        
-        $sellerData = array(
-            'pendingOrder_id'=>$pendingOrder['PendingOrder']['id']
-            );
-
-        $request = array(
-            "name" => $name,
-            "description" => $description,
-            "price" => $total,
-            "currencyCode" => "USD",
-            "sellerData" => json_encode($sellerData)
-            );
         
 
+       
 
         // We have a valid order request
         if($response['success']){
@@ -121,16 +144,13 @@ class OrderController extends AppController {
             App::uses('JWT', 'JWT');
             $response['jwt_plain'] = $payload;
             $response['jwt'] = JWT::encode($payload, $this->WalletSecretKey);
-        }
+        }  
 
-        $this->layout = 'ajax';
-        $this->set('response', json_encode($response));
+        return $response;
 
     }
 
-
-    public function getFl(){}
-
+  
 
     /*
         From Google Wallet Doc's
