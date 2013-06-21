@@ -1,13 +1,7 @@
-<?php 
-
-    $address = $listing['Marker']['street_address'];
-    $listing_id = $listing['Listing']['listing_id'];
-?>
-
-<div class = 'featured-listing-order-item' id = '<?php echo $listing_id; ?>'>
+<div class = 'featured-listing-order-item'>
     <div class = ''>
         <div class = ''>
-            <span class = 'address'><?php echo $address; ?></span>
+            <span class = 'address'></span>
         </div>
     </div>
     <p>Add Dates:</p>
@@ -16,11 +10,11 @@
     <table class = 'total-tally'>
             <tr>
                 <td>Weekdays:</td>
-                <td><strong class = 'weekdays'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></strong></td>
+                <td><strong class = 'weekdays'>0</strong><strong> x $15</strong></td>
             </tr>
             <tr>
                 <td>Weekends:</td>
-                <td><strong class = 'weekends'>0</strong><strong> x <?php echo "$". $rules['FeaturedListings']['costs']['weekend'];?></strong></td>
+                <td><strong class = 'weekends'>0</strong><strong> x $5</strong></td>
             </tr>
             <tr>
                 <td><strong>Price: </td>

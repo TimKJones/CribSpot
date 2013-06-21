@@ -9,12 +9,12 @@ class ShoppingCart extends AppModel {
 
     public function add($orderItems, $user_id){
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items']);
+        $items = json_decode($cart['ShoppingCart']['items'], true);
 
         foreach($orderItems as $orderItem){
             array_push($items, $orderItem);    
         }
-        
+
         $cart['ShoppingCart']['items'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
@@ -28,12 +28,13 @@ class ShoppingCart extends AppModel {
     public function edit($index, $orderItem, $user_id){
 
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items']);
-
-        if($items[$index] == null){
+        $items = json_decode($cart['ShoppingCart']['items'], true);
+        $keys = array_keys($items);
+        if($items[$keys[$index]] == null){
             throw new Exception('invalid index given, no item exists');
         }
-        $items[$index] = $orderItem;
+
+        $items[$keys[$index]] = $orderItem;
         $cart['ShoppingCart']['items'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
@@ -45,12 +46,14 @@ class ShoppingCart extends AppModel {
 
     public function remove($index, $user_id){
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items']);
-
-        if($items[$index] == null){
+        $items = json_decode($cart['ShoppingCart']['items'], true);
+        
+        $keys = array_keys($items);
+        if($items[$keys[$index]] == null){
             throw new Exception('invalid index given, no item exists');
         }
-        unset($items[$index]);
+
+        array_splice($items, $index, 1);
         $cart['ShoppingCart']['items'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->v3alidateErrors));

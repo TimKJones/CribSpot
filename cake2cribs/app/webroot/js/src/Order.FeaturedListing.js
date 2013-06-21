@@ -3,17 +3,16 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(item, rules) {
+    function FeaturedListing(item, data) {
       var _this = this;
       this.item = item;
-      this.rules = rules;
-      this.address = this.item.find('.address').text();
-      this.listing_id = this.item.attr('id');
+      this.address = data.address;
+      this.listing_id = data.listing_id;
       this.Weekdays = 0;
       this.Weekends = 0;
       this.Price = 0;
-      this.WD_price = this.rules.FeaturedListings.costs.weekday;
-      this.WE_price = this.rules.FeaturedListings.costs.weekend;
+      this.WD_price = 15;
+      this.WE_price = 5;
       this.initMultiDatesPicker();
       this.shiftKey = false;
       $(window).keydown(function(event) {
@@ -26,6 +25,11 @@
           return _this.shiftKey = false;
         }
       });
+      this.item.find('.address').html(this.address);
+      if (data.dates) {
+        this.datepicker.multiDatesPicker('addDates', data.dates);
+        this.dateSelected();
+      }
     }
 
     FeaturedListing.prototype.getPrice = function() {

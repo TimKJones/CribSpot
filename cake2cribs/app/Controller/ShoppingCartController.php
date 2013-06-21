@@ -8,10 +8,17 @@ class ShoppingCartController extends AppController {
 
 
   public function index(){
+  }
+
+  public function get(){
     $user_id = $this->Auth->User("id");
     $cart = $this->ShoppingCart->get($user_id);
+
+    $this->layout = 'ajax';
+
     $this->set('orderItems', json_decode($cart['ShoppingCart']['items']));
-    // die(debug($cart));
+
+
   }
 
 

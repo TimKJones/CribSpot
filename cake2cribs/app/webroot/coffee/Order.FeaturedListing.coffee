@@ -1,15 +1,15 @@
 class A2Cribs.Order.FeaturedListing
-        constructor:(@item, @rules)->
+        constructor:(@item, data)->
             
-            @address = @item.find('.address').text()
-            @listing_id = @item.attr('id')
+            @address = data.address
+            @listing_id = data.listing_id
             
             @Weekdays = 0
             @Weekends = 0
             @Price = 0
 
-            @WD_price = @rules.FeaturedListings.costs.weekday
-            @WE_price = @rules.FeaturedListings.costs.weekend
+            @WD_price = 15
+            @WE_price = 5
 
             @initMultiDatesPicker()
             @shiftKey = false;
@@ -20,6 +20,13 @@ class A2Cribs.Order.FeaturedListing
             $(window).keyup (event)=>
                 if event.shiftKey or event.keyCode is 16
                     @shiftKey = false
+
+
+            @item.find('.address').html @address
+            if(data.dates)
+                @datepicker.multiDatesPicker('addDates', data.dates)
+                @dateSelected()
+
 
         getPrice:()->
             return @Price

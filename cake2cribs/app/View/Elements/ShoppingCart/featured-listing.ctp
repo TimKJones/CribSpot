@@ -3,10 +3,10 @@
         <span  class = 'address'><?php echo $fl->item->address;?></span>
     </td>
     <td>
-        <span class = 'price'?><?php echo $fl->price;?></span>
+        <span class = 'price'?><?php echo "$".number_format($fl->price,2);?></span>
     </td>
-    <td class = 'pull-right actions'>
-        <a href = '#'><i class = 'icon-edit'></i> Edit</a>   
-        <a href = '#'><i class = 'icon-remove-circle'></i> Remove</a>
+    <td class = 'actions'>
+        <a href = '#' class = 'edit' id = '<?php echo $id;?>'><i class = 'icon-edit'></i></a>   
+        <a href = '#' class = 'remove' id = '<?php echo $id;?>'><i class = 'icon-remove-circle'></i></a>
     </td>
 </tr>
