@@ -1,2 +1,2 @@
 class A2Cribs.Listing
-	constructor: (@ListingId, @MarkerId, @Available, @LeaseRange, @UnitType, @UnitDescription, @Beds, @Baths, @Rent, @Electric, @Water, @Heat, @Air, @Parking, @Furnished, @Url, @RealtorId) ->
+	constructor: (@listing_id, @listing_type) ->
