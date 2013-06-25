@@ -1,4 +1,7 @@
-class A2Cribs.Rentals
+class A2Cribs.RentalSave
+	constructor: () ->
+		@SetupUI()
+
 	SetupUI: ->
 		###
 		********************* TODO **********************
@@ -12,6 +15,7 @@ class A2Cribs.Rentals
 		********************* TODO **********************
 		###
 		# Gets rental info and saves to JS object
+		@ClearGrids()
 
 	Save: ->
 		###
@@ -36,13 +40,30 @@ class A2Cribs.Rentals
 		###
 		********************* TODO **********************
 		###
+		# Popup modal
+		# Open blank grids
+
+	CreateSubRental: ->
 		# Create newline on grid
+		data = @GridMap["overview_grid"].getData()
+		data.push {}
+
+		for container,grid of @GridMap
+			grid.updateRowCount()
+			grid.render()
+		
 
 	PopulateGrid: (rental_ids) ->
 		###
 		********************* TODO **********************
 		###
 		# Pre-populate grid based on selected address
+
+	ClearGrids: ->
+		for container,grid of @GridMap
+			data = []
+			grid.setData data
+			grid.render()
 
 	CreateGrids: ->
 		# Method to create grids for each tab
@@ -94,64 +115,6 @@ class A2Cribs.Rentals
 					id: "occupancy"
 					name: "Occupancy"
 					field: "occupancy"
-					###
-					formatter: (row, cell, value, columnDef, dataContext) ->
-						return "#{dataContext.from} - #{dataContext.to}"
-					editor: (args) ->
-						scope = @
-						$from = $to = null
-						@init = ->
-							$from = $("<INPUT type=text style='width:40px' />")
-								.appendTo(args.container)
-								.bind("keydown", scope.handleKeyDown)
-
-							$(args.container).append "&nbsp; to &nbsp;"
-
-							$to = $("<INPUT type=text style='width:40px' />")
-								.appendTo(args.container)
-								.bind("keydown", scope.handleKeyDown)
-
-							scope.focus()
-
-						@handleKeyDown = (e) ->
-							if e.keyCode is $.ui.keyCode.LEFT or e.keyCode is $.ui.keyCode.RIGHT or e.keyCode is $.ui.keyCode.TAB
-								e.stopImmediatePropagation()
-
-						@destroy = ->
-							$(args.container).empty()
-
-						@focus = ->
-							$from.focus()
-
-						@serializeValue = ->
-							from: parseInt $from.val(), 10
-							to: parseInt $to.val(), 10
-
-						@applyValue = (item, state) ->
-							item.from = state.from
-							item.to = state.to
-
-						@loadValue = (item) ->
-							$from.val item.from
-							$to.val item.to
-
-						@isValueChanged = ->
-							return args.item.from != parseInt $from.val(), 10 || args.item.to != parseInt $from.val(), 10
-
-						@validate = ->
-							if isNaN(parseInt($from.val(), 10)) || isNaN(parseInt($to.val(), 10))) {
-							return {valid: false, msg: "Please type in valid numbers."};
-							}
-
-							if (parseInt($from.val(), 10) > parseInt($to.val(), 10)) {
-							return {valid: false, msg: "'from' cannot be greater than 'to'"};
-							}
-
-							return {valid: true, msg: null};
-							};
-
-						@init()
-					###
 				}
 				{
 					id: "rent"
