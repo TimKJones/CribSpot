@@ -14,3 +14,12 @@ class A2Cribs.UtilityFunctions
 			x: lx
 			y: ly
 		return x
+
+	###
+	Returns a date (year, month, day) formatted for Mysql
+	###
+	@GetFormattedDate: (date) ->
+		year = date.getUTCFullYear()
+		month = date.getMonth() + 1
+		day = date.getDate()
+		return year + '-' + month + '-' + day
