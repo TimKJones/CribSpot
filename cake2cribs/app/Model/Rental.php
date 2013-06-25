@@ -218,7 +218,7 @@ class Rental extends AppModel {
 		CakeLog::write("RentalSave", print_r($rental, true));
 		$rentalWrapper['Rental'] = $rental;
 		if ($this->save($rentalWrapper))
-			return array("success" => "");
+			return array('listing_id' => $this->id);
 		else
 		{
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
