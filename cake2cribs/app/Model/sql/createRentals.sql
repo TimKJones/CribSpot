@@ -1,7 +1,10 @@
 create table rentals (
 rental_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 listing_id INTEGER NOT NULL,
-address VARCHAR(255),
+street_address VARCHAR(255),
+city VARCHAR(255),
+state VARCHAR(2),
+zipcode VARCHAR(12),
 unit_style_options INTEGER,
 unit_style_type VARCHAR (50),
 unit_style_description VARCHAR (50),

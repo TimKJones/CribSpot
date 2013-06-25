@@ -7,13 +7,41 @@ class Rental extends AppModel {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'address' => 'alphaNumeric',
+		'street_address' => array(
+			'between' => array(
+				'rule' => array('between', 1, 255)
+			)
+		),
+		'city' => array(
+			'between' => array(
+				'rule' => array('between', 1, 255)
+			)
+		),
+		'state' => array(
+			'between' => array(
+				'rule' => array('between',2, 2),
+				'message' => 'Must be 2 characters'
+			)
+		),
+		'zipcode' => array(
+        	'rule' => array('postal', null, 'us')
+    	),
 		'unit_style_options' => 'alphaNumeric',
 		'unit_style_type' => 'alphaNumeric',
 		'unit_style_description' => 'alphaNumeric',
-		'building_name' => 'alphaNumeric',
+		'building_name' => array(
+			'between' => array(
+				'rule' => array('between',0,100),
+				'message' => 'Must be less than 100 characters'
+			)
+		),
 		'beds' => 'numeric',
-		'min_occupancy' => 'numeric',
+		'min_occupancy' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
 		'max_occupancy' => 'numeric',
 		'building_type' => 'numeric',
 		'rent' => 'numeric', /*this is total rent, not per person */
@@ -45,13 +73,30 @@ class Rental extends AppModel {
 		'utility_estimate_winter' => 'numeric',
 		'utility_estimate_summer' => 'numeric',
 		'deposit' => 'numeric',
-		'highlights' => 'alphaNumeric',
-		'description' => 'alphaNumeric',
+		'highlights' => array(
+			'between' => array(
+				'rule' => array('between',0,160),
+				'message' => 'Must be less than 160 characters'
+			)
+		),
+		'description' => array(
+			'between' => array(
+				'rule' => array('between',0,1000),
+				'message' => 'Must be less than 1000 characters'
+			)
+		),
 		'waitlist' => 'boolean',
 		'waitlist_open_date' => 'date',
-		'lease_office_address' => 'alphaNumeric',
+		'lease_office_address' => array(
+			'between' => array(
+				'rule' => array('between', 0, 100),
+				'message' => 'Must be less than 100 characters'
+			)
+		),
 		'contact_email' => 'email',
-		'contact_phone' => array('phone', null, 'us'),
+		'contact_phone' => array(
+			'rule' => array('phone', null, 'us')
+		),
 		'website' => 'url',
 		'is_complete' => 'boolean'
 	);
@@ -149,13 +194,21 @@ class Rental extends AppModel {
 	Then it saves the rental.
 	REQUIRES: it has been verified that user is logged-in.
 	*/
-	public function Save($rental, $user_id)
+	public function SaveRental($rental, $user_id)
 	{
 		if ($rental == null || $user_id == null || $user_id == 0)
-			return false;
+			return array("error" => "User not logged in");
 
 		$rental = $this->_markAsSaved($rental);
-
+		CakeLog::write("RentalSave", print_r($rental, true));
+		$rentalWrapper['Rental'] = $rental;
+		if ($this->save($rentalWrapper))
+			return array("success" => "");
+		else
+		{
+			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
+			return array("error" => "it didn't work");
+		}
 	}
 
 	/*
@@ -173,6 +226,18 @@ class Rental extends AppModel {
 	*/
 	private function _markAsSaved($rental)
 	{
+		$rental['is_complete'] = 1;
+
+		/* 
+		Remove entries from array that are null so that cakephp won't complain.
+		They will be set to null by default in the rentals table.
+		*/
+		foreach ($rental as $key => $value)
+		{
+			if ($rental[$key] == null)
+				unset($rental[$key]);
+		}
+
 		return $rental;
 	}
 }
