@@ -31,6 +31,21 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+
+	/**
+	 * static enums
+	 * @access static
+	 */
+	public static function enum($value, $options, $default = '') {
+	    if ($value !== null) {
+	        if (array_key_exists($value, $options)) {
+	            return $options[$value];
+	        }
+	        return $default;
+	    }
+	    return $options;
+	}
+
 	function getLastQuery()
 	{
 	    $dbo = $this->getDatasource();	
