@@ -25,10 +25,10 @@ class RentalsController extends AppController
   public function Save()
   {
     $this->layout = 'ajax';
-    //CakeLog::write("AjaxDebug", print_r($this->params->, true));
     $rentals = $this->params['data'];
-    //CakeLog::write("RentalSave", print_r($rentals, true));
-    $response = $this->Rental->SaveRental($rentals, 26);
+    //$rentals['user_id'] = $this->Auth('user');
+    $rentals['user_id'] = 25;
+    $response = $this->Rental->SaveRental($rentals);
     $this->set('response', json_encode($response));
   }
 

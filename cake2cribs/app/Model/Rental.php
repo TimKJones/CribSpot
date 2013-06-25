@@ -7,6 +7,7 @@ class Rental extends AppModel {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
+		'user_id' => 'numeric',
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 1, 255)
@@ -87,12 +88,26 @@ class Rental extends AppModel {
 		),
 		'waitlist' => 'boolean',
 		'waitlist_open_date' => 'date',
-		'lease_office_address' => array(
+		'lease_office_street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 100),
 				'message' => 'Must be less than 100 characters'
 			)
 		),
+		'lease_office_city' => array(
+			'between' => array(
+				'rule' => array('between', 1, 255)
+			)
+		),
+		'lease_office_state' => array(
+			'between' => array(
+				'rule' => array('between',2, 2),
+				'message' => 'Must be 2 characters'
+			)
+		),
+		'lease_office_zipcode' => array(
+        	'rule' => array('postal', null, 'us')
+    	),
 		'contact_email' => 'email',
 		'contact_phone' => array(
 			'rule' => array('phone', null, 'us')
@@ -194,10 +209,10 @@ class Rental extends AppModel {
 	Then it saves the rental.
 	REQUIRES: it has been verified that user is logged-in.
 	*/
-	public function SaveRental($rental, $user_id)
+	public function SaveRental($rental)
 	{
-		if ($rental == null || $user_id == null || $user_id == 0)
-			return array("error" => "User not logged in");
+		if ($rental == null)
+			return array("error" => "Rental cannot be null");
 
 		$rental = $this->_markAsSaved($rental);
 		CakeLog::write("RentalSave", print_r($rental, true));

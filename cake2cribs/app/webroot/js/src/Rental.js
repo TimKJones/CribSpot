@@ -56,80 +56,61 @@
       this.website = website;
     }
 
-    /*@TwoDigits: (date) ->
-    		if 0 <= date && date < 10
-    			return "0" + date.toString()
-    		if -10 < date && date < 0
-    			return "-0" + (-1*date).toString()
-    		return date.toString();
-    
-    	@GetMysqlDate: (date) ->
-    		return date.getUTCFullYear() + "-" + @TwoDigits(1 + date.getUTCMonth()) + "-" + @TwoDigits(date.getUTCDate()) + " " + @TwoDigits(date.getUTCHours()) + ":" + @TwoDigits(date.getUTCMinutes()) + ":" + @TwoDigits(date.getUTCSeconds());
-    */
-
-    Rental.GetFormattedDate = function(date) {
-      var day, month, year;
-      year = date.getUTCFullYear();
-      month = date.getMonth() + 1;
-      day = date.getDate();
-      return year + '-' + month + '-' + day;
-    };
-
     Rental.Save = function() {
       var data,
         _this = this;
       data = {
-        rental_id: 1,
-        listing_id: 2,
-        street_address: "521 Linden St",
-        city: "Ann Arbor",
-        state: "MI",
-        zipcode: "48104",
-        unit_style_options: 2,
-        unit_style_type: "NA",
-        unit_style_description: "NA",
-        building_name: "",
-        beds: 6,
-        min_occupancy: "",
-        max_occupancy: 6,
-        building_type: 2,
-        rent: 3600,
-        rent_negotiable: 0,
-        unit_count: 1,
-        start_date: this.GetFormattedDate(new Date("09-02-2013")),
-        alternate_start_date: "",
-        lease_length: 12,
-        available: 1,
-        baths: 2,
-        air: 1,
-        parking_type: 1,
-        parking_spots: 6,
-        street_parking: 0,
-        furnished_type: 0,
-        pets_type: 1,
-        smoking: 1,
-        square_feet: 2000,
-        year_built: 1944,
-        electric: 1,
-        water: 1,
-        gas: 1,
-        heat: 1,
-        sewage: 1,
-        trash: 1,
-        cable: 1,
-        internet: 1,
-        utility_total_flat_rate: 0,
-        utility_estimate_winter: 250,
-        utility_estimate_summer: 200,
-        deposit: 900,
-        highlights: "Its a really fun place",
-        description: "This is a longer description about the place",
-        waitlist: 1,
-        waitlist_open_date: "",
-        lease_office_address: "Jonah Copi's place",
-        contact_email: "email@address.com",
-        contact_phone: "5555555555",
-        website: "www.cribspot.com"
+        rental_id: A2Cribs.UI_Rentals.rental_id(),
+        listing_id: A2Cribs.UI_Rentals.listing_id(),
+        street_address: A2Cribs.UI_Rentals.street_address(),
+        city: A2Cribs.UI_Rentals.city(),
+        state: A2Cribs.UI_Rentals.state(),
+        zipcode: A2Cribs.UI_Rentals.zipcode(),
+        unit_style_options: A2Cribs.UI_Rentals.unit_style_options(),
+        unit_style_type: A2Cribs.UI_Rentals.unit_style_type(),
+        unit_style_description: A2Cribs.UI_Rentals.unit_style_description(),
+        building_name: A2Cribs.UI_Rentals.building_name(),
+        beds: A2Cribs.UI_Rentals.beds(),
+        min_occupancy: A2Cribs.UI_Rentals.min_occupancy(),
+        max_occupancy: A2Cribs.UI_Rentals.max_occupancy(),
+        building_type: A2Cribs.UI_Rentals.building_type(),
+        rent: A2Cribs.UI_Rentals.rent(),
+        rent_negotiable: A2Cribs.UI_Rentals.rent_negotiable(),
+        unit_count: A2Cribs.UI_Rentals.unit_count(),
+        start_date: A2Cribs.UI_Rentals.start_date(),
+        alternate_start_date: A2Cribs.UI_Rentals.alternate_start_date(),
+        lease_length: A2Cribs.UI_Rentals.lease_length(),
+        available: A2Cribs.UI_Rentals.available(),
+        baths: A2Cribs.UI_Rentals.baths(),
+        air: A2Cribs.UI_Rentals.air(),
+        parking_type: A2Cribs.UI_Rentals.parking_type(),
+        parking_spots: A2Cribs.UI_Rentals.parking_spots(),
+        street_parking: A2Cribs.UI_Rentals.street_parking(),
+        furnished_type: A2Cribs.UI_Rentals.furnished_type(),
+        pets_type: A2Cribs.UI_Rentals.pets_type(),
+        smoking: A2Cribs.UI_Rentals.smoking(),
+        square_feet: A2Cribs.UI_Rentals.square_feet(),
+        year_built: A2Cribs.UI_Rentals.year_built(),
+        electric: A2Cribs.UI_Rentals.electric(),
+        water: A2Cribs.UI_Rentals.water(),
+        gas: A2Cribs.UI_Rentals.gas(),
+        heat: A2Cribs.UI_Rentals.heat(),
+        sewage: A2Cribs.UI_Rentals.sewage(),
+        trash: A2Cribs.UI_Rentals.trash(),
+        cable: A2Cribs.UI_Rentals.cable(),
+        internet: A2Cribs.UI_Rentals.internet(),
+        utility_total_flat_rate: A2Cribs.UI_Rentals.utility_total_flat_rate(),
+        utility_estimate_winter: A2Cribs.UI_Rentals.utility_estimate_winter(),
+        utility_estimate_summer: A2Cribs.UI_Rentals.utility_estimate_summer(),
+        deposit: A2Cribs.UI_Rentals.deposit(),
+        highlights: A2Cribs.UI_Rentals.highlights(),
+        description: A2Cribs.UI_Rentals.description(),
+        waitlist: A2Cribs.UI_Rentals.waitlist(),
+        waitlist_open_date: A2Cribs.UI_Rentals.waitlist_open_date(),
+        lease_office_address: A2Cribs.UI_Rentals.lease_office_address(),
+        contact_email: A2Cribs.UI_Rentals.contact_email(),
+        contact_phone: A2Cribs.UI_Rentals.contact_phone(),
+        website: A2Cribs.UI_Rentals.website()
       };
       return $.ajax({
         url: myBaseUrl + "rentals/Save",
