@@ -2,7 +2,7 @@
 class RentalsController extends AppController 
 {	
 	public $helpers = array('Html');
-	public $uses = array('Rental', 'Fee');
+	public $uses = array('Rental', 'Fee', 'Listing');
 	//public $components= array('');
 
   public function beforeFilter()
@@ -29,25 +29,29 @@ class RentalsController extends AppController
     $rental = $rentalObject['Rental'];
     $fees = $rentalObject['Fees'];
     CakeLog::write("SavingFees", print_r($fees, true));
-    //$rentals['user_id'] = $this->Auth('user');
-    $rentals['user_id'] = 25;
-    $rentalResponse = $this->Rental->SaveRental($rental);
 
+    /* TODO: get the real user id here */
+    $rentals['user_id'] = 25;
+
+    $listingResponse = $this->Listing->SaveListing(Listing::LISTING_TYPE_RENTAL);
     /*
-    $rentalResponse contains the listing_id of the saved rental if successful.
+    $listingResponse contains the listing_id of the saved rental if successful.
     If rental save was unsuccessful, return an error code to client.
     */
     $listing_id = null;
     $ajaxResponse = null;
-    if (!array_key_exists('error', $rentalResponse) && array_key_exists('listing_id', $rentalResponse))
-      $listing_id = $rentalResponse['listing_id'];
+    if (!array_key_exists('error', $listingResponse) && array_key_exists('listing_id', $listingResponse))
+      $listing_id = $listingResponse['listing_id'];
     else
     {
-      if (array_key_exists('error', $rentalResponse))
-        $this->set('response', json_encode($ajaxResponse));
-      else
-        $this->set('response', json_encode(array('error' => 'Rental save unsuccessful')));
+      $this->set('response', json_encode(array('error' => 'Rental save unsuccessful')));
+      return;
+    }
 
+    $rentalResponse = $this->Rental->SaveRental($rental);
+    if (array_key_exists('error', $rentalResponse))
+    {
+      $this->set('response', json_encode($rentalResponse));
       return;
     }
 

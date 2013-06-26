@@ -11,7 +11,7 @@ class User extends AppModel {
 	public $primaryKey = 'id';
 
 	public $validate = array (
-		'id' => 'alphaNumeric', 
+		'id' => 'alphaNumeric',
 		'password' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -50,7 +50,27 @@ class User extends AppModel {
 				'rule' => 'alphaNumeric',
 				'message' => 'Names must only contain letters and numbers.'
 				)
-			),
+		),
+		'street_address' => array(
+			'between' => array(
+				'rule' => array('between', 0, 255)
+			)
+		),
+		'city' => array(
+			'between' => array(
+				'rule' => array('between', 0, 255)
+			)
+		),
+		'state' => array(
+			'between' => array(
+				'rule' => array('between',0, 2),
+				'message' => 'Must be 2 characters'
+			)
+		),
+		'zipcode' => array(
+        	'rule' => array('postal', null, 'us')
+    	),
+    	'website' => 'url',
 		'email' => array(
 			'email' => array(
         		'rule'    => array('email', true),
