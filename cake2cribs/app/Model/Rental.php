@@ -59,9 +59,29 @@ class Rental extends AppModel {
 		'street_parking' => 'boolean',
 		'furnished_type' => 'numeric',
 		'pets_type' => 'numeric',
+		'washer_dryer' => 'numeric', ////////////////// need a type enum for this
 		'smoking' => 'boolean',
+		/* ------------- start new fields ----------------*/
+		'tv' => 'boolean',
+		'balcony' => 'boolean',
+		'fridge' => 'boolean', 
+		'storage' => 'boolean', 
+		/* ------------ end new fields ------------------ */	
 		'square_feet' => 'numeric',
 		'year_built' => 'numeric',
+		/* ------------ start new fields --------------- */
+		'pool' => 'boolean',
+		'hot_tub' => 'boolean',
+		'fitness_center' => 'boolean',
+		'game_room' => 'boolean',
+		'front_desk' => 'boolean',
+		'security_system' => 'boolean',
+		'tanning_beds' => 'boolean',
+		'study_lounge' => 'boolean',
+		'patio_deck' => 'boolean',
+		'yard_space' => 'boolean',
+		'elevator' => 'boolean',
+		/* ------------ end new fields --------------- */
 		'electric' => 'numeric',
 		'water' => 'numeric',
 		'gas' => 'numeric',
