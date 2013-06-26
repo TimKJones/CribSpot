@@ -17,11 +17,18 @@ class A2Cribs.RentalSave
 		# Gets rental info and saves to JS object
 		@ClearGrids()
 
-	Save: ->
-		###
-		********************* TODO **********************
-		###
-		# Sends array of rentals to backend
+	# Sends rental to server including all associated tables (fees, etc.)
+	@Save: ->
+		$.ajax
+			url: myBaseUrl + "rentals/Save"
+			type: "POST"
+			data: A2Cribs.Rental.Template
+			success: (response) =>
+				response = JSON.parse response
+				if response.success != null
+					alert "Success!"
+				else
+					alert response.error
 
 	Copy: (rental_ids) ->
 		###

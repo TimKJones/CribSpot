@@ -28,6 +28,7 @@ class RentalsController extends AppController
     $rentalObject = $this->params['data'];
     $rental = $rentalObject['Rental'];
     $fees = $rentalObject['Fees'];
+    CakeLog::write("SavingFees", print_r($fees, true));
     //$rentals['user_id'] = $this->Auth('user');
     $rentals['user_id'] = 25;
     $rentalResponse = $this->Rental->SaveRental($rental);
