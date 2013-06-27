@@ -52,7 +52,7 @@ class RentalsController extends AppController
     save in rentals_incomplete table and set is_complete = 0;
     For FIRST ITERATION, simply save in rentals table, and return error on failure.
     */
-
+    $rental['listing_id'] = $listing_id;
     $rentalResponse = $this->Rental->SaveRental($rental);
     if (array_key_exists('error', $rentalResponse))
     {
