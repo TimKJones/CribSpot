@@ -225,7 +225,7 @@ class Rental extends RentalPrototype {
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
 		$rental = parent::_removeNullEntries($rental);
-		//CakeLog::write("RentalSave", print_r($rental, true));
+		CakeLog::write("RentalSave", print_r($rental, true));
 		$rental['is_complete'] = 1;
 		if ($this->save(array('Rental' => $rental)))
 			return array('success' => '');
@@ -236,10 +236,7 @@ class Rental extends RentalPrototype {
 			Remove failed keys and return the result.
 			*/
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
-			$validationErrors = $this->validationErrors;
-			$rental = parent::_removeFailedKeys($rental, $validationErrors);
-			CakeLog::write("RentalSave", print_r($rental, true));
-			return array('error' => array('rental' => $rental));
+			return array('error' => array('message' => 'Rental save failed: error code 2'));
 		}
 	}
 }

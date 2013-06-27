@@ -51,21 +51,28 @@ class RentalsController extends AppController
     /*
     First, try and save in rentals table. If validation fails,
     save in rentals_incomplete table and set is_complete = 0;
+    For FIRST ITERATION, simply save in rentals table, and return error on failure.
     */
 
     $rentalResponse = $this->Rental->SaveRental($rental);
     if (array_key_exists('error', $rentalResponse))
     {
+
       /* 
       Rental is not complete.
       Save to rentals_incomplete table only.
+      for FIRST ITERATION, simply return an error code.
       */
-      $this->RentalIncomplete->SaveRental($rentalResponse['error']['rental']);
-    }
+      //$this->RentalIncomplete->SaveRental($rentalResponse['error']['rental']);
 
-    /* Save fees using $listing_id of saved rental */
-    $feesResponse = $this->Fee->SaveFees($fees, $listing_id);
-    $this->set('response', json_encode($rentalResponse));
+      $this->set('response', json_encode($rentalResponse));
+    }
+    else
+    {
+      /* Save fees using $listing_id of saved rental */
+      $feesResponse = $this->Fee->SaveFees($fees, $listing_id);
+      $this->set('response', json_encode($rentalResponse));
+    }
   }
 
   /*

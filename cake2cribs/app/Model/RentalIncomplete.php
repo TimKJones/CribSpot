@@ -8,7 +8,7 @@ To allow for this, it has loose restrictions for what can be saved.
 App::import('Model', "RentalPrototype");
 class RentalIncomplete extends RentalPrototype {
 	public $name = 'RentalIncomplete';
-	public $primaryKey = 'rental_id';
+	public $primaryKey = 'rental_incomplete_id';
 	public $hasOne = array('Listing');
 	public $validate = array(
 		'rental_id' => 'numeric',

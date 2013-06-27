@@ -2,7 +2,7 @@ class A2Cribs.Rental
 	constructor:\
 	(	@rental_id, @listing_id, @street_address, @city, @state, @zip, @unit_style_options, @unit_style_type, @unit_style_description, @building_name 
 	,	@beds, @min_occupancy, @max_occupancy, @building_type, @rent, @rent_negotiable, @unit_count, @start_date
-	,	@alternate_start_date, @lease_length, @available, @baths, @air, @parking_type, @parking_spots, @street_parking
+	,	@alternate_start_date, @end_date, @dates_negotiable, @available, @baths, @air, @parking_type, @parking_spots, @street_parking
 	,	@furnished_type, @pets_type, @smoking, @tv, @balcony, @fridge, @storage, @square_feet, @year_built 
 	,	@pool, @hot_tub, @fitness_center, @game_room, @front_desk, @security_system, @tanning_beds, @study_lounge
 	,	@patio_deck, @yard_space, @elevator, @electric, @water, @gas, @heat, @sewage, @trash
@@ -26,16 +26,17 @@ class A2Cribs.Rental
 				building_name: A2Cribs.UILayer.Rentals.building_name()
 				beds: A2Cribs.UILayer.Rentals.beds()
 				min_occupancy: A2Cribs.UILayer.Rentals.min_occupancy()
-				max_occupancy: null
+				max_occupancy: 4
 				building_type: A2Cribs.UILayer.Rentals.building_type()
-				rent: null #A2Cribs.UILayer.Rentals.rent()
+				rent: A2Cribs.UILayer.Rentals.rent()
 				rent_negotiable: A2Cribs.UILayer.Rentals.rent_negotiable()
 				unit_count: A2Cribs.UILayer.Rentals.unit_count()
 				start_date: A2Cribs.UILayer.Rentals.start_date()
 				alternate_start_date: A2Cribs.UILayer.Rentals.alternate_start_date()
-				lease_length: A2Cribs.UILayer.Rentals.lease_length()
+				end_date: A2Cribs.UILayer.Rentals.end_date()
+				dates_negotiable: 0
 				available: A2Cribs.UILayer.Rentals.available()
-				baths: null #A2Cribs.UILayer.Rentals.baths()
+				baths: A2Cribs.UILayer.Rentals.baths()
 				air: A2Cribs.UILayer.Rentals.air()
 				parking_type: A2Cribs.UILayer.Rentals.parking_type()
 				parking_spots: A2Cribs.UILayer.Rentals.parking_spots()
