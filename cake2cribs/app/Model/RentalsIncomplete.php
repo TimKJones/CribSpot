@@ -233,13 +233,25 @@ class Rental extends RentalPrototype {
 		{
 			/* 
 			There were validation errors.
-			Remove failed keys and return the result.
+			Remove failed keys and try to save again.
+			The failed keys will be saved as null values and is_complete will be set to 0.
 			*/
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
+			$rental['is_complete'] = 0;
 			$validationErrors = $this->validationErrors;
 			$rental = parent::_removeFailedKeys($rental, $validationErrors);
-			CakeLog::write("RentalSave", print_r($rental, true));
-			return array('error' => array('rental' => $rental));
+			/* Now try and save again having removed the failed keys */
+			if ($this->save(array('Rental' => $rental)))
+				return array('error' => array(
+					'columns' => $validationErrors,
+					'type' => 'TYPE_VALIDATION')
+				);
+			else
+			{
+				CakeLog::write("RentalSaveSecondAttempt", print_r($rental, true));
+				CakeLog::write("RentalSaveSecondAttemptErrors", print_r($this->validationErrors, true));
+				return array('error' => array('type' => 'TYPE_FATAL'));
+			}
 		}
 	}
 }

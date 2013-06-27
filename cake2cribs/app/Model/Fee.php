@@ -33,15 +33,7 @@ class Fee extends AppModel {
 			$this->id = null; // reset so that the same entry is not continually overwritten in loop
 			$nextFee = $fees[$i];
 			
-			/* 
-			Remove entries from array that are null so that cakephp won't complain.
-			They will be set to null by default in the fees table.
-			*/
-			foreach ($nextFee as $key => $value)
-			{
-				if ($nextFee[$key] == null)
-					unset($nextFee[$key]);
-			}
+			$nextFee = parent::_removeNullEntries($nextFee);
 
 			$nextFee['listing_id'] = $listing_id;
 			$feesWrapper['Fee'] = $nextFee;
