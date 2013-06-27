@@ -18,6 +18,20 @@ class RentalPrototype extends AppModel {
 		return parent::enum($value, $options);
 	}
 
+	/* ---------- building_type ---------- */
+	const BUILDING_TYPE_HOUSE = 0;
+	const BUILDING_TYPE_APARTMENT = 1;
+	const BUILDING_TYPE_DUPLEX = 2;
+
+	public static function building_type($value = null) {
+		$options = array(
+		    self::BUILDING_TYPE_HOUSE => __('House',true),
+		    self::BUILDING_TYPE_APARTMENT => __('Apartment',true),
+		    self::BUILDING_TYPE_DUPLEX => __('Duplex',true),
+		);
+		return parent::enum($value, $options);
+	}
+
 	/* ---------- air ---------- */
 	const AIR_CENTRAL = 0;
 	const AIR_WALL_UNIT = 1;
@@ -72,6 +86,22 @@ class RentalPrototype extends AppModel {
 		    self::PETS_CATS_ONLY => __('Cats Only',true),
 		    self::PETS_DOGS_ONLY => __('Dogs Only',true),
 		    self::PETS_CATS_AND_DOGS => __('Cats and Dogs',true),
+		);
+		return parent::enum($value, $options);
+	}
+
+	/* ---------- washer_dryer ---------- */
+	const WASHER_DRYER_IN_UNIT = 0;
+	const WASHER_DRYER_ON_SITE_FREE = 1;
+	const WASHER_DRYER_ON_SITE_COIN_OPERATED = 2;
+	const WASHER_DRYER_OFF_SITE = 3;
+
+	public static function washer_dryer($value = null) {
+		$options = array(
+		    self::WASHER_DRYER_IN_UNIT => __('In Unit',true),
+		    self::WASHER_DRYER_ON_SITE_FREE => __('On-Site Free',true),
+		    self::WASHER_DRYER_ON_SITE_COIN_OPERATED => __('On-Site Coin Operated',true),
+		    self::WASHER_DRYER_OFF_SITE => __('Off-Site',true),
 		);
 		return parent::enum($value, $options);
 	}

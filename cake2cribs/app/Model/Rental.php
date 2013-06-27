@@ -134,7 +134,7 @@ class Rental extends RentalPrototype {
 		'street_parking' => 'boolean',
 		'furnished_type' => 'numeric',
 		'pets_type' => 'numeric',
-		'washer_dryer' => 'numeric', ////////////////// need a type enum for this
+		'washer_dryer' => 'numeric', 
 		'smoking' => 'boolean',
 		/* ------------- start new fields ----------------*/
 		'tv' => 'boolean',
