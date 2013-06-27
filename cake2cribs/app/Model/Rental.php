@@ -4,7 +4,12 @@ App::import('Model', "RentalPrototype");
 class Rental extends RentalPrototype {
 	public $name = 'Rental';
 	public $primaryKey = 'rental_id';
-	public $hasOne = array('Listing');
+	public $belongsTo = array(
+		'Listing' => array(
+            'className'    => 'Listing',
+            'foreignKey'   => 'listing_id'
+        )
+	);
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
@@ -238,6 +243,34 @@ class Rental extends RentalPrototype {
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
 			return array('error' => array('message' => 'Rental save failed: error code 2'));
 		}
+	}
+
+	/*
+	Delete the rental with listing_id = $listing_id
+	IMPORTANT: this is listing_id, NOT rental_id.
+	*/
+	public function DeleteRental($listing_id)
+	{
+		return array('success' => '');
+	}
+
+	/* 
+	Returns true if given user owns the rental with the given listing_id
+	*/
+	public function UserOwnsRental($listing_id, $user_id)
+	{
+		if ($user_id == null || $user_id == 0)
+			return null;
+
+		$listings = $this->find('first', array(
+			'fields' => array('Listing.listing_id'),
+			'conditions' => array(
+				'Rental.user_id' => $user_id,
+				'Rental.listing_id' => $listing_id
+			)
+		));
+
+		return $listings != null;
 	}
 }
 

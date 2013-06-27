@@ -9,7 +9,6 @@ class RentalsController extends AppController
   {
     parent::beforeFilter();
     $this->Auth->allow('Save');
-    $this->Auth->allow('Delete');
     $this->Auth->allow('Get');
   }
 
@@ -73,14 +72,6 @@ class RentalsController extends AppController
       $feesResponse = $this->Fee->SaveFees($fees, $listing_id);
       $this->set('response', json_encode($rentalResponse));
     }
-  }
-
-  /*
-  Delete each rental with an id in $rental_ids
-  */
-  public function Delete($rental_ids = null)
-  {
-
   }
 
   /*

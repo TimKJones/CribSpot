@@ -3,7 +3,12 @@
 class Listing extends AppModel {
 	public $name = 'Listing';
 	public $primaryKey = 'listing_id';
-	/*public hasOne = array('Rental', 'Sublet', 'Parking');*/
+	public $hasOne = array(
+		'Rental' => array(
+			'className' => 'Rental',
+			'dependent' => true
+		)
+	);
 	public $validate = array(
 		'listing_id' => 'alphaNumeric',
 		'listing_type' => 'alphaNumeric'
@@ -32,6 +37,43 @@ class Listing extends AppModel {
 		/* Listing failed to save - return error code */
 		CakeLog::write("listingValidationErrors", print_r($this->validationErrors, true));
 		return array("error" => "Failed to save listing");
+	}
+
+	/* returns listing with id = $listing_id */
+	public function Get($listing_id)
+	{
+		$listing = $this->find('all', array(
+        	'conditions' => array('Listing.listing_id' => $listing_id)
+    	));
+
+    	return $listing;
+	}
+
+	/*
+	Delete the listing with id = $listing_id
+	Returns true on success, false otherwise.
+	*/
+	public function DeleteListing($listing_id)
+	{
+		$response = $this->delete($listing_id);
+		return $response != null;
+
+	}
+
+	/*
+	Returns the listing_type for the given listing_id
+	*/
+	public function GetListingType($listing_id)
+	{
+		$listingType = $this->find('first', array(
+			'fields' => array('Listing.listing_type'),
+        	'conditions' => array('Listing.listing_id' => $listing_id)
+    	));
+		
+		if ($listingType != null)
+    		return $listingType['Listing']['listing_type'];
+    	else
+    		return null;
 	}
 }	
 

@@ -38,11 +38,20 @@ class A2Cribs.RentalSave
 		# Create new on backend
 		# Update grid
 
-	Delete: (rental_ids) ->
-		###
-		********************* TODO **********************
-		###
-		# Update backend and grid
+
+	# Sends array of listing_ids to delete
+	# IMPORTANT - sends listing_ids, not rental_ids
+	@Delete: (listing_ids) ->
+		$.ajax
+			url: myBaseUrl + "listings/Delete/" + JSON.stringify listing_ids
+			type: "POST"
+			success: (response) =>
+				response = JSON.parse response
+				if response.success != null && response.success != undefined
+					alert "Success!"
+				else
+					alert "Delete unsuccessful"
+					console.log response
 
 	Create: ->
 		###
