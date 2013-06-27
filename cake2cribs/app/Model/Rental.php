@@ -226,11 +226,8 @@ class Rental extends RentalPrototype {
 		if ($rental == null)
 			return array("error" => "Rental cannot be null");
 
-		$validationErrors = null;
-
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
 		$rental = parent::_removeNullEntries($rental);
-		CakeLog::write("RentalSave", print_r($rental, true));
 		$rental['is_complete'] = 1;
 		if ($this->save(array('Rental' => $rental)))
 			return array('success' => '');
@@ -259,6 +256,7 @@ class Rental extends RentalPrototype {
 	*/
 	public function UserOwnsRental($listing_id, $user_id)
 	{
+		CakeLog::write("UserOwnsRental", "listing_id = " . $listing_id . "; user_id = " . $user_id);
 		if ($user_id == null || $user_id == 0)
 			return null;
 
@@ -271,6 +269,24 @@ class Rental extends RentalPrototype {
 		));
 
 		return $listings != null;
+	}
+
+	/*
+	Returns the rental_id for the rental with the given listing_id
+	*/
+	public function GetRentalIdFromListingId($listing_id)
+	{
+		$rentalId = $this->find('first', array(
+			'fields' => array('Rental.rental_id'),
+			'conditions' => array(
+				'Rental.listing_id' => $listing_id
+			)
+		));
+
+		if ($rentalId != null)
+			return $rentalId['Rental']['rental_id'];
+		else
+			return null;
 	}
 }
 

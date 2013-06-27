@@ -15,7 +15,6 @@ class A2Cribs.Rental
 		data = 
 			Rental:
 				rental_id: A2Cribs.UILayer.Rentals.rental_id()
-				listing_id: A2Cribs.UILayer.Rentals.listing_id()
 				street_address: A2Cribs.UILayer.Rentals.street_address()
 				city: A2Cribs.UILayer.Rentals.city()
 				state: A2Cribs.UILayer.Rentals.state()
@@ -26,7 +25,7 @@ class A2Cribs.Rental
 				building_name: A2Cribs.UILayer.Rentals.building_name()
 				beds: A2Cribs.UILayer.Rentals.beds()
 				min_occupancy: A2Cribs.UILayer.Rentals.min_occupancy()
-				max_occupancy: 4
+				max_occupancy: 69
 				building_type: A2Cribs.UILayer.Rentals.building_type()
 				rent: A2Cribs.UILayer.Rentals.rent()
 				rent_negotiable: A2Cribs.UILayer.Rentals.rent_negotiable()

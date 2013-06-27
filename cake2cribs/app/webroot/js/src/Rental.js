@@ -3,7 +3,7 @@
   A2Cribs.Rental = (function() {
     var data;
 
-    function Rental(rental_id, listing_id, street_address, city, state, zip, unit_style_options, unit_style_type, unit_style_description, building_name, beds, min_occupancy, max_occupancy, building_type, rent, rent_negotiable, unit_count, start_date, alternate_start_date, lease_length, available, baths, air, parking_type, parking_spots, street_parking, furnished_type, pets_type, smoking, tv, balcony, fridge, storage, square_feet, year_built, pool, hot_tub, fitness_center, game_room, front_desk, security_system, tanning_beds, study_lounge, patio_deck, yard_space, elevator, electric, water, gas, heat, sewage, trash, cable, internet, utility_total_flat_rate, utility_estimate_winter, utility_estimate_summer, deposit, highlights, description, waitlist, waitlist_open_date, lease_office_address, contact_email, contact_phone, website) {
+    function Rental(rental_id, listing_id, street_address, city, state, zip, unit_style_options, unit_style_type, unit_style_description, building_name, beds, min_occupancy, max_occupancy, building_type, rent, rent_negotiable, unit_count, start_date, alternate_start_date, end_date, dates_negotiable, available, baths, air, parking_type, parking_spots, street_parking, furnished_type, pets_type, smoking, tv, balcony, fridge, storage, square_feet, year_built, pool, hot_tub, fitness_center, game_room, front_desk, security_system, tanning_beds, study_lounge, patio_deck, yard_space, elevator, electric, water, gas, heat, sewage, trash, cable, internet, utility_total_flat_rate, utility_estimate_winter, utility_estimate_summer, deposit, highlights, description, waitlist, waitlist_open_date, lease_office_address, contact_email, contact_phone, website) {
       this.rental_id = rental_id;
       this.listing_id = listing_id;
       this.street_address = street_address;
@@ -23,7 +23,8 @@
       this.unit_count = unit_count;
       this.start_date = start_date;
       this.alternate_start_date = alternate_start_date;
-      this.lease_length = lease_length;
+      this.end_date = end_date;
+      this.dates_negotiable = dates_negotiable;
       this.available = available;
       this.baths = baths;
       this.air = air;
@@ -75,7 +76,6 @@
     Rental.Template = data = {
       Rental: {
         rental_id: A2Cribs.UILayer.Rentals.rental_id(),
-        listing_id: A2Cribs.UILayer.Rentals.listing_id(),
         street_address: A2Cribs.UILayer.Rentals.street_address(),
         city: A2Cribs.UILayer.Rentals.city(),
         state: A2Cribs.UILayer.Rentals.state(),
@@ -86,16 +86,17 @@
         building_name: A2Cribs.UILayer.Rentals.building_name(),
         beds: A2Cribs.UILayer.Rentals.beds(),
         min_occupancy: A2Cribs.UILayer.Rentals.min_occupancy(),
-        max_occupancy: null,
+        max_occupancy: 69,
         building_type: A2Cribs.UILayer.Rentals.building_type(),
-        rent: null,
+        rent: A2Cribs.UILayer.Rentals.rent(),
         rent_negotiable: A2Cribs.UILayer.Rentals.rent_negotiable(),
         unit_count: A2Cribs.UILayer.Rentals.unit_count(),
         start_date: A2Cribs.UILayer.Rentals.start_date(),
         alternate_start_date: A2Cribs.UILayer.Rentals.alternate_start_date(),
-        lease_length: A2Cribs.UILayer.Rentals.lease_length(),
+        end_date: A2Cribs.UILayer.Rentals.end_date(),
+        dates_negotiable: 0,
         available: A2Cribs.UILayer.Rentals.available(),
-        baths: null,
+        baths: A2Cribs.UILayer.Rentals.baths(),
         air: A2Cribs.UILayer.Rentals.air(),
         parking_type: A2Cribs.UILayer.Rentals.parking_type(),
         parking_spots: A2Cribs.UILayer.Rentals.parking_spots(),

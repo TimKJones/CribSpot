@@ -27,6 +27,7 @@ class A2Cribs.RentalSave
 				response = JSON.parse response
 				if response.success != null && response.success != undefined
 					alert "Success!"
+					console.log response
 				else
 					alert "Save unsuccessful"
 					console.log response

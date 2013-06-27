@@ -27,7 +27,8 @@
         success: function(response) {
           response = JSON.parse(response);
           if (response.success !== null && response.success !== void 0) {
-            return alert("Success!");
+            alert("Success!");
+            return console.log(response);
           } else {
             alert("Save unsuccessful");
             return console.log(response);
@@ -42,10 +43,21 @@
       */
     };
 
-    RentalSave.prototype.Delete = function(rental_ids) {
-      /*
-      		********************* TODO **********************
-      */
+    RentalSave.Delete = function(listing_ids) {
+      var _this = this;
+      return $.ajax({
+        url: myBaseUrl + "listings/Delete/" + JSON.stringify(listing_ids),
+        type: "POST",
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.success !== null && response.success !== void 0) {
+            return alert("Success!");
+          } else {
+            alert("Delete unsuccessful");
+            return console.log(response);
+          }
+        }
+      });
     };
 
     RentalSave.prototype.Create = function() {
