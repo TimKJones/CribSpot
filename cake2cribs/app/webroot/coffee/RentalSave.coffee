@@ -25,10 +25,11 @@ class A2Cribs.RentalSave
 			data: A2Cribs.Rental.Template
 			success: (response) =>
 				response = JSON.parse response
-				if response.success != null
+				if response.success != null && response.success != undefined
 					alert "Success!"
 				else
-					alert response.error
+					alert "Save unsuccessful"
+					console.log response
 
 	Copy: (rental_ids) ->
 		###

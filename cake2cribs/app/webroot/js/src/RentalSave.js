@@ -26,10 +26,11 @@
         data: A2Cribs.Rental.Template,
         success: function(response) {
           response = JSON.parse(response);
-          if (response.success !== null) {
+          if (response.success !== null && response.success !== void 0) {
             return alert("Success!");
           } else {
-            return alert(response.error);
+            alert("Save unsuccessful");
+            return console.log(response);
           }
         }
       });

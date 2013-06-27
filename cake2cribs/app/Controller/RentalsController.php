@@ -20,6 +20,7 @@ class RentalsController extends AppController
 
   /*
   Save each rental object and fee object passed via POST data.
+  If unsuccessful, returns an error code as well as a list of the fields that failed validation
   REQUIRES: each rental and fee object is in the form cake expects for a valid save.
   */
   public function Save()
@@ -28,7 +29,7 @@ class RentalsController extends AppController
     $rentalObject = $this->params['data'];
     $rental = $rentalObject['Rental'];
     $fees = $rentalObject['Fees'];
-    CakeLog::write("SavingFees", print_r($fees, true));
+    //CakeLog::write("SavingFees", print_r($fees, true));
 
     /* TODO: get the real user id here */
     $rentals['user_id'] = 25;
@@ -51,7 +52,9 @@ class RentalsController extends AppController
     $rentalResponse = $this->Rental->SaveRental($rental);
     if (array_key_exists('error', $rentalResponse))
     {
-      $this->set('response', json_encode($rentalResponse));
+      $rentalResponseWrapper['Rental'] = $rentalResponse['error'];
+      /* Return to the client a list of fields that failed validation */
+      $this->set('response', json_encode(array('error' => $rentalResponseWrapper)));
       return;
     }
 

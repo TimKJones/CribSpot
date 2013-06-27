@@ -7,7 +7,12 @@ class Rental extends AppModel {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'user_id' => 'numeric',
+		'user_id' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 1, 255)
@@ -27,31 +32,100 @@ class Rental extends AppModel {
 		'zipcode' => array(
         	'rule' => array('postal', null, 'us')
     	),
-		'unit_style_options' => 'alphaNumeric',
-		'unit_style_type' => 'alphaNumeric',
-		'unit_style_description' => 'alphaNumeric',
+		'unit_style_options' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
+		'unit_style_type' => array(
+			'between' => array(
+				'rule' => array('between', 1, 20)
+			)
+		),
+		'unit_style_description' => array(
+			'between' => array(
+				'rule' => array('between', 1, 255)
+			)
+		),
 		'building_name' => array(
 			'between' => array(
 				'rule' => array('between',0,100),
 				'message' => 'Must be less than 100 characters'
 			)
 		),
-		'beds' => 'numeric',
+		'beds' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
 		'min_occupancy' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
 				'required' => false
 			)
 		),
-		'max_occupancy' => 'numeric',
-		'building_type' => 'numeric',
-		'rent' => 'numeric', /*this is total rent, not per person */
-		'rent_negotiable' => 'boolean',
-		'unit_count' => 'numeric',
-		'start_date' => 'date',
-		'alternate_start_date' => 'date',
-		'lease_length' => 'numeric', /* in months */
-		'available' => 'boolean',
+		'max_occupancy' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
+		'building_type' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
+		'rent' => array(  /*this is total rent, not per person */
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		), 
+		'rent_negotiable' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'unit_count' => array(  /* Not required - will default to 1 */
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		), 
+		'start_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => true
+			)
+		),
+		'alternate_start_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => false
+			)
+		),
+		'end_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => true
+			)
+		),
+		'dates_negotiable' => array(
+			'boolean' => array(
+				'rule' => 'boolean',
+				'required' => true
+			)
+		),
+		'available' => array(
+			'boolean' => array(
+				'rule' => 'boolean',
+				'required' => true
+			)
+		),
 		'baths' => 'numeric',
 		'air' => 'boolean',
 		'parking_type' => 'numeric',
@@ -234,15 +308,17 @@ class Rental extends AppModel {
 		if ($rental == null)
 			return array("error" => "Rental cannot be null");
 
-		$rental = $this->_markAsSaved($rental);
+		$rental = $this->_removeNullEntries($rental);
 		CakeLog::write("RentalSave", print_r($rental, true));
 		$rentalWrapper['Rental'] = $rental;
+		$rental['is_complete'] = 1;
 		if ($this->save($rentalWrapper))
 			return array('listing_id' => $this->id);
 		else
 		{
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
-			return array("error" => "it didn't work");
+			$rental['is_complete'] = 0;
+			return array("error" => $this->validationErrors);
 		}
 	}
 
@@ -255,18 +331,13 @@ class Rental extends AppModel {
 
 	}
 
-	/*
-	Marks $rental (via the 'is_complete' field) as complete or incomplete by checking for all required fields.
-	Returns modified $rental object;
+	/* 
+	Remove entries from array that are null so that cakephp won't complain.
+	They will be set to null by default in the rentals table.
 	*/
-	private function _markAsSaved($rental)
-	{
-		$rental['is_complete'] = 1;
 
-		/* 
-		Remove entries from array that are null so that cakephp won't complain.
-		They will be set to null by default in the rentals table.
-		*/
+	private function _removeNullEntries($rental)
+	{
 		foreach ($rental as $key => $value)
 		{
 			if ($rental[$key] == null)
