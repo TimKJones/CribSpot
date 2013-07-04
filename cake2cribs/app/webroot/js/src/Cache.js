@@ -262,6 +262,20 @@
     };
 
     /*
+    	Adds listing to the appropriate cache based on listing_type
+    */
+
+    Cache.AddListing = function(listing) {
+      if (listing === void 0 || listing === null) return;
+      if (listing.Rental !== void 0) {
+        this.AddRental(listing.Rental);
+      } else if (listing.Parking !== void 0) {
+        this.AddParking(listing.Parking);
+      }
+      return this.AddUser(parseInt(listing.Listing.listing_id), listing.User);
+    };
+
+    /*
     	Returns listing object specified by listing_id
     */
 
@@ -278,14 +292,7 @@
         async: false,
         success: function(response) {
           listing = JSON.parse(response);
-          if (listing[0] !== void 0) {
-            if (listing[0].Rental !== void 0) {
-              this.AddRental(listing[0].Rental);
-            } else if (listing[0].Parking !== void 0) {
-              this.AddParking(listing[0].Parking);
-            }
-            return this.AddUser(parseInt(listing[0].Listing.listing_id), listing[0].User);
-          }
+          return this.AddListing(listing[0]);
         }
       });
       if (listing !== null) {
@@ -296,23 +303,32 @@
     };
 
     /*
-    	- returns the listing objectfor the given id
-    	- if the listing is not in the cache
-    		- fetches listing from database
-    		- if listing_type is rental, add to IdToRentalMap
-    		- if listing_type is parking, add to IdToParkingMap
-    		- if listing_type is sublet, add to IdToSubletMap
-    		- adds user to cache
-    	- returns new listing/user object
+    	Loads all listings owned by logged-in user
+    	Loads PUBLIC user data for user into cache
+    	Returns array of listings
     */
 
-    Cache.GetListingsByUser = function(user_id) {};
-
-    /*
-    	- Loads all listings into cache with given user_id
-    	- Loads PUBLIC user data for user into cache
-    	- Returns array of listings for that PM
-    */
+    Cache.GetListingsByLoggedInUser = function() {
+      var listings;
+      listings = null;
+      $.ajax({
+        url: myBaseUrl + "Listings/GetListingsByLoggedInUser",
+        type: "GET",
+        context: this,
+        async: false,
+        success: function(response) {
+          var listing, _i, _len, _results;
+          listings = JSON.parse(response);
+          _results = [];
+          for (_i = 0, _len = listings.length; _i < _len; _i++) {
+            listing = listings[_i];
+            _results.push(this.AddListing(listing));
+          }
+          return _results;
+        }
+      });
+      return listings;
+    };
 
     return Cache;
 

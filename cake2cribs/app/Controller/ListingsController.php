@@ -10,6 +10,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('Save');
 		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetListing');
+		$this->Auth->allow('GetListingsByLoggedInUser');
 	}
 
 	/* Deletes the listings in $listing_ids */
@@ -71,10 +72,20 @@ class ListingsController extends AppController {
 	Returns all listing_data for given user_id.
 	NOTE: only returns PUBLIC user data
 	*/
-	function GetListingsByUser($user_id)
+	function GetListingsByLoggedInUser()
 	{
 		$this->layout = 'ajax';
-		$this->set('response', '');
+		$user_id = $this->Auth->User('id');
+		if ($user_id == 0 || $user_id == null){
+			$listings['error'] = 'Error retrieving listings. User not logged in.';
+			$this->set('response', json_encode($listings));
+			return;
+		}
+		$listings = $this->Listing->GetListingsByUserId($this->Auth->User('id'));
+		if ($listings == null)
+			$listings['error'] = 'Error retrieving listings';
+
+		$this->set('response', json_encode($listings));
 	}
 
 }

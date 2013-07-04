@@ -212,6 +212,20 @@ class A2Cribs.Cache
 		@ListingIdToUserMap[listing_id] = user
 
 	###
+	Adds listing to the appropriate cache based on listing_type
+	###
+	@AddListing: (listing) ->
+		if listing == undefined || listing == null
+			return
+
+		if listing.Rental != undefined
+			@AddRental listing.Rental
+		else if listing.Parking != undefined
+			@AddParking listing.Parking
+		
+		@AddUser parseInt(listing.Listing.listing_id), listing.User
+
+	###
 	Returns listing object specified by listing_id
 	###
 	@GetListing:(listing_id) ->
@@ -228,13 +242,8 @@ class A2Cribs.Cache
 			async: false
 			success: (response) ->
 				listing = JSON.parse response
-				if listing[0] != undefined
-					#determine listing_type and add to appropriate cache data structure
-					if listing[0].Rental != undefined
-						@AddRental listing[0].Rental
-					else if listing[0].Parking != undefined
-						@AddParking listing[0].Parking
-					@AddUser parseInt(listing[0].Listing.listing_id), listing[0].User
+				@AddListing listing[0]
+
 		if listing != null
 			return listing[0]
 		else
@@ -246,21 +255,14 @@ class A2Cribs.Cache
 	Returns array of listings
 	###
 	@GetListingsByLoggedInUser:() ->
+		listings = null
 		$.ajax
-			url: myBaseUrl + "Listings/GetListing/" + listing_id
+			url: myBaseUrl + "Listings/GetListingsByLoggedInUser"
 			type:"GET"
 			context: this
 			async: false
 			success: (response) ->
-				listing = JSON.parse response
-				if listing[0] != undefined
-					#determine listing_type and add to appropriate cache data structure
-					if listing[0].Rental != undefined
-						@AddRental listing[0].Rental
-					else if listing[0].Parking != undefined
-						@AddParking listing[0].Parking
-					@AddUser parseInt(listing[0].Listing.listing_id), listing[0].User
-		if listing != null
-			return listing[0]
-		else
-			return null
+				listings = JSON.parse response
+				for listing in listings
+					@AddListing listing
+		return listings

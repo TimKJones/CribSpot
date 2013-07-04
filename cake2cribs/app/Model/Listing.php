@@ -102,7 +102,17 @@ class Listing extends AppModel {
 		return $listing;
 	}
 
-
+	/*
+	Returns an array of listings owned by the given user_id
+	*/
+	public function GetListingsByUserId($user_id)
+	{
+		$listings = $this->find('all', array(
+			'conditions' => array('Listing.user_id' => $user_id)
+		));
+		
+		return $listings;
+	}
 }	
 
 ?>
