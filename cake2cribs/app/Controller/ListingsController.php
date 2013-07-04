@@ -9,7 +9,7 @@ class ListingsController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow('Save');
 		$this->Auth->allow('Delete');
-		$this->Auth->allow('Get');
+		$this->Auth->allow('GetListing');
 	}
 
 	/* Deletes the listings in $listing_ids */
@@ -38,7 +38,7 @@ class ListingsController extends AppController {
 	}
 
 	/*
-		Check if user owns listing_id. Returns true if so, false otherwise.
+	Check if user owns listing_id. Returns true if so, false otherwise.
 	*/
 	function UserOwnsListing($listing_id)
 	{
@@ -51,6 +51,30 @@ class ListingsController extends AppController {
 			return $this->Rental->UserOwnsRental($listing_id, $user_id);
 
 		return false;
+	}
+
+	/*
+	Returns json-encoded listing
+	NOTE: only returns PUBLIC user data
+	*/
+	function GetListing($listing_id)
+	{
+		$this->layout = 'ajax';
+		$listing = $this->Listing->GetListing($listing_id);
+		if ($listing == null)
+			$listing['error'] = 'Listing id not found';
+
+		$this->set('response', json_encode($listing));
+	}
+
+	/*
+	Returns all listing_data for given user_id.
+	NOTE: only returns PUBLIC user data
+	*/
+	function GetListingsByUser($user_id)
+	{
+		$this->layout = 'ajax';
+		$this->set('response', '');
 	}
 
 }

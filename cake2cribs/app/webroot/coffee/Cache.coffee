@@ -20,6 +20,11 @@ class A2Cribs.Cache
 	@FavoritesSubletIdsList = []
 	@FavoritesMarkerIdsList = []
 
+	
+	@IdToRentalMap = []
+	@IdToParkingMap = []
+	@IdToUserMap = [] #Only contains public user data
+
 	@SubletEditInProgress = null
 
 	###
@@ -181,3 +186,47 @@ class A2Cribs.Cache
 
 	@CacheSubletAddStep3: (data) ->
 		A2Cribs.Cache.Step3Data = data
+
+
+	###
+	Adds new rental object to IdToRentalMap
+	###
+	@AddRental:(rental) ->
+	###
+	Creates a new Rental object from rental
+	Adds new rental object to IdToRentalMap
+	###
+
+	###
+	Returns a list of listing objects specified by listing_ids
+	###
+	@GetListing:(listing_id) ->
+		#See if listing is already cached
+		if listing_id in @IdToRentalMap
+			return @IdToRentalMap[listing_id]
+
+		#Listing not in cache. Fetch it from database
+		$.ajax
+			url: myBaseUrl + "Listings/GetListing/" + listing_id
+			type:"GET"
+			context: this
+			success: (response) ->
+				console.log response
+	###
+	- returns the listing objectfor the given id
+	- if the listing is not in the cache
+		- fetches listing from database
+		- if listing_type is rental, add to IdToRentalMap
+		- if listing_type is parking, add to IdToParkingMap
+		- if listing_type is sublet, add to IdToSubletMap
+		- adds user to cache
+	- returns new listing/user object
+	###
+
+	@GetListingsByUser:(user_id) ->
+	###
+	- Loads all listings into cache with given user_id
+	- Loads PUBLIC user data for user into cache
+	- Returns array of listings for that PM
+	###
+

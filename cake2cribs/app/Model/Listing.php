@@ -75,6 +75,21 @@ class Listing extends AppModel {
     	else
     		return null;
 	}
+
+	/*
+	Returns array of listings with ids in listing_ids
+	NOTE: Only return non-sensitive user data
+	*/
+	public function GetListing($listing_id)
+	{
+		$listing = $this->find('all', array(
+			'conditions' => array('Listing.listing_id' => $listing_id)
+		));
+
+		return $listing;
+	}
+
+
 }	
 
 ?>
