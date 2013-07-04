@@ -23,7 +23,7 @@ class A2Cribs.Cache
 	
 	@IdToRentalMap = []
 	@IdToParkingMap = []
-	@IdToUserMap = [] #Only contains public user data
+	@ListingIdToUserMap = [] #Only contains public user data
 
 	@SubletEditInProgress = null
 
@@ -192,13 +192,27 @@ class A2Cribs.Cache
 	Adds new rental object to IdToRentalMap
 	###
 	@AddRental:(rental) ->
+		@IdToRentalMap[parseInt rental.rental_id] = rental
 	###
 	Creates a new Rental object from rental
 	Adds new rental object to IdToRentalMap
 	###
 
 	###
-	Returns a list of listing objects specified by listing_ids
+	Adds new parking object to IdToParkingMap
+	###
+	@AddParking:(parking) ->
+		@IdToParkingMap[parseInt parking.parking_id] = parking
+
+	###
+	Adds new user object to RentalIdToUserMap
+	IMPORTANT: only contains public, non-sensitive user data
+	###
+	@AddUser:(listing_id, user) ->
+		@ListingIdToUserMap[listing_id] = user
+
+	###
+	Returns listing object specified by listing_id
 	###
 	@GetListing:(listing_id) ->
 		#See if listing is already cached
@@ -206,27 +220,47 @@ class A2Cribs.Cache
 			return @IdToRentalMap[listing_id]
 
 		#Listing not in cache. Fetch it from database
+		listing = null
 		$.ajax
 			url: myBaseUrl + "Listings/GetListing/" + listing_id
 			type:"GET"
 			context: this
+			async: false
 			success: (response) ->
-				console.log response
-	###
-	- returns the listing objectfor the given id
-	- if the listing is not in the cache
-		- fetches listing from database
-		- if listing_type is rental, add to IdToRentalMap
-		- if listing_type is parking, add to IdToParkingMap
-		- if listing_type is sublet, add to IdToSubletMap
-		- adds user to cache
-	- returns new listing/user object
-	###
+				listing = JSON.parse response
+				if listing[0] != undefined
+					#determine listing_type and add to appropriate cache data structure
+					if listing[0].Rental != undefined
+						@AddRental listing[0].Rental
+					else if listing[0].Parking != undefined
+						@AddParking listing[0].Parking
+					@AddUser parseInt(listing[0].Listing.listing_id), listing[0].User
+		if listing != null
+			return listing[0]
+		else
+			return null
 
-	@GetListingsByUser:(user_id) ->
 	###
-	- Loads all listings into cache with given user_id
-	- Loads PUBLIC user data for user into cache
-	- Returns array of listings for that PM
+	Loads all listings owned by logged-in user
+	Loads PUBLIC user data for user into cache
+	Returns array of listings
 	###
-
+	@GetListingsByLoggedInUser:() ->
+		$.ajax
+			url: myBaseUrl + "Listings/GetListing/" + listing_id
+			type:"GET"
+			context: this
+			async: false
+			success: (response) ->
+				listing = JSON.parse response
+				if listing[0] != undefined
+					#determine listing_type and add to appropriate cache data structure
+					if listing[0].Rental != undefined
+						@AddRental listing[0].Rental
+					else if listing[0].Parking != undefined
+						@AddParking listing[0].Parking
+					@AddUser parseInt(listing[0].Listing.listing_id), listing[0].User
+		if listing != null
+			return listing[0]
+		else
+			return null

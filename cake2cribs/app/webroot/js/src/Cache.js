@@ -43,7 +43,7 @@
 
     Cache.IdToParkingMap = [];
 
-    Cache.IdToUserMap = [];
+    Cache.ListingIdToUserMap = [];
 
     Cache.SubletEditInProgress = null;
 
@@ -235,7 +235,9 @@
     	Adds new rental object to IdToRentalMap
     */
 
-    Cache.AddRental = function(rental) {};
+    Cache.AddRental = function(rental) {
+      return this.IdToRentalMap[parseInt(rental.rental_id)] = rental;
+    };
 
     /*
     	Creates a new Rental object from rental
@@ -243,21 +245,54 @@
     */
 
     /*
-    	Returns a list of listing objects specified by listing_ids
+    	Adds new parking object to IdToParkingMap
+    */
+
+    Cache.AddParking = function(parking) {
+      return this.IdToParkingMap[parseInt(parking.parking_id)] = parking;
+    };
+
+    /*
+    	Adds new user object to RentalIdToUserMap
+    	IMPORTANT: only contains public, non-sensitive user data
+    */
+
+    Cache.AddUser = function(listing_id, user) {
+      return this.ListingIdToUserMap[listing_id] = user;
+    };
+
+    /*
+    	Returns listing object specified by listing_id
     */
 
     Cache.GetListing = function(listing_id) {
+      var listing;
       if (__indexOf.call(this.IdToRentalMap, listing_id) >= 0) {
         return this.IdToRentalMap[listing_id];
       }
-      return $.ajax({
+      listing = null;
+      $.ajax({
         url: myBaseUrl + "Listings/GetListing/" + listing_id,
         type: "GET",
         context: this,
+        async: false,
         success: function(response) {
-          return console.log(response);
+          listing = JSON.parse(response);
+          if (listing[0] !== void 0) {
+            if (listing[0].Rental !== void 0) {
+              this.AddRental(listing[0].Rental);
+            } else if (listing[0].Parking !== void 0) {
+              this.AddParking(listing[0].Parking);
+            }
+            return this.AddUser(parseInt(listing[0].Listing.listing_id), listing[0].User);
+          }
         }
       });
+      if (listing !== null) {
+        return listing[0];
+      } else {
+        return null;
+      }
     };
 
     /*
