@@ -9,9 +9,22 @@ class Listing extends AppModel {
 			'dependent' => true
 		)
 	);
+	public $belongsTo = array(
+		'User' => array(
+            'className'    => 'User',
+            'foreignKey'   => 'user_id',
+            'dependent'    => true
+        )
+	);
 	public $validate = array(
 		'listing_id' => 'alphaNumeric',
-		'listing_type' => 'alphaNumeric'
+		'listing_type' => 'alphaNumeric',
+		'user_id' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
 	);
 
 	/* ---------- unit_style_options ---------- */

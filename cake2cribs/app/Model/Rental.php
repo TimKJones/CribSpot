@@ -13,12 +13,6 @@ class Rental extends RentalPrototype {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'user_id' => array(
-			'numeric' => array(
-				'rule' => 'numeric',
-				'required' => true
-			)
-		),
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 1, 255)
