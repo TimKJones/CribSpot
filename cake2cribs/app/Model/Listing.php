@@ -3,6 +3,7 @@
 class Listing extends AppModel {
 	public $name = 'Listing';
 	public $primaryKey = 'listing_id';
+	public $actsAs = array('Containable');
 	public $hasOne = array(
 		'Rental' => array(
 			'className' => 'Rental',
@@ -14,11 +15,17 @@ class Listing extends AppModel {
             'className'    => 'User',
             'foreignKey'   => 'user_id',
             'dependent'    => true
+        ),
+        'Marker' => array(
+            'className'    => 'Marker',
+            'foreignKey'   => 'marker_id',
+            'dependent'    => true
         )
 	);
 	public $validate = array(
-		'listing_id' => 'alphaNumeric',
-		'listing_type' => 'alphaNumeric',
+		'listing_id' => 'numeric',
+		'listing_type' => 'numeric',
+		'marker_id' => 'numeric',
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -111,6 +118,25 @@ class Listing extends AppModel {
 			'conditions' => array('Listing.user_id' => $user_id)
 		));
 		
+		return $listings;
+	}
+
+	/*
+	Returns all listings of given listing_type with given marker_id
+	*/
+	public function GetMarkerData($listing_type, $marker_id)
+	{
+		$this->contain('Rental', 'User');
+		$listings = $this->find('all', array(
+			'conditions' => array(
+				'Listing.listing_type' => $listing_type,
+				'Listing.marker_id' => $marker_id
+			)
+		));
+
+		if ($listings == null)
+			$listings['error'] = 'Unable to retrieve listings for this marker';
+
 		return $listings;
 	}
 }	

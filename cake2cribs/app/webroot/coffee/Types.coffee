@@ -1,4 +1,8 @@
 class A2Cribs.Types
+	@LISTING_TYPE_RENTAL = 0;
+	@LISTING_TYPE_SUBLET = 1;
+	@LISTING_TYPE_PARKING = 2;
+	
 	@UNIT_STYLE_OPTIONS =
 		0: "Style"
 		1: "Unit"

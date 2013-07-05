@@ -11,6 +11,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
+		$this->Auth->allow('LoadMarkerData');
 	}
 
 	/* Deletes the listings in $listing_ids */
@@ -88,6 +89,16 @@ class ListingsController extends AppController {
 		$this->set('response', json_encode($listings));
 	}
 
+	/*
+	AJAX
+	Returns all listings of given listing_type with given marker_id
+	*/
+	function LoadMarkerData($listing_type, $marker_id)
+	{
+		$this->layout = 'ajax';
+		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
+		$this->set('response', json_encode($listings));
+	}
 }
 
 ?>
