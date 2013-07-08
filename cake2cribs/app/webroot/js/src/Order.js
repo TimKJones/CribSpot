@@ -5,7 +5,7 @@
 
     function Order() {}
 
-    Order.Buy = function(orderItems, successHandler, failHandler) {
+    Order.BuyItem = function(orderItem, successHandler, failHandler) {
       var data, url,
         _this = this;
       if (successHandler == null) {
@@ -15,9 +15,9 @@
         failHandler = null;
       }
       data = {
-        'orderItems': JSON.stringify(orderItems)
+        'orderItem': JSON.stringify(orderItem)
       };
-      url = "" + myBaseUrl + "order/getJwt";
+      url = "" + myBaseUrl + "order/buyItem";
       return $.post(url, data, function(response_raw) {
         var response;
         response = JSON.parse(response_raw);

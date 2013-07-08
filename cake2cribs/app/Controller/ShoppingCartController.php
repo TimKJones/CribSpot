@@ -3,7 +3,7 @@
 class ShoppingCartController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('User', 'ShoppingCart');
+  public $uses = array('User', 'ShoppingCart', 'Order');
   public $TAG = "ShoppingCartController";
 
 
@@ -16,7 +16,7 @@ class ShoppingCartController extends AppController {
 
     $this->layout = 'ajax';
 
-    $this->set('orderItems', json_decode($cart['ShoppingCart']['items']));
+    $this->set('orderItems', $cart['ShoppingCart']['items']);
 
 
   }
@@ -55,11 +55,17 @@ class ShoppingCartController extends AppController {
 
     $orderItem = json_decode($this->request->data('orderItem'));
     $index = $this->request->data('index');
-
-    $this->ShoppingCart->edit($index, $orderItem, $user_id);
-
+    $response = array();
+    try {
+      $this->Order->validateFeaturedListing($orderItem);
+      $this->ShoppingCart->edit($index, $orderItem, $user_id);  
+      $response['success'] = true;
+    } catch (Exception $e) {
+      $response['success'] = false;
+      $response['message'] = $e->getMessage();
+    }
+    
     $this->layout = 'ajax';
-    $response = array('success'=>true);
     $this->set('response', json_encode($response));
 
   }

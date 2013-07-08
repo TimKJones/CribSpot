@@ -1,5 +1,6 @@
 <?php echo $this->Html->script('less.js'); ?>
 <?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->script('src/Order'); ?>
 <?php echo $this->Html->script('src/ShoppingCart'); ?>
 <?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
@@ -12,7 +13,7 @@
 
 <div class = 'ShoppingCart order-window'>
     <h3 class = 'title'>Shopping Cart</h2>
-    <table class = 'table table-hover orderItems'>
+    <table class = 'table orderItems'>
         <thead> 
                 <th>Address</th>
                 <th>Price</th>

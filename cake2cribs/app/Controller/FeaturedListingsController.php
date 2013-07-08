@@ -29,30 +29,12 @@ class FeaturedListingsController extends AppController {
 
   }
 
-  
-
-  public function create(){
-    
-    if($this->request->isPost()){
-      
-      $listing_id = $this->request->data['listing_id'];
-      $duration = $this->request->data['duration'];  
-      $options['conditions'] = array('Listing.listing_id'=>$listing_id);
-      $listing = $this->Listing->find('first', $options);
-      $user = $this->User->get($this->Auth->User('id'));
-
-      $featured_listing = $this->FeaturedListing->newFL($listing, $user, $duration);
-
-      $this->redirect('/featuredListings/all');
-    }
-  }
-
   public function all(){
     $featured_listings = $this->FeaturedListing->find('all');
     die(debug($featured_listings));
   }
 
-  public function test(){}
+  
 
 
   

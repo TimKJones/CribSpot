@@ -5,11 +5,11 @@ class PendingOrder extends AppModel {
     // public $actsAs = array('Containable');
     // public $uses = array('FeaturedListing', 'Order');
 
-    public function add($order, $user_id){
+    public function add($total, $orderItems, $user_id){
         $pending_order_data = array(
             'PendingOrder'=>array(
-                'price'=>$order['total'],
-                'order'=>json_encode($order),
+                'total'=>$total,
+                'orderItems'=>json_encode($orderItems),
                 'user_id'=>$user_id,
                 )
         );

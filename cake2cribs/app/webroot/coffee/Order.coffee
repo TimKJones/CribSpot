@@ -1,10 +1,10 @@
 class A2Cribs.Order
 
-    @Buy:(orderItems, successHandler=null, failHandler=null)->
+    @BuyItem:(orderItem, successHandler=null, failHandler=null)->
         data = {
-            'orderItems': JSON.stringify(orderItems)
+            'orderItem': JSON.stringify(orderItem)
         }
-        url = "#{myBaseUrl}order/getJwt"
+        url = "#{myBaseUrl}order/buyItem"
         $.post url, data, (response_raw)=>
             response = JSON.parse(response_raw)
             if !response.success

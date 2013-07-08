@@ -13,18 +13,14 @@
     height: @widget_height;
     padding-top: 10px;
     padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     border-radius: 10px;
     border: solid 2px #aeaeae;
     position: relative;
     background: #f7f7f7;
     
 
-    .order-items{
-    }
-
-    .order-receipt{
-        background: red;
-    }    
 
     .total{
         // line-height: 45px;
@@ -204,6 +200,10 @@ table.orderItems{
         }
     }
 
+    tr.editing{
+        background: #ffffff;
+    }
+
 
 }
 
@@ -213,5 +213,6 @@ table.orderItems{
     top: 0;
     right: 0;
     width: @widget_width/2;
+
 
 }

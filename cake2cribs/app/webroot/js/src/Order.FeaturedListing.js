@@ -3,11 +3,14 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(item, data) {
+    function FeaturedListing(item, listing_id, address, dates) {
       var _this = this;
       this.item = item;
-      this.address = data.address;
-      this.listing_id = data.listing_id;
+      this.listing_id = listing_id;
+      this.address = address;
+      if (dates == null) {
+        dates = null;
+      }
       this.Weekdays = 0;
       this.Weekends = 0;
       this.Price = 0;
@@ -26,9 +29,9 @@
         }
       });
       this.item.find('.address').html(this.address);
-      if (data.dates) {
-        this.datepicker.multiDatesPicker('addDates', data.dates);
-        this.dateSelected();
+      if (dates != null) {
+        this.datepicker.multiDatesPicker('addDates', dates);
+        this.refresh();
       }
     }
 
@@ -46,6 +49,11 @@
           dates: this.getDates('string')
         }
       };
+    };
+
+    FeaturedListing.prototype.clear = function() {
+      this.datepicker.multiDatesPicker('resetDates');
+      return this.refresh();
     };
 
     FeaturedListing.prototype.getDates = function(type) {
@@ -77,17 +85,19 @@
     };
 
     FeaturedListing.prototype.initMultiDatesPicker = function() {
-      var _this = this;
+      var today,
+        _this = this;
+      today = new Date();
       this.datepicker = $(this.item).find('.mdp').multiDatesPicker({
-        minDate: new Date(),
+        minDate: new Date(today.setDate(today.getDate() + 3)),
         onSelect: function(dateText, inst) {
-          return _this.dateSelected(dateText, inst);
+          return _this.refresh();
         }
       });
       return this.datepicker.click();
     };
 
-    FeaturedListing.prototype.dateSelected = function(dateText, picker_inst) {
+    FeaturedListing.prototype.refresh = function() {
       this.updateDayCounts();
       this.updatePrice();
       $(this.item).find('.price').html(" $" + (this.Price.toFixed(2)));

@@ -1,8 +1,5 @@
 class A2Cribs.Order.FeaturedListing
-        constructor:(@item, data)->
-            
-            @address = data.address
-            @listing_id = data.listing_id
+        constructor:(@item, @listing_id, @address, dates=null)->
             
             @Weekdays = 0
             @Weekends = 0
@@ -23,9 +20,9 @@ class A2Cribs.Order.FeaturedListing
 
 
             @item.find('.address').html @address
-            if(data.dates)
-                @datepicker.multiDatesPicker('addDates', data.dates)
-                @dateSelected()
+            if dates?
+                @datepicker.multiDatesPicker('addDates', dates)
+                @refresh()
 
 
         getPrice:()->
@@ -41,6 +38,13 @@ class A2Cribs.Order.FeaturedListing
                     dates: @getDates('string')
                 }
             }
+
+        # Removes all the selected dates
+
+        clear:()->
+            @datepicker.multiDatesPicker 'resetDates'
+            @refresh()
+
 
         getDates:(type = 'object')->
             @datepicker.multiDatesPicker 'getDates', type
@@ -68,10 +72,13 @@ class A2Cribs.Order.FeaturedListing
 
 
         initMultiDatesPicker:()->
+            today = new Date()
+            
             @datepicker = $(@item).find('.mdp').multiDatesPicker({
-                minDate: new Date(),
+                # minDate available is 3 days into the future
+                minDate: new Date(today.setDate(today.getDate() + 3))
                 onSelect: (dateText, inst)=>
-                    @dateSelected(dateText, inst)
+                    @refresh()
                     # if @shiftKey
 
                         
@@ -79,7 +86,7 @@ class A2Cribs.Order.FeaturedListing
 
             @datepicker.click()
 
-        dateSelected:(dateText, picker_inst)->
+        refresh:()->
             @updateDayCounts()
             @updatePrice()
 

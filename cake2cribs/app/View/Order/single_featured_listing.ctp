@@ -8,14 +8,13 @@
 
 <?php echo $this->Html->script('src/Order'); ?>
 <?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
-
+<script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 
 <div class = 'order-window'>
     <div class = 'left-sec'>
         <div class= 'order-items'>
-            <?php echo $this->element('Order/featured-listing-item', array(
-                    'listing'=> $listing)); ?>
+            <?php echo $this->element('Order/featured-listing-item'); ?>
         </div>
         
         <button class = 'btn' id = 'buy'>Buy</button>
@@ -47,13 +46,13 @@
                 <span class = 'weekdays-price'>
                     <div>Weekdays</div>
                     <div>
-                    <span class = 'big-price'><?php echo "$". $rules['FeaturedListings']['costs']['weekday'];?></span> /day
+                    <span class = 'big-price'><?php echo "$". $wd_price;?></span> /day
                     </div>
                 </span>
                 <span class = 'weekends-price'>
                     <div>Weekends</div>
                     <div>
-                        <span class = 'big-price'><?php echo "$" . $rules['FeaturedListings']['costs']['weekend'];?></span> /day
+                        <span class = 'big-price'><?php echo "$" . $we_price;?></span> /day
                     </div>
                 </span>
             </div>
@@ -66,10 +65,10 @@
     $(function(){
 
         FeaturedListing = new A2Cribs.Order.FeaturedListing(
-            $('.featured-listing-order-item').first(), <?php echo $rules_json;?>);
+            $('.featured-listing-order-item').first(), <?php echo $listing_id;?>, "<?php echo $address;?>");
 
         $('#buy').click(function(){
-            A2Cribs.Order.Buy([FeaturedListing.getOrderItem()]);
+            A2Cribs.Order.BuyItem(FeaturedListing.getOrderItem());
         });
 
         $('#addToCart').click(function(){
