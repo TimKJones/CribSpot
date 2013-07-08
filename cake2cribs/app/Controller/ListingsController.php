@@ -58,15 +58,22 @@ class ListingsController extends AppController {
 	/*
 	Returns json-encoded listing
 	NOTE: only returns PUBLIC user data
+	If $listing_id is null, returns all listings owned by logged-in user
 	*/
-	function GetListing($listing_id)
+	function GetListing($listing_id = null)
 	{
 		$this->layout = 'ajax';
-		$listing = $this->Listing->GetListing($listing_id);
-		if ($listing == null)
-			$listing['error'] = 'Listing id not found';
+		if ($listing_id == null){
+			$listings = $this->GetListingsByLoggedInUser();
+			$this->set('response', json_encode($listings));
+		}
+		else{
+			$listing = $this->Listing->GetListing($listing_id);
+			if ($listing == null)
+				$listing['error'] = 'Listing id not found';
 
-		$this->set('response', json_encode($listing));
+			$this->set('response', json_encode($listing));
+		}
 	}
 
 	/*
@@ -80,13 +87,15 @@ class ListingsController extends AppController {
 		if ($user_id == 0 || $user_id == null){
 			$listings['error'] = 'Error retrieving listings. User not logged in.';
 			$this->set('response', json_encode($listings));
-			return;
+			return $listings;
 		}
+		
 		$listings = $this->Listing->GetListingsByUserId($this->Auth->User('id'));
 		if ($listings == null)
 			$listings['error'] = 'Error retrieving listings';
 
 		$this->set('response', json_encode($listings));
+		return $listings;
 	}
 
 	/*

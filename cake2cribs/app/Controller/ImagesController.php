@@ -3,11 +3,13 @@
 class ImagesController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Image');
+	public $components= array('RequestHandler', 'Auth', 'Session');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index');
 		$this->Auth->allow('add');
+		$this->Auth->allow('AddImage');
 		$this->Auth->allow('add2');
 		$this->Auth->allow('add3');
 		$this->Auth->allow('edit');
@@ -15,6 +17,51 @@ class ImagesController extends AppController {
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
 		$this->Auth->allow('SubmitCaption');
+	}
+
+	/*
+	AJAX
+	If SESSION[row_id] != $num_images, cleans up images left over from uploading in a previous tab (same session).
+	Pass image data to Image model to create table entries and move the file.
+	Appends image_id of new Image entry to SESSION[row_id]
+	Returns: SUCCESS: image_id of new image entry; FAILURE: error message
+	*/
+	function AddImage($image, $row_id, $num_images, $listing_id = null)
+	{
+		$this->layout = 'ajax';
+
+		/*
+		Solve for this scenario: User adds photos for an incomplete listing.
+		They close the browser tab, and come back. Session is still active, but user doesn't see the images anymore.
+		So, user uploads images again, and user and server have now different expectations of what has already
+		been uploaded for this listing.  
+		Here, we delete old images to reconcile this difference.
+		*/
+
+		$image_ids = $this->Session->read('row_' . $row_id);
+		if ($image_ids != null && $image_ids != $num_images)
+			$this->Image->DeleteExpiredImages($image_ids);
+
+		$imageResponse = $this->Image->SaveImage($image, $row_id, $num_images, $this->Auth->User('id'), $listing_id);
+		/* 
+		If no listing_id is given, the listing entry for this image has not yet been created.
+		Create an image entry and update its listing_id later after the listing has been completed.
+		*/
+		if ($listing_id == null && !array_key_exists('error', $imageResponse)){
+			/* Initialize the array of image_ids for this row_id if it does not yet exist. */
+			$image_id_array = $this->Session->read('row_' . $row_id);
+			if ($image_id_array == null)
+				$image_id_array = array();	
+
+			/* 
+			$imageResponse contains the new image_id if there was no error.
+			Add this image_id to the list of image_ids belonging to this incomplete listing
+			*/
+			array_push($image_id_array, $imageResponse['image_id']);
+			$this->Session->write('row_' . $row_id, $image_id_array);
+		}
+
+		$this->set('response', $imageResponse);
 	}
 
 	function add($data = null)

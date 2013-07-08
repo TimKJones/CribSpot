@@ -18,7 +18,7 @@ class A2Cribs.RentalSave
 		@ClearGrids()
 
 	# Sends rental to server including all associated tables (fees, etc.)
-	@Save: ->
+	@Save: ()->
 		$.ajax
 			url: myBaseUrl + "rentals/Save"
 			type: "POST"
@@ -31,6 +31,16 @@ class A2Cribs.RentalSave
 				else
 					alert "Save unsuccessful"
 					console.log response
+
+	###
+	Called when user adds a new row for the existing marker
+	Adds a new row to the grid, with a new row_id.
+	Sets the row_id hidden field.
+	###
+	@AddNewUnit: () ->
+		#next_row_id = SlickGrid.GetNumRows()
+		#Add new row to the UI. 
+		#$("new_row.row_id").val(next_row_id)
 
 	Copy: (rental_ids) ->
 		###
