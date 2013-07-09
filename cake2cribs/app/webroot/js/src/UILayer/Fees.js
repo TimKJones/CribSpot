@@ -12,32 +12,32 @@
       var fees;
       fees = [];
       fees.push({
-        fee_id: null,
+        fee_id: 160,
         description: "Admin",
         amount: null
       });
       fees.push({
-        fee_id: null,
+        fee_id: 161,
         description: "Parking",
         amount: 25
       });
       fees.push({
-        fee_id: null,
+        fee_id: 162,
         description: "Furniture",
         amount: null
       });
       fees.push({
-        fee_id: null,
+        fee_id: 163,
         description: "Pets",
         amount: 50
       });
       fees.push({
-        fee_id: null,
+        fee_id: 164,
         description: "Upper Floor",
         amount: null
       });
       fees.push({
-        fee_id: null,
+        fee_id: 165,
         description: "Cleaning",
         amount: 50
       });

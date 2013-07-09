@@ -66,7 +66,12 @@ class A2Cribs.RentalSave
 		@CurrentMarker = marker_id
 		# Open blank grids
 
-	CreateSubRental: ->
+	###
+	Called when user adds a new row for the existing marker
+	Adds a new row to the grid, with a new row_id.
+	Sets the row_id hidden field.
+	###
+	AddNewUnit: ->
 		# Create newline on grid
 		data = @GridMap["overview_grid"].getData()
 		data.push {}

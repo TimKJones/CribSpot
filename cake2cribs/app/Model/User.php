@@ -5,6 +5,10 @@ class User extends AppModel {
 		'Sublet' => array(
 			'className' => 'Sublet',
 			'foreignKey' => 'user_id'
+		),
+		'Rental' => array(
+			'className' => 'Rental',
+			'foreignKey' => 'user_id'
 		)
 	);
 	public $belongsTo = 'University'; 	

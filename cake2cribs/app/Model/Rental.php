@@ -181,7 +181,12 @@ class Rental extends RentalPrototype {
 			)
 		),
 		'waitlist' => 'boolean',
-		'waitlist_open_date' => 'date',
+		'waitlist_open_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => false
+			)
+		),
 		'lease_office_street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 100),
@@ -243,26 +248,6 @@ class Rental extends RentalPrototype {
 	public function DeleteRental($listing_id)
 	{
 		return array('success' => '');
-	}
-
-	/* 
-	Returns true if given user owns the rental with the given listing_id
-	*/
-	public function UserOwnsRental($listing_id, $user_id)
-	{
-		CakeLog::write("UserOwnsRental", "listing_id = " . $listing_id . "; user_id = " . $user_id);
-		if ($user_id == null || $user_id == 0)
-			return null;
-
-		$listings = $this->find('first', array(
-			'fields' => array('Listing.listing_id'),
-			'conditions' => array(
-				'Rental.user_id' => $user_id,
-				'Rental.listing_id' => $listing_id
-			)
-		));
-
-		return $listings != null;
 	}
 
 	/*

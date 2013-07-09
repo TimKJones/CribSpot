@@ -13,4 +13,10 @@ class MarkersController extends AppController {
             return;
 		$this->Marker->UpdateCache();
 	}
+
+	
+	public function Save()
+	{
+
+	}
 }

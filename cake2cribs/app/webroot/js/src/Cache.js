@@ -236,7 +236,34 @@
     */
 
     Cache.AddRental = function(rental) {
-      return this.IdToRentalMap[parseInt(rental.rental_id)] = rental;
+      rental.air = parseInt(rental.air);
+      rental.beds = parseInt(rental.beds);
+      rental.baths = parseInt(rental.baths);
+      rental.building_type = parseInt(rental.building_type);
+      rental.cable = parseInt(rental.cable);
+      rental.deposit = parseInt(rental.deposit);
+      rental.electric = parseInt(rental.electric);
+      rental.furnished_type = parseInt(rental.furnished_type);
+      rental.gas = parseInt(rental.gas);
+      rental.heat = parseInt(rental.heat);
+      rental.internet = parseInt(rental.internet);
+      rental.listing_id = parseInt(rental.listing_id);
+      rental.min_occupancy = parseInt(rental.min_occupancy);
+      rental.max_occupancy = parseInt(rental.max_occupancy);
+      rental.parking_spots = parseInt(rental.parking_spots);
+      rental.parking_type = parseInt(rental.parking_type);
+      rental.pets_type = parseInt(rental.pets_type);
+      rental.rent = parseInt(rental.rent);
+      rental.rental_id = parseInt(rental.rental_id);
+      rental.sewage = parseInt(rental.sewage);
+      rental.square_feet = parseInt(rental.square_feet);
+      rental.trash = parseInt(rental.trash);
+      rental.unit_style_options = parseInt(rental.unit_style_options);
+      rental.utility_estimate_summer = parseInt(rental.utility_estimate_summer);
+      rental.utility_estimate_winter = parseInt(rental.utility_estimate_winter);
+      rental.water = parseInt(rental.water);
+      rental.year_built = parseInt(rental.year_built);
+      return this.IdToRentalMap[rental.rental_id] = rental;
     };
 
     /*

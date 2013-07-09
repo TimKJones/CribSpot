@@ -9,7 +9,6 @@ class Image extends AppModel {
 	public $validate = array(
 		'image_id' => 'alphaNumeric',
 		'sublet_id' => 'alphaNumeric', // listing to which this image belongs
-		'user_id' => 'alphaNumeric',    // user that uploaded this photo
 		'image_path'    => array(
 			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
 			'message' => 'Please supply a valid image, either jpeg, jpg, or png'
@@ -30,6 +29,108 @@ class Image extends AppModel {
 		}
 
 		return true;
+	}
+
+	/*
+	VARIABLES: 
+	$file = $image data
+	$row_id = row  of listing in user's current slickgrid
+	$num_images = number of images for this listing entry as seen by the user.
+	$listing_id = listing_id of of this listing, if already saved.
+
+	If $listing_id is not null:
+	- Move image to /listings/listing_id/
+	- Add new record to images table.
+	If $listing_id is null:
+	- Move image to /listings/incomplete/user_id/row_id/
+	- Add new record to images table
+	Returns the new image_id on success; error message on failure.
+	*/
+	public function SaveImage($file, $row_id, $num_images, $user_id, $listing_id = null)
+	{
+		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
+			return array('error' => 'error2 saving image');
+
+		/* Determine path for where to save image */
+		$fileName = $file['name'][0];
+		$folder = WWW_ROOT . 'img/listings/';
+		if ($listing_id == null)
+			$folder = $folder . 'incomplete/' . $user_id . '/' . $row_id . '/';
+		else
+			$folder = $folder . $listing_id . '/';
+
+		/* Move image to new destination */
+		$response = $this->MoveFileToFolder($file, $folder);
+		if (array_key_exists('error', $response))
+			return $response;
+
+		$response = $this->AddImageEntry($path, $listing_id);
+		return $response;
+
+	}
+
+	/*
+	Moves file to the path specified.
+	Returns true on success; false on failure
+	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
+	*/
+	public function MoveFileToFolder($file, $folder)
+	{
+		if (!$this->_isValidFileSize($file))
+			return array('error' => 'File is too large');
+
+		if (!$this->_isValidFileType($file))
+			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png');
+
+		if (!$this->_createFolder($folder))
+			return array('error' => 'Error saving image.')
+
+		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name']))
+			return array('error' => 'Error saving image 2.');
+
+		if (!move_uploaded_file($file['tmp_name'][0], $folder . $file['name'][0]))
+			return array('error' => 'Error saving image 3');
+
+		return array('success' => 'file moved successfully'); 
+	}
+
+	/*
+	Add a record to the images table for the given file path.
+	*/
+	private function AddImageEntry($filePath, $listing_id = null)
+	{
+		$newImage = array(
+			'image_path' => $filePath,
+			'is_primary' => 0
+		);
+
+		if ($listing_id != null)
+			$newImage['listing_id'] = $listing_id;
+
+		if ($this->save($newImage))
+			return array('image_id' => $this->id);
+		else
+			return array('error' => 'Failed to add new record for image');
+	}
+
+	/*
+	Deletes the images with paths in records to be deleted.
+	Deletes the image records with ids in $image_ids.
+	*/
+	public function DeleteExpiredImages($image_ids)
+	{
+		/* Get all image paths to delete */
+		$imagePaths = $this->find('all', array(
+			'fields' => array('image_path'), 
+			'conditions' => array('Image.image_id' => $image_ids)
+		));
+
+		/* Delete all images from img/listings/incomplete/user_id/row_id */
+		for ($i = 0; $i < count($imagePaths)){
+			$this->DeleteImageFile($imagePaths[$i]['Image']['image_path']);
+		}
+
+		$this->DeleteImageRecords($image_ids);
 	}
 
 	/* 
@@ -94,7 +195,11 @@ class Image extends AppModel {
 		return $response;
 	}
 
-	private function AddImageEntry($user_id, $filePath)
+
+	/*
+	This is the old method for adding to the images table.
+	*/
+	private function AddImageEntry_old($user_id, $filePath)
 	{
 		$newImage = array(
 			'sublet_id' => null, 
@@ -178,6 +283,25 @@ class Image extends AppModel {
 		$returnVal = array();
 		array_push($returnVal, $primary_image_index, $files, $captions);
 		return $returnVal;
+	}
+
+	/*
+	Deletes the file with the specified path
+	*/
+	public function DeleteImageFile($image_path)
+	{
+		$image_path = WWW_ROOT . $image_path;
+		return unlink($image_path);
+	}
+
+	/*
+	Deletes all image records with ids contained in $image_ids
+	*/
+	public function DeleteImageRecords($image_ids)
+	{
+		$this->deleteAll(
+			array('Image.image_id' => $image_ids), false
+		);
 	}
 
 	public function DeleteImage($user_id, $listing_id, $path)
@@ -285,5 +409,56 @@ class Image extends AppModel {
 		}
 
 		return "SUCCESS";
+	}
+
+	/*
+	Creates new folder with given path.
+	Returns true on success; false on failure
+	*/
+	private function _createFolder($path)
+	{
+		if(!is_dir($path)){
+			if (!mkdir($folder))
+				return false;
+		}
+
+		return true;
+	}
+
+	/*
+	Returns true if file is of valid file type (jpg, jpeg, png); false otherwise
+	*/
+	private function _isValidFileType($file, $user_id)
+	{
+		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
+			return false;
+
+		$fileType = $this->_getFileType($file);
+		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
+		{
+			//TODO: Log error somewhere, listing user_id, file_name, dates, important information
+			return false;
+		}
+
+		return true;		
+	}
+
+	/*
+	Returns true if file is smaller than the maximum file size; false otherwise
+	*/
+	private function _isValidFileSize($file)
+	{
+		if (array_key_exists('size', $file) && array_key_exists(0, $file['size']))
+			return ($file['size'][0] <= $this->MAX_FILE_SIZE);
+
+		return false;
+	}
+
+	/*
+	Returns the file type from a file path
+	*/
+	private function _getFileType($path)
+	{
+		return substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
 	}
 }

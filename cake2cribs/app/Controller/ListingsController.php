@@ -11,6 +11,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
+		$this->Auth->allow('LoadMarkerData');
 	}
 
 	/* Deletes the listings in $listing_ids */
@@ -49,7 +50,7 @@ class ListingsController extends AppController {
 
 		$listingType = $this->Listing->GetListingType($listing_id);
 		if ($listingType == Listing::LISTING_TYPE_RENTAL)
-			return $this->Rental->UserOwnsRental($listing_id, $user_id);
+			return $this->Listing->UserOwnsListing($listing_id, $user_id);
 
 		return false;
 	}
@@ -57,15 +58,22 @@ class ListingsController extends AppController {
 	/*
 	Returns json-encoded listing
 	NOTE: only returns PUBLIC user data
+	If $listing_id is null, returns all listings owned by logged-in user
 	*/
-	function GetListing($listing_id)
+	function GetListing($listing_id = null)
 	{
 		$this->layout = 'ajax';
-		$listing = $this->Listing->GetListing($listing_id);
-		if ($listing == null)
-			$listing['error'] = 'Listing id not found';
+		if ($listing_id == null){
+			$listings = $this->GetListingsByLoggedInUser();
+			$this->set('response', json_encode($listings));
+		}
+		else{
+			$listing = $this->Listing->GetListing($listing_id);
+			if ($listing == null)
+				$listing['error'] = 'Listing id not found';
 
-		$this->set('response', json_encode($listing));
+			$this->set('response', json_encode($listing));
+		}
 	}
 
 	/*
@@ -79,15 +87,27 @@ class ListingsController extends AppController {
 		if ($user_id == 0 || $user_id == null){
 			$listings['error'] = 'Error retrieving listings. User not logged in.';
 			$this->set('response', json_encode($listings));
-			return;
+			return $listings;
 		}
+		
 		$listings = $this->Listing->GetListingsByUserId($this->Auth->User('id'));
 		if ($listings == null)
 			$listings['error'] = 'Error retrieving listings';
 
 		$this->set('response', json_encode($listings));
+		return $listings;
 	}
 
+	/*
+	AJAX
+	Returns all listings of given listing_type with given marker_id
+	*/
+	function LoadMarkerData($listing_type, $marker_id)
+	{
+		$this->layout = 'ajax';
+		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
+		$this->set('response', json_encode($listings));
+	}
 }
 
 ?>

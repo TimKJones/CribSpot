@@ -9,6 +9,10 @@ class Marker extends AppModel {
 						'Sublet' => array(
 							'className' => 'Sublet', 
 							'foreignKey' => 'marker_id'
+						),
+						'Listing' => array(
+							'className' => 'Listing', 
+							'foreignKey' => 'marker_id'
 						)
 	);
 

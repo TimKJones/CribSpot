@@ -14,7 +14,8 @@ class A2Cribs.Rental
 	@Template =
 		data = 
 			Rental:
-				rental_id: A2Cribs.UILayer.Rentals.rental_id()
+				rental_id: 41
+				listing_id: 64
 				street_address: A2Cribs.UILayer.Rentals.street_address()
 				city: A2Cribs.UILayer.Rentals.city()
 				state: A2Cribs.UILayer.Rentals.state()
@@ -25,7 +26,7 @@ class A2Cribs.Rental
 				building_name: A2Cribs.UILayer.Rentals.building_name()
 				beds: A2Cribs.UILayer.Rentals.beds()
 				min_occupancy: A2Cribs.UILayer.Rentals.min_occupancy()
-				max_occupancy: 69
+				max_occupancy: 75
 				building_type: A2Cribs.UILayer.Rentals.building_type()
 				rent: A2Cribs.UILayer.Rentals.rent()
 				rent_negotiable: A2Cribs.UILayer.Rentals.rent_negotiable()
@@ -35,7 +36,7 @@ class A2Cribs.Rental
 				end_date: A2Cribs.UILayer.Rentals.end_date()
 				dates_negotiable: 0
 				available: A2Cribs.UILayer.Rentals.available()
-				baths: A2Cribs.UILayer.Rentals.baths()
+				baths: 555
 				air: A2Cribs.UILayer.Rentals.air()
 				parking_type: A2Cribs.UILayer.Rentals.parking_type()
 				parking_spots: A2Cribs.UILayer.Rentals.parking_spots()
