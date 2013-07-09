@@ -120,6 +120,10 @@ class Order extends AppModel {
     */
     public function validateFeaturedListing($orderItem){
         
+        if($orderItem->type != "FeaturedListing"){
+            throw new Exception("Invalid type for order item, FeaturedListing expected");
+        }
+
         //Check to see if listing that is being referenced is valid
         $Listing = ClassRegistry::init('Listing');
         $listing_id = $orderItem->item->listing_id;

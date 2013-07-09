@@ -18,7 +18,7 @@
             </tr>
             <tr>
                 <td><strong>Price: </td>
-                <td></strong><span class = 'price'>$0</span></td>
+                <td></strong><span class = 'price'>$0.00</span></td>
             </tr>
     </table>
 <!--     <div class = 'row-fluid'>

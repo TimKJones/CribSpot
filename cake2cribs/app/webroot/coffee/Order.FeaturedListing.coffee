@@ -1,5 +1,5 @@
 class A2Cribs.Order.FeaturedListing
-        constructor:(@item, @listing_id, @address, dates=null)->
+        constructor:(@Widget, @listing_id, @address, dates=null)->
             
             @Weekdays = 0
             @Weekends = 0
@@ -7,6 +7,7 @@ class A2Cribs.Order.FeaturedListing
 
             @WD_price = 15
             @WE_price = 5
+            @MIN_DAY_OFFSET = 3
 
             @initMultiDatesPicker()
             @shiftKey = false;
@@ -19,7 +20,7 @@ class A2Cribs.Order.FeaturedListing
                     @shiftKey = false
 
 
-            @item.find('.address').html @address
+            @Widget.find('.address').html @address
             if dates?
                 @datepicker.multiDatesPicker('addDates', dates)
                 @refresh()
@@ -74,9 +75,9 @@ class A2Cribs.Order.FeaturedListing
         initMultiDatesPicker:()->
             today = new Date()
             
-            @datepicker = $(@item).find('.mdp').multiDatesPicker({
+            @datepicker = $(@Widget).find('.mdp').multiDatesPicker({
                 # minDate available is 3 days into the future
-                minDate: new Date(today.setDate(today.getDate() + 3))
+                minDate: new Date(today.setDate(today.getDate() + @MIN_DAY_OFFSET))
                 onSelect: (dateText, inst)=>
                     @refresh()
                     # if @shiftKey
@@ -90,8 +91,8 @@ class A2Cribs.Order.FeaturedListing
             @updateDayCounts()
             @updatePrice()
 
-            $(@item).find('.price').html " $#{@Price.toFixed(2)}"
-            $(@item).find('.weekdays').html @Weekdays
-            $(@item).find('.weekends').html @Weekends
+            $(@Widget).find('.price').html " $#{@Price.toFixed(2)}"
+            $(@Widget).find('.weekdays').html @Weekdays
+            $(@Widget).find('.weekends').html @Weekends
             
-            @item.trigger('orderItemChanged', @)
+            @Widget.trigger('orderItemChanged', @)

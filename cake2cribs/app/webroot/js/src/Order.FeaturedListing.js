@@ -3,9 +3,9 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(item, listing_id, address, dates) {
+    function FeaturedListing(Widget, listing_id, address, dates) {
       var _this = this;
-      this.item = item;
+      this.Widget = Widget;
       this.listing_id = listing_id;
       this.address = address;
       if (dates == null) {
@@ -16,6 +16,7 @@
       this.Price = 0;
       this.WD_price = 15;
       this.WE_price = 5;
+      this.MIN_DAY_OFFSET = 3;
       this.initMultiDatesPicker();
       this.shiftKey = false;
       $(window).keydown(function(event) {
@@ -28,7 +29,7 @@
           return _this.shiftKey = false;
         }
       });
-      this.item.find('.address').html(this.address);
+      this.Widget.find('.address').html(this.address);
       if (dates != null) {
         this.datepicker.multiDatesPicker('addDates', dates);
         this.refresh();
@@ -88,8 +89,8 @@
       var today,
         _this = this;
       today = new Date();
-      this.datepicker = $(this.item).find('.mdp').multiDatesPicker({
-        minDate: new Date(today.setDate(today.getDate() + 3)),
+      this.datepicker = $(this.Widget).find('.mdp').multiDatesPicker({
+        minDate: new Date(today.setDate(today.getDate() + this.MIN_DAY_OFFSET)),
         onSelect: function(dateText, inst) {
           return _this.refresh();
         }
@@ -100,10 +101,10 @@
     FeaturedListing.prototype.refresh = function() {
       this.updateDayCounts();
       this.updatePrice();
-      $(this.item).find('.price').html(" $" + (this.Price.toFixed(2)));
-      $(this.item).find('.weekdays').html(this.Weekdays);
-      $(this.item).find('.weekends').html(this.Weekends);
-      return this.item.trigger('orderItemChanged', this);
+      $(this.Widget).find('.price').html(" $" + (this.Price.toFixed(2)));
+      $(this.Widget).find('.weekdays').html(this.Weekdays);
+      $(this.Widget).find('.weekends').html(this.Weekends);
+      return this.Widget.trigger('orderItemChanged', this);
     };
 
     return FeaturedListing;

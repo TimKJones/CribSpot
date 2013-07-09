@@ -16,6 +16,7 @@ class OrderController extends AppController {
         $this->set("orders", $orders);
     }
 
+    // [TODO] move this function FeaturedListingController
     public function singleFeaturedListing($listing_id){
 
         $listing = $this->Listing->get($listing_id);
@@ -30,7 +31,57 @@ class OrderController extends AppController {
 
     }
 
-    
+    /*
+        This is a super user feature listing function
+        it accepts an orderItem pertaining to a featured listing
+        The order will be validated and immediately filled. Without
+        payment. This is used by our super user accounts such as the 
+        Michigan Daily.
+
+        Function will return a JSON object containing the following 
+        fields 
+        {
+            success: (TRUE or FALSE)
+            msg: (Success message or reason for failure)
+        }
+    */
+    public function suFeatureListing(){
+        
+        $orderItem = json_decode($this->request->data('orderItem'));
+        if($orderItem == null){
+            throw new NotFoundException();
+        }
+
+        //We need to make sure the user has Super User rights
+        $user = $this->User->get($this->Auth->User('id'));
+
+        // if($user['User']['type'] != SUPERUSER){
+        //     throw new NotFoundException();
+        // }
+        
+        $user_id = $user['User']['id'];
+        $response = array();
+        try {
+            $this->Order->validateFeaturedListing($orderItem);
+            $listing_id = $orderItem->item->listing_id;
+            foreach ($orderItem->item->dates as $key => $date) {
+                $this->FeaturedListing->add($listing_id, $date, $user_id);    
+            }
+
+            $addr = $orderItem->item->street_address;
+            $num_dates = count($orderItem->item->dates);
+            $response['msg'] = "$addr successfully featured for $num_dates days.";
+            $response['success'] = true;
+
+        } catch (Exception $e) {
+            $response['success'] = false;
+            $response['msg'] = $e->getMessage();
+        }
+
+        $this->layout = 'ajax';
+        $this->set('response', json_encode($response)); 
+
+    }
 
     /*  Accepts an order item and creates a jwt to buy it, used to one click buy
         a featured listing for example
@@ -195,55 +246,6 @@ class OrderController extends AppController {
         $this->set('orderId', json_encode(array('orderId'=>$jwt->response->orderId)));
 
     }
-
-
-    private function getFeaturedListingPrice($featuredListing){
-        App::import('Vendor', 'Utilities/DateHelpers');
-
-        $price = 0;
-        $weekdays = 0;
-        $weekends = 0;
-        $days = 0;
-
-        $wd_price = $this->rules['FeaturedListings']['costs']['weekday'];
-        $we_price = $this->rules['FeaturedListings']['costs']['weekend'];  
-
-        // Make sure listing exists
-
-        $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$featuredListing->listing_id));
-            // die(debug($listing));
-            if($listing == null){
-                // Listing not found return null;
-                CakeLog::write($TAG, "Listing " . $featuredlisting->listing_id . " not found while trying to buy a featured listing");
-                return null;
-            }
-
-
-        foreach($featuredListing->dates as $date){
-                $day = date("N", strtotime($date));
-
-                if($day > 5){
-                    //Sat or Sun
-                    $weekends++;
-                }else{
-                    $weekdays++;
-                }
-                $days++;
-            }
-
-        $price += $wd_price * $weekdays + $we_price * $weekends;
-
-        return array(
-            "Price"=>$price,
-            "Weekdays"=>$weekdays,
-            "Weekends"=>$weekends,
-            );
-    }
-
-
-
-
-
 
 }
 

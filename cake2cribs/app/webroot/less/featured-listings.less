@@ -1,21 +1,61 @@
-@widget_width: 350px;
+.FLDash{
+    position: relative;
+    .listings_list{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 300px;
+        background: #e9e9e9;
 
+        .listing{
+            width: 300px;
+            border-top: 2px solid #dbdbdb;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .listing:hover{
+            background: #f6f6f6;            
+        };
 
-
-.fl_sidebar{
-    
-    width: @widget_width;
-
-    #listings_list{
-        overflow: auto;
 
     }
 
+    .fl_form{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 320px;
+        display: none;
+    }
+
+
+
 
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+@widget_width: 350px;
+.fl_sidebar{    
+    width: @widget_width;
+    #listings_list{
+        overflow: auto;
+    }
+}
 .test-controls{
     padding-top: 20px;
 }
+
+
