@@ -24,65 +24,34 @@ class RentalsController extends AppController
   */
   public function Save()
   {
+    /*
+    if rental[listing_id] is set
+      Check if user owns listing.
+        yes -> create the listings array and set listing_id
+        no  -> return error message
+    Listing->Save()
+    If successful return listing_id.
+    If fail, return validation errors.
+    */
     $this->layout = 'ajax';
     $rentalObject = $this->params['data'];
-    $rental = $rentalObject['Rental'];
-    $fees = $rentalObject['Fees'];
-    $listing_id = null; // this is the listing_id of rental being saved
-    $rental['user_id'] = $this->_getUserId();
-    if (array_key_exists('listing_id', $rental)){
+    $rentalObject['Listing'] = array();
+    $rentalObject['Listing']['user_id'] = $this->_getUserId();
+    $rentalObject['Listing']['listing_type'] = 0; /* TODO: Make this reference the Listing::LISTING_TYPE_RENTAL constant */
+    if (array_key_exists('listing_id', $rentalObject['Rental'])){
       /* We are saving an existing listing. */
-      $listing_id = $rental['listing_id'];
-      $rental['rental_id'] = $this->Rental->GetRentalIdFromListingId($listing_id);
-      if (!$this->UserOwnsListing($rental['listing_id'])){
+      if ($this->UserOwnsListing($rentalObject['Rental']['listing_id'])){
+        $rentalObject['Listing']['listing_id'] = $rentalObject['Rental']['listing_id'];
+      }
+      else {
         $this->set('response', json_encode(array('error' => 'Rental save unsuccessful. Error code: 2')));
         return;
       }
     }
-    else {
-      /* Create a new listing */
-      $listingResponse = $this->Listing->SaveListing(Listing::LISTING_TYPE_RENTAL);
-      /*
-      $listingResponse contains the listing_id of the saved rental if successful.
-      If rental save was unsuccessful, return an error code to client.
-      */
-
-      if (!array_key_exists('error', $listingResponse) && array_key_exists('listing_id', $listingResponse))
-        $listing_id = $listingResponse['listing_id'];
-      else {
-        $this->set('response', json_encode(array('error' => 'Rental save unsuccessful. Error code: 1')));
-        return;
-      }
-    }
-
-    /*
-    LATER ON:
-    First, try and save in rentals table. If validation fails,
-    save in rentals_incomplete table and set is_complete = 0;
-    RIGHT NOW:
-    For FIRST ITERATION, simply save in rentals table, and return error on failure.
-    */
-    $rental['listing_id'] = $listing_id;
-    $rentalResponse = $this->Rental->SaveRental($rental);
-    $rentalResponse['listing_id'] = $listing_id;
-    if (array_key_exists('error', $rentalResponse))
-    {
-
-      /* 
-      Rental is not complete.
-      Save to rentals_incomplete table only.
-      for FIRST ITERATION, simply return an error code.
-      */
-      //$this->RentalIncomplete->SaveRental($rentalResponse['error']['rental']);
-
-      $this->set('response', json_encode($rentalResponse));
-    }
-    else
-    {
-      /* Save fees using $listing_id of saved rental */
-      $feesResponse = $this->Fee->SaveFees($fees, $listing_id);
-      $this->set('response', json_encode($rentalResponse));
-    }
+    
+    $response = $this->Listing->SaveListing($rentalObject);
+    $this->set('response', json_encode($response));
+    return;
   }
 
   /*
@@ -119,7 +88,7 @@ class RentalsController extends AppController
 
     $listingType = $this->Listing->GetListingType($listing_id);
     if ($listingType == Listing::LISTING_TYPE_RENTAL)
-      return $this->Rental->UserOwnsRental($listing_id, $user_id);
+      return $this->Listing->UserOwnsListing($listing_id, $user_id);
 
     return false;
   }

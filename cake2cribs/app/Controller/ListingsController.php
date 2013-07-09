@@ -50,7 +50,7 @@ class ListingsController extends AppController {
 
 		$listingType = $this->Listing->GetListingType($listing_id);
 		if ($listingType == Listing::LISTING_TYPE_RENTAL)
-			return $this->Rental->UserOwnsRental($listing_id, $user_id);
+			return $this->Listing->UserOwnsListing($listing_id, $user_id);
 
 		return false;
 	}

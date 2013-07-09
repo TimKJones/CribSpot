@@ -3,7 +3,12 @@
 class Fee extends AppModel {
 	public $name = 'Fee';
 	public $primaryKey = 'fee_id';
-	/*public $belongsTo = array('');*/
+	public $belongsTo = array(
+		'Listing' => array(
+            'className'    => 'Listing',
+            'foreignKey'   => 'listing_id'
+        )
+	);
 
 	public $validate = array(
 		'fee_id' => 'numeric',
