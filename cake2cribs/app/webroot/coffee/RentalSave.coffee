@@ -1,14 +1,19 @@
 class A2Cribs.RentalSave
-	constructor: () ->
+	constructor: (modal) ->
+		modal = $('.rental-content')
 		@SetupUI()
 
 	SetupUI: ->
 		###
 		********************* TODO **********************
 		###
+		if not A2Cribs.Geocoder?
+			A2Cribs.Geocoder = new google.maps.Geocoder()
 		@CreateGrids()
 		# Create grid and setup necessary grid code
 		# Create jquery listeners for buttons on Rentals layout
+
+		@MarkerModalSetup()
 
 	Open: (rental_ids) ->
 		###
@@ -18,7 +23,7 @@ class A2Cribs.RentalSave
 		@ClearGrids()
 
 	# Sends rental to server including all associated tables (fees, etc.)
-	@Save: ->
+	Save: ->
 		$.ajax
 			url: myBaseUrl + "rentals/Save"
 			type: "POST"
@@ -42,7 +47,7 @@ class A2Cribs.RentalSave
 
 	# Sends array of listing_ids to delete
 	# IMPORTANT - sends listing_ids, not rental_ids
-	@Delete: (listing_ids) ->
+	Delete: (listing_ids) ->
 		$.ajax
 			url: myBaseUrl + "listings/Delete/" + JSON.stringify listing_ids
 			type: "POST"
@@ -54,11 +59,11 @@ class A2Cribs.RentalSave
 					alert "Delete unsuccessful"
 					console.log response
 
-	Create: ->
+	Create: (marker_id)->
 		###
 		********************* TODO **********************
 		###
-		# Popup modal
+		@CurrentMarker = marker_id
 		# Open blank grids
 
 	CreateSubRental: ->
@@ -69,7 +74,129 @@ class A2Cribs.RentalSave
 		for container,grid of @GridMap
 			grid.updateRowCount()
 			grid.render()
-		
+
+	MarkerModalSetup: ->
+		modal = $('#marker-modal')
+
+		modal.on 'show', () ->
+			modal.find('#marker_add').hide()
+			modal.find("#continue-button").addClass "disabled"
+			modal.find("#marker_select").val "0"
+
+		modal.on 'shown', () =>
+			@MiniMap.Resize()
+
+		modal.find(".required").keydown ->
+			$(this).parent().removeClass "error"
+
+		modal.find("#University_name").focusout () =>
+			@FindSelectedUniversity modal
+			if @SelectedUniversity?
+				@MiniMap.CenterMap @SelectedUniversity.latitude, @SelectedUniversity.longitude
+
+		modal.find("#place_map_button").click () =>
+			@FindAddress modal
+
+		modal.find("#marker_select").change () =>
+			marker_selected = modal.find("#marker_select").val()
+			if marker_selected is "0"
+				modal.find("#continue-button").addClass "disabled"
+			else
+				modal.find("#continue-button").removeClass "disabled"
+
+			if marker_selected is "new_marker"
+				modal.find('#marker_add').show()
+				@MiniMap.Resize()
+			else
+				modal.find('#marker_add').hide()
+
+		marker_validate = () ->
+			isValid = yes
+			if not modal.find('#Marker_street_address').val()
+				A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
+				modal.find('#Marker_street_address').parent().addClass "error"
+				isValid = no
+			if not modal.find('#University_name').val()
+				A2Cribs.UIManager.Error "You need to select a university."
+				modal.find('#University_name').parent().addClass "error"
+				isValid = no
+			if modal.find('#Marker_building_type_id').val().length is 0
+				A2Cribs.UIManager.Error "You need to select a building type."
+				modal.find('#Marker_building_type_id').parent().addClass "error"
+				isValid = no
+			if modal.find('#Sublet_unit_number').val().length >= 249
+				A2Cribs.UIManager.Error "Your unit number is too long."
+				modal.find('#Sublet_unit_number').parent().addClass "error"
+				isValid = no
+			if modal.find('#Marker_alternate_name').val().length >= 249
+				A2Cribs.UIManager.Error "Your alternate name is too long."
+				modal.find('#Marker_alternate_name').parent().addClass "error"
+				isValid = no
+			return isValid
+
+		modal.find("#continue-button").click () =>
+			marker_selected = modal.find("#marker_select").val()
+			if marker_selected is "new_marker"
+				if marker_validate()
+					# Make new marker ajax and call create
+					modal.modal "hide"
+					@Create 1
+
+			else if marker_selected isnt "0"
+				modal.modal "hide"
+				@Create +marker_selected
+
+		@MiniMap = new A2Cribs.MiniMap modal
+
+		if A2Cribs.Cache.SchoolList?
+			modal.find("#University_name").typeahead
+				source: A2Cribs.Cache.SchoolList
+			return
+		$.ajax
+			url: "/University/getAll"
+			success :(response) =>
+				A2Cribs.Cache.universitiesMap = JSON.parse response
+				A2Cribs.Cache.SchoolList = []
+				A2Cribs.Cache.SchoolIDList = []
+				for university in A2Cribs.Cache.universitiesMap
+					A2Cribs.Cache.SchoolList.push university.University.name
+					A2Cribs.Cache.SchoolIDList.push university.University.id
+				modal.find("#University_name").typeahead
+					source: A2Cribs.Cache.SchoolList
+
+	FindSelectedUniversity: (div) ->
+		selected = div.find("#University_name").val()
+		index = A2Cribs.Cache.SchoolList.indexOf selected
+		if index >= 0
+			@SelectedUniversity = A2Cribs.Cache.universitiesMap[index].University;
+		else
+			@SelectedUniversity = null
+
+	FindAddress: (div) ->
+		if @SelectedUniversity?
+			address = div.find("#Marker_street_address").val()
+			addressObj =
+				'address' : address + " " + @SelectedUniversity.city + ", " + @SelectedUniversity.state
+			A2Cribs.Geocoder.geocode addressObj, (response, status) =>
+				if status is google.maps.GeocoderStatus.OK and response[0].address_components.length >= 2
+					for component in response[0].address_components
+						for type in component.types
+							switch type
+								when "street_number" then street_number = component.short_name
+								when "route" then street_name = component.short_name
+								when "locality" then div.find('#Marker_city').val component.short_name
+								when "administrative_area_level_1" then div.find('#Marker_state').val component.short_name
+								when "postal_code" then div.find('#Marker_zip').val component.short_name
+
+					if not street_number?
+						A2Cribs.UIManager.Alert "Entered street address is not valid."
+						$("#Marker_street_address").text ""
+						return
+					
+					@MiniMap.SetMarkerPosition response[0].geometry.location
+					div.find("#Marker_street_address").val street_number + " " + street_name
+					div.find("#Marker_latitude").val response[0].geometry.location.lat()
+					div.find("#Marker_longitude").val response[0].geometry.location.lng()
 
 	PopulateGrid: (rental_ids) ->
 		###

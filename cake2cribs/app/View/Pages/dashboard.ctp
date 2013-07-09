@@ -7,8 +7,6 @@
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
 
-
-	echo $this->Html->script('slickgrid/lib/jquery-1.7.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
 
@@ -27,6 +25,8 @@
 ?>
 
 
+<?php echo $this->element('Dashboard/marker-modal');?>
+
 
 <!-- Header -->
 <!--<div class="navbar navbar-inverse navbar-fixed-top">
@@ -40,7 +40,7 @@
 		<div class="span2">
 			<ul class="nav nav-list">
 				<li>
-					<a href="#">
+					<a href="#marker-modal" data-toggle="modal">
 						<i class="icon-plus-sign icon-large"></i>
 						CREATE A NEW LISTING
 					</a>
@@ -89,7 +89,7 @@
 		</div>
 
 		<!-- Rest of layout -->
-		<div class="span10">
+		<div class="span10 rental-content">
 
 			<!-- Rental Preview -->
 			<div class="row-fluid">
