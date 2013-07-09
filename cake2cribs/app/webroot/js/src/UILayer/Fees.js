@@ -14,7 +14,7 @@
       fees.push({
         fee_id: 160,
         description: "Admin",
-        amount: null
+        amount: 69
       });
       fees.push({
         fee_id: 161,
@@ -24,7 +24,7 @@
       fees.push({
         fee_id: 162,
         description: "Furniture",
-        amount: null
+        amount: 34
       });
       fees.push({
         fee_id: 163,
@@ -34,7 +34,7 @@
       fees.push({
         fee_id: 164,
         description: "Upper Floor",
-        amount: null
+        amount: 22
       });
       fees.push({
         fee_id: 165,

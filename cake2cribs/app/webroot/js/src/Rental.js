@@ -143,7 +143,7 @@
         contact_phone: A2Cribs.UILayer.Rentals.contact_phone(),
         website: A2Cribs.UILayer.Rentals.website()
       },
-      Fees: A2Cribs.UILayer.Fees.GetFees()
+      Fee: A2Cribs.UILayer.Fees.GetFees()
     };
 
     return Rental;

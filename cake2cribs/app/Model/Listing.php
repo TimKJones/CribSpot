@@ -69,7 +69,7 @@ class Listing extends AppModel {
 
 		CakeLog::write("RentalSave", print_r($listing, true));
 
-		if ($this->saveAll($listing))
+		if ($this->saveAll($listing, array('deep' => true)))
 			return array('listing_id' => $this->id);
 
 		/* Listing failed to save - return error code */

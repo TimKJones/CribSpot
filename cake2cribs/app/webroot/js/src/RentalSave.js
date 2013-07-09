@@ -37,6 +37,14 @@
       });
     };
 
+    /*
+    	Called when user adds a new row for the existing marker
+    	Adds a new row to the grid, with a new row_id.
+    	Sets the row_id hidden field.
+    */
+
+    RentalSave.AddNewUnit = function() {};
+
     RentalSave.prototype.Copy = function(rental_ids) {
       /*
       		********************* TODO (Not first priority) *

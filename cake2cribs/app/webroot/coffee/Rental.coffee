@@ -81,5 +81,5 @@ class A2Cribs.Rental
 				contact_email: A2Cribs.UILayer.Rentals.contact_email()
 				contact_phone: A2Cribs.UILayer.Rentals.contact_phone()
 				website: A2Cribs.UILayer.Rentals.website()
-			Fees:
+			Fee:
 				A2Cribs.UILayer.Fees.GetFees()
