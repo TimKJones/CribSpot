@@ -24,15 +24,6 @@ class RentalsController extends AppController
   */
   public function Save()
   {
-    /*
-    if rental[listing_id] is set
-      Check if user owns listing.
-        yes -> create the listings array and set listing_id
-        no  -> return error message
-    Listing->Save()
-    If successful return listing_id.
-    If fail, return validation errors.
-    */
     $this->layout = 'ajax';
     $rentalObject = $this->params['data'];
     $rentalObject['Listing'] = array();
@@ -40,9 +31,8 @@ class RentalsController extends AppController
     $rentalObject['Listing']['listing_type'] = 0; /* TODO: Make this reference the Listing::LISTING_TYPE_RENTAL constant */
     if (array_key_exists('listing_id', $rentalObject['Rental'])){
       /* We are saving an existing listing. */
-      if ($this->UserOwnsListing($rentalObject['Rental']['listing_id'])){
+      if ($this->UserOwnsListing($rentalObject['Rental']['listing_id']))
         $rentalObject['Listing']['listing_id'] = $rentalObject['Rental']['listing_id'];
-      }
       else {
         $this->set('response', json_encode(array('error' => 'Rental save unsuccessful. Error code: 2')));
         return;

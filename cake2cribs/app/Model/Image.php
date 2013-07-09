@@ -83,7 +83,7 @@ class Image extends AppModel {
 			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png');
 
 		if (!$this->_createFolder($folder))
-			return array('error' => 'Error saving image.')
+			return array('error' => 'Error saving image.');
 
 		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name']))
 			return array('error' => 'Error saving image 2.');
@@ -126,7 +126,7 @@ class Image extends AppModel {
 		));
 
 		/* Delete all images from img/listings/incomplete/user_id/row_id */
-		for ($i = 0; $i < count($imagePaths)){
+		for ($i = 0; $i < count($imagePaths); $i++) {
 			$this->DeleteImageFile($imagePaths[$i]['Image']['image_path']);
 		}
 

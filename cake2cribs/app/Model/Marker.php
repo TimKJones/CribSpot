@@ -155,7 +155,9 @@ class Marker extends AppModel {
 	}
 
 	/*
-	Finds marker_id by street_address
+	Finds marker_id by address.
+	If no marker exists, creates new marker.
+	Returns marker_id on success; error message on failure.
 	*/
 	public function FindMarkerId($marker)
 	{
@@ -170,38 +172,35 @@ class Marker extends AppModel {
 	    	                 'fields' => array('Marker.marker_id', 'Marker.visible')
 	  	));
 
-		CakeLog::write("markerMatch", print_r($markerMatch, true));
-	  	if($markerMatch != null && $markerMatch['Marker']['visible']==0){
-	  		//marker was previously made invisible so we
-	  		//need to make it visible again
-	  		$markerMatch['Marker']['visible']=1;
-	  		if(!$this->save($markerMatch)){
-	  			CakeLog::write("Marker", "Making marker ". $markerMatch['Marker']['marker_id'] ." visible failed");
+	  	if($markerMatch != null){
+	  		/* Marker for this address already exists */
+	  		if (!array_key_exists('Marker', $markerMatch) || 
+	  			!array_key_exists('visible', $markerMatch['Marker']) || 
+	  			!array_key_exists('marker_id', $markerMatch['Marker'])){
+	  			/* TODO: Log error info here. */
+	  			return array('error' => 'failed to save marker');
 	  		}
-	  		else
-	  		{
-	  			CakeLog::write("Marker", "Making marker ". $markerMatch['Marker']['marker_id'] ." visible SUCCESS");
-	  		}
-	  	}
 
-	  	if ($markerMatch == null)
-	  	{
-	  		// create new marker
-	  		$marker_to_save = array('Marker' => $marker);
-	  		CakeLog::write("newMarker", print_r($marker_to_save, true));
-	  		if ($this->save($marker_to_save))
-	  		{
-	  			CakeLog::write("savingMarker", "SUCCESS: saved marker_id " . $this->id);
-	  			return $this->id;
+	  		if ($markerMatch['Marker']['visible']==0){
+	  			/* Marker exists but is invisible. Make it visible. */
+	  			$markerMatch['Marker']['visible']=1;
+		  		if(!$this->save($markerMatch)){
+		  			/* TODO: Log important error info here */
+		  			return array('error' => 'failed to save marker 2');
+		  		}
 	  		}
-	  		else
-	  		{
-	  			CakeLog::write("savingMarker", "error: " . print_r($this->validationErrors, true));
-	  			return null;
+		  		
+		  	return $markerMatch['Marker']['marker_id'];
+	  	}
+	  	else {
+	  		/* Marker for this address doesn't exist, so create a new one. */
+	  		if ($this->save(array('Marker' => $marker)))
+	  			return $this->id;
+	  		else {
+	  			/* TODO: Log important error info here. */
+	  			return array('error' => 'failed to saved marker 3');
 	  		}
 	  	}
-	  	else
-	  		return $markerMatch['Marker']['marker_id'];
 	}
 
 	public function hide($marker){

@@ -67,8 +67,6 @@ class Listing extends AppModel {
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
-		CakeLog::write("RentalSave", print_r($listing, true));
-
 		if ($this->saveAll($listing, array('deep' => true)))
 			return array('listing_id' => $this->id);
 
