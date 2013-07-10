@@ -321,6 +321,24 @@
       }
     };
 
+    /*
+    	Send photo and photo's row_id to server
+    	The form of this function is mostly for testing the backend handling of row_id.
+    */
+
+
+    PhotoManager.SubmitPhoto = function(row_id, photo) {
+      var _this = this;
+      return $.ajax({
+        url: myBaseUrl + "images/AddImage/" + row_id + "/" + photo,
+        type: "POST",
+        success: function(response) {
+          response = JSON.parse(response);
+          return console.log(response);
+        }
+      });
+    };
+
     return PhotoManager;
 
   }).call(this);

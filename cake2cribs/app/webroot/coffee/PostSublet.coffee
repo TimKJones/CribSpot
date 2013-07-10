@@ -43,6 +43,7 @@ class A2Cribs.PostSublet extends A2Cribs.SubletSave
 		# Set Current Step to first
 		@div.find('.step').eq(0).show()
 		@div.find('.step').eq(0).siblings().hide()
+		@currentStep = 0
 		super @div
 
 	Save: () ->

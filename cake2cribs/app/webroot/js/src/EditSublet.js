@@ -58,6 +58,16 @@
       }
     };
 
+    EditSublet.prototype.Delete = function(sublet_id) {
+      return alertify.confirm("Are you sure you want to delete this property? This can't be undone.", function(e) {
+        var url;
+        if (e) {
+          url = myBaseUrl + ("sublets/remove/" + sublet_id);
+          return window.location.href = url;
+        }
+      });
+    };
+
     EditSublet.prototype.GetSubletObject = function() {
       return EditSublet.__super__.GetSubletObject.call(this, this.div);
     };

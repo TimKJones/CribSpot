@@ -219,4 +219,16 @@ class A2Cribs.PhotoManager
 			if not photo.IsEmpty()
 				results.push photo.GetObject()
 
-		if results.length is 0 then null else results 
+		if results.length is 0 then null else results
+
+	###
+	Send photo and photo's row_id to server
+	The form of this function is mostly for testing the backend handling of row_id.
+	###
+	@SubmitPhoto: (row_id, photo) -> 
+		$.ajax
+			url: myBaseUrl + "images/AddImage/" + row_id + "/" + photo
+			type: "POST"
+			success: (response) =>
+				response = JSON.parse response
+				console.log response

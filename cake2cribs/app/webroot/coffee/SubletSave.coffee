@@ -166,7 +166,7 @@ class A2Cribs.SubletSave
 		return isValid
 
 	Reset: () ->
-		@ResetAllInputFields
+		@ResetAllInputFields()
 		@PhotoManager.Reset()
 
 	###
@@ -176,6 +176,9 @@ class A2Cribs.SubletSave
 		@div.find('input:text').val '' # Erase all inputs
 		@div.find('input:hidden').val '' # Erase all inputs
 		@div.find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
+
+		# Need to input payment type since field is hidden
+		@div.find("#Sublet_payment_type_id").val "1"
 
 	###
 	Submits sublet to backend to save
@@ -191,7 +194,8 @@ class A2Cribs.SubletSave
 			if data.status?
 				A2Cribs.UIManager.Success data.status
 				A2Cribs.ShareManager.SavedListing = data.newid
-				success data.newid
+				if success?
+					success data.newid
 			else
 				A2Cribs.UIManager.Alert data.error
 

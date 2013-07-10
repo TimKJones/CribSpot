@@ -20,6 +20,11 @@ class A2Cribs.Cache
 	@FavoritesSubletIdsList = []
 	@FavoritesMarkerIdsList = []
 
+	
+	@IdToRentalMap = []
+	@IdToParkingMap = []
+	@ListingIdToUserMap = [] #Only contains public user data
+
 	@SubletEditInProgress = null
 
 	###
@@ -112,24 +117,23 @@ class A2Cribs.Cache
 			@MarkerIdToHoverDataMap[marker_id] = hd
 
 	@CacheHousemates: (housemates) ->
-		if housemates ==  null || housemates == undefined
+		if not housemates?
 			return
 
 		sublet_id = null
-		if housemates[0] != undefined and housemates[0].sublet_id != undefined
-			sublet_id = parseInt housemates[0].sublet_id
+		if housemates.sublet_id?
+			sublet_id = parseInt housemates.sublet_id
 		else
 			return
 			
 		@SubletIdToHousemateIdsMap[sublet_id] = []
-		for h in housemates
-			h.id = parseInt h.id
-			grad_status = @StudentTypeIdToNameMap[parseInt h.student_type_id]
-			gender = @GenderIdToNameMap[parseInt h.gender_type_id]
-			sublet_id = parseInt h.sublet_id
-			quantity = parseInt h.quantity
-			@IdToHousematesMap[h.id] = new A2Cribs.Housemate(sublet_id, h.enrolled, h.major, h.seeking, grad_status, gender, quantity)
-			@SubletIdToHousemateIdsMap[sublet_id].push h.id
+		id = parseInt housemates.id
+		grad_status = @StudentTypeIdToNameMap[parseInt housemates.student_type_id]
+		gender = @GenderIdToNameMap[parseInt housemates.gender_type_id]
+		sublet_id = parseInt housemates.sublet_id
+		quantity = parseInt housemates.quantity
+		@IdToHousematesMap[id] = new A2Cribs.Housemate sublet_id, housemates.enrolled, housemates.major, housemates.seeking, grad_status, gender, quantity
+		@SubletIdToHousemateIdsMap[sublet_id].push id
 
 	@CacheImages: (imageList) ->
 		if imageList == undefined or imageList == null or imageList[0] == undefined
@@ -182,3 +186,110 @@ class A2Cribs.Cache
 
 	@CacheSubletAddStep3: (data) ->
 		A2Cribs.Cache.Step3Data = data
+
+
+	###
+	Adds new rental object to IdToRentalMap
+	###
+	@AddRental:(rental) ->
+		rental.air = parseInt rental.air
+		rental.beds = parseInt rental.beds
+		rental.baths = parseInt rental.baths
+		rental.building_type = parseInt rental.building_type
+		rental.cable = parseInt rental.cable
+		rental.deposit = parseInt rental.deposit
+		rental.electric = parseInt rental.electric
+		rental.furnished_type = parseInt rental.furnished_type
+		rental.gas = parseInt rental.gas
+		rental.heat = parseInt rental.heat
+		rental.internet = parseInt rental.internet
+		rental.listing_id = parseInt rental.listing_id
+		rental.min_occupancy = parseInt rental.min_occupancy
+		rental.max_occupancy = parseInt rental.max_occupancy
+		rental.parking_spots = parseInt rental.parking_spots
+		rental.parking_type = parseInt rental.parking_type
+		rental.pets_type = parseInt rental.pets_type
+		rental.rent = parseInt rental.rent
+		rental.rental_id = parseInt rental.rental_id
+		rental.sewage = parseInt rental.sewage
+		rental.square_feet = parseInt rental.square_feet
+		rental.trash = parseInt rental.trash
+		rental.unit_style_options = parseInt rental.unit_style_options
+		rental.utility_estimate_summer = parseInt rental.utility_estimate_summer
+		rental.utility_estimate_winter = parseInt rental.utility_estimate_winter
+		rental.water = parseInt rental.water
+		rental.year_built = parseInt rental.year_built
+		@IdToRentalMap[rental.rental_id] = rental
+	###
+	Creates a new Rental object from rental
+	Adds new rental object to IdToRentalMap
+	###
+
+	###
+	Adds new parking object to IdToParkingMap
+	###
+	@AddParking:(parking) ->
+		@IdToParkingMap[parseInt parking.parking_id] = parking
+
+	###
+	Adds new user object to RentalIdToUserMap
+	IMPORTANT: only contains public, non-sensitive user data
+	###
+	@AddUser:(listing_id, user) ->
+		@ListingIdToUserMap[listing_id] = user
+
+	###
+	Adds listing to the appropriate cache based on listing_type
+	###
+	@AddListing: (listing) ->
+		if listing == undefined || listing == null
+			return
+
+		if listing.Rental != undefined
+			@AddRental listing.Rental
+		else if listing.Parking != undefined
+			@AddParking listing.Parking
+		
+		@AddUser parseInt(listing.Listing.listing_id), listing.User
+
+	###
+	Returns listing object specified by listing_id
+	###
+	@GetListing:(listing_id) ->
+		#See if listing is already cached
+		if listing_id in @IdToRentalMap
+			return @IdToRentalMap[listing_id]
+
+		#Listing not in cache. Fetch it from database
+		listing = null
+		$.ajax
+			url: myBaseUrl + "Listings/GetListing/" + listing_id
+			type:"GET"
+			context: this
+			async: false
+			success: (response) ->
+				listing = JSON.parse response
+				@AddListing listing[0]
+
+		if listing != null
+			return listing[0]
+		else
+			return null
+
+	###
+	Loads all listings owned by logged-in user
+	Loads PUBLIC user data for user into cache
+	Returns array of listings
+	###
+	@GetListingsByLoggedInUser:() ->
+		listings = null
+		$.ajax
+			url: myBaseUrl + "Listings/GetListingsByLoggedInUser"
+			type:"GET"
+			context: this
+			async: false
+			success: (response) ->
+				listings = JSON.parse response
+				for listing in listings
+					@AddListing listing
+		return listings

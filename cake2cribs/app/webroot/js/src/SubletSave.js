@@ -207,7 +207,7 @@
     };
 
     SubletSave.prototype.Reset = function() {
-      this.ResetAllInputFields;
+      this.ResetAllInputFields();
       return this.PhotoManager.Reset();
     };
 
@@ -219,7 +219,8 @@
     SubletSave.prototype.ResetAllInputFields = function() {
       this.div.find('input:text').val('');
       this.div.find('input:hidden').val('');
-      return this.div.find('select option:first-child').attr("selected", "selected");
+      this.div.find('select option:first-child').attr("selected", "selected");
+      return this.div.find("#Sublet_payment_type_id").val("1");
     };
 
     /*
@@ -245,7 +246,9 @@
         if (data.status != null) {
           A2Cribs.UIManager.Success(data.status);
           A2Cribs.ShareManager.SavedListing = data.newid;
-          return success(data.newid);
+          if (success != null) {
+            return success(data.newid);
+          }
         } else {
           return A2Cribs.UIManager.Alert(data.error);
         }

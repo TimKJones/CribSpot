@@ -37,6 +37,13 @@ class A2Cribs.EditSublet extends A2Cribs.SubletSave
 		if @Validate()
 			super @GetSubletObject()
 
+	Delete: (sublet_id) ->
+		alertify.confirm "Are you sure you want to delete this property? This can't be undone.", (e) ->
+			if e
+				# User clicked okay
+				url = myBaseUrl + "sublets/remove/#{sublet_id}"
+				window.location.href = url
+
 	GetSubletObject: () ->
 		super @div
 
