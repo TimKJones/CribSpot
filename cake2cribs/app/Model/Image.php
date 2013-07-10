@@ -35,36 +35,33 @@ class Image extends AppModel {
 	VARIABLES: 
 	$file = $image data
 	$row_id = row  of listing in user's current slickgrid
-	$num_images = number of images for this listing entry as seen by the user.
 	$listing_id = listing_id of of this listing, if already saved.
 
-	If $listing_id is not null:
-	- Move image to /listings/listing_id/
-	- Add new record to images table.
-	If $listing_id is null:
-	- Move image to /listings/incomplete/user_id/row_id/
-	- Add new record to images table
+	If $listing_id is not null, moves $file to /img/listings/listing_id/
+	Otherwise, moves $fuke to /img/listings/incomplete/user_id/row_id/
+	Add new record to images table
 	Returns the new image_id on success; error message on failure.
 	*/
-	public function SaveImage($file, $row_id, $num_images, $user_id, $listing_id = null)
+	public function SaveImage($file, $row_id, $user_id, $listing_id = null)
 	{
 		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
 			return array('error' => 'error2 saving image');
 
 		/* Determine path for where to save image */
 		$fileName = $file['name'][0];
-		$folder = WWW_ROOT . 'img/listings/';
+		$relativePath = 'img/listings/';
 		if ($listing_id == null)
-			$folder = $folder . 'incomplete/' . $user_id . '/' . $row_id . '/';
+			$relativePath = $relativePath . 'incomplete/' . $user_id . '/' . $row_id . '/';
 		else
-			$folder = $folder . $listing_id . '/';
+			$relativePath = $relativePath . $listing_id . '/';
 
+		$folder = WWW_ROOT . $relativePath;
 		/* Move image to new destination */
 		$response = $this->MoveFileToFolder($file, $folder);
 		if (array_key_exists('error', $response))
 			return $response;
 
-		$response = $this->AddImageEntry($path, $listing_id);
+		$response = $this->AddImageEntry($relativePath . $fileName, $listing_id);
 		return $response;
 
 	}
@@ -121,7 +118,7 @@ class Image extends AppModel {
 	{
 		/* Get all image paths to delete */
 		$imagePaths = $this->find('all', array(
-			'fields' => array('image_path'), 
+			'fields' => array('Image.image_path'), 
 			'conditions' => array('Image.image_id' => $image_ids)
 		));
 
@@ -134,6 +131,8 @@ class Image extends AppModel {
 	}
 
 	/* 
+	------- NOT TO BE USED ANYMORE. THIS WAS USED WITH SUBLETS.     --------
+	------- WHEN NEW VERSION IS FULLY TESTED, THIS WILL BE REMOVED. --------
 	Create new row in images table for this image.
 	Move image to new location in img/sublets/[sublet_id]_img#
 	returns true on success, false on failure
@@ -418,7 +417,7 @@ class Image extends AppModel {
 	private function _createFolder($path)
 	{
 		if(!is_dir($path)){
-			if (!mkdir($folder))
+			if (!mkdir($path, 0777, true))
 				return false;
 		}
 
@@ -434,6 +433,7 @@ class Image extends AppModel {
 			return false;
 
 		$fileType = $this->_getFileType($file);
+		CakeLog::write("AddImage", "image type: " . $fileType);
 		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
 		{
 			//TODO: Log error somewhere, listing user_id, file_name, dates, important information
@@ -457,7 +457,7 @@ class Image extends AppModel {
 	/*
 	Returns the file type from a file path
 	*/
-	private function _getFileType($path)
+	private function _getFileType($file)
 	{
 		return substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
 	}

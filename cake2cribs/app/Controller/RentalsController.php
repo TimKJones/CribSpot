@@ -35,11 +35,6 @@ class RentalsController extends AppController
 
   }
 
-  private function _getUserId()
-  {
-    return 15;
-  }
-
   /*
     Check if user owns listing_id. Returns true if so, false otherwise.
   */

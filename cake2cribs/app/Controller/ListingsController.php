@@ -105,11 +105,6 @@ class ListingsController extends AppController {
 		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
 		$this->set('response', json_encode($listings));
 	}
-
-	private function _getUserId()
-	{
-		return 15;
-	}
 }
 
 ?>

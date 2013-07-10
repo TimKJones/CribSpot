@@ -17,7 +17,11 @@ class ImagesController extends AppController {
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
 		$this->Auth->allow('SubmitCaption');
+
+		$this->Auth->allow('add_test');
 	}
+
+	public function add_test(){}
 
 	/*
 	AJAX
@@ -26,9 +30,18 @@ class ImagesController extends AppController {
 	Appends image_id of new Image entry to SESSION[row_id]
 	Returns: SUCCESS: image_id of new image entry; FAILURE: error message
 	*/
-	function AddImage($image, $row_id, $num_images, $listing_id = null)
+	function AddImage($row_id, $num_images, $listing_id = null)
 	{
 		$this->layout = 'ajax';
+		if (!array_key_exists('form', $this->request->params) || 
+			!array_key_exists('files', $this->request->params['form'])){
+			/* TODO: log error */
+			$this->set('response', json_encode(array('error' => 'Failed to upload image')));
+		}
+
+		$image = $this->request->params['form']['files'];
+		$row_id = $this->data['row_id'];
+		$num_images = $this->data['num_images'];
 
 		/*
 		Solve for this scenario: User adds photos for an incomplete listing.
@@ -39,10 +52,12 @@ class ImagesController extends AppController {
 		*/
 
 		$image_ids = $this->Session->read('row_' . $row_id);
-		if ($image_ids != null && $image_ids != $num_images)
+		if ($image_ids != null && count($image_ids) != $num_images){
 			$this->Image->DeleteExpiredImages($image_ids);
+			$this->Session->delete('row_' . $row_id);
+		}
 
-		$imageResponse = $this->Image->SaveImage($image, $row_id, $num_images, $this->Auth->User('id'), $listing_id);
+		$imageResponse = $this->Image->SaveImage($image, $row_id, $this->_getUserId(), $listing_id);
 		/* 
 		If no listing_id is given, the listing entry for this image has not yet been created.
 		Create an image entry and update its listing_id later after the listing has been completed.
