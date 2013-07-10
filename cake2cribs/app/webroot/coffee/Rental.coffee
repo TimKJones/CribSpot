@@ -12,9 +12,10 @@ class A2Cribs.Rental
 	) ->
 
 	@Template =
-		data = 
+		data =
+			Listing:
+				listing_type: 0
 			Rental:
-				rental_id: 41
 				listing_id: 64
 				street_address: A2Cribs.UILayer.Rentals.street_address()
 				city: A2Cribs.UILayer.Rentals.city()
@@ -26,7 +27,7 @@ class A2Cribs.Rental
 				building_name: A2Cribs.UILayer.Rentals.building_name()
 				beds: A2Cribs.UILayer.Rentals.beds()
 				min_occupancy: A2Cribs.UILayer.Rentals.min_occupancy()
-				max_occupancy: 75
+				max_occupancy: 100
 				building_type: A2Cribs.UILayer.Rentals.building_type()
 				rent: A2Cribs.UILayer.Rentals.rent()
 				rent_negotiable: A2Cribs.UILayer.Rentals.rent_negotiable()
@@ -74,7 +75,7 @@ class A2Cribs.Rental
 				utility_estimate_summer: A2Cribs.UILayer.Rentals.utility_estimate_summer()
 				deposit: A2Cribs.UILayer.Rentals.deposit()
 				highlights: A2Cribs.UILayer.Rentals.highlights()
-				description: A2Cribs.UILayer.Rentals.description()
+				description: "Its a new listing!!!!!"
 				waitlist: A2Cribs.UILayer.Rentals.waitlist()
 				waitlist_open_date: A2Cribs.UILayer.Rentals.waitlist_open_date()
 				lease_office_address: A2Cribs.UILayer.Rentals.lease_office_address()

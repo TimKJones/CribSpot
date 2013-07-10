@@ -20,7 +20,7 @@ class A2Cribs.RentalSave
 	# Sends rental to server including all associated tables (fees, etc.)
 	@Save: ()->
 		$.ajax
-			url: myBaseUrl + "rentals/Save"
+			url: myBaseUrl + "listings/Save"
 			type: "POST"
 			data: A2Cribs.Rental.Template
 			success: (response) =>

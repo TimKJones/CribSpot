@@ -14,6 +14,21 @@ class ListingsController extends AppController {
 		$this->Auth->allow('LoadMarkerData');
 	}
 
+	/*
+	Save each rental object and fee object passed via POST data.
+	If unsuccessful, returns an error code as well as a list of the fields that failed validation
+	REQUIRES: each rental and fee object is in the form cake expects for a valid save.
+	*/
+	public function Save()
+	{
+		$this->layout = 'ajax';
+		$listingObject = $this->params['data'];
+		$listingObject['Listing']['user_id'] = $this->_getUserId();
+		$response = $this->Listing->SaveListing($listingObject);
+		$this->set('response', json_encode($response));
+		return;
+	}
+
 	/* Deletes the listings in $listing_ids */
 	public function Delete ($listing_ids)
 	{
@@ -107,6 +122,11 @@ class ListingsController extends AppController {
 		$this->layout = 'ajax';
 		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
 		$this->set('response', json_encode($listings));
+	}
+
+	private function _getUserId()
+	{
+		return 15;
 	}
 }
 
