@@ -33,6 +33,21 @@ class A2Cribs.RentalSave
 					console.log response
 
 	###
+	Test function for Listings/GetListing.
+	Retrieves the listing specified by listing_id.
+	If listing_id is null, retrieves all listings owned by the logged-in user.
+	###
+	@GetListing: (listing_id = null) ->
+		url = myBaseUrl + 'listings/GetListing/'
+		if listing_id != null
+			url = url + listing_id
+		$.ajax
+			url: url
+			type: "POST"
+			success: (response) =>
+				console.log JSON.parse response
+
+	###
 	Called when user adds a new row for the existing marker
 	Adds a new row to the grid, with a new row_id.
 	Sets the row_id hidden field.
