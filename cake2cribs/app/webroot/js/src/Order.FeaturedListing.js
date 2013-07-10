@@ -3,13 +3,12 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(Widget, listing_id, address, dates) {
-      var _this = this;
+    function FeaturedListing(Widget, listing_id, address, options) {
       this.Widget = Widget;
       this.listing_id = listing_id;
       this.address = address;
-      if (dates == null) {
-        dates = null;
+      if (options == null) {
+        options = null;
       }
       this.Weekdays = 0;
       this.Weekends = 0;
@@ -17,23 +16,9 @@
       this.WD_price = 15;
       this.WE_price = 5;
       this.MIN_DAY_OFFSET = 3;
-      this.initMultiDatesPicker();
-      this.shiftKey = false;
-      $(window).keydown(function(event) {
-        if (event.shiftKey || event.keyCode === 16) {
-          return _this.shiftKey = true;
-        }
-      });
-      $(window).keyup(function(event) {
-        if (event.shiftKey || event.keyCode === 16) {
-          return _this.shiftKey = false;
-        }
-      });
+      this.initMultiDatesPicker(options);
       this.Widget.find('.address').html(this.address);
-      if (dates != null) {
-        this.datepicker.multiDatesPicker('addDates', dates);
-        this.refresh();
-      }
+      this.refresh();
     }
 
     FeaturedListing.prototype.getPrice = function() {
@@ -85,11 +70,27 @@
       return [this.Weekdays, this.Weekends];
     };
 
-    FeaturedListing.prototype.initMultiDatesPicker = function() {
-      var today,
+    FeaturedListing.prototype.initMultiDatesPicker = function(options) {
+      var disabled_dates, selected_dates, today,
         _this = this;
+      if (options == null) {
+        options = null;
+      }
       today = new Date();
+      selected_dates = null;
+      disabled_dates = null;
+      if ((options != null ? options.selected_dates : void 0) != null) {
+        selected_dates = options.selected_dates;
+      }
+      if ((options != null ? options.disabled_dates : void 0) != null) {
+        disabled_dates = options.disabled_dates;
+      }
+      selected_dates;
+
       this.datepicker = $(this.Widget).find('.mdp').multiDatesPicker({
+        dateFormat: "yy-mm-dd",
+        addDates: selected_dates,
+        addDisabledDates: disabled_dates,
         minDate: new Date(today.setDate(today.getDate() + this.MIN_DAY_OFFSET)),
         onSelect: function(dateText, inst) {
           return _this.refresh();

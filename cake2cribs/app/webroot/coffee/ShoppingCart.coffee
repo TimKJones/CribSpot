@@ -79,16 +79,12 @@ class A2Cribs.ShoppingCart
                            # in the calendar. There is one datepicker widget that is shared, swe
                            # Just need to remove the dates so someone else can use it since
 
-        @orderItem = new A2Cribs.Order.FeaturedListing($('.featured-listing-order-item').first(), fl.item.listing_id, fl.item.address, fl.item.dates)
+        @orderItem = new A2Cribs.Order.FeaturedListing($('.featured-listing-order-item').first(), fl.item.listing_id, fl.item.address, {selected_dates: fl.item.dates})
         $('.edit-form').fadeIn('fast')
         @EditingIndex = index
 
         $(".fl-cart-item:eq(#{index})").addClass('editing').siblings().removeClass('editing')
 
-
-
-
-             
 
     save:()-> 
         if @EditingIndex >= 0

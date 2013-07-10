@@ -1,5 +1,7 @@
 class A2Cribs.Order.FeaturedListing
-        constructor:(@Widget, @listing_id, @address, dates=null)->
+        
+        # Options can contain the properties selected_dates, and/or disabled_dates which are arrays of date strings
+        constructor:(@Widget, @listing_id, @address, options=null)->
             
             @Weekdays = 0
             @Weekends = 0
@@ -9,22 +11,17 @@ class A2Cribs.Order.FeaturedListing
             @WE_price = 5
             @MIN_DAY_OFFSET = 3
 
-            @initMultiDatesPicker()
-            @shiftKey = false;
-            $(window).keydown (event)=>
-                if event.shiftKey or event.keyCode is 16
-                    @shiftKey = true
-
-            $(window).keyup (event)=>
-                if event.shiftKey or event.keyCode is 16
-                    @shiftKey = false
-
+            @initMultiDatesPicker(options)
 
             @Widget.find('.address').html @address
-            if dates?
-                @datepicker.multiDatesPicker('addDates', dates)
-                @refresh()
+            
+            # if options.selected_dates?
+            #     @datepicker.multiDatesPicker('addDates', dates)
 
+            # if options.disabled_dates?
+            #     @datepicker.multiDatesPicker {addDisabledDates: options.disabled_dates}
+
+            @refresh()
 
         getPrice:()->
             return @Price
@@ -72,15 +69,26 @@ class A2Cribs.Order.FeaturedListing
             return [@Weekdays, @Weekends]
 
 
-        initMultiDatesPicker:()->
+        initMultiDatesPicker:(options=null)->
             today = new Date()
-            
+            selected_dates = null
+            disabled_dates = null
+
+            if options?.selected_dates?
+                selected_dates = options.selected_dates
+
+            if options?.disabled_dates?
+                disabled_dates = options.disabled_dates
+            selected_dates
             @datepicker = $(@Widget).find('.mdp').multiDatesPicker({
+                dateFormat: "yy-mm-dd"
+                addDates: selected_dates
+                addDisabledDates: disabled_dates
                 # minDate available is 3 days into the future
                 minDate: new Date(today.setDate(today.getDate() + @MIN_DAY_OFFSET))
                 onSelect: (dateText, inst)=>
                     @refresh()
-                    # if @shiftKey
+
 
                         
             });
@@ -96,3 +104,4 @@ class A2Cribs.Order.FeaturedListing
             $(@Widget).find('.weekends').html @Weekends
             
             @Widget.trigger('orderItemChanged', @)
+

@@ -10,6 +10,8 @@ class FeaturedListingsController extends AppController {
 
   public function suDash(){
     //We need to make sure the user has Super User rights
+    $dates = $this->FeaturedListing->getDates(1);
+    die(debug($dates));
     $user = $this->User->get($this->Auth->User('id'));
 
     // if($user['User']['type'] != SUPERUSER){

@@ -72,6 +72,33 @@ class FeaturedListing extends AppModel {
 
     }
 
+    public function getDates($listing_id, $show_past=false){
+        
+        if($show_past){
+            $date = date('Y-m-d', 0); //Time of Epoch
+        }else{
+            $date = date('Y-m-d');
+        }
+
+        $options = array(
+                "conditions"=>array(
+                    "FeaturedListing.listing_id = "=>$listing_id,
+                    "FeaturedListing.date >= " => $date,
+                    ),
+                "fields"=>array(
+                    "FeaturedListing.date"
+                    )
+            );
+        $dates = $this->find('list', $options);
+        // $new_dates = array();
+        // foreach ($dates as $date){
+        //     array_push($new_dates, date('m/d/Y', strtotime($date)));
+        // }
+        // return $new_dates;
+        return array_values($dates);
+
+    }
+
 
 
 

@@ -23,11 +23,15 @@ class OrderController extends AppController {
         if($listing == null){
             throw new NotFoundException();
         }  
-
+        $listing_id = $listing['Listing']['listing_id'];
         $this->set('address', $listing['Marker']['street_address']);
-        $this->set('listing_id', $listing['Listing']['listing_id']);
+        $this->set('listing_id', $listing_id);
+
         $this->set('wd_price', $this->Order->FLWeekdayCost);
         $this->set('we_price', $this->Order->FLWeekendCost);
+
+        // $featured_dates = $this->FeaturedListing->getDates($listing_id);
+        // $this->set("disabled_dates", json_encode($featured_dates));
 
     }
 

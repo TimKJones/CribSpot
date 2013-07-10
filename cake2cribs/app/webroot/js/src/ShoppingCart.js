@@ -80,7 +80,9 @@
       if ((_ref = this.orderItem) != null) {
         _ref.clear();
       }
-      this.orderItem = new A2Cribs.Order.FeaturedListing($('.featured-listing-order-item').first(), fl.item.listing_id, fl.item.address, fl.item.dates);
+      this.orderItem = new A2Cribs.Order.FeaturedListing($('.featured-listing-order-item').first(), fl.item.listing_id, fl.item.address, {
+        selected_dates: fl.item.dates
+      });
       $('.edit-form').fadeIn('fast');
       this.EditingIndex = index;
       return $(".fl-cart-item:eq(" + index + ")").addClass('editing').siblings().removeClass('editing');
