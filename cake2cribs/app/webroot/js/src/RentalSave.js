@@ -19,9 +19,11 @@
     };
 
     RentalSave.Save = function() {
-      var _this = this;
+      var row_id,
+        _this = this;
+      row_id = 0;
       return $.ajax({
-        url: myBaseUrl + "listings/Save",
+        url: myBaseUrl + "listings/Save/" + row_id,
         type: "POST",
         data: A2Cribs.Rental.Template,
         success: function(response) {

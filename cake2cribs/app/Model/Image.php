@@ -3,12 +3,18 @@
 class Image extends AppModel {
 	public $name = 'Image';
 	public $primaryKey = 'image_id';
-	public $belongsTo = array('Sublet');
+	public $actsAs = array('Containable');
+	public $belongsTo = array(
+		'Listing' => array(
+            'className'    => 'Listing',
+            'foreignKey'   => 'listing_id'
+        )
+	);
 	public $MAX_FILE_SIZE = 5242880; // in bytes (5 MB)
 
 	public $validate = array(
-		'image_id' => 'alphaNumeric',
-		'sublet_id' => 'alphaNumeric', // listing to which this image belongs
+		'image_id' => 'numeric',
+		'listing_id' => 'numeric', // listing to which this image belongs
 		'image_path'    => array(
 			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
 			'message' => 'Please supply a valid image, either jpeg, jpg, or png'
@@ -129,6 +135,103 @@ class Image extends AppModel {
 
 		$this->DeleteImageRecords($image_ids);
 	}
+
+	/*
+	Called after a listing is saved.
+	$listing_id = id of listing that was just saved.
+	$image_ids  = ids of images to be moved for this listing.
+	Moves temp image files from /img/listings/incomplete/$user_id/$row_id
+						   to	/img/listings/$listing_id 
+	Then updates paths in images table.
+	Returns error message on failure.
+	*/
+	public function UpdateAfterListingSave($listing_id, $image_ids)
+	{
+		$images = $this->find('all', array( 
+			'conditions' => array('Image.image_id' => $image_ids),
+			'contain' => array()
+		)); 
+
+		$errors = false;
+		for ($i = 0; $i < count($images); $i++){
+			if (!array_key_exists($i, $images) ||
+				!array_key_exists('Image', $images[$i]) ||
+				!array_key_exists('image_path', $images[$i]['Image'])){
+				/* TODO: Error logging */
+				return array('error' => 'failed to move images');
+			}
+
+			/* Move each image file to new destination */
+			$currentPath = WWW_ROOT . $images[$i]['Image']['image_path'];
+			$newRelativePath = $this->GetNewRelativePathAfterListingSave($currentPath, $listing_id);
+			$success = $this->_moveImageAfterListingSave($currentPath, WWW_ROOT . $newRelativePath);
+			$this->_deleteDirectory($this->_getDeepestDirectoryFromPath($currentPath));
+			if (!$success){
+				$errors = true;
+				continue;
+			}
+
+			$images[$i]['Image']['image_path'] = $newRelativePath;
+			$images[$i]['Image']['listing_id'] = $listing_id;
+			$images[$i]['Image'] = $this->_removeNullEntries($images[$i]['Image']);
+			if (!$this->save($images[$i])){
+				$errors = true;
+				CakeLog::write("movingImage", "failed to re-save image: " . print_r($images[$i], true));
+				CakeLog::write("movingImage", "failed to re-save image: " . print_r($this->validationErrors, true));
+				/*TODO: LOG ERRORS */
+			}
+		}
+
+		if ($errors)
+			return array('error' => 'Failed to save images');
+
+		return array('success' => '');
+	}	
+
+	/*
+	Moves file from $currentPath to $newPath
+	Returns true on success; false on failure.
+	*/
+	private function _moveImageAfterListingSave($currentPath, $newPath)
+	{
+		if (!$this->_createFolder($newPath)){
+			CakeLog::write("movingImage", "failed to move " . $currentPath . " to " . $newPath);
+			return false;
+		}
+
+		if (!rename($currentPath, $newPath)){
+			CakeLog::write("movingImage", "failed to rename " . $currentPath . " to " . $newPath);
+			return false;
+		}
+
+		return true;
+	}
+
+	/*
+	Sometimes files aren't deleted after moving them to /img/listings/listing_id.
+	Delete all files in $directory
+	*/
+	private function _deleteDirectory($directory)
+	{
+		$files = glob($directory); // get all file names
+		foreach($files as $file){
+			if(is_file($file))
+				unlink($file); // delete file
+		}
+
+		rmdir($directory);
+	}
+
+	/*
+	Return the new path for image with $listing_id and old path $old_path
+	*/
+	public function GetNewRelativePathAfterListingSave($old_path, $listing_id)
+	{
+		$fileName = $this->_getFileNameFromPath($old_path);
+		$newPath = 'img/listings/' . $listing_id . '/' . $fileName;
+		return $newPath;
+	}
+
 
 	/* 
 	------- NOT TO BE USED ANYMORE. THIS WAS USED WITH SUBLETS.     --------
@@ -408,6 +511,22 @@ class Image extends AppModel {
 		}
 
 		return "SUCCESS";
+	}
+
+	/*
+	Returns the file name given the full path to the file
+	*/
+	private function _getFileNameFromPath($image_path)
+	{
+		return substr($image_path, strrpos($image_path, '/') + 1);
+	}
+
+	/*
+	Returns the deepest directory from a given path.
+	*/
+	private function _getDeepestDirectoryFromPath($path)
+	{
+		return substr($image_path, 0, strrpos($image_path, '/'));
 	}
 
 	/*

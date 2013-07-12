@@ -78,7 +78,6 @@
         listing_type: 0
       },
       Rental: {
-        listing_id: 64,
         street_address: A2Cribs.UILayer.Rentals.street_address(),
         city: A2Cribs.UILayer.Rentals.city(),
         state: A2Cribs.UILayer.Rentals.state(),

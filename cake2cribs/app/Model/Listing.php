@@ -14,6 +14,10 @@ class Listing extends AppModel {
 		'Fee' => array(
 			'className' => 'Fee',
 			'dependent' => true
+		),
+		'Image' => array(
+			'className' => 'Image',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(

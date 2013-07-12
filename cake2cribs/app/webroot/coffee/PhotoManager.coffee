@@ -146,7 +146,7 @@ class A2Cribs.PhotoManager
 		@div.find(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
 
 		@div.find('#ImageAddForm').fileupload
-			url: '/images/add'
+			url: '/images/AddImage'
 			dataType: 'json'
 			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
 			singleFileUploads: true
