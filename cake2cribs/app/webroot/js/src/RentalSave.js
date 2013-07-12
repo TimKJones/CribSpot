@@ -76,7 +76,14 @@
       return this.CurrentMarker = marker_id;
     };
 
-    RentalSave.prototype.CreateSubRental = function() {
+    /*
+    	Called when user adds a new row for the existing marker
+    	Adds a new row to the grid, with a new row_id.
+    	Sets the row_id hidden field.
+    */
+
+
+    RentalSave.prototype.AddNewUnit = function() {
       var container, data, grid, _ref, _results;
       data = this.GridMap["overview_grid"].getData();
       data.push({});
@@ -91,10 +98,16 @@
     };
 
     RentalSave.prototype.MarkerModalSetup = function() {
-      var marker_validate, modal,
+      var clear, marker_validate, modal,
         _this = this;
       modal = $('#marker-modal');
+      clear = function() {
+        modal.find("input").val("");
+        modal.find('select option:first-child').attr("selected", "selected");
+        return _this.MiniMap.SetMarkerVisible(false);
+      };
       modal.on('show', function() {
+        clear();
         modal.find('#marker_add').hide();
         modal.find("#continue-button").addClass("disabled");
         return modal.find("#marker_select").val("0");
@@ -287,7 +300,8 @@
         editable: true,
         enableCellNavigation: true,
         asyncEditorLoading: false,
-        enableAddRow: false
+        enableAddRow: false,
+        autoEdit: false
       };
       data = [];
       data.push({});
@@ -311,14 +325,81 @@
     };
 
     RentalSave.prototype.GetColumns = function(container) {
-      var AmenitiesColumns, DescriptionColumns, FeaturesColumns, FeesColumns, OverviewColumns, UtilitiesColumns;
+      var AmenitiesColumns, DescriptionColumns, FeaturesColumns, FeesColumns, NumericRangeEditor, NumericRangeFormatter, OverviewColumns, UtilitiesColumns;
+      NumericRangeFormatter = function(row, cell, value, columnDef, dataContext) {
+        return dataContext.from + " - " + dataContext.to;
+      };
+      NumericRangeEditor = function(args) {
+        var $from, $to,
+          _this = this;
+        $to = $from = null;
+        this.init = function() {
+          $from = $("<INPUT type=text style='width:40px' />");
+          $from.appendTo(args.container);
+          $from.bind("keydown", _this.handleKeyDown);
+          $(args.container).append("&nbsp; to &nbsp;");
+          $to = $("<INPUT type=text style='width:40px' />");
+          $to.appendTo(args.container);
+          $to.bind("keydown", _this.handleKeyDown);
+          return _this.focus();
+        };
+        this.handleKeyDown = function(e) {
+          if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.TAB) {
+            return e.stopImmediatePropagation();
+          }
+        };
+        this.destroy = function() {
+          return $(args.container).empty();
+        };
+        this.applyValue = function(item, state) {};
+        this.serializeValue = function() {
+          return {
+            from: parseInt($from.val(), 10),
+            to: parseInt($to.val(), 10)
+          };
+        };
+        this.focus = function() {
+          /*
+          				$from.focus()
+          */
+
+        };
+        this.loadValue = function(item) {
+          $from.val(item.from);
+          return $to.val(item.to);
+        };
+        this.isValueChanged = function() {
+          return args.item.from !== parseInt($from.val(), 10) || args.item.to !== parseInt($from.val(), 10);
+        };
+        this.validate = function() {
+          if (isNaN(parseInt($from.val(), 10)) || isNaN(parseInt($to.val(), 10))) {
+            return {
+              valid: false,
+              msg: "Please type in valid numbers."
+            };
+          }
+          if (parseInt($from.val(), 10) > parseInt($to.val(), 10)) {
+            return {
+              valid: false,
+              msg: "'from' cannot be greater than 'to'"
+            };
+          }
+          return {
+            valid: true,
+            msg: null
+          };
+        };
+        return this.init();
+      };
       OverviewColumns = function() {
         var columns;
         return columns = [
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }, {
             id: "beds",
             name: "Beds",
@@ -327,27 +408,41 @@
           }, {
             id: "occupancy",
             name: "Occupancy",
-            field: "occupancy"
+            field: "occupancy",
+            formatter: A2Cribs.Formatters.Range,
+            editor: A2Cribs.Editors.Range
           }, {
             id: "rent",
             name: "Total Rent",
-            field: "rent"
+            field: "rent",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
+          }, {
+            id: "rent_negotiable",
+            name: "(Neg.)",
+            field: "rent_negotiable",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
           }, {
             id: "start_date",
             name: "Start Date",
-            field: "start_date"
+            field: "start_date",
+            editor: Slick.Editors.Date
           }, {
-            id: "alt_start_date",
+            id: "alternate_start_date",
             name: "Alt. Start Date",
-            field: "alt_start_date"
+            field: "alternate_start_date",
+            editor: Slick.Editors.Date
           }, {
-            id: "lease_length",
-            name: "Lease Length",
-            field: "lease_length"
+            id: "end_date",
+            name: "End Date",
+            field: "end_date",
+            editor: Slick.Editors.Date
           }, {
-            id: "availability",
+            id: "available",
             name: "Availability",
-            field: "availability"
+            field: "available",
+            editor: A2Cribs.Editors.Availability
           }
         ];
       };
@@ -357,43 +452,84 @@
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }, {
             id: "baths",
             name: "Baths",
-            field: "baths"
+            field: "baths",
+            editor: Slick.Editors.Integer
           }, {
-            id: "occupancy",
+            id: "air",
             name: "A/C",
-            field: "occupancy"
+            field: "air",
+            editor: A2Cribs.Editors.AC
           }, {
-            id: "rent",
+            id: "parking_type",
             name: "Parking",
-            field: "rent"
+            field: "parking_type",
+            editor: A2Cribs.Editors.Parking
           }, {
-            id: "start_date",
+            id: "parking_spots",
             name: "Spots",
-            field: "start_date"
+            field: "parking_spots",
+            editor: Slick.Editors.Integer
           }, {
-            id: "alt_start_date",
+            id: "street_parking",
+            name: "Street Parking",
+            field: "street_parking",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
+          }, {
+            id: "furnished_type",
             name: "Furnished",
-            field: "alt_start_date"
+            field: "furnished_type",
+            editor: A2Cribs.Editors.Furnished
           }, {
-            id: "lease_length",
+            id: "pets_type",
             name: "Pets",
-            field: "lease_length"
+            field: "pets_type",
+            editor: A2Cribs.Editors.Pets
           }, {
-            id: "availability",
+            id: "smoking",
             name: "Smoking",
-            field: "availability"
+            field: "smoking",
+            editor: A2Cribs.Editors.Smoking
           }, {
-            id: "sq_feet",
+            id: "fridge",
+            name: "Fridge",
+            field: "fridge",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
+          }, {
+            id: "balcony",
+            name: "Balcony",
+            field: "balcony",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
+          }, {
+            id: "tv",
+            name: "TV",
+            field: "tv",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
+          }, {
+            id: "storage",
+            name: "Storage",
+            field: "storage",
+            editor: Slick.Editors.Checkbox,
+            formatter: Slick.Formatters.Checkmark
+          }, {
+            id: "square_feet",
             name: "SQ Feet",
-            field: "sq_feet"
+            field: "square_feet",
+            editor: Slick.Editors.Integer
           }, {
             id: "year_built",
             name: "Year Built",
-            field: "year_built"
+            field: "year_built",
+            editor: Slick.Editors.Integer
           }
         ];
       };
@@ -403,7 +539,9 @@
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }
         ];
       };
@@ -413,51 +551,67 @@
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }, {
-            id: "beds",
+            id: "electric",
             name: "Electricity",
-            field: "beds"
+            field: "electric",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "occupancy",
+            id: "water",
             name: "Water",
-            field: "occupancy"
+            field: "water",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "rent",
+            id: "gas",
             name: "Gas",
-            field: "rent"
+            field: "gas",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "start_date",
+            id: "heat",
             name: "Heat",
-            field: "start_date"
+            field: "heat",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "alt_start_date",
+            id: "sewage",
             name: "Sewage",
-            field: "alt_start_date"
+            field: "sewage",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "lease_length",
+            id: "trash",
             name: "Trash",
-            field: "lease_length"
+            field: "trash",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "availability",
+            id: "cable",
             name: "Cable",
-            field: "availability"
+            field: "cable",
+            editor: A2Cribs.Editors.Utilities
           }, {
             id: "internet",
             name: "Internet",
-            field: "internet"
+            field: "internet",
+            editor: A2Cribs.Editors.Utilities
           }, {
-            id: "flat_rate",
+            id: "utility_total_flat_rate",
             name: "Total Flat Rate",
-            field: "flat_rate"
+            field: "utility_total_flat_rate",
+            editor: A2Cribs.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
-            id: "winter_cost",
+            id: "utility_estimate_winter",
             name: "Est. Winter Utility Cost",
-            field: "winter_cost"
+            field: "utility_estimate_winter",
+            editor: A2Cribs.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
-            id: "summer_cost",
+            id: "utility_estimate_summer",
             name: "Est. Summer Utility Cost",
-            field: "summer_cost"
+            field: "utility_estimate_summer",
+            editor: A2Cribs.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }
         ];
       };
@@ -467,47 +621,68 @@
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }, {
             id: "beds",
             name: "Deposit",
-            field: "beds"
+            field: "beds",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "occupancy",
             name: "Admin",
-            field: "occupancy"
+            field: "occupancy",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "rent",
             name: "Parking",
-            field: "rent"
+            field: "rent",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "start_date",
             name: "Furniture",
-            field: "start_date"
+            field: "start_date",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "alt_start_date",
             name: "Pets",
-            field: "alt_start_date"
+            field: "alt_start_date",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "lease_length",
             name: "Amenity",
-            field: "lease_length"
+            field: "lease_length",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "availability",
             name: "Upper Floor",
-            field: "availability"
+            field: "availability",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "extra_occupant",
             name: "Cost for Extra Occupant",
-            field: "extra_occupant"
+            field: "extra_occupant",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }, {
             id: "other_fee_description",
             name: "Other Fees",
-            field: "other_fee_description"
+            field: "other_fee_description",
+            editor: Slick.Editors.Text
           }, {
             id: "other_fee_cost",
             name: "Fee",
-            field: "other_fee_cost"
+            field: "other_fee_cost",
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Money
           }
         ];
       };
@@ -517,15 +692,19 @@
           {}, {
             id: "title",
             name: "Unit/Style - Name",
-            field: "title"
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
           }, {
             id: "beds",
             name: "Highlights",
-            field: "beds"
+            field: "beds",
+            editor: Slick.Editors.LongText
           }, {
             id: "occupancy",
             name: "Description",
-            field: "occupancy"
+            field: "occupancy",
+            editor: Slick.Editors.LongText
           }
         ];
       };

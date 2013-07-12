@@ -20,7 +20,9 @@
 	echo $this->Html->script('slickgrid/plugins/slick.rowselectionmodel.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/controls/slick.columnpicker.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.formatters.js', array('inline' => false));
+	echo $this->Html->script('slickgrid/custom.formatters.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.editors.js', array('inline' => false));
+	echo $this->Html->script('slickgrid/custom.editors.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
 ?>
 
@@ -175,7 +177,7 @@
 			</div>
 
 			<div class="row-fluid">
-				<a href="#" onclick="A2Cribs.RentalSave.CreateSubRental()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
+				<a href="#" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
 			</div>
 		</div>
 
