@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental');
+	public $uses = array('Listing', 'Rental', 'Image');
 	public $components= array('Session');
 
 	public function beforeFilter()
@@ -12,6 +12,30 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
+	}
+
+	/*
+	Save each rental object and fee object passed via POST data.
+	If unsuccessful, returns an error code as well as a list of the fields that failed validation
+	REQUIRES: each rental and fee object is in the form cake expects for a valid save.
+	*/
+	public function Save($row_id)
+	{
+		$this->layout = 'ajax';
+		$listingObject = $this->params['data'];
+		$listingObject['Listing']['user_id'] = $this->_getUserId();
+		$response = $this->Listing->SaveListing($listingObject);
+		$image_ids_to_update = $this->Session->read('row_' . $row_id);
+		if (!array_key_exists('error', $response) && 
+			array_key_exists('listing_id', $response) && 
+			$image_ids_to_update != null) {
+			/* Update images that bad been saved before listing_id was known */
+			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update);
+			if (array_key_exists('error', $imageResponse))
+				$response['error'] = $imageResponse['error'];
+		}
+		$this->set('response', json_encode($response));
+		return;
 	}
 
 	/* Deletes the listings in $listing_ids */
@@ -40,22 +64,6 @@ class ListingsController extends AppController {
 	}
 
 	/*
-	Check if user owns listing_id. Returns true if so, false otherwise.
-	*/
-	function UserOwnsListing($listing_id)
-	{
-		$user_id = 15;
-		if ($user_id == null || $user_id == 0)
-			return false;
-
-		$listingType = $this->Listing->GetListingType($listing_id);
-		if ($listingType == Listing::LISTING_TYPE_RENTAL)
-			return $this->Listing->UserOwnsListing($listing_id, $user_id);
-
-		return false;
-	}
-
-	/*
 	Returns json-encoded listing
 	NOTE: only returns PUBLIC user data
 	If $listing_id is null, returns all listings owned by logged-in user
@@ -64,10 +72,12 @@ class ListingsController extends AppController {
 	{
 		$this->layout = 'ajax';
 		if ($listing_id == null){
+			/* Return all listings owned by this user. */
 			$listings = $this->GetListingsByLoggedInUser();
 			$this->set('response', json_encode($listings));
 		}
 		else{
+			/* Return the listing given by $listing_id */
 			$listing = $this->Listing->GetListing($listing_id);
 			if ($listing == null)
 				$listing['error'] = 'Listing id not found';
@@ -82,19 +92,15 @@ class ListingsController extends AppController {
 	*/
 	function GetListingsByLoggedInUser()
 	{
-		$this->layout = 'ajax';
-		$user_id = $this->Auth->User('id');
+		$user_id = $this->_getUserId();
 		if ($user_id == 0 || $user_id == null){
-			$listings['error'] = 'Error retrieving listings. User not logged in.';
-			$this->set('response', json_encode($listings));
-			return $listings;
+			return array('error' => 'Error retrieving listings. User not logged in.');
 		}
 		
-		$listings = $this->Listing->GetListingsByUserId($this->Auth->User('id'));
+		$listings = $this->Listing->GetListingsByUserId($user_id);
 		if ($listings == null)
-			$listings['error'] = 'Error retrieving listings';
+			return array('error' => 'Error retrieving listings');
 
-		$this->set('response', json_encode($listings));
 		return $listings;
 	}
 

@@ -99,6 +99,11 @@ class AppController extends Controller {
 		}
 	}
 
+	protected function _getUserId()
+	{
+		return 15;
+	}
+
 /*Facebook stuff - maybe should be in another controller? */
 /*TODO: TEST LOGOUT FUNCTIONALITY MORE THOROUGHLY */
 /*

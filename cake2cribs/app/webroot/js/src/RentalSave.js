@@ -27,9 +27,11 @@
     };
 
     RentalSave.prototype.Save = function() {
-      var _this = this;
+      var row_id,
+        _this = this;
+      row_id = 4;
       return $.ajax({
-        url: myBaseUrl + "rentals/Save",
+        url: myBaseUrl + "listings/Save/" + row_id,
         type: "POST",
         data: A2Cribs.Rental.Template,
         success: function(response) {
@@ -41,6 +43,32 @@
             alert("Save unsuccessful");
             return console.log(response);
           }
+        }
+      });
+    };
+
+    /*
+    	Test function for Listings/GetListing.
+    	Retrieves the listing specified by listing_id.
+    	If listing_id is null, retrieves all listings owned by the logged-in user.
+    */
+
+
+    RentalSave.prototype.GetListing = function(listing_id) {
+      var url,
+        _this = this;
+      if (listing_id == null) {
+        listing_id = null;
+      }
+      url = myBaseUrl + 'listings/GetListing/';
+      if (listing_id !== null) {
+        url = url + listing_id;
+      }
+      return $.ajax({
+        url: url,
+        type: "POST",
+        success: function(response) {
+          return console.log(JSON.parse(response));
         }
       });
     };

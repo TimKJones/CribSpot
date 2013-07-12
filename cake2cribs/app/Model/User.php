@@ -2,12 +2,8 @@
 App::uses('AuthComponent', 'Controller/Component');
 class User extends AppModel {
 	public $hasMany = array(
-		'Sublet' => array(
-			'className' => 'Sublet',
-			'foreignKey' => 'user_id'
-		),
-		'Rental' => array(
-			'className' => 'Rental',
+		'Listing' => array(
+			'className' => 'Listing',
 			'foreignKey' => 'user_id'
 		)
 	);

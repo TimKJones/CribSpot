@@ -24,8 +24,9 @@ class A2Cribs.RentalSave
 
 	# Sends rental to server including all associated tables (fees, etc.)
 	Save: ->
+		row_id = 4
 		$.ajax
-			url: myBaseUrl + "rentals/Save"
+			url: myBaseUrl + "listings/Save/" + row_id
 			type: "POST"
 			data: A2Cribs.Rental.Template
 			success: (response) =>
@@ -36,6 +37,21 @@ class A2Cribs.RentalSave
 				else
 					alert "Save unsuccessful"
 					console.log response
+
+	###
+	Test function for Listings/GetListing.
+	Retrieves the listing specified by listing_id.
+	If listing_id is null, retrieves all listings owned by the logged-in user.
+	###
+	GetListing: (listing_id = null) ->
+		url = myBaseUrl + 'listings/GetListing/'
+		if listing_id != null
+			url = url + listing_id
+		$.ajax
+			url: url
+			type: "POST"
+			success: (response) =>
+				console.log JSON.parse response
 
 	Copy: (rental_ids) ->
 		###
