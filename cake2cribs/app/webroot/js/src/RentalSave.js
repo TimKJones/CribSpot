@@ -21,7 +21,7 @@
     RentalSave.Save = function() {
       var row_id,
         _this = this;
-      row_id = 0;
+      row_id = 4;
       return $.ajax({
         url: myBaseUrl + "listings/Save/" + row_id,
         type: "POST",

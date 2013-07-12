@@ -30,7 +30,7 @@ class ImagesController extends AppController {
 	Appends image_id of new Image entry to SESSION[row_id]
 	Returns: SUCCESS: image_id of new image entry; FAILURE: error message
 	*/
-	function AddImage($row_id, $num_images, $listing_id = null)
+	function AddImage()
 	{
 		$this->layout = 'ajax';
 		if (!array_key_exists('form', $this->request->params) || 
@@ -42,6 +42,9 @@ class ImagesController extends AppController {
 		$image = $this->request->params['form']['files'];
 		$row_id = $this->data['row_id'];
 		$num_images = $this->data['num_images'];
+		$listing_id = null;
+		if (array_key_exists('listing_id', $this->data))
+			$listing_id = $this->data['listing_id'];
 
 		/*
 		Solve for this scenario: User adds photos for an incomplete listing.

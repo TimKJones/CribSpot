@@ -165,7 +165,6 @@ class Image extends AppModel {
 			$currentPath = WWW_ROOT . $images[$i]['Image']['image_path'];
 			$newRelativePath = $this->GetNewRelativePathAfterListingSave($currentPath, $listing_id);
 			$success = $this->_moveImageAfterListingSave($currentPath, WWW_ROOT . $newRelativePath);
-			$this->_deleteDirectory($this->_getDeepestDirectoryFromPath($currentPath));
 			if (!$success){
 				$errors = true;
 				continue;
@@ -184,6 +183,9 @@ class Image extends AppModel {
 
 		if ($errors)
 			return array('error' => 'Failed to save images');
+		
+		/* Delete empty directory where temp images were stored */
+		$this->_deleteDirectory($this->_getDeepestDirectoryFromPath($currentPath));
 
 		return array('success' => '');
 	}	
@@ -194,7 +196,7 @@ class Image extends AppModel {
 	*/
 	private function _moveImageAfterListingSave($currentPath, $newPath)
 	{
-		if (!$this->_createFolder($newPath)){
+		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))) {
 			CakeLog::write("movingImage", "failed to move " . $currentPath . " to " . $newPath);
 			return false;
 		}
@@ -211,15 +213,19 @@ class Image extends AppModel {
 	Sometimes files aren't deleted after moving them to /img/listings/listing_id.
 	Delete all files in $directory
 	*/
-	private function _deleteDirectory($directory)
+	private function _deleteDirectory($dir) 
 	{
-		$files = glob($directory); // get all file names
-		foreach($files as $file){
-			if(is_file($file))
-				unlink($file); // delete file
-		}
-
-		rmdir($directory);
+	    if (!file_exists($dir)) 
+	    	return true;
+	    if (!is_dir($dir)) 
+	    	return unlink($dir);
+	    foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') 
+	        	continue;
+	        if (!$this->_deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) 
+	        	return false;
+	    }
+    	return rmdir($dir);
 	}
 
 	/*
@@ -526,7 +532,7 @@ class Image extends AppModel {
 	*/
 	private function _getDeepestDirectoryFromPath($path)
 	{
-		return substr($image_path, 0, strrpos($image_path, '/'));
+		return substr($path, 0, strrpos($path, '/'));
 	}
 
 	/*

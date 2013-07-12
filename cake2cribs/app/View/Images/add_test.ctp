@@ -20,8 +20,9 @@
                 <form action="/images/AddImage" id="ImageAddForm" enctype="multipart/form-data" method="post" accept-charset="utf-8"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>
                   <fieldset>
                     <input style='width:186px;height:30px' id = 'real-file-input' class="fileInput" id="1" type="file" data-url="/images/AddImage" data-sequential-uploads="true" data-form-data="{&quot;script&quot;: &quot;true&quot;}">
-                    <input type="hidden" name="row_id" value="0">
+                    <input type="hidden" name="row_id" value="4">
                     <input type="hidden" name="num_images" value="1">
+                    <input type="hidden" name="listing_id" value="138">
                   </fieldset>
                 </form>
 
