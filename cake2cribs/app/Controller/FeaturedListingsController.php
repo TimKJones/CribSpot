@@ -16,11 +16,12 @@ class FeaturedListingsController extends AppController {
     // if($user['User']['type'] != SUPERUSER){
     //     throw new NotFoundException();
     // }
+    
+    // $listings = $this->Listing->GetListingsByType(Listing::LISTING_TYPE_RENTAL);
+    
 
-    $listings = $this->Listing->find("all", array('limit'=>5));
 
-
-    $this->set('listings', $listings);
+    // $this->set('listings', $listings);
   }
 
   public function getListings(){

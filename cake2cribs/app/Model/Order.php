@@ -127,7 +127,7 @@ class Order extends AppModel {
         //Check to see if listing that is being referenced is valid
         $Listing = ClassRegistry::init('Listing');
         $listing_id = $orderItem->item->listing_id;
-        $listing = $Listing->find('first', array('conditions'=>'Listing.listing_id='.$listing_id));
+        $listing = $Listing->Get($listing_id);
         if($listing == null)
             throw new Exception("Invalid listing_id $listing_id for requested featured listing");
 

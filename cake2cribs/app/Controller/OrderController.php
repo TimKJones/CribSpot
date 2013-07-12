@@ -95,13 +95,13 @@ class OrderController extends AppController {
         is a 'msg' property that will say whats wrong
     */
     public function buyItem(){
-        $orderItem = $this->request->data('orderItem');
-        if($orderItem == null){
+        $orderItems = $this->request->data('orderItems');
+        if($orderItems == null){
             throw new NotFoundException();
         }
 
         try {
-            $jwt_clear = $this->getJwt(array(json_decode($orderItem)));
+            $jwt_clear = $this->getJwt(json_decode($orderItems));
             App::uses('JWT', 'JWT');
             $response = array(
                 'success'=>true,

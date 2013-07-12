@@ -16,7 +16,7 @@ class ShoppingCartController extends AppController {
 
     $this->layout = 'ajax';
 
-    $this->set('orderItems', $cart['ShoppingCart']['items']);
+    $this->set('orderItems', $cart['ShoppingCart']['orderItems']);
 
 
   }

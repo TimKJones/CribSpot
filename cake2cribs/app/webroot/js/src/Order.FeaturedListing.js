@@ -37,9 +37,14 @@
       };
     };
 
-    FeaturedListing.prototype.clear = function() {
+    FeaturedListing.prototype.clear = function(refresh_after) {
+      if (refresh_after == null) {
+        refresh_after = true;
+      }
       this.datepicker.multiDatesPicker('resetDates');
-      return this.refresh();
+      if (refresh_after) {
+        return this.refresh();
+      }
     };
 
     FeaturedListing.prototype.getDates = function(type) {

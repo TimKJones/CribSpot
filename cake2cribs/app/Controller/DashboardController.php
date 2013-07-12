@@ -62,5 +62,6 @@
 
 	 		$this->set('mapUrl', $mapUrl);
 	 		CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
+
 	 	}
 	}

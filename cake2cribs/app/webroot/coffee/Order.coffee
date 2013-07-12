@@ -1,8 +1,8 @@
 class A2Cribs.Order
 
-    @BuyItem:(orderItem, successHandler=null, failHandler=null)->
+    @BuyItems:(orderItems, successHandler=null, failHandler=null)->
         data = {
-            'orderItem': JSON.stringify(orderItem)
+            'orderItems': JSON.stringify(orderItems)
         }
         url = "#{myBaseUrl}order/buyItem"
         $.post url, data, (response_raw)=>
@@ -15,6 +15,8 @@ class A2Cribs.Order
                 success: ()->alert("success")
                 failture: ()->alert("fail")
             })
+
+
 
     @BuyCart:(successHandler=null, failHandler=null)->
         url = "#{myBaseUrl}order/buyCart"

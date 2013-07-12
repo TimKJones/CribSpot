@@ -101,7 +101,8 @@ class AppController extends Controller {
 
 	protected function _getUserId()
 	{
-		return 15;
+		return $this->Auth->User('id');
+        // return 15;
 	}
 
 /*Facebook stuff - maybe should be in another controller? */

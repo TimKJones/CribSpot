@@ -9,13 +9,13 @@ class ShoppingCart extends AppModel {
 
     public function add($orderItems, $user_id){
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items'], true);
+        $items = json_decode($cart['ShoppingCart']['orderItems'], true);
 
         foreach($orderItems as $orderItem){
             array_push($items, $orderItem);    
         }
 
-        $cart['ShoppingCart']['items'] = json_encode($items);
+        $cart['ShoppingCart']['orderItems'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
         }else{
@@ -28,14 +28,14 @@ class ShoppingCart extends AppModel {
     public function edit($index, $orderItem, $user_id){
 
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items'], true);
+        $items = json_decode($cart['ShoppingCart']['orderItems'], true);
         $keys = array_keys($items);
         if($items[$keys[$index]] == null){
             throw new Exception('invalid index given, no item exists');
         }
 
         $items[$keys[$index]] = $orderItem;
-        $cart['ShoppingCart']['items'] = json_encode($items);
+        $cart['ShoppingCart']['orderItems'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
         }else{
@@ -46,7 +46,7 @@ class ShoppingCart extends AppModel {
 
     public function remove($index, $user_id){
         $cart = $this->get($user_id);
-        $items = json_decode($cart['ShoppingCart']['items'], true);
+        $items = json_decode($cart['ShoppingCart']['orderItems'], true);
         
         $keys = array_keys($items);
         if($items[$keys[$index]] == null){
@@ -54,7 +54,7 @@ class ShoppingCart extends AppModel {
         }
 
         array_splice($items, $index, 1);
-        $cart['ShoppingCart']['items'] = json_encode($items);
+        $cart['ShoppingCart']['orderItems'] = json_encode($items);
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
         }else{
@@ -64,7 +64,7 @@ class ShoppingCart extends AppModel {
 
     public function removeAll($user_id){
         $cart = $this->get($user_id);
-        $cart['ShoppingCart']['items'] = json_encode(array());
+        $cart['ShoppingCart']['orderItems'] = json_encode(array());
         if(!$this->save($cart)){
             die(debug($this->validateErrors));
         }else{
@@ -107,7 +107,7 @@ class ShoppingCart extends AppModel {
 
             // die(debug($cart));
             if($date_modified != $today){
-                $cart['ShoppingCart']['items'] = json_encode(array());
+                $cart['ShoppingCart']['orderItems'] = json_encode(array());
                 if(!$this->save($cart)){
                     die(debug($this->validateErrors));
                 }
@@ -121,7 +121,7 @@ class ShoppingCart extends AppModel {
         $cart_data = array(
             'ShoppingCart'=>array(
                 'user_id'=>$user_id,
-                'items'=>json_encode(array()),
+                'orderItems'=>json_encode(array()),
                 )
             );
 

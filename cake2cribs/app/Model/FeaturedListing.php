@@ -16,10 +16,8 @@ class FeaturedListing extends AppModel {
 
     public function add($listing_id, $date, $user_id){
         
-        $listing = $this->Listing->find('first', array(
-            'conditions'=>'Listing.listing_id='.$listing_id)
-        );
-
+        $listing = $this->Listing->Get($listing_id);
+        
         if($listing == null){
             CakeLog::write($this->$TAG, "Listing " . $listing_id . 
                 " not found while trying to buy a featured listing");
@@ -49,6 +47,10 @@ class FeaturedListing extends AppModel {
 
         $featuredListing = $this->read();
         return $featuredListing;
+    }
+
+    public function getByType($listing_type){
+        return $this->find('all', array("conditions"=>"Listing.listing_type=$listing_type"));
     }
 
     public function get($up_lat, $low_lat, $up_long, $low_long, $date){

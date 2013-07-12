@@ -10,7 +10,6 @@ class A2Cribs.Order.FeaturedListing
             @WD_price = 15
             @WE_price = 5
             @MIN_DAY_OFFSET = 3
-
             @initMultiDatesPicker(options)
 
             @Widget.find('.address').html @address
@@ -39,9 +38,10 @@ class A2Cribs.Order.FeaturedListing
 
         # Removes all the selected dates
 
-        clear:()->
+        clear:(refresh_after=true)->
             @datepicker.multiDatesPicker 'resetDates'
-            @refresh()
+            if refresh_after then @refresh()
+            
 
 
         getDates:(type = 'object')->

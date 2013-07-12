@@ -79,12 +79,14 @@ class Listing extends AppModel {
 	/* returns listing with id = $listing_id */
 	public function Get($listing_id)
 	{
-		$listing = $this->find('all', array(
+		$listing = $this->find('first', array(
         	'conditions' => array('Listing.listing_id' => $listing_id)
     	));
 
     	return $listing;
 	}
+
+
 
 	/*
 	Delete the listing with id = $listing_id
@@ -124,6 +126,18 @@ class Listing extends AppModel {
 		));
 
 		return $listing;
+	}
+
+	/*
+	Listing type is a string representation of type (Rental, Sublet...)
+	Returns an array of listings that match the given type
+	*/
+	public function GetListingsByType($listing_type){	
+		$listings = $this->find('all', array(
+			"conditions" => array('Listing.listing_type' => $listing_type)
+		));
+
+		return $listings;
 	}
 
 	/*
