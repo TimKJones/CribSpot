@@ -85,7 +85,8 @@ class Listing extends AppModel {
 
 		/* Listing failed to save - return error code */
 		CakeLog::write("listingValidationErrors", print_r($this->validationErrors, true));
-		return array("error" => array('validation' => $this->validationErrors));
+		return array("error" => array('validation' => $this->validationErrors,
+			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -164,7 +165,7 @@ class Listing extends AppModel {
 		));
 
 		if ($listings == null)
-			$listings['error'] = 'Unable to retrieve listings for this marker';
+			$listings['error'] = array('message' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 7);
 
 		return $listings;
 	}

@@ -217,7 +217,8 @@ class Rental extends RentalPrototype {
 	public function SaveRental($rental)
 	{
 		if ($rental == null)
-			return array("error" => "Rental cannot be null");
+			return array('error' => 
+					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
 		$rental = parent::_removeNullEntries($rental);
@@ -231,7 +232,9 @@ class Rental extends RentalPrototype {
 			Remove failed keys and return the result.
 			*/
 			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
-			return array('error' => array('message' => 'Rental save failed: error code 2'));
+			return array('error' => array('message' => 
+				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
+				'validation' => $this->validationErrors));
 		}
 	}
 

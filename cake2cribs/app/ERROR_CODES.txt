@@ -1,0 +1,39 @@
+1
+- ListingsController->Delete()
+- User doesn't own the listing being deleted
+2
+- ListingsController->Delete()
+- Listing->Delete() failed
+3
+- ListingsController->GetListingsByLoggedInUser()
+- User not logged in.
+4
+- ListingsController->GetListingsByLoggedInUser()
+- Couldn't retrieve listings.
+6
+- Listing->SaveListing()
+- Listing failed validation
+7
+- Listing->GetMarkerData()
+- Failed to retrieve listings
+8
+- Fee->SaveFees()
+- Failed validation
+9
+- Marker->FindMarkerId()
+10
+- Marker->FindMarkerId()
+11
+- Marker->FindMarkerId()
+12
+- Rental->SaveRental()
+13
+- Rental->SaveRental()
+14
+- Image->SaveImage()
+15
+- Image->AddImageEntry()
+16
+- Image->UpdateAfterListingSave()
+17
+- Image->UpdateAfterListingSave()

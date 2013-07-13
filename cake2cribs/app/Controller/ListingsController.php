@@ -23,8 +23,9 @@ class ListingsController extends AppController {
 		$listingObject = $this->params['data'];
 		$listingObject['Listing']['user_id'] = $this->_getUserId();
 		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
+		$image_ids_to_update = $listingObject['image_ids'];
+		unset($listingObject['image_ids']);
 		$response = $this->Listing->SaveListing($listingObject);
-		$image_ids_to_update = $this->Session->read('row_' . $row_id);
 		if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
 			$image_ids_to_update != null) {
@@ -46,14 +47,16 @@ class ListingsController extends AppController {
 		for ($i = 0; $i < count($listing_ids); $i++){
 			if (!$this->UserOwnsListing($listing_ids[$i]))
 			{
-				$this->set('response', json_encode(array('error' => 'failed to delete listing. Error code 3')));
+				$this->set('response', json_encode(array('error' => 
+					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 1')));
 				return;
 			}
 
 			/* Delete from listings table. Set cascade=true to also delete from either rentals, parkings, or sublets. */
 			if (!$this->Listing->delete($listing_ids[$i], true))
 			{
-				$this->set('response', json_encode(array('error' => 'failed to delete listing. Error code 2')));
+				$this->set('response', json_encode(array('error' => 
+					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 2')));
 				return;
 			}
 		}
@@ -79,7 +82,7 @@ class ListingsController extends AppController {
 			/* Return the listing given by $listing_id */
 			$listing = $this->Listing->GetListing($listing_id);
 			if ($listing == null)
-				$listing['error'] = 'Listing id not found';
+				$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
 			$this->set('response', json_encode($listing));
 		}
@@ -93,12 +96,12 @@ class ListingsController extends AppController {
 	{
 		$user_id = $this->_getUserId();
 		if ($user_id == 0 || $user_id == null){
-			return array('error' => 'Error retrieving listings. User not logged in.');
+			return array('error' => 'USER_NOT_LOGGED_IN', 'code' => 3);
 		}
 		
 		$listings = $this->Listing->GetListingsByUserId($user_id);
 		if ($listings == null)
-			return array('error' => 'Error retrieving listings');
+			return array('error' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 4);
 
 		return $listings;
 	}
