@@ -24,8 +24,9 @@ class ListingsController extends AppController {
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
 		$listingObject['Listing']['user_id'] = $this->_getUserId();
+		$image_ids_to_update = $listingObject['image_ids'];
+		unset($listingObject['image_ids']);
 		$response = $this->Listing->SaveListing($listingObject);
-		$image_ids_to_update = $this->Session->read('row_' . $row_id);
 		if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
 			$image_ids_to_update != null) {
@@ -82,7 +83,7 @@ class ListingsController extends AppController {
 			/* Return the listing given by $listing_id */
 			$listing = $this->Listing->GetListing($listing_id);
 			if ($listing == null)
-				$listing['error'] = arrray('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
+				$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
 			$this->set('response', json_encode($listing));
 		}

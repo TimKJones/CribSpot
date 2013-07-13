@@ -29,3 +29,11 @@
 - Rental->SaveRental()
 13
 - Rental->SaveRental()
+14
+- Image->SaveImage()
+15
+- Image->AddImageEntry()
+16
+- Image->UpdateAfterListingSave()
+17
+- Image->UpdateAfterListingSave()

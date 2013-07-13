@@ -14,6 +14,7 @@ class Image extends AppModel {
 
 	public $validate = array(
 		'image_id' => 'numeric',
+		'user_id' => 'numeric',
 		'listing_id' => 'numeric', // listing to which this image belongs
 		'image_path'    => array(
 			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
@@ -42,34 +43,38 @@ class Image extends AppModel {
 	$file = $image data
 	$row_id = row  of listing in user's current slickgrid
 	$listing_id = listing_id of of this listing, if already saved.
-
-	If $listing_id is not null, moves $file to /img/listings/listing_id/
-	Otherwise, moves $fuke to /img/listings/incomplete/user_id/row_id/
+	Moves file to /img/listings/random_id
 	Add new record to images table
 	Returns the new image_id on success; error message on failure.
 	*/
-	public function SaveImage($file, $row_id, $user_id, $listing_id = null)
+	public function SaveImage($file, $user_id, $currentPath=null, $listing_id = null)
 	{
 		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
 			return array('error' => 'error2 saving image');
 
-		/* Determine path for where to save image */
-		$fileName = $file['name'][0];
-		$relativePath = 'img/listings/';
-		if ($listing_id == null)
-			$relativePath = $relativePath . 'incomplete/' . $user_id . '/' . $row_id . '/';
-		else
-			$relativePath = $relativePath . $listing_id . '/';
+		if ($currentPath == null)
+			$currentPath = WWW_ROOT . 'img/listings/';
 
-		$folder = WWW_ROOT . $relativePath;
-		/* Move image to new destination */
-		$response = $this->MoveFileToFolder($file, $folder);
-		if (array_key_exists('error', $response))
-			return $response;
+		$random = uniqid();
+		$newPath = $currentPath . $random;
+		if (!is_file($newPath)){
+			/* File doesn't exist yet. This is the path where the image will be saved. */
+			$this->MoveFileToFolder($file, $currentPath);
+			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
+			return $image_id;
+		}
 
-		$response = $this->AddImageEntry($relativePath . $fileName, $listing_id);
-		return $response;
+		/* File name already exists. Create new folder if $newPath doesn't already exist */
+		if (!is_dir($newPath)){
+			if (!$this->createFolder($newPath)){
+				/* TODO: Log error info */
+				return array('error' => 
+					'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 14');
+			}
+		}
 
+		$newPath = $newPath . '/';
+		return $this->SaveImage($file, $user_id, $newPath, $listing_id);
 	}
 
 	/*
@@ -100,10 +105,11 @@ class Image extends AppModel {
 	/*
 	Add a record to the images table for the given file path.
 	*/
-	private function AddImageEntry($filePath, $listing_id = null)
+	private function AddImageEntry($filePath, $user_id, $listing_id = null)
 	{
 		$newImage = array(
 			'image_path' => $filePath,
+			'user_id' => $user_id,
 			'is_primary' => 0
 		);
 
@@ -113,7 +119,8 @@ class Image extends AppModel {
 		if ($this->save($newImage))
 			return array('image_id' => $this->id);
 		else
-			return array('error' => 'Failed to add new record for image');
+			return array('error' => 
+				'Failed to save image. Contact help@cribspot.com if the error persists. Reference error code 15.');
 	}
 
 	/*
@@ -137,12 +144,9 @@ class Image extends AppModel {
 	}
 
 	/*
-	Called after a listing is saved.
+	Called after a listing is saved to update the listings images that were saved before listing_id was known.
 	$listing_id = id of listing that was just saved.
-	$image_ids  = ids of images to be moved for this listing.
-	Moves temp image files from /img/listings/incomplete/$user_id/$row_id
-						   to	/img/listings/$listing_id 
-	Then updates paths in images table.
+	$image_ids  = ids of images to be updated for this listing.
 	Returns error message on failure.
 	*/
 	public function UpdateAfterListingSave($listing_id, $image_ids)
@@ -158,34 +162,22 @@ class Image extends AppModel {
 				!array_key_exists('Image', $images[$i]) ||
 				!array_key_exists('image_path', $images[$i]['Image'])){
 				/* TODO: Error logging */
-				return array('error' => 'failed to move images');
+				return array('error' => 
+					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 16.');
 			}
 
-			/* Move each image file to new destination */
-			$currentPath = WWW_ROOT . $images[$i]['Image']['image_path'];
-			$newRelativePath = $this->GetNewRelativePathAfterListingSave($currentPath, $listing_id);
-			$success = $this->_moveImageAfterListingSave($currentPath, WWW_ROOT . $newRelativePath);
-			if (!$success){
-				$errors = true;
-				continue;
-			}
-
-			$images[$i]['Image']['image_path'] = $newRelativePath;
 			$images[$i]['Image']['listing_id'] = $listing_id;
 			$images[$i]['Image'] = $this->_removeNullEntries($images[$i]['Image']);
 			if (!$this->save($images[$i])){
 				$errors = true;
-				CakeLog::write("movingImage", "failed to re-save image: " . print_r($images[$i], true));
-				CakeLog::write("movingImage", "failed to re-save image: " . print_r($this->validationErrors, true));
 				/*TODO: LOG ERRORS */
+				return array('error' => 
+					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 17')
 			}
 		}
 
 		if ($errors)
 			return array('error' => 'Failed to save images');
-		
-		/* Delete empty directory where temp images were stored */
-		$this->_deleteDirectory($this->_getDeepestDirectoryFromPath($currentPath));
 
 		return array('success' => '');
 	}	
