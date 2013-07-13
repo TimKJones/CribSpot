@@ -1,6 +1,8 @@
 class A2Cribs.RentalSave
 	constructor: (modal) ->
 		modal = $('.rental-content')
+		@ListingIds = []
+		@CurrentMarker = 4 # temp fix
 		@SetupUI()
 
 	SetupUI: ->
@@ -23,16 +25,17 @@ class A2Cribs.RentalSave
 		@ClearGrids()
 
 	# Sends rental to server including all associated tables (fees, etc.)
-	Save: ->
+	Save: (row, rental_object) ->
 		row_id = 4
 		$.ajax
 			url: myBaseUrl + "listings/Save/" + row_id
 			type: "POST"
-			data: A2Cribs.Rental.Template
+			data: rental_object
 			success: (response) =>
 				response = JSON.parse response
-				if response.success != null && response.success != undefined
+				if response.listing_id?
 					alert "Success!"
+					@ListingIds[row] = response.listing_id
 					console.log response
 				else
 					alert "Save unsuccessful"
@@ -169,8 +172,26 @@ class A2Cribs.RentalSave
 			if marker_selected is "new_marker"
 				if marker_validate()
 					# Make new marker ajax and call create
-					modal.modal "hide"
-					@Create 1
+					marker_object = {
+						alternate_name: modal.find('#Marker_alternate_name').val()
+						building_type_id: modal.find('#Marker_building_type_id').val()
+						street_address: modal.find('#Marker_street_address').val()
+						city: modal.find('#Marker_city').val()
+						state: modal.find('#Marker_state').val()
+						zip: modal.find('#Marker_zip').val()
+						latitude: modal.find('#Marker_latitude').val()
+						longitude: modal.find('#Marker_longitude').val()
+					}
+					$.ajax
+						url: "/Markers/Save/"
+						type: "POST"
+						data: marker_object
+						success :(response) =>
+							if response.error
+								UIManager.Error response.error
+							else
+								modal.modal "hide"
+								@Create +response
 
 			else if marker_selected isnt "0"
 				modal.modal "hide"
@@ -243,7 +264,7 @@ class A2Cribs.RentalSave
 	CreateGrids: ->
 		# Method to create grids for each tab
 		containers = [
-			"overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid"
+			"overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "contact_grid"
 		]
 		@GridMap = {}
 		options =
@@ -262,68 +283,42 @@ class A2Cribs.RentalSave
 				cssClass: "slick-cell-checkboxsel"
 			columns[0] = checkboxSelector.getColumnDefinition()
 
-			grid = new Slick.Grid "##{container}", data, columns, options
-			grid.setSelectionModel new Slick.RowSelectionModel
+			@GridMap[container] = new Slick.Grid "##{container}", data, columns, options
+			@GridMap[container].setSelectionModel new Slick.RowSelectionModel
 				selectActiveRow: false
 
-			grid.registerPlugin checkboxSelector
-			@GridMap[container] = grid
-			columnpicker = new Slick.Controls.ColumnPicker columns, grid, options
+			@GridMap[container].registerPlugin checkboxSelector
+			columnpicker = new Slick.Controls.ColumnPicker columns, @GridMap[container], options
+
+			@GridMap[container].onCellChange.subscribe (e, args) =>
+				columns = @GridMap[container].getColumns()
+				required = A2Cribs.Rental.Required_Fields
+				data = {
+					Rental: {}
+					Listing: {}
+					Fees: []
+				}
+				isValid = yes
+				for key in required
+					isValid = isValid and args.item[key]?
+
+				if isValid
+					for desc, amount of args.item
+						index = desc.indexOf("Fee_")
+						if index != -1
+							data.Fees.push {
+								description: desc.split("_").join(" ")
+								amount: amount
+							}
+
+					data.Rental = args.item
+					data.Listing.listing_type = 0
+					if @ListingIds[args.row]?
+						data.Listing.listing_id = @ListingIds[args.row]
+					data.Listing.marker_id = @CurrentMarker
+					@Save args.row, data
 
 	GetColumns: (container) ->
-		NumericRangeFormatter = (row, cell, value, columnDef, dataContext) ->
-			return dataContext.from + " - " + dataContext.to
-
-		NumericRangeEditor = (args) ->
-			$to = $from = null
-			@.init = =>
-				$from = $("<INPUT type=text style='width:40px' />")
-				$from.appendTo args.container
-				$from.bind "keydown", @.handleKeyDown
-
-				$(args.container).append "&nbsp; to &nbsp;"
-
-				$to = $("<INPUT type=text style='width:40px' />")
-				$to.appendTo args.container
-				$to.bind "keydown", @.handleKeyDown
-
-				@.focus()
-
-			@.handleKeyDown = (e) =>
-				if e.keyCode is $.ui.keyCode.LEFT or e.keyCode is $.ui.keyCode.RIGHT or e.keyCode is $.ui.keyCode.TAB
-					e.stopImmediatePropagation()
-
-			@.destroy = =>
-				$(args.container).empty()
-
-			@.applyValue = (item, state) =>
-
-			@.serializeValue = =>
-				return {from: parseInt($from.val(), 10), to: parseInt($to.val(), 10)}
-
-			@.focus = ->
-				###
-				$from.focus()
-				###
-
-			@.loadValue = (item) ->
-				$from.val item.from
-				$to.val item.to
-
-			@.isValueChanged = ->
-				return args.item.from != parseInt($from.val(), 10) || args.item.to != parseInt($from.val(), 10);
-
-			@.validate = ->
-				if (isNaN(parseInt($from.val(), 10)) || isNaN(parseInt($to.val(), 10)))
-					return {valid: false, msg: "Please type in valid numbers."};
-
-				if (parseInt($from.val(), 10) > parseInt($to.val(), 10))
-					return {valid: false, msg: "'from' cannot be greater than 'to'"};
-
-				return {valid: true, msg: null};
-
-			@.init()
-
 		OverviewColumns = ->
 			columns = [
 				{
@@ -386,6 +381,12 @@ class A2Cribs.RentalSave
 					name: "Availability"
 					field: "available"
 					editor: A2Cribs.Editors.Availability
+				}
+				{
+					id: "unit_count"
+					name: "Unit Count"
+					field: "unit_count"
+					editor: Slick.Editors.Integer
 				}
 			]
 
@@ -602,71 +603,58 @@ class A2Cribs.RentalSave
 					formatter: A2Cribs.Formatters.Unit
 				}
 				{
-					id: "beds"
+					id: "deposit_fee"
 					name: "Deposit"
-					field: "beds"
+					field: "Fee_Deposit"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "occupancy"
+					id: "admin_fee"
 					name: "Admin"
-					field: "occupancy"
+					field: "Fee_Admin"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "rent"
+					id: "parking_fee"
 					name: "Parking"
-					field: "rent"
+					field: "Fee_Parking"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "start_date"
+					id: "furniture_fee"
 					name: "Furniture"
-					field: "start_date"
+					field: "Fee_Furniture"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "alt_start_date"
+					id: "pets_fee"
 					name: "Pets"
-					field: "alt_start_date"
+					field: "Fee_Pets"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "lease_length"
+					id: "amenity_fee"
 					name: "Amenity"
-					field: "lease_length"
+					field: "Fee_Amenity"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "availability"
+					id: "upper_floor_fee"
 					name: "Upper Floor"
-					field: "availability"
+					field: "Fee_Upper_Floor"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "extra_occupant"
+					id: "extra_occupant_fee"
 					name: "Cost for Extra Occupant"
-					field: "extra_occupant"
-					editor: Slick.Editors.Integer
-					formatter: A2Cribs.Formatters.Money
-				}
-				{
-					id: "other_fee_description"
-					name: "Other Fees"
-					field: "other_fee_description"
-					editor: Slick.Editors.Text
-				}
-				{
-					id: "other_fee_cost"
-					name: "Fee"
-					field: "other_fee_cost"
+					field: "Fee_Extra_Occupant"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
@@ -685,16 +673,67 @@ class A2Cribs.RentalSave
 					formatter: A2Cribs.Formatters.Unit
 				}
 				{
-					id: "beds"
+					id: "highlights"
 					name: "Highlights"
-					field: "beds"
+					field: "highlights"
 					editor: Slick.Editors.LongText
 				}
 				{
-					id: "occupancy"
+					id: "description"
 					name: "Description"
-					field: "occupancy"
+					field: "description"
 					editor: Slick.Editors.LongText
+				}
+			]
+
+		ContactColumns = ->
+			columns = [
+				{
+					# Use for Checkbox
+				}
+				{
+					id: "title"
+					name: "Unit/Style - Name"
+					field: "title"
+					editor: A2Cribs.Editors.Unit
+					formatter: A2Cribs.Formatters.Unit
+				}
+				{
+					id: "waitlist"
+					name: "Waitlist"
+					field: "waitlist"
+					editor: Slick.Editors.YesNoSelect
+					formatter: Slick.Formatters.YesNo
+				}
+				{
+					id: "waitlist_open_date"
+					name: "waitlist_open_date"
+					field: "waitlist_open_date"
+					editor: Slick.Editors.Date 
+				}
+				{
+					id: "lease_office_address"
+					name: "lease_office_address"
+					field: "lease_office_address"
+					editor: Slick.Editors.Text
+				}
+				{
+					id: "contact_email"
+					name: "contact_email"
+					field: "contact_email"
+					editor: Slick.Editors.Text
+				}
+				{
+					id: "contact_phone"
+					name: "contact_phone"
+					field: "contact_phone"
+					editor: Slick.Editors.Text
+				}
+				{
+					id: "website"
+					name: "website"
+					field: "website"
+					editor: Slick.Editors.Text
 				}
 			]
 
@@ -705,3 +744,4 @@ class A2Cribs.RentalSave
 			when "utilites_grid" then UtilitiesColumns()
 			when "fees_grid" then FeesColumns()
 			when "description_grid" then DescriptionColumns()
+			when "contact_grid" then ContactColumns()

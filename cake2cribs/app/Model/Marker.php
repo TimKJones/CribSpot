@@ -161,6 +161,7 @@ class Marker extends AppModel {
 	*/
 	public function FindMarkerId($marker)
 	{
+		CakeLog::write("savingMarker", print_r($marker, true));
 		$street_address = $marker['street_address'];
 		$city = $marker['city'];
 		$state = $marker['state'];

@@ -13,8 +13,6 @@ class A2Cribs.Rental
 
 	@Template =
 		data =
-			Listing:
-				listing_type: 0
 			Rental:
 				street_address: A2Cribs.UILayer.Rentals.street_address()
 				city: A2Cribs.UILayer.Rentals.city()
@@ -81,5 +79,20 @@ class A2Cribs.Rental
 				contact_email: A2Cribs.UILayer.Rentals.contact_email()
 				contact_phone: A2Cribs.UILayer.Rentals.contact_phone()
 				website: A2Cribs.UILayer.Rentals.website()
-			Fee:
-				A2Cribs.UILayer.Fees.GetFees()
+	@Required_Fields = [
+		"unit_style_options",
+		"unit_style_type",
+		"unit_style_description",
+		"beds",
+		"min_occupancy",
+		"max_occupancy",
+		"rent",
+		"unit_count",
+		"start_date",
+		"end_date",
+		"available",
+		"highlights",
+		"contact_email",
+		"contact_phone",
+		"website"
+	]

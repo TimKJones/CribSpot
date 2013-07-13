@@ -72,12 +72,6 @@ class Rental extends RentalPrototype {
 				'required' => true
 			)
 		),
-		'building_type' => array(
-			'numeric' => array(
-				'rule' => 'numeric',
-				'required' => true
-			)
-		),
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -117,7 +111,7 @@ class Rental extends RentalPrototype {
 		'dates_negotiable' => array(
 			'boolean' => array(
 				'rule' => 'boolean',
-				'required' => true
+				'required' => false
 			)
 		),
 		'available' => array(

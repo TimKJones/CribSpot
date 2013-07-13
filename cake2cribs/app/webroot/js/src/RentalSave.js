@@ -5,6 +5,8 @@
 
     function RentalSave(modal) {
       modal = $('.rental-content');
+      this.ListingIds = [];
+      this.CurrentMarker = 4;
       this.SetupUI();
     }
 
@@ -26,18 +28,19 @@
       return this.ClearGrids();
     };
 
-    RentalSave.prototype.Save = function() {
+    RentalSave.prototype.Save = function(row, rental_object) {
       var row_id,
         _this = this;
       row_id = 4;
       return $.ajax({
         url: myBaseUrl + "listings/Save/" + row_id,
         type: "POST",
-        data: A2Cribs.Rental.Template,
+        data: rental_object,
         success: function(response) {
           response = JSON.parse(response);
-          if (response.success !== null && response.success !== void 0) {
+          if (response.listing_id != null) {
             alert("Success!");
+            _this.ListingIds[row] = response.listing_id;
             return console.log(response);
           } else {
             alert("Save unsuccessful");
@@ -201,12 +204,33 @@
         return isValid;
       };
       modal.find("#continue-button").click(function() {
-        var marker_selected;
+        var marker_object, marker_selected;
         marker_selected = modal.find("#marker_select").val();
         if (marker_selected === "new_marker") {
           if (marker_validate()) {
-            modal.modal("hide");
-            return _this.Create(1);
+            marker_object = {
+              alternate_name: modal.find('#Marker_alternate_name').val(),
+              building_type_id: modal.find('#Marker_building_type_id').val(),
+              street_address: modal.find('#Marker_street_address').val(),
+              city: modal.find('#Marker_city').val(),
+              state: modal.find('#Marker_state').val(),
+              zip: modal.find('#Marker_zip').val(),
+              latitude: modal.find('#Marker_latitude').val(),
+              longitude: modal.find('#Marker_longitude').val()
+            };
+            return $.ajax({
+              url: "/Markers/Save/",
+              type: "POST",
+              data: marker_object,
+              success: function(response) {
+                if (response.error) {
+                  return UIManager.Error(response.error);
+                } else {
+                  modal.modal("hide");
+                  return _this.Create(+response);
+                }
+              }
+            });
           }
         } else if (marker_selected !== "0") {
           modal.modal("hide");
@@ -321,8 +345,9 @@
     };
 
     RentalSave.prototype.CreateGrids = function() {
-      var checkboxSelector, columnpicker, columns, container, containers, data, grid, options, _i, _len, _results;
-      containers = ["overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid"];
+      var checkboxSelector, columnpicker, columns, container, containers, data, options, _i, _len, _results,
+        _this = this;
+      containers = ["overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "contact_grid"];
       this.GridMap = {};
       options = {
         editable: true,
@@ -341,84 +366,53 @@
           cssClass: "slick-cell-checkboxsel"
         });
         columns[0] = checkboxSelector.getColumnDefinition();
-        grid = new Slick.Grid("#" + container, data, columns, options);
-        grid.setSelectionModel(new Slick.RowSelectionModel({
+        this.GridMap[container] = new Slick.Grid("#" + container, data, columns, options);
+        this.GridMap[container].setSelectionModel(new Slick.RowSelectionModel({
           selectActiveRow: false
         }));
-        grid.registerPlugin(checkboxSelector);
-        this.GridMap[container] = grid;
-        _results.push(columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options));
+        this.GridMap[container].registerPlugin(checkboxSelector);
+        columnpicker = new Slick.Controls.ColumnPicker(columns, this.GridMap[container], options);
+        _results.push(this.GridMap[container].onCellChange.subscribe(function(e, args) {
+          var amount, desc, index, isValid, key, required, _j, _len1, _ref;
+          columns = _this.GridMap[container].getColumns();
+          required = A2Cribs.Rental.Required_Fields;
+          data = {
+            Rental: {},
+            Listing: {},
+            Fees: []
+          };
+          isValid = true;
+          for (_j = 0, _len1 = required.length; _j < _len1; _j++) {
+            key = required[_j];
+            isValid = isValid && (args.item[key] != null);
+          }
+          if (isValid) {
+            _ref = args.item;
+            for (desc in _ref) {
+              amount = _ref[desc];
+              index = desc.indexOf("Fee_");
+              if (index !== -1) {
+                data.Fees.push({
+                  description: desc.split("_").join(" "),
+                  amount: amount
+                });
+              }
+            }
+            data.Rental = args.item;
+            data.Listing.listing_type = 0;
+            if (_this.ListingIds[args.row] != null) {
+              data.Listing.listing_id = _this.ListingIds[args.row];
+            }
+            data.Listing.marker_id = _this.CurrentMarker;
+            return _this.Save(args.row, data);
+          }
+        }));
       }
       return _results;
     };
 
     RentalSave.prototype.GetColumns = function(container) {
-      var AmenitiesColumns, DescriptionColumns, FeaturesColumns, FeesColumns, NumericRangeEditor, NumericRangeFormatter, OverviewColumns, UtilitiesColumns;
-      NumericRangeFormatter = function(row, cell, value, columnDef, dataContext) {
-        return dataContext.from + " - " + dataContext.to;
-      };
-      NumericRangeEditor = function(args) {
-        var $from, $to,
-          _this = this;
-        $to = $from = null;
-        this.init = function() {
-          $from = $("<INPUT type=text style='width:40px' />");
-          $from.appendTo(args.container);
-          $from.bind("keydown", _this.handleKeyDown);
-          $(args.container).append("&nbsp; to &nbsp;");
-          $to = $("<INPUT type=text style='width:40px' />");
-          $to.appendTo(args.container);
-          $to.bind("keydown", _this.handleKeyDown);
-          return _this.focus();
-        };
-        this.handleKeyDown = function(e) {
-          if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT || e.keyCode === $.ui.keyCode.TAB) {
-            return e.stopImmediatePropagation();
-          }
-        };
-        this.destroy = function() {
-          return $(args.container).empty();
-        };
-        this.applyValue = function(item, state) {};
-        this.serializeValue = function() {
-          return {
-            from: parseInt($from.val(), 10),
-            to: parseInt($to.val(), 10)
-          };
-        };
-        this.focus = function() {
-          /*
-          				$from.focus()
-          */
-
-        };
-        this.loadValue = function(item) {
-          $from.val(item.from);
-          return $to.val(item.to);
-        };
-        this.isValueChanged = function() {
-          return args.item.from !== parseInt($from.val(), 10) || args.item.to !== parseInt($from.val(), 10);
-        };
-        this.validate = function() {
-          if (isNaN(parseInt($from.val(), 10)) || isNaN(parseInt($to.val(), 10))) {
-            return {
-              valid: false,
-              msg: "Please type in valid numbers."
-            };
-          }
-          if (parseInt($from.val(), 10) > parseInt($to.val(), 10)) {
-            return {
-              valid: false,
-              msg: "'from' cannot be greater than 'to'"
-            };
-          }
-          return {
-            valid: true,
-            msg: null
-          };
-        };
-        return this.init();
-      };
+      var AmenitiesColumns, ContactColumns, DescriptionColumns, FeaturesColumns, FeesColumns, OverviewColumns, UtilitiesColumns;
       OverviewColumns = function() {
         var columns;
         return columns = [
@@ -471,6 +465,11 @@
             name: "Availability",
             field: "available",
             editor: A2Cribs.Editors.Availability
+          }, {
+            id: "unit_count",
+            name: "Unit Count",
+            field: "unit_count",
+            editor: Slick.Editors.Integer
           }
         ];
       };
@@ -653,62 +652,51 @@
             editor: A2Cribs.Editors.Unit,
             formatter: A2Cribs.Formatters.Unit
           }, {
-            id: "beds",
+            id: "deposit_fee",
             name: "Deposit",
-            field: "beds",
+            field: "Fee_Deposit",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "occupancy",
+            id: "admin_fee",
             name: "Admin",
-            field: "occupancy",
+            field: "Fee_Admin",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "rent",
+            id: "parking_fee",
             name: "Parking",
-            field: "rent",
+            field: "Fee_Parking",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "start_date",
+            id: "furniture_fee",
             name: "Furniture",
-            field: "start_date",
+            field: "Fee_Furniture",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "alt_start_date",
+            id: "pets_fee",
             name: "Pets",
-            field: "alt_start_date",
+            field: "Fee_Pets",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "lease_length",
+            id: "amenity_fee",
             name: "Amenity",
-            field: "lease_length",
+            field: "Fee_Amenity",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "availability",
+            id: "upper_floor_fee",
             name: "Upper Floor",
-            field: "availability",
+            field: "Fee_Upper_Floor",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "extra_occupant",
+            id: "extra_occupant_fee",
             name: "Cost for Extra Occupant",
-            field: "extra_occupant",
-            editor: Slick.Editors.Integer,
-            formatter: A2Cribs.Formatters.Money
-          }, {
-            id: "other_fee_description",
-            name: "Other Fees",
-            field: "other_fee_description",
-            editor: Slick.Editors.Text
-          }, {
-            id: "other_fee_cost",
-            name: "Fee",
-            field: "other_fee_cost",
+            field: "Fee_Extra_Occupant",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }
@@ -724,15 +712,58 @@
             editor: A2Cribs.Editors.Unit,
             formatter: A2Cribs.Formatters.Unit
           }, {
-            id: "beds",
+            id: "highlights",
             name: "Highlights",
-            field: "beds",
+            field: "highlights",
             editor: Slick.Editors.LongText
           }, {
-            id: "occupancy",
+            id: "description",
             name: "Description",
-            field: "occupancy",
+            field: "description",
             editor: Slick.Editors.LongText
+          }
+        ];
+      };
+      ContactColumns = function() {
+        var columns;
+        return columns = [
+          {}, {
+            id: "title",
+            name: "Unit/Style - Name",
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
+          }, {
+            id: "waitlist",
+            name: "Waitlist",
+            field: "waitlist",
+            editor: Slick.Editors.YesNoSelect,
+            formatter: Slick.Formatters.YesNo
+          }, {
+            id: "waitlist_open_date",
+            name: "waitlist_open_date",
+            field: "waitlist_open_date",
+            editor: Slick.Editors.Date
+          }, {
+            id: "lease_office_address",
+            name: "lease_office_address",
+            field: "lease_office_address",
+            editor: Slick.Editors.Text
+          }, {
+            id: "contact_email",
+            name: "contact_email",
+            field: "contact_email",
+            editor: Slick.Editors.Text
+          }, {
+            id: "contact_phone",
+            name: "contact_phone",
+            field: "contact_phone",
+            editor: Slick.Editors.Text
+          }, {
+            id: "website",
+            name: "website",
+            field: "website",
+            editor: Slick.Editors.Text
           }
         ];
       };
@@ -749,6 +780,8 @@
           return FeesColumns();
         case "description_grid":
           return DescriptionColumns();
+        case "contact_grid":
+          return ContactColumns();
       }
     };
 

@@ -7,8 +7,6 @@ class ListingsController extends AppController {
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->Auth->allow('Save');
-		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
@@ -24,6 +22,7 @@ class ListingsController extends AppController {
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
 		$listingObject['Listing']['user_id'] = $this->_getUserId();
+		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
 		$response = $this->Listing->SaveListing($listingObject);
 		$image_ids_to_update = $this->Session->read('row_' . $row_id);
 		if (!array_key_exists('error', $response) && 

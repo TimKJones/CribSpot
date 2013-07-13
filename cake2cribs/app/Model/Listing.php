@@ -65,14 +65,23 @@ class Listing extends AppModel {
 	public function SaveListing($listing)
 	{
 		if (array_key_exists('Rental', $listing))
+		{
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
+			if (array_key_exists('listing_id', $listing['Listing']))
+			{
+				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id']);
+				$listing['Rental']['rental_id'] = $rental_id;
+			}
+		}
 		else if (array_key_exists('Sublet', $listing))
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
 		if ($this->saveAll($listing, array('deep' => true)))
+		{
 			return array('listing_id' => $this->id);
+		}
 
 		/* Listing failed to save - return error code */
 		CakeLog::write("listingValidationErrors", print_r($this->validationErrors, true));

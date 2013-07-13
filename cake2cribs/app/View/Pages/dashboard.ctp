@@ -4,6 +4,10 @@
 	echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/controls/slick.columnpicker.css', null, array('inline' => false));
 
+	echo $this->Html->script('src/UILayer/UILayer.js', array('inline' => false));
+	echo $this->Html->script('src/UILayer/Rentals.js', array('inline' => false));
+	echo $this->Html->script('src/UILayer/Fees.js', array('inline' => false));
+	
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
 
@@ -161,6 +165,12 @@
 							<p>Howdy, I'm in Section 5.</p>
 						</div>
 						<div class="tab-pane" id="description_grid" style="height:300px;">
+							<p>Howdy, I'm in Section 6.</p>
+						</div>
+						<div class="tab-pane" id="pictures_grid" style="height:300px;">
+							<p>Howdy, I'm in Section 6.</p>
+						</div>
+						<div class="tab-pane" id="contact_grid" style="height:300px;">
 							<p>Howdy, I'm in Section 6.</p>
 						</div>
 					</div>
