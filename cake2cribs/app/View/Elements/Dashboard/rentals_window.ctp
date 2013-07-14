@@ -37,6 +37,11 @@
 		<strong>Zaragon</strong><br>
 		795 Folsom Ave, Suite 600<br>
 	</address>
+	<div class="btn-group pull-right">
+		<button class="btn" id="rentals_edit">Edit</button>
+		<!--<button class="btn">Copy</button>-->
+		<button class="btn" id="rentals_delete">Delete</button>
+	</div>
 </div>
 
 <!-- Rental Tabs and Buttons -->
@@ -46,42 +51,42 @@
 	<div class="span12 tabbable"> <!-- Only required for left/right tabs -->
 		<ul class="nav nav-tabs">
 			<li class="active">
-				<a href="#overview_grid" data-toggle="tab">
+				<a href="#overview_grid" class="rentals_tab" data-toggle="tab">
 					OVERVIEW
 				</a>
 			</li>
 			<li>
-				<a href="#features_grid" data-toggle="tab">
+				<a href="#features_grid" class="rentals_tab" data-toggle="tab">
 					FEATURES
 				</a>
 			</li>
 			<li>
-				<a href="#amenities_grid" data-toggle="tab">
+				<a href="#amenities_grid" class="rentals_tab" data-toggle="tab">
 					AMENITIES
 				</a>
 			</li>
 			<li>
-				<a href="#utilites_grid" data-toggle="tab">
+				<a href="#utilites_grid" class="rentals_tab" data-toggle="tab">
 					UTILITIES
 				</a>
 			</li>
 			<li>
-				<a href="#fees_grid" data-toggle="tab">
+				<a href="#fees_grid" class="rentals_tab" data-toggle="tab">
 					FEES
 				</a>
 			</li>
 			<li>
-				<a href="#description_grid" data-toggle="tab">
+				<a href="#description_grid" class="rentals_tab" data-toggle="tab">
 					DESCRIPTION
 				</a>
 			</li>
 			<li>
-				<a href="#pictures_grid" data-toggle="tab">
+				<a href="#picture_grid" class="rentals_tab" data-toggle="tab">
 					PICTURES
 				</a>
 			</li>
 			<li>
-				<a href="#contact_grid" data-toggle="tab">
+				<a href="#contact_grid" class="rentals_tab" data-toggle="tab">
 					CONTACT
 				</a>
 			</li>
@@ -105,7 +110,7 @@
 			<div class="tab-pane" id="description_grid" style="height:300px;">
 				<p>Howdy, I'm in Section 6.</p>
 			</div>
-			<div class="tab-pane" id="pictures_grid" style="height:300px;">
+			<div class="tab-pane" id="picture_grid" style="height:300px;">
 				<p>Howdy, I'm in Section 6.</p>
 			</div>
 			<div class="tab-pane" id="contact_grid" style="height:300px;">
@@ -113,15 +118,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Rental Buttons -->
-	<!--<div class="span4">
-		<div class="btn-group">
-			<button class="btn">Edit</button>
-			<button class="btn">Copy</button>
-			<button class="btn">Delete</button>
-		</div>
-	</div>-->
 </div>
 
 <div class="row-fluid">

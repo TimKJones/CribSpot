@@ -45,7 +45,7 @@ class ListingsController extends AppController {
 		$listing_ids = json_decode($listing_ids);
 
 		for ($i = 0; $i < count($listing_ids); $i++){
-			if (!$this->UserOwnsListing($listing_ids[$i]))
+			if (!$this->Listing->UserOwnsListing($listing_ids[$i], $this->_getUserId()))
 			{
 				$this->set('response', json_encode(array('error' => 
 					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 1')));

@@ -6,7 +6,8 @@
     function RentalSave(modal) {
       modal = $('.rental-content');
       this.ListingIds = [];
-      this.CurrentMarker = 4;
+      this.EditableRows = [];
+      this.VisibleGrid = 'overview_grid';
       this.SetupUI();
     }
 
@@ -22,12 +23,46 @@
       $("body").on('click', '.rentals_list_item', function(event) {
         return _this.Open(event.target.id);
       });
+      $("#rentals_edit").click(function(event) {
+        var data, row, selected, _i, _len;
+        selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
+        for (_i = 0, _len = selected.length; _i < _len; _i++) {
+          row = selected[_i];
+          data = _this.GridMap[_this.VisibleGrid].getDataItem(row);
+          data.editable = !_this.EditableRows.length;
+        }
+        if (_this.EditableRows.length) {
+          _this.GridMap[_this.VisibleGrid].getEditorLock().commitCurrentEdit();
+          _this.EditableRows = [];
+          $(event.target).text("Edit");
+        } else {
+          _this.EditableRows = selected;
+          $(event.target).text("Save");
+        }
+        return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+      });
+      $("#rentals_delete").click(function() {
+        var listings, row, selected, _i, _len;
+        selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
+        listings = [];
+        for (_i = 0, _len = selected.length; _i < _len; _i++) {
+          row = selected[_i];
+          listings.push(+_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id);
+        }
+        return _this.Delete(selected, listings);
+      });
+      $(".rentals_tab").click(function(event) {
+        var selected;
+        selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
+        _this.VisibleGrid = $(event.target).attr("href").substring(1);
+        return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+      });
       this.CreateGrids();
       return this.MarkerModalSetup();
     };
 
     RentalSave.prototype.Open = function(marker_id) {
-      var container, data, grid, i, key, marker_object, name, rentals, _i, _ref, _ref1, _ref2, _results;
+      var marker_object, name;
       this.ClearGrids();
       this.ListingIds = [];
       this.CurrentMarker = marker_id;
@@ -35,31 +70,7 @@
       name = (marker_object.alternate_name != null) && marker_object.alternate_name.length ? marker_object.alternate_name : marker_object.street_address;
       $("#rentals_address").html("<strong>" + name + "</strong><br>");
       A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
-      rentals = A2Cribs.UserCache.GetRentals();
-      data = [];
-      if (rentals.length) {
-        for (i = _i = 0, _ref = rentals.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          if (rentals[i].Marker.marker_id === this.CurrentMarker) {
-            data.push(rentals[i].Rental);
-            this.ListingIds[i] = rentals[i].Listing.listing_id;
-          }
-        }
-      }
-      _ref1 = this.GridMap;
-      for (key in _ref1) {
-        grid = _ref1[key];
-        grid.setData(data);
-        grid.init();
-        grid.autosizeColumns();
-      }
-      _ref2 = this.GridMap;
-      _results = [];
-      for (container in _ref2) {
-        grid = _ref2[container];
-        grid.updateRowCount();
-        _results.push(grid.render());
-      }
-      return _results;
+      return this.PopulateGrid(marker_id);
     };
 
     RentalSave.prototype.Save = function(row, rental_object) {
@@ -115,17 +126,25 @@
 
     };
 
-    RentalSave.prototype.Delete = function(listing_ids) {
+    RentalSave.prototype.Delete = function(rows, listing_ids) {
       var _this = this;
       return $.ajax({
         url: myBaseUrl + "listings/Delete/" + JSON.stringify(listing_ids),
         type: "POST",
         success: function(response) {
+          var data, row, _i, _len, _results;
           response = JSON.parse(response);
           if (response.success !== null && response.success !== void 0) {
-            return alert("Success!");
+            A2Cribs.UIManager.Success("Listings deleted!");
+            data = _this.GridMap[_this.VisibleGrid].getData();
+            _results = [];
+            for (_i = 0, _len = rows.length; _i < _len; _i++) {
+              row = rows[_i];
+              _results.push(data.splice(row, 1));
+            }
+            return _results;
           } else {
-            alert("Delete unsuccessful");
+            A2Cribs.UIManager.Error("Delete unsuccessful");
             return console.log(response);
           }
         }
@@ -386,11 +405,33 @@
       }
     };
 
-    RentalSave.prototype.PopulateGrid = function(rental_ids) {
+    RentalSave.prototype.PopulateGrid = function(marker_id) {
       /*
       		********************* TODO **********************
       */
 
+      var data, grid, i, key, rentals, _i, _ref, _ref1, _results;
+      rentals = A2Cribs.UserCache.GetRentals();
+      data = [];
+      if (rentals.length) {
+        for (i = _i = 0, _ref = rentals.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if (rentals[i].Marker.marker_id === this.CurrentMarker) {
+            data.push(rentals[i].Rental);
+            this.ListingIds[i] = rentals[i].Listing.listing_id;
+          }
+        }
+      }
+      _ref1 = this.GridMap;
+      _results = [];
+      for (key in _ref1) {
+        grid = _ref1[key];
+        grid.setData(data);
+        grid.init();
+        grid.autosizeColumns();
+        grid.updateRowCount();
+        _results.push(grid.render());
+      }
+      return _results;
     };
 
     RentalSave.prototype.ClearGrids = function() {
@@ -409,14 +450,14 @@
     RentalSave.prototype.CreateGrids = function() {
       var checkboxSelector, columnpicker, columns, container, containers, data, options, _i, _len, _results,
         _this = this;
-      containers = ["overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "contact_grid"];
+      containers = ["overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"];
       this.GridMap = {};
       options = {
         editable: true,
         enableCellNavigation: true,
         asyncEditorLoading: false,
         enableAddRow: false,
-        autoEdit: false,
+        autoEdit: true,
         explicitInitialization: true
       };
       data = [];
@@ -434,6 +475,14 @@
         }));
         this.GridMap[container].registerPlugin(checkboxSelector);
         columnpicker = new Slick.Controls.ColumnPicker(columns, this.GridMap[container], options);
+        this.GridMap[container].onBeforeEditCell.subscribe(function(e, args) {
+          if (_this.EditableRows.indexOf(args.row) !== -1) {
+            console.log("lol");
+            return true;
+          } else {
+            return false;
+          }
+        });
         _results.push(this.GridMap[container].onCellChange.subscribe(function(e, args) {
           var amount, desc, index, isValid, key, required, _j, _len1, _ref;
           columns = _this.GridMap[container].getColumns();
@@ -474,7 +523,7 @@
     };
 
     RentalSave.prototype.GetColumns = function(container) {
-      var AmenitiesColumns, ContactColumns, DescriptionColumns, FeaturesColumns, FeesColumns, OverviewColumns, UtilitiesColumns;
+      var AmenitiesColumns, ContactColumns, DescriptionColumns, FeaturesColumns, FeesColumns, OverviewColumns, PictureColumns, UtilitiesColumns;
       OverviewColumns = function() {
         var columns;
         return columns = [
@@ -511,17 +560,20 @@
             id: "start_date",
             name: "Start Date",
             field: "start_date",
-            editor: Slick.Editors.Date
+            editor: Slick.Editors.Date,
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "alternate_start_date",
             name: "Alt. Start Date",
             field: "alternate_start_date",
-            editor: Slick.Editors.Date
+            editor: Slick.Editors.Date,
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "end_date",
             name: "End Date",
             field: "end_date",
-            editor: Slick.Editors.Date
+            editor: Slick.Editors.Date,
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "available",
             name: "Availability",
@@ -531,7 +583,8 @@
             id: "unit_count",
             name: "Unit Count",
             field: "unit_count",
-            editor: Slick.Editors.Integer
+            editor: Slick.Editors.Integer,
+            formatter: A2Cribs.Formatters.Text
           }
         ];
       };
@@ -786,6 +839,22 @@
           }
         ];
       };
+      PictureColumns = function() {
+        var columns;
+        return columns = [
+          {}, {
+            id: "title",
+            name: "Unit/Style - Name",
+            field: "title",
+            editor: A2Cribs.Editors.Unit,
+            formatter: A2Cribs.Formatters.Unit
+          }, {
+            id: "pictures",
+            name: "Pictures",
+            formatter: A2Cribs.Formatters.Button
+          }
+        ];
+      };
       ContactColumns = function() {
         var columns;
         return columns = [
@@ -842,6 +911,8 @@
           return FeesColumns();
         case "description_grid":
           return DescriptionColumns();
+        case "picture_grid":
+          return PictureColumns();
         case "contact_grid":
           return ContactColumns();
       }

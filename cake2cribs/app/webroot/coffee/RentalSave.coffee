@@ -2,7 +2,8 @@ class A2Cribs.RentalSave
 	constructor: (modal) ->
 		modal = $('.rental-content')
 		@ListingIds = []
-		@CurrentMarker = 4 # temp fix
+		@EditableRows = []
+		@VisibleGrid = 'overview_grid'
 		@SetupUI()
 
 	SetupUI: ->
@@ -14,6 +15,34 @@ class A2Cribs.RentalSave
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
 			@Open event.target.id
+
+		$("#rentals_edit").click (event) =>
+			selected = @GridMap[@VisibleGrid].getSelectedRows()
+			for row in selected
+				data = @GridMap[@VisibleGrid].getDataItem row
+				data.editable = not @EditableRows.length
+
+			if @EditableRows.length
+				@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
+				@EditableRows = []
+				$(event.target).text "Edit"
+			else
+				@EditableRows = selected
+				$(event.target).text "Save"
+			@GridMap[@VisibleGrid].setSelectedRows selected
+
+		$("#rentals_delete").click () =>
+			selected = @GridMap[@VisibleGrid].getSelectedRows()	
+			listings = []
+			for row in selected
+				listings.push +@GridMap[@VisibleGrid].getDataItem(row).listing_id
+			@Delete selected, listings
+
+		$(".rentals_tab").click (event) =>
+			selected = @GridMap[@VisibleGrid].getSelectedRows()
+			@VisibleGrid = $(event.target).attr("href").substring(1)
+			@GridMap[@VisibleGrid].setSelectedRows selected
+
 
 		@CreateGrids()
 		# Create grid and setup necessary grid code
@@ -32,22 +61,7 @@ class A2Cribs.RentalSave
 		$("#rentals_address").html "<strong>#{name}</strong><br>"
 		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
 
-		rentals = A2Cribs.UserCache.GetRentals()
-		data = []
-		if rentals.length
-			for i in [0..rentals.length - 1]
-				if rentals[i].Marker.marker_id is @CurrentMarker
-					data.push rentals[i].Rental
-					@ListingIds[i] = rentals[i].Listing.listing_id
-
-		for key, grid of @GridMap
-			grid.setData data
-			grid.init()
-			grid.autosizeColumns()
-
-		for container,grid of @GridMap
-			grid.updateRowCount()
-			grid.render()
+		@PopulateGrid marker_id
 
 	# Sends rental to server including all associated tables (fees, etc.)
 	Save: (row, rental_object) ->
@@ -90,16 +104,19 @@ class A2Cribs.RentalSave
 
 	# Sends array of listing_ids to delete
 	# IMPORTANT - sends listing_ids, not rental_ids
-	Delete: (listing_ids) ->
+	Delete: (rows, listing_ids) ->
 		$.ajax
 			url: myBaseUrl + "listings/Delete/" + JSON.stringify listing_ids
 			type: "POST"
 			success: (response) =>
 				response = JSON.parse response
 				if response.success != null && response.success != undefined
-					alert "Success!"
+					A2Cribs.UIManager.Success "Listings deleted!"
+					data = @GridMap[@VisibleGrid].getData()
+					for row in rows
+						data.splice row, 1
 				else
-					alert "Delete unsuccessful"
+					A2Cribs.UIManager.Error "Delete unsuccessful"
 					console.log response
 
 	Create: (marker_id)->
@@ -300,11 +317,25 @@ class A2Cribs.RentalSave
 					div.find("#Marker_latitude").val response[0].geometry.location.lat()
 					div.find("#Marker_longitude").val response[0].geometry.location.lng()
 
-	PopulateGrid: (rental_ids) ->
+	PopulateGrid: (marker_id) ->
 		###
 		********************* TODO **********************
 		###
 		# Pre-populate grid based on selected address
+		rentals = A2Cribs.UserCache.GetRentals()
+		data = []
+		if rentals.length
+			for i in [0..rentals.length - 1]
+				if rentals[i].Marker.marker_id is @CurrentMarker
+					data.push rentals[i].Rental
+					@ListingIds[i] = rentals[i].Listing.listing_id
+
+		for key, grid of @GridMap
+			grid.setData data
+			grid.init()
+			grid.autosizeColumns()
+			grid.updateRowCount()
+			grid.render()
 
 	ClearGrids: ->
 		for container,grid of @GridMap
@@ -315,7 +346,7 @@ class A2Cribs.RentalSave
 	CreateGrids: ->
 		# Method to create grids for each tab
 		containers = [
-			"overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "contact_grid"
+			"overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"
 		]
 		@GridMap = {}
 		options =
@@ -323,7 +354,7 @@ class A2Cribs.RentalSave
 			enableCellNavigation: true
 			asyncEditorLoading: false
 			enableAddRow: false
-			autoEdit: false
+			autoEdit: true
 			explicitInitialization: true
 
 		data = []
@@ -340,6 +371,13 @@ class A2Cribs.RentalSave
 
 			@GridMap[container].registerPlugin checkboxSelector
 			columnpicker = new Slick.Controls.ColumnPicker columns, @GridMap[container], options
+
+			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
+				if @EditableRows.indexOf(args.row) isnt -1
+					console.log  "lol"
+					return true
+				else
+					return false
 
 			@GridMap[container].onCellChange.subscribe (e, args) =>
 				columns = @GridMap[container].getColumns()
@@ -414,18 +452,21 @@ class A2Cribs.RentalSave
 					name: "Start Date"
 					field: "start_date"
 					editor: Slick.Editors.Date
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "alternate_start_date"
 					name: "Alt. Start Date"
 					field: "alternate_start_date"
 					editor: Slick.Editors.Date 
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "end_date"
 					name: "End Date"
 					field: "end_date"
 					editor: Slick.Editors.Date 
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "available"
@@ -438,6 +479,7 @@ class A2Cribs.RentalSave
 					name: "Unit Count"
 					field: "unit_count"
 					editor: Slick.Editors.Integer
+					formatter: A2Cribs.Formatters.Text
 				}
 			]
 
@@ -737,6 +779,25 @@ class A2Cribs.RentalSave
 				}
 			]
 
+		PictureColumns = ->
+			columns = [
+				{
+					# Use for Checkbox
+				}
+				{
+					id: "title"
+					name: "Unit/Style - Name"
+					field: "title"
+					editor: A2Cribs.Editors.Unit
+					formatter: A2Cribs.Formatters.Unit
+				}
+				{
+					id: "pictures"
+					name: "Pictures"
+					formatter: A2Cribs.Formatters.Button
+				}
+			]
+
 		ContactColumns = ->
 			columns = [
 				{
@@ -795,4 +856,5 @@ class A2Cribs.RentalSave
 			when "utilites_grid" then UtilitiesColumns()
 			when "fees_grid" then FeesColumns()
 			when "description_grid" then DescriptionColumns()
+			when "picture_grid" then PictureColumns()
 			when "contact_grid" then ContactColumns()
