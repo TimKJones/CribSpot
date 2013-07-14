@@ -12,6 +12,7 @@
       this.uiFL_Form = $('.featured-listing-order-item').first();
       this.uiListingsList = this.uiWidget.find('#listings_list');
       this.uiOrderItemsList = this.uiWidget.find('#orderItems_list');
+      this.uiErrorsList = this.uiWidget.find("#validation-error-list");
       this.initTemplates();
       this.setupEventHandlers();
       this.loadListings();
@@ -42,6 +43,11 @@
         } else if (target.hasClass('remove')) {
           return _this.removeOrderItem(id);
         }
+      });
+      this.uiErrorsList.on('click', '.icon-remove', function(event) {
+        var listing_id;
+        listing_id = $(event.currentTarget).parent().data('id');
+        return _this.removeErrors(listing_id);
       });
       this.uiWidget.find("#buyNow").click(function() {
         return _this.buy();
@@ -116,27 +122,25 @@
     FLDash.prototype.removeOrderItem = function(listing_id) {
       var different_id, _ref;
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").remove();
+      this.removeErrors(listing_id);
       delete this.OrderItems[listing_id];
       if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
         this.FL_Order = null;
       }
       if (this.uiOrderItemsList.find(".orderItem").length === 0) {
-        this.uiWidget.find(".right-content").hide();
+        return this.uiWidget.find(".right-content").hide();
       } else {
         different_id = this.uiOrderItemsList.find(".orderItem").first().data('id');
-        this.editOrderItem(different_id);
+        return this.editOrderItem(different_id);
       }
-      return $(".validation-error-list").children("[data-id=" + listing_id + "]").remove();
     };
 
     FLDash.prototype.initTemplates = function() {
-      var ListingHTML, OrderItemHTML, ValidationErrorHTML;
+      var ListingHTML, OrderItemHTML;
       ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= altName %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
       this.ListingTemplate = _.template(ListingHTML);
       OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td>$<span class = 'price'?><%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>\n";
-      this.OrderItemTemplate = _.template(OrderItemHTML);
-      ValidationErrorHTML = "<dd class = 'validation-error'><%= msg %></dd>";
-      return this.ValidationErrorTemplate = _.template(ValidationErrorHTML);
+      return this.OrderItemTemplate = _.template(OrderItemHTML);
     };
 
     FLDash.prototype.showErrors = function(errors) {
@@ -148,20 +152,32 @@
         oi = this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]");
         oi.addClass('error');
         addr = oi.find('.address').html();
-        html += "<dt data-id='" + listing_id + "''>Validation Errors for " + addr + "</dt>";
+        html += "<dt data-id='" + listing_id + "'>Validation Errors for " + addr + "<i class = 'icon-remove'></i></dt>";
         for (index = _i = 0, _len = error_msgs.length; _i < _len; index = ++_i) {
           msg = error_msgs[index];
           html += "<dd data-id='" + listing_id + "' class = 'validation-error'>" + (index + 1) + ". " + msg + "</dd>";
         }
       }
-      return $('.validation-error-list').html(html);
+      return this.uiErrorsList.html(html);
+    };
+
+    FLDash.prototype.removeErrors = function(listing_id) {
+      if (listing_id == null) {
+        listing_id = null;
+      }
+      if (listing_id != null) {
+        this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").removeClass("error");
+        return this.uiErrorsList.children("[data-id=" + listing_id + "]").remove();
+      } else {
+        this.uiOrderItemsList.find(".orderItem").removeClass("error");
+        return this.uiErrorsList.html("");
+      }
     };
 
     FLDash.prototype.buy = function() {
       var key, order, orderItem, _ref,
         _this = this;
-      this.uiOrderItemsList.find(".orderItem").removeClass("error");
-      $('.validation-error-list').html("");
+      this.removeErrors();
       if (this.FL_Order) {
         this.OrderItems[this.FL_Order.listing_id] = this.FL_Order.getOrderItem();
       }

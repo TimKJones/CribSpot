@@ -20,7 +20,7 @@
         <div class = 'fl_form'>
             <?php echo $this->element('Order/featured-listing-item');?>
         </div>
-        <dl class = 'validation-error-list'></dl>
+        <dl id = 'validation-error-list'></dl>
         <table class = 'table orderItems_table'>
             <thead> 
                     <th>Address</th>

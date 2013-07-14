@@ -8,6 +8,7 @@ class A2Cribs.FLDash
 
         @uiListingsList = @uiWidget.find('#listings_list')
         @uiOrderItemsList = @uiWidget.find('#orderItems_list')
+        @uiErrorsList = @uiWidget.find("#validation-error-list")
 
         @initTemplates()
         @setupEventHandlers()
@@ -51,9 +52,14 @@ class A2Cribs.FLDash
             else if target.hasClass('remove')
                 @removeOrderItem(id)
 
+        @uiErrorsList.on 'click', '.icon-remove', (event)=>
+            listing_id = $(event.currentTarget).parent().data('id')
+            @removeErrors(listing_id)
+
             
         @uiWidget.find("#buyNow").click ()=>
             @buy()
+
 
         @uiWidget.find(".feature-listing").click ()=> 
             @featureListing()
@@ -129,10 +135,12 @@ class A2Cribs.FLDash
 
     removeOrderItem:(listing_id)->
 
-        # Remove the corresponding orderitem from the list, if its currently being edited
-        # clear and hide the form
+        # Remove the corresponding orderitem from the list and any validation
+        # errors that may be associated with it.
 
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").remove()
+        @removeErrors(listing_id)
+
         delete @OrderItems[listing_id]
         if(parseInt(@FL_Order?.listing_id,10) == listing_id)
             @FL_Order = null
@@ -148,7 +156,7 @@ class A2Cribs.FLDash
 
         #Update any other UI info like total
 
-        $(".validation-error-list").children("[data-id=#{listing_id}]").remove()
+        
 
 
     initTemplates:()->
@@ -174,11 +182,6 @@ class A2Cribs.FLDash
 
         @OrderItemTemplate = _.template(OrderItemHTML)
 
-        ValidationErrorHTML = """
-            <dd class = 'validation-error'><%= msg %></dd>
-        """
-
-        @ValidationErrorTemplate = _.template(ValidationErrorHTML)
 
 
     showErrors:(errors)->
@@ -188,22 +191,27 @@ class A2Cribs.FLDash
             oi = @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]")
             oi.addClass('error')
             addr = oi.find('.address').html()
-            html += "<dt data-id='#{listing_id}''>Validation Errors for #{addr}</dt>"
+            html += "<dt data-id='#{listing_id}'>Validation Errors for #{addr}<i class = 'icon-remove'></i></dt>"
 
             for msg, index in error_msgs
                 html+="<dd data-id='#{listing_id}' class = 'validation-error'>#{index+1}. #{msg}</dd>"
             
 
-        $('.validation-error-list').html html
+        @uiErrorsList.html html
 
+    # if listing_id is null then all the errors will be removed
+    removeErrors:(listing_id=null)->
+        if listing_id?
+            @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").removeClass("error")
+            @uiErrorsList.children("[data-id=#{listing_id}]").remove()
 
-
+        else
+            @uiOrderItemsList.find(".orderItem").removeClass("error")
+            @uiErrorsList.html ""
 
     buy:()->
-        # Clear the validation information
-        @uiOrderItemsList.find(".orderItem").removeClass("error")
-        $('.validation-error-list').html ""
-
+        
+        @removeErrors()
 
         if @FL_Order then @OrderItems[@FL_Order.listing_id] = @FL_Order.getOrderItem()
         order = []
