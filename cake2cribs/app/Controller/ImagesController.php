@@ -40,27 +40,11 @@ class ImagesController extends AppController {
 		}
 
 		$image = $this->request->params['form']['files'];
-		$row_id = $this->data['row_id'];
-		$num_images = $this->data['num_images'];
 		$listing_id = null;
 		if (array_key_exists('listing_id', $this->data))
 			$listing_id = $this->data['listing_id'];
 
-		/*
-		Solve for this scenario: User adds photos for an incomplete listing.
-		They close the browser tab, and come back. Session is still active, but user doesn't see the images anymore.
-		So, user uploads images again, and user and server have now different expectations of what has already
-		been uploaded for this listing.  
-		Here, we delete old images to reconcile this difference.
-		*/
-
-		$image_ids = $this->Session->read('row_' . $row_id);
-		if ($image_ids != null && count($image_ids) != $num_images){
-			$this->Image->DeleteExpiredImages($image_ids);
-			$this->Session->delete('row_' . $row_id);
-		}
-
-		$imageResponse = $this->Image->SaveImage($image, $row_id, $this->_getUserId(), $listing_id);
+		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
 		/* 
 		If no listing_id is given, the listing entry for this image has not yet been created.
 		Create an image entry and update its listing_id later after the listing has been completed.

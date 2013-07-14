@@ -47,26 +47,33 @@ class Image extends AppModel {
 	Add new record to images table
 	Returns the new image_id on success; error message on failure.
 	*/
-	public function SaveImage($file, $user_id, $currentPath=null, $listing_id = null)
+	public function SaveImage($file, $user_id, $listing_id = null, $currentPath=null)
 	{
 		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
 			return array('error' => 'error2 saving image');
 
 		if ($currentPath == null)
-			$currentPath = WWW_ROOT . 'img/listings/';
+			$currentPath = 'img/listings/';
 
 		$random = uniqid();
 		$newPath = $currentPath . $random;
-		if (!is_file($newPath)){
+		$fileType = $this->_getFileType($file);
+		if (!is_file(WWW_ROOT . $newPath . '.' . $fileType)){
 			/* File doesn't exist yet. This is the path where the image will be saved. */
-			$this->MoveFileToFolder($file, $currentPath);
+			$newPath = $newPath . '.' . $fileType;
+			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath);
+			if (array_key_exists('error', $response)){
+				/* TODO: Log error info */
+				CakeLog::write("AddImage", "error: " . print_r($response, true));
+				return $response;
+			}
 			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
 			return $image_id;
 		}
 
 		/* File name already exists. Create new folder if $newPath doesn't already exist */
 		if (!is_dir($newPath)){
-			if (!$this->createFolder($newPath)){
+			if (!$this->_createFolder($newPath)){
 				/* TODO: Log error info */
 				return array('error' => 
 					'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 14');
@@ -74,7 +81,7 @@ class Image extends AppModel {
 		}
 
 		$newPath = $newPath . '/';
-		return $this->SaveImage($file, $user_id, $newPath, $listing_id);
+		return $this->SaveImage($file, $user_id, $listing_id, $newPath);
 	}
 
 	/*
@@ -82,22 +89,35 @@ class Image extends AppModel {
 	Returns true on success; false on failure
 	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
 	*/
-	public function MoveFileToFolder($file, $folder)
+	public function MoveFileToFolder($file, $newPath)
 	{
-		if (!$this->_isValidFileSize($file))
+		if (!$this->_isValidFileSize($file)) {
+			/* TODO: Log error info */
 			return array('error' => 'File is too large');
+		}
 
-		if (!$this->_isValidFileType($file))
+		if (!$this->_isValidFileType($file)){
+			/* TODO: Log error info */
 			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png');
+		}
 
-		if (!$this->_createFolder($folder))
-			return array('error' => 'Error saving image.');
+		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))){
+			/* TODO: Log error info */
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 18');
+		}
 
-		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name']))
-			return array('error' => 'Error saving image 2.');
+		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name'])){
+			/* TODO: Log error info */
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 19');
+		}
 
-		if (!move_uploaded_file($file['tmp_name'][0], $folder . $file['name'][0]))
-			return array('error' => 'Error saving image 3');
+		if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
+			/* TODO: Log error info */
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 20');
+		}
 
 		return array('success' => 'file moved successfully'); 
 	}

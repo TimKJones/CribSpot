@@ -44,7 +44,7 @@
 	 		}
 
 	 		//load sublets for this user
-	 		$sublets = $this->Sublet->getSubletDataByUserId($this->Auth->User('id'));
+	 		//$sublets = $this->Sublet->getSubletDataByUserId($this->Auth->User('id'));
 
 	 		$user = $this->User->get($this->Auth->User('id'));
 	 		unset($user['User']['password']);
@@ -54,7 +54,7 @@
 	 		$this->User->University->id = $user['User']['university_id'];
 	 		$this->Session->write('Auth.User.University.name', $this->User->University->field('name'));
 	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user, 'user_json'=>$json_user));
-	 		$this->set('sublets', $sublets);
+	 		//$this->set('sublets', $sublets);
 
 	 		$mapUrl = '/';
 	 		if ($this->Session->read("currentUniversity") != null)
