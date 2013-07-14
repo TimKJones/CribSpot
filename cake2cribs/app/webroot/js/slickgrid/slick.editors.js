@@ -161,10 +161,7 @@
       $input = $("<INPUT type=text class='editor-text' />");
       $input.appendTo(args.container);
       $input.focus().select();
-      $input.datepicker({
-        showOn: "button",
-        buttonImageOnly: true,
-        buttonImage: "../images/calendar.gif",
+      $input.datepicker({ 
         beforeShow: function () {
           calendarOpen = true
         },
@@ -172,13 +169,13 @@
           calendarOpen = false
         }
       });
+      $input.datepicker("show");
       $input.width($input.width() - 18);
     };
 
     this.destroy = function () {
       $.datepicker.dpDiv.stop(true, true);
       $input.datepicker("hide");
-      $input.datepicker("destroy");
       $input.remove();
     };
 
@@ -312,7 +309,7 @@
     };
 
     this.serializeValue = function () {
-      return !!$select.prop("checked");
+      return +$select.prop("checked");
     };
 
     this.applyValue = function (item, state) {

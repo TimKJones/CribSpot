@@ -17,23 +17,23 @@ class ListingsController extends AppController {
 	If unsuccessful, returns an error code as well as a list of the fields that failed validation
 	REQUIRES: each rental and fee object is in the form cake expects for a valid save.
 	*/
-	public function Save($row_id)
+	public function Save()
 	{
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
 		$listingObject['Listing']['user_id'] = $this->_getUserId();
 		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
-		$image_ids_to_update = $listingObject['image_ids'];
-		unset($listingObject['image_ids']);
+		//$image_ids_to_update = $listingObject['image_ids'];
+		//unset($listingObject['image_ids']);
 		$response = $this->Listing->SaveListing($listingObject);
-		if (!array_key_exists('error', $response) && 
+		/* if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
 			$image_ids_to_update != null) {
-			/* Update images that bad been saved before listing_id was known */
+			// Update images that bad been saved before listing_id was known
 			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update);
 			if (array_key_exists('error', $imageResponse))
 				$response['error'] = $imageResponse['error'];
-		}
+		} */
 		$this->set('response', json_encode($response));
 		return;
 	}

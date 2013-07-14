@@ -172,7 +172,7 @@ class Image extends AppModel {
 				$errors = true;
 				/*TODO: LOG ERRORS */
 				return array('error' => 
-					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 17')
+					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 17');
 			}
 		}
 

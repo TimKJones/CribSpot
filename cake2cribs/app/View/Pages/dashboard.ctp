@@ -1,7 +1,7 @@
 <?php
 	echo $this->Html->css('/js/slickgrid/slick.grid.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css', null, array('inline' => false));
-	echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
+	//echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/controls/slick.columnpicker.css', null, array('inline' => false));
 
 	echo $this->Html->script('src/UILayer/UILayer.js', array('inline' => false));

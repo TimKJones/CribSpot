@@ -48,6 +48,7 @@ a:hover{
 
 
 .content-header{
+	/*
 	position: relative;
 	margin-top: 20px;
 	height: 45px;
@@ -55,6 +56,7 @@ a:hover{
 	background: #f9f9f9;
 	border: 2px solid #b7b1b1;
 	line-height	: 45px;
+	*/
 
 	/*Disable Text Selection*/
 	-webkit-touch-callout: none;

@@ -14,26 +14,58 @@
       /*
       		********************* TODO **********************
       */
+
+      var _this = this;
       if (!(A2Cribs.Geocoder != null)) {
         A2Cribs.Geocoder = new google.maps.Geocoder();
       }
+      $("body").on('click', '.rentals_list_item', function(event) {
+        return _this.Open(event.target.id);
+      });
       this.CreateGrids();
       return this.MarkerModalSetup();
     };
 
-    RentalSave.prototype.Open = function(rental_ids) {
-      /*
-      		********************* TODO **********************
-      */
-      return this.ClearGrids();
+    RentalSave.prototype.Open = function(marker_id) {
+      var container, data, grid, i, key, marker_object, name, rentals, _i, _ref, _ref1, _ref2, _results;
+      this.ClearGrids();
+      this.ListingIds = [];
+      this.CurrentMarker = marker_id;
+      marker_object = A2Cribs.UserCache.GetMarkerById(this.CurrentMarker);
+      name = (marker_object.alternate_name != null) && marker_object.alternate_name.length ? marker_object.alternate_name : marker_object.street_address;
+      $("#rentals_address").html("<strong>" + name + "</strong><br>");
+      A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
+      rentals = A2Cribs.UserCache.GetRentals();
+      data = [];
+      if (rentals.length) {
+        for (i = _i = 0, _ref = rentals.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if (rentals[i].Marker.marker_id === this.CurrentMarker) {
+            data.push(rentals[i].Rental);
+            this.ListingIds[i] = rentals[i].Listing.listing_id;
+          }
+        }
+      }
+      _ref1 = this.GridMap;
+      for (key in _ref1) {
+        grid = _ref1[key];
+        grid.setData(data);
+        grid.init();
+        grid.autosizeColumns();
+      }
+      _ref2 = this.GridMap;
+      _results = [];
+      for (container in _ref2) {
+        grid = _ref2[container];
+        grid.updateRowCount();
+        _results.push(grid.render());
+      }
+      return _results;
     };
 
     RentalSave.prototype.Save = function(row, rental_object) {
-      var row_id,
-        _this = this;
-      row_id = 4;
+      var _this = this;
       return $.ajax({
-        url: myBaseUrl + "listings/Save/" + row_id,
+        url: myBaseUrl + "listings/Save/",
         type: "POST",
         data: rental_object,
         success: function(response) {
@@ -104,7 +136,16 @@
       /*
       		********************* TODO **********************
       */
-      return this.CurrentMarker = marker_id;
+
+      var data, grid, key, _ref;
+      this.CurrentMarker = marker_id;
+      A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
+      _ref = this.GridMap;
+      for (key in _ref) {
+        grid = _ref[key];
+        grid.init();
+      }
+      return data = this.GridMap["overview_grid"].getData();
     };
 
     /*
@@ -138,9 +179,23 @@
         return _this.MiniMap.SetMarkerVisible(false);
       };
       modal.on('show', function() {
+        var marker, markers, name, option, _i, _len;
         clear();
         modal.find('#marker_add').hide();
         modal.find("#continue-button").addClass("disabled");
+        markers = A2Cribs.UserCache.GetRentalMarkers();
+        modal.find("#marker_select").empty();
+        modal.find("#marker_select").append('<option value="0">--</option>\
+				<option value="new_marker"><strong>New Location</strong></option>');
+        for (_i = 0, _len = markers.length; _i < _len; _i++) {
+          marker = markers[_i];
+          name = (marker.alternate_name != null) && marker.alternate_name.length ? marker.alternate_name : marker.street_address;
+          option = $("<option />", {
+            text: name,
+            value: marker.marker_id
+          });
+          modal.find("#marker_select").append(option);
+        }
         return modal.find("#marker_select").val("0");
       });
       modal.on('shown', function() {
@@ -191,11 +246,6 @@
           modal.find('#Marker_building_type_id').parent().addClass("error");
           isValid = false;
         }
-        if (modal.find('#Sublet_unit_number').val().length >= 249) {
-          A2Cribs.UIManager.Error("Your unit number is too long.");
-          modal.find('#Sublet_unit_number').parent().addClass("error");
-          isValid = false;
-        }
         if (modal.find('#Marker_alternate_name').val().length >= 249) {
           A2Cribs.UIManager.Error("Your alternate name is too long.");
           modal.find('#Marker_alternate_name').parent().addClass("error");
@@ -223,18 +273,30 @@
               type: "POST",
               data: marker_object,
               success: function(response) {
+                var list_item, name;
                 if (response.error) {
                   return UIManager.Error(response.error);
                 } else {
                   modal.modal("hide");
-                  return _this.Create(+response);
+                  marker_object.marker_id = parseInt(response, 10);
+                  A2Cribs.UserCache.AddRentalMarker(marker_object);
+                  name = (marker_object.alternate_name != null) && marker_object.alternate_name.length ? marker_object.alternate_name : marker_object.street_address;
+                  list_item = $("<li />", {
+                    text: name,
+                    "class": "rentals_list_item",
+                    id: marker_object.marker_id
+                  });
+                  $("#rentals_list").append(list_item);
+                  $("#rentals_list").slideDown();
+                  _this.Open(+response);
+                  return _this.AddNewUnit();
                 }
               }
             });
           }
         } else if (marker_selected !== "0") {
           modal.modal("hide");
-          return _this.Create(+marker_selected);
+          return _this.Open(+marker_selected);
         }
       });
       this.MiniMap = new A2Cribs.MiniMap(modal);
@@ -354,10 +416,10 @@
         enableCellNavigation: true,
         asyncEditorLoading: false,
         enableAddRow: false,
-        autoEdit: false
+        autoEdit: false,
+        explicitInitialization: true
       };
       data = [];
-      data.push({});
       _results = [];
       for (_i = 0, _len = containers.length; _i < _len; _i++) {
         container = containers[_i];

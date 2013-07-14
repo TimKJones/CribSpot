@@ -25,6 +25,6 @@ class MarkersController extends AppController {
 		$marker = $this->params['data'];
 		CakeLog::write("savingMarker", print_r($marker, true));
 		$marker_id = $this->Marker->FindMarkerId($marker);
-		$this->set('response', json_encode($marker_id));
+		$this->set('response', $marker_id);
 	}
 }

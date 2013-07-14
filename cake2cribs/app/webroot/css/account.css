@@ -3,9 +3,6 @@
 /******************************************************************************/
 #edit_account_window{
 	width: 100%;
-	position: absolute;
-	top: 20px;
-	bottom: 100px;
 	border: 2px solid #b7b1b1;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
@@ -23,7 +20,6 @@
 
 #user_info{
 	background: #fbfbfb;
-	margin-top: 20px;
 	border: 2px solid #b7b1b1;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;

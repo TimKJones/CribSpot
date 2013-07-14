@@ -55,10 +55,6 @@
 							<div class="span12" id="map-message">Please verify that the marker to the right is on the correct location. If not, click and drag the marker to the correct spot on the map.</div>
 							<img id="map-message-arrow" src="/img/messages/arrow-right.png">
 						</div>
-						<div class="row-fluid control-group">
-							<label class="span4"><strong>Unit Number:</strong></label>
-							<input id="Sublet_unit_number" type="text" class="span4">
-						</div>
 					</div>
 					<div class="span5">
 						<div class="row-fluid">

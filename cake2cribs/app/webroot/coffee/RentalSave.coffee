@@ -11,24 +11,48 @@ class A2Cribs.RentalSave
 		###
 		if not A2Cribs.Geocoder?
 			A2Cribs.Geocoder = new google.maps.Geocoder()
+
+		$("body").on 'click', '.rentals_list_item', (event) =>
+			@Open event.target.id
+
 		@CreateGrids()
 		# Create grid and setup necessary grid code
 		# Create jquery listeners for buttons on Rentals layout
 
 		@MarkerModalSetup()
 
-	Open: (rental_ids) ->
-		###
-		********************* TODO **********************
-		###
+	Open: (marker_id) ->
 		# Gets rental info and saves to JS object
 		@ClearGrids()
+		@ListingIds = []
+
+		@CurrentMarker = marker_id
+		marker_object = A2Cribs.UserCache.GetMarkerById @CurrentMarker
+		name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
+		$("#rentals_address").html "<strong>#{name}</strong><br>"
+		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+
+		rentals = A2Cribs.UserCache.GetRentals()
+		data = []
+		if rentals.length
+			for i in [0..rentals.length - 1]
+				if rentals[i].Marker.marker_id is @CurrentMarker
+					data.push rentals[i].Rental
+					@ListingIds[i] = rentals[i].Listing.listing_id
+
+		for key, grid of @GridMap
+			grid.setData data
+			grid.init()
+			grid.autosizeColumns()
+
+		for container,grid of @GridMap
+			grid.updateRowCount()
+			grid.render()
 
 	# Sends rental to server including all associated tables (fees, etc.)
 	Save: (row, rental_object) ->
-		row_id = 4
 		$.ajax
-			url: myBaseUrl + "listings/Save/" + row_id
+			url: myBaseUrl + "listings/Save/"
 			type: "POST"
 			data: rental_object
 			success: (response) =>
@@ -83,6 +107,12 @@ class A2Cribs.RentalSave
 		********************* TODO **********************
 		###
 		@CurrentMarker = marker_id
+		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+		for key, grid of @GridMap
+			grid.init()
+
+		data = @GridMap["overview_grid"].getData()
+
 		# Go into cache and look for marker
 		# Set Address area with marker name and picture
 		# If listings with this marker show them
@@ -114,6 +144,20 @@ class A2Cribs.RentalSave
 			clear()
 			modal.find('#marker_add').hide()
 			modal.find("#continue-button").addClass "disabled"
+			markers = A2Cribs.UserCache.GetRentalMarkers()
+			modal.find("#marker_select").empty()
+			modal.find("#marker_select").append(
+				'<option value="0">--</option>
+				<option value="new_marker"><strong>New Location</strong></option>')
+			for marker in markers
+				name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
+				option = $ "<option />",
+					{
+						text: name
+						value: marker.marker_id
+					}
+				modal.find("#marker_select").append option
+
 			modal.find("#marker_select").val "0"
 
 		modal.on 'shown', () =>
@@ -157,10 +201,6 @@ class A2Cribs.RentalSave
 				A2Cribs.UIManager.Error "You need to select a building type."
 				modal.find('#Marker_building_type_id').parent().addClass "error"
 				isValid = no
-			if modal.find('#Sublet_unit_number').val().length >= 249
-				A2Cribs.UIManager.Error "Your unit number is too long."
-				modal.find('#Sublet_unit_number').parent().addClass "error"
-				isValid = no
 			if modal.find('#Marker_alternate_name').val().length >= 249
 				A2Cribs.UIManager.Error "Your alternate name is too long."
 				modal.find('#Marker_alternate_name').parent().addClass "error"
@@ -191,11 +231,22 @@ class A2Cribs.RentalSave
 								UIManager.Error response.error
 							else
 								modal.modal "hide"
-								@Create +response
+								marker_object.marker_id = parseInt response, 10
+								A2Cribs.UserCache.AddRentalMarker marker_object
+								name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
+								list_item = $ "<li />", {
+									text: name
+									class: "rentals_list_item"
+									id: marker_object.marker_id
+								}
+								$("#rentals_list").append list_item
+								$("#rentals_list").slideDown()
+								@Open +response
+								@AddNewUnit()
 
 			else if marker_selected isnt "0"
 				modal.modal "hide"
-				@Create +marker_selected
+				@Open +marker_selected
 
 		@MiniMap = new A2Cribs.MiniMap modal
 
@@ -273,9 +324,9 @@ class A2Cribs.RentalSave
 			asyncEditorLoading: false
 			enableAddRow: false
 			autoEdit: false
+			explicitInitialization: true
 
 		data = []
-		data.push {}
 		for container in containers
 			columns = @GetColumns container
 
