@@ -1,6 +1,7 @@
 <?php echo $this->element('dashboard-header'); ?>
 <?php echo $this->element('popups'); ?>
 <?php echo $this->element('Dashboard/marker-modal');?>
+<?php echo $this->element('Dashboard/picture-modal');?>
 
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>

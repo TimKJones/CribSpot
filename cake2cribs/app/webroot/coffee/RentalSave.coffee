@@ -4,6 +4,7 @@ class A2Cribs.RentalSave
 		@ListingIds = []
 		@EditableRows = []
 		@VisibleGrid = 'overview_grid'
+		@PhotoManager = new A2Cribs.PhotoManager $("#picture-modal")
 		@SetupUI()
 
 	SetupUI: ->

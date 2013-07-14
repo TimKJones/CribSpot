@@ -11,7 +11,7 @@
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
 
-	echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
+	//echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
 
 	echo $this->Html->script('slickgrid/slick.core.js', array('inline' => false));

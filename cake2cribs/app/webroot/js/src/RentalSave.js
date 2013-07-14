@@ -8,6 +8,7 @@
       this.ListingIds = [];
       this.EditableRows = [];
       this.VisibleGrid = 'overview_grid';
+      this.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
       this.SetupUI();
     }
 
