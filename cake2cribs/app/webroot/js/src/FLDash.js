@@ -4,8 +4,9 @@
 
   A2Cribs.FLDash = (function() {
 
-    function FLDash(uiWidget) {
+    function FLDash(uiWidget, UnavailableDates) {
       this.uiWidget = uiWidget;
+      this.UnavailableDates = UnavailableDates;
       this.Listings = {};
       this.OrderItems = {};
       this.FL_Order = null;
@@ -108,11 +109,11 @@
         this.OrderItems[old_id] = this.FL_Order.getOrderItem();
         this.FL_Order.clear(false);
       }
-      options = null;
+      options = {
+        disabled_dates: this.UnavailableDates
+      };
       if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
-        options = {
-          selected_dates: this.OrderItems[listing_id].item.dates
-        };
+        options.selected_dates(this.OrderItems[listing_id].item.dates);
       }
       this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');

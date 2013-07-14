@@ -47,6 +47,6 @@
 <script>
     var FLDash;
     $(function(){
-        FLDash = new A2Cribs.FLDash($(".FLDash").first())
+        FLDash = new A2Cribs.FLDash($(".FLDash").first(), <?php echo $unavaildates;?>)
     });
 </script>

@@ -84,6 +84,21 @@ class FeaturedListing extends AppModel {
         return $this->hasAny($conditions);
     }
 
+    // Takes in a number n
+    // Returns upcoming dates that have at least N featuredlistings on it.
+    public function getDatesWithNOrMoreListings($n, $minDate=null){
+        if($minDate == null)
+            $minDate = date('Y-m-d');
+
+        $dates = $this->find('list', array(
+            'fields' => array('FeaturedListing.date'),
+            'conditions' => array('FeaturedListing.date >=' => $minDate),
+            'group' => array("FeaturedListing.date HAVING COUNT(*) >= $n")
+            )
+        );
+        return array_values($dates);
+    }
+
 
     public function getDates($listing_id, $show_past=false){
         

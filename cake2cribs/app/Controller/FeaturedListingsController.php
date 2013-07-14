@@ -10,8 +10,9 @@ class FeaturedListingsController extends AppController {
 
   public function suDash(){
     //We need to make sure the user has Super User rights
-
-    $user = $this->User->get($this->Auth->User('id'));
+    $dates = $this->FeaturedListing->getDatesWithNOrMoreListings(2);
+    
+    $user = $this->_getUserId();
 
     // if($user['User']['type'] != SUPERUSER){
     //     throw new NotFoundException();
@@ -19,7 +20,7 @@ class FeaturedListingsController extends AppController {
     
     // $listings = $this->Listing->GetListingsByType(Listing::LISTING_TYPE_RENTAL);
     
-
+    $this->set("unavaildates", json_encode($dates));
 
     // $this->set('listings', $listings);
   }

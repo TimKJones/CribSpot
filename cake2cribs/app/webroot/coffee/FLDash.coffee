@@ -1,5 +1,6 @@
 class A2Cribs.FLDash
-    constructor:(@uiWidget)->
+    constructor:(@uiWidget, @UnavailableDates)->
+        
         @Listings = {}
         @OrderItems = {}
         @FL_Order = null
@@ -120,9 +121,9 @@ class A2Cribs.FLDash
                                    #Making the price go down to 0
         
         # This sets up the featured listing form
-        options = null
+        options = {disabled_dates:@UnavailableDates}
         if @OrderItems[listing_id].item?.dates.length > 0
-            options = {selected_dates:@OrderItems[listing_id].item.dates}
+            options.selected_dates @OrderItems[listing_id].item.dates
 
         @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, listing.address, options)
         
