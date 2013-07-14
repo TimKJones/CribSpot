@@ -37,3 +37,9 @@
 - Image->UpdateAfterListingSave()
 17
 - Image->UpdateAfterListingSave()
+18
+- Image->MoveFileToFolder()
+19
+- Image->MoveFileToFolder()
+20
+- Image->MoveFileToFolder()
