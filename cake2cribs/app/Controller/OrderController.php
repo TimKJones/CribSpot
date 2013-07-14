@@ -95,26 +95,28 @@ class OrderController extends AppController {
         is a 'msg' property that will say whats wrong
     */
     public function buyItem(){
-        $orderItems = $this->request->data('orderItems');
-        if($orderItems == null){
+        $orderItems_json = $this->request->data('orderItems');
+        if($orderItems_json == null){
             throw new NotFoundException();
         }
 
-        try {
-            $jwt_clear = $this->getJwt(json_decode($orderItems));
-            App::uses('JWT', 'JWT');
-            $response = array(
-                'success'=>true,
-                'jwt_clear'=>$jwt_clear,
-                'jwt'=>JWT::encode($jwt_clear, $this->WalletSecretKey)
-                );
-        } catch (Exception $e) {
+        $orderItems = json_decode($orderItems_json);
+        $validationErrors = $this->Order->validateOrder($orderItems, $this->_getUserId());
+        if($validationErrors){
             $response = array(
                 'success'=>false,
-                'msg'=>$e->getMessage()
+                'errors'=>$validationErrors
                 );
+        }else{
+            $jwt_clear = $this->getJwt($orderItems);
+            App::uses('JWT', 'JWT');
+            $response = array(
+            'success'=>true,
+            'jwt_clear'=>$jwt_clear,
+            'jwt'=>JWT::encode($jwt_clear, $this->WalletSecretKey)
+            );
+    
         }
-        
         $this->layout = 'ajax';
         $this->set('response', json_encode($response)); 
     }
@@ -135,6 +137,7 @@ class OrderController extends AppController {
                 //No Items in cart
                 throw new Exception('No Items in the Cart');
             }
+
             $jwt_clear = $this->getJwt($orderItems);
             App::uses('JWT', 'JWT');
             $response = array(

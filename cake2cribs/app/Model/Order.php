@@ -5,10 +5,10 @@ class Order extends AppModel {
     public $actsAs = array('Containable');
     public $uses = array('FeaturedListing', 'Listing', 'Order', 'PendingOrder');
 
-    public $FLWeekdayCost = 15.00;
-    public $FLWeekendCost = 5.00;
-    public $FLMinStartOffset = 259200;  // 3 * (60 * 60 * 24);   //3 days ahead is the gap needed to feature listing
-
+    const FLWeekdayCost = 15.00;
+    const FLWeekendCost = 5.00;
+    const FLMinStartOffset = 259200;  // 3 * (60 * 60 * 24);   //3 days ahead is the gap needed to feature listing
+    const FLDailyLimit = 2;
     // public $belongsTo = array('Listing', 'User');
     
     // public $validate = array(
@@ -99,6 +99,105 @@ class Order extends AppModel {
         return $order;
     }
 
+    public function validateOrder($orderItems, $user_id, $SU=false){
+        $FeaturedListing = ClassRegistry::init('FeaturedListing');
+        $Listing = ClassRegistry::init('Listing');
+        // Build a map of a date and num featuredlistings on that date
+        $dates = array();
+        $validationErrors = array();
+
+        foreach($orderItems as &$orderItem){
+            //Only want unique dates, incase extras got in we remove them
+            $orderItem->item->dates = array_unique($orderItem->item->dates); 
+            $listing_id = $orderItem->item->listing_id;
+            
+            // Depending on if the order is being carried out by a super
+            // user do different checks
+            if(!$SU){
+                if(!$Listing->UserOwnsListing($listing_id, $user_id)){
+                    $msg = "User doesn't own the listing";
+                    array_push($validationErrors, array('id'=>$listing_id, 'reason'=>$msg));
+                }
+            }else{
+
+                // Super users like the Mich Daily don't have to own listing to feature it
+                if(!$Listing->ListingExists($listing_id)){
+                    $msg = "Listing doesn't exist";
+                    array_push($validationErrors, array('id'=>$listing_id, 'reason'=>$msg));   
+                }
+            }
+
+
+            // unique dates incase duplicate dates slipped in the post data
+            foreach($orderItem->item->dates as $date){
+                if(!array_key_exists($date, $dates)){
+                    $dates[$date]['id'] = array();
+                    $dates[$date]['count'] = $FeaturedListing->countListingsOnDate($date);
+                }
+                array_push($dates[$date]['id'], $listing_id);
+            }
+        }
+
+        // We now want to see if featuring the listings on the given dates
+        // will put us over our daily limit. Also check to see if a date 
+        // is with in the valid range (n days in the future). Check to see if
+        // a listing is already featured on a day
+        
+        $min_start_date = date("Y-m-d", time() + $this::FLMinStartOffset); // first day they can start featuring
+        $min_start = strtotime($min_start_date);
+
+        foreach($dates as $date=>$info){
+            
+            // See if featuring the listings on a given date will put us over
+            // The limit
+            if($info['count'] + count($info['id']) > $this::FLDailyLimit){
+                $msg = "Not enough spots left to feature on $date";
+                foreach($info['id'] as $id){
+                    array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
+                }
+            }
+
+            //See if the date trying to be featured on is before the minimum start date
+            if(strtotime($date) < $min_start){
+                $msg = "Date selected ($date) is before the minimum start date ($min_start_date)";
+                foreach($info['id'] as $id){
+                    array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
+                }   
+            }
+
+            //See if the listing is already featured on the given day.
+            foreach($info['id'] as $id){
+                if($FeaturedListing->featuredOnDate($id, $date)){
+                    $msg = "Listing already featured on date ($date)";
+                    array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
+                }
+            }
+        }
+
+
+
+        if(count($validationErrors) > 0){
+            // Rearrange the validation errors structure to be grouped by listing_id
+            $groupedErrors = array();
+            foreach($validationErrors as $error){
+
+                $id = $error['id'];
+
+                if(!array_key_exists($id, $groupedErrors)){
+                    $groupedErrors[$id]=array();
+                }
+                array_push($groupedErrors[$id], $error['reason']);
+            }
+            return $groupedErrors;
+        }else{
+            return null;
+        }
+
+
+
+        
+    }
+
     /*
         Makes sure the order item is valid and will make alterations to the object to make sure
         an example featured listing order item will have the structure 
@@ -145,7 +244,7 @@ class Order extends AppModel {
             throw new Exception("No dates selected.");
         }
 
-        $min_start_date = date("m/d/Y", time() + $this->FLMinStartOffset); // first day they can start featuring
+        $min_start_date = date("m/d/Y", time() + $this::FLMinStartOffset); // first day they can start featuring
         $min_start = strtotime($min_start_date);
         // Need to make sure each date selected falls within the valid
         // range of dates. Example: Dates have to be selected 3 days in advanced
@@ -159,7 +258,7 @@ class Order extends AppModel {
 
         App::uses('DateHelpers', 'Utilities');
         $day_counts = DateHelpers::getDayCounts($dates);
-        $price = ($day_counts['weekdays'] * $this->FLWeekdayCost) + ($day_counts['weekends'] * $this->FLWeekendCost);
+        $price = ($day_counts['weekdays'] * $this::FLWeekdayCost) + ($day_counts['weekends'] * $this::FLWeekendCost);
         $orderItem->price = $price;
 
     }

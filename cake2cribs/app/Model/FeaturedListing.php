@@ -74,6 +74,17 @@ class FeaturedListing extends AppModel {
 
     }
 
+    // Given a mysql formatted date string y-m-d count the num listings on that day.
+    public function countListingsOnDate($date){
+        return $this->find('count', array('conditions'=>array("FeaturedListing.date"=>$date)));
+    }
+    // Returns true or false based on whether the following listing is featured on the provided date
+    public function featuredOnDate($listing_id, $date){
+        $conditions = array('FeaturedListing.listing_id'=>$listing_id, "FeaturedListing.date"=>$date);
+        return $this->hasAny($conditions);
+    }
+
+
     public function getDates($listing_id, $show_past=false){
         
         if($show_past){

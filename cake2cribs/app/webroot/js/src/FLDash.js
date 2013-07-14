@@ -19,9 +19,15 @@
 
     FLDash.prototype.setupEventHandlers = function() {
       var _this = this;
-      this.uiWidget.find("#listings_list").on('click', '.listing-item', function(event) {
+      this.uiListingsList.on('mouseenter', '.feature-star', function(event) {
+        $(event.currentTarget).removeClass('icon-star-empty');
+        return $(event.currentTarget).addClass('icon-star');
+      }).on('mouseleave', '.feature-star', function(event) {
+        $(event.currentTarget).removeClass('icon-star');
+        return $(event.currentTarget).addClass('icon-star-empty');
+      }).on('click', '.feature-star', function(event) {
         var listing_id;
-        listing_id = $(event.currentTarget).data('id');
+        listing_id = $(event.currentTarget).parent('.listing-item').data('id');
         if (!(_this.OrderItems[listing_id] != null)) {
           _this.addOrderItem(listing_id);
         }
@@ -44,9 +50,14 @@
         return _this.featureListing();
       });
       return this.uiFL_Form.on('orderItemChanged', function(event, FL) {
-        var listing_id;
+        var listing_id, total;
         listing_id = FL.listing_id;
-        return _this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "] .price").html(" $" + (FL.getPrice().toFixed(2)));
+        _this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "] .price").html("" + (FL.getPrice().toFixed(2)));
+        total = 0;
+        _this.uiOrderItemsList.find(".price").each(function(index, element) {
+          return total += Number($(element).html());
+        });
+        return _this.uiOrderItemsList.siblings('tfoot').find('.total').html("" + (total.toFixed(2)));
       });
     };
 
@@ -83,37 +94,74 @@
     };
 
     FLDash.prototype.editOrderItem = function(listing_id) {
-      var listing, _ref;
+      var listing, old_id, options, _ref;
       listing = this.Listings[listing_id];
       if (this.FL_Order != null) {
-        this.OrderItems[this.FL_Order.listing_id] = this.FL_Order.getOrderItem();
+        old_id = this.FL_Order.listing_id;
+        this.uiOrderItemsList.find(".orderItem[data-id=" + old_id + "]").removeClass('editing');
+        this.OrderItems[old_id] = this.FL_Order.getOrderItem();
         this.FL_Order.clear(false);
       }
-      this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, {
-        selected_dates: (_ref = this.OrderItems[listing_id].item) != null ? _ref.dates : void 0
-      });
-      return console.log(this.FL_Order);
+      options = null;
+      if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
+        options = {
+          selected_dates: this.OrderItems[listing_id].item.dates
+        };
+      }
+      this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
+      this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
+      return this.uiWidget.find(".right-content").show();
     };
 
     FLDash.prototype.removeOrderItem = function(listing_id) {
-      var _ref;
-      if (((_ref = this.FL_Order) != null ? _ref.listing_id : void 0) === listing_id) {
-        this.FL_Order.clear();
-      }
+      var different_id, _ref;
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").remove();
-      return delete this.OrderItems[listing_id];
+      delete this.OrderItems[listing_id];
+      if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
+        this.FL_Order = null;
+      }
+      if (this.uiOrderItemsList.find(".orderItem").length === 0) {
+        this.uiWidget.find(".right-content").hide();
+      } else {
+        different_id = this.uiOrderItemsList.find(".orderItem").first().data('id');
+        this.editOrderItem(different_id);
+      }
+      return $(".validation-error-list").children("[data-id=" + listing_id + "]").remove();
     };
 
     FLDash.prototype.initTemplates = function() {
-      var ListingHTML, OrderItemHTML;
-      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= altName %>\n</div>";
+      var ListingHTML, OrderItemHTML, ValidationErrorHTML;
+      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= altName %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
       this.ListingTemplate = _.template(ListingHTML);
-      OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td><span class = 'price'?>$<%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>";
-      return this.OrderItemTemplate = _.template(OrderItemHTML);
+      OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td>$<span class = 'price'?><%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>\n";
+      this.OrderItemTemplate = _.template(OrderItemHTML);
+      ValidationErrorHTML = "<dd class = 'validation-error'><%= msg %></dd>";
+      return this.ValidationErrorTemplate = _.template(ValidationErrorHTML);
+    };
+
+    FLDash.prototype.showErrors = function(errors) {
+      var addr, error_msgs, html, index, listing_id, msg, oi, _i, _len;
+      html = "";
+      for (listing_id in errors) {
+        if (!__hasProp.call(errors, listing_id)) continue;
+        error_msgs = errors[listing_id];
+        oi = this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]");
+        oi.addClass('error');
+        addr = oi.find('.address').html();
+        html += "<dt data-id='" + listing_id + "''>Validation Errors for " + addr + "</dt>";
+        for (index = _i = 0, _len = error_msgs.length; _i < _len; index = ++_i) {
+          msg = error_msgs[index];
+          html += "<dd data-id='" + listing_id + "' class = 'validation-error'>" + (index + 1) + ". " + msg + "</dd>";
+        }
+      }
+      return $('.validation-error-list').html(html);
     };
 
     FLDash.prototype.buy = function() {
-      var key, order, orderItem, _ref;
+      var key, order, orderItem, _ref,
+        _this = this;
+      this.uiOrderItemsList.find(".orderItem").removeClass("error");
+      $('.validation-error-list').html("");
       if (this.FL_Order) {
         this.OrderItems[this.FL_Order.listing_id] = this.FL_Order.getOrderItem();
       }
@@ -124,7 +172,9 @@
         orderItem = _ref[key];
         order.push(orderItem);
       }
-      return A2Cribs.Order.BuyItems(order);
+      return A2Cribs.Order.BuyItems(order, function(errors) {
+        return _this.showErrors(errors);
+      });
     };
 
     FLDash.prototype.featureListing = function() {

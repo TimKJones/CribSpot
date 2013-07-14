@@ -16,22 +16,31 @@
     <div class = 'left-content'>
         <div id = 'listings_list'></div>
     </div>
+    <div class = 'right-content'>
+        <div class = 'fl_form'>
+            <?php echo $this->element('Order/featured-listing-item');?>
+        </div>
+        <dl class = 'validation-error-list'></dl>
+        <table class = 'table orderItems_table'>
+            <thead> 
+                    <th>Address</th>
+                    <th>Price</th>
+                    <th></th>
+            </thead>
+            
+            <tbody id = 'orderItems_list'></tbody>
+            <tfoot>
+                <tr>
+                    <th><span class = 'pull-right'>Total:</span></th>
+                    <td>$<span class = 'total'></span></td>
+                    <th></th>
+                </tr>
+            </tfoot>
 
-    <div class = 'fl_form'>
-        <?php echo $this->element('Order/featured-listing-item');?>
-        <button class = 'btn feature-listing'>Feature</button>
-    
-    <table class = 'table'>
-        <thead> 
-                <th>Address</th>
-                <th>Price</th>
-                <th></th>
-        </thead>
-        
-        <tbody id = 'orderItems_list'></tbody>
-    </table>
-    <button class = 'btn' id = 'buyNow'>Buy</button>
+        </table>
+        <button class = 'btn' id = 'buyNow'>Buy</button>
     </div>
+    
 
 </div>
 

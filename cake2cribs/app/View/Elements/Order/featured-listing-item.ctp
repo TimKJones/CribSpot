@@ -4,7 +4,7 @@
             <span class = 'address'></span>
         </div>
     </div>
-    <p>Add Dates:</p>
+    <!-- <p>Add Dates:</p> -->
     <div class = 'mdp'>
     </div>
     <table class = 'total-tally'>

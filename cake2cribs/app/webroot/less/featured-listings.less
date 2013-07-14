@@ -1,5 +1,6 @@
 .FLDash{
     position: relative;
+
     .left-content{
         position: absolute;
         top: 0;
@@ -12,7 +13,20 @@
             width: 300px;
             border-top: 2px solid #dbdbdb;
             padding: 5px;
-            cursor: pointer;
+            
+            .feature-star{
+                padding-right: 20px;
+                font-size: 22px;
+            }
+            .feature-star:hover{
+                cursor: pointer;
+            }
+
+
+        }
+
+        .icon-star{
+            color: #f6e617;
         }
         .listing:hover{
             background: #f6f6f6;            
@@ -24,16 +38,37 @@
 
         }
 
-
+        .hidden{
+            visibility: hidden;
+        }
     }
 
-    .fl_form{
+    .right-content{
         position: absolute;
         top: 0;
         bottom: 0;
         left: 320px;
-        // display: none;
+        display: none;
+
+        .editing{
+            background: #fbfdee;
+        }
+
+        .actions > a{
+            font-size: 16px;
+            color: #333;
+        }
+        .actions > a:hover{
+            text-decoration: none;
+            color: #666;
+        }
+
     }
+
+    .fl_form{
+        
+    }
+
 
 
 

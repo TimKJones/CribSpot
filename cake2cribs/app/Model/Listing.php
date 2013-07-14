@@ -189,6 +189,12 @@ class Listing extends AppModel {
 
 		return $listings != null;
 	}
+
+	public function ListingExists($listing_id){
+		$this->id = $listing_id;
+		return $this->exists();
+	}
+
 }	
 
 ?>

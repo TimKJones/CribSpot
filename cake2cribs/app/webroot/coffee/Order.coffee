@@ -1,6 +1,6 @@
 class A2Cribs.Order
 
-    @BuyItems:(orderItems, successHandler=null, failHandler=null)->
+    @BuyItems:(orderItems, errorHandler, successHandler=null, failHandler=null)->
         data = {
             'orderItems': JSON.stringify(orderItems)
         }
@@ -8,7 +8,8 @@ class A2Cribs.Order
         $.post url, data, (response_raw)=>
             response = JSON.parse(response_raw)
             if !response.success
-                console.log response.message
+                errorHandler(response.errors)
+                # console.log response.message
             google.payments.inapp.buy({
                 parameters:{},
                 jwt: response.jwt,

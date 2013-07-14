@@ -5,7 +5,7 @@
 
     function Order() {}
 
-    Order.BuyItems = function(orderItems, successHandler, failHandler) {
+    Order.BuyItems = function(orderItems, errorHandler, successHandler, failHandler) {
       var data, url,
         _this = this;
       if (successHandler == null) {
@@ -22,7 +22,7 @@
         var response;
         response = JSON.parse(response_raw);
         if (!response.success) {
-          console.log(response.message);
+          errorHandler(response.errors);
         }
         return google.payments.inapp.buy({
           parameters: {},
