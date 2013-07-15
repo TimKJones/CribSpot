@@ -139,7 +139,7 @@ fieldset
 }
 
 
-
+/*
 .unselected
 {
     box-shadow: 2px 4px 10px gray;
@@ -153,6 +153,7 @@ fieldset
     -moz-box-shadow: 2px 4px 10px blue;
     -webkit-box-shadow: 2px 4px 10px blue;
 }
+*/
 
 #caption{
     position: absolute;

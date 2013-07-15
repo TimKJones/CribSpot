@@ -79,6 +79,7 @@ class A2Cribs.Dashboard
 	@ShowContent:(content)->
 		content.siblings().addClass 'hidden'
 		content.removeClass 'hidden'
+		content.trigger 'shown'
 
 	@HideContent: (classname)->
 		$(".#{ classname }-content").addClass 'hidden'

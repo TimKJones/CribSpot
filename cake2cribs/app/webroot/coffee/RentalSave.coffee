@@ -19,17 +19,21 @@ class A2Cribs.RentalSave
 
 		$("#rentals_edit").click (event) =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
-			for row in selected
-				data = @GridMap[@VisibleGrid].getDataItem row
-				data.editable = not @EditableRows.length
 
 			if @EditableRows.length
 				@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
-				@EditableRows = []
 				$(event.target).text "Edit"
-			else
+				for row in @EditableRows
+					data = @GridMap[@VisibleGrid].getDataItem row
+					data.editable = no
+				@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+				@EditableRows = []
+			else if selected.length
 				@EditableRows = selected
-				$(event.target).text "Save"
+				$(event.target).text "Finish Editing"
+				for row in selected
+					data = @GridMap[@VisibleGrid].getDataItem row
+					data.editable = yes
 			@GridMap[@VisibleGrid].setSelectedRows selected
 
 		$("#rentals_delete").click () =>
@@ -43,6 +47,12 @@ class A2Cribs.RentalSave
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
 			@VisibleGrid = $(event.target).attr("href").substring(1)
 			@GridMap[@VisibleGrid].setSelectedRows selected
+
+		$(".rentals-content").on "shown", (event) =>
+			width = $("##{@VisibleGrid}").width()
+			for grid of @GridMap
+				$("##{grid}").css "width", "#{width}px"
+				@GridMap[grid].init()
 
 
 		@CreateGrids()
@@ -73,11 +83,11 @@ class A2Cribs.RentalSave
 			success: (response) =>
 				response = JSON.parse response
 				if response.listing_id?
-					alert "Success!"
+					A2Cribs.UIManager.Success "Save successful!"
 					@ListingIds[row] = response.listing_id
 					console.log response
 				else
-					alert "Save unsuccessful"
+					A2Cribs.UIManager.Error "Save unsuccessful"
 					console.log response
 
 	###
@@ -116,6 +126,8 @@ class A2Cribs.RentalSave
 					data = @GridMap[@VisibleGrid].getData()
 					for row in rows
 						data.splice row, 1
+					@GridMap[@VisibleGrid].updateRowCount()
+					@GridMap[@VisibleGrid].render()
 				else
 					A2Cribs.UIManager.Error "Delete unsuccessful"
 					console.log response
@@ -143,8 +155,18 @@ class A2Cribs.RentalSave
 	###
 	AddNewUnit: ->
 		# Create newline on grid
-		data = @GridMap["overview_grid"].getData()
-		data.push {}
+		@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
+
+		data = @GridMap[@VisibleGrid].getData()
+
+		for row in @EditableRows
+			data[row].editable = no
+
+		row_number = data.length
+		@EditableRows = [row_number]
+		data.push { editable: true }
+		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+		$("#rentals_edit").text "Finish Editing"
 
 		for container,grid of @GridMap
 			grid.updateRowCount()
@@ -249,7 +271,7 @@ class A2Cribs.RentalSave
 								UIManager.Error response.error
 							else
 								modal.modal "hide"
-								marker_object.marker_id = parseInt response, 10
+								marker_object.marker_id = response
 								A2Cribs.UserCache.AddRentalMarker marker_object
 								name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
 								list_item = $ "<li />", {
@@ -259,7 +281,7 @@ class A2Cribs.RentalSave
 								}
 								$("#rentals_list").append list_item
 								$("#rentals_list").slideDown()
-								@Open +response
+								@Open response
 								@AddNewUnit()
 
 			else if marker_selected isnt "0"
@@ -333,8 +355,6 @@ class A2Cribs.RentalSave
 
 		for key, grid of @GridMap
 			grid.setData data
-			grid.init()
-			grid.autosizeColumns()
 			grid.updateRowCount()
 			grid.render()
 
@@ -347,7 +367,7 @@ class A2Cribs.RentalSave
 	CreateGrids: ->
 		# Method to create grids for each tab
 		containers = [
-			"overview_grid", "features_grid", "amenities_grid", "utilites_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"
+			"overview_grid", "features_grid", "amenities_grid", "utilities_grid", "buildingamenities_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"
 		]
 		@GridMap = {}
 		options =
@@ -356,14 +376,16 @@ class A2Cribs.RentalSave
 			asyncEditorLoading: false
 			enableAddRow: false
 			autoEdit: true
+			forceFitColumns: true
 			explicitInitialization: true
+			rowHeight: 35
 
 		data = []
 		for container in containers
 			columns = @GetColumns container
 
 			checkboxSelector = new Slick.CheckboxSelectColumn
-				cssClass: "slick-cell-checkboxsel"
+				cssClass: "grid_checkbox"
 			columns[0] = checkboxSelector.getColumnDefinition()
 
 			@GridMap[container] = new Slick.Grid "##{container}", data, columns, options
@@ -420,12 +442,14 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "beds"
 					name: "Beds"
 					field: "beds"
 					editor: Slick.Editors.Integer
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "occupancy"
@@ -439,7 +463,7 @@ class A2Cribs.RentalSave
 					name: "Total Rent"
 					field: "rent"
 					editor: Slick.Editors.Integer
-					formatter: A2Cribs.Formatters.Money
+					formatter: A2Cribs.Formatters.RequiredMoney
 				}
 				{
 					id: "rent_negotiable"
@@ -453,7 +477,7 @@ class A2Cribs.RentalSave
 					name: "Start Date"
 					field: "start_date"
 					editor: Slick.Editors.Date
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "alternate_start_date"
@@ -467,20 +491,21 @@ class A2Cribs.RentalSave
 					name: "End Date"
 					field: "end_date"
 					editor: Slick.Editors.Date 
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "available"
 					name: "Availability"
 					field: "available"
 					editor: A2Cribs.Editors.Availability
+					formatter: A2Cribs.Formatters.Availability
 				}
 				{
 					id: "unit_count"
 					name: "Unit Count"
 					field: "unit_count"
 					editor: Slick.Editors.Integer
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 			]
 
@@ -495,18 +520,14 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "baths"
 					name: "Baths"
 					field: "baths"
 					editor: Slick.Editors.Integer
-				}
-				{
-					id: "air"
-					name: "A/C"
-					field: "air"
-					editor: A2Cribs.Editors.AC
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "parking_type"
@@ -519,6 +540,7 @@ class A2Cribs.RentalSave
 					name: "Spots"
 					field: "parking_spots"
 					editor: Slick.Editors.Integer
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "street_parking"
@@ -544,6 +566,47 @@ class A2Cribs.RentalSave
 					name: "Smoking"
 					field: "smoking"
 					editor: A2Cribs.Editors.Smoking
+				}
+				{
+					id: "square_feet"
+					name: "SQ Feet"
+					field: "square_feet"
+					editor: Slick.Editors.Integer
+					formatter: A2Cribs.Formatters.Text
+				}
+				{
+					id: "year_built"
+					name: "Year Built"
+					field: "year_built"
+					editor: Slick.Editors.Integer
+					formatter: A2Cribs.Formatters.Text
+				}
+			]
+
+		AmenitiesColumns = ->
+			columns = [
+				{
+					# Use for Checkbox
+				}
+				{
+					id: "title"
+					name: "Unit/Style - Name"
+					field: "title"
+					editor: A2Cribs.Editors.Unit
+					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
+				}
+				{
+					id: "air"
+					name: "A/C"
+					field: "air"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "washer"
+					name: "Washer/Dryer"
+					field: "washer"
 				}
 				{
 					id: "fridge"
@@ -574,20 +637,15 @@ class A2Cribs.RentalSave
 					formatter: Slick.Formatters.Checkmark
 				}
 				{
-					id: "square_feet"
-					name: "SQ Feet"
-					field: "square_feet"
-					editor: Slick.Editors.Integer
-				}
-				{
-					id: "year_built"
-					name: "Year Built"
-					field: "year_built"
-					editor: Slick.Editors.Integer
+					id: "security_system"
+					name: "Security System"
+					field: "security_system"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
 				}
 			]
 
-		AmenitiesColumns = ->
+		BuildingAmenitiesColumns =->
 			columns = [
 				{
 					# Use for Checkbox
@@ -598,6 +656,77 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
+				}
+				{
+					id: "pool"
+					name: "Pool"
+					field: "pool"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "hot_tub"
+					name: "Hot Tubs"
+					field: "hot_tub"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "fitness_center"
+					name: "Fitness Center"
+					field: "fitness_center"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "game_room"
+					name: "Game Room"
+					field: "game_room"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "front_desk"
+					name: "Front Desk"
+					field: "front_desk"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "tanning_beds"
+					name: "Tanning Beds"
+					field: "tanning_beds"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "study_lounge"
+					name: "Study Lounge"
+					field: "study_lounge"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "patio_deck"
+					name: "Deck/Patio"
+					field: "patio_deck"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "yard_space"
+					name: "Yard Space"
+					field: "yard_space"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
+				}
+				{
+					id: "elevator"
+					name: "Elevator"
+					field: "elevator"
+					editor: Slick.Editors.Checkbox
+					formatter: Slick.Formatters.Checkmark
 				}
 			]
 
@@ -612,6 +741,7 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "electric"
@@ -695,6 +825,7 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "deposit_fee"
@@ -765,18 +896,21 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "highlights"
 					name: "Highlights"
 					field: "highlights"
 					editor: Slick.Editors.LongText
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "description"
 					name: "Description"
 					field: "description"
 					editor: Slick.Editors.LongText
+					formatter: A2Cribs.Formatters.Text
 				}
 			]
 
@@ -791,6 +925,7 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "pictures"
@@ -810,6 +945,7 @@ class A2Cribs.RentalSave
 					field: "title"
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
+					minWidth: 185
 				}
 				{
 					id: "waitlist"
@@ -823,30 +959,35 @@ class A2Cribs.RentalSave
 					name: "waitlist_open_date"
 					field: "waitlist_open_date"
 					editor: Slick.Editors.Date 
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "lease_office_address"
 					name: "lease_office_address"
 					field: "lease_office_address"
 					editor: Slick.Editors.Text
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "contact_email"
 					name: "contact_email"
 					field: "contact_email"
 					editor: Slick.Editors.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "contact_phone"
 					name: "contact_phone"
 					field: "contact_phone"
 					editor: Slick.Editors.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "website"
 					name: "website"
 					field: "website"
 					editor: Slick.Editors.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 			]
 
@@ -854,8 +995,9 @@ class A2Cribs.RentalSave
 			when "overview_grid" then OverviewColumns()
 			when "features_grid" then FeaturesColumns()
 			when "amenities_grid" then AmenitiesColumns()
-			when "utilites_grid" then UtilitiesColumns()
+			when "utilities_grid" then UtilitiesColumns()
 			when "fees_grid" then FeesColumns()
 			when "description_grid" then DescriptionColumns()
 			when "picture_grid" then PictureColumns()
 			when "contact_grid" then ContactColumns()
+			when "buildingamenities_grid" then BuildingAmenitiesColumns()
