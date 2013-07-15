@@ -61,10 +61,9 @@ class Image extends AppModel {
 		if (!is_file(WWW_ROOT . $newPath . '.' . $fileType)){
 			/* File doesn't exist yet. This is the path where the image will be saved. */
 			$newPath = $newPath . '.' . $fileType;
-			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath);
+			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath, $user_id);
 			if (array_key_exists('error', $response)){
 				/* TODO: Log error info */
-				CakeLog::write("AddImage", "error: " . print_r($response, true));
 				return $response;
 			}
 			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
@@ -89,14 +88,14 @@ class Image extends AppModel {
 	Returns true on success; false on failure
 	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
 	*/
-	public function MoveFileToFolder($file, $newPath)
+	public function MoveFileToFolder($file, $newPath, $user_id)
 	{
 		if (!$this->_isValidFileSize($file)) {
 			/* TODO: Log error info */
 			return array('error' => 'File is too large');
 		}
 
-		if (!$this->_isValidFileType($file)){
+		if (!$this->_isValidFileType($file, $user_id)){
 			/* TODO: Log error info */
 			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png');
 		}
@@ -570,7 +569,6 @@ class Image extends AppModel {
 			return false;
 
 		$fileType = $this->_getFileType($file);
-		CakeLog::write("AddImage", "image type: " . $fileType);
 		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
 		{
 			//TODO: Log error somewhere, listing user_id, file_name, dates, important information

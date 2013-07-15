@@ -37,6 +37,7 @@ class ImagesController extends AppController {
 			!array_key_exists('files', $this->request->params['form'])){
 			/* TODO: log error */
 			$this->set('response', json_encode(array('error' => 'Failed to upload image')));
+			return;
 		}
 
 		$image = $this->request->params['form']['files'];
@@ -45,25 +46,7 @@ class ImagesController extends AppController {
 			$listing_id = $this->data['listing_id'];
 
 		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
-		/* 
-		If no listing_id is given, the listing entry for this image has not yet been created.
-		Create an image entry and update its listing_id later after the listing has been completed.
-		*/
-		if ($listing_id == null && !array_key_exists('error', $imageResponse)){
-			/* Initialize the array of image_ids for this row_id if it does not yet exist. */
-			$image_id_array = $this->Session->read('row_' . $row_id);
-			if ($image_id_array == null)
-				$image_id_array = array();	
-
-			/* 
-			$imageResponse contains the new image_id if there was no error.
-			Add this image_id to the list of image_ids belonging to this incomplete listing
-			*/
-			array_push($image_id_array, $imageResponse['image_id']);
-			$this->Session->write('row_' . $row_id, $image_id_array);
-		}
-
-		$this->set('response', $imageResponse);
+		$this->set('response', json_encode($imageResponse));
 	}
 
 	function add($data = null)
