@@ -64,6 +64,8 @@ class Listing extends AppModel {
 	*/
 	public function SaveListing($listing, $user_id=null)
 	{
+		$listing['Listing']['user_id'] = $user_id;
+
 		if (array_key_exists('Rental', $listing))
 		{
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
@@ -84,7 +86,10 @@ class Listing extends AppModel {
 		}
 
 		/* Listing failed to save - return error code */
-		$this->LogError($user_id, 6, print_r($this->validationErrors, true));
+		$error = null;
+		$error['Listing'] = $listing;
+		$error['validationErrors'] = $this->validationErrors;
+		$this->LogError($user_id, 6, json_encode($error));
 		return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
 	}

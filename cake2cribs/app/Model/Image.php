@@ -22,8 +22,6 @@ class Image extends AppModel {
 		),
 		'is_primary' => 'boolean',
 		'caption' => array(
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric'),
 			'maxLength' => array(
 				'rule' => array('maxLength', 25)
 			)
@@ -168,35 +166,26 @@ class Image extends AppModel {
 	/*
 	Called after a listing is saved to update the listings images that were saved before listing_id was known.
 	$listing_id = id of listing that was just saved.
-	$image_ids  = ids of images to be updated for this listing.
+	$images  = image objects to be re-saved.
 	Returns error message on failure.
 	*/
-	public function UpdateAfterListingSave($listing_id, $image_ids, $user_id=null)
+	public function UpdateAfterListingSave($listing_id, $images, $user_id=null)
 	{
-		$images = $this->find('all', array( 
-			'conditions' => array('Image.image_id' => $image_ids),
-			'contain' => array()
-		)); 
-
 		$errors = false;
 		for ($i = 0; $i < count($images); $i++){
 			if (!array_key_exists($i, $images) ||
 				!array_key_exists('Image', $images[$i]) ||
-				!array_key_exists('image_path', $images[$i]['Image'])){
+				!array_key_exists('image_id', $images[$i]['Image'])){
 				$this->LogError($user_id, 16, print_r($images[$i], true));
 				return array('error' => 
 					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 16.');
 			}
 
 			$images[$i]['Image']['listing_id'] = $listing_id;
-			$images[$i]['Image'] = $this->_removeNullEntries($images[$i]['Image']);
-			if (!$this->save($images[$i])){
-				$errors = true;
-				$this->LogError($user_id, 17, print_r($images[$i], true));
-			}
 		}
 
-		if ($errors){
+		if (!$this->save($images)){
+			$this->LogError($user_id, 17, print_r($images[$i], true));
 			return array('error' => 
 					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 17');
 		}

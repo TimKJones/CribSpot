@@ -10,6 +10,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
+		$this->Auth->allow('Save');
 	}
 
 	/*
@@ -21,19 +22,24 @@ class ListingsController extends AppController {
 	{
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
-		$listingObject['Listing']['user_id'] = $this->_getUserId();
-		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
-		//$image_ids_to_update = $listingObject['image_ids'];
-		//unset($listingObject['image_ids']);
+		$listing = $listingObject['Listing'];
+		$listing['Listing'] = $listing;
+		$images = null;
+		if (array_key_exists('Image', $listing)){
+			$images = $listingObject['Image'];
+			$images['Image'] = $images;
+		}
+
 		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
-		/* if (!array_key_exists('error', $response) && 
+		if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
-			$image_ids_to_update != null) {
+			$images != null) {
 			// Update images that bad been saved before listing_id was known
-			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update, $this->_getUserId());
+			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $images, $this->_getUserId());
 			if (array_key_exists('error', $imageResponse))
 				$response['error'] = $imageResponse['error'];
-		} */
+		}
+
 		$this->set('response', json_encode($response));
 		return;
 	}
