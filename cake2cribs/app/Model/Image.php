@@ -61,12 +61,10 @@ class Image extends AppModel {
 		if (!is_file(WWW_ROOT . $newPath . '.' . $fileType)){
 			/* File doesn't exist yet. This is the path where the image will be saved. */
 			$newPath = $newPath . '.' . $fileType;
-			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath);
-			if (array_key_exists('error', $response)){
-				/* TODO: Log error info */
-				CakeLog::write("AddImage", "error: " . print_r($response, true));
+			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath, $user_id);
+			if (array_key_exists('error', $response))
 				return $response;
-			}
+
 			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
 			return $image_id;
 		}
@@ -74,9 +72,9 @@ class Image extends AppModel {
 		/* File name already exists. Create new folder if $newPath doesn't already exist */
 		if (!is_dir($newPath)){
 			if (!$this->_createFolder($newPath)){
-				/* TODO: Log error info */
-				return array('error' => 
-					'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 14');
+				$this->LogError($user_id, 14, print_r($newPath, true));
+				return array('error' => 'There was an error saving your image. ' . 
+					'Contact help@cribspot.com if the error persists. Reference error code 14');
 			}
 		}
 
@@ -89,32 +87,34 @@ class Image extends AppModel {
 	Returns true on success; false on failure
 	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
 	*/
-	public function MoveFileToFolder($file, $newPath)
+	public function MoveFileToFolder($file, $newPath, $user_id)
 	{
 		if (!$this->_isValidFileSize($file)) {
-			/* TODO: Log error info */
-			return array('error' => 'File is too large');
+			$this->LogError($user_id, 21, print_r($file, true));
+			return array('error' => 'File is too large.' . 
+				'Contact help@cribspot.com if you believe this is an error. Reference error code 21.');
 		}
 
-		if (!$this->_isValidFileType($file)){
-			/* TODO: Log error info */
-			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png');
+		if (!$this->_isValidFileType($file, $user_id)){
+			$this->LogError($user_id, 22, print_r($file, true));
+			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png.' . 
+				'Contact help@cribspot.com if you believe this is an error. Reference error code 22.');
 		}
 
 		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))){
-			/* TODO: Log error info */
+			$this->LogError($user_id, 18, "file: " . print_r($file, true) . "; path: " . $newPath);
 			return array(
 			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 18');
 		}
 
 		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name'])){
-			/* TODO: Log error info */
+			$this->LogError($user_id, 19, print_r($file, true));
 			return array(
 			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 19');
 		}
 
 		if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
-			/* TODO: Log error info */
+			$this->LogError($user_id, 20, print_r($file, true));
 			return array(
 			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 20');
 		}
@@ -138,9 +138,11 @@ class Image extends AppModel {
 
 		if ($this->save($newImage))
 			return array('image_id' => $this->id);
-		else
+		else{
+			$this->LogError($user_id, 15, print_r($newImage, true));
 			return array('error' => 
 				'Failed to save image. Contact help@cribspot.com if the error persists. Reference error code 15.');
+		}
 	}
 
 	/*
@@ -169,7 +171,7 @@ class Image extends AppModel {
 	$image_ids  = ids of images to be updated for this listing.
 	Returns error message on failure.
 	*/
-	public function UpdateAfterListingSave($listing_id, $image_ids)
+	public function UpdateAfterListingSave($listing_id, $image_ids, $user_id=null)
 	{
 		$images = $this->find('all', array( 
 			'conditions' => array('Image.image_id' => $image_ids),
@@ -181,7 +183,7 @@ class Image extends AppModel {
 			if (!array_key_exists($i, $images) ||
 				!array_key_exists('Image', $images[$i]) ||
 				!array_key_exists('image_path', $images[$i]['Image'])){
-				/* TODO: Error logging */
+				$this->LogError($user_id, 16, print_r($images[$i], true));
 				return array('error' => 
 					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 16.');
 			}
@@ -190,14 +192,14 @@ class Image extends AppModel {
 			$images[$i]['Image'] = $this->_removeNullEntries($images[$i]['Image']);
 			if (!$this->save($images[$i])){
 				$errors = true;
-				/*TODO: LOG ERRORS */
-				return array('error' => 
-					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 17');
+				$this->LogError($user_id, 17, print_r($images[$i], true));
 			}
 		}
 
-		if ($errors)
-			return array('error' => 'Failed to save images');
+		if ($errors){
+			return array('error' => 
+					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 17');
+		}
 
 		return array('success' => '');
 	}	
@@ -570,13 +572,9 @@ class Image extends AppModel {
 			return false;
 
 		$fileType = $this->_getFileType($file);
-		CakeLog::write("AddImage", "image type: " . $fileType);
 		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
-		{
-			//TODO: Log error somewhere, listing user_id, file_name, dates, important information
 			return false;
-		}
-
+		
 		return true;		
 	}
 

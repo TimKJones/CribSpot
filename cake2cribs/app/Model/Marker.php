@@ -159,7 +159,7 @@ class Marker extends AppModel {
 	If no marker exists, creates new marker.
 	Returns marker_id on success; error message on failure.
 	*/
-	public function FindMarkerId($marker)
+	public function FindMarkerId($marker, $user_id=null)
 	{
 		CakeLog::write("savingMarker", print_r($marker, true));
 		$street_address = $marker['street_address'];
@@ -178,7 +178,7 @@ class Marker extends AppModel {
 	  		if (!array_key_exists('Marker', $markerMatch) || 
 	  			!array_key_exists('visible', $markerMatch['Marker']) || 
 	  			!array_key_exists('marker_id', $markerMatch['Marker'])){
-	  			/* TODO: Log error info here. */
+	  			$this->LogError($user_id, 9, print_r($markerMatch, true));
 	  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 9');
 	  		}
@@ -187,7 +187,7 @@ class Marker extends AppModel {
 	  			/* Marker exists but is invisible. Make it visible. */
 	  			$markerMatch['Marker']['visible']=1;
 		  		if(!$this->save($markerMatch)){
-		  			/* TODO: Log important error info here */
+		  			$this->LogError($user_id, 10, print_r($markerMatch, true));
 		  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 10');
 		  		}
@@ -200,7 +200,7 @@ class Marker extends AppModel {
 	  		if ($this->save(array('Marker' => $marker)))
 	  			return $this->id;
 	  		else {
-	  			/* TODO: Log important error info here. */
+	  			$this->LogError($user_id, 11, print_r($marker, true));
 	  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 11');
 	  		}

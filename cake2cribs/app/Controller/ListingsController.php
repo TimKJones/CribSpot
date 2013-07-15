@@ -25,12 +25,12 @@ class ListingsController extends AppController {
 		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
 		//$image_ids_to_update = $listingObject['image_ids'];
 		//unset($listingObject['image_ids']);
-		$response = $this->Listing->SaveListing($listingObject);
+		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
 		/* if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
 			$image_ids_to_update != null) {
 			// Update images that bad been saved before listing_id was known
-			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update);
+			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update, $this->_getUserId());
 			if (array_key_exists('error', $imageResponse))
 				$response['error'] = $imageResponse['error'];
 		} */
@@ -113,7 +113,7 @@ class ListingsController extends AppController {
 	function LoadMarkerData($listing_type, $marker_id)
 	{
 		$this->layout = 'ajax';
-		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
+		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
 		$this->set('response', json_encode($listings));
 	}
 }
