@@ -217,7 +217,9 @@ class Rental extends RentalPrototype {
 	public function SaveRental($rental, $user_id=null)
 	{
 		if ($rental == null){
-			$this->LogError($user_id, 12, print_r($rental, true));
+			$error = null;
+			$error['rental'] = $rental;
+			$this->LogError($user_id, 12, $error);
 			return array('error' => 
 					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
 		}
@@ -229,7 +231,10 @@ class Rental extends RentalPrototype {
 			return array('success' => '');
 		else
 		{
-			$this->LogError($user_id, 13, print_r($this->validationErrors, true));
+			$error = null;
+			$error['rental'] = array('Rental' => $rental);
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 13, $error);
 			return array('error' => array('message' => 
 				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
 				'validation' => $this->validationErrors));
@@ -260,7 +265,9 @@ class Rental extends RentalPrototype {
 		if ($rentalId != null)
 			return $rentalId['Rental']['rental_id'];
 		else{
-			$this->LogError($user_id, 23, print_r($listing_id, true));
+			$error = null;
+			$error['listing_id'] = $listing_id;
+			$this->LogError($user_id, 23, $error);
 			return null;
 		}
 	}

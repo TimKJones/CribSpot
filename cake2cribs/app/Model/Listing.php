@@ -89,7 +89,7 @@ class Listing extends AppModel {
 		$error = null;
 		$error['Listing'] = $listing;
 		$error['validationErrors'] = $this->validationErrors;
-		$this->LogError($user_id, 6, json_encode($error));
+		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
 	}
@@ -171,7 +171,10 @@ class Listing extends AppModel {
 
 		if ($listings == null){
 			$listings['error'] = array('message' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 7);
-			$this->LogError($user_id, 7, 'listing_type: ' . $listing_type . '; marker_id: ' . $marker_id);
+			$error = null;
+			$error['listing_type'] = $listing_type;
+			$error['marker_id'] = $marker_id;
+			$this->LogError($user_id, 7, $error);
 		}
 
 		return $listings;
