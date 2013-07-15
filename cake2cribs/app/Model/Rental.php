@@ -214,11 +214,13 @@ class Rental extends RentalPrototype {
 	Then it saves the rental.
 	REQUIRES: it has been verified that user is logged-in.
 	*/
-	public function SaveRental($rental)
+	public function SaveRental($rental, $user_id=null)
 	{
-		if ($rental == null)
+		if ($rental == null){
+			$this->LogError($user_id, 12, print_r($rental, true));
 			return array('error' => 
 					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
+		}
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
 		$rental = parent::_removeNullEntries($rental);
@@ -227,11 +229,7 @@ class Rental extends RentalPrototype {
 			return array('success' => '');
 		else
 		{
-			/* 
-			There were validation errors.
-			Remove failed keys and return the result.
-			*/
-			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
+			$this->LogError($user_id, 13, print_r($this->validationErrors, true));
 			return array('error' => array('message' => 
 				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
 				'validation' => $this->validationErrors));
@@ -250,7 +248,7 @@ class Rental extends RentalPrototype {
 	/*
 	Returns the rental_id for the rental with the given listing_id
 	*/
-	public function GetRentalIdFromListingId($listing_id)
+	public function GetRentalIdFromListingId($listing_id, $user_id)
 	{
 		$rentalId = $this->find('first', array(
 			'fields' => array('Rental.rental_id'),
@@ -261,8 +259,10 @@ class Rental extends RentalPrototype {
 
 		if ($rentalId != null)
 			return $rentalId['Rental']['rental_id'];
-		else
+		else{
+			$this->LogError($user_id, 23, print_r($listing_id, true));
 			return null;
+		}
 	}
 }
 

@@ -62,7 +62,7 @@ class Listing extends AppModel {
 	Attempts to save $listing to the Listing table and any associated tables.
 	Returns listing_id of saved listing on success; validation errors on failure.
 	*/
-	public function SaveListing($listing)
+	public function SaveListing($listing, $user_id=null)
 	{
 		if (array_key_exists('Rental', $listing))
 		{
@@ -84,7 +84,7 @@ class Listing extends AppModel {
 		}
 
 		/* Listing failed to save - return error code */
-		CakeLog::write("listingValidationErrors", print_r($this->validationErrors, true));
+		$this->LogError($user_id, 6, print_r($this->validationErrors, true));
 		return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
 	}
@@ -154,7 +154,7 @@ class Listing extends AppModel {
 	/*
 	Returns all listings of given listing_type with given marker_id
 	*/
-	public function GetMarkerData($listing_type, $marker_id)
+	public function GetMarkerData($listing_type, $marker_id, $user_id)
 	{
 		$this->contain('Rental', 'User');
 		$listings = $this->find('all', array(
@@ -164,8 +164,10 @@ class Listing extends AppModel {
 			)
 		));
 
-		if ($listings == null)
+		if ($listings == null){
 			$listings['error'] = array('message' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 7);
+			$this->LogError($user_id, 7, 'listing_type: ' . $listing_type . '; marker_id: ' . $marker_id);
+		}
 
 		return $listings;
 	}

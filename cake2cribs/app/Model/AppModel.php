@@ -46,6 +46,16 @@ class AppModel extends Model {
 	    return $options;
 	}
 
+	/*
+	Log an error to the errors table.
+	*/
+	public function LogError($user_id, $error_code, $debug_info)
+	{
+		App::import('Model', 'Error');
+		$Error = new Error();
+		$Error->AddError($user_id, $error_code, $debug_info);
+	}
+
 	function getLastQuery()
 	{
 	    $dbo = $this->getDatasource();	

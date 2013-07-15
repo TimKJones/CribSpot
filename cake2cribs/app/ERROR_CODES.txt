@@ -43,3 +43,9 @@
 - Image->MoveFileToFolder()
 20	
 - Image->MoveFileToFolder()
+21
+- Image->MoveFileToFolder()
+22
+- Image->MoveFileToFolder()
+23
+- Rental->GetRentalIdFromListingId()

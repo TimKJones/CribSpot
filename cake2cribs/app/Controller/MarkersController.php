@@ -24,7 +24,7 @@ class MarkersController extends AppController {
 		$this->layout = 'ajax';
 		$marker = $this->params['data'];
 		CakeLog::write("savingMarker", print_r($marker, true));
-		$marker_id = $this->Marker->FindMarkerId($marker);
+		$marker_id = $this->Marker->FindMarkerId($marker, $this->_getUserId());
 		$this->set('response', $marker_id);
 	}
 }
