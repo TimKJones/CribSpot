@@ -54,6 +54,6 @@
   }
 
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? "<img src='../images/tick.png'>" : "";
+    return value ? "<i class='icon-check-sign icon-large'>Selected</i>" : "";
   }
 })(jQuery);

@@ -88,7 +88,8 @@
 
     Dashboard.ShowContent = function(content) {
       content.siblings().addClass('hidden');
-      return content.removeClass('hidden');
+      content.removeClass('hidden');
+      return content.trigger('shown');
     };
 
     Dashboard.HideContent = function(classname) {

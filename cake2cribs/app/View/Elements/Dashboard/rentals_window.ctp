@@ -3,6 +3,7 @@
 	echo $this->Html->css('/js/slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css', null, array('inline' => false));
 	//echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/controls/slick.columnpicker.css', null, array('inline' => false));
+	echo $this->Html->css('/less/Dashboard/rentals_window.less?','stylesheet/less', array('inline' => false));
 
 	echo $this->Html->script('src/UILayer/UILayer.js', array('inline' => false));
 	echo $this->Html->script('src/UILayer/Rentals.js', array('inline' => false));
@@ -66,7 +67,12 @@
 				</a>
 			</li>
 			<li>
-				<a href="#utilites_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#buildingamenities_grid" class="rentals_tab" data-toggle="tab">
+					BUILDING AMENITIES
+				</a>
+			</li>
+			<li>
+				<a href="#utilities_grid" class="rentals_tab" data-toggle="tab">
 					UTILITIES
 				</a>
 			</li>
@@ -101,7 +107,10 @@
 			<div class="tab-pane" id="amenities_grid" style="height:300px;">
 				<p>Howdy, I'm in Section 3.</p>
 			</div>
-			<div class="tab-pane" id="utilites_grid" style="height:300px;">
+			<div class="tab-pane" id="utilities_grid" style="height:300px;">
+				<p>Howdy, I'm in Section 4.</p>
+			</div>
+			<div class="tab-pane" id="buildingamenities_grid" style="height:300px;">
 				<p>Howdy, I'm in Section 4.</p>
 			</div>
 			<div class="tab-pane" id="fees_grid" style="height:300px;">

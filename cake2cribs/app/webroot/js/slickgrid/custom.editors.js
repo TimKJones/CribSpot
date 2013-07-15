@@ -26,13 +26,13 @@
     var scope = this;
 
     this.init = function () {
-      $min_occupancy = $("<INPUT type=text style='width:40px' placeholder='min' />")
+      $min_occupancy = $("<INPUT type=text style='width:25px' placeholder='min' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
       $(args.container).append("&nbsp; to &nbsp;");
 
-      $max_occupancy = $("<INPUT type=text style='width:40px' placeholder='max' />")
+      $max_occupancy = $("<INPUT type=text style='width:25px' placeholder='max' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
@@ -90,18 +90,19 @@
     var scope = this;
 
     this.init = function () {
-      $unit_style_type = $("<select />");
-      $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_type);
-      $("<option />", {value: 0, text: "Style"}).appendTo($unit_style_type);
+      $unit_style_options = $("<select style='width:70px;'/>");
+      $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
+      $("<option />", {value: 0, text: "Style"}).appendTo($unit_style_options);
 
-      $unit_style_type.appendTo(args.container);
-      $unit_style_options = $("<INPUT type=text style='width:40px' placeholder='Unit/Style' />")
+      $unit_style_options.appendTo(args.container);
+      $(args.container).append("&nbsp;");
+      $unit_style_type = $("<INPUT type=text style='width:25px' placeholder='Unit/Style' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
       $(args.container).append("&nbsp; - &nbsp;");
 
-      $unit_style_description = $("<INPUT type=text style='width:40px' placeholder='Name' />")
+      $unit_style_description = $("<INPUT type=text style='width:50px' placeholder='Name' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
@@ -119,14 +120,15 @@
     };
 
     this.focus = function () {
-      $unit_style_type.focus();
+      $unit_style_options.focus();
     };
 
     this.serializeValue = function () {
       return {
         unit_style_type: $unit_style_type.val(),
-        unit_style_options: $unit_style_options.val(),
-        unit_style_description: $unit_style_description.val()
+        unit_style_options: +$unit_style_options.val(),
+        unit_style_description: $unit_style_description.val(),
+        unit_style_options_text: $($unit_style_type).find("option:selected").text()
       };
     };
 
@@ -134,6 +136,7 @@
       item.unit_style_type = state.unit_style_type;
       item.unit_style_options = state.unit_style_options;
       item.unit_style_description = state.unit_style_description;
+      item.unit_style_options_text = state.unit_style_options_text
     };
 
     this.loadValue = function (item) {
@@ -158,7 +161,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
       $("<option />", {value: 1, text: "Available"}).appendTo($select);
       $("<option />", {value: 0, text: "Leased"}).appendTo($select);
 
@@ -175,7 +178,7 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
@@ -206,7 +209,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
       $("<option />", {value: 1, text: "Yes"}).appendTo($select);
       $("<option />", {value: 0, text: "No"}).appendTo($select);
       $("<option />", {value: 2, text: "Flat Rate"}).appendTo($select);
@@ -224,12 +227,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
@@ -255,7 +258,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
       $("<option />", {value: 1, text: "Cats Only"}).appendTo($select);
       $("<option />", {value: 2, text: "Dogs Only"}).appendTo($select);
       $("<option />", {value: 3, text: "Cats & Dogs"}).appendTo($select);
@@ -275,12 +278,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = +item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
@@ -306,7 +309,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
       $("<option />", {value: 1, text: "Fully"}).appendTo($select);
       $("<option />", {value: 0, text: "Unfurnished"}).appendTo($select);
       $("<option />", {value: 2, text: "Partially"}).appendTo($select);
@@ -324,12 +327,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
@@ -355,7 +358,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
       $("<option />", {value: 1, text: "Lot"}).appendTo($select);
       $("<option />", {value: 2, text: "Driveway"}).appendTo($select);
       $("<option />", {value: 3, text: "Garage"}).appendTo($select);
@@ -375,12 +378,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
@@ -406,7 +409,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
       $("<option />", {value: 1, text: "Central"}).appendTo($select);
       $("<option />", {value: 0, text: "None"}).appendTo($select);
       $("<option />", {value: 2, text: "Wall Unit"}).appendTo($select);
@@ -424,12 +427,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
@@ -455,7 +458,7 @@
     var scope = this;
 
     this.init = function () {
-      $select = $("<select id='selectId' name='selectName' />");
+      $select = $("<select id='selectId' name='selectName' style='width:100px;' />");
       $("<option />", {value: 1, text: "Allowed"}).appendTo($select);
       $("<option />", {value: 0, text: "Prohibited"}).appendTo($select);
 
@@ -472,12 +475,12 @@
     };
 
     this.loadValue = function (item) {
-      defaultValue = !!item[args.column.field];
+      defaultValue = item[args.column.field];
       $select.val(+defaultValue);
     };
 
     this.serializeValue = function () {
-      return !!+$select.val();
+      return +$select.val();
     };
 
     this.applyValue = function (item, state) {
