@@ -11,6 +11,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
 		$this->Auth->allow('Save');
+		$this->Auth->allow('Delete');
 	}
 
 	/*
@@ -48,26 +49,23 @@ class ListingsController extends AppController {
 	public function Delete ($listing_ids)
 	{
 		$this->layout = 'ajax';
-		$listing_ids = json_decode($listing_ids);
+		$listing_ids = json_decode($listing_ids);	
 
 		for ($i = 0; $i < count($listing_ids); $i++){
 			if (!$this->Listing->UserOwnsListing($listing_ids[$i], $this->_getUserId()))
 			{
+				$error = null;
+				$error['listing_id'] = $listing_ids[$i];
+				$this->Listing->LogError($this->_getUserId(), 1, $error);
 				$this->set('response', json_encode(array('error' => 
 					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 1')));
 				return;
 			}
-
-			/* Delete from listings table. Set cascade=true to also delete from either rentals, parkings, or sublets. */
-			if (!$this->Listing->delete($listing_ids[$i], true))
-			{
-				$this->set('response', json_encode(array('error' => 
-					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 2')));
-				return;
-			}
 		}
 
-		$this->set('response', json_encode(array('success' => '')));
+		/* "Delete" from listings table (set visible=0) */
+		$response = $this->Listing->DeleteListing($listing_ids, $this->_getUserId());
+		$this->set('response', json_encode($response));
 		return;
 	}
 

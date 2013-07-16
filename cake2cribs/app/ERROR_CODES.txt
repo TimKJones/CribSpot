@@ -2,7 +2,7 @@
 - ListingsController->Delete()
 - User doesn't own the listing being deleted
 2
-- ListingsController->Delete()
+- Listing->DeleteListing()
 - Listing->Delete() failed
 3
 - ListingsController->GetListingsByLoggedInUser()

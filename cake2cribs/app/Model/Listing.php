@@ -42,6 +42,7 @@ class Listing extends AppModel {
 				'required' => true
 			)
 		),
+		'visible' => 'boolean' /* visible is set to false when listing is deleted */
 	);
 
 	/* ---------- unit_style_options ---------- */
@@ -105,14 +106,26 @@ class Listing extends AppModel {
 	}
 
 	/*
-	Delete the listing with id = $listing_id
+	Mark all listings in $listing_ids as invisible
 	Returns true on success, false otherwise.
 	*/
-	public function DeleteListing($listing_id)
+	public function DeleteListing($listing_ids, $user_id)
 	{
-		$response = $this->delete($listing_id);
-		return $response != null;
+		$listings = array();
+		$listings['Listing'] = array();
+		for ($i = 0; $i < count($listing_ids); $i++){
+			$this->id = $listing_ids[$i];
+			if (!$this->saveField('visible', 0)){
+				$error = null;
+				$error['listings'] = $listings;
+				$error['validation'] = $this->validationErrors;
+				$this->LogError($user_id, 2, $error);
+				return array("error" => array('validation' => $this->validationErrors,
+				'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 2'));
+			}
+		}
 
+		return array('success' => '');
 	}
 
 	/*
