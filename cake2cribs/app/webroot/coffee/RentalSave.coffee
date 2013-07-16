@@ -23,6 +23,7 @@ class A2Cribs.RentalSave
 			if @EditableRows.length
 				@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
 				$(event.target).text "Edit"
+				$(".rentals_tab").removeClass "highlight-tab"
 				for row in @EditableRows
 					data = @GridMap[@VisibleGrid].getDataItem row
 					data.editable = no
@@ -37,16 +38,19 @@ class A2Cribs.RentalSave
 			@GridMap[@VisibleGrid].setSelectedRows selected
 
 		$("#rentals_delete").click () =>
-			selected = @GridMap[@VisibleGrid].getSelectedRows()	
-			listings = []
-			for row in selected
-				listings.push +@GridMap[@VisibleGrid].getDataItem(row).listing_id
-			@Delete selected, listings
+			selected = @GridMap[@VisibleGrid].getSelectedRows()
+			if selected.length
+				listings = []
+				for row in selected
+					if @GridMap[@VisibleGrid].getDataItem(row).listing_id?
+						listings.push @GridMap[@VisibleGrid].getDataItem(row).listing_id
+				@Delete selected, listings
 
 		$(".rentals_tab").click (event) =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
 			@VisibleGrid = $(event.target).attr("href").substring(1)
 			@GridMap[@VisibleGrid].setSelectedRows selected
+			$(event.target).removeClass "highlight-tab"
 
 		$(".rentals-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
@@ -124,6 +128,8 @@ class A2Cribs.RentalSave
 				if response.success != null && response.success != undefined
 					A2Cribs.UIManager.Success "Listings deleted!"
 					data = @GridMap[@VisibleGrid].getData()
+					for listing_id in listing_ids
+						A2Cribs.UserCache.DeleteListing listing_id.toString()
 					for row in rows
 						data.splice row, 1
 					@GridMap[@VisibleGrid].updateRowCount()
@@ -167,6 +173,12 @@ class A2Cribs.RentalSave
 		data.push { editable: true }
 		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
 		$("#rentals_edit").text "Finish Editing"
+
+		# Highlight tabs
+		$('a[href="#overview_grid"]').addClass "highlight-tab"
+		$('a[href="#description_grid"]').addClass "highlight-tab"
+		$('a[href="#contact_grid"]').addClass "highlight-tab"
+		$('a[href="#' + @VisibleGrid + '"]').removeClass "highlight-tab"
 
 		for container,grid of @GridMap
 			grid.updateRowCount()
@@ -286,7 +298,8 @@ class A2Cribs.RentalSave
 
 			else if marker_selected isnt "0"
 				modal.modal "hide"
-				@Open +marker_selected
+				@Open marker_selected
+				@AddNewUnit()
 
 		@MiniMap = new A2Cribs.MiniMap modal
 
@@ -408,7 +421,12 @@ class A2Cribs.RentalSave
 				data = {
 					Rental: {}
 					Listing: {}
-					Fees: []
+					Fee: [
+						{
+							description: "Admin"
+							amount: 90
+						}
+					]
 				}
 				isValid = yes
 				for key in required
@@ -418,7 +436,7 @@ class A2Cribs.RentalSave
 					for desc, amount of args.item
 						index = desc.indexOf("Fee_")
 						if index != -1
-							data.Fees.push {
+							data.Fee.push {
 								description: desc.split("_").join(" ")
 								amount: amount
 							}

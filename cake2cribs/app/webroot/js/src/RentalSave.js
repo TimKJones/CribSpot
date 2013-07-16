@@ -30,6 +30,7 @@
         if (_this.EditableRows.length) {
           _this.GridMap[_this.VisibleGrid].getEditorLock().commitCurrentEdit();
           $(event.target).text("Edit");
+          $(".rentals_tab").removeClass("highlight-tab");
           _ref = _this.EditableRows;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             row = _ref[_i];
@@ -52,18 +53,23 @@
       $("#rentals_delete").click(function() {
         var listings, row, selected, _i, _len;
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-        listings = [];
-        for (_i = 0, _len = selected.length; _i < _len; _i++) {
-          row = selected[_i];
-          listings.push(+_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id);
+        if (selected.length) {
+          listings = [];
+          for (_i = 0, _len = selected.length; _i < _len; _i++) {
+            row = selected[_i];
+            if (_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id != null) {
+              listings.push(_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id);
+            }
+          }
+          return _this.Delete(selected, listings);
         }
-        return _this.Delete(selected, listings);
       });
       $(".rentals_tab").click(function(event) {
         var selected;
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
         _this.VisibleGrid = $(event.target).attr("href").substring(1);
-        return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+        _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+        return $(event.target).removeClass("highlight-tab");
       });
       $(".rentals-content").on("shown", function(event) {
         var grid, width, _results;
@@ -150,13 +156,17 @@
         url: myBaseUrl + "listings/Delete/" + JSON.stringify(listing_ids),
         type: "POST",
         success: function(response) {
-          var data, row, _i, _len;
+          var data, listing_id, row, _i, _j, _len, _len1;
           response = JSON.parse(response);
           if (response.success !== null && response.success !== void 0) {
             A2Cribs.UIManager.Success("Listings deleted!");
             data = _this.GridMap[_this.VisibleGrid].getData();
-            for (_i = 0, _len = rows.length; _i < _len; _i++) {
-              row = rows[_i];
+            for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
+              listing_id = listing_ids[_i];
+              A2Cribs.UserCache.DeleteListing(listing_id.toString());
+            }
+            for (_j = 0, _len1 = rows.length; _j < _len1; _j++) {
+              row = rows[_j];
               data.splice(row, 1);
             }
             _this.GridMap[_this.VisibleGrid].updateRowCount();
@@ -208,6 +218,10 @@
       });
       this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
       $("#rentals_edit").text("Finish Editing");
+      $('a[href="#overview_grid"]').addClass("highlight-tab");
+      $('a[href="#description_grid"]').addClass("highlight-tab");
+      $('a[href="#contact_grid"]').addClass("highlight-tab");
+      $('a[href="#' + this.VisibleGrid + '"]').removeClass("highlight-tab");
       _ref1 = this.GridMap;
       _results = [];
       for (container in _ref1) {
@@ -345,7 +359,8 @@
           }
         } else if (marker_selected !== "0") {
           modal.modal("hide");
-          return _this.Open(+marker_selected);
+          _this.Open(marker_selected);
+          return _this.AddNewUnit();
         }
       });
       this.MiniMap = new A2Cribs.MiniMap(modal);
@@ -520,7 +535,12 @@
           data = {
             Rental: {},
             Listing: {},
-            Fees: []
+            Fee: [
+              {
+                description: "Admin",
+                amount: 90
+              }
+            ]
           };
           isValid = true;
           for (_j = 0, _len1 = required.length; _j < _len1; _j++) {
@@ -533,7 +553,7 @@
               amount = _ref[desc];
               index = desc.indexOf("Fee_");
               if (index !== -1) {
-                data.Fees.push({
+                data.Fee.push({
                   description: desc.split("_").join(" "),
                   amount: amount
                 });

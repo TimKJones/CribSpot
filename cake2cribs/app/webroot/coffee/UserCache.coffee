@@ -38,6 +38,12 @@ class A2Cribs.UserCache
 			if not alreadyAdded
 				@Markers[key].push marker
 
+	delete_listing = (listing_id) =>
+		for i in [0..@Listings.length - 1]
+			if @Listings[i].Listing.listing_id is listing_id
+				@Listings.splice i, 1
+
+
 	@CacheListings : (listing_list) ->
 		@Listings = listing_list
 		@Markers = {
@@ -111,6 +117,9 @@ class A2Cribs.UserCache
 
 	@AddRentalMarker: (marker) ->
 		add_marker "Rental", marker
+
+	@DeleteListing: (listing_id) ->
+		delete_listing listing_id
 
 	@GetMarkerById: (id) ->
 		get_marker_from_id id

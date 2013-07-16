@@ -24,6 +24,7 @@
   function NumericRangeEditor(args) {
     var $min_occupancy, $max_occupancy;
     var scope = this;
+    var right_count = 0;
 
     this.init = function () {
       $min_occupancy = $("<INPUT type=text style='width:25px' placeholder='min' />")
@@ -40,9 +41,14 @@
     };
 
     this.handleKeyDown = function (e) {
-      if (e.keyCode == $.ui.keyCode.LEFT || e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB) {
+      if (e.keyCode == $.ui.keyCode.LEFT)
+        right_count--;
+
+      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
+        right_count++;
+
+      if (right_count >= 0 && right_count < 2)
         e.stopImmediatePropagation();
-      }
     };
 
     this.destroy = function () {
@@ -88,11 +94,13 @@
   function UnitEditor(args) {
     var $unit_style_type, $unit_style_options, $unit_style_description;
     var scope = this;
+    var right_count = 0;
 
     this.init = function () {
       $unit_style_options = $("<select style='width:70px;'/>");
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
       $("<option />", {value: 0, text: "Style"}).appendTo($unit_style_options);
+      $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
       $(args.container).append("&nbsp;");
@@ -110,9 +118,14 @@
     };
 
     this.handleKeyDown = function (e) {
-      if (e.keyCode == $.ui.keyCode.LEFT || e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB) {
+      if (e.keyCode == $.ui.keyCode.LEFT)
+        right_count--;
+
+      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
+        right_count++;
+
+      if (right_count >= 0 && right_count < 3)
         e.stopImmediatePropagation();
-      }
     };
 
     this.destroy = function () {

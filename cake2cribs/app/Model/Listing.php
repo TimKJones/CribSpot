@@ -69,7 +69,7 @@ class Listing extends AppModel {
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
 			if (array_key_exists('listing_id', $listing['Listing']))
 			{
-				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id']);
+				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id'], $user_id);
 				$listing['Rental']['rental_id'] = $rental_id;
 			}
 		}

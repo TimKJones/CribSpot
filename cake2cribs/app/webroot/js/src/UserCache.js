@@ -2,7 +2,7 @@
 (function() {
 
   A2Cribs.UserCache = (function() {
-    var add_marker, count, get, get_marker_from_id, get_markers, load_markers,
+    var add_marker, count, delete_listing, get, get_marker_from_id, get_markers, load_markers,
       _this = this;
 
     function UserCache() {}
@@ -91,6 +91,19 @@
           return UserCache.Markers[key].push(marker);
         }
       }
+    };
+
+    delete_listing = function(listing_id) {
+      var i, _i, _ref, _results;
+      _results = [];
+      for (i = _i = 0, _ref = UserCache.Listings.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (UserCache.Listings[i].Listing.listing_id === listing_id) {
+          _results.push(UserCache.Listings.splice(i, 1));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     UserCache.CacheListings = function(listing_list) {
@@ -190,6 +203,10 @@
 
     UserCache.AddRentalMarker = function(marker) {
       return add_marker("Rental", marker);
+    };
+
+    UserCache.DeleteListing = function(listing_id) {
+      return delete_listing(listing_id);
     };
 
     UserCache.GetMarkerById = function(id) {
