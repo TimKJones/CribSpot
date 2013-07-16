@@ -151,7 +151,9 @@ class Listing extends AppModel {
 	public function GetListing($listing_id)
 	{
 		$listing = $this->find('all', array(
-			'conditions' => array('Listing.listing_id' => $listing_id)
+			'conditions' => array(
+				'Listing.listing_id' => $listing_id,
+				'Listing.visible' => 1)
 		));
 
 		return $listing;
@@ -163,7 +165,9 @@ class Listing extends AppModel {
 	public function GetListingsByUserId($user_id)
 	{
 		$listings = $this->find('all', array(
-			'conditions' => array('Listing.user_id' => $user_id)
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1)
 		));
 		
 		return $listings;
