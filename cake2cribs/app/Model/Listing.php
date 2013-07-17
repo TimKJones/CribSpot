@@ -102,6 +102,9 @@ class Listing extends AppModel {
         	'conditions' => array('Listing.listing_id' => $listing_id)
     	));
 
+		if (array_key_exists('User', $listing))
+			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
+
     	return $listing;
 	}
 
@@ -156,6 +159,12 @@ class Listing extends AppModel {
 				'Listing.visible' => 1)
 		));
 
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listing); $i++){
+			if (array_key_exists('User', $listing[$i]))
+				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
+		}
+
 		return $listing;
 	}
 
@@ -170,6 +179,12 @@ class Listing extends AppModel {
 				'Listing.visible' => 1)
 		));
 		
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listings); $i++){
+			if (array_key_exists('User', $listings[$i]))
+				$listings[$i]['User'] = $this->_removeSensitiveUserFields($listings[$i]['User']);
+		}
+
 		return $listings;
 	}
 
@@ -192,6 +207,12 @@ class Listing extends AppModel {
 			$error['listing_type'] = $listing_type;
 			$error['marker_id'] = $marker_id;
 			$this->LogError($user_id, 7, $error);
+		}
+
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listings); $i++){
+			if (array_key_exists('User', $listings[$i]))
+				$listings[$i]['User'] = $this->_removeSensitiveUserFields($listings[$i]['User']);
 		}
 
 		return $listings;

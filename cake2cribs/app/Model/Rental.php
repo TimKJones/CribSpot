@@ -174,6 +174,102 @@ class Rental extends RentalPrototype {
 				'message' => 'Must be less than 1000 characters'
 			)
 		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'admin_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'admin_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'parking_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'parking_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'furniture_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'furniture_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'pets_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'pets_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'upper_floor_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'upper_floor_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'extra_occupant_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'extra_occupant_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
 		'waitlist' => 'boolean',
 		'waitlist_open_date' => array(
 			'date' => array(
