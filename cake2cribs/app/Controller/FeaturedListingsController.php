@@ -48,6 +48,52 @@ class FeaturedListingsController extends AppController {
 
   }
 
+  // Return a json array containing all the data needed to order
+  // a featured listing. This will include the following listing fields
+  // listing_id, address, alt_name for property, listing_type (string)
+  // as well as any dates specific to that listing that its already 
+  // featured on.
+
+  public function flOrderData(){
+    $user_id = $this->_getUserId();
+    $response = array();
+    
+
+    // TODO if super user (Mich Daily) fetch all listings
+    
+    // if (super user){
+    //   blah blah blah
+    // }
+    
+    $listings = $this->Listing->GetListingsByUserId($user_id);
+
+
+    // Push onto the response array the specifc data mentioned above
+    foreach($listings as $listing){
+      $listing_id = $listing['Listing']['listing_id'];
+      $address = $listing['Marker']['street_address'];
+      $alt_name = $listing['Marker']['alternate_name'];
+      $listing_type_str = Listing::listing_type($listing['Listing']['listing_type']);
+      $dates = $this->FeaturedListing->getDates($listing_id);
+      
+      $data = array(
+          'listing_id' => $listing_id,
+          'address' => $address,
+          'alt_name' => $alt_name,
+          'listing_type' => $listing_type_str,
+          'unavailable_dates'=>$dates
+        );
+
+      array_push($response, $data);
+
+    }
+
+    $this->layout = 'ajax';
+    $this->set("response", json_encode($response));
+
+
+  }
+
   public function all(){
     $featured_listings = $this->FeaturedListing->find('all');
     die(debug($featured_listings));

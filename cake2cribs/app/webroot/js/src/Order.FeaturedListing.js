@@ -41,7 +41,8 @@
       if (refresh_after == null) {
         refresh_after = true;
       }
-      this.datepicker.multiDatesPicker('resetDates');
+      this.datepicker.multiDatesPicker('resetDates', 'picked');
+      this.datepicker.multiDatesPicker('resetDates', 'disabled');
       if (refresh_after) {
         return this.refresh();
       }

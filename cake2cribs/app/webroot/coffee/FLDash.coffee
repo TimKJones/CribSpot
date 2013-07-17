@@ -77,20 +77,13 @@ class A2Cribs.FLDash
     
     loadListings:()->
        
-        $.getJSON '/listings/GetListing', (listings)=>
+        $.getJSON '/featuredlistings/flOrderData', (listings)=>
             @Listings = {} #Remove all the old listings
             list = ""
             for listing in listings
-                # Cache some data about the listings loaded
-                data = {
-                    listing_id: listing.Listing.listing_id
-                    address: listing.Marker.street_address
-                    altName: listing.Marker.alternate_name
-                }
-                @Listings[data.listing_id] = data
-                list += @ListingTemplate(data)
+                @Listings[listing.listing_id] = listing
+                list += @ListingTemplate(listing)
             
-
             @uiListingsList.html list
 
     # Add an orderitem to the list of order items
@@ -121,10 +114,18 @@ class A2Cribs.FLDash
                                    #Making the price go down to 0
         
         # This sets up the featured listing form
-        options = {disabled_dates:@UnavailableDates}
+
+        # Need to build an array of dates to disabled for the listing
+        # This is a combination of the global UnavailableDates 
+        # dates that don't have any more spots left
+        # as well as listing specific dates such as dates where the listing
+        # is already featured.
+
+        options = {disabled_dates:@UnavailableDates.concat listing.unavailable_dates}
+
         if @OrderItems[listing_id].item?.dates.length > 0
             options.selected_dates @OrderItems[listing_id].item.dates
-
+        console.log(options)
         @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, listing.address, options)
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
@@ -163,7 +164,7 @@ class A2Cribs.FLDash
     initTemplates:()->
         ListingHTML = """
                 <div class = 'listing-item' data-id='<%= listing_id %>'>
-                    <strong><%= address %></strong> <%= altName %>
+                    <strong><%= address %></strong> <%= alt_name %>
                     <i class = 'pull-right feature-star icon-star-empty'></i>
                 </div>
                     """

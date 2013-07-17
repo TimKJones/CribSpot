@@ -39,7 +39,8 @@ class A2Cribs.Order.FeaturedListing
         # Removes all the selected dates
 
         clear:(refresh_after=true)->
-            @datepicker.multiDatesPicker 'resetDates'
+            @datepicker.multiDatesPicker 'resetDates', 'picked'
+            @datepicker.multiDatesPicker 'resetDates', 'disabled'
             if refresh_after then @refresh()
             
 

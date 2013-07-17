@@ -143,15 +143,19 @@ class Order extends AppModel {
         // is with in the valid range (n days in the future). Check to see if
         // a listing is already featured on a day
         
-        $min_start_date = date("Y-m-d", time() + $this::FLMinStartOffset); // first day they can start featuring
+        $min_start_date = date("m/d/Y", time() + $this::FLMinStartOffset); // first day they can start featuring
         $min_start = strtotime($min_start_date);
-
+        // echo $min_start_date;
+        // echo $min_start;
         foreach($dates as $date=>$info){
             
+            // Convert the date string to a more readable format for the user
+
+            $date = date("m/d/Y", strtotime($date));
             // See if featuring the listings on a given date will put us over
             // The limit
             if($info['count'] + count($info['id']) > $this::FLDailyLimit){
-                $msg = "Not enough spots left to feature on $date";
+                $msg = "Not enough spots left to feature on $date, only ".$info['count']." spots left";
                 foreach($info['id'] as $id){
                     array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
                 }
@@ -191,11 +195,7 @@ class Order extends AppModel {
             return $groupedErrors;
         }else{
             return null;
-        }
-
-
-
-        
+        }        
     }
 
     /*

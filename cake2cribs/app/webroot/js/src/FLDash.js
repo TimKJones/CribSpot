@@ -70,19 +70,14 @@
 
     FLDash.prototype.loadListings = function() {
       var _this = this;
-      return $.getJSON('/listings/GetListing', function(listings) {
-        var data, list, listing, _i, _len;
+      return $.getJSON('/featuredlistings/flOrderData', function(listings) {
+        var list, listing, _i, _len;
         _this.Listings = {};
         list = "";
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
-          data = {
-            listing_id: listing.Listing.listing_id,
-            address: listing.Marker.street_address,
-            altName: listing.Marker.alternate_name
-          };
-          _this.Listings[data.listing_id] = data;
-          list += _this.ListingTemplate(data);
+          _this.Listings[listing.listing_id] = listing;
+          list += _this.ListingTemplate(listing);
         }
         return _this.uiListingsList.html(list);
       });
@@ -110,11 +105,12 @@
         this.FL_Order.clear(false);
       }
       options = {
-        disabled_dates: this.UnavailableDates
+        disabled_dates: this.UnavailableDates.concat(listing.unavailable_dates)
       };
       if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
         options.selected_dates(this.OrderItems[listing_id].item.dates);
       }
+      console.log(options);
       this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
       return this.uiWidget.find(".right-content").show();
@@ -138,7 +134,7 @@
 
     FLDash.prototype.initTemplates = function() {
       var ListingHTML, OrderItemHTML;
-      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= altName %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
+      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= alt_name %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
       this.ListingTemplate = _.template(ListingHTML);
       OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td>$<span class = 'price'?><%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>\n";
       return this.OrderItemTemplate = _.template(OrderItemHTML);
