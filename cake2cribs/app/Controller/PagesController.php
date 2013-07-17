@@ -37,6 +37,8 @@ class PagesController extends AppController {
  * @var string
  */
 	public $name = 'Pages';
+	public $helpers = array('Facebook.Facebook');
+	public $components = array('Facebook.Connect');
 
 /**
  * This controller does not use a model
@@ -56,6 +58,11 @@ class PagesController extends AppController {
      $this->Auth->allow('display');
   	}
   	
+  	public function login()
+  	{
+
+  	}
+
 	public function display() {
 		$path = func_get_args();
 
