@@ -1,13 +1,18 @@
 <?php 
 
-class Rental extends AppModel {
+App::import('Model', "RentalPrototype");
+class Rental extends RentalPrototype {
 	public $name = 'Rental';
 	public $primaryKey = 'rental_id';
-	public $hasOne = array('Listing');
+	public $belongsTo = array(
+		'Listing' => array(
+            'className'    => 'Listing',
+            'foreignKey'   => 'listing_id'
+        )
+	);
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'user_id' => 'numeric',
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 1, 255)
@@ -27,31 +32,94 @@ class Rental extends AppModel {
 		'zipcode' => array(
         	'rule' => array('postal', null, 'us')
     	),
-		'unit_style_options' => 'alphaNumeric',
-		'unit_style_type' => 'alphaNumeric',
-		'unit_style_description' => 'alphaNumeric',
+		'unit_style_options' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
+		'unit_style_type' => array(
+			'between' => array(
+				'rule' => array('between', 1, 20)
+			)
+		),
+		'unit_style_description' => array(
+			'between' => array(
+				'rule' => array('between', 1, 255)
+			)
+		),
 		'building_name' => array(
 			'between' => array(
 				'rule' => array('between',0,100),
 				'message' => 'Must be less than 100 characters'
 			)
 		),
-		'beds' => 'numeric',
+		'beds' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
 		'min_occupancy' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
 				'required' => false
 			)
 		),
-		'max_occupancy' => 'numeric',
-		'building_type' => 'numeric',
-		'rent' => 'numeric', /*this is total rent, not per person */
-		'rent_negotiable' => 'boolean',
-		'unit_count' => 'numeric',
-		'start_date' => 'date',
-		'alternate_start_date' => 'date',
-		'lease_length' => 'numeric', /* in months */
-		'available' => 'boolean',
+		'max_occupancy' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		),
+		'rent' => array(  /*this is total rent, not per person */
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => true
+			)
+		), 
+		'rent_negotiable' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'unit_count' => array(  /* Not required - will default to 1 */
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		), 
+		'start_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => true
+			)
+		),
+		'alternate_start_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => false
+			)
+		),
+		'end_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => true
+			)
+		),
+		'dates_negotiable' => array(
+			'boolean' => array(
+				'rule' => 'boolean',
+				'required' => false
+			)
+		),
+		'available' => array(
+			'boolean' => array(
+				'rule' => 'boolean',
+				'required' => true
+			)
+		),
 		'baths' => 'numeric',
 		'air' => 'boolean',
 		'parking_type' => 'numeric',
@@ -59,9 +127,29 @@ class Rental extends AppModel {
 		'street_parking' => 'boolean',
 		'furnished_type' => 'numeric',
 		'pets_type' => 'numeric',
+		'washer_dryer' => 'numeric', 
 		'smoking' => 'boolean',
+		/* ------------- start new fields ----------------*/
+		'tv' => 'boolean',
+		'balcony' => 'boolean',
+		'fridge' => 'boolean', 
+		'storage' => 'boolean', 
+		/* ------------ end new fields ------------------ */	
 		'square_feet' => 'numeric',
 		'year_built' => 'numeric',
+		/* ------------ start new fields --------------- */
+		'pool' => 'boolean',
+		'hot_tub' => 'boolean',
+		'fitness_center' => 'boolean',
+		'game_room' => 'boolean',
+		'front_desk' => 'boolean',
+		'security_system' => 'boolean',
+		'tanning_beds' => 'boolean',
+		'study_lounge' => 'boolean',
+		'patio_deck' => 'boolean',
+		'yard_space' => 'boolean',
+		'elevator' => 'boolean',
+		/* ------------ end new fields --------------- */
 		'electric' => 'numeric',
 		'water' => 'numeric',
 		'gas' => 'numeric',
@@ -86,8 +174,109 @@ class Rental extends AppModel {
 				'message' => 'Must be less than 1000 characters'
 			)
 		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'admin_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'admin_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'parking_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'parking_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'furniture_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'furniture_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'pets_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'pets_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'upper_floor_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'upper_floor_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'extra_occupant_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'extra_occupant_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
 		'waitlist' => 'boolean',
-		'waitlist_open_date' => 'date',
+		'waitlist_open_date' => array(
+			'date' => array(
+				'rule' => 'date',
+				'required' => false
+			)
+		),
 		'lease_office_street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 100),
@@ -116,144 +305,67 @@ class Rental extends AppModel {
 		'is_complete' => 'boolean'
 	);
 
-	/* ---------- unit_style_options ---------- */
-	const UNIT_STYLE_OPTIONS_STYLE = 0;
-	const UNIT_STYLE_OPTIONS_UNIT = 1;
-	const UNIT_STYLE_OPTIONS_ENTIRE_UNIT = 2;
-
-	public static function unit_style_options($value = null) {
-		$options = array(
-		    self::UNIT_STYLE_OPTIONS_STYLE => __('Style',true),
-		    self::UNIT_STYLE_OPTIONS_UNIT => __('Unit',true),
-		    self::UNIT_STYLE_OPTIONS_ENTIRE_UNIT => __('Entire Unit',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ---------- air ---------- */
-	const AIR_CENTRAL = 0;
-	const AIR_WALL_UNIT = 1;
-	const AIR_NONE= 2; 
-
-	public static function air($value = null) {
-		$options = array(
-		    self::AIR_CENTRAL => __('Central',true),
-		    self::AIR_WALL_UNIT => __('Wall Unit',true),
-		    self::AIR_NONE => __('None',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ---------- parking ---------- */
-	const PARKING_PARKING_LOT = 0;
-	const PARKING_DRIVEWAY = 1;
-	const PARKING_GARAGE = 2;
-	const PARKING_OFF_SITE = 3;
-
-	public static function parking($value = null) {
-		$options = array(
-		    self::PARKING_PARKING_LOT => __('Parking Lot',true),
-		    self::PARKING_DRIVEWAY => __('Driveway',true),
-		    self::PARKING_GARAGE => __('Garage',true),
-		    self::PARKING_OFF_SITE => __('Off Site',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ---------- furnished ---------- */
-	const FURNISHED_FULLY = 0;
-	const FURNISHED_PARTIALLY = 1;
-	const FURNISHED_NO = 2;
-
-	public static function furnished($value = null) {
-		$options = array(
-		    self::FURNISHED_FULLY => __('Fully',true),
-		    self::FURNISHED_PARTIALLY => __('Partially',true),
-		    self::FURNISHED_NO => __('No',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ---------- pets ---------- */
-	const PETS_CATS_ONLY = 0;
-	const PETS_DOGS_ONLY = 1;
-	const PETS_CATS_AND_DOGS = 2;
-
-	public static function pets($value = null) {
-		$options = array(
-		    self::PETS_CATS_ONLY => __('Cats Only',true),
-		    self::PETS_DOGS_ONLY => __('Dogs Only',true),
-		    self::PETS_CATS_AND_DOGS => __('Cats and Dogs',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ---------- utilities_included ---------- */
-	const UTILITY_INCLUDED_NO = 0;
-	const UTILITY_INCLUDED_YES = 1;
-	const UTILITY_INCLUDED_FLAT_RATE = 2;
-
-	public static function utilities_included($value = null) {
-		$options = array(
-		    self::UTILITY_INCLUDED_NO => __('No',true),
-		    self::UTILITY_INCLUDED_YES => __('Yes',true),
-		    self::UTILITY_INCLUDED_FLAT_RATE => __('Flat Rate',true),
-		);
-		return parent::enum($value, $options);
-	}
-
-	/* ------------------------------------------*/
-
 	/*
 	Marks the rental as either complete or incomplete, depending on whether all fields have been filled in.
 	Then it saves the rental.
 	REQUIRES: it has been verified that user is logged-in.
 	*/
-	public function SaveRental($rental)
+	public function SaveRental($rental, $user_id=null)
 	{
-		if ($rental == null)
-			return array("error" => "Rental cannot be null");
+		if ($rental == null){
+			$error = null;
+			$error['rental'] = $rental;
+			$this->LogError($user_id, 12, $error);
+			return array('error' => 
+					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
+		}
 
-		$rental = $this->_markAsSaved($rental);
-		CakeLog::write("RentalSave", print_r($rental, true));
-		$rentalWrapper['Rental'] = $rental;
-		if ($this->save($rentalWrapper))
-			return array("success" => "");
+		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
+		$rental = parent::_removeNullEntries($rental);
+		$rental['is_complete'] = 1;
+		if ($this->save(array('Rental' => $rental)))
+			return array('success' => '');
 		else
 		{
-			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
-			return array("error" => "it didn't work");
+			$error = null;
+			$error['rental'] = array('Rental' => $rental);
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 13, $error);
+			return array('error' => array('message' => 
+				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
+				'validation' => $this->validationErrors));
 		}
 	}
 
 	/*
-	Delete the rental with rental_id = $rental_id.
-	REQUIRES: it has been verified that the logged-in user owns this rental.
+	Delete the rental with listing_id = $listing_id
+	IMPORTANT: this is listing_id, NOT rental_id.
 	*/
-	public function Delete ($rental_id)
+	public function DeleteRental($listing_id)
 	{
-
+		return array('success' => '');
 	}
 
 	/*
-	Marks $rental (via the 'is_complete' field) as complete or incomplete by checking for all required fields.
-	Returns modified $rental object;
+	Returns the rental_id for the rental with the given listing_id
 	*/
-	private function _markAsSaved($rental)
+	public function GetRentalIdFromListingId($listing_id, $user_id)
 	{
-		$rental['is_complete'] = 1;
+		$rentalId = $this->find('first', array(
+			'fields' => array('Rental.rental_id'),
+			'conditions' => array(
+				'Rental.listing_id' => $listing_id
+			)
+		));
 
-		/* 
-		Remove entries from array that are null so that cakephp won't complain.
-		They will be set to null by default in the rentals table.
-		*/
-		foreach ($rental as $key => $value)
-		{
-			if ($rental[$key] == null)
-				unset($rental[$key]);
+		if ($rentalId != null)
+			return $rentalId['Rental']['rental_id'];
+		else{
+			$error = null;
+			$error['listing_id'] = $listing_id;
+			$this->LogError($user_id, 23, $error);
+			return null;
 		}
-
-		return $rental;
 	}
 }
 

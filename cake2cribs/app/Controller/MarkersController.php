@@ -13,4 +13,18 @@ class MarkersController extends AppController {
             return;
 		$this->Marker->UpdateCache();
 	}
+
+	/*
+	Creates a new marker if address in $marker does not yet exist.
+	Otherwise, retrieves marker_id of existing marker with that address.
+	Returns marker_id to user
+	*/
+	public function Save()
+	{
+		$this->layout = 'ajax';
+		$marker = $this->params['data'];
+		CakeLog::write("savingMarker", print_r($marker, true));
+		$marker_id = $this->Marker->FindMarkerId($marker, $this->_getUserId());
+		$this->set('response', $marker_id);
+	}
 }

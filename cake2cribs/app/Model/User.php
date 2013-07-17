@@ -2,8 +2,8 @@
 App::uses('AuthComponent', 'Controller/Component');
 class User extends AppModel {
 	public $hasMany = array(
-		'Sublet' => array(
-			'className' => 'Sublet',
+		'Listing' => array(
+			'className' => 'Listing',
 			'foreignKey' => 'user_id'
 		)
 	);
@@ -11,7 +11,8 @@ class User extends AppModel {
 	public $primaryKey = 'id';
 
 	public $validate = array (
-		'id' => 'alphaNumeric', 
+		'id' => 'numeric',
+		'user_type' => 'numeric',
 		'password' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -50,7 +51,27 @@ class User extends AppModel {
 				'rule' => 'alphaNumeric',
 				'message' => 'Names must only contain letters and numbers.'
 				)
-			),
+		),
+		'street_address' => array(
+			'between' => array(
+				'rule' => array('between', 0, 255)
+			)
+		),
+		'city' => array(
+			'between' => array(
+				'rule' => array('between', 0, 255)
+			)
+		),
+		'state' => array(
+			'between' => array(
+				'rule' => array('between',0, 2),
+				'message' => 'Must be 2 characters'
+			)
+		),
+		'zipcode' => array(
+        	'rule' => array('postal', null, 'us')
+    	),
+    	'website' => 'url',
 		'email' => array(
 			'email' => array(
         		'rule'    => array('email', true),
@@ -90,7 +111,7 @@ class User extends AppModel {
 				'message' => 'A university selection is required.'
 				)
 
-			),
+		),
 		'verified' => 'boolean',
 		'university_verified' => 'boolean',
 		'vericode' => 'alphaNumeric',
@@ -103,7 +124,20 @@ class User extends AppModel {
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
 		'password_reset_date' => 'datetime'
+	);
+
+	/* ---------- unit_style_options ---------- */
+	const USER_TYPE_SUBLETTER = 0;
+	const USER_TYPE_PROPERTY_MANAGER = 1;
+
+	public static function user_type($value = null) {
+		$options = array(
+		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
+		    self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
 		);
+		return parent::enum($value, $options);
+	}
+
 	public function beforeSave($options = array()) {
 		if(isset($this->data[$this->alias]['password'])) {
 			$this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
@@ -111,9 +145,6 @@ class User extends AppModel {
 		
 		return true;
 	}
-
-
-/*TODO: Figure out how to get userid of currently logged in user - necessary for table updates here */
 
 	public function FacebookVerify($user_id)
 	{	

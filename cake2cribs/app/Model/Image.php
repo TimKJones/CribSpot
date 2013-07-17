@@ -3,21 +3,25 @@
 class Image extends AppModel {
 	public $name = 'Image';
 	public $primaryKey = 'image_id';
-	public $belongsTo = array('Sublet');
+	public $actsAs = array('Containable');
+	public $belongsTo = array(
+		'Listing' => array(
+            'className'    => 'Listing',
+            'foreignKey'   => 'listing_id'
+        )
+	);
 	public $MAX_FILE_SIZE = 5242880; // in bytes (5 MB)
 
 	public $validate = array(
-		'image_id' => 'alphaNumeric',
-		'sublet_id' => 'alphaNumeric', // listing to which this image belongs
-		'user_id' => 'alphaNumeric',    // user that uploaded this photo
+		'image_id' => 'numeric',
+		'user_id' => 'numeric',
+		'listing_id' => 'numeric', // listing to which this image belongs
 		'image_path'    => array(
 			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
 			'message' => 'Please supply a valid image, either jpeg, jpg, or png'
 		),
 		'is_primary' => 'boolean',
 		'caption' => array(
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric'),
 			'maxLength' => array(
 				'rule' => array('maxLength', 25)
 			)
@@ -32,7 +36,237 @@ class Image extends AppModel {
 		return true;
 	}
 
+	/*
+	VARIABLES: 
+	$file = $image data
+	$row_id = row  of listing in user's current slickgrid
+	$listing_id = listing_id of of this listing, if already saved.
+	Moves file to /img/listings/random_id
+	Add new record to images table
+	Returns the new image_id on success; error message on failure.
+	*/
+	public function SaveImage($file, $user_id, $listing_id = null, $currentPath=null)
+	{
+		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
+			return array('error' => 'error2 saving image');
+
+		if ($currentPath == null)
+			$currentPath = 'img/listings/';
+
+		$random = uniqid();
+		$newPath = $currentPath . $random;
+		$fileType = $this->_getFileType($file);
+		if (!is_file(WWW_ROOT . $newPath . '.' . $fileType)){
+			/* File doesn't exist yet. This is the path where the image will be saved. */
+			$newPath = $newPath . '.' . $fileType;
+			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath, $user_id);
+			if (array_key_exists('error', $response))
+				return $response;
+
+			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
+			return $image_id;
+		}
+
+		/* File name already exists. Create new folder if $newPath doesn't already exist */
+		if (!is_dir($newPath)){
+			if (!$this->_createFolder($newPath)){
+				$error = null;
+				$error['new_path'] = $newPath;
+				$this->LogError($user_id, 14, $error);
+				return array('error' => 'There was an error saving your image. ' . 
+					'Contact help@cribspot.com if the error persists. Reference error code 14');
+			}
+		}
+
+		$newPath = $newPath . '/';
+		return $this->SaveImage($file, $user_id, $listing_id, $newPath);
+	}
+
+	/*
+	Moves file to the path specified.
+	Returns true on success; false on failure
+	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
+	*/
+	public function MoveFileToFolder($file, $newPath, $user_id)
+	{
+		if (!$this->_isValidFileSize($file)) {
+			$error = null;
+			$error['file'] = $file;
+			$this->LogError($user_id, 21, $error);
+			return array('error' => 'File is too large.' . 
+				'Contact help@cribspot.com if you believe this is an error. Reference error code 21.');
+		}
+
+		if (!$this->_isValidFileType($file, $user_id)){
+			$error = null;
+			$error['file'] = $file;
+			$this->LogError($user_id, 22, $error);
+			return array('error' => 'Invalid file type. Image must be jpeg, jpg, or png.' . 
+				'Contact help@cribspot.com if you believe this is an error. Reference error code 22.');
+		}
+
+		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))){
+			$error = null;
+			$error['file'] = $file;
+			$error['path'] = $newPath;
+			$this->LogError($user_id, 18, $error);
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 18');
+		}
+
+		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name'])){
+			$error = null;
+			$error['file'] = $file;
+			$this->LogError($user_id, 19, $error);
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 19');
+		}
+
+		if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
+			$error = null;
+			$error['path'] = $newPath;
+			$error['file'] = $file;
+			$this->LogError($user_id, 20, $error);
+			return array(
+			'There was an error saving your image. Contact help@cribspot.com if the error persists. Reference error code 20');
+		}
+
+		return array('success' => 'file moved successfully'); 
+	}
+
+	/*
+	Add a record to the images table for the given file path.
+	*/
+	private function AddImageEntry($filePath, $user_id, $listing_id = null)
+	{
+		$newImage = array(
+			'image_path' => $filePath,
+			'user_id' => $user_id,
+			'is_primary' => 0
+		);
+
+		if ($listing_id != null)
+			$newImage['listing_id'] = $listing_id;
+
+		if ($this->save($newImage))
+			return array('image_id' => $this->id);
+		else{
+			$error = null;
+			$error['image'] = $newImage;
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 15, $error);
+			return array('error' => 
+				'Failed to save image. Contact help@cribspot.com if the error persists. Reference error code 15.');
+		}
+	}
+
+	/*
+	Deletes the images with paths in records to be deleted.
+	Deletes the image records with ids in $image_ids.
+	*/
+	public function DeleteExpiredImages($image_ids)
+	{
+		/* Get all image paths to delete */
+		$imagePaths = $this->find('all', array(
+			'fields' => array('Image.image_path'), 
+			'conditions' => array('Image.image_id' => $image_ids)
+		));
+
+		/* Delete all images from img/listings/incomplete/user_id/row_id */
+		for ($i = 0; $i < count($imagePaths); $i++) {
+			$this->DeleteImageFile($imagePaths[$i]['Image']['image_path']);
+		}
+
+		$this->DeleteImageRecords($image_ids);
+	}
+
+	/*
+	Called after a listing is saved to update the listings images that were saved before listing_id was known.
+	$listing_id = id of listing that was just saved.
+	$images  = image objects to be re-saved.
+	Returns error message on failure.
+	*/
+	public function UpdateAfterListingSave($listing_id, $images, $user_id=null)
+	{
+		$errors = false;
+		for ($i = 0; $i < count($images); $i++){
+			if (!array_key_exists($i, $images) ||
+				!array_key_exists('Image', $images[$i]) ||
+				!array_key_exists('image_id', $images[$i]['Image'])){
+				$error = null;
+				$error['images'] = $images;
+				$this->LogError($user_id, 16, $error);
+				return array('error' => 
+					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 16.');
+			}
+
+			$images[$i]['Image']['listing_id'] = $listing_id;
+		}
+
+		if (!$this->save($images)){
+			$error = null;
+			$error['image'] = $images[$i];
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 17, $error);
+			return array('error' => 
+					'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 17');
+		}
+
+		return array('success' => '');
+	}	
+
+	/*
+	Moves file from $currentPath to $newPath
+	Returns true on success; false on failure.
+	*/
+	private function _moveImageAfterListingSave($currentPath, $newPath)
+	{
+		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))) {
+			CakeLog::write("movingImage", "failed to move " . $currentPath . " to " . $newPath);
+			return false;
+		}
+
+		if (!rename($currentPath, $newPath)){
+			CakeLog::write("movingImage", "failed to rename " . $currentPath . " to " . $newPath);
+			return false;
+		}
+
+		return true;
+	}
+
+	/*
+	Sometimes files aren't deleted after moving them to /img/listings/listing_id.
+	Delete all files in $directory
+	*/
+	private function _deleteDirectory($dir) 
+	{
+	    if (!file_exists($dir)) 
+	    	return true;
+	    if (!is_dir($dir)) 
+	    	return unlink($dir);
+	    foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') 
+	        	continue;
+	        if (!$this->_deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) 
+	        	return false;
+	    }
+    	return rmdir($dir);
+	}
+
+	/*
+	Return the new path for image with $listing_id and old path $old_path
+	*/
+	public function GetNewRelativePathAfterListingSave($old_path, $listing_id)
+	{
+		$fileName = $this->_getFileNameFromPath($old_path);
+		$newPath = 'img/listings/' . $listing_id . '/' . $fileName;
+		return $newPath;
+	}
+
+
 	/* 
+	------- NOT TO BE USED ANYMORE. THIS WAS USED WITH SUBLETS.     --------
+	------- WHEN NEW VERSION IS FULLY TESTED, THIS WILL BE REMOVED. --------
 	Create new row in images table for this image.
 	Move image to new location in img/sublets/[sublet_id]_img#
 	returns true on success, false on failure
@@ -94,7 +328,11 @@ class Image extends AppModel {
 		return $response;
 	}
 
-	private function AddImageEntry($user_id, $filePath)
+
+	/*
+	This is the old method for adding to the images table.
+	*/
+	private function AddImageEntry_old($user_id, $filePath)
 	{
 		$newImage = array(
 			'sublet_id' => null, 
@@ -178,6 +416,25 @@ class Image extends AppModel {
 		$returnVal = array();
 		array_push($returnVal, $primary_image_index, $files, $captions);
 		return $returnVal;
+	}
+
+	/*
+	Deletes the file with the specified path
+	*/
+	public function DeleteImageFile($image_path)
+	{
+		$image_path = WWW_ROOT . $image_path;
+		return unlink($image_path);
+	}
+
+	/*
+	Deletes all image records with ids contained in $image_ids
+	*/
+	public function DeleteImageRecords($image_ids)
+	{
+		$this->deleteAll(
+			array('Image.image_id' => $image_ids), false
+		);
 	}
 
 	public function DeleteImage($user_id, $listing_id, $path)
@@ -285,5 +542,69 @@ class Image extends AppModel {
 		}
 
 		return "SUCCESS";
+	}
+
+	/*
+	Returns the file name given the full path to the file
+	*/
+	private function _getFileNameFromPath($image_path)
+	{
+		return substr($image_path, strrpos($image_path, '/') + 1);
+	}
+
+	/*
+	Returns the deepest directory from a given path.
+	*/
+	private function _getDeepestDirectoryFromPath($path)
+	{
+		return substr($path, 0, strrpos($path, '/'));
+	}
+
+	/*
+	Creates new folder with given path.
+	Returns true on success; false on failure
+	*/
+	private function _createFolder($path)
+	{
+		if(!is_dir($path)){
+			if (!mkdir($path, 0777, true))
+				return false;
+		}
+
+		return true;
+	}
+
+	/*
+	Returns true if file is of valid file type (jpg, jpeg, png); false otherwise
+	*/
+	private function _isValidFileType($file, $user_id)
+	{
+		if (!array_key_exists('name', $file) || !array_key_exists(0, $file['name']))
+			return false;
+
+		$fileType = $this->_getFileType($file);
+		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
+			return false;
+		
+		return true;		
+	}
+
+	/*
+	Returns true if file is smaller than the maximum file size; false otherwise
+	*/
+	private function _isValidFileSize($file)
+	{
+		if (array_key_exists('size', $file) && array_key_exists(0, $file['size']))
+			return ($file['size'][0] <= $this->MAX_FILE_SIZE);
+
+		return false;
+	}
+
+	/*
+	Returns the file type from a file path
+	*/
+	private function _getFileType($file)
+	{
+		return substr($file['name'][0], strrpos($file['name'][0], '.') + 1);
 	}
 }

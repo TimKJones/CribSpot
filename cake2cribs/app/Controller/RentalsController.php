@@ -1,41 +1,18 @@
 <?php
 class RentalsController extends AppController 
-{	
-	public $helpers = array('Html');
-	public $uses = array('Rental');
-	//public $components= array('');
+{ 
+  public $helpers = array('Html');
+  public $uses = array('Rental', 'RentalIncomplete', 'Fee', 'Listing');
+  public $components= array('RequestHandler', 'Auth', 'Session');
 
   public function beforeFilter()
   {
     parent::beforeFilter();
     $this->Auth->allow('Save');
-    $this->Auth->allow('Delete');
     $this->Auth->allow('Get');
   }
 
   public function index()
-  {
-
-  }
-
-  /*
-  Save each rental object in $rentals
-  REQUIRES: each rental object is in the form cake expects for a valid save.
-  */
-  public function Save()
-  {
-    $this->layout = 'ajax';
-    $rentals = $this->params['data'];
-    //$rentals['user_id'] = $this->Auth('user');
-    $rentals['user_id'] = 25;
-    $response = $this->Rental->SaveRental($rentals);
-    $this->set('response', json_encode($response));
-  }
-
-  /*
-  Delete each rental with an id in $rental_ids
-  */
-  public function Delete($rental_ids = null)
   {
 
   }
@@ -56,5 +33,21 @@ class RentalsController extends AppController
   public function Copy($rental_ids = null)
   {
 
+  }
+
+  /*
+    Check if user owns listing_id. Returns true if so, false otherwise.
+  */
+  function UserOwnsListing($listing_id)
+  {
+    $user_id = $this->_getUserId();
+    if ($user_id == null || $user_id == 0)
+      return false;
+
+    $listingType = $this->Listing->GetListingType($listing_id);
+    if ($listingType == Listing::LISTING_TYPE_RENTAL)
+      return $this->Listing->UserOwnsListing($listing_id, $user_id);
+
+    return false;
   }
 }

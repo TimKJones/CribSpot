@@ -3,11 +3,13 @@
 class ImagesController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Image');
+	public $components= array('RequestHandler', 'Auth', 'Session');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index');
 		$this->Auth->allow('add');
+		$this->Auth->allow('AddImage');
 		$this->Auth->allow('add2');
 		$this->Auth->allow('add3');
 		$this->Auth->allow('edit');
@@ -15,6 +17,36 @@ class ImagesController extends AppController {
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
 		$this->Auth->allow('SubmitCaption');
+
+		$this->Auth->allow('add_test');
+	}
+
+	public function add_test(){}
+
+	/*
+	AJAX
+	If SESSION[row_id] != $num_images, cleans up images left over from uploading in a previous tab (same session).
+	Pass image data to Image model to create table entries and move the file.
+	Appends image_id of new Image entry to SESSION[row_id]
+	Returns: SUCCESS: image_id of new image entry; FAILURE: error message
+	*/
+	function AddImage()
+	{
+		$this->layout = 'ajax';
+		if (!array_key_exists('form', $this->request->params) || 
+			!array_key_exists('files', $this->request->params['form'])){
+			/* TODO: log error */
+			$this->set('response', json_encode(array('error' => 'Failed to upload image')));
+			return;
+		}
+
+		$image = $this->request->params['form']['files'];
+		$listing_id = null;
+		if (array_key_exists('listing_id', $this->data))
+			$listing_id = $this->data['listing_id'];
+
+		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
+		$this->set('response', json_encode($imageResponse));
 	}
 
 	function add($data = null)

@@ -1,5 +1,5 @@
 #main_content{
-	padding-top: 70px;
+	padding: 0;
 	background-color: #eeecec;	
 	margin: 0px;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
@@ -43,11 +43,16 @@ a:hover{
 #left_content{
 	height: 100%;
 	position: relative;
-	min-width: 250px;
+	top: 75px;
+	background-color: white;
+	-webkit-box-shadow: inset 0 0 5px 0 hsl(0, 0%, 50%);
+	-moz-box-shadow: inset 0 0 5px 0 hsl(0, 0%, 50%);
+	box-shadow: inset 0 0 5px 0 hsl(0, 0%, 50%);
 }
 
 
 .content-header{
+	/*
 	position: relative;
 	margin-top: 20px;
 	height: 45px;
@@ -55,6 +60,7 @@ a:hover{
 	background: #f9f9f9;
 	border: 2px solid #b7b1b1;
 	line-height	: 45px;
+	*/
 
 	/*Disable Text Selection*/
 	-webkit-touch-callout: none;
@@ -123,10 +129,17 @@ a:hover{
 /********************************Center Content********************************/
 /******************************************************************************/
 
+.cake-error
+{
+	display: none;
+}
 
 #middle_content{
 	height: 100%;
 	position: relative;
+	margin-left: 20px;
+	top: 75px;
+	padding-top: 10px;
 	/*margin-bottom: 2%;*/
 	/*margin-bottom: 20px;*/
 }

@@ -251,7 +251,7 @@ class SubletsController extends AppController {
 			//Since there was no marker defined we need to find a marker
 			//findMarker will create a marker if it doesn't find one by 
 			//the street address passed in the marker
-			$marker['marker_id'] = $this->Marker->FindMarkerId($marker);
+			$marker['marker_id'] = $this->Marker->FindMarkerId($marker, $this->_getUserId());
 		}
 
 		CakeLog::write("savingSublet", "Found Marker " . print_r($marker, true));

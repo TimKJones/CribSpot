@@ -76,14 +76,11 @@ class AppController extends Controller {
 		//$this->Auth->allow('user','resetpassword');
 		//$this->Auth->allow('sublet', 'ajax_add');
 		$this->Auth->allow('verify','map');
-		App::import('Vendor', 'Facebook', array('file' => 'facebook/src/facebook.php'));     
+		/*App::import('Vendor', 'Facebook', array('file' => 'facebook/src/facebook.php'));     
     	$this->facebook = new Facebook(array(
       		'appId'  => Configure::read("FB_APP_ID"),
       		'secret' => Configure::read("FB_APP_SECRET"),
-    	));
-
-		$this->__initLogin();
-
+    	));*/
 	}
 
 	public function beforeRender()
@@ -99,41 +96,9 @@ class AppController extends Controller {
 		}
 	}
 
-/*Facebook stuff - maybe should be in another controller? */
-/*TODO: TEST LOGOUT FUNCTIONALITY MORE THOROUGHLY */
-/*
-Try and log in.
-Set userid in session as well as $this->loginUrl and $this->logoutUrl
-*/
-	public function __initLogin() {
- 
-	    if (isset($this->params['url']['code']) and $this->params['url']['code'] !='' ){
-	        $uid = $this->facebook->getUser();     
-					/*TODO: INVESTIGATE THIS LINE BELOW */
-	        //echo "<script type='text/javascript'>top.location.href = '".Configure::read('APP_URL')."';</script>";
-	        exit;
-	    }
-     
-    	$uid = $this->facebook->getUser();     
-	    if ($uid) {
-	      try {
-	        $user_profile = $this->facebook->api('/me');
-	        $this->Session->write('user', $uid);
-	      } catch (FacebookApiException $e) {   
-	        $this->Session->write('user', 0);
-	      }
-	    }
-	    else
-	    	$this->Session->write('user', 0);
-
-    	$loginUrl = $this->facebook->getLoginUrl(
-            array(
-                'scope' => 'email'
-            ),''
-    	);
-		$logoutUrl = $this->facebook->getLogoutUrl();
- 		$this->set('loginUrl',  $loginUrl);
-		$this->set('logoutUrl', $logoutUrl);
+	protected function _getUserId()
+	{
+		return 15;
 	}
 
 	/**
