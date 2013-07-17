@@ -80,6 +80,28 @@ class AppModel extends Model {
 		return $rental;
 	}
 
+	/*	
+	Input: User object
+	Removes all sensitive fields that shouldn't be returned to client.
+	Returns modified User object with sensitive fields removed.
+	Returns null on error.
+	*/
+	protected function _removeSensitiveUserFields($user)
+	{
+		unset($user['user_type']);
+		unset($user['password']);
+		unset($user['email']);
+		unset($user['phone']);
+		unset($user['vericode']);
+		unset($user['created']);
+		unset($user['modified']);
+		unset($user['password_reset_token']);
+		unset($user['password_reset_date']);
+		unset($user['twitter_auth_token']);
+		unset($user['twitter_auth_token_secret']);
+		return $user;
+	}
+
 	/*
 	Used when saving a row that is labeled as incomplete (is_complete = 0)
 	Removes the keys from the array that are in $keysFailed
