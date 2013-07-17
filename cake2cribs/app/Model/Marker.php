@@ -178,7 +178,9 @@ class Marker extends AppModel {
 	  		if (!array_key_exists('Marker', $markerMatch) || 
 	  			!array_key_exists('visible', $markerMatch['Marker']) || 
 	  			!array_key_exists('marker_id', $markerMatch['Marker'])){
-	  			$this->LogError($user_id, 9, print_r($markerMatch, true));
+	  			$error = null;
+				$error['markerMatch'] = $markerMatch;
+	  			$this->LogError($user_id, 9, $error);
 	  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 9');
 	  		}
@@ -187,7 +189,10 @@ class Marker extends AppModel {
 	  			/* Marker exists but is invisible. Make it visible. */
 	  			$markerMatch['Marker']['visible']=1;
 		  		if(!$this->save($markerMatch)){
-		  			$this->LogError($user_id, 10, print_r($markerMatch, true));
+		  			$error = null;
+					$error['markerMatch'] = $markerMatch;
+					$error['validation'] = $this->validationErrors;
+		  			$this->LogError($user_id, 10, $error);
 		  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 10');
 		  		}
@@ -200,7 +205,10 @@ class Marker extends AppModel {
 	  		if ($this->save(array('Marker' => $marker)))
 	  			return $this->id;
 	  		else {
-	  			$this->LogError($user_id, 11, print_r($marker, true));
+	  			$error = null;
+				$error['marker'] = $marker;
+				$error['validation'] = $this->validationErrors;
+	  			$this->LogError($user_id, 11, $error);
 	  			return array('error' =>
 	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 11');
 	  		}

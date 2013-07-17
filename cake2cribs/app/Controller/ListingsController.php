@@ -10,6 +10,8 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
+		$this->Auth->allow('Save');
+		$this->Auth->allow('Delete');
 	}
 
 	/*
@@ -21,19 +23,24 @@ class ListingsController extends AppController {
 	{
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
-		$listingObject['Listing']['user_id'] = $this->_getUserId();
-		CakeLog::write("listingValidationErrors", print_r($listingObject, true));
-		//$image_ids_to_update = $listingObject['image_ids'];
-		//unset($listingObject['image_ids']);
+		$listing = $listingObject['Listing'];
+		$listing['Listing'] = $listing;
+		$images = null;
+		if (array_key_exists('Image', $listing)){
+			$images = $listingObject['Image'];
+			$images['Image'] = $images;
+		}
+
 		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
-		/* if (!array_key_exists('error', $response) && 
+		if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
-			$image_ids_to_update != null) {
+			$images != null) {
 			// Update images that bad been saved before listing_id was known
-			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $image_ids_to_update, $this->_getUserId());
+			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $images, $this->_getUserId());
 			if (array_key_exists('error', $imageResponse))
 				$response['error'] = $imageResponse['error'];
-		} */
+		}
+
 		$this->set('response', json_encode($response));
 		return;
 	}
@@ -42,26 +49,23 @@ class ListingsController extends AppController {
 	public function Delete ($listing_ids)
 	{
 		$this->layout = 'ajax';
-		$listing_ids = json_decode($listing_ids);
+		$listing_ids = json_decode($listing_ids);	
 
 		for ($i = 0; $i < count($listing_ids); $i++){
 			if (!$this->Listing->UserOwnsListing($listing_ids[$i], $this->_getUserId()))
 			{
+				$error = null;
+				$error['listing_id'] = $listing_ids[$i];
+				$this->Listing->LogError($this->_getUserId(), 1, $error);
 				$this->set('response', json_encode(array('error' => 
 					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 1')));
 				return;
 			}
-
-			/* Delete from listings table. Set cascade=true to also delete from either rentals, parkings, or sublets. */
-			if (!$this->Listing->delete($listing_ids[$i], true))
-			{
-				$this->set('response', json_encode(array('error' => 
-					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 2')));
-				return;
-			}
 		}
 
-		$this->set('response', json_encode(array('success' => '')));
+		/* "Delete" from listings table (set visible=0) */
+		$response = $this->Listing->DeleteListing($listing_ids, $this->_getUserId());
+		$this->set('response', json_encode($response));
 		return;
 	}
 

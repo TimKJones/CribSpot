@@ -13,6 +13,8 @@ class A2Cribs.Rental
 
 	@Template =
 		data =
+			Listing:
+				listing_type: 0
 			Rental:
 				street_address: A2Cribs.UILayer.Rentals.street_address()
 				city: A2Cribs.UILayer.Rentals.city()
@@ -79,6 +81,16 @@ class A2Cribs.Rental
 				contact_email: A2Cribs.UILayer.Rentals.contact_email()
 				contact_phone: A2Cribs.UILayer.Rentals.contact_phone()
 				website: A2Cribs.UILayer.Rentals.website()
+			Image:
+				0:
+					image_id:275
+					caption: "herefdf"
+					is_primary: 0
+				1:
+					image_id:276
+					caption: "heres the second one"
+					is_primary: 1
+
 	@Required_Fields = [
 		"unit_style_options",
 		"unit_style_type",

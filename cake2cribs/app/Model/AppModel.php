@@ -53,7 +53,7 @@ class AppModel extends Model {
 	{
 		App::import('Model', 'Error');
 		$Error = new Error();
-		$Error->AddError($user_id, $error_code, $debug_info);
+		$Error->AddError($user_id, $error_code, json_encode($debug_info));
 	}
 
 	function getLastQuery()
