@@ -1,4 +1,12 @@
 class A2Cribs.UserCache
+	@Markers = {
+			Rental: []
+			Parking: []
+			Sublet: []
+		}
+
+	@Listings = []
+	
 	get = (key) =>
 		items = []
 		for listing in @Listings
@@ -46,11 +54,6 @@ class A2Cribs.UserCache
 
 	@CacheListings : (listing_list) ->
 		@Listings = listing_list
-		@Markers = {
-			Rental: []
-			Parking: []
-			Sublet: []
-		}
 		for i in [0..@Listings.length - 1]
 			listing = @Listings[i]
 			for key, field of listing

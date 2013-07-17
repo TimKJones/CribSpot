@@ -20,10 +20,10 @@
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
-		<div class = 'span2'>
+		<div id = 'left_content' class = 'span2'>
 			<?php echo $this->element('Dashboard/navigation-bar'); ?>			
 		</div>
-		<div class = 'span10'>
+		<div id = 'middle_content' class = 'span10'>
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>
 					<?php echo $this->element('Account/edit_account_window', $user) ?>

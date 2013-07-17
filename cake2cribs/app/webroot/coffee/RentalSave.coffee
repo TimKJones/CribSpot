@@ -201,14 +201,15 @@ class A2Cribs.RentalSave
 			modal.find("#marker_select").append(
 				'<option value="0">--</option>
 				<option value="new_marker"><strong>New Location</strong></option>')
-			for marker in markers
-				name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
-				option = $ "<option />",
-					{
-						text: name
-						value: marker.marker_id
-					}
-				modal.find("#marker_select").append option
+			if markers?
+				for marker in markers
+					name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
+					option = $ "<option />",
+						{
+							text: name
+							value: marker.marker_id
+						}
+					modal.find("#marker_select").append option
 
 			modal.find("#marker_select").val "0"
 

@@ -1,10 +1,13 @@
-<ul class="nav nav-list">
-	<li>
+<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?','stylesheet/less', array('inline' => false)); ?>
+
+<ul id="navigation-bar" class="nav nav-list">
+	<li id="create-listing">
 		<a href="#marker-modal" data-toggle="modal">
 			<i class="icon-plus-sign icon-large"></i>
 			CREATE A NEW LISTING
 		</a>
 	</li>
+	<li class="spacer"></li>
 	<li>
 		<a href="#">
 			<i class="icon-map-marker icon-large"></i>
@@ -29,7 +32,7 @@
 			Rentals
 		</a>
 	</li>
-	<li>
+<!--	<li>
 		<a href="#">
 			<i></i>
 			Sublets
@@ -40,7 +43,7 @@
 			<i></i>
 			Parking
 		</a>
-	</li>
+	</li> -->
 </ul>
 <ul class="nav nav-list hide list-dropdown" id = "Rental_list">
 	<li class="nav-header">MESSAGES</li>
@@ -48,9 +51,9 @@
 <ul class="nav nav-list hide list-dropdown" id = "rentals_list">
 	<li class="nav-header">RENTALS</li>
 </ul>
-<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
+<!--<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
 	<li class="nav-header">SUBLETS</li>
 </ul>
 <ul class="nav nav-list hide list-dropdown" id = "parking_list">
 	<li class="nav-header">PARKING</li>
-</ul>
+</ul>-->

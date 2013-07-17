@@ -32,16 +32,16 @@
 ?>
 
 <!-- Rental Preview -->
-<div class="row-fluid">
-	<img src="" alt="Nice" class="img-polaroid pull-left" style="width:70px; height:70px;">
+<div id="rentals_preview" class="row-fluid">
+	<img src="" alt="Nice" class="img-polaroid pull-left" style="width:80px; height:70px;">
 	<address id="rentals_address">
 		<strong>Zaragon</strong><br>
 		795 Folsom Ave, Suite 600<br>
 	</address>
 	<div class="btn-group pull-right">
-		<button class="btn" id="rentals_edit">Edit</button>
+		<button class="btn btn-small" id="rentals_edit">Edit</button>
 		<!--<button class="btn">Copy</button>-->
-		<button class="btn" id="rentals_delete">Delete</button>
+		<button class="btn btn-small" id="rentals_delete">Delete</button>
 	</div>
 </div>
 
@@ -50,7 +50,7 @@
 
 	<!-- Rental Tabs -->
 	<div class="span12 tabbable"> <!-- Only required for left/right tabs -->
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs grid-tabs">
 			<li class="active">
 				<a href="#overview_grid" class="rentals_tab" data-toggle="tab">
 					OVERVIEW

@@ -250,14 +250,16 @@
         modal.find("#marker_select").empty();
         modal.find("#marker_select").append('<option value="0">--</option>\
 				<option value="new_marker"><strong>New Location</strong></option>');
-        for (_i = 0, _len = markers.length; _i < _len; _i++) {
-          marker = markers[_i];
-          name = (marker.alternate_name != null) && marker.alternate_name.length ? marker.alternate_name : marker.street_address;
-          option = $("<option />", {
-            text: name,
-            value: marker.marker_id
-          });
-          modal.find("#marker_select").append(option);
+        if (markers != null) {
+          for (_i = 0, _len = markers.length; _i < _len; _i++) {
+            marker = markers[_i];
+            name = (marker.alternate_name != null) && marker.alternate_name.length ? marker.alternate_name : marker.street_address;
+            option = $("<option />", {
+              text: name,
+              value: marker.marker_id
+            });
+            modal.find("#marker_select").append(option);
+          }
         }
         return modal.find("#marker_select").val("0");
       });

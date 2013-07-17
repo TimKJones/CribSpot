@@ -7,6 +7,14 @@
 
     function UserCache() {}
 
+    UserCache.Markers = {
+      Rental: [],
+      Parking: [],
+      Sublet: []
+    };
+
+    UserCache.Listings = [];
+
     get = function(key) {
       var items, listing, _i, _len, _ref;
       items = [];
@@ -109,11 +117,6 @@
     UserCache.CacheListings = function(listing_list) {
       var field, i, index, key, listing, term, value, _i, _ref, _results;
       this.Listings = listing_list;
-      this.Markers = {
-        Rental: [],
-        Parking: [],
-        Sublet: []
-      };
       for (i = _i = 0, _ref = this.Listings.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         listing = this.Listings[i];
         for (key in listing) {
