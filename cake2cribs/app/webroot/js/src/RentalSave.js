@@ -606,10 +606,11 @@
             formatter: A2Cribs.Formatters.RequiredMoney
           }, {
             id: "rent_negotiable",
+            cssClass: "grid_checkbox",
             name: "(Neg.)",
             field: "rent_negotiable",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "start_date",
             name: "Start Date",
@@ -663,7 +664,8 @@
             id: "parking_type",
             name: "Parking",
             field: "parking_type",
-            editor: A2Cribs.Editors.Parking
+            editor: A2Cribs.Editors.Parking,
+            formatter: A2Cribs.Formatters.Parking
           }, {
             id: "parking_spots",
             name: "Spots",
@@ -672,25 +674,29 @@
             formatter: A2Cribs.Formatters.Text
           }, {
             id: "street_parking",
+            cssClass: "grid_checkbox",
             name: "Street Parking",
             field: "street_parking",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "furnished_type",
             name: "Furnished",
             field: "furnished_type",
-            editor: A2Cribs.Editors.Furnished
+            editor: A2Cribs.Editors.Furnished,
+            formatter: A2Cribs.Formatters.Furnished
           }, {
             id: "pets_type",
             name: "Pets",
             field: "pets_type",
-            editor: A2Cribs.Editors.Pets
+            editor: A2Cribs.Editors.Pets,
+            formatter: A2Cribs.Formatters.Pets
           }, {
             id: "smoking",
             name: "Smoking",
             field: "smoking",
-            editor: A2Cribs.Editors.Smoking
+            editor: A2Cribs.Editors.Smoking,
+            formatter: A2Cribs.Formatters.Smoking
           }, {
             id: "square_feet",
             name: "SQ Feet",
@@ -718,44 +724,50 @@
             minWidth: 185
           }, {
             id: "air",
+            cssClass: "grid_checkbox",
             name: "A/C",
             field: "air",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "washer",
             name: "Washer/Dryer",
             field: "washer"
           }, {
             id: "fridge",
+            cssClass: "grid_checkbox",
             name: "Fridge",
             field: "fridge",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "balcony",
+            cssClass: "grid_checkbox",
             name: "Balcony",
             field: "balcony",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "tv",
+            cssClass: "grid_checkbox",
             name: "TV",
             field: "tv",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "storage",
+            cssClass: "grid_checkbox",
             name: "Storage",
             field: "storage",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "security_system",
+            cssClass: "grid_checkbox",
             name: "Security System",
             field: "security_system",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }
         ];
       };
@@ -771,64 +783,74 @@
             minWidth: 185
           }, {
             id: "pool",
+            cssClass: "grid_checkbox",
             name: "Pool",
             field: "pool",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "hot_tub",
+            cssClass: "grid_checkbox",
             name: "Hot Tubs",
             field: "hot_tub",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "fitness_center",
+            cssClass: "grid_checkbox",
             name: "Fitness Center",
             field: "fitness_center",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "game_room",
+            cssClass: "grid_checkbox",
             name: "Game Room",
             field: "game_room",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "front_desk",
+            cssClass: "grid_checkbox",
             name: "Front Desk",
             field: "front_desk",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "tanning_beds",
+            cssClass: "grid_checkbox",
             name: "Tanning Beds",
             field: "tanning_beds",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "study_lounge",
+            cssClass: "grid_checkbox",
             name: "Study Lounge",
             field: "study_lounge",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "patio_deck",
+            cssClass: "grid_checkbox",
             name: "Deck/Patio",
             field: "patio_deck",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "yard_space",
+            cssClass: "grid_checkbox",
             name: "Yard Space",
             field: "yard_space",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }, {
             id: "elevator",
+            cssClass: "grid_checkbox",
             name: "Elevator",
             field: "elevator",
             editor: Slick.Editors.Checkbox,
-            formatter: Slick.Formatters.Checkmark
+            formatter: A2Cribs.Formatters.Check
           }
         ];
       };
@@ -846,42 +868,50 @@
             id: "electric",
             name: "Electricity",
             field: "electric",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "water",
             name: "Water",
             field: "water",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "gas",
             name: "Gas",
             field: "gas",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "heat",
             name: "Heat",
             field: "heat",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "sewage",
             name: "Sewage",
             field: "sewage",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "trash",
             name: "Trash",
             field: "trash",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "cable",
             name: "Cable",
             field: "cable",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "internet",
             name: "Internet",
             field: "internet",
-            editor: A2Cribs.Editors.Utilities
+            editor: A2Cribs.Editors.Utilities,
+            formatter: A2Cribs.Formatters.Utilities
           }, {
             id: "utility_total_flat_rate",
             name: "Total Flat Rate",
