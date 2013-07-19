@@ -1,4 +1,4 @@
-.FLDash{
+#FLDash{
     position: relative;
 
     .left-content{
@@ -76,9 +76,29 @@
     }
 
 
+}
 
+/* Jquery UI Datepicker hacks  WOOP WOOP */
 
+span.nextmonth{
+    padding-left: 5px;
+    top:23% !important;
+}
 
+span.prevmonth{
+    padding-right: 5px;
+    top:23% !important;   
+}
+.ui-datepicker-next:hover, .ui-datepicker-prev:hover{
+    cursor: pointer;
+}
+
+table.ui-datepicker-calendar {border-collapse: separate;}
+.ui-datepicker-calendar td {border: 1px solid transparent;}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
+    background: #ebf6fc none; /* a color that fits the widget theme */
+    color: #606060; /* a color that is readeable with the color above */
 }
 
 
