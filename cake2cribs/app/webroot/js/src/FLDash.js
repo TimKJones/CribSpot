@@ -4,10 +4,13 @@
 
   A2Cribs.FLDash = (function() {
 
-    function FLDash(uiWidget, UnavailableDates) {
+    function FLDash(uiWidget) {
+      var _this = this;
       this.uiWidget = uiWidget;
-      this.UnavailableDates = UnavailableDates;
       this.Listings = {};
+      $.getJSON('/featuredListings/getUnavailableDates', function(data) {
+        return _this.UnavailableDates = data;
+      });
       this.OrderItems = {};
       this.FL_Order = null;
       this.uiFL_Form = $('.featured-listing-order-item').first();

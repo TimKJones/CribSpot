@@ -77,31 +77,26 @@
     };
 
     FeaturedListing.prototype.initMultiDatesPicker = function(options) {
-      var disabled_dates, selected_dates, today,
+      var pickeroptions, today,
         _this = this;
       if (options == null) {
         options = null;
       }
       today = new Date();
-      selected_dates = null;
-      disabled_dates = null;
-      if ((options != null ? options.selected_dates : void 0) != null) {
-        selected_dates = options.selected_dates;
-      }
-      if ((options != null ? options.disabled_dates : void 0) != null) {
-        disabled_dates = options.disabled_dates;
-      }
-      selected_dates;
-
-      this.datepicker = $(this.Widget).find('.mdp').multiDatesPicker({
+      pickeroptions = {
         dateFormat: "yy-mm-dd",
-        addDates: selected_dates,
-        addDisabledDates: disabled_dates,
         minDate: new Date(today.setDate(today.getDate() + this.MIN_DAY_OFFSET)),
         onSelect: function(dateText, inst) {
           return _this.refresh();
         }
-      });
+      };
+      if ((options != null ? options.selected_dates : void 0) != null) {
+        pickeroptions.addDates = options.selected_dates;
+      }
+      if ((options != null ? options.disabled_dates : void 0) != null) {
+        pickeroptions.addDisabledDates = options.disabled_dates;
+      }
+      this.datepicker = $(this.Widget).find('.mdp').multiDatesPicker(pickeroptions);
       return this.datepicker.click();
     };
 

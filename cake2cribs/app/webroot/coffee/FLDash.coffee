@@ -1,8 +1,10 @@
 class A2Cribs.FLDash
 
-    constructor:(@uiWidget, @UnavailableDates)->
-        
+    constructor:(@uiWidget)->
         @Listings = {}
+        $.getJSON '/featuredListings/getUnavailableDates', (data)=>
+            @UnavailableDates = data
+            
         @OrderItems = {}
         @FL_Order = null
         @uiFL_Form = $('.featured-listing-order-item').first()
@@ -18,7 +20,6 @@ class A2Cribs.FLDash
 
         # Hide the pricing details because they get that shit for free
         # @FL_Form.find(".total-tally").hide()
-
 
     setupEventHandlers:()->
         

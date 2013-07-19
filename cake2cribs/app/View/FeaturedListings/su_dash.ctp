@@ -8,6 +8,8 @@
 <?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
 <?php $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
+<?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
+<?php $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('multi-date-picker'); ?>
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 

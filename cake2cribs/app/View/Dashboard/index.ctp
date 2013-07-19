@@ -50,6 +50,10 @@
 				<?php echo $this->element('Dashboard/rentals_window') ?>
 			</div>
 
+			<div class = 'featuredlisting-content hidden'>
+				<?php echo $this->element('FeaturedListings/dashview') ?>
+			</div>
+
 		</div>
 	</div>
 </div>

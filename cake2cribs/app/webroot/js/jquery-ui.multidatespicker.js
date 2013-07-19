@@ -319,7 +319,11 @@
 					}
 					$(this).datepicker('refresh');
 				} else {
-					$.error('Empty array of dates received.');
+					// Modification made to not throw an error if receiving an empty array of dates
+					// beacuse really who gives a shit if gets empty dates.	
+					console.log("Empty array of dates received.");
+
+					// $.error('Empty array of dates received.');
 				}
 			},
 			removeDates : function( dates, type ) {

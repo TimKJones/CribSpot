@@ -32,6 +32,14 @@
 			Rentals
 		</a>
 	</li>
+	<li>
+		<a href="#" class = 'featured-listing-content-header content-header' classname = 'featuredlisting'>
+			<i class = "icon-star icon-large"></i>
+			Featured Listings
+		</a>
+	</li>
+
+
 <!--	<li>
 		<a href="#">
 			<i></i>

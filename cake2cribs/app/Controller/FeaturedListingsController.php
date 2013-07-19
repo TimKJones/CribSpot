@@ -48,6 +48,16 @@ class FeaturedListingsController extends AppController {
 
   }
 
+  // Returns an array of date strings representing the dates
+  // that are unavailable to feature a listing
+  public function getUnavailableDates(){
+
+    $dates = $this->FeaturedListing->getDatesWithNOrMoreListings(2);
+
+    $this->layout = 'ajax';
+    $this->set('response', json_encode($dates));
+  } 
+
   // Return a json array containing all the data needed to order
   // a featured listing. This will include the following listing fields
   // listing_id, address, alt_name for property, listing_type (string)
@@ -64,7 +74,7 @@ class FeaturedListingsController extends AppController {
     // if (super user){
     //   blah blah blah
     // }
-    
+
     $listings = $this->Listing->GetListingsByUserId($user_id);
 
 

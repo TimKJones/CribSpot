@@ -72,27 +72,25 @@ class A2Cribs.Order.FeaturedListing
 
         initMultiDatesPicker:(options=null)->
             today = new Date()
-            selected_dates = null
-            disabled_dates = null
-
-            if options?.selected_dates?
-                selected_dates = options.selected_dates
-
-            if options?.disabled_dates?
-                disabled_dates = options.disabled_dates
-            selected_dates
-            @datepicker = $(@Widget).find('.mdp').multiDatesPicker({
+            
+            pickeroptions = 
+            {
                 dateFormat: "yy-mm-dd"
-                addDates: selected_dates
-                addDisabledDates: disabled_dates
                 # minDate available is 3 days into the future
                 minDate: new Date(today.setDate(today.getDate() + @MIN_DAY_OFFSET))
                 onSelect: (dateText, inst)=>
-                    @refresh()
+                    @refresh()           
+            }
 
+            if options?.selected_dates?
+                pickeroptions.addDates = options.selected_dates
 
-                        
-            });
+            if options?.disabled_dates?
+                pickeroptions.addDisabledDates = options.disabled_dates
+            
+            
+
+            @datepicker = $(@Widget).find('.mdp').multiDatesPicker(pickeroptions);
 
             @datepicker.click()
 
