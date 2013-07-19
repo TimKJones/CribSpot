@@ -1,4 +1,5 @@
 class A2Cribs.FLDash
+
     constructor:(@uiWidget, @UnavailableDates)->
         
         @Listings = {}
@@ -121,10 +122,12 @@ class A2Cribs.FLDash
         # as well as listing specific dates such as dates where the listing
         # is already featured.
 
-        options = {disabled_dates:@UnavailableDates.concat listing.unavailable_dates}
+        options = {
+            disabled_dates:@UnavailableDates.concat listing.unavailable_dates
+        }
 
         if @OrderItems[listing_id].item?.dates.length > 0
-            options.selected_dates @OrderItems[listing_id].item.dates
+            options['selected_dates'] = @OrderItems[listing_id].item.dates
         console.log(options)
         @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, listing.address, options)
         
@@ -221,7 +224,8 @@ class A2Cribs.FLDash
         for own key, orderItem of @OrderItems
             order.push(orderItem)
 
-        A2Cribs.Order.BuyItems order, (errors)=>
+        #Featured Listing Order Type is 0
+        A2Cribs.Order.BuyItems order, 0, (errors)=>
             @showErrors(errors)
 
 

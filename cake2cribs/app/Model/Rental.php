@@ -72,12 +72,6 @@ class Rental extends RentalPrototype {
 				'required' => true
 			)
 		),
-		'building_type' => array(
-			'numeric' => array(
-				'rule' => 'numeric',
-				'required' => true
-			)
-		),
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -117,7 +111,7 @@ class Rental extends RentalPrototype {
 		'dates_negotiable' => array(
 			'boolean' => array(
 				'rule' => 'boolean',
-				'required' => true
+				'required' => false
 			)
 		),
 		'available' => array(
@@ -180,6 +174,102 @@ class Rental extends RentalPrototype {
 				'message' => 'Must be less than 1000 characters'
 			)
 		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'admin_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'admin_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'parking_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'parking_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'furniture_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'furniture_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'pets_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'pets_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'deposit_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'deposit_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'upper_floor_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'upper_floor_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'extra_occupant_description' => array(
+			'between' => array(
+				'rule' => array('between',0,25),
+				'message' => 'Must be less than 25 characters'
+			)
+		),
+		'extra_occupant_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
 		'waitlist' => 'boolean',
 		'waitlist_open_date' => array(
 			'date' => array(
@@ -220,10 +310,15 @@ class Rental extends RentalPrototype {
 	Then it saves the rental.
 	REQUIRES: it has been verified that user is logged-in.
 	*/
-	public function SaveRental($rental)
+	public function SaveRental($rental, $user_id=null)
 	{
-		if ($rental == null)
-			return array("error" => "Rental cannot be null");
+		if ($rental == null){
+			$error = null;
+			$error['rental'] = $rental;
+			$this->LogError($user_id, 12, $error);
+			return array('error' => 
+					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
+		}
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
 		$rental = parent::_removeNullEntries($rental);
@@ -232,12 +327,13 @@ class Rental extends RentalPrototype {
 			return array('success' => '');
 		else
 		{
-			/* 
-			There were validation errors.
-			Remove failed keys and return the result.
-			*/
-			CakeLog::write("RentalSaveValidationErrors", print_r($this->validationErrors, true));
-			return array('error' => array('message' => 'Rental save failed: error code 2'));
+			$error = null;
+			$error['rental'] = array('Rental' => $rental);
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 13, $error);
+			return array('error' => array('message' => 
+				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
+				'validation' => $this->validationErrors));
 		}
 	}
 
@@ -253,7 +349,7 @@ class Rental extends RentalPrototype {
 	/*
 	Returns the rental_id for the rental with the given listing_id
 	*/
-	public function GetRentalIdFromListingId($listing_id)
+	public function GetRentalIdFromListingId($listing_id, $user_id)
 	{
 		$rentalId = $this->find('first', array(
 			'fields' => array('Rental.rental_id'),
@@ -264,8 +360,12 @@ class Rental extends RentalPrototype {
 
 		if ($rentalId != null)
 			return $rentalId['Rental']['rental_id'];
-		else
+		else{
+			$error = null;
+			$error['listing_id'] = $listing_id;
+			$this->LogError($user_id, 23, $error);
 			return null;
+		}
 	}
 }
 

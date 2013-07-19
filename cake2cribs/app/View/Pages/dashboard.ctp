@@ -1,14 +1,16 @@
 <?php
 	echo $this->Html->css('/js/slickgrid/slick.grid.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css', null, array('inline' => false));
-	echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
+	//echo $this->Html->css('/js/slickgrid/examples/examples.css', null, array('inline' => false));
 	echo $this->Html->css('/js/slickgrid/controls/slick.columnpicker.css', null, array('inline' => false));
 
+	echo $this->Html->script('src/UILayer/UILayer.js', array('inline' => false));
+	echo $this->Html->script('src/UILayer/Rentals.js', array('inline' => false));
+	echo $this->Html->script('src/UILayer/Fees.js', array('inline' => false));
+	
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
 
-
-	echo $this->Html->script('slickgrid/lib/jquery-1.7.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
 
@@ -22,10 +24,14 @@
 	echo $this->Html->script('slickgrid/plugins/slick.rowselectionmodel.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/controls/slick.columnpicker.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.formatters.js', array('inline' => false));
+	echo $this->Html->script('slickgrid/custom.formatters.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.editors.js', array('inline' => false));
+	echo $this->Html->script('slickgrid/custom.editors.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
 ?>
 
+
+<?php echo $this->element('Dashboard/marker-modal');?>
 
 
 <!-- Header -->
@@ -40,7 +46,7 @@
 		<div class="span2">
 			<ul class="nav nav-list">
 				<li>
-					<a href="#">
+					<a href="#marker-modal" data-toggle="modal">
 						<i class="icon-plus-sign icon-large"></i>
 						CREATE A NEW LISTING
 					</a>
@@ -89,7 +95,7 @@
 		</div>
 
 		<!-- Rest of layout -->
-		<div class="span10">
+		<div class="span10 rental-content">
 
 			<!-- Rental Preview -->
 			<div class="row-fluid">
@@ -161,6 +167,12 @@
 						<div class="tab-pane" id="description_grid" style="height:300px;">
 							<p>Howdy, I'm in Section 6.</p>
 						</div>
+						<div class="tab-pane" id="pictures_grid" style="height:300px;">
+							<p>Howdy, I'm in Section 6.</p>
+						</div>
+						<div class="tab-pane" id="contact_grid" style="height:300px;">
+							<p>Howdy, I'm in Section 6.</p>
+						</div>
 					</div>
 				</div>
 
@@ -175,7 +187,7 @@
 			</div>
 
 			<div class="row-fluid">
-				<a href="#" onclick="A2Cribs.RentalSave.CreateSubRental()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
+				<a href="#" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
 			</div>
 		</div>
 

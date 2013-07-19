@@ -30,6 +30,10 @@ class A2Cribs.MiniMap
 		google.maps.event.trigger @Map, "resize"
 		@Map.setCenter @center
 
+	SetMarkerVisible: (value = true) ->
+		if @Marker?
+			@Marker.setVisible false
+
 	SetMarkerPosition: (location) ->
 		@center = location
 		@Map.panTo location

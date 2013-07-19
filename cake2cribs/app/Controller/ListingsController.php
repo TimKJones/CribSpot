@@ -1,17 +1,17 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental');
+	public $uses = array('Listing', 'Rental', 'Image');
 	public $components= array('Session');
 
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->Auth->allow('Save');
-		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
+		$this->Auth->allow('Save');
+		$this->Auth->allow('Delete');
 	}
 
 	/*
@@ -23,8 +23,24 @@ class ListingsController extends AppController {
 	{
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
-		$listingObject['Listing']['user_id'] = $this->_getUserId();
-		$response = $this->Listing->SaveListing($listingObject);
+		$listing = $listingObject['Listing'];
+		$listing['Listing'] = $listing;
+		$images = null;
+		if (array_key_exists('Image', $listing)){
+			$images = $listingObject['Image'];
+			$images['Image'] = $images;
+		}
+
+		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
+		if (!array_key_exists('error', $response) && 
+			array_key_exists('listing_id', $response) && 
+			$images != null) {
+			// Update images that bad been saved before listing_id was known
+			$imageResponse = $this->Image->UpdateAfterListingSave($response['listing_id'], $images, $this->_getUserId());
+			if (array_key_exists('error', $imageResponse))
+				$response['error'] = $imageResponse['error'];
+		}
+
 		$this->set('response', json_encode($response));
 		return;
 	}
@@ -33,24 +49,23 @@ class ListingsController extends AppController {
 	public function Delete ($listing_ids)
 	{
 		$this->layout = 'ajax';
-		$listing_ids = json_decode($listing_ids);
+		$listing_ids = json_decode($listing_ids);	
 
 		for ($i = 0; $i < count($listing_ids); $i++){
-			if (!$this->UserOwnsListing($listing_ids[$i]))
+			if (!$this->Listing->UserOwnsListing($listing_ids[$i], $this->_getUserId()))
 			{
-				$this->set('response', json_encode(array('error' => 'failed to delete listing. Error code 3')));
-				return;
-			}
-
-			/* Delete from listings table. Set cascade=true to also delete from either rentals, parkings, or sublets. */
-			if (!$this->Listing->delete($listing_ids[$i], true))
-			{
-				$this->set('response', json_encode(array('error' => 'failed to delete listing. Error code 2')));
+				$error = null;
+				$error['listing_id'] = $listing_ids[$i];
+				$this->Listing->LogError($this->_getUserId(), 1, $error);
+				$this->set('response', json_encode(array('error' => 
+					'Failed to delete listing. Contact help@cribspot.com if the error persists. Reference error code 1')));
 				return;
 			}
 		}
 
-		$this->set('response', json_encode(array('success' => '')));
+		/* "Delete" from listings table (set visible=0) */
+		$response = $this->Listing->DeleteListing($listing_ids, $this->_getUserId());
+		$this->set('response', json_encode($response));
 		return;
 	}
 
@@ -71,7 +86,7 @@ class ListingsController extends AppController {
 			/* Return the listing given by $listing_id */
 			$listing = $this->Listing->GetListing($listing_id);
 			if ($listing == null)
-				$listing['error'] = 'Listing id not found';
+				$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
 			$this->set('response', json_encode($listing));
 		}
@@ -85,12 +100,12 @@ class ListingsController extends AppController {
 	{
 		$user_id = $this->_getUserId();
 		if ($user_id == 0 || $user_id == null){
-			return array('error' => 'Error retrieving listings. User not logged in.');
+			return array('error' => 'USER_NOT_LOGGED_IN', 'code' => 3);
 		}
 		
 		$listings = $this->Listing->GetListingsByUserId($user_id);
 		if ($listings == null)
-			return array('error' => 'Error retrieving listings');
+			return array('error' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 4);
 
 		return $listings;
 	}
@@ -102,7 +117,7 @@ class ListingsController extends AppController {
 	function LoadMarkerData($listing_type, $marker_id)
 	{
 		$this->layout = 'ajax';
-		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id);
+		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
 		$this->set('response', json_encode($listings));
 	}
 }

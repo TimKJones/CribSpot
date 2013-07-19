@@ -50,7 +50,7 @@
     };
 
     Rentals.min_occupancy = function() {
-      return null;
+      return 1;
     };
 
     Rentals.max_occupancy = function() {

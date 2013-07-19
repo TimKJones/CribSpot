@@ -51,6 +51,15 @@
       return this.Map.setCenter(this.center);
     };
 
+    MiniMap.prototype.SetMarkerVisible = function(value) {
+      if (value == null) {
+        value = true;
+      }
+      if (this.Marker != null) {
+        return this.Marker.setVisible(false);
+      }
+    };
+
     MiniMap.prototype.SetMarkerPosition = function(location) {
       this.center = location;
       this.Map.panTo(location);

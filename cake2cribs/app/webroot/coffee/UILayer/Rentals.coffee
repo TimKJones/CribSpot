@@ -22,7 +22,7 @@ class A2Cribs.UILayer.Rentals
 	@beds: () ->
 		return 6
 	@min_occupancy: () ->
-		return null
+		return 1
 	@max_occupancy: () ->
 		return 6
 	@building_type: () ->

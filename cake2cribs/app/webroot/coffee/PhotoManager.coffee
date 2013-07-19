@@ -146,9 +146,9 @@ class A2Cribs.PhotoManager
 		@div.find(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
 
 		@div.find('#ImageAddForm').fileupload
-			url: '/images/add'
+			url: myBaseUrl + 'images/AddImage'
 			dataType: 'json'
-			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+			acceptFileTypes: /(\.|\/)(jpeg|jpg|png)$/i
 			singleFileUploads: true
 			maxFileSize: 5000000 # 5 MB
 			loadImageMaxFileSize: 15000000 # 15MB
@@ -167,7 +167,7 @@ class A2Cribs.PhotoManager
 				A2Cribs.UIManager.Error "Failed to upload image!"
 				@Photos[@CurrentImageLoading].Reset()
 			else
-				@Photos[@CurrentImageLoading].SetId data.result.id
+				@Photos[@CurrentImageLoading].SetId data.result.image_id
 		.on 'fileuploadfail', (e, data) =>
 			A2Cribs.UIManager.Error "Failed to upload image!"
 			@div.find("#upload_image").button 'reset'

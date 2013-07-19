@@ -202,9 +202,9 @@
         'title': 'Make Primary'
       });
       return this.div.find('#ImageAddForm').fileupload({
-        url: '/images/add',
+        url: myBaseUrl + 'images/AddImage',
         dataType: 'json',
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        acceptFileTypes: /(\.|\/)(jpeg|jpg|png)$/i,
         singleFileUploads: true,
         maxFileSize: 5000000,
         loadImageMaxFileSize: 15000000,
@@ -223,7 +223,7 @@
           A2Cribs.UIManager.Error("Failed to upload image!");
           return _this.Photos[_this.CurrentImageLoading].Reset();
         } else {
-          return _this.Photos[_this.CurrentImageLoading].SetId(data.result.id);
+          return _this.Photos[_this.CurrentImageLoading].SetId(data.result.image_id);
         }
       }).on('fileuploadfail', function(e, data) {
         A2Cribs.UIManager.Error("Failed to upload image!");

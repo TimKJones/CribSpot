@@ -159,8 +159,9 @@ class Marker extends AppModel {
 	If no marker exists, creates new marker.
 	Returns marker_id on success; error message on failure.
 	*/
-	public function FindMarkerId($marker)
+	public function FindMarkerId($marker, $user_id=null)
 	{
+		CakeLog::write("savingMarker", print_r($marker, true));
 		$street_address = $marker['street_address'];
 		$city = $marker['city'];
 		$state = $marker['state'];
@@ -177,16 +178,23 @@ class Marker extends AppModel {
 	  		if (!array_key_exists('Marker', $markerMatch) || 
 	  			!array_key_exists('visible', $markerMatch['Marker']) || 
 	  			!array_key_exists('marker_id', $markerMatch['Marker'])){
-	  			/* TODO: Log error info here. */
-	  			return array('error' => 'failed to save marker');
+	  			$error = null;
+				$error['markerMatch'] = $markerMatch;
+	  			$this->LogError($user_id, 9, $error);
+	  			return array('error' =>
+	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 9');
 	  		}
 
 	  		if ($markerMatch['Marker']['visible']==0){
 	  			/* Marker exists but is invisible. Make it visible. */
 	  			$markerMatch['Marker']['visible']=1;
 		  		if(!$this->save($markerMatch)){
-		  			/* TODO: Log important error info here */
-		  			return array('error' => 'failed to save marker 2');
+		  			$error = null;
+					$error['markerMatch'] = $markerMatch;
+					$error['validation'] = $this->validationErrors;
+		  			$this->LogError($user_id, 10, $error);
+		  			return array('error' =>
+	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 10');
 		  		}
 	  		}
 		  		
@@ -197,8 +205,12 @@ class Marker extends AppModel {
 	  		if ($this->save(array('Marker' => $marker)))
 	  			return $this->id;
 	  		else {
-	  			/* TODO: Log important error info here. */
-	  			return array('error' => 'failed to saved marker 3');
+	  			$error = null;
+				$error['marker'] = $marker;
+				$error['validation'] = $this->validationErrors;
+	  			$this->LogError($user_id, 11, $error);
+	  			return array('error' =>
+	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 11');
 	  		}
 	  	}
 	}

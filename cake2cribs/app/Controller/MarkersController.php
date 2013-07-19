@@ -19,11 +19,12 @@ class MarkersController extends AppController {
 	Otherwise, retrieves marker_id of existing marker with that address.
 	Returns marker_id to user
 	*/
-	public function Save($marker)
+	public function Save()
 	{
 		$this->layout = 'ajax';
-		$marker = json_decode($marker);
-		$marker_id = $this->Marker->FindMarkerId($marker);
-		$this->set('response', json_encode($marker_id));
+		$marker = $this->params['data'];
+		CakeLog::write("savingMarker", print_r($marker, true));
+		$marker_id = $this->Marker->FindMarkerId($marker, $this->_getUserId());
+		$this->set('response', $marker_id);
 	}
 }

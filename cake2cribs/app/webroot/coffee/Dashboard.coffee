@@ -12,16 +12,39 @@ class A2Cribs.Dashboard
 			content = $('.' + class_name + '-content')
 			
 			$(element).click (event)=>
-				if content_header.next('.drop-down').length > 0
+				$(".list-dropdown").slideUp()
+				if content_header.hasClass "list-dropdown-header"
 					#Toggle Drop down
-					show_content = content_header.next('.drop-down').is ':hidden'
-					@SlideDropDown content_header, show_content	
+					$("##{class_name}_list").slideDown()
 				else
 					@ShowContent content, true
 
 			content_header.next?('.drop-down')
 				.find('.drop-down-list').click =>
-					@ShowContent content			
+					@ShowContent content
+
+		@GetListings()
+
+	@GetListings: ->
+		url = myBaseUrl + "listings/GetListing"
+		$.get url, (data) =>
+			response_data = JSON.parse data
+			A2Cribs.UserCache.CacheListings response_data
+			#Get count of sublets/parking/rentals (TODO)
+
+			#Create lists for everything
+			listing_markers = A2Cribs.UserCache.GetListingMarkers()
+			for type, marker_set of listing_markers
+				for marker in marker_set
+					name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
+					list_item = $ "<li />", {
+						text: name
+						class: "#{type}_list_item"
+						id: marker.marker_id
+					}
+					$("##{type}_list").append list_item
+
+
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window
@@ -56,6 +79,7 @@ class A2Cribs.Dashboard
 	@ShowContent:(content)->
 		content.siblings().addClass 'hidden'
 		content.removeClass 'hidden'
+		content.trigger 'shown'
 
 	@HideContent: (classname)->
 		$(".#{ classname }-content").addClass 'hidden'

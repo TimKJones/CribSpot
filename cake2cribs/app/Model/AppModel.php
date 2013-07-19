@@ -46,6 +46,16 @@ class AppModel extends Model {
 	    return $options;
 	}
 
+	/*
+	Log an error to the errors table.
+	*/
+	public function LogError($user_id, $error_code, $debug_info)
+	{
+		App::import('Model', 'Error');
+		$Error = new Error();
+		$Error->AddError($user_id, $error_code, json_encode($debug_info));
+	}
+
 	function getLastQuery()
 	{
 	    $dbo = $this->getDatasource();	
@@ -68,6 +78,28 @@ class AppModel extends Model {
 		}
 
 		return $rental;
+	}
+
+	/*	
+	Input: User object
+	Removes all sensitive fields that shouldn't be returned to client.
+	Returns modified User object with sensitive fields removed.
+	Returns null on error.
+	*/
+	protected function _removeSensitiveUserFields($user)
+	{
+		unset($user['user_type']);
+		unset($user['password']);
+		unset($user['email']);
+		unset($user['phone']);
+		unset($user['vericode']);
+		unset($user['created']);
+		unset($user['modified']);
+		unset($user['password_reset_token']);
+		unset($user['password_reset_date']);
+		unset($user['twitter_auth_token']);
+		unset($user['twitter_auth_token_secret']);
+		return $user;
 	}
 
 	/*

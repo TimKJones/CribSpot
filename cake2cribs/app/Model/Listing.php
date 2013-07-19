@@ -14,6 +14,10 @@ class Listing extends AppModel {
 		'Fee' => array(
 			'className' => 'Fee',
 			'dependent' => true
+		),
+		'Image' => array(
+			'className' => 'Image',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
@@ -39,6 +43,7 @@ class Listing extends AppModel {
 				'required' => true
 			)
 		),
+		'visible' => 'boolean' /* visible is set to false when listing is deleted */
 	);
 
 	/* ---------- unit_style_options ---------- */
@@ -59,21 +64,36 @@ class Listing extends AppModel {
 	Attempts to save $listing to the Listing table and any associated tables.
 	Returns listing_id of saved listing on success; validation errors on failure.
 	*/
-	public function SaveListing($listing)
+	public function SaveListing($listing, $user_id=null)
 	{
+		$listing['Listing']['user_id'] = $user_id;
+
 		if (array_key_exists('Rental', $listing))
+		{
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
+			if (array_key_exists('listing_id', $listing['Listing']))
+			{
+				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id'], $user_id);
+				$listing['Rental']['rental_id'] = $rental_id;
+			}
+		}
 		else if (array_key_exists('Sublet', $listing))
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
 		if ($this->saveAll($listing, array('deep' => true)))
+		{
 			return array('listing_id' => $this->id);
+		}
 
 		/* Listing failed to save - return error code */
-		CakeLog::write("listingValidationErrors", print_r($this->validationErrors, true));
-		return array("error" => array('validation' => $this->validationErrors));
+		$error = null;
+		$error['Listing'] = $listing;
+		$error['validationErrors'] = $this->validationErrors;
+		$this->LogError($user_id, 6, $error);
+		return array("error" => array('validation' => $this->validationErrors,
+			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -83,20 +103,35 @@ class Listing extends AppModel {
         	'conditions' => array('Listing.listing_id' => $listing_id)
     	));
 
+		if (array_key_exists('User', $listing))
+			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
+
     	return $listing;
 	}
 
 
 
 	/*
-	Delete the listing with id = $listing_id
+	Mark all listings in $listing_ids as invisible
 	Returns true on success, false otherwise.
 	*/
-	public function DeleteListing($listing_id)
+	public function DeleteListing($listing_ids, $user_id)
 	{
-		$response = $this->delete($listing_id);
-		return $response != null;
+		$listings = array();
+		$listings['Listing'] = array();
+		for ($i = 0; $i < count($listing_ids); $i++){
+			$this->id = $listing_ids[$i];
+			if (!$this->saveField('visible', 0)){
+				$error = null;
+				$error['listings'] = $listings;
+				$error['validation'] = $this->validationErrors;
+				$this->LogError($user_id, 2, $error);
+				return array("error" => array('validation' => $this->validationErrors,
+				'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 2'));
+			}
+		}
 
+		return array('success' => '');
 	}
 
 	/*
@@ -122,8 +157,16 @@ class Listing extends AppModel {
 	public function GetListing($listing_id)
 	{
 		$listing = $this->find('all', array(
-			'conditions' => array('Listing.listing_id' => $listing_id)
+			'conditions' => array(
+				'Listing.listing_id' => $listing_id,
+				'Listing.visible' => 1)
 		));
+
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listing); $i++){
+			if (array_key_exists('User', $listing[$i]))
+				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
+		}
 
 		return $listing;
 	}
@@ -146,16 +189,24 @@ class Listing extends AppModel {
 	public function GetListingsByUserId($user_id)
 	{
 		$listings = $this->find('all', array(
-			'conditions' => array('Listing.user_id' => $user_id)
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1)
 		));
 		
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listings); $i++){
+			if (array_key_exists('User', $listings[$i]))
+				$listings[$i]['User'] = $this->_removeSensitiveUserFields($listings[$i]['User']);
+		}
+
 		return $listings;
 	}
 
 	/*
 	Returns all listings of given listing_type with given marker_id
 	*/
-	public function GetMarkerData($listing_type, $marker_id)
+	public function GetMarkerData($listing_type, $marker_id, $user_id)
 	{
 		$this->contain('Rental', 'User');
 		$listings = $this->find('all', array(
@@ -165,8 +216,19 @@ class Listing extends AppModel {
 			)
 		));
 
-		if ($listings == null)
-			$listings['error'] = 'Unable to retrieve listings for this marker';
+		if ($listings == null){
+			$listings['error'] = array('message' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 7);
+			$error = null;
+			$error['listing_type'] = $listing_type;
+			$error['marker_id'] = $marker_id;
+			$this->LogError($user_id, 7, $error);
+		}
+
+		/* Remove sensitive user data */
+		for ($i = 0; $i < count($listings); $i++){
+			if (array_key_exists('User', $listings[$i]))
+				$listings[$i]['User'] = $this->_removeSensitiveUserFields($listings[$i]['User']);
+		}
 
 		return $listings;
 	}

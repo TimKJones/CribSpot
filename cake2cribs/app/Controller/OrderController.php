@@ -5,8 +5,6 @@ class OrderController extends AppController {
   public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder', 'ShoppingCart');
   public $TAG = "OrdersController";
 
-    private $WalletSellerID = "10354430150694430158";
-    private $WalletSecretKey = "XWLZaH-bSdUGUJxlSZZVSg";
     
 
     public function myOrders(){
@@ -87,138 +85,60 @@ class OrderController extends AppController {
 
     }
 
-    /*  Accepts an order item and creates a jwt to buy it, used to one click buy
-        a featured listing for example
-
+    /*  Accepts an array of orderItems and creates a jwt to buy it
+        
         The response object returned has a success flag and if its true then
         there is a valid 'jwt' property in the response object otherwise there
-        is a 'msg' property that will say whats wrong
+        is an array of validation errors passed back
     */
-    public function buyItem(){
+
+    public function buy(){
+        ClassRegistry::init('Order'); //For some reason I can't access the static properties of the
+                                      // of the order class
+
         $orderItems_json = $this->request->data('orderItems');
-        if($orderItems_json == null){
+        $order_type_str = $this->request->data('order_type');
+        
+        if($orderItems_json == null or $order_type_str == null){
             throw new NotFoundException();
         }
 
+        $order_type = intval($order_type_str);
+
         $orderItems = json_decode($orderItems_json);
-        $validationErrors = $this->Order->validateOrder($orderItems, $this->_getUserId());
+        $user_id =$this->_getUserId();
+
+        switch($order_type){
+            case Order::ORDER_TYPE_FEATURED_LISTING:
+                $validationErrors = $this->Order->validateFLOrder($orderItems, $user_id);
+                break;
+
+            // case Order::ORDER_TYPE_PARKING:
+
+            //     break;
+            
+            default:
+                throw new Exception("Order Type was not valid");
+        }
+        
         if($validationErrors){
             $response = array(
                 'success'=>false,
                 'errors'=>$validationErrors
                 );
         }else{
-            $jwt_clear = $this->getJwt($orderItems);
+            $jwt_clear = $this->Order->generateJWT($orderItems, $user_id, $order_type);
             App::uses('JWT', 'JWT');
             $response = array(
             'success'=>true,
             'jwt_clear'=>$jwt_clear,
-            'jwt'=>JWT::encode($jwt_clear, $this->WalletSecretKey)
+            'jwt'=>JWT::encode($jwt_clear, Order::WalletSecretKey)
             );
     
         }
         $this->layout = 'ajax';
         $this->set('response', json_encode($response)); 
     }
-
-    /*
-        Tries to create a jwt for the users shopping cart
-        
-        The response object returned has a success flag and if its true then
-        there is a valid 'jwt' property in the response object otherwise there
-        is a 'msg' property that will say whats wrong
-    */
-    public function buyCart(){
-        
-        $cart = $this->ShoppingCart->get($this->Auth->User('id'));
-        $orderItems = json_decode($cart['ShoppingCart']['items']);
-        try {
-            if(count($orderItems) == 0){
-                //No Items in cart
-                throw new Exception('No Items in the Cart');
-            }
-
-            $jwt_clear = $this->getJwt($orderItems);
-            App::uses('JWT', 'JWT');
-            $response = array(
-                'success'=>true,
-                'jwt_clear'=>$jwt_clear,
-                'jwt'=>JWT::encode($jwt_clear, $this->WalletSecretKey)
-                );
-        } catch (Exception $e) {
-            $response = array(
-                'success'=>false,
-                'msg'=>$e->getMessage()
-                );
-        }
-
-        $this->layout = 'ajax';
-        $this->set('response', json_encode($response));
-    }
-
-    // Takes an array of order items and returns a google wallet jwt
-    // also creates a pending order to be used when the purchased goes through.
-    // JWT spec found here https://developers.google.com/commerce/wallet/digital/docs/jsreference#jwt
-    private function getJwt($orderItems){
-        App::uses('DateHelpers', 'Utilities');
-        $total = 0;
-        $weekends = 0;
-        $weekdays = 0;
-
-        foreach($orderItems as &$orderItem){
-            switch($orderItem->type){
-                case "FeaturedListing":
-                    $this->Order->validateFeaturedListing($orderItem);
-                    $total += $orderItem->price;
-                    
-                    $day_counts = DateHelpers::getDayCounts($orderItem->item->dates);
-                    $weekdays += $day_counts['weekdays'];
-                    $weekends += $day_counts['weekends'];
-                    
-                    break;
-                default:
-                    throw new Exception("Type didn't match any valid type");
-            }
-        }        
-        $wd_price = $this->Order->FLWeekdayCost;
-        $we_price = $this->Order->FLWeekendCost;
-
-        $name = "Featured Listing on Cribspot.com";
-        $description = "Weekdays: $weekdays x $".$wd_price."/day + Weekends: $weekends x $".$we_price."/day";
-
-        $user_id = $this->Auth->User('id');
-        
-        $pendingOrder = $this->PendingOrder->add($total, $orderItems, $user_id);
-        
-        $sellerData = array(
-            'pendingOrder_id'=>$pendingOrder['PendingOrder']['id']
-            );
-
-        $request = array(
-            "name" => $name,
-            "description" => $description,
-            "price" => $total,
-            "currencyCode" => "USD",
-            "sellerData" => json_encode($sellerData)
-            );
-        
-
-
-        $payload = array(
-            "iss" => $this->WalletSellerID,
-            "aud" => "Google",
-            "typ" => "google/payments/inapp/item/v1",
-            "exp" => (time() + 3600) * 1000,
-            "iat" => time() * 1000,
-            "request" => $request,
-            "response"=> array("orderId"=>"69")
-        );
-
-
-        return $payload;
-    }
-
-  
 
     /*
         From Google Wallet Doc's
@@ -237,6 +157,10 @@ class OrderController extends AppController {
     public function postBackHandler(){
 
         $jwt_encry = $this->request->data['jwt'];
+        
+        if($jwt_encry == null){
+            throw new NotFoundException();
+        }
 
         App::uses('JWT', 'JWT');
 

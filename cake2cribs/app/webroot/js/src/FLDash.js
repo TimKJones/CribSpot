@@ -108,7 +108,7 @@
         disabled_dates: this.UnavailableDates.concat(listing.unavailable_dates)
       };
       if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
-        options.selected_dates(this.OrderItems[listing_id].item.dates);
+        options['selected_dates'] = this.OrderItems[listing_id].item.dates;
       }
       console.log(options);
       this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
@@ -185,7 +185,7 @@
         orderItem = _ref[key];
         order.push(orderItem);
       }
-      return A2Cribs.Order.BuyItems(order, function(errors) {
+      return A2Cribs.Order.BuyItems(order, 0, function(errors) {
         return _this.showErrors(errors);
       });
     };

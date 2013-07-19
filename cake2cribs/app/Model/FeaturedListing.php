@@ -12,7 +12,7 @@ class FeaturedListing extends AppModel {
         'longitude' => 'numeric',
     );
 
-    public $TAG = 'FeaturedListing';
+    public $TAG = 'FeaturedListing'; 
 
     public function add($listing_id, $date, $user_id){
         
@@ -99,6 +99,13 @@ class FeaturedListing extends AppModel {
         return array_values($dates);
     }
 
+    /*
+    
+        Returns an array of dates (strings) coming up that the listing is featured
+        on, there is also an optional parameter that can be set to true so that it'll 
+        show all dates that the listing has been and will be featured on
+
+    */ 
 
     public function getDates($listing_id, $show_past=false){
         

@@ -79,7 +79,6 @@
         listing_type: 0
       },
       Rental: {
-        listing_id: 64,
         street_address: A2Cribs.UILayer.Rentals.street_address(),
         city: A2Cribs.UILayer.Rentals.city(),
         state: A2Cribs.UILayer.Rentals.state(),
@@ -146,8 +145,21 @@
         contact_phone: A2Cribs.UILayer.Rentals.contact_phone(),
         website: A2Cribs.UILayer.Rentals.website()
       },
-      Fee: A2Cribs.UILayer.Fees.GetFees()
+      Image: {
+        0: {
+          image_id: 275,
+          caption: "herefdf",
+          is_primary: 0
+        },
+        1: {
+          image_id: 276,
+          caption: "heres the second one",
+          is_primary: 1
+        }
+      }
     };
+
+    Rental.Required_Fields = ["unit_style_options", "unit_style_type", "unit_style_description", "beds", "min_occupancy", "max_occupancy", "rent", "unit_count", "start_date", "end_date", "available", "highlights", "contact_email", "contact_phone", "website"];
 
     return Rental;
 

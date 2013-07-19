@@ -161,10 +161,7 @@
       $input = $("<INPUT type=text class='editor-text' />");
       $input.appendTo(args.container);
       $input.focus().select();
-      $input.datepicker({
-        showOn: "button",
-        buttonImageOnly: true,
-        buttonImage: "../images/calendar.gif",
+      $input.datepicker({ 
         beforeShow: function () {
           calendarOpen = true
         },
@@ -172,13 +169,13 @@
           calendarOpen = false
         }
       });
+      $input.datepicker("show");
       $input.width($input.width() - 18);
     };
 
     this.destroy = function () {
       $.datepicker.dpDiv.stop(true, true);
       $input.datepicker("hide");
-      $input.datepicker("destroy");
       $input.remove();
     };
 
@@ -215,7 +212,8 @@
     };
 
     this.serializeValue = function () {
-      return $input.val();
+      var date = $input.val().split("/");
+      return date[2] + "-" + date[0] + "-" + date[1];
     };
 
     this.applyValue = function (item, state) {
@@ -261,7 +259,7 @@
     };
 
     this.serializeValue = function () {
-      return ($select.val() == "yes");
+      return +($select.val() == "yes");
     };
 
     this.applyValue = function (item, state) {
@@ -304,14 +302,14 @@
     this.loadValue = function (item) {
       defaultValue = !!item[args.column.field];
       if (defaultValue) {
-        $select.attr("checked", "checked");
+        $select.prop("checked", true);
       } else {
-        $select.removeAttr("checked");
+        $select.prop("checked", false);
       }
     };
 
     this.serializeValue = function () {
-      return !!$select.attr("checked");
+      return +$select.prop("checked");
     };
 
     this.applyValue = function (item, state) {
@@ -454,6 +452,7 @@
 
     this.save = function () {
       args.commitChanges();
+      scope.hide();
     };
 
     this.cancel = function () {

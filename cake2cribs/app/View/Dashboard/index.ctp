@@ -1,8 +1,7 @@
-
-
 <?php echo $this->element('dashboard-header'); ?>
 <?php echo $this->element('popups'); ?>
-<?php echo $this->element('post-sublet'); ?>
+<?php echo $this->element('Dashboard/marker-modal');?>
+<?php echo $this->element('Dashboard/picture-modal');?>
 
 <?php echo $this->Html->script('src/Dashboard'); ?>
 <?php echo $this->Html->script('src/Account'); ?>
@@ -10,6 +9,8 @@
 <?php echo $this->Html->script('src/PropertyManagement'); ?>
 <?php echo $this->Html->script('src/VerifyManager'); ?>
 <?php echo $this->Html->script('src/SubletSave'); ?>
+
+<?php echo $this->Html->script('src/UserCache', array('inline' => false)); ?>
 
 <?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->css('messages'); ?>
@@ -19,32 +20,36 @@
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
-		<div class = 'span3' id = 'left_content'>
-			<?php echo $this->element('Account/account_settings_header');?>
-			<?php echo $this->element('Listings/listings_header', $sublets);?>
-			<?php echo $this->element('Messages/conversations_header');?>
-			
+		<div id = 'left_content' class = 'span2'>
+			<?php echo $this->element('Dashboard/navigation-bar'); ?>			
 		</div>
+<!-- <<<<<<< HEAD
 		<div class = 'span6' id = 'middle_content'>
 			
 			<div class = 'account-content hidden'>
-				<?php echo $this->element('Account/edit_account_window', $user) ?>
+				<?php //echo $this->element('Account/edit_account_window', $user) ?>
 			</div>
 			<div class = 'messages-content hidden'>
-			 	<?php echo $this->element('Messages/message_window', $user) ?>
+			 	<?php //echo $this->element('Messages/message_window', $user) ?>
 			</div>
 			<div class="sublet-content hide">
-				<?php echo $this->element('Sublet/edit_sublet_window', $user); ?>
+				<?php //echo $this->element('Sublet/edit_sublet_window', $user); ?>
+======= -->
+		<div id = 'middle_content' class = 'span10'>
+			<div class = 'row-fluid account-content hidden'>
+				<div class = 'span9'>
+					<?php echo $this->element('Account/edit_account_window', $user) ?>
+				</div>
+				<div class = 'span3'>
+					<?php echo $this->element('Account/user_info') ?>
+				</div>
+
 			</div>
 
-		</div>
-		<div class = 'span3' id = 'right_content'>
-			<div class = 'account-content hidden'>
-				<?php echo $this->element('Account/user_info') ?>
+			<div class = 'rentals-content hidden'>
+				<?php echo $this->element('Dashboard/rentals_window') ?>
 			</div>
-			<div class = 'messages-content hidden'>
-				<?php echo $this->element('Messages/participant_info') ?>
-			</div>
+
 		</div>
 	</div>
 </div>

@@ -46,7 +46,7 @@ class Fee extends AppModel {
 			if (!$this->save($feesWrapper))
 			{
 				CakeLog::write("FeeSaveValidationErrors", print_r($this->validationErrors, true));
-				return array('error' => 'Fee not saved');
+				return array('error' => array('message' => 'Fee not saved', 'code' => 8));
 			}
 		}
 
