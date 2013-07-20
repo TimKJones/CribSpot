@@ -27,23 +27,24 @@ class FeaturedListingsController extends AppController {
 
   public function getListings(){
     
-    $up_lat = $this->request->query['up_lat'];
-    $low_lat = $this->request->query['low_lat'];
+    // $up_lat = $this->request->query['up_lat'];
+    // $low_lat = $this->request->query['low_lat'];
 
-    $up_long = $this->request->query['up_long'];
-    $low_long = $this->request->query['low_long'];
+    // $up_long = $this->request->query['up_long'];
+    // $low_long = $this->request->query['low_long'];
 
-    $day = null;
+    // $day = null;
     
-    // If day is null we use today's date
-    if($day == null){
-      $day = time();
-    }
-    $date = date("Y-m-d", $day);
+    // // If day is null we use today's date
+    // if($day == null){
+    //   $day = time();
+    // }
+    // $date = date("Y-m-d", $day);
 
-    $listings = $this->FeaturedListing->get($up_lat, $low_lat, $up_long, $low_long, $date);
+    // $listings = $this->FeaturedListing->get($up_lat, $low_lat, $up_long, $low_long, $date);
+    $listings = $this->FeaturedListing->find('all');
 
-    $this->layout = 'ajax';
+    // $this->layout = 'ajax';
     $this->set('listings', $listings);
 
   }
