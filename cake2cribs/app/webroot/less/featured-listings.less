@@ -1,21 +1,43 @@
 #FLDash{
     position: relative;
-
+    overflow: auto;
+     .listing-wrapper{
+            background-color: #f4f4f4;
+            border: 1px solid #cacaca;
+            border-radius: 5px;
+            padding: 5px;
+            h4{
+                text-align: center;
+            }
+        }
     .left-content{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 300px;
-        background: #e9e9e9;
+        // position: absolute;
+        // top: 0;
+        // bottom: 0;
+        // left: 0;
+        // width: 300px;
+        min-width: 250px;
+        
+
+        #listings_list{
+            // padding-top: 20px;
+        }
+        // background: #e9e9e9;
 
         .listing-item{
-            width: 300px;
+            // width: 300px;
+            position: relative;
             border-top: 2px solid #dbdbdb;
             padding: 5px;
             
+            .listing-icon{
+                padding-right: 10px;
+            }
+
             .feature-star{
-                padding-right: 20px;
+                position: absolute;
+                right: 20px;
+                // padding-right: 20px;
                 font-size: 22px;
             }
             .feature-star:hover{
@@ -43,15 +65,12 @@
         }
     }
 
-    .right-content{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 320px;
-        display: none;
+    .middle-content{
+        position:relative;
+        min-width: 250px;
 
         .editing{
-            background: #fbfdee;
+            background: #ebf6fc;
         }
 
         .icon-remove{
@@ -68,15 +87,46 @@
             text-decoration: none;
             color: #666;
         }
+        tfoot{
+            font-size: 15px;
+        }
+
+        // #buyNow{
+        //     position: absolute;
+        //     bottom: 30px;
+        //     right: 5px;
+        // }
+    }
+
+    .right-content{
+        // position: absolute;
+        // top: 0;
+        // bottom: 0;
+        // left: 320px;
+        min-width: 250px;
+        
+        
+
+        .mdp > .ui-datepicker{
+            // display: block;
+            margin: auto;
+            width: 100%;
+        }
+
+        
 
     }
 
     .fl_form{
         
     }
+    .orderingInfo{
+            display: none;
+    }
 
 
 }
+
 
 /* Jquery UI Datepicker hacks  WOOP WOOP */
 

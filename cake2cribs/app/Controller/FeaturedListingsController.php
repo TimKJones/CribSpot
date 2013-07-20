@@ -83,6 +83,7 @@ class FeaturedListingsController extends AppController {
       $listing_id = $listing['Listing']['listing_id'];
       $address = $listing['Marker']['street_address'];
       $alt_name = $listing['Marker']['alternate_name'];
+      $listing_type = $listing['Listing']['listing_type'];
       $listing_type_str = Listing::listing_type($listing['Listing']['listing_type']);
       $dates = $this->FeaturedListing->getDates($listing_id);
       
@@ -90,7 +91,8 @@ class FeaturedListingsController extends AppController {
           'listing_id' => $listing_id,
           'address' => $address,
           'alt_name' => $alt_name,
-          'listing_type' => $listing_type_str,
+          'listing_type_str' => $listing_type_str,
+          'listing_type' => intval($listing_type),
           'unavailable_dates'=>$dates
         );
 

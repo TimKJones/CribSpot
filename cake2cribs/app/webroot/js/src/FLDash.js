@@ -79,6 +79,16 @@
         list = "";
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
+          switch (listing.listing_type) {
+            case 0:
+              listing.icon = 'icon-home';
+              break;
+            case 1:
+              listing.icon = 'icon-lemon';
+              break;
+            case 2:
+              listing.icon = 'icon-truck';
+          }
           _this.Listings[listing.listing_id] = listing;
           list += _this.ListingTemplate(listing);
         }
@@ -116,7 +126,7 @@
       console.log(options);
       this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
-      return this.uiWidget.find(".right-content").show();
+      return this.uiWidget.find(".orderingInfo").slideDown();
     };
 
     FLDash.prototype.removeOrderItem = function(listing_id) {
@@ -128,7 +138,7 @@
         this.FL_Order = null;
       }
       if (this.uiOrderItemsList.find(".orderItem").length === 0) {
-        return this.uiWidget.find(".right-content").hide();
+        return this.uiWidget.find(".orderingInfo").slideUp();
       } else {
         different_id = this.uiOrderItemsList.find(".orderItem").first().data('id');
         return this.editOrderItem(different_id);
@@ -137,7 +147,7 @@
 
     FLDash.prototype.initTemplates = function() {
       var ListingHTML, OrderItemHTML;
-      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <strong><%= address %></strong> <%= alt_name %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
+      ListingHTML = "<div class = 'listing-item' data-id='<%= listing_id %>'>\n    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong> <%= alt_name %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</div>";
       this.ListingTemplate = _.template(ListingHTML);
       OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td>$<span class = 'price'?><%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>\n";
       return this.OrderItemTemplate = _.template(OrderItemHTML);

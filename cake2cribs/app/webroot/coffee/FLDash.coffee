@@ -4,7 +4,7 @@ class A2Cribs.FLDash
         @Listings = {}
         $.getJSON '/featuredListings/getUnavailableDates', (data)=>
             @UnavailableDates = data
-            
+
         @OrderItems = {}
         @FL_Order = null
         @uiFL_Form = $('.featured-listing-order-item').first()
@@ -83,6 +83,11 @@ class A2Cribs.FLDash
             @Listings = {} #Remove all the old listings
             list = ""
             for listing in listings
+                switch listing.listing_type
+                    when 0 then listing.icon = 'icon-home' #rental
+                    when 1 then listing.icon = 'icon-lemon' #WTF should sublet icon be??
+                    when 2 then listing.icon = 'icon-truck' #Font awesome doesn't have a car icon
+
                 @Listings[listing.listing_id] = listing
                 list += @ListingTemplate(listing)
             
@@ -134,7 +139,7 @@ class A2Cribs.FLDash
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
 
-        @uiWidget.find(".right-content").show()
+        @uiWidget.find(".orderingInfo").slideDown()
         # Do any UI updates to css classes and shit
 
 
@@ -154,7 +159,7 @@ class A2Cribs.FLDash
 
         # If there are no more  orderitems left hide the right content
         if @uiOrderItemsList.find(".orderItem").length == 0
-            @uiWidget.find(".right-content").hide()
+            @uiWidget.find(".orderingInfo").slideUp()   
         else
             #There are still orderItems left so switch to editing one of those
             different_id = @uiOrderItemsList.find(".orderItem").first().data('id')
@@ -168,7 +173,7 @@ class A2Cribs.FLDash
     initTemplates:()->
         ListingHTML = """
                 <div class = 'listing-item' data-id='<%= listing_id %>'>
-                    <strong><%= address %></strong> <%= alt_name %>
+                    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong> <%= alt_name %>
                     <i class = 'pull-right feature-star icon-star-empty'></i>
                 </div>
                     """

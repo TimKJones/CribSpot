@@ -50,7 +50,7 @@
 				<?php echo $this->element('Dashboard/rentals_window') ?>
 			</div>
 
-			<div class = 'featuredlisting-content hidden'>
+			<div class = 'row-fluid featuredlisting-content hidden'>
 				<?php echo $this->element('FeaturedListings/dashview') ?>
 			</div>
 
