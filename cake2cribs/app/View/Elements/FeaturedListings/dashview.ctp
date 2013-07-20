@@ -18,30 +18,31 @@
         </div>
     </div>
     <div class = 'span4 middle-content'>
-        <div class = 'orderingInfo'>
+        
             <div class = 'listing-wrapper'>
                 <h4 class ='header'>Order Details</h4>
-                <dl id = 'validation-error-list'></dl>
-                <table class = 'table orderItems_table'>
-                    <thead> 
-                            <th>Address</th>
-                            <th>Price</th>
-                            <th></th>
-                    </thead>
-                    
-                    <tbody id = 'orderItems_list'></tbody>
-                    <tfoot>
-                        <tr>
-                            <th><span class = 'pull-right'>Total:</span></th>
-                            <td>$<span class = 'total'></span></td>
-                            <th> <button class = 'btn' id = 'buyNow'>Buy</button></th>
-                        </tr>
-                    </tfoot>
+                <div class = 'orderingInfo'>
+                    <dl id = 'validation-error-list'></dl>
+                    <table class = 'table orderItems_table'>
+                        <thead> 
+                                <th>Address</th>
+                                <th>Price</th>
+                                <th></th>
+                        </thead>
+                        
+                        <tbody id = 'orderItems_list'></tbody>
+                        <tfoot>
+                            <tr>
+                                <th><span class = 'pull-right'>Total:</span></th>
+                                <td>$<span class = 'total'></span></td>
+                                <th> <button class = 'btn' id = 'buyNow'>Buy</button></th>
+                            </tr>
+                        </tfoot>
 
-                </table>
-               
+                    </table>
+                </div>
+                <p id = 'noListingSelected'>No Listing Selected</p>
             </div>
-        </div>
     </div>
     <div class = 'span4 right-content'>
         <div class = 'listing-wrapper'>
@@ -53,7 +54,7 @@
         <div id = 'orderingInstructions'>
             <h4> How It Works</h4>
             <p>
-                Click the star next to a listing you want to feature.
+                Click the star next to the listing you want to feature.
                 Select the days you want to feature it. Repeat for as
                 many listings as you want. When you are satisfied with
                 the order click the buy button to procede with

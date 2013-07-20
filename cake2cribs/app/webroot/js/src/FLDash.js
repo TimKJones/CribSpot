@@ -126,7 +126,7 @@
       console.log(options);
       this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
-      return this.uiWidget.find(".orderingInfo").slideDown();
+      return this.toggleOrderDetailsUI(true);
     };
 
     FLDash.prototype.removeOrderItem = function(listing_id) {
@@ -138,7 +138,7 @@
         this.FL_Order = null;
       }
       if (this.uiOrderItemsList.find(".orderItem").length === 0) {
-        return this.uiWidget.find(".orderingInfo").slideUp();
+        return this.toggleOrderDetailsUI(false);
       } else {
         different_id = this.uiOrderItemsList.find(".orderItem").first().data('id');
         return this.editOrderItem(different_id);
@@ -201,6 +201,16 @@
       return A2Cribs.Order.BuyItems(order, 0, function(errors) {
         return _this.showErrors(errors);
       });
+    };
+
+    FLDash.prototype.toggleOrderDetailsUI = function(show) {
+      if (show) {
+        $("#noListingSelected").fadeOut('fast');
+        return this.uiWidget.find(".orderingInfo").slideDown();
+      } else {
+        this.uiWidget.find(".orderingInfo").slideUp();
+        return $("#noListingSelected").fadeIn('fast');
+      }
     };
 
     FLDash.prototype.featureListing = function() {

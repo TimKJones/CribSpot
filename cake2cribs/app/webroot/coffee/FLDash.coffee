@@ -139,7 +139,7 @@ class A2Cribs.FLDash
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
 
-        @uiWidget.find(".orderingInfo").slideDown()
+        @toggleOrderDetailsUI(true) #Show the order detail info
         # Do any UI updates to css classes and shit
 
 
@@ -159,7 +159,7 @@ class A2Cribs.FLDash
 
         # If there are no more  orderitems left hide the right content
         if @uiOrderItemsList.find(".orderItem").length == 0
-            @uiWidget.find(".orderingInfo").slideUp()   
+            @toggleOrderDetailsUI(false) #Hide order details stuff
         else
             #There are still orderItems left so switch to editing one of those
             different_id = @uiOrderItemsList.find(".orderItem").first().data('id')
@@ -233,6 +233,19 @@ class A2Cribs.FLDash
         #Featured Listing Order Type is 0
         A2Cribs.Order.BuyItems order, 0, (errors)=>
             @showErrors(errors)
+
+    
+    toggleOrderDetailsUI:(show)->
+        if show
+            $("#noListingSelected").fadeOut('fast')
+            @uiWidget.find(".orderingInfo").slideDown()
+        else
+            @uiWidget.find(".orderingInfo").slideUp()
+            $("#noListingSelected").fadeIn('fast')
+                
+
+
+
 
 
     featureListing:()->
