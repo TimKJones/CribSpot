@@ -29,14 +29,30 @@ class A2Cribs.Dashboard
 		url = myBaseUrl + "listings/GetListing"
 		$.get url, (data) =>
 			response_data = JSON.parse data
-			A2Cribs.UserCache.CacheListings response_data
+			for item in response_data
+				for key, value of item
+					if A2Cribs[key]? and not value.length?
+						A2Cribs.UserCache.Set new A2Cribs[key] value
+					else if A2Cribs[key]? and value.length? # Is an array
+						for i in value
+							A2Cribs.UserCache.Set new A2Cribs[key] i
 			#Get count of sublets/parking/rentals (TODO)
 
 			#Create lists for everything
-			listing_markers = A2Cribs.UserCache.GetListingMarkers()
-			for type, marker_set of listing_markers
-				for marker in marker_set
+			listings = A2Cribs.UserCache.Get "listing"
+			marker_set = {}
+			for listing in listings
+				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
+				marker_set[listing.listing_type][listing.marker_id] = true
+
+			for listing_type, marker_id_array of marker_set
+				for marker_id of marker_id_array
+					marker = A2Cribs.UserCache.Get "marker", marker_id
 					name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
+					type = null
+					if parseInt(listing_type, 10) is 0 then type = "rentals"
+					if parseInt(listing_type, 10) is 1 then type = "sublet"
+					if parseInt(listing_type, 10) is 2 then type = "parking"
 					list_item = $ "<li />", {
 						text: name
 						class: "#{type}_list_item"

@@ -5,11 +5,10 @@
 
     function RentalSave(modal) {
       modal = $('.rental-content');
-      this.ListingIds = [];
       this.EditableRows = [];
       this.VisibleGrid = 'overview_grid';
-      this.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
       this.SetupUI();
+      this.NextListing;
     }
 
     RentalSave.prototype.SetupUI = function() {
@@ -21,6 +20,20 @@
       if (!(A2Cribs.Geocoder != null)) {
         A2Cribs.Geocoder = new google.maps.Geocoder();
       }
+      $('body').on("Rental_SavePhoto", function(event, row, images, listing_id) {
+        var data, image, _i, _len, _results;
+        if (listing_id != null) {
+          _results = [];
+          for (_i = 0, _len = images.length; _i < _len; _i++) {
+            image = images[_i];
+            _results.push(A2Cribs.UserCache.Set(new Image(image)));
+          }
+          return _results;
+        } else {
+          data = _this.GridMap[_this.VisibleGrid].getDataItem(row);
+          return data.Image = images;
+        }
+      });
       $("body").on('click', '.rentals_list_item', function(event) {
         return _this.Open(event.target.id);
       });
@@ -88,9 +101,8 @@
     RentalSave.prototype.Open = function(marker_id) {
       var marker_object, name;
       this.ClearGrids();
-      this.ListingIds = [];
       this.CurrentMarker = marker_id;
-      marker_object = A2Cribs.UserCache.GetMarkerById(this.CurrentMarker);
+      marker_object = A2Cribs.UserCache.Get("marker", this.CurrentMarker);
       name = (marker_object.alternate_name != null) && marker_object.alternate_name.length ? marker_object.alternate_name : marker_object.street_address;
       $("#rentals_address").html("<strong>" + name + "</strong><br>");
       A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
@@ -104,10 +116,24 @@
         type: "POST",
         data: rental_object,
         success: function(response) {
+          var i, key, value, _i, _len;
           response = JSON.parse(response);
           if (response.listing_id != null) {
             A2Cribs.UIManager.Success("Save successful!");
-            _this.ListingIds[row] = response.listing_id;
+            rental_object.Listing.listing_id = response.listing_id;
+            rental_object.Rental.listing_id = response.listing_id;
+            for (key in rental_object) {
+              value = rental_object[key];
+              if ((A2Cribs[key] != null) && !(value.length != null)) {
+                A2Cribs.UserCache.Set(new A2Cribs[key](value));
+              } else if ((A2Cribs[key] != null) && (value.length != null)) {
+                for (_i = 0, _len = value.length; _i < _len; _i++) {
+                  i = value[_i];
+                  i.listing_id = response.listing_id;
+                  A2Cribs.UserCache.Set(new A2Cribs[key](i));
+                }
+              }
+            }
             return console.log(response);
           } else {
             A2Cribs.UIManager.Error("Save unsuccessful");
@@ -156,17 +182,22 @@
         url: myBaseUrl + "listings/Delete/" + JSON.stringify(listing_ids),
         type: "POST",
         success: function(response) {
-          var data, listing_id, row, _i, _j, _len, _len1;
+          var data, listing_id, rental, rentals, row, _i, _j, _k, _len, _len1, _len2;
           response = JSON.parse(response);
           if (response.success !== null && response.success !== void 0) {
             A2Cribs.UIManager.Success("Listings deleted!");
             data = _this.GridMap[_this.VisibleGrid].getData();
             for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
               listing_id = listing_ids[_i];
-              A2Cribs.UserCache.DeleteListing(listing_id.toString());
+              rentals = A2Cribs.UserCache.GetAllAssociatedObjects("rental", "listing", listing_id);
+              for (_j = 0, _len1 = rentals.length; _j < _len1; _j++) {
+                rental = rentals[_j];
+                A2Cribs.UserCache.Remove(rental.class_name, rental.GetId());
+              }
+              A2Cribs.UserCache.Remove("listing", listing_id);
             }
-            for (_j = 0, _len1 = rows.length; _j < _len1; _j++) {
-              row = rows[_j];
+            for (_k = 0, _len2 = rows.length; _k < _len2; _k++) {
+              row = rows[_k];
               data.splice(row, 1);
             }
             _this.GridMap[_this.VisibleGrid].updateRowCount();
@@ -246,7 +277,7 @@
         clear();
         modal.find('#marker_add').hide();
         modal.find("#continue-button").addClass("disabled");
-        markers = A2Cribs.UserCache.GetRentalMarkers();
+        markers = A2Cribs.UserCache.Get("marker");
         modal.find("#marker_select").empty();
         modal.find("#marker_select").append('<option value="0">--</option>\
 				<option value="new_marker"><strong>New Location</strong></option>');
@@ -344,7 +375,7 @@
                 } else {
                   modal.modal("hide");
                   marker_object.marker_id = response;
-                  A2Cribs.UserCache.AddRentalMarker(marker_object);
+                  A2Cribs.UserCache.Set(new A2Cribs.Marker(marker_object));
                   name = (marker_object.alternate_name != null) && marker_object.alternate_name.length ? marker_object.alternate_name : marker_object.street_address;
                   list_item = $("<li />", {
                     text: name,
@@ -457,21 +488,22 @@
       		********************* TODO **********************
       */
 
-      var data, grid, i, key, rentals, _i, _ref, _ref1, _results;
-      rentals = A2Cribs.UserCache.GetRentals();
+      var data, grid, key, listing, rental, rentals, _i, _len, _ref, _results;
+      rentals = A2Cribs.UserCache.Get("rental");
       data = [];
       if (rentals.length) {
-        for (i = _i = 0, _ref = rentals.length - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          if (rentals[i].Marker.marker_id === this.CurrentMarker) {
-            data.push(rentals[i].Rental);
-            this.ListingIds[i] = rentals[i].Listing.listing_id;
+        for (_i = 0, _len = rentals.length; _i < _len; _i++) {
+          rental = rentals[_i];
+          listing = A2Cribs.UserCache.Get("listing", rental.listing_id);
+          if (listing.marker_id === this.CurrentMarker) {
+            data.push(rental.GetObject());
           }
         }
       }
-      _ref1 = this.GridMap;
+      _ref = this.GridMap;
       _results = [];
-      for (key in _ref1) {
-        grid = _ref1[key];
+      for (key in _ref) {
+        grid = _ref[key];
         grid.setData(data);
         grid.updateRowCount();
         _results.push(grid.render());
@@ -531,18 +563,13 @@
           }
         });
         _results.push(this.GridMap[container].onCellChange.subscribe(function(e, args) {
-          var amount, desc, index, isValid, key, required, _j, _len1, _ref;
+          var isValid, key, required, _j, _len1;
           columns = _this.GridMap[container].getColumns();
           required = A2Cribs.Rental.Required_Fields;
           data = {
             Rental: {},
             Listing: {},
-            Fee: [
-              {
-                description: "Admin",
-                amount: 90
-              }
-            ]
+            Image: {}
           };
           isValid = true;
           for (_j = 0, _len1 = required.length; _j < _len1; _j++) {
@@ -550,23 +577,17 @@
             isValid = isValid && (args.item[key] != null);
           }
           if (isValid) {
-            _ref = args.item;
-            for (desc in _ref) {
-              amount = _ref[desc];
-              index = desc.indexOf("Fee_");
-              if (index !== -1) {
-                data.Fee.push({
-                  description: desc.split("_").join(" "),
-                  amount: amount
-                });
-              }
-            }
             data.Rental = args.item;
-            data.Listing.listing_type = 0;
-            if (_this.ListingIds[args.row] != null) {
-              data.Listing.listing_id = _this.ListingIds[args.row];
+            if (!(data.Rental.listing_id != null)) {
+              data.Listing.listing_type = 0;
+              data.Listing.marker_id = _this.CurrentMarker;
+              if (data.Rental.Image != null) {
+                data.Image = data.Rental.Image;
+              }
+            } else {
+              data.Listing = A2Cribs.UserCache.Get("listing", data.Rental.listing_id);
+              data.Image = A2Cribs.UserCache.GetAllAssociatedObjects("image", "listing", data.Rental.listing_id);
             }
-            data.Listing.marker_id = _this.CurrentMarker;
             return _this.Save(args.row, data);
           }
         }));
@@ -944,51 +965,51 @@
             formatter: A2Cribs.Formatters.Unit,
             minWidth: 185
           }, {
-            id: "deposit_fee",
+            id: "deposit_amount",
             name: "Deposit",
-            field: "Fee_Deposit",
+            field: "deposit_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "admin_fee",
+            id: "admin_amount",
             name: "Admin",
-            field: "Fee_Admin",
+            field: "admin_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "parking_fee",
+            id: "parking_amount",
             name: "Parking",
-            field: "Fee_Parking",
+            field: "parking_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "furniture_fee",
+            id: "furniture_amount",
             name: "Furniture",
-            field: "Fee_Furniture",
+            field: "furniture_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "pets_fee",
+            id: "pets_amount",
             name: "Pets",
-            field: "Fee_Pets",
+            field: "pets_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "amenity_fee",
+            id: "amenity_amount",
             name: "Amenity",
-            field: "Fee_Amenity",
+            field: "amenity_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "upper_floor_fee",
+            id: "upper_floor_amount",
             name: "Upper Floor",
-            field: "Fee_Upper_Floor",
+            field: "upper_floor_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }, {
-            id: "extra_occupant_fee",
+            id: "extra_occupant_amount",
             name: "Cost for Extra Occupant",
-            field: "Fee_Extra_Occupant",
+            field: "extra_occupant_amount",
             editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }

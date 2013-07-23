@@ -8,7 +8,7 @@ class A2Cribs.PhotoManager
 			@_path = ""
 			@_preview = null
 
-		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary) ->
+		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary, @_listing_id) ->
 			@_isEmpty = false
 			@_preview = "<img src='#{@_path}'></img>"
 			@_div.find(".imageContent").html @_preview
@@ -54,6 +54,12 @@ class A2Cribs.PhotoManager
 		SetId: (id) ->
 			@_imageId = id
 
+		SetPath: (path) ->
+			@_path = path
+
+		SetListingId: (listing_id) ->
+			@_listing_id = listing_id
+
 		IsEmpty: ->
 			@_isEmpty
 
@@ -70,6 +76,8 @@ class A2Cribs.PhotoManager
 				image_id: @_imageId
 				caption: @_caption
 				is_primary: +@_isPrimary
+				image_path: @_path
+				listing_id: @_listing_id
 
 		@IsAcceptableFileType: (fileName) ->
 			indexOfDot = fileName.indexOf ".", fileName.length - 4
@@ -132,6 +140,10 @@ class A2Cribs.PhotoManager
 			if @CurrentPreviewImage?
 				@Photos[@CurrentPreviewImage].SaveCaption @div.find("#captionInput").val()
 
+		@div.find("#finish_photo").click () =>
+			@SavePhotos()
+			@div.modal('hide')
+
 		@div.find("#captionInput").keyup () =>
 			curString = @div.find("#captionInput").val()
 			if curString.length == @MAX_CAPTION_LENGTH
@@ -168,16 +180,24 @@ class A2Cribs.PhotoManager
 				@Photos[@CurrentImageLoading].Reset()
 			else
 				@Photos[@CurrentImageLoading].SetId data.result.image_id
+				@Photos[@CurrentImageLoading].SetPath data.result.image_path
+				@Photos[@CurrentImageLoading].SetListingId @CurrentListing
 		.on 'fileuploadfail', (e, data) =>
 			A2Cribs.UIManager.Error "Failed to upload image!"
 			@div.find("#upload_image").button 'reset'
 			@Photos[@CurrentImageLoading].Reset()
 
 
-	LoadImages:(images) ->
-		for image in images
-			next_photo = @NextAvailablePhoto()
-			@Photos[next_photo].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary
+	LoadImages:(row, listing_type, listing_id = null) ->
+		@Reset()
+		@CurrentListingType = listing_type
+		@CurrentRow = row
+		if listing_id?
+			@CurrentListing = listing_id.toString()
+			images = A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", listing_id
+			for image in images
+				next_photo = @NextAvailablePhoto()
+				@Photos[next_photo].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary, @CurrentListing
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
@@ -220,6 +240,9 @@ class A2Cribs.PhotoManager
 				results.push photo.GetObject()
 
 		if results.length is 0 then null else results
+
+	SavePhotos: ->
+		$('body').trigger "#{@CurrentListingType}_SavePhoto", [@CurrentRow, @GetPhotos(), @CurrentListing]
 
 	###
 	Send photo and photo's row_id to server
