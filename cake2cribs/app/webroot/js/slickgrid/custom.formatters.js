@@ -90,7 +90,7 @@
     return text;
   }
   function ButtonFormatter (row, cell, value, columnDef, dataContext) {
-    var button = '<a class="btn btn-primary btn-mini" href="#picture-modal" ' + dataContext.listing_id + ' data-toggle="modal">Add/Edit Images</a>';
+    var button = '<a class="btn btn-primary btn-mini" href="#picture-modal" onclick="A2Cribs.PhotoManager.LoadImages(' + row + ', \'Rental\', ' + dataContext.listing_id + ')" data-toggle="modal">Add/Edit Images</a>';
     return button;
   }
   function TextFormatter (row, cell, value, columnDef, dataContext) {

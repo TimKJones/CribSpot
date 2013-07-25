@@ -1,11 +1,10 @@
 class A2Cribs.RentalSave
 	constructor: (modal) ->
 		modal = $('.rental-content')
-		@ListingIds = []
 		@EditableRows = []
 		@VisibleGrid = 'overview_grid'
-		@PhotoManager = new A2Cribs.PhotoManager $("#picture-modal")
 		@SetupUI()
+		@NextListing
 
 	SetupUI: ->
 		###
@@ -13,6 +12,14 @@ class A2Cribs.RentalSave
 		###
 		if not A2Cribs.Geocoder?
 			A2Cribs.Geocoder = new google.maps.Geocoder()
+
+		$('body').on "Rental_SavePhoto", (event, row, images, listing_id) =>
+			if listing_id?
+				for image in images
+					A2Cribs.UserCache.Set new Image image
+			else
+				data = @GridMap[@VisibleGrid].getDataItem row
+				data.Image = images
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
 			@Open event.target.id
@@ -68,10 +75,9 @@ class A2Cribs.RentalSave
 	Open: (marker_id) ->
 		# Gets rental info and saves to JS object
 		@ClearGrids()
-		@ListingIds = []
 
 		@CurrentMarker = marker_id
-		marker_object = A2Cribs.UserCache.GetMarkerById @CurrentMarker
+		marker_object = A2Cribs.UserCache.Get "marker", @CurrentMarker
 		name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
 		$("#rentals_address").html "<strong>#{name}</strong><br>"
 		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
@@ -88,7 +94,15 @@ class A2Cribs.RentalSave
 				response = JSON.parse response
 				if response.listing_id?
 					A2Cribs.UIManager.Success "Save successful!"
-					@ListingIds[row] = response.listing_id
+					rental_object.Listing.listing_id = response.listing_id
+					rental_object.Rental.listing_id = response.listing_id
+					for key, value of rental_object
+						if A2Cribs[key]? and not value.length?
+							A2Cribs.UserCache.Set new A2Cribs[key] value
+						else if A2Cribs[key]? and value.length? # Is an array
+							for i in value
+								i.listing_id = response.listing_id
+								A2Cribs.UserCache.Set new A2Cribs[key] i
 					console.log response
 				else
 					A2Cribs.UIManager.Error "Save unsuccessful"
@@ -129,7 +143,10 @@ class A2Cribs.RentalSave
 					A2Cribs.UIManager.Success "Listings deleted!"
 					data = @GridMap[@VisibleGrid].getData()
 					for listing_id in listing_ids
-						A2Cribs.UserCache.DeleteListing listing_id.toString()
+						rentals = A2Cribs.UserCache.GetAllAssociatedObjects "rental", "listing", listing_id
+						for rental in rentals
+							A2Cribs.UserCache.Remove rental.class_name, rental.GetId()
+						A2Cribs.UserCache.Remove "listing", listing_id
 					for row in rows
 						data.splice row, 1
 					@GridMap[@VisibleGrid].updateRowCount()
@@ -196,7 +213,7 @@ class A2Cribs.RentalSave
 			clear()
 			modal.find('#marker_add').hide()
 			modal.find("#continue-button").addClass "disabled"
-			markers = A2Cribs.UserCache.GetRentalMarkers()
+			markers = A2Cribs.UserCache.Get "marker"
 			modal.find("#marker_select").empty()
 			modal.find("#marker_select").append(
 				'<option value="0">--</option>
@@ -285,7 +302,7 @@ class A2Cribs.RentalSave
 							else
 								modal.modal "hide"
 								marker_object.marker_id = response
-								A2Cribs.UserCache.AddRentalMarker marker_object
+								A2Cribs.UserCache.Set new A2Cribs.Marker marker_object
 								name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
 								list_item = $ "<li />", {
 									text: name
@@ -359,13 +376,13 @@ class A2Cribs.RentalSave
 		********************* TODO **********************
 		###
 		# Pre-populate grid based on selected address
-		rentals = A2Cribs.UserCache.GetRentals()
+		rentals = A2Cribs.UserCache.Get "rental"
 		data = []
 		if rentals.length
-			for i in [0..rentals.length - 1]
-				if rentals[i].Marker.marker_id is @CurrentMarker
-					data.push rentals[i].Rental
-					@ListingIds[i] = rentals[i].Listing.listing_id
+			for rental in rentals
+				listing = A2Cribs.UserCache.Get "listing", rental.listing_id
+				if listing.marker_id is @CurrentMarker
+					data.push rental.GetObject()
 
 		for key, grid of @GridMap
 			grid.setData data
@@ -422,31 +439,22 @@ class A2Cribs.RentalSave
 				data = {
 					Rental: {}
 					Listing: {}
-					Fee: [
-						{
-							description: "Admin"
-							amount: 90
-						}
-					]
+					Image: {}
 				}
 				isValid = yes
 				for key in required
 					isValid = isValid and args.item[key]?
 
 				if isValid
-					for desc, amount of args.item
-						index = desc.indexOf("Fee_")
-						if index != -1
-							data.Fee.push {
-								description: desc.split("_").join(" ")
-								amount: amount
-							}
-
 					data.Rental = args.item
-					data.Listing.listing_type = 0
-					if @ListingIds[args.row]?
-						data.Listing.listing_id = @ListingIds[args.row]
-					data.Listing.marker_id = @CurrentMarker
+					if not data.Rental.listing_id?
+						data.Listing.listing_type = 0
+						data.Listing.marker_id = @CurrentMarker
+						if data.Rental.Image?
+							data.Image = data.Rental.Image
+					else
+						data.Listing = A2Cribs.UserCache.Get "listing", data.Rental.listing_id
+						data.Image = A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.Rental.listing_id
 					@Save args.row, data
 
 	GetColumns: (container) ->
@@ -877,58 +885,58 @@ class A2Cribs.RentalSave
 					minWidth: 185
 				}
 				{
-					id: "deposit_fee"
+					id: "deposit_amount"
 					name: "Deposit"
-					field: "Fee_Deposit"
+					field: "deposit_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "admin_fee"
+					id: "admin_amount"
 					name: "Admin"
-					field: "Fee_Admin"
+					field: "admin_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "parking_fee"
+					id: "parking_amount"
 					name: "Parking"
-					field: "Fee_Parking"
+					field: "parking_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "furniture_fee"
+					id: "furniture_amount"
 					name: "Furniture"
-					field: "Fee_Furniture"
+					field: "furniture_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "pets_fee"
+					id: "pets_amount"
 					name: "Pets"
-					field: "Fee_Pets"
+					field: "pets_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "amenity_fee"
+					id: "amenity_amount"
 					name: "Amenity"
-					field: "Fee_Amenity"
+					field: "amenity_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "upper_floor_fee"
+					id: "upper_floor_amount"
 					name: "Upper Floor"
-					field: "Fee_Upper_Floor"
+					field: "upper_floor_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 				{
-					id: "extra_occupant_fee"
+					id: "extra_occupant_amount"
 					name: "Cost for Extra Occupant"
-					field: "Fee_Extra_Occupant"
+					field: "extra_occupant_amount"
 					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
