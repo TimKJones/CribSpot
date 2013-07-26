@@ -36,7 +36,7 @@ class UsersController extends AppController {
       
                 
                 if ($this->Auth->user('verified') == 0) {
-                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
+                    //$this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
                     $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
                 }
                 else {
@@ -172,11 +172,11 @@ class UsersController extends AppController {
                     'loginStatus' => 1,
                     'error'=>'You are verified'));
                     $this->set('response', $json);
-                    $this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
+                    //$this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
                  //   $this->redirect('/dashboard');
                 }
                 else {
-                    $this->Session->setFlash(__('You were successfully logged in.'));
+                    //$this->Session->setFlash(__('You were successfully logged in.'));
                     $json = json_encode(array(
                     'loginStatus' => 1,
                     'error'=>'You are logged in.'));

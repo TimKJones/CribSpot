@@ -15,10 +15,11 @@
         this._preview = null;
       }
 
-      Photo.prototype.LoadPhoto = function(_imageId, _path, _caption, isPrimary) {
+      Photo.prototype.LoadPhoto = function(_imageId, _path, _caption, isPrimary, _listing_id) {
         this._imageId = _imageId;
         this._path = _path;
         this._caption = _caption;
+        this._listing_id = _listing_id;
         this._isEmpty = false;
         this._preview = "<img src='" + this._path + "'></img>";
         this._div.find(".imageContent").html(this._preview);
@@ -73,6 +74,14 @@
         return this._imageId = id;
       };
 
+      Photo.prototype.SetPath = function(path) {
+        return this._path = path;
+      };
+
+      Photo.prototype.SetListingId = function(listing_id) {
+        return this._listing_id = listing_id;
+      };
+
       Photo.prototype.IsEmpty = function() {
         return this._isEmpty;
       };
@@ -91,7 +100,9 @@
         return {
           image_id: this._imageId,
           caption: this._caption,
-          is_primary: +this._isPrimary
+          is_primary: +this._isPrimary,
+          image_path: this._path,
+          listing_id: this._listing_id
         };
       };
 
@@ -169,6 +180,10 @@
           return _this.Photos[_this.CurrentPreviewImage].SaveCaption(_this.div.find("#captionInput").val());
         }
       });
+      this.div.find("#finish_photo").click(function() {
+        _this.SavePhotos();
+        return _this.div.modal('hide');
+      });
       this.div.find("#captionInput").keyup(function() {
         var curString;
         curString = _this.div.find("#captionInput").val();
@@ -216,7 +231,9 @@
           A2Cribs.UIManager.Error("Failed to upload image!");
           return _this.Photos[_this.CurrentImageLoading].Reset();
         } else {
-          return _this.Photos[_this.CurrentImageLoading].SetId(data.result.image_id);
+          _this.Photos[_this.CurrentImageLoading].SetId(data.result.image_id);
+          _this.Photos[_this.CurrentImageLoading].SetPath(data.result.image_path);
+          return _this.Photos[_this.CurrentImageLoading].SetListingId(_this.CurrentListing);
         }
       }).on('fileuploadfail', function(e, data) {
         A2Cribs.UIManager.Error("Failed to upload image!");
@@ -225,15 +242,23 @@
       });
     };
 
-    PhotoManager.prototype.LoadImages = function(images) {
-      var image, next_photo, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = images.length; _i < _len; _i++) {
-        image = images[_i];
-        next_photo = this.NextAvailablePhoto();
-        _results.push(this.Photos[next_photo].LoadPhoto(image.image_id, image.image_path, image.caption, image.is_primary));
+    PhotoManager.prototype.LoadImages = function(row, listing_type, listing_id) {
+      var image, images, next_photo, _i, _len, _results;
+      if (listing_id == null) listing_id = null;
+      this.Reset();
+      this.CurrentListingType = listing_type;
+      this.CurrentRow = row;
+      if (listing_id != null) {
+        this.CurrentListing = listing_id.toString();
+        images = A2Cribs.UserCache.GetAllAssociatedObjects("image", "listing", listing_id);
+        _results = [];
+        for (_i = 0, _len = images.length; _i < _len; _i++) {
+          image = images[_i];
+          next_photo = this.NextAvailablePhoto();
+          _results.push(this.Photos[next_photo].LoadPhoto(image.image_id, image.image_path, image.caption, image.is_primary, this.CurrentListing));
+        }
+        return _results;
       }
-      return _results;
     };
 
     PhotoManager.prototype.NextAvailablePhoto = function() {
@@ -306,6 +331,10 @@
       } else {
         return results;
       }
+    };
+
+    PhotoManager.prototype.SavePhotos = function() {
+      return $('body').trigger("" + this.CurrentListingType + "_SavePhoto", [this.CurrentRow, this.GetPhotos(), this.CurrentListing]);
     };
 
     /*

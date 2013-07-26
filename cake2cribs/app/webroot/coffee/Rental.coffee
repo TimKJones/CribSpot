@@ -1,15 +1,6 @@
-class A2Cribs.Rental
-	constructor:\
-	(	@rental_id, @listing_id, @street_address, @city, @state, @zip, @unit_style_options, @unit_style_type, @unit_style_description, @building_name 
-	,	@beds, @min_occupancy, @max_occupancy, @building_type, @rent, @rent_negotiable, @unit_count, @start_date
-	,	@alternate_start_date, @end_date, @dates_negotiable, @available, @baths, @air, @parking_type, @parking_spots, @street_parking
-	,	@furnished_type, @pets_type, @smoking, @tv, @balcony, @fridge, @storage, @square_feet, @year_built 
-	,	@pool, @hot_tub, @fitness_center, @game_room, @front_desk, @security_system, @tanning_beds, @study_lounge
-	,	@patio_deck, @yard_space, @elevator, @electric, @water, @gas, @heat, @sewage, @trash
-	,	@cable, @internet, @utility_total_flat_rate, @utility_estimate_winter, @utility_estimate_summer, @deposit
-	,	@highlights, @description, @waitlist, @waitlist_open_date, @lease_office_address, @contact_email, @contact_phone
-	,	@website
-	) ->
+class A2Cribs.Rental extends A2Cribs.Object
+	constructor: (rental) ->
+		super "rental", rental
 
 	@Template =
 		data =

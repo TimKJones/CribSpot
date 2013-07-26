@@ -1,26 +1,26 @@
 (function() {
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  A2Cribs.Marker = (function() {
+  A2Cribs.Marker = (function(_super) {
     var FilterVisibleListings, UpdateMarkerContent;
 
-    function Marker(MarkerId, Address, Title, UnitType, Latitude, Longitude, City, State) {
-      this.MarkerId = MarkerId;
-      this.Address = Address;
-      this.Title = Title;
-      this.UnitType = UnitType;
-      this.Latitude = Latitude;
-      this.Longitude = Longitude;
-      this.City = City;
-      this.State = State;
-      this.ListingIds = null;
-      this.MarkerId = parseInt(this.MarkerId);
-      this.GMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(this.Latitude, this.Longitude),
-        icon: "/img/dots/available_dot.png",
-        id: this.MarkerId
-      });
-      this.Clicked = false;
+    __extends(Marker, _super);
+
+    function Marker(marker) {
+      Marker.__super__.constructor.call(this, "marker", marker);
     }
+
+    /*
+    	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
+    		@ListingIds = null
+    		@MarkerId = parseInt(@MarkerId)
+    		@GMarker = new google.maps.Marker
+    			position: new google.maps.LatLng(@Latitude, @Longitude)
+    			icon: "/img/dots/available_dot.png"
+    			id: @MarkerId
+    		@Clicked = false #Used to determine if data is already in the cache
+    */
 
     /*
     	Filters the listing_ids at the current marker according to the user's current filter settings.
@@ -163,6 +163,6 @@
 
     return Marker;
 
-  })();
+  })(A2Cribs.Object);
 
 }).call(this);

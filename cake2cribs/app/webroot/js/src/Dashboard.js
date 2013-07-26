@@ -35,19 +35,44 @@
         _this = this;
       url = myBaseUrl + "listings/GetListing";
       return $.get(url, function(data) {
-        var list_item, listing_markers, marker, marker_set, name, response_data, type, _results;
+        var i, item, key, list_item, listing, listing_type, listings, marker, marker_id, marker_id_array, marker_set, name, response_data, type, value, _i, _j, _k, _len, _len2, _len3, _results;
         response_data = JSON.parse(data);
-        A2Cribs.UserCache.CacheListings(response_data);
-        listing_markers = A2Cribs.UserCache.GetListingMarkers();
+        for (_i = 0, _len = response_data.length; _i < _len; _i++) {
+          item = response_data[_i];
+          for (key in item) {
+            value = item[key];
+            if ((A2Cribs[key] != null) && !(value.length != null)) {
+              A2Cribs.UserCache.Set(new A2Cribs[key](value));
+            } else if ((A2Cribs[key] != null) && (value.length != null)) {
+              for (_j = 0, _len2 = value.length; _j < _len2; _j++) {
+                i = value[_j];
+                A2Cribs.UserCache.Set(new A2Cribs[key](i));
+              }
+            }
+          }
+        }
+        listings = A2Cribs.UserCache.Get("listing");
+        marker_set = {};
+        for (_k = 0, _len3 = listings.length; _k < _len3; _k++) {
+          listing = listings[_k];
+          if (!(marker_set[listing.listing_type] != null)) {
+            marker_set[listing.listing_type] = {};
+          }
+          marker_set[listing.listing_type][listing.marker_id] = true;
+        }
         _results = [];
-        for (type in listing_markers) {
-          marker_set = listing_markers[type];
+        for (listing_type in marker_set) {
+          marker_id_array = marker_set[listing_type];
           _results.push((function() {
-            var _i, _len, _results2;
+            var _results2;
             _results2 = [];
-            for (_i = 0, _len = marker_set.length; _i < _len; _i++) {
-              marker = marker_set[_i];
+            for (marker_id in marker_id_array) {
+              marker = A2Cribs.UserCache.Get("marker", marker_id);
               name = (marker.alternate_name != null) && marker.alternate_name.length ? marker.alternate_name : marker.street_address;
+              type = null;
+              if (parseInt(listing_type, 10) === 0) type = "rentals";
+              if (parseInt(listing_type, 10) === 1) type = "sublet";
+              if (parseInt(listing_type, 10) === 2) type = "parking";
               list_item = $("<li />", {
                 text: name,
                 "class": "" + type + "_list_item",
