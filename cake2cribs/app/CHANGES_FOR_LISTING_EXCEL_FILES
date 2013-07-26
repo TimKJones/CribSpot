@@ -1,0 +1,5 @@
+- need to remove all commas before converting to csv
+- need to standardize yes/no
+- need to convert all values that should be numbers (like deposit) into numeric values
+- remove dollar signs from numeric values
+- 
