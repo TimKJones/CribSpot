@@ -9,7 +9,12 @@
 			<?php echo $this->element('photo_manager'); ?>
 		</div>
 		<div class="modal-footer">
-			<button class="btn btn-primary pull-right next-btn">Finish</button>
+			<button id="finish_photo" class="btn btn-primary pull-right next-btn">Finish</button>
 		</div>
 	</div>
 </div>
+<?php 
+	$this->Js->buffer('
+		A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
+	');
+?>

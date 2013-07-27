@@ -63,8 +63,7 @@ class Image extends AppModel {
 			if (array_key_exists('error', $response))
 				return $response;
 
-			$image_id = $this->AddImageEntry($newPath, $user_id, $listing_id);
-			return $image_id;
+			return $this->AddImageEntry($newPath, $user_id, $listing_id);
 		}
 
 		/* File name already exists. Create new folder if $newPath doesn't already exist */
@@ -149,7 +148,7 @@ class Image extends AppModel {
 			$newImage['listing_id'] = $listing_id;
 
 		if ($this->save($newImage))
-			return array('image_id' => $this->id);
+			return array('image_id' => $this->id, 'image_path' => $filePath);
 		else{
 			$error = null;
 			$error['image'] = $newImage;

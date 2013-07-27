@@ -1,2 +1,3 @@
-class A2Cribs.Image
-	constructor: (@SubletId, @Path, @IsPrimary, @Caption) ->
+class A2Cribs.Image extends A2Cribs.Object
+	constructor: (image) ->
+		super "image", image

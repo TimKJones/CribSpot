@@ -1,129 +1,40 @@
 class A2Cribs.UserCache
-	@Markers = {
-			Rental: []
-			Parking: []
-			Sublet: []
-		}
+	@Cache = {}
 
-	@Listings = []
-	
-	get = (key) =>
-		items = []
-		for listing in @Listings
-			if listing[key]? then items.push listing
-		return items
+	@Set: (object) ->
+		class_name = object.class_name
+		if not @Cache[object.class_name]?
+			@Cache[object.class_name] = {}
 
-	count = (key) =>
-		items = 0
-		for listing in @Listings
-			if listing[key]? then items++
-		return items
+		@Cache[object.class_name][object.GetId()] = object
 
-	get_markers = (key) =>
-		if @Markers? and @Markers[key]
-			return @Markers[key]
+	@Get: (object_type, id) ->
+		list = []
+		if @Cache[object_type]?
+			if id?
+				return @Cache[object_type][id]
+			else
+				for item of @Cache[object_type]
+					list.push @Cache[object_type][item]
+		return list
 
-	get_marker_from_id = (id) =>
-		for key, field of @Markers
-			for marker in field
-				if marker.marker_id is id
-					return marker
-		return null
+	@Remove: (object_type, id) ->
+		if @Cache[object_type]?
+			delete @Cache[object_type][id]
 
-	load_markers = (key) =>
-		items = []
-		for listing in @Listings
-			if listing[key]? then items[listing.Marker.marker_id] = listing.Marker
-		for marker in items
-			if marker? then @Markers[key].push marker
-
-	add_marker = (key, marker) =>
-		if @Markers? and @Markers[key]
-			alreadyAdded = no
-			for m in @Markers[key]
-				if marker.marker_id is m.marker_id
-					alreadyAdded = yes
-			if not alreadyAdded
-				@Markers[key].push marker
-
-	delete_listing = (listing_id) =>
-		for i in [0..@Listings.length - 1]
-			if @Listings[i].Listing.listing_id is listing_id
-				@Listings.splice i, 1
-
-
-	@CacheListings : (listing_list) ->
-		@Listings = listing_list
-		for i in [0..@Listings.length - 1]
-			listing = @Listings[i]
-			for key, field of listing
-				for term, value of field
-					if not value?
-						delete @Listings[i][key][term]
-					else if typeof value is "string" and (index = value.indexOf("00:00")) isnt -1
-						@Listings[i][key][term] = value.substring 0, index - 1
-					else if typeof value is "boolean"
-						@Listings[i][key][term] = +value
-
-		for key of @Markers
-			load_markers key
-					
-
-	@GetListings: ->
-		return @Listings
-
-	@GetRentals: ->
-		return get "Rental"
-
-	@GetParking: ->
-		return get "Parking"
-
-	@GetSublets: ->
-		return get "Sublet"
-
-	@GetListingCount: ->
-		if @Listings
-			return @Listings.length()
-		else
-			return 0
-
-	@GetSubletCount: ->
-		count "Sublet"
-
-	@GetParkingCount: ->
-		count "Parking"
-
-	@GetRentalCount: ->
-		count "Rental"
-
-	@GetRentalMarkers: ->
-		get_markers "Rental"
-
-	@GetSubletMarkers: ->
-		get_markers "Sublet"
-
-	@GetParkingMarkers: ->
-		get_markers "Parking"
-
-	@GetListingMarkers: ->
-		return {
-			sublet: @GetSubletMarkers()
-			parking: @GetParkingMarkers()
-			rentals: @GetRentalMarkers() 
-		}
-
-	@AddSubletMarker: (marker) ->
-		add_marker "Sublet", marker
-
-	@AddParkingMarker: (marker) ->
-		add_marker "Parking", marker
-
-	@AddRentalMarker: (marker) ->
-		add_marker "Rental", marker
-
-	@DeleteListing: (listing_id) ->
-		delete_listing listing_id
-
-	@GetMarkerById: (id) ->
-		get_marker_from_id id
-
+	###
+	Think of it as Get all {return_type} with a sorted_type_id that equals
+	sorted_id
+	Get all images with a listing_id of 3 would be
+	GetAllAssociatedObjects("image", "listing", listing_id)
+	###
+	@GetAllAssociatedObjects: (return_type, sorted_type, sorted_id) ->
+		list = {}
+		return_list = []
+		for item of @Cache[return_type]
+			if @Cache[return_type][item]["#{sorted_type}_id"]?
+				if @Cache[return_type][item]["#{sorted_type}_id"] is sorted_id
+					list[@Cache[return_type][item]["#{return_type}_id"]] = true
+		for item of list
+			return_list.push @Get return_type, item
+		return return_list

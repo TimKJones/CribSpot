@@ -21,10 +21,32 @@
         "Text" : TextFormatter,
         "Availability" : AvailabilityFormatter,
         "RequiredText" : RequiredTextFormatter,
-        "RequiredMoney" : RequiredMoneyFormatter
+        "RequiredMoney" : RequiredMoneyFormatter,
+        "Check" : CheckmarkFormatter,
+        "Utilities" : UtilitiesFormatter,
+        "Parking" : ParkingFormatter,
+        "Furnished" : FurnishedFormatter,
+        "Pets" : PetsFormatter,
+        "Smoking" : SmokingFormatter
       }
     }
   });
+
+  var selectFormatter = function(options, value, dataContext) {
+    var text;
+    if (typeof(value) == "undefined")
+      text = "";
+    else
+    {
+      value = parseInt(value, 10);
+      text = options[value];
+    }
+
+    if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
+      return "<input value='" + text + "' type='text' >";
+    return "<strong>" + text + "</strong>";
+  }
+
   function NumericRangeFormatter(row, cell, value, columnDef, dataContext) {
     var text, text_class;
     if (typeof(dataContext.min_occupancy) != "undefined" && dataContext.min_occupancy != null)
@@ -68,7 +90,7 @@
     return text;
   }
   function ButtonFormatter (row, cell, value, columnDef, dataContext) {
-    var button = '<a class="btn btn-primary btn-mini" href="#picture-modal" ' + dataContext.listing_id + ' data-toggle="modal">Add/Edit Images</a>';
+    var button = '<a class="btn btn-primary btn-mini" href="#picture-modal" onclick="A2Cribs.PhotoManager.LoadImages(' + row + ', \'Rental\', ' + dataContext.listing_id + ')" data-toggle="modal">Add/Edit Images</a>';
     return button;
   }
   function TextFormatter (row, cell, value, columnDef, dataContext) {
@@ -101,5 +123,23 @@
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + value + "' type='text' class='" + text_class + "' required>";
     return value;
+  }
+  function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
+    return value ? '<img src="/img/dashboard/yes.png" alt="Yes">' : '<img src="/img/dashboard/no.png" alt="No">' ;
+  }
+  function UtilitiesFormatter (row, cell, value, columnDef, dataContext) {
+    return selectFormatter(["No", "Yes", "Flat Rate"], value, dataContext);
+  }
+  function ParkingFormatter (row, cell, value, columnDef, dataContext) {
+    return selectFormatter(["None", "Lot", "Driveway", "Garage", "Off-Site"], value, dataContext);
+  }
+  function FurnishedFormatter (row, cell, value, columnDef, dataContext) {
+    return selectFormatter(["Unfurnished", "Fully", "Partially"], value, dataContext);
+  }
+  function PetsFormatter (row, cell, value, columnDef, dataContext) {
+    return selectFormatter(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"], value, dataContext);
+  }
+  function SmokingFormatter (row, cell, value, columnDef, dataContext) {
+    return selectFormatter(["Prohibited", "Allowed"], value, dataContext);
   }
 })(jQuery);

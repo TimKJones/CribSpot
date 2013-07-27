@@ -1,4 +1,8 @@
-class A2Cribs.Marker
+class A2Cribs.Marker extends  A2Cribs.Object
+	constructor: (marker) ->
+		super "marker", marker
+
+	###
 	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
 		@ListingIds = null
 		@MarkerId = parseInt(@MarkerId)
@@ -7,7 +11,7 @@ class A2Cribs.Marker
 			icon: "/img/dots/available_dot.png"
 			id: @MarkerId
 		@Clicked = false #Used to determine if data is already in the cache
-
+	###
 	###
 	Filters the listing_ids at the current marker according to the user's current filter settings.
 	Returns list of listing_ids that should be visible in marker tooltip.

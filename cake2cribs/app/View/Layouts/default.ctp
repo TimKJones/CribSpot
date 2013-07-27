@@ -42,6 +42,7 @@
 		echo $this->Html->script('google_analytics');
 		echo $this->Html->script('infobubble.js');
 		echo $this->Html->script('src/A2Cribs');	
+		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/Map');
 		echo $this->Html->script('src/MarkerTooltip');
 		echo $this->Html->script('src/Favorite');

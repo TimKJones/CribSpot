@@ -452,6 +452,7 @@
 
     this.save = function () {
       args.commitChanges();
+      scope.hide();
     };
 
     this.cancel = function () {
