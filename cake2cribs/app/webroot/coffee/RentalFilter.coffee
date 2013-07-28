@@ -1,0 +1,103 @@
+class A2Cribs.RentalFilter extends A2Cribs.FilterManager
+
+	###
+	Called immediately after user applies a filter.
+	Submits an ajax call with all current filter parameters
+	###
+	@ApplyFilter: (event, ui) ->
+		A2Cribs.Map.ClickBubble.Close()	
+		ajaxData = null
+		ajaxData += "minBeds=" + $("#minBedsSelect").val()
+		ajaxData += "&maxBeds=" + $("#maxBedsSelect").val()
+		ajaxData += "&minBaths=" + $("#minBathsSelect").val()
+		ajaxData += "&maxBaths=" + $("#maxBathsSelect").val()
+		ajaxData += "&house=" + $("#houseCheck").is(':checked')
+		ajaxData += "&apt=" + $("#aptCheck").is(':checked')
+		ajaxData += "&unit_type_other=" + $("#otherCheck").is(':checked')
+		ajaxData += "&ac=" + $("#acCheck").is(':checked')
+		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
+		$.ajax
+			url: myBaseUrl + "Rentals/ApplyFilter"
+			type: "GET"
+			data: ajaxData
+			context: this
+			success: A2Cribs.FilterManager.UpdateMarkers
+
+	###
+	Retrieves all listing_ids for a given marker_id that fit the current filter criteria
+	###
+	@FilterVisibleListings: (marker_id) ->
+		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker_id
+		visibile_listings = []
+		for listing in listings
+			rent = FilterRent listing
+			beds = FilterBeds listing
+			baths = FilterBaths listing
+			building_type = FilterBuildingType listing
+			dates = FilterDates listing
+			unit_features = FilterUnitFeatures listing
+			parking = FilterParking listing
+			pets = FilterPets listing
+			amenities = FilterAmenities listing
+			square_feet = FilterSquareFeet listing
+			year_built = FilterYearBuilt listing
+			utilities = FilterUtilities listing
+			if rent && beds && baths && building_type && dates && unit_features && parking && pets && amenities && square_feet && year_built && utilities
+				visibile_listings.push listing
+
+		return visibile_listings
+
+	FilterRent: (listing) ->
+		return true
+
+	FilterBeds: (listing) ->
+		return true
+
+	FilterBaths: (listing) ->
+		return true
+
+	FilterBuildingType: (listing) ->
+		return true
+
+	FilterDates: (listing) ->
+		return true
+
+	FilterUnitFeatures: (listing) ->
+		#a/c, furnished_type
+		return true
+
+	FilterParking: (listing) ->
+		# parking type
+		# parking spots
+		# street_parking
+		return true
+
+	FilterPets: (listing) ->
+		return true
+
+	FilterAmenities: (listing) ->
+		# smoking
+		# tv
+		# balcony
+		# fridge
+		# storage
+		# pool
+		# hot_tub
+		# fitness_center
+		# game_room
+		# security_system
+		# tanning_beds
+		# study_lounge
+		# patio_deck
+		# yard_space
+		# elevator
+		return true
+
+	FilterSquareFeet: (listing) ->
+		return true
+
+	FilterYearBuilt: (listing) ->
+		return true
+
+	FilterUtilities: (listing) ->
+		return true
