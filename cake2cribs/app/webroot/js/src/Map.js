@@ -40,10 +40,10 @@
     */
 
     Map.InitializeMarkers = function(markerList) {
-      var decodedMarkerList, marker, _i, _len;
-      decodedMarkerList = JSON.parse(markerList);
-      for (_i = 0, _len = decodedMarkerList.length; _i < _len; _i++) {
-        marker = decodedMarkerList[_i];
+      var marker, _i, _len;
+      markerList = JSON.parse(markerList);
+      for (_i = 0, _len = markerList.length; _i < _len; _i++) {
+        marker = markerList[_i];
         this.AddMarker(marker.Marker);
       }
       if (A2Cribs.marker_id_to_open >= 0) {
@@ -59,7 +59,7 @@
     Map.LoadMarkers = function() {
       if (A2Cribs.Map.CurentSchoolId === void 0) return;
       return $.ajax({
-        url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId,
+        url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0,
         type: "GET",
         context: this,
         success: this.InitializeMarkers
@@ -166,7 +166,7 @@
 
     Map.LoadHoverData = function() {
       return $.ajax({
-        url: myBaseUrl + "Map/LoadHoverData",
+        url: myBaseUrl + "Map/LoadHoverData/" + 0,
         type: "POST",
         success: this.LoadHoverDataCallback
       });
@@ -175,7 +175,7 @@
     Map.LoadHoverDataCallback = function(response) {
       var hdList;
       hdList = JSON.parse(response);
-      return A2Cribs.Cache.CacheHoverData(hdList);
+      return A2Cribs.UserCache.Set(new A2Cribs.HoverData(hdList));
     };
 
     Map.LoadTypeTablesCallback = function(types) {

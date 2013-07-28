@@ -28,10 +28,9 @@ class A2Cribs.Map
 	Add all markers in markerList to map
 	###
 	@InitializeMarkers:(markerList) ->
-		decodedMarkerList = JSON.parse markerList
-		for marker in decodedMarkerList
+		markerList = JSON.parse markerList
+		for marker in markerList
 			@AddMarker marker.Marker
-
 
 		if A2Cribs.marker_id_to_open >= 0
 			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
@@ -46,7 +45,7 @@ class A2Cribs.Map
 			return
 			
 		$.ajax 
-			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId
+			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0
 			type:"GET"
 			context: this
 			success: @InitializeMarkers	
@@ -143,13 +142,14 @@ class A2Cribs.Map
 
 	@LoadHoverData: ->
 		$.ajax 
-			url: myBaseUrl + "Map/LoadHoverData"
+			url: myBaseUrl + "Map/LoadHoverData/" + 0
 			type: "POST"
 			success: @LoadHoverDataCallback
 
 	@LoadHoverDataCallback: (response) ->
 		hdList = JSON.parse response
-		A2Cribs.Cache.CacheHoverData hdList
+		#A2Cribs.Cache.CacheHoverData hdList
+		A2Cribs.UserCache.Set new A2Cribs.HoverData hdList
 
 	@LoadTypeTablesCallback: (types) ->
 		types = JSON.parse types
