@@ -88,14 +88,17 @@
     */
 
     UpdateMarkerContent = function(markerData) {
-      var visibleListingIds;
+      var clickedMarker, listing, _i, _len;
       if (!this.Clicked) {
-        A2Cribs.Cache.CacheMarkerData(JSON.parse(markerData));
-        A2Cribs.Cache.IdToMarkerMap[this.MarkerId].GMarker.setIcon("/img/dots/clicked_dot.png");
+        for (_i = 0, _len = markerData.length; _i < _len; _i++) {
+          listing = markerData[_i];
+          A2Cribs.UserCache.Set(A2Cribs.Listing(JSON.parse(markerData)));
+        }
+        clickedMarker = A2Cribs.UserCache.Get("marker", this.MarkerId);
+        clickedMarker.GMarker.setIcon("/img/dots/clicked_dot.png");
       }
       this.Clicked = true;
-      visibleListingIds = FilterVisibleListings(A2Cribs.Cache.MarkerIdToSubletIdsMap[this.MarkerId]);
-      return A2Cribs.Map.ClickBubble.Open(this, visibleListingIds);
+      return this.FilterVisibleListingsAndOpenPopup();
     };
 
     /*
@@ -104,11 +107,9 @@
     */
 
     Marker.prototype.LoadMarkerData = function() {
-      var visibleListingIds;
       this.CorrectTooltipLocation();
       if (this.Clicked) {
-        visibleListingIds = FilterVisibleListings(A2Cribs.Cache.MarkerIdToSubletIdsMap[this.MarkerId]);
-        return A2Cribs.Map.ClickBubble.Open(this, visibleListingIds);
+        return this.FilterVisibleListingsAndOpenPopup();
       } else {
         return $.ajax({
           url: myBaseUrl + "Listings/LoadMarkerData/" + this.MarkerId,
@@ -117,6 +118,12 @@
           success: UpdateMarkerContent
         });
       }
+    };
+
+    Marker.prototype.FilterVisibleListingsAndOpenPopup = function() {
+      var visibleListingIds;
+      visibleListingIds = FilterVisibleListings(A2Cribs.Cache.MarkerIdToSubletIdsMap[this.MarkerId]);
+      return A2Cribs.Map.ClickBubble.Open(this, visibleListingIds);
     };
 
     Marker.GetMarkerPixelCoordinates = function(latlng) {

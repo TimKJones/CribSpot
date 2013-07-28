@@ -193,7 +193,7 @@ class Listing extends AppModel {
 	*/
 	public function GetMarkerData($listing_type, $marker_id, $user_id)
 	{
-		$this->contain('Rental', 'User');
+		$this->contain('Rental', 'User', 'Fee');
 		$listings = $this->find('all', array(
 			'conditions' => array(
 				'Listing.listing_type' => $listing_type,
