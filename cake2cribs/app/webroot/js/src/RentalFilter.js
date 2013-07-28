@@ -17,21 +17,33 @@
 
     RentalFilter.ApplyFilter = function(event, ui) {
       var ajaxData;
-      A2Cribs.Map.ClickBubble.Close();
       ajaxData = null;
-      ajaxData += "minBeds=" + $("#minBedsSelect").val();
-      ajaxData += "&maxBeds=" + $("#maxBedsSelect").val();
-      ajaxData += "&minBaths=" + $("#minBathsSelect").val();
-      ajaxData += "&maxBaths=" + $("#maxBathsSelect").val();
-      ajaxData += "&house=" + $("#houseCheck").is(':checked');
-      ajaxData += "&apt=" + $("#aptCheck").is(':checked');
-      ajaxData += "&unit_type_other=" + $("#otherCheck").is(':checked');
-      ajaxData += "&ac=" + $("#acCheck").is(':checked');
-      ajaxData += "&parking=" + $("#parkingCheck").is(':checked');
+      /*
+      		ajaxData += "minBeds=" + $("#minBedsSelect").val()
+      		ajaxData += "&maxBeds=" + $("#maxBedsSelect").val()
+      		ajaxData += "&minBaths=" + $("#minBathsSelect").val()
+      		ajaxData += "&maxBaths=" + $("#maxBathsSelect").val()
+      		ajaxData += "&house=" + $("#houseCheck").is(':checked')
+      		ajaxData += "&apt=" + $("#aptCheck").is(':checked')
+      		ajaxData += "&duplex=" + $("#duplexCheck").is(':checked')
+      		ajaxData += "&ac=" + $("#acCheck").is(':checked')
+      		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
+      */
+      ajaxData = "min_beds=" + 0;
+      ajaxData += "&max_beds=" + 5;
+      ajaxData += "&min_baths=" + 0;
+      ajaxData += "&max_baths=" + 3;
+      ajaxData += "&min_rent=" + 0;
+      ajaxData += "&max_rent=" + 3000;
+      ajaxData += "&house=" + 1;
+      ajaxData += "&apt=" + 1;
+      ajaxData += "&duplex=" + 0;
+      ajaxData += "&ac=" + 0;
+      ajaxData += "&parking=" + 1;
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
-        type: "GET",
         data: ajaxData,
+        type: "GET",
         context: this,
         success: A2Cribs.FilterManager.UpdateMarkers
       });

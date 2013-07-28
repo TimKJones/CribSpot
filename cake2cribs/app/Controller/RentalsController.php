@@ -10,6 +10,7 @@ class RentalsController extends AppController
     parent::beforeFilter();
     $this->Auth->allow('Save');
     $this->Auth->allow('Get');
+    $this->Auth->allow('ApplyFilter');
   }
 
   public function index()
@@ -38,11 +39,16 @@ class RentalsController extends AppController
 /*
 Returns a list of marker_ids that will be visible based on the current filter settings.
 */
-  public function ApplyFilter($filterSettings)
+  public function ApplyFilter()
   {
     if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
       return;
 
+    if ($this->params == null || !array_key_exists('url', $this->params))
+      return;
+
+    $filterSettings = $this->params['url'];
+    CakeLog::write("filterSettings", print_r($filterSettings,true));
     $this->layout = 'ajax';
     $response = $this->Rental->getFilteredMarkerIdList($filterSettings);
     $this->set('response', $response);

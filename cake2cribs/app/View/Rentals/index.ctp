@@ -9,5 +9,6 @@ echo $this->Html->script('src/RentalSave');
 echo $this->Html->script('src/Cache');
 echo $this->Html->script('src/Types');
 echo $this->Html->script('src/Rental_Marker');
-
+echo $this->Html->script('src/FilterManager');
+echo $this->Html->script('src/RentalFilter');
 ?>

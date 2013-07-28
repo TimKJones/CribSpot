@@ -10,6 +10,7 @@ class Rental extends RentalPrototype {
             'foreignKey'   => 'listing_id'
         )
 	);
+	public $actsAs = array('Containable');
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
@@ -375,28 +376,19 @@ class Rental extends RentalPrototype {
 	public function getFilteredMarkerIdList($params)
 	{
 		$conditions = $this->_getFilteredQueryConditions($params);
+		//CakeLog::write("getFilteredMarkerIdList", print_r($conditions, true));
 
 		/* Limit which tables are queried */
-		$contains = array('Marker', 'Fee');
+		$contains = array('Marker', 'Rental', 'Fee');
 
-		$markerIdList = $this->find('all', array(
+		$markerIdList = $this->Listing->find('all', array(
 			'conditions' => $conditions,
-			/*'joins' => array(
-		        array(
-		            'table' => 'housemates',
-		            'alias' => 'Housemate',
-		            'type' => 'INNER',
-		            'conditions' => array(
-		                'Housemate.sublet_id = Sublet.id'
-		            )
-		        )
-		    ),*/
-			'fields' => array('marker_id'),
-			'contain' => $contains));
+		    'contain' => $contains,
+			'fields' => array('Listing.marker_id')));
 
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
-			array_push($formattedIdList, $markerIdList[$i]['Rental']['marker_id']);
+			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
 
 		/*$log = $this->getDataSource()->getLog(false, false); 
 	  	CakeLog::write("lastQuery", print_r($log, true));*/
@@ -432,11 +424,11 @@ class Rental extends RentalPrototype {
 	private function _getBuildingTypeOr($params)
 	{
 		$building_type_id_OR = array();
-		if ($params['house'] == "true")
+		if ($params['house'])
 			array_push($building_type_id_OR, Rental::BUILDING_TYPE_HOUSE);
-		if ($params['apt'] == "true")
+		if ($params['apt'])
 			array_push($building_type_id_OR, Rental::BUILDING_TYPE_APARTMENT);
-		if ($params['duplex'] == "true")
+		if ($params['duplex'])
 			array_push($building_type_id_OR, Rental::BUILDING_TYPE_DUPLEX);
 
 		return $building_type_id_OR;

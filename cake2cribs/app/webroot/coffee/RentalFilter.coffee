@@ -5,8 +5,9 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	Submits an ajax call with all current filter parameters
 	###
 	@ApplyFilter: (event, ui) ->
-		A2Cribs.Map.ClickBubble.Close()	
+		#A2Cribs.Map.ClickBubble.Close()	
 		ajaxData = null
+		###
 		ajaxData += "minBeds=" + $("#minBedsSelect").val()
 		ajaxData += "&maxBeds=" + $("#maxBedsSelect").val()
 		ajaxData += "&minBaths=" + $("#minBathsSelect").val()
@@ -16,8 +17,21 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&duplex=" + $("#duplexCheck").is(':checked')
 		ajaxData += "&ac=" + $("#acCheck").is(':checked')
 		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
+		###
+		ajaxData = "min_beds=" + 0
+		ajaxData += "&max_beds=" + 5
+		ajaxData += "&min_baths=" + 0
+		ajaxData += "&max_baths=" + 3
+		ajaxData += "&min_rent=" + 0
+		ajaxData += "&max_rent=" + 3000
+		ajaxData += "&house=" + 1
+		ajaxData += "&apt=" + 1
+		ajaxData += "&duplex=" + 0
+		ajaxData += "&ac=" + 0
+		ajaxData += "&parking=" + 1
 		$.ajax
-			url: myBaseUrl + "Rentals/ApplyFilter/" + ajaxData
+			url: myBaseUrl + "Rentals/ApplyFilter"
+			data: ajaxData
 			type: "GET"
 			context: this
 			success: A2Cribs.FilterManager.UpdateMarkers

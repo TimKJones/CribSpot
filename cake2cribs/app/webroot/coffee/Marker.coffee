@@ -112,7 +112,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 			A2Cribs.Map.ClickBubble.Open this, visibleListingIds
 		else
 			$.ajax 
-				url: myBaseUrl + "Sublets/LoadMarkerData/" + @MarkerId
+				url: myBaseUrl + "Listings/LoadMarkerData/" + @MarkerId
 				type:"GET"
 				context: this
 				success: UpdateMarkerContent
