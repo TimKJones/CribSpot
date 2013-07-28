@@ -13,13 +13,12 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&maxBaths=" + $("#maxBathsSelect").val()
 		ajaxData += "&house=" + $("#houseCheck").is(':checked')
 		ajaxData += "&apt=" + $("#aptCheck").is(':checked')
-		ajaxData += "&unit_type_other=" + $("#otherCheck").is(':checked')
+		ajaxData += "&duplex=" + $("#duplexCheck").is(':checked')
 		ajaxData += "&ac=" + $("#acCheck").is(':checked')
 		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
 		$.ajax
-			url: myBaseUrl + "Rentals/ApplyFilter"
+			url: myBaseUrl + "Rentals/ApplyFilter/" + ajaxData
 			type: "GET"
-			data: ajaxData
 			context: this
 			success: A2Cribs.FilterManager.UpdateMarkers
 

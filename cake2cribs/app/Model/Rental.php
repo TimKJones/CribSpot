@@ -367,6 +367,80 @@ class Rental extends RentalPrototype {
 			return null;
 		}
 	}
+
+	/*
+	Given array of parameter values as input.
+	Returns a list of marker_ids that have rentals matching the parameter criteria.
+	*/
+	public function getFilteredMarkerIdList($params)
+	{
+		$conditions = $this->_getFilteredQueryConditions($params);
+
+		/* Limit which tables are queried */
+		$contains = array('Marker', 'Fee');
+
+		$markerIdList = $this->find('all', array(
+			'conditions' => $conditions,
+			/*'joins' => array(
+		        array(
+		            'table' => 'housemates',
+		            'alias' => 'Housemate',
+		            'type' => 'INNER',
+		            'conditions' => array(
+		                'Housemate.sublet_id = Sublet.id'
+		            )
+		        )
+		    ),*/
+			'fields' => array('marker_id'),
+			'contain' => $contains));
+
+		$formattedIdList = array();
+		for ($i = 0; $i < count($markerIdList); $i++)
+			array_push($formattedIdList, $markerIdList[$i]['Rental']['marker_id']);
+
+		/*$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		return json_encode($formattedIdList);
+	}
+
+	/*
+	Returns the conditions array used to match the current filter settings in a query using model->find()
+	*/
+	private function _getFilteredQueryConditions($params)
+	{
+		$conditions = array();
+		$building_type_id_OR = $this->_getBuildingTypeOr($params);
+
+		array_push($conditions, array('OR' => array(
+			array('Marker.building_type_id' => $building_type_id_OR),
+			array('Marker.building_type_id' => NULL))));
+
+		array_push($conditions, array(
+			'Rental.rent >=' => $params['min_rent'],
+			'Rental.rent <=' => $params['max_rent'],
+			'Rental.beds >=' => $params['min_beds'],
+			'Rental.beds <=' => $params['max_beds'],
+			'Rental.baths >=' => $params['min_baths'],
+			'Rental.baths <=' => $params['max_baths']));
+
+		return $conditions;
+	}
+
+	/*
+	returns a piece for the filter query dealing with building type
+	*/
+	private function _getBuildingTypeOr($params)
+	{
+		$building_type_id_OR = array();
+		if ($params['house'] == "true")
+			array_push($building_type_id_OR, Rental::BUILDING_TYPE_HOUSE);
+		if ($params['apt'] == "true")
+			array_push($building_type_id_OR, Rental::BUILDING_TYPE_APARTMENT);
+		if ($params['duplex'] == "true")
+			array_push($building_type_id_OR, Rental::BUILDING_TYPE_DUPLEX);
+
+		return $building_type_id_OR;
+	}
 }
 
 ?>

@@ -35,6 +35,19 @@ class RentalsController extends AppController
 
   }
 
+/*
+Returns a list of marker_ids that will be visible based on the current filter settings.
+*/
+  public function ApplyFilter($filterSettings)
+  {
+    if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+      return;
+
+    $this->layout = 'ajax';
+    $response = $this->Rental->getFilteredMarkerIdList($filterSettings);
+    $this->set('response', $response);
+  }
+
   /*
     Check if user owns listing_id. Returns true if so, false otherwise.
   */
