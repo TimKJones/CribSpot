@@ -39,17 +39,17 @@
     	Add all markers in markerList to map
     */
 
-    Map.InitializeMarkers = function(markerList) {
+    Map.InitializeMarkers = function(markerList, that) {
       var marker, _i, _len;
+      if (markerList === null || markerList === void 0) return;
       markerList = JSON.parse(markerList);
       for (_i = 0, _len = markerList.length; _i < _len; _i++) {
         marker = markerList[_i];
-        this.AddMarker(marker.Marker);
+        that.AddMarker(marker.Marker);
       }
       if (A2Cribs.marker_id_to_open >= 0) {
-        A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon("/img/dots/clicked_dot.png");
+        return A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon("/img/dots/clicked_dot.png");
       }
-      return A2Cribs.Map.LoadHoverData();
     };
 
     /*
@@ -57,20 +57,24 @@
     */
 
     Map.LoadMarkers = function() {
-      if (A2Cribs.Map.CurentSchoolId === void 0) return;
-      return $.ajax({
+      var deferred;
+      deferred = new $.Deferred;
+      if (A2Cribs.Map.CurentSchoolId === void 0) {
+        deferred.resolve(null);
+        return;
+      }
+      $.ajax({
         url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0,
         type: "GET",
         context: this,
-        success: this.InitializeMarkers
+        success: function(response) {
+          return deferred.resolve(response, this);
+        },
+        error: function() {
+          return deferred.resolve(null);
+        }
       });
-      /*defaultBounds = new google.maps.LatLngBounds(new google.maps.LatLng(42.23472,-83.846283), new google.maps.LatLng(42.33322,-83.627243))
-      		input = $("#addressSearchBar")[0]
-      		options = 
-      			bounds: defaultBounds
-      		@AutoComplete = new google.maps.places.Autocomplete(input, options)
-      		@AutoComplete.setBounds(defaultBounds)
-      */
+      return deferred.promise();
     };
 
     /*
@@ -139,7 +143,6 @@
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
       this.GMarkerClusterer.ignoreHidden_ = true;
-      this.LoadTypeTables();
       this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
       this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
       this.ListingPopup = new A2Cribs.ListingPopup();
@@ -156,52 +159,27 @@
       return A2Cribs.FilterManager.InitAddressSearch();
     };
 
-    Map.LoadTypeTables = function() {
-      return $.ajax({
-        url: myBaseUrl + "Map/LoadTypeTables",
-        type: "POST",
-        success: this.LoadTypeTablesCallback
-      });
-    };
-
     Map.LoadHoverData = function() {
-      return $.ajax({
+      var deferred;
+      deferred = new $.Deferred;
+      $.ajax({
         url: myBaseUrl + "Map/LoadHoverData/" + 0,
         type: "POST",
-        success: this.LoadHoverDataCallback
+        success: function(responses) {
+          return deferred.resolve(responses);
+        },
+        error: function() {
+          return deferred.resolve(null);
+        }
       });
+      return deferred.promise();
     };
 
     Map.LoadHoverDataCallback = function(response) {
       var hdList;
+      if (response === null || response === void 0) return;
       hdList = JSON.parse(response);
       return A2Cribs.UserCache.Set(new A2Cribs.HoverData(hdList));
-    };
-
-    Map.LoadTypeTablesCallback = function(types) {
-      var bathrooms, buildings, genders, student_types, type, _i, _j, _k, _l, _len, _len2, _len3, _len4;
-      types = JSON.parse(types);
-      buildings = types[0];
-      bathrooms = types[1];
-      genders = types[2];
-      student_types = types[3];
-      for (_i = 0, _len = buildings.length; _i < _len; _i++) {
-        type = buildings[_i];
-        A2Cribs.Cache.BuildingIdToNameMap[parseInt(type.BuildingType.id)] = type.BuildingType.name;
-      }
-      for (_j = 0, _len2 = bathrooms.length; _j < _len2; _j++) {
-        type = bathrooms[_j];
-        A2Cribs.Cache.BathroomIdToNameMap[parseInt(type.BathroomType.id)] = type.BathroomType.name;
-      }
-      for (_k = 0, _len3 = genders.length; _k < _len3; _k++) {
-        type = genders[_k];
-        A2Cribs.Cache.GenderIdToNameMap[parseInt(type.GenderType.id)] = type.GenderType.name;
-      }
-      for (_l = 0, _len4 = student_types.length; _l < _len4; _l++) {
-        type = student_types[_l];
-        A2Cribs.Cache.StudentTypeIdToNameMap[parseInt(type.StudentType.id)] = type.StudentType.name;
-      }
-      return A2Cribs.Map.LoadMarkers();
     };
 
     /*
@@ -217,6 +195,22 @@
       }
       if (marker_id === -2) return;
       return alert(marker_id);
+    };
+
+    /*
+    	Load markers and hover data.
+    	Use JQuery Deferred object to load all data asynchronously
+    */
+
+    Map.LoadAllMapData = function() {
+      var hoverDataPromise, markersPromise;
+      markersPromise = this.LoadMarkers();
+      hoverDataPromise = this.LoadHoverData();
+      $.when(markersPromise).then(this.InitializeMarkers);
+      $.when(hoverDataPromise).then(this.LoadHoverDataCallback);
+      return $.when(markersPromise, hoverDataPromise).done(function() {
+        return alert('everthing has been loaded');
+      });
     };
 
     return Map;
