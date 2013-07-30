@@ -27,7 +27,7 @@
     Register.cribspotRegister = function() {
       var request_data, request_form, url,
         _this = this;
-      url = "/users/ajaxRegister";
+      url = "/users/AjaxRegister";
       request_form = $('#registerForm').serializeArray();
       request_data = {
         User: {
@@ -39,39 +39,33 @@
       };
       return $.post(url, request_data, function(response) {
         var data;
-        console.log(request_data);
-        console.log(response);
         data = JSON.parse(response);
         console.log(data);
-        if (data.registerStatus === 1) {
-          if (A2Cribs.Register.RedirectUrl !== null) {
-            url = A2Cribs.Register.RedirectUrl;
-            A2Cribs.Register.RedirectUrl = null;
-            return window.location.href = url;
-          } else {
-            return window.location.href = '/dashboard';
-          }
+        if (data.success !== void 0 && data.success !== null) {
+          return window.location.href = '/users/login?register_success=true';
+        } else if (data.error_type === 'EMAIL_EXISTS') {
+          A2Cribs.UIManager.Alert(data.error);
+          return $('#inputEmail').val("");
         } else {
-          $('#registerStatus').empty();
-          if (typeof data.email !== 'undefined') {
+          if (typeof data.validation.email !== 'undefined') {
             $('#inputEmail').effect("highlight", {
               color: "#FF0000"
             }, 3000);
             $('#registerStatus').append('<p>' + data['email'][0] + '<p>');
           }
-          if (typeof data.first_name !== 'undefined') {
+          if (typeof data.validation.first_name !== 'undefined') {
             $('#inputFirstName').effect("highlight", {
               color: "#FF0000"
             }, 3000);
             $('#registerStatus').append('<p>' + data['first_name'][0] + '<p>');
           }
-          if (typeof data.last_name !== 'undefined') {
+          if (typeof data.validation.last_name !== 'undefined') {
             $('#inputLastName').effect("highlight", {
               color: "#FF0000"
             }, 3000);
             $('#registerStatus').append('<p>' + data['last_name'][0] + '<p>');
           }
-          if (typeof data.password !== 'undefined') {
+          if (typeof data.validation.password !== 'undefined') {
             $('#registerStatus').append('<p>' + data['password'][0] + '<p>');
             $('#inputPassword').effect("highlight", {
               color: "#FF0000"

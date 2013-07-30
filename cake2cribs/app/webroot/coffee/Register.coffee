@@ -15,7 +15,7 @@ class A2Cribs.Register
 
 			
 	@cribspotRegister:() ->
-		url = "/users/ajaxRegister"
+		url = "/users/AjaxRegister"
 		request_form =  $('#registerForm').serializeArray()
 		request_data = {
 			User: {
@@ -27,31 +27,25 @@ class A2Cribs.Register
 			
 		}
 		$.post url, request_data, (response) =>
-			console.log request_data
-			console.log response
 			data = JSON.parse response
 			console.log data
-			if data.registerStatus == 1
-				if A2Cribs.Register.RedirectUrl != null
-					url =  A2Cribs.Register.RedirectUrl
-					A2Cribs.Register.RedirectUrl = null
-					window.location.href = url
-				else
-					window.location.href= '/dashboard'
+			if data.success != undefined and data.success != null
+				window.location.href = '/users/login?register_success=true'
+			else if data.error_type == 'EMAIL_EXISTS'
+				A2Cribs.UIManager.Alert data.error
+				$('#inputEmail').val("")
 			else
-				$('#registerStatus').empty()
-			
 				#add selective field highlighting here based on error message
-				if(typeof data.email != 'undefined')
+				if(typeof data.validation.email != 'undefined')
 					$('#inputEmail').effect "highlight", {color:"#FF0000"}, 3000
 					$('#registerStatus').append '<p>' + data['email'][0] + '<p>'
-				if(typeof data.first_name != 'undefined')
+				if(typeof data.validation.first_name != 'undefined')
 					$('#inputFirstName').effect "highlight", {color:"#FF0000"}, 3000
 					$('#registerStatus').append '<p>' + data['first_name'][0] + '<p>'
-				if(typeof data.last_name != 'undefined')
+				if(typeof data.validation.last_name != 'undefined')
 					$('#inputLastName').effect "highlight", {color:"#FF0000"}, 3000
 					$('#registerStatus').append '<p>' + data['last_name'][0] + '<p>'
-				if(typeof data.password != 'undefined')
+				if(typeof data.validation.password != 'undefined')
 					$('#registerStatus').append '<p>' + data['password'][0] + '<p>'
 					$('#inputPassword').effect "highlight", {color:"#FF0000"}, 3000
 					$('#confirmPassword').effect "highlight", {color:"#FF0000"}, 3000		

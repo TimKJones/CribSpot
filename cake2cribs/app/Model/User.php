@@ -117,8 +117,6 @@ class User extends AppModel {
 		'vericode' => 'alphaNumeric',
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
-		// 'twitter_auth_token' => 'alphaNumeric',
-		'twitter_auth_token_secret' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
 		'created' => 'datetime',
 		'modified' => 'datetime',
@@ -208,11 +206,6 @@ class User extends AppModel {
 		return $twitter_data;
 	}
 
-	public function LinkedinVerify($user_id)
-	{
-		
-	}
-
 	public function edit($data){
 		if (!$this->save($data))
 			CakeLog::write("saveUser", print_r($this->validationErrors, true));
@@ -233,6 +226,75 @@ class User extends AppModel {
 		$options['fields'] = array ('User.first_name', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
 		$options['recursive'] = -1;
 		return $this->find('first', $options);
+	}
+
+	/*
+	Returns true if a user account exists with email=$email, false otherwise.
+	*/
+	public function EmailExists($email)
+	{
+		$emailFound = $this->find('first', array(
+			'fields' => array('User.id'), 
+			'conditions' => array('User.email' => $email)
+		));
+
+		return $emailFound != null;
+	}
+
+	/*
+	Sets verified to true.
+	Sets university_verified to true if $university_id is not null.
+	*/
+	public function VerifyUserEmail($user_id, $university_id)
+	{
+		$user = array();
+		$user['id'] = $user_id;
+		$user['verified'] = true;
+		if ($university_id != null){
+			$user['university_verified'] = true;
+			$user['university_id'] = $university_id;
+		}
+
+		$user['User'] = $user;
+		if (!$this->save($user)){
+			$error = null;
+			$error['user'] = $user;
+			$this->LogError($user_id, 26, $error);
+			return array('error' => 
+					'Failed to verify user email. Contact help@cribspot.com if the error persists. Reference error code 26');
+		}
+
+		return array('success' => '');
+	}
+
+	/*
+	returns true if given id already exists.
+	*/
+	public function IdExists($id)
+	{
+		$idFound = $this->find('first', array(
+			'fields' => array('User.id'), 
+			'conditions' => array('User.id' => $id)
+		));
+
+		return $idFound != null;
+	}
+
+	/*
+	returns true if there exists a row with the given $user_id and $vericode.
+	returns false otherwise.
+	*/
+	public function VericodeIsValid($vericode, $id)
+	{
+		$idFound = $this->find('first', array(
+			'fields' => array('User.id'), 
+			'conditions' => array(
+				'User.id' => $id,
+				'User.vericode' => $vericode
+			)
+		));
+
+		return $idFound != null;
 	}
 }
 ?>

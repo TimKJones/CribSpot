@@ -49,3 +49,9 @@
 - Image->MoveFileToFolder()
 23
 - Rental->GetRentalIdFromListingId()
+24
+- UserController->AjaxRegister()
+25
+- UserController->AjaxRegister()
+26
+- User->VerifyUserEmail()
