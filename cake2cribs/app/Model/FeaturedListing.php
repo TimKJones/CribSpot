@@ -55,9 +55,41 @@ class FeaturedListing extends AppModel {
 
     public function get($up_lat, $low_lat, $up_long, $low_long, $date){
 
-        $this->contain('Listing', 'Listing.Marker', 'User');
+        $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
+
         $conditions = array(
         'conditions' => array(
+            'and' => array(
+                        array(
+                            // 'FeaturedListing.date = ' => $date,
+                            'FeaturedListing.latitude <=' => $up_lat,
+                            'FeaturedListing.latitude >=' => $low_lat,
+                            'FeaturedListing.longitude <=' => $up_long,
+                            'FeaturedListing.longitude >=' => $low_long
+                            ),
+                    )
+            ),
+        );
+        // 'Listing.listing_id',
+        //     'Marker.street_address',
+        //     'Listing.Rental.min_occupancy',
+        //     'Listing.Rental.max_occupancy',
+        //     'Listing.Rental.start_date',
+        //     'Listing.Rental.end_date',
+        //     'Listing.Rental.rent',
+        //     'Listing.Rental.building_type',
+
+        return $this->find($find_type, $conditions);
+    }
+
+
+    // A seed value is used along with the page size to pull out a select few
+    // featured listings. 
+    public function cycleConditions($up_lat, $low_lat, $up_long, $low_long, $date){
+
+        $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
+
+        $conditions = array(
             'and' => array(
                         array(
                             'FeaturedListing.date = ' => $date,
@@ -67,10 +99,9 @@ class FeaturedListing extends AppModel {
                             'FeaturedListing.longitude >=' => $low_long
                             ),
                     )
-            )
-        );
+            );
 
-        return $this->find('all', $conditions);
+        return $conditions;
 
     }
 

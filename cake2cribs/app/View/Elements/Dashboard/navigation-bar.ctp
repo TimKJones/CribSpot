@@ -26,18 +26,30 @@
 			Messages
 		</a>
 	</li>
+	<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
+		<li class="nav-header">MESSAGES</li>
+	</ul>
 	<li>
 		<a href="#" class = 'rental-content-header content-header list-dropdown-header' classname = 'rentals'>
 			<i class="icon-home icon-large"></i>
 			Rentals
 		</a>
 	</li>
+	
+	<ul class="nav nav-list hide list-dropdown" id = "rentals_list">
+		<li class="nav-header">RENTALS</li>
+	</ul>
+
 	<li>
 		<a href="#" class = 'featured-listing-content-header content-header' classname = 'featuredlisting'>
 			<i class = "icon-star icon-large"></i>
 			Featured Listings
 		</a>
 	</li>
+<!-- 	<ul class="nav nav-list hide list-dropdown" id = "featuredlisting_list">
+		<li class="">Buy Featured Listing</li>
+		<li class="">My Featured Listing</li>
+	</ul> -->
 
 
 <!--	<li>
@@ -53,12 +65,9 @@
 		</a>
 	</li> -->
 </ul>
-<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
-	<li class="nav-header">MESSAGES</li>
-</ul>
-<ul class="nav nav-list hide list-dropdown" id = "rentals_list">
-	<li class="nav-header">RENTALS</li>
-</ul>
+
+
+
 <!--<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
 	<li class="nav-header">SUBLETS</li>
 </ul>

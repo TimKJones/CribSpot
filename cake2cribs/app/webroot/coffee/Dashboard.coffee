@@ -60,6 +60,8 @@ class A2Cribs.Dashboard
 					}
 					$("##{type}_list").append list_item
 
+			console.log(A2Cribs.UserCache.Cache)
+
 
 
 	@SizeContent:()->

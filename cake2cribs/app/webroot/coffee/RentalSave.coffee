@@ -375,7 +375,6 @@ class A2Cribs.RentalSave
 		###
 		********************* TODO **********************
 		###
-		# Pre-populate grid based on selected address
 		rentals = A2Cribs.UserCache.Get "rental"
 		data = []
 		if rentals.length
@@ -383,6 +382,8 @@ class A2Cribs.RentalSave
 				listing = A2Cribs.UserCache.Get "listing", rental.listing_id
 				if listing.marker_id is @CurrentMarker
 					data.push rental.GetObject()
+
+		console.log(data)
 
 		for key, grid of @GridMap
 			grid.setData data

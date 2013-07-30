@@ -4,7 +4,6 @@ class FeaturedListingsController extends AppController {
   public $components = array('Auth');
   public $uses = array('Listing', 'User', 'FeaturedListing');
 
-
   // This action can only be run by a user with Super Privalleges
   // such as the Michigan Daily. It'll grab all the listings from
 
@@ -25,24 +24,105 @@ class FeaturedListingsController extends AppController {
     // $this->set('listings', $listings);
   }
 
+  //Returns a list view of featured listing items
+  //the fls selected change every time the user loads
+  //the page. I use sessions to store data so I can cycle through
+
+  //along with the listing search parameters based on location
+  //there is a limit variable and we use a session variable to hold
+  //a seed
+
+
+  const ARBITRARY_SEED_CAP_VALUE = 100;
+
   public function getListings(){
+
+
+      
+    $up_lat = $this->request->query['up_lat'];
+    $low_lat = $this->request->query['low_lat'];
+
+    $up_long = $this->request->query['up_long'];
+    $low_long = $this->request->query['low_long'];
+
+    $day = null;
+
+    $limit = $this->request->query['limit'];
     
-    // $up_lat = $this->request->query['up_lat'];
-    // $low_lat = $this->request->query['low_lat'];
-
-    // $up_long = $this->request->query['up_long'];
-    // $low_long = $this->request->query['low_long'];
-
-    // $day = null;
+    // If day is null we use today's date
+    if($day == null){
+      $day = time();
+    }
     
-    // // If day is null we use today's date
-    // if($day == null){
-    //   $day = time();
-    // }
-    // $date = date("Y-m-d", $day);
+    //TODO get date relative to users time zone
 
-    // $listings = $this->FeaturedListing->get($up_lat, $low_lat, $up_long, $low_long, $date);
-    $listings = $this->FeaturedListing->find('all');
+    $date = date("Y-m-d", $day);
+
+    // echo $date;
+
+    // Get the session data so we we know what data to get
+
+    $seed = $this->Session->read('FeaturedListing.GetListingSeed');
+    
+    if($seed == null){
+      //generate a psuedo random seed.
+      $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
+    }
+
+    //increment the seed
+    $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
+
+    $this->Session->write('FeaturedListing.GetListingSeed', $seed);
+
+    $page = ($seed % ($limit+1)) + 1;
+
+    $conditions = $this->FeaturedListing->cycleConditions($up_lat, $low_lat, $up_long, $low_long, $date);
+
+    $this->paginate = array(
+                'conditions' => $conditions,
+                'page' => $page,
+                'limit' => $limit,
+                'order' => array('FeaturedListing.id' => 'desc'),
+            );
+    
+    $listings_data = $this->paginate('FeaturedListing');
+    // debug($listings_data);
+
+    // debug($listings_data);
+    // Going to build a custom array to pass to the View using the data in the listings_data
+    $listings = array();
+    
+    foreach($listings_data as $listing){
+      $start_date = $listing['Listing']['Rental']['start_date'];
+      $end_date = $listing['Listing']['Rental']['end_date'];
+
+      $start_time = strtotime($start_date);
+      $end_time = strtotime($end_date);
+
+      $start_month_str = date("M", $start_time);
+      $end_month_str = date("M", $end_time);
+
+      $time_dif = abs($start_time - $end_time);
+      $num_months = intval(ceil($time_dif/ (30*60*60*24)));
+
+      // echo $listing['FeaturedListing']['id'];
+
+      $_listing = array(
+          'address' => $listing['Listing']['Marker']['street_address'],
+          'min_occup' => $listing['Listing']['Rental']['min_occupancy'],
+          'max_occup' => $listing['Listing']['Rental']['max_occupancy'],
+          'rent' => $listing['Listing']['Rental']['rent'],
+          'start_month' => $start_month_str,
+          'end_month' => $end_month_str,
+          'num_months' => $num_months,
+        );
+
+      array_push($listings, $_listing);
+    }
+
+
+    // die(debug($listings));
+    // $listings = $this->FeaturedListing->find('all');
 
     // $this->layout = 'ajax';
     $this->set('listings', $listings);
@@ -90,6 +170,7 @@ class FeaturedListingsController extends AppController {
       
       $data = array(
           'listing_id' => $listing_id,
+          'marker_id' => $listing['Marker']['marker_id'],
           'address' => $address,
           'alt_name' => $alt_name,
           'listing_type_str' => $listing_type_str,

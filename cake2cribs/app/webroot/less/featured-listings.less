@@ -5,7 +5,7 @@
             background-color: #f4f4f4;
             border: 1px solid #cacaca;
             border-radius: 5px;
-            padding: 5px;
+            // padding: 5px;
             h4{
                 text-align: center;
             }
@@ -15,19 +15,43 @@
 
         min-width: 250px;
         
-
-        #listings_list{
-        }
-
-        .listing-item{
+        .marker-item{
             position: relative;
             border-top: 2px solid #dbdbdb;
+            
+            ul{
+                display:none;
+                // margin:0;
+                // background: #f9f9f9;
+            }
+            .marker-info{
+                padding: 5px;
+
+                i{
+                    padding-right: 3px;
+                    font-size: 8px;
+                }   
+                
+                &:hover{
+                    cursor: pointer;
+                    background: #fafafa;
+                }
+            }
+         
+        }
+        .listing-item{
+            list-style-type: none;
+            position: relative;
+            // border-top: 2px solid #e3e3e3;
+            
             padding: 5px;
+            // padding-left:20px;
+
             
             .listing-icon{
                 padding-right: 10px;
             }
-
+    
             .feature-star{
                 position: absolute;
                 right: 20px;

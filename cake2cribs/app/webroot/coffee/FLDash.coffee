@@ -2,6 +2,11 @@ class A2Cribs.FLDash
 
     constructor:(@uiWidget)->
         @Listings = {}
+        @Marker = {} # We are grouping the loaded listings by marker
+                     # So multiple listings will collapse and expand under
+                     # a single address
+
+
         $.getJSON '/featuredListings/getUnavailableDates', (data)=>
             @UnavailableDates = data
 
@@ -46,6 +51,11 @@ class A2Cribs.FLDash
 
             @editOrderItem(listing_id)
 
+        .on 'click', '.marker-info', (event)=>
+            marker_info = $(event.currentTarget)
+            marker_info.siblings('ul').slideToggle('fast')
+            marker_info.find('i').toggleClass("icon-plus").toggleClass('icon-minus')
+
 
         @uiOrderItemsList.on 'click', 'a', (event)=>
             target = $(event.currentTarget)
@@ -80,7 +90,10 @@ class A2Cribs.FLDash
     loadListings:()->
        
         $.getJSON '/featuredlistings/flOrderData', (listings)=>
+            
             @Listings = {} #Remove all the old listings
+            @Markers = {}
+
             list = ""
             for listing in listings
                 switch listing.listing_type
@@ -89,7 +102,33 @@ class A2Cribs.FLDash
                     when 2 then listing.icon = 'icon-truck' #Font awesome doesn't have a car icon
 
                 @Listings[listing.listing_id] = listing
-                list += @ListingTemplate(listing)
+                if not @Markers[listing.marker_id]?
+                    @Markers[listing.marker_id] = {address:listing.address, alt_name: listing.alt_name, listing_ids:[]}
+
+                @Markers[listing.marker_id].listing_ids.push(listing.listing_id)
+
+            # We now need to go through each marker and construct the results
+            # list. Which will be a marker item with all the listing items inside it
+            list = ""
+            for own marker_id, marker_data of @Markers
+                listing_list = ""
+                address = marker_data.address
+                alt_name = marker_data.alt_name
+                
+                
+
+                for listing_id in marker_data.listing_ids
+                    listing_list += @ListingTemplate(@Listings[listing_id])
+                
+                data = {
+                    marker_id: marker_id,
+                    num_listings: marker_data.listing_ids.length
+                    address: address
+                    alt_name: alt_name
+                    listing_list: listing_list
+                }
+                marker_item = @MarkerTemplate(data)
+                list += marker_item
             
             @uiListingsList.html list
 
@@ -172,12 +211,22 @@ class A2Cribs.FLDash
 
     initTemplates:()->
         ListingHTML = """
-                <div class = 'listing-item' data-id='<%= listing_id %>'>
+                <li class = 'listing-item' data-id='<%= listing_id %>'>
                     <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong> <%= alt_name %>
                     <i class = 'pull-right feature-star icon-star-empty'></i>
-                </div>
+                </li>
                     """
         @ListingTemplate = _.template(ListingHTML)
+
+        MarkerHTML = """
+                <div class = 'marker-item' data-id='<%= marker_id %>'>
+                    <div class = 'marker-info'><i class = 'icon-plus'></i><strong><%= address %></strong>  <%= alt_name %> (<%=num_listings%>)</div>
+                    <ul><%= listing_list %></ul>
+                </div>
+                     """
+
+        @MarkerTemplate = _.template(MarkerHTML)
+
 
         OrderItemHTML = """
             <tr class = 'orderItem' data-id = '<%= id %>'>

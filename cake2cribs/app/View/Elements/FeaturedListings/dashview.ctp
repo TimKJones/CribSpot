@@ -60,6 +60,8 @@
                 the order click the buy button to procede with
                 the checkout process.
             </p>
+
+            <a href = '#'>View My Featured Listings</a>
         </div>
     </div>
     </div>

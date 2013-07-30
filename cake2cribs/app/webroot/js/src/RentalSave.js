@@ -500,6 +500,7 @@
           }
         }
       }
+      console.log(data);
       _ref = this.GridMap;
       _results = [];
       for (key in _ref) {
