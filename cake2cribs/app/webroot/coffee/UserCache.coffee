@@ -19,7 +19,7 @@ class A2Cribs.UserCache
 		return list
 
 	@Remove: (object_type, id) ->
-		if @Cache[object_type]?
+		if @Cache[object_type]? and id?
 			delete @Cache[object_type][id]
 
 	###
@@ -29,12 +29,15 @@ class A2Cribs.UserCache
 	GetAllAssociatedObjects("image", "listing", listing_id)
 	###
 	@GetAllAssociatedObjects: (return_type, sorted_type, sorted_id) ->
-		list = {}
-		return_list = []
-		for item of @Cache[return_type]
-			if @Cache[return_type][item]["#{sorted_type}_id"]?
-				if @Cache[return_type][item]["#{sorted_type}_id"] is sorted_id
-					list[@Cache[return_type][item]["#{return_type}_id"]] = true
-		for item of list
-			return_list.push @Get return_type, item
-		return return_list
+		if return_type? and sorted_type? and sorted_id?
+			list = {}
+			return_list = []
+			sorted_id = parseInt sorted_id, 10
+			for item of @Cache[return_type]
+				if @Cache[return_type][item]["#{sorted_type}_id"]?
+					return_id = parseInt @Cache[return_type][item]["#{sorted_type}_id"], 10
+					if return_id is sorted_id
+						list[@Cache[return_type][item].GetId()] = true
+			for item of list
+				return_list.push @Get return_type, item
+			return return_list

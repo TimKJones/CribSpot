@@ -182,15 +182,6 @@
         index = +event.currentTarget.id.match(/\d+/g)[0];
         return _this.MakePrimary(index - 1);
       });
-      this.div.find("#saveCaption").click(function() {
-        if (_this.CurrentPreviewImage != null) {
-          return _this.Photos[_this.CurrentPreviewImage].SaveCaption(_this.div.find("#captionInput").val());
-        }
-      });
-      this.div.find("#finish_photo").click(function() {
-        _this.SavePhotos();
-        return _this.div.modal('hide');
-      });
       this.div.find("#captionInput").keyup(function() {
         var curString;
         curString = _this.div.find("#captionInput").val();
@@ -199,7 +190,10 @@
         } else {
           _this.div.find("#charactersLeft").css("color", "black");
         }
-        return _this.div.find("#charactersLeft").html(_this.MAX_CAPTION_LENGTH - curString.length);
+        _this.div.find("#charactersLeft").html(_this.MAX_CAPTION_LENGTH - curString.length);
+        if (_this.CurrentPreviewImage != null) {
+          return _this.Photos[_this.CurrentPreviewImage].SaveCaption(_this.div.find("#captionInput").val());
+        }
       });
       this.div.find(".delete").tooltip({
         'selector': '',
@@ -249,25 +243,21 @@
       });
     };
 
-    PhotoManager.prototype.LoadImages = function(row, listing_type, listing_id) {
-      var image, images, next_photo, _i, _len, _results;
-      if (listing_id == null) {
-        listing_id = null;
-      }
+    PhotoManager.prototype.LoadImages = function(images, row, imageCallback) {
+      var image, _i, _len,
+        _this = this;
       this.Reset();
-      this.CurrentListingType = listing_type;
-      this.CurrentRow = row;
-      if (listing_id != null) {
-        this.CurrentListing = listing_id.toString();
-        images = A2Cribs.UserCache.GetAllAssociatedObjects("image", "listing", listing_id);
-        _results = [];
+      if (images != null) {
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
-          next_photo = this.NextAvailablePhoto();
-          _results.push(this.Photos[next_photo].LoadPhoto(image.image_id, image.image_path, image.caption, image.is_primary, this.CurrentListing));
+          this.Photos[this.NextAvailablePhoto()].LoadPhoto(image.image_id, image.image_path, image.caption, image.is_primary);
         }
-        return _results;
       }
+      this.div.find("#finish_photo").unbind('click');
+      return this.div.find("#finish_photo").click(function() {
+        imageCallback(row, _this.GetPhotos());
+        return _this.div.modal('hide');
+      });
     };
 
     PhotoManager.prototype.NextAvailablePhoto = function() {
@@ -310,7 +300,8 @@
       if (!this.Photos[index].IsEmpty()) {
         this.CurrentPreviewImage = index;
         this.div.find("#imageContent0").html(this.Photos[index].GetPreview());
-        return this.div.find("#captionInput").val(this.Photos[index].GetCaption());
+        this.div.find("#captionInput").val(this.Photos[index].GetCaption());
+        return this.div.find("#charactersLeft").html(this.MAX_CAPTION_LENGTH - this.Photos[index].GetCaption().length);
       }
     };
 
@@ -322,6 +313,8 @@
     PhotoManager.prototype.Reset = function() {
       var photo, _i, _len, _ref, _results;
       this.div.find("#imageContent0").html('<div class="img-place-holder"></div>');
+      this.div.find("#captionInput").val("");
+      this.div.find("#charactersLeft").html(this.MAX_CAPTION_LENGTH);
       _ref = this.Photos;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {

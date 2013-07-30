@@ -2,6 +2,9 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	constructor: (marker) ->
 		super "marker", marker
 
+	GetName: ->
+		if @alternate_name? and @alternate_name.length then @alternate_name else @street_address
+
 	###
 	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
 		@ListingIds = null

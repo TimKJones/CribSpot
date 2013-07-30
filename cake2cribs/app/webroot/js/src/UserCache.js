@@ -32,7 +32,7 @@
     };
 
     UserCache.Remove = function(object_type, id) {
-      if (this.Cache[object_type] != null) {
+      if ((this.Cache[object_type] != null) && (id != null)) {
         return delete this.Cache[object_type][id];
       }
     };
@@ -46,20 +46,24 @@
 
 
     UserCache.GetAllAssociatedObjects = function(return_type, sorted_type, sorted_id) {
-      var item, list, return_list;
-      list = {};
-      return_list = [];
-      for (item in this.Cache[return_type]) {
-        if (this.Cache[return_type][item]["" + sorted_type + "_id"] != null) {
-          if (this.Cache[return_type][item]["" + sorted_type + "_id"] === sorted_id) {
-            list[this.Cache[return_type][item]["" + return_type + "_id"]] = true;
+      var item, list, return_id, return_list;
+      if ((return_type != null) && (sorted_type != null) && (sorted_id != null)) {
+        list = {};
+        return_list = [];
+        sorted_id = parseInt(sorted_id, 10);
+        for (item in this.Cache[return_type]) {
+          if (this.Cache[return_type][item]["" + sorted_type + "_id"] != null) {
+            return_id = parseInt(this.Cache[return_type][item]["" + sorted_type + "_id"], 10);
+            if (return_id === sorted_id) {
+              list[this.Cache[return_type][item].GetId()] = true;
+            }
           }
         }
+        for (item in list) {
+          return_list.push(this.Get(return_type, item));
+        }
+        return return_list;
       }
-      for (item in list) {
-        return_list.push(this.Get(return_type, item));
-      }
-      return return_list;
     };
 
     return UserCache;

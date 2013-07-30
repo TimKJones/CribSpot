@@ -12,6 +12,14 @@
       Marker.__super__.constructor.call(this, "marker", marker);
     }
 
+    Marker.prototype.GetName = function() {
+      if ((this.alternate_name != null) && this.alternate_name.length) {
+        return this.alternate_name;
+      } else {
+        return this.street_address;
+      }
+    };
+
     /*
     	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
     		@ListingIds = null
