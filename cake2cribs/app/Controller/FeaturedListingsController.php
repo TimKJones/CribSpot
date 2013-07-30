@@ -132,11 +132,19 @@ class FeaturedListingsController extends AppController {
   // Returns an array of date strings representing the dates
   // that are unavailable to feature a listing
   public function getUnavailableDates(){
+    $listing_ids = $this->Listing->GetListingIdsByUserId($this->_getUserId());
+    $listing_dates = array();
+    foreach($listing_ids as $listing_id){
+      $listing_dates[$listing_id] = $this->FeaturedListing->getDates($listing_id);
+    }
 
-    $dates = $this->FeaturedListing->getDatesWithNOrMoreListings(2);
-
+    $full_dates = $this->FeaturedListing->getDatesWithNOrMoreListings(2);
+    $response = array(
+      'full_dates' => $full_dates,
+      'listing_dates' => $listing_dates,
+      );
     $this->layout = 'ajax';
-    $this->set('response', json_encode($dates));
+    $this->set('response', json_encode($response));
   } 
 
   // Return a json array containing all the data needed to order

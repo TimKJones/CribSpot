@@ -7,10 +7,9 @@
     function FLDash(uiWidget) {
       var _this = this;
       this.uiWidget = uiWidget;
-      this.Listings = {};
-      this.Marker = {};
+      this.GetUnavailableDates = new $.Deferred();
       $.getJSON('/featuredListings/getUnavailableDates', function(data) {
-        return _this.UnavailableDates = data;
+        return _this.GetUnavailableDates.resolve(data.full_dates, data.listing_dates);
       });
       this.OrderItems = {};
       this.FL_Order = null;
@@ -20,7 +19,9 @@
       this.uiErrorsList = this.uiWidget.find("#validation-error-list");
       this.initTemplates();
       this.setupEventHandlers();
-      this.loadListings();
+      $.when(A2Cribs.Dashboard.GetListings().then(function(Cache) {
+        return _this.loadListings();
+      }));
     }
 
     FLDash.prototype.setupEventHandlers = function() {
@@ -78,66 +79,62 @@
     };
 
     FLDash.prototype.loadListings = function() {
-      var _this = this;
-      return $.getJSON('/featuredlistings/flOrderData', function(listings) {
-        var address, alt_name, data, list, listing, listing_id, listing_list, marker_data, marker_id, marker_item, _i, _j, _len, _len1, _ref, _ref1;
-        _this.Listings = {};
-        _this.Markers = {};
-        list = "";
-        for (_i = 0, _len = listings.length; _i < _len; _i++) {
-          listing = listings[_i];
-          switch (listing.listing_type) {
+      var address, alt_name, data, icon, list, listing, listing_id, listing_ids, listing_list, marker, marker_data, marker_id, marker_item, _i, _j, _len, _len1, _ref;
+      list = "";
+      marker_data = {};
+      _ref = A2Cribs.UserCache.Get('listing');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listing = _ref[_i];
+        if (!(marker_data[listing.marker_id] != null)) {
+          marker_data[listing.marker_id] = [];
+        }
+        marker_data[listing.marker_id].push(listing.listing_id);
+      }
+      for (marker_id in marker_data) {
+        if (!__hasProp.call(marker_data, marker_id)) continue;
+        listing_ids = marker_data[marker_id];
+        marker = A2Cribs.UserCache.Get('marker', marker_id);
+        listing_list = "";
+        address = marker.street_address;
+        alt_name = marker_data.alt_name;
+        for (_j = 0, _len1 = listing_ids.length; _j < _len1; _j++) {
+          listing_id = listing_ids[_j];
+          listing = A2Cribs.UserCache.Get('listing', listing_id);
+          icon = '';
+          switch (parseInt(listing.listing_type)) {
             case 0:
-              listing.icon = 'icon-home';
+              icon = 'icon-home';
               break;
             case 1:
-              listing.icon = 'icon-lemon';
+              icon = 'icon-lemon';
               break;
             case 2:
-              listing.icon = 'icon-truck';
-          }
-          _this.Listings[listing.listing_id] = listing;
-          if (!(_this.Markers[listing.marker_id] != null)) {
-            _this.Markers[listing.marker_id] = {
-              address: listing.address,
-              alt_name: listing.alt_name,
-              listing_ids: []
-            };
-          }
-          _this.Markers[listing.marker_id].listing_ids.push(listing.listing_id);
-        }
-        list = "";
-        _ref = _this.Markers;
-        for (marker_id in _ref) {
-          if (!__hasProp.call(_ref, marker_id)) continue;
-          marker_data = _ref[marker_id];
-          listing_list = "";
-          address = marker_data.address;
-          alt_name = marker_data.alt_name;
-          _ref1 = marker_data.listing_ids;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            listing_id = _ref1[_j];
-            listing_list += _this.ListingTemplate(_this.Listings[listing_id]);
+              icon = 'icon-truck';
           }
           data = {
-            marker_id: marker_id,
-            num_listings: marker_data.listing_ids.length,
+            icon: icon,
             address: address,
-            alt_name: alt_name,
-            listing_list: listing_list
+            listing_id: listing_id
           };
-          marker_item = _this.MarkerTemplate(data);
-          list += marker_item;
+          listing_list += this.ListingTemplate(data);
         }
-        return _this.uiListingsList.html(list);
-      });
+        data = {
+          marker: marker,
+          num_listings: listing_ids.length,
+          listing_list: listing_list
+        };
+        marker_item = this.MarkerTemplate(data);
+        list += marker_item;
+      }
+      return this.uiListingsList.html(list);
     };
 
     FLDash.prototype.addOrderItem = function(listing_id) {
-      var data, listing;
-      listing = this.Listings[listing_id];
+      var data, listing, marker;
+      listing = A2Cribs.UserCache.Get('listing', listing_id);
+      marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
       data = {
-        address: listing.address,
+        address: marker.street_address,
         price: 0.00,
         id: listing.listing_id
       };
@@ -146,22 +143,27 @@
     };
 
     FLDash.prototype.editOrderItem = function(listing_id) {
-      var listing, old_id, options, _ref;
-      listing = this.Listings[listing_id];
+      var address, id, listing, old_id, options, _ref,
+        _this = this;
+      listing = A2Cribs.UserCache.Get('listing', listing_id);
       if (this.FL_Order != null) {
         old_id = this.FL_Order.listing_id;
         this.uiOrderItemsList.find(".orderItem[data-id=" + old_id + "]").removeClass('editing');
         this.OrderItems[old_id] = this.FL_Order.getOrderItem();
         this.FL_Order.clear(false);
       }
-      options = {
-        disabled_dates: this.UnavailableDates.concat(listing.unavailable_dates)
-      };
+      options = {};
       if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
         options['selected_dates'] = this.OrderItems[listing_id].item.dates;
       }
-      console.log(options);
-      this.FL_Order = new A2Cribs.Order.FeaturedListing(this.uiFL_Form, listing.listing_id, listing.address, options);
+      address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address;
+      id = listing_id;
+      $.when(this.GetUnavailableDates).then(function(full_dates, listing_dates) {
+        var unavail_dates;
+        unavail_dates = full_dates.concat(listing_dates[id]);
+        options['disabled_dates'] = unavail_dates;
+        return _this.FL_Order = new A2Cribs.Order.FeaturedListing(_this.uiFL_Form, listing.listing_id, address, options);
+      });
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
       return this.toggleOrderDetailsUI(true);
     };
@@ -184,9 +186,9 @@
 
     FLDash.prototype.initTemplates = function() {
       var ListingHTML, MarkerHTML, OrderItemHTML;
-      ListingHTML = "<li class = 'listing-item' data-id='<%= listing_id %>'>\n    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong> <%= alt_name %>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</li>";
+      ListingHTML = "<li class = 'listing-item' data-id='<%= listing_id %>'>\n    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong>\n    <i class = 'pull-right feature-star icon-star-empty'></i>\n</li>";
       this.ListingTemplate = _.template(ListingHTML);
-      MarkerHTML = "<div class = 'marker-item' data-id='<%= marker_id %>'>\n    <div class = 'marker-info'><i class = 'icon-plus'></i><strong><%= address %></strong>  <%= alt_name %> (<%=num_listings%>)</div>\n    <ul><%= listing_list %></ul>\n</div>";
+      MarkerHTML = "<div class = 'marker-item' data-id='<%= marker.marker_id %>'>\n    <div class = 'marker-info'><i class = 'icon-plus'></i><strong><%= marker.street_address %></strong>  <%= marker.alternate_name %> (<%=num_listings%>)</div>\n    <ul><%= listing_list %></ul>\n</div>";
       this.MarkerTemplate = _.template(MarkerHTML);
       OrderItemHTML = "<tr class = 'orderItem' data-id = '<%= id %>'>\n    <td><span  class = 'address'><%= address %></span></td>\n    <td>$<span class = 'price'?><%= price %></span></td>\n    <td class = 'actions'>\n        <a href = '#' class = 'edit' data-id = '<%= id %>'><i class = 'icon-edit'></i></a>   \n        <a href = '#' class = 'remove' data-id = '<%= id %>'><i class = 'icon-remove-circle'></i></a>\n    </td>\n</tr>\n";
       return this.OrderItemTemplate = _.template(OrderItemHTML);

@@ -202,6 +202,20 @@ class Listing extends AppModel {
 
 		return $listings;
 	}
+	/*
+	Returns an array of listing ids owned by the user
+	*/
+	public function GetListingIdsByUserId($user_id){
+		$listing_ids = $this->find('list', array(
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1),
+			'fields' => array(
+				'Listing.listing_id'
+			)
+		));
+		return array_values($listing_ids);
+	}
 
 	/*
 	Returns all listings of given listing_type with given marker_id

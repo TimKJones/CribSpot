@@ -1,5 +1,5 @@
 class A2Cribs.Dashboard
-
+	
 	@SetupUI:()->
 		$(window).resize =>
 			@SizeContent()
@@ -25,7 +25,16 @@ class A2Cribs.Dashboard
 
 		@GetListings()
 
+	# Returns a promise that will return the cache when complete.
+	# This can be used by other module who want to know when the dashboard
+	# has the listinngs loaded. 
+	
 	@GetListings: ->
+		if not @DeferedListings?
+			@DeferedListings = new $.Deferred()
+		else
+			return @DeferedListings.promise()
+
 		url = myBaseUrl + "listings/GetListing"
 		$.get url, (data) =>
 			response_data = JSON.parse data
@@ -36,6 +45,11 @@ class A2Cribs.Dashboard
 					else if A2Cribs[key]? and value.length? # Is an array
 						for i in value
 							A2Cribs.UserCache.Set new A2Cribs[key] i
+
+			@DeferedListings.resolve() # Resolve the deffered so anyone
+			# Waiting on the data to be loaded now knows the listings 
+			# are in the cache.
+
 			#Get count of sublets/parking/rentals (TODO)
 
 			#Create lists for everything
@@ -60,8 +74,10 @@ class A2Cribs.Dashboard
 					}
 					$("##{type}_list").append list_item
 
-			console.log(A2Cribs.UserCache.Cache)
+			
+			
 
+		return @DeferedListings.promise()
 
 
 	@SizeContent:()->

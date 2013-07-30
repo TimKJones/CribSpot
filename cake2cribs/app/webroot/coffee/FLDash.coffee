@@ -1,14 +1,11 @@
 class A2Cribs.FLDash
 
     constructor:(@uiWidget)->
-        @Listings = {}
-        @Marker = {} # We are grouping the loaded listings by marker
-                     # So multiple listings will collapse and expand under
-                     # a single address
-
-
+        
+        # Create a deffered that can be resolved to get the unavailable dates
+        @GetUnavailableDates = new $.Deferred()
         $.getJSON '/featuredListings/getUnavailableDates', (data)=>
-            @UnavailableDates = data
+            @GetUnavailableDates.resolve(data.full_dates, data.listing_dates)
 
         @OrderItems = {}
         @FL_Order = null
@@ -21,7 +18,8 @@ class A2Cribs.FLDash
 
         @initTemplates()
         @setupEventHandlers()
-        @loadListings()
+        $.when A2Cribs.Dashboard.GetListings() .then (Cache)=>
+            @loadListings()
 
         # Hide the pricing details because they get that shit for free
         # @FL_Form.find(".total-tally").hide()
@@ -88,56 +86,62 @@ class A2Cribs.FLDash
 
     
     loadListings:()->
-       
-        $.getJSON '/featuredlistings/flOrderData', (listings)=>
+        
+        list = ""
+        # We want to keep track which listings belond with which markers 
+        # so we can easily group the listings with the same address under one title
+        marker_data = {}
+        for listing in A2Cribs.UserCache.Get('listing')
+            if not marker_data[listing.marker_id]?
+                marker_data[listing.marker_id] = []
+
+            marker_data[listing.marker_id].push(listing.listing_id)
+
+
+
+        # We now need to go through each marker and construct the results
+        # list. Which will be a marker item with all the listing items inside it
+        for own marker_id, listing_ids of marker_data
+            marker = A2Cribs.UserCache.Get 'marker', marker_id
+
+            listing_list = ""
+            address = marker.street_address
+            alt_name = marker_data.alt_name
             
-            @Listings = {} #Remove all the old listings
-            @Markers = {}
+            for listing_id in listing_ids
+                 
+                listing = A2Cribs.UserCache.Get('listing', listing_id)
+                icon = ''
+                switch parseInt(listing.listing_type)
+                    when 0 then icon = 'icon-home' #rental
+                    when 1 then icon = 'icon-lemon' #WTF should sublet icon be??
+                    when 2 then icon = 'icon-truck' #Font awesome doesn't have a car icon
 
-            list = ""
-            for listing in listings
-                switch listing.listing_type
-                    when 0 then listing.icon = 'icon-home' #rental
-                    when 1 then listing.icon = 'icon-lemon' #WTF should sublet icon be??
-                    when 2 then listing.icon = 'icon-truck' #Font awesome doesn't have a car icon
-
-                @Listings[listing.listing_id] = listing
-                if not @Markers[listing.marker_id]?
-                    @Markers[listing.marker_id] = {address:listing.address, alt_name: listing.alt_name, listing_ids:[]}
-
-                @Markers[listing.marker_id].listing_ids.push(listing.listing_id)
-
-            # We now need to go through each marker and construct the results
-            # list. Which will be a marker item with all the listing items inside it
-            list = ""
-            for own marker_id, marker_data of @Markers
-                listing_list = ""
-                address = marker_data.address
-                alt_name = marker_data.alt_name
-                
-                
-
-                for listing_id in marker_data.listing_ids
-                    listing_list += @ListingTemplate(@Listings[listing_id])
-                
                 data = {
-                    marker_id: marker_id,
-                    num_listings: marker_data.listing_ids.length
+                    icon:icon
                     address: address
-                    alt_name: alt_name
-                    listing_list: listing_list
+                    listing_id: listing_id 
                 }
-                marker_item = @MarkerTemplate(data)
-                list += marker_item
+
+                listing_list += @ListingTemplate(data)
             
-            @uiListingsList.html list
+            data = {
+                marker: marker
+                num_listings: listing_ids.length
+                listing_list: listing_list
+            }
+            marker_item = @MarkerTemplate(data)
+            list += marker_item
+        
+        @uiListingsList.html list          
 
     # Add an orderitem to the list of order items
     addOrderItem:(listing_id)->
-        listing = @Listings[listing_id]
+        listing = A2Cribs.UserCache.Get 'listing', listing_id
+        marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
         
         data = {
-            address: listing.address
+            address: marker.street_address
             price: 0.00
             id: listing.listing_id
         }
@@ -148,7 +152,7 @@ class A2Cribs.FLDash
 
 
     editOrderItem:(listing_id)->
-        listing = @Listings[listing_id]
+        listing = A2Cribs.UserCache.Get 'listing', listing_id
         # If there is order item being edited we need to save it first
         # before loading in the new one.
         if @FL_Order?
@@ -160,21 +164,19 @@ class A2Cribs.FLDash
                                    #Making the price go down to 0
         
         # This sets up the featured listing form
-
-        # Need to build an array of dates to disabled for the listing
-        # This is a combination of the global UnavailableDates 
-        # dates that don't have any more spots left
-        # as well as listing specific dates such as dates where the listing
-        # is already featured.
-
-        options = {
-            disabled_dates:@UnavailableDates.concat listing.unavailable_dates
-        }
-
+        options = {}
         if @OrderItems[listing_id].item?.dates.length > 0
             options['selected_dates'] = @OrderItems[listing_id].item.dates
-        console.log(options)
-        @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, listing.address, options)
+        
+        address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address
+
+        # We deffered the fetching of unavailable dates so when its ready we can 
+        # continue and make the featured listing order form
+        id = listing_id
+        $.when(@GetUnavailableDates).then (full_dates, listing_dates)=>
+            unavail_dates = full_dates.concat listing_dates[id]
+            options['disabled_dates'] = unavail_dates
+            @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, address, options)
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
 
@@ -212,15 +214,15 @@ class A2Cribs.FLDash
     initTemplates:()->
         ListingHTML = """
                 <li class = 'listing-item' data-id='<%= listing_id %>'>
-                    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong> <%= alt_name %>
+                    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong>
                     <i class = 'pull-right feature-star icon-star-empty'></i>
                 </li>
                     """
         @ListingTemplate = _.template(ListingHTML)
 
         MarkerHTML = """
-                <div class = 'marker-item' data-id='<%= marker_id %>'>
-                    <div class = 'marker-info'><i class = 'icon-plus'></i><strong><%= address %></strong>  <%= alt_name %> (<%=num_listings%>)</div>
+                <div class = 'marker-item' data-id='<%= marker.marker_id %>'>
+                    <div class = 'marker-info'><i class = 'icon-plus'></i><strong><%= marker.street_address %></strong>  <%= marker.alternate_name %> (<%=num_listings%>)</div>
                     <ul><%= listing_list %></ul>
                 </div>
                      """
