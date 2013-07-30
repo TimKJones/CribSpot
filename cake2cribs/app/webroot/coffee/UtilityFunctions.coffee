@@ -24,3 +24,17 @@ class A2Cribs.UtilityFunctions
 		month = date.getMonth() + 1
 		day = date.getDate()
 		return year + '-' + month + '-' + day
+
+	@getDateRange:(startDate, endDate)->
+            `Date.prototype.addDays = function(days) {
+                var dat = new Date(this.valueOf())
+                dat.setDate(dat.getDate() + days);
+                return dat; 
+            }`
+            dateArray = new Array()
+            currentDate = startDate
+            while currentDate <= endDate
+                dateArray.push(currentDate)
+                currentDate = currentDate.addDays(1)
+            
+            return dateArray

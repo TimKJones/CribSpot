@@ -12,7 +12,17 @@ class A2Cribs.Order.FeaturedListing
             @MIN_DAY_OFFSET = 3
             @initMultiDatesPicker(options)
 
+            @PrevSelectedDate = null
+            @RangeSelectEnabled = true
+
             @Widget.find('.address').html @address
+
+            @Widget.on 'click', '.rst input', (event)=>
+                @RangeSelectEnabled = !@RangeSelectEnabled
+                @PrevSelectedDate = null
+
+            .on 'click', '.rst .clear-selected-dates', (event)=>
+                @clear()
             
             # if options.selected_dates?
             #     @datepicker.multiDatesPicker('addDates', dates)
@@ -36,11 +46,20 @@ class A2Cribs.Order.FeaturedListing
                 }
             }
 
-        # Removes all the selected dates
+        # Clear all the picked dates
+        clear:()->
+            @datepicker.multiDatesPicker 'resetDates', 'picked'
+            @refresh()
 
-        clear:(refresh_after=true)->
+        # Removes all the dates picked and disabled, sets the form
+        # up to have a different order loaded into it. Basically
+        # invalidates the form. Removes all the event handlers
+
+        reset:(refresh_after=true)->
             @datepicker.multiDatesPicker 'resetDates', 'picked'
             @datepicker.multiDatesPicker 'resetDates', 'disabled'
+            @Widget.off 'click', '.rst input'
+            @Widget.off 'click', '.rst .clear-selected-dates'
             if refresh_after then @refresh()
             
 
@@ -79,7 +98,11 @@ class A2Cribs.Order.FeaturedListing
                 # minDate available is 3 days into the future
                 minDate: new Date(today.setDate(today.getDate() + @MIN_DAY_OFFSET))
                 onSelect: (dateText, inst)=>
-                    @refresh()           
+                    
+                    if(@RangeSelectEnabled)
+                        @rangeSelect(dateText)
+                    
+                    @refresh()              
             }
 
             if options?.selected_dates?
@@ -90,9 +113,56 @@ class A2Cribs.Order.FeaturedListing
             
             
 
-            @datepicker = $(@Widget).find('.mdp').multiDatesPicker(pickeroptions);
+            @datepicker = $(@Widget).find('.mdp').first().multiDatesPicker(pickeroptions);
 
             @datepicker.click()
+
+        
+        #Takes in a selected date and will select a range of dates if
+        #two date selections are defined.
+
+        # Usage, user clicks one date, then another date. The range of dates between
+        # them is selected. The user clicks another date, the previous range is removed
+        # and when the next date is clicked a new range is selected
+        rangeSelect:(dateText)->
+            
+            if @PrevSelectedDate?
+                _date = new Date(dateText)
+                selectedDate = new Date(_date.getUTCFullYear(), _date.getUTCMonth(), _date.getUTCDate())
+                if(@PrevSelectedDate > selectedDate)
+                    [@PrevSelectedDate, selectedDate] = [selectedDate, @PrevSelectedDate] # Swap 'em
+
+
+                @SelectedDateRange = A2Cribs.UtilityFunctions.getDateRange(@PrevSelectedDate, selectedDate)
+                
+                # Go through and remove any dates in the range that are disabled
+                # go through it in reverse as to not screw up the indexing while splicing
+                for i in [@SelectedDateRange.length - 1..0] by -1
+                    date = @SelectedDateRange[i]
+                    if @datepicker.multiDatesPicker('gotDate', date, 'disabled') != false
+                       @SelectedDateRange.splice(i, 1)
+                
+                @PrevSelectedDate = null
+
+                @datepicker.multiDatesPicker 'addDates', @SelectedDateRange
+                
+
+            else
+                # We need to see if there was already a selected range
+                # Since we are starting a new range selection we need to remove
+                # the old range if it exists.
+                if @SelectedDateRange?
+                    @datepicker.multiDatesPicker 'removeDates', @SelectedDateRange
+                
+                @SelectedDateRange = null
+                _date = new Date(dateText)
+                @PrevSelectedDate = new Date(_date.getUTCFullYear(), _date.getUTCMonth(), _date.getUTCDate())
+                @datepicker.multiDatesPicker 'addDates', [@PrevSelectedDate]
+
+
+
+        
+
 
         refresh:()->
             @updateDayCounts()
@@ -101,6 +171,5 @@ class A2Cribs.Order.FeaturedListing
             $(@Widget).find('.price').html " $#{@Price.toFixed(2)}"
             $(@Widget).find('.weekdays').html @Weekdays
             $(@Widget).find('.weekends').html @Weekends
-            
             @Widget.trigger('orderItemChanged', @)
 

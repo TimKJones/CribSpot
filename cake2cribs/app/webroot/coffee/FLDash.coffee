@@ -76,6 +76,7 @@ class A2Cribs.FLDash
             @featureListing()
 
         @uiFL_Form.on 'orderItemChanged', (event, FL)=>
+            
             listing_id = FL.listing_id
             @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}] .price").html "#{FL.getPrice().toFixed(2)}"
             total = 0
@@ -159,7 +160,7 @@ class A2Cribs.FLDash
             old_id = @FL_Order.listing_id
             @uiOrderItemsList.find(".orderItem[data-id=#{old_id}]").removeClass('editing')
             @OrderItems[old_id] = @FL_Order.getOrderItem()
-            @FL_Order.clear(false) #Tell it not to refresh after, this is a hack to prevent
+            @FL_Order.reset(false) #Tell it not to refresh after, this is a hack to prevent
                                    #The order changed event from firing with an empty calendar and
                                    #Making the price go down to 0
         
@@ -196,7 +197,7 @@ class A2Cribs.FLDash
 
         delete @OrderItems[listing_id]
         if(parseInt(@FL_Order?.listing_id,10) == listing_id)
-            @FL_Order.clear()
+            @FL_Order.reset()
             @FL_Order = null
 
 

@@ -32,8 +32,7 @@
       });
       div.find(".date_field").datepicker();
       this.MiniMap = new A2Cribs.MiniMap(div);
-      this.PhotoManager = new A2Cribs.PhotoManager(div);
-      return A2Cribs.Map.LoadTypeTables();
+      return this.PhotoManager = new A2Cribs.PhotoManager(div);
     };
 
     /*

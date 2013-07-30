@@ -7,6 +7,10 @@
     <!-- <p>Add Dates:</p> -->
     <div class = 'mdp'>
     </div>
+    <div class = 'rst pull-right'>
+        <label><input type="checkbox" checked/> Range Select Enabled</label>
+        <a href='#' class = 'clear-selected-dates'>Clear Selected Dates</a>
+    </div>
     <table class = 'total-tally'>
             <tr>
                 <td>Weekdays:</td>

@@ -4,12 +4,13 @@
 	$this->set('title_for_layout', 'Cribspot Sublet');
 	echo '<div id="container">';
 		echo $this->element('header');
+		echo $this->element('FeaturedListings/fl_sidebar');	
 		echo $this->element('map');
 		echo $this->element('login');
 		echo $this->element('register');
 		echo $this->element('post-sublet');
 
-		echo $this->element('FeaturedListings/fl_sidebar');	
+		
 		//echo $this->element('favorites');
 
 		/* Hidden Elements */

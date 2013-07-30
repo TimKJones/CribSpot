@@ -34,7 +34,7 @@
                         <tfoot>
                             <tr>
                                 <th><span class = 'pull-right'>Total:</span></th>
-                                <td>$<span class = 'total'></span></td>
+                                <td>$ <span class = 'total'></span></td>
                                 <th> <button class = 'btn' id = 'buyNow'>Buy</button></th>
                             </tr>
                         </tfoot>

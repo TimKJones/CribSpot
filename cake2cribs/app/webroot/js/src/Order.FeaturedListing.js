@@ -4,6 +4,7 @@
   A2Cribs.Order.FeaturedListing = (function() {
 
     function FeaturedListing(Widget, listing_id, address, options) {
+      var _this = this;
       this.Widget = Widget;
       this.listing_id = listing_id;
       this.address = address;
@@ -17,7 +18,15 @@
       this.WE_price = 5;
       this.MIN_DAY_OFFSET = 3;
       this.initMultiDatesPicker(options);
+      this.PrevSelectedDate = null;
+      this.RangeSelectEnabled = true;
       this.Widget.find('.address').html(this.address);
+      this.Widget.on('click', '.rst input', function(event) {
+        _this.RangeSelectEnabled = !_this.RangeSelectEnabled;
+        return _this.PrevSelectedDate = null;
+      }).on('click', '.rst .clear-selected-dates', function(event) {
+        return _this.clear();
+      });
       this.refresh();
     }
 
@@ -37,12 +46,19 @@
       };
     };
 
-    FeaturedListing.prototype.clear = function(refresh_after) {
+    FeaturedListing.prototype.clear = function() {
+      this.datepicker.multiDatesPicker('resetDates', 'picked');
+      return this.refresh();
+    };
+
+    FeaturedListing.prototype.reset = function(refresh_after) {
       if (refresh_after == null) {
         refresh_after = true;
       }
       this.datepicker.multiDatesPicker('resetDates', 'picked');
       this.datepicker.multiDatesPicker('resetDates', 'disabled');
+      this.Widget.off('click', '.rst input');
+      this.Widget.off('click', '.rst .clear-selected-dates');
       if (refresh_after) {
         return this.refresh();
       }
@@ -87,6 +103,9 @@
         dateFormat: "yy-mm-dd",
         minDate: new Date(today.setDate(today.getDate() + this.MIN_DAY_OFFSET)),
         onSelect: function(dateText, inst) {
+          if (_this.RangeSelectEnabled) {
+            _this.rangeSelect(dateText);
+          }
           return _this.refresh();
         }
       };
@@ -96,8 +115,36 @@
       if ((options != null ? options.disabled_dates : void 0) != null) {
         pickeroptions.addDisabledDates = options.disabled_dates;
       }
-      this.datepicker = $(this.Widget).find('.mdp').multiDatesPicker(pickeroptions);
+      this.datepicker = $(this.Widget).find('.mdp').first().multiDatesPicker(pickeroptions);
       return this.datepicker.click();
+    };
+
+    FeaturedListing.prototype.rangeSelect = function(dateText) {
+      var date, i, selectedDate, _date, _i, _ref, _ref1;
+      if (this.PrevSelectedDate != null) {
+        _date = new Date(dateText);
+        selectedDate = new Date(_date.getUTCFullYear(), _date.getUTCMonth(), _date.getUTCDate());
+        if (this.PrevSelectedDate > selectedDate) {
+          _ref = [selectedDate, this.PrevSelectedDate], this.PrevSelectedDate = _ref[0], selectedDate = _ref[1];
+        }
+        this.SelectedDateRange = A2Cribs.UtilityFunctions.getDateRange(this.PrevSelectedDate, selectedDate);
+        for (i = _i = _ref1 = this.SelectedDateRange.length - 1; _i >= 0; i = _i += -1) {
+          date = this.SelectedDateRange[i];
+          if (this.datepicker.multiDatesPicker('gotDate', date, 'disabled') !== false) {
+            this.SelectedDateRange.splice(i, 1);
+          }
+        }
+        this.PrevSelectedDate = null;
+        return this.datepicker.multiDatesPicker('addDates', this.SelectedDateRange);
+      } else {
+        if (this.SelectedDateRange != null) {
+          this.datepicker.multiDatesPicker('removeDates', this.SelectedDateRange);
+        }
+        this.SelectedDateRange = null;
+        _date = new Date(dateText);
+        this.PrevSelectedDate = new Date(_date.getUTCFullYear(), _date.getUTCMonth(), _date.getUTCDate());
+        return this.datepicker.multiDatesPicker('addDates', [this.PrevSelectedDate]);
+      }
     };
 
     FeaturedListing.prototype.refresh = function() {

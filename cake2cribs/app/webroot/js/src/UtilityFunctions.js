@@ -42,6 +42,23 @@
       return year + '-' + month + '-' + day;
     };
 
+    UtilityFunctions.getDateRange = function(startDate, endDate) {
+      Date.prototype.addDays = function(days) {
+                var dat = new Date(this.valueOf())
+                dat.setDate(dat.getDate() + days);
+                return dat; 
+            };
+
+      var currentDate, dateArray;
+      dateArray = new Array();
+      currentDate = startDate;
+      while (currentDate <= endDate) {
+        dateArray.push(currentDate);
+        currentDate = currentDate.addDays(1);
+      }
+      return dateArray;
+    };
+
     return UtilityFunctions;
 
   })();
