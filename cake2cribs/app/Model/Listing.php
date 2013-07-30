@@ -193,7 +193,7 @@ class Listing extends AppModel {
 	*/
 	public function GetMarkerData($listing_type, $marker_id, $user_id)
 	{
-		$this->contain('Rental', 'User');
+		$this->contain('Rental', 'User', 'Fee');
 		$listings = $this->find('all', array(
 			'conditions' => array(
 				'Listing.listing_type' => $listing_type,
@@ -235,6 +235,63 @@ class Listing extends AppModel {
 		));
 
 		return $listings != null;
+	}
+
+	/*
+	Retrieve all data needed for the onHover menu
+	Only retrieve for listing type specified in $listing_type
+	*/
+	public function LoadHoverData($listing_type)
+	{
+		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
+			return $this->_loadRentalHoverData();
+		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
+			return $this->_loadSubletHoverData();
+
+		return $this->loadParkingHoverData();
+	}
+
+	/*
+	return all data needed for a rental hover menu (for all markers)
+	*/
+	private function _loadRentalHoverData()
+	{
+		$this->contain('Rental');
+		$options = array();
+		$options['fields'] = array(
+			'MIN(Rental.rent) as min_rent', 
+			'MAX(Rental.rent) as max_rent',
+			'MIN(Rental.beds) as min_beds', 
+			'MAX(Rental.beds) as max_beds',
+			'MIN(Rental.baths) as min_baths', 
+			'MAX(Rental.baths) as max_baths',
+			'Listing.marker_id');
+		$options['conditions'] = array('Listing.visible' => 1);
+		return $this->find('all', $options);
+	}
+
+	/*
+	return all data needed for a sublet hover menu (for all markers)
+	*/
+	private function _loadSubletHoverData()
+	{
+		$this->contain();
+		$options = array();
+		$options['fields'] = array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end');
+		$options['conditions'] = array('Sublet.visible' => 1);
+		$hover_data = $this->find('all', $options);
+	}
+
+	/*
+	return all data needed for a parking hover menu (for all markers)
+	*/
+	private function _loadParkingHoverData()
+	{
+		$this->contain();
+		$options = array();
+		$options['fields'] = array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end');
+		$options['conditions'] = array('Sublet.visible' => 1);
+		$hover_data = $this->find('all', $options);
 	}
 }	
 

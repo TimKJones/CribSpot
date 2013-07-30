@@ -89,20 +89,22 @@ class MapController extends AppController {
 			$this->redirect(array('controller' => 'map', 'action' => 'index'));
 	}
 
-	public function LoadMarkers($school_id) {
+	public function LoadMarkers($school_id, $listing_type) {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 		$target_lat_long = $this->University->getTargetLatLong($school_id);
 		$markers = $this->Marker->getAllMarkers($target_lat_long);
+        $markerData = null;
 		$this->layout = 'ajax';
 		$this->set('response', $markers);
 	}
 
-  public function LoadHoverData()
+  public function LoadHoverData($listing_type)
   {
     if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
         return;
-    $hover_data = $this->Sublet->LoadHoverData();
+    //$hover_data = $this->Sublet->LoadHoverData();
+    $hover_data = $this->Listing->LoadHoverData($listing_type);
     $this->layout = 'ajax';
     $response = json_encode($hover_data);
     $this->set("response", $response);

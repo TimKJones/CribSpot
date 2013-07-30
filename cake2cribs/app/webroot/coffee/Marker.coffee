@@ -97,12 +97,14 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	UpdateMarkerContent = (markerData) ->
 		#decodedData = $.parseJSON markerData
 		if (!@Clicked)
-				A2Cribs.Cache.CacheMarkerData JSON.parse markerData
-				A2Cribs.Cache.IdToMarkerMap[@MarkerId].GMarker.setIcon("/img/dots/clicked_dot.png")
+			for listing in markerData
+				A2Cribs.UserCache.Set A2Cribs.Listing JSON.parse markerData 
+				
+			clickedMarker = A2Cribs.UserCache.Get "marker", @MarkerId
+			clickedMarker.GMarker.setIcon("/img/dots/clicked_dot.png")
 
 		@Clicked = true
-		visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
-		A2Cribs.Map.ClickBubble.Open this, visibleListingIds
+		@FilterVisibleListingsAndOpenPopup()
 
 	###
 	Load all listing data for this marker
@@ -111,14 +113,17 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	LoadMarkerData: ->
 		@CorrectTooltipLocation()
 		if (@Clicked)
-			visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
-			A2Cribs.Map.ClickBubble.Open this, visibleListingIds
+			@FilterVisibleListingsAndOpenPopup()
 		else
 			$.ajax 
-				url: myBaseUrl + "Sublets/LoadMarkerData/" + @MarkerId
+				url: myBaseUrl + "Listings/LoadMarkerData/" + @MarkerId
 				type:"GET"
 				context: this
 				success: UpdateMarkerContent
+
+	FilterVisibleListingsAndOpenPopup: () ->
+		visibleListingIds = FilterVisibleListings A2Cribs.Cache.MarkerIdToSubletIdsMap[@MarkerId]
+		A2Cribs.Map.ClickBubble.Open this, visibleListingIds
 
 	@GetMarkerPixelCoordinates:(latlng) ->
 		map = A2Cribs.Map.GMap
