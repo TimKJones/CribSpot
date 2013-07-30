@@ -28,12 +28,9 @@
                         <div class = 'img-place-holder'></div>
                     </div>
                      <div id="caption">
-                    <div class="input-append">
                         <input type="text" id="captionInput" placeholder="Enter a Caption" maxlength="25"></input>
-                        <span class="add-on"><i id='saveCaption' class="icon-save"></i></span>
+                        <span id="charactersLeft">25</span>
                     </div>
-                    <span id="charactersLeft">25</span>
-                </div>
                 </div>
                
             </div>

@@ -1,51 +1,62 @@
 class A2Cribs.RentalSave
 	constructor: (modal) ->
-		modal = $('.rental-content')
+		@div = $('.rentals-content')
 		@EditableRows = []
+		@Editable = false
 		@VisibleGrid = 'overview_grid'
 		@SetupUI()
 		@NextListing
 
 	SetupUI: ->
-		###
-		********************* TODO **********************
-		###
 		if not A2Cribs.Geocoder?
 			A2Cribs.Geocoder = new google.maps.Geocoder()
 
-		$('body').on "Rental_SavePhoto", (event, row, images, listing_id) =>
-			if listing_id?
-				for image in images
-					A2Cribs.UserCache.Set new Image image
-			else
-				data = @GridMap[@VisibleGrid].getDataItem row
-				data.Image = images
+		$('#middle_content').height()
+		@div.find("grid-pane").height 
+		@CreateCallbacks()
+		@CreateGrids()
+
+	CreateCallbacks: () ->
+		$('body').on "Rental_marker_added", (event, marker_id) =>
+			if $("#rentals_list").find("##{marker_id}").length is 0
+				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
+				list_item = $ "<li />", {
+					text: name
+					class: "rentals_list_item"
+					id: marker_id
+				}
+				$("#rentals_list").append list_item
+				$("#rentals_list").slideDown()
+			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
+			@Open marker_id
+			@AddNewUnit()
+
+		$('body').on "Rental_marker_updated", (event, marker_id) =>
+			if $("#rentals_list").find("##{marker_id}").length is 1
+				list_item = $("#rentals_list").find("##{marker_id}")
+				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
+				list_item.text name
+				@CreateListingPreview marker_id
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
 			@Open event.target.id
 
+		@div.find(".edit_marker").click () =>
+			A2Cribs.MarkerModal.Open()
+			A2Cribs.MarkerModal.LoadMarker @CurrentMarker
+
 		$("#rentals_edit").click (event) =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
+			if @Editable
+				@FinishEditing()
+			else
+				@Edit selected
 
-			if @EditableRows.length
-				@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
-				$(event.target).text "Edit"
-				$(".rentals_tab").removeClass "highlight-tab"
-				for row in @EditableRows
-					data = @GridMap[@VisibleGrid].getDataItem row
-					data.editable = no
-				@GridMap[@VisibleGrid].setSelectedRows @EditableRows
-				@EditableRows = []
-			else if selected.length
-				@EditableRows = selected
-				$(event.target).text "Finish Editing"
-				for row in selected
-					data = @GridMap[@VisibleGrid].getDataItem row
-					data.editable = yes
 			@GridMap[@VisibleGrid].setSelectedRows selected
 
 		$("#rentals_delete").click () =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
+			@FinishEditing()
 			if selected.length
 				listings = []
 				for row in selected
@@ -54,6 +65,7 @@ class A2Cribs.RentalSave
 				@Delete selected, listings
 
 		$(".rentals_tab").click (event) =>
+			@CommitSlickgridChanges()
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
 			@VisibleGrid = $(event.target).attr("href").substring(1)
 			@GridMap[@VisibleGrid].setSelectedRows selected
@@ -61,52 +73,113 @@ class A2Cribs.RentalSave
 
 		$(".rentals-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
+			height = $('#add_new_unit').position().top - $("##{@VisibleGrid}").position().top
 			for grid of @GridMap
 				$("##{grid}").css "width", "#{width}px"
+				$("##{grid}").css "height", "#{height}px"
 				@GridMap[grid].init()
 
+	CommitSlickgridChanges: ->
+		@GridMap[@VisibleGrid].getEditorLock()?.commitCurrentEdit()
 
-		@CreateGrids()
-		# Create grid and setup necessary grid code
-		# Create jquery listeners for buttons on Rentals layout
+	Edit: (rows) ->
+		@EditableRows = rows
+		$("#rentals_edit").text "Finish Editing"
+		for row in rows
+			data = @GridMap[@VisibleGrid].getDataItem row
+			data.editable = yes
+		@Editable = true
 
-		@MarkerModalSetup()
+	FinishEditing: () ->
+		@CommitSlickgridChanges()
+		$("#rentals_edit").text "Edit"
+		$(".rentals_tab").removeClass "highlight-tab"
+		for row in @EditableRows
+			data = @GridMap[@VisibleGrid].getDataItem row
+			data.editable = no
+		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+		@EditableRows = []
+		@Editable = false
 
 	Open: (marker_id) ->
 		# Gets rental info and saves to JS object
 		@ClearGrids()
 
 		@CurrentMarker = marker_id
-		marker_object = A2Cribs.UserCache.Get "marker", @CurrentMarker
-		name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
-		$("#rentals_address").html "<strong>#{name}</strong><br>"
+		@CreateListingPreview marker_id
+		
 		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
 
 		@PopulateGrid marker_id
 
+	CreateListingPreview: (marker_id) ->
+		marker_object = A2Cribs.UserCache.Get "marker", marker_id
+		name = marker_object.GetName()
+		$("#rentals_address").html "<strong>#{name}</strong><br>"
+
+	Validate: (row) ->
+		required = A2Cribs.Rental.Required_Fields
+		data = @GridMap[@VisibleGrid].getDataItem row
+		highlighted_tabs = {}
+
+		isValid = yes
+		for key, tab of required
+			if not data[key]?
+				isValid = no
+				highlighted_tabs[tab] = yes
+
+		for tab, value of highlighted_tabs
+			$("a[href='##{tab}']").addClass "highlight-tab"
+
+		return isValid
+
+	GetObjectByRow: (row) ->
+		data = @GridMap[@VisibleGrid].getDataItem row
+		images = if data.listing_id? then A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.listing_id else []
+		for image, i in images
+			images[i] = image.GetObject()
+
+		rental_object = {
+			Rental: data
+			Listing: if data.listing_id? then A2Cribs.UserCache.Get("listing", data.listing_id).GetObject()
+			Image: images
+		}
+		if not rental_object.Listing?
+			rental_object.Listing = {
+				listing_type: 0
+				marker_id: @CurrentMarker 
+			}
+		
+		if rental_object.Image?.length is 0 and data.Image?
+			rental_object.Image = data.Image
+
+		return rental_object
+
 	# Sends rental to server including all associated tables (fees, etc.)
-	Save: (row, rental_object) ->
-		$.ajax
-			url: myBaseUrl + "listings/Save/"
-			type: "POST"
-			data: rental_object
-			success: (response) =>
-				response = JSON.parse response
-				if response.listing_id?
-					A2Cribs.UIManager.Success "Save successful!"
-					rental_object.Listing.listing_id = response.listing_id
-					rental_object.Rental.listing_id = response.listing_id
-					for key, value of rental_object
-						if A2Cribs[key]? and not value.length?
-							A2Cribs.UserCache.Set new A2Cribs[key] value
-						else if A2Cribs[key]? and value.length? # Is an array
-							for i in value
-								i.listing_id = response.listing_id
-								A2Cribs.UserCache.Set new A2Cribs[key] i
-					console.log response
-				else
-					A2Cribs.UIManager.Error "Save unsuccessful"
-					console.log response
+	Save: (row) ->
+		if @Validate row
+			rental_object = @GetObjectByRow row
+			$.ajax
+				url: myBaseUrl + "listings/Save/"
+				type: "POST"
+				data: rental_object
+				success: (response) =>
+					response = JSON.parse response
+					if response.listing_id?
+						A2Cribs.UIManager.Success "Save successful!"
+						rental_object.Listing.listing_id = response.listing_id
+						rental_object.Rental.listing_id = response.listing_id
+						for key, value of rental_object
+							if A2Cribs[key]? and not value.length?
+								A2Cribs.UserCache.Set new A2Cribs[key] value
+							else if A2Cribs[key]? and value.length? # Is an array
+								for i in value
+									i.listing_id = response.listing_id
+									A2Cribs.UserCache.Set new A2Cribs[key] i
+						console.log response
+					else
+						A2Cribs.UIManager.Error response.error.message
+						console.log response
 
 	###
 	Test function for Listings/GetListing.
@@ -172,6 +245,29 @@ class A2Cribs.RentalSave
 		# Open new line on grid (AddNewUnit)
 
 	###
+	Grabs all the images based on a row and loads them into A2Cribs.PhotoManager
+	###
+	LoadImages: (row) ->
+		data = @GridMap[@VisibleGrid].getDataItem row
+		images = if data.listing_id? then A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.listing_id else data.Image
+		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
+
+
+	###
+	Saves the images in either the cache or temp object in slickgrid
+	###
+	SaveImages: (row, images) =>
+		data = @GridMap[@VisibleGrid].getDataItem row
+		if data.listing_id? # If the listing has been saved already cache it
+			for image in images
+				image.listing_id = data.listing_id
+				A2Cribs.UserCache.Set new A2Cribs.Image image
+		else
+			data.Image = images
+		@Save row
+
+
+	###
 	Called when user adds a new row for the existing marker
 	Adds a new row to the grid, with a new row_id.
 	Sets the row_id hidden field.
@@ -201,180 +297,8 @@ class A2Cribs.RentalSave
 			grid.updateRowCount()
 			grid.render()
 
-	MarkerModalSetup: ->
-		modal = $('#marker-modal')
-
-		clear = () =>
-			modal.find("input").val ""
-			modal.find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
-			@MiniMap.SetMarkerVisible no
-
-		modal.on 'show', () ->
-			clear()
-			modal.find('#marker_add').hide()
-			modal.find("#continue-button").addClass "disabled"
-			markers = A2Cribs.UserCache.Get "marker"
-			modal.find("#marker_select").empty()
-			modal.find("#marker_select").append(
-				'<option value="0">--</option>
-				<option value="new_marker"><strong>New Location</strong></option>')
-			if markers?
-				for marker in markers
-					name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
-					option = $ "<option />",
-						{
-							text: name
-							value: marker.marker_id
-						}
-					modal.find("#marker_select").append option
-
-			modal.find("#marker_select").val "0"
-
-		modal.on 'shown', () =>
-			@MiniMap.Resize()
-
-		modal.find(".required").keydown ->
-			$(this).parent().removeClass "error"
-
-		modal.find("#University_name").focusout () =>
-			@FindSelectedUniversity modal
-			if @SelectedUniversity?
-				@MiniMap.CenterMap @SelectedUniversity.latitude, @SelectedUniversity.longitude
-
-		modal.find("#place_map_button").click () =>
-			@FindAddress modal
-
-		modal.find("#marker_select").change () =>
-			marker_selected = modal.find("#marker_select").val()
-			if marker_selected is "0"
-				modal.find("#continue-button").addClass "disabled"
-			else
-				modal.find("#continue-button").removeClass "disabled"
-
-			if marker_selected is "new_marker"
-				modal.find('#marker_add').show()
-				@MiniMap.Resize()
-			else
-				modal.find('#marker_add').hide()
-
-		marker_validate = () ->
-			isValid = yes
-			if not modal.find('#Marker_street_address').val()
-				A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
-				modal.find('#Marker_street_address').parent().addClass "error"
-				isValid = no
-			if not modal.find('#University_name').val()
-				A2Cribs.UIManager.Error "You need to select a university."
-				modal.find('#University_name').parent().addClass "error"
-				isValid = no
-			if modal.find('#Marker_building_type_id').val().length is 0
-				A2Cribs.UIManager.Error "You need to select a building type."
-				modal.find('#Marker_building_type_id').parent().addClass "error"
-				isValid = no
-			if modal.find('#Marker_alternate_name').val().length >= 249
-				A2Cribs.UIManager.Error "Your alternate name is too long."
-				modal.find('#Marker_alternate_name').parent().addClass "error"
-				isValid = no
-			return isValid
-
-		modal.find("#continue-button").click () =>
-			marker_selected = modal.find("#marker_select").val()
-			if marker_selected is "new_marker"
-				if marker_validate()
-					# Make new marker ajax and call create
-					marker_object = {
-						alternate_name: modal.find('#Marker_alternate_name').val()
-						building_type_id: modal.find('#Marker_building_type_id').val()
-						street_address: modal.find('#Marker_street_address').val()
-						city: modal.find('#Marker_city').val()
-						state: modal.find('#Marker_state').val()
-						zip: modal.find('#Marker_zip').val()
-						latitude: modal.find('#Marker_latitude').val()
-						longitude: modal.find('#Marker_longitude').val()
-					}
-					$.ajax
-						url: "/Markers/Save/"
-						type: "POST"
-						data: marker_object
-						success :(response) =>
-							if response.error
-								UIManager.Error response.error
-							else
-								modal.modal "hide"
-								marker_object.marker_id = response
-								A2Cribs.UserCache.Set new A2Cribs.Marker marker_object
-								name = if marker_object.alternate_name? and marker_object.alternate_name.length then marker_object.alternate_name else marker_object.street_address
-								list_item = $ "<li />", {
-									text: name
-									class: "rentals_list_item"
-									id: marker_object.marker_id
-								}
-								$("#rentals_list").append list_item
-								$("#rentals_list").slideDown()
-								@Open response
-								@AddNewUnit()
-
-			else if marker_selected isnt "0"
-				modal.modal "hide"
-				@Open marker_selected
-				@AddNewUnit()
-
-		@MiniMap = new A2Cribs.MiniMap modal
-
-		if A2Cribs.Cache.SchoolList?
-			modal.find("#University_name").typeahead
-				source: A2Cribs.Cache.SchoolList
-			return
-		$.ajax
-			url: "/University/getAll"
-			success :(response) =>
-				A2Cribs.Cache.universitiesMap = JSON.parse response
-				A2Cribs.Cache.SchoolList = []
-				A2Cribs.Cache.SchoolIDList = []
-				for university in A2Cribs.Cache.universitiesMap
-					A2Cribs.Cache.SchoolList.push university.University.name
-					A2Cribs.Cache.SchoolIDList.push university.University.id
-				modal.find("#University_name").typeahead
-					source: A2Cribs.Cache.SchoolList
-
-	FindSelectedUniversity: (div) ->
-		selected = div.find("#University_name").val()
-		index = A2Cribs.Cache.SchoolList.indexOf selected
-		if index >= 0
-			@SelectedUniversity = A2Cribs.Cache.universitiesMap[index].University;
-		else
-			@SelectedUniversity = null
-
-	FindAddress: (div) ->
-		if @SelectedUniversity?
-			address = div.find("#Marker_street_address").val()
-			addressObj =
-				'address' : address + " " + @SelectedUniversity.city + ", " + @SelectedUniversity.state
-			A2Cribs.Geocoder.geocode addressObj, (response, status) =>
-				if status is google.maps.GeocoderStatus.OK and response[0].address_components.length >= 2
-					for component in response[0].address_components
-						for type in component.types
-							switch type
-								when "street_number" then street_number = component.short_name
-								when "route" then street_name = component.short_name
-								when "locality" then div.find('#Marker_city').val component.short_name
-								when "administrative_area_level_1" then div.find('#Marker_state').val component.short_name
-								when "postal_code" then div.find('#Marker_zip').val component.short_name
-
-					if not street_number?
-						A2Cribs.UIManager.Alert "Entered street address is not valid."
-						$("#Marker_street_address").text ""
-						return
-					
-					@MiniMap.SetMarkerPosition response[0].geometry.location
-					div.find("#Marker_street_address").val street_number + " " + street_name
-					div.find("#Marker_latitude").val response[0].geometry.location.lat()
-					div.find("#Marker_longitude").val response[0].geometry.location.lng()
-
 	PopulateGrid: (marker_id) ->
-		###
-		********************* TODO **********************
-		###
+		# Pre-populate grid based on selected marker
 		rentals = A2Cribs.UserCache.Get "rental"
 		data = []
 		if rentals.length
@@ -382,8 +306,6 @@ class A2Cribs.RentalSave
 				listing = A2Cribs.UserCache.Get "listing", rental.listing_id
 				if listing.marker_id is @CurrentMarker
 					data.push rental.GetObject()
-
-		console.log(data)
 
 		for key, grid of @GridMap
 			grid.setData data
@@ -429,34 +351,11 @@ class A2Cribs.RentalSave
 
 			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
 				if @EditableRows.indexOf(args.row) isnt -1
-					console.log  "lol"
 					return true
-				else
-					return false
+				return false
 
 			@GridMap[container].onCellChange.subscribe (e, args) =>
-				columns = @GridMap[container].getColumns()
-				required = A2Cribs.Rental.Required_Fields
-				data = {
-					Rental: {}
-					Listing: {}
-					Image: {}
-				}
-				isValid = yes
-				for key in required
-					isValid = isValid and args.item[key]?
-
-				if isValid
-					data.Rental = args.item
-					if not data.Rental.listing_id?
-						data.Listing.listing_type = 0
-						data.Listing.marker_id = @CurrentMarker
-						if data.Rental.Image?
-							data.Image = data.Rental.Image
-					else
-						data.Listing = A2Cribs.UserCache.Get "listing", data.Rental.listing_id
-						data.Image = A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.Rental.listing_id
-					@Save args.row, data
+				@Save args.row
 
 	GetColumns: (container) ->
 		OverviewColumns = ->
@@ -1014,35 +913,35 @@ class A2Cribs.RentalSave
 				}
 				{
 					id: "waitlist_open_date"
-					name: "waitlist_open_date"
+					name: "Waitlist Open Date"
 					field: "waitlist_open_date"
 					editor: Slick.Editors.Date 
 					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "lease_office_address"
-					name: "lease_office_address"
+					name: "Leasing Office Address"
 					field: "lease_office_address"
 					editor: Slick.Editors.Text
 					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "contact_email"
-					name: "contact_email"
+					name: "Contact Email"
 					field: "contact_email"
 					editor: Slick.Editors.Text
 					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "contact_phone"
-					name: "contact_phone"
+					name: "Contact Phone"
 					field: "contact_phone"
 					editor: Slick.Editors.Text
 					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "website"
-					name: "website"
+					name: "Website"
 					field: "website"
 					editor: Slick.Editors.Text
 					formatter: A2Cribs.Formatters.RequiredText

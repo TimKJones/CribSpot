@@ -2,7 +2,7 @@
 
 <ul id="navigation-bar" class="nav nav-list">
 	<li id="create-listing">
-		<a href="#marker-modal" data-toggle="modal">
+		<a href="#">
 			<i class="icon-plus-sign icon-large"></i>
 			CREATE A NEW LISTING
 		</a>

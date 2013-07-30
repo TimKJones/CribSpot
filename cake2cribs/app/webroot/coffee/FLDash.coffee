@@ -164,6 +164,7 @@ class A2Cribs.FLDash
                                    #Making the price go down to 0
         
         # This sets up the featured listing form
+
         options = {}
         if @OrderItems[listing_id].item?.dates.length > 0
             options['selected_dates'] = @OrderItems[listing_id].item.dates
@@ -195,6 +196,7 @@ class A2Cribs.FLDash
 
         delete @OrderItems[listing_id]
         if(parseInt(@FL_Order?.listing_id,10) == listing_id)
+            @FL_Order.clear()
             @FL_Order = null
 
 

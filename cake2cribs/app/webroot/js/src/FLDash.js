@@ -174,6 +174,7 @@
       this.removeErrors(listing_id);
       delete this.OrderItems[listing_id];
       if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
+        this.FL_Order.clear();
         this.FL_Order = null;
       }
       if (this.uiOrderItemsList.find(".orderItem").length === 0) {

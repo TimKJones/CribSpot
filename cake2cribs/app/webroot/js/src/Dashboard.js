@@ -28,6 +28,10 @@
           return _this.ShowContent(content);
         }) : void 0;
       });
+      $("#create-listing").find("a").click(function(event) {
+        A2Cribs.MarkerModal.NewMarker();
+        return A2Cribs.MarkerModal.Open();
+      });
       return this.GetListings();
     };
 
@@ -101,12 +105,7 @@
       return this.DeferedListings.promise();
     };
 
-    Dashboard.SizeContent = function() {
-      var main_content, middle_content;
-      main_content = $('#main_content');
-      middle_content = $('#middle_content');
-      return main_content.css('height', Math.max(window.innerHeight - main_content.offset().top, 750) + 'px');
-    };
+    Dashboard.SizeContent = function() {};
 
     Dashboard.SlideDropDown = function(content_header, show_content) {
       var dropdown, toggle_icon;

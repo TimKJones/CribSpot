@@ -1,6 +1,14 @@
 class A2Cribs.Rental extends A2Cribs.Object
 	constructor: (rental) ->
 		super "rental", rental
+		dates = ["start_date", "end_date", "alternate_start_date"]
+		for date in dates
+			if @[date]
+				if (index = @[date].indexOf " ") isnt -1
+					@[date] = @[date].substring 0, index
+
+	GetId: (id) ->
+		return parseInt this["listing_id"], 10
 
 	@Template =
 		data =
@@ -82,20 +90,20 @@ class A2Cribs.Rental extends A2Cribs.Object
 					caption: "heres the second one"
 					is_primary: 1
 
-	@Required_Fields = [
-		"unit_style_options",
-		"unit_style_type",
-		"unit_style_description",
-		"beds",
-		"min_occupancy",
-		"max_occupancy",
-		"rent",
-		"unit_count",
-		"start_date",
-		"end_date",
-		"available",
-		"highlights",
-		"contact_email",
-		"contact_phone",
-		"website"
-	]
+	@Required_Fields = {
+		unit_style_options: "overview_grid"
+		unit_style_type: "overview_grid"
+		unit_style_description: "overview_grid"
+		beds: "overview_grid"
+		min_occupancy: "overview_grid"
+		max_occupancy: "overview_grid"
+		rent: "overview_grid"
+		unit_count: "overview_grid"
+		start_date: "overview_grid"
+		end_date: "overview_grid"
+		available: "overview_grid"
+		highlights: "description_grid"
+		contact_email: "contact_grid"
+		contact_phone: "contact_grid"
+		website: "contact_grid"
+	}
