@@ -17,6 +17,11 @@ class UsersController extends AppController {
         $this->Auth->allow('Register');
         $this->Auth->allow('AjaxRegister');
         $this->Auth->allow('VerifyEmailRedirect');
+        $this->Auth->allow('ResetPassword');
+        $this->Auth->allow('AjaxResetPassword');
+        $this->Auth->allow('ResetPasswordRedirect');
+        $this->Auth->allow('AjaxChangePassword');
+        $this->Auth->allow('AjaxLogin');
     }
 
     /*
@@ -76,16 +81,76 @@ class UsersController extends AppController {
     */
     public function AjaxLogin()
     {
+        if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 
+        $this->layout = 'ajax';
+        if(!$this->request->isPost()){
+            /* User cannot login without using a post request. Redirect to landing page */
+            CakeLog::write('SECURITY', 'User called AjaxLogin without a post request');
+            $this->set('response', '');
+            return;
+        }
+
+        if ($this->Auth->login()){
+            $this->set('response', json_encode(array('sucess'=>'')));
+            return;
+        }
+
+        $response = array('error' => 'Invalid username or password.');
+        $this->set('response', json_encode($response));
+        return;
     }
 
     /*
-    User submits reset password data here.
+    Attempt to logout the current user.
+    */
+    public function Logout()
+    {
+        $this->autoRender = false;
+        $this->Session->destroy();
+        $this->Auth->logout();
+        $this->redirect('/');
+    }
+
+    /*
+    User submits email address of account for which to reset password.
     Returns success or error message.
     */
     public function AjaxResetPassword()
     {
+        $this->layout = 'ajax';
+        if ($this->request == null || 
+            $this->request->data == null || 
+            !array_key_exists('email', $this->request->data)){
+            CakeLog::write("ErrorAjaxResetPassword", "Error code: 27;" . print_r($this->request, true));
+            $this->set('response', json_encode(array('error' => 
+                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 27')));
+            return;
+        }
 
+        /* Get user_id from given email address and check its validity */
+        $email = $this->request->data['email'];
+        $user = $this->User->GetUserFromEmail($email);
+        if (!$user){
+            $this->set('response', json_encode(array('error' => 
+                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 28')));
+            return;
+        }
+
+        /* Set password_reset_token and password_reset_date for this user_id */
+        $response = $this->User->SetPasswordResetToken($user['id']);
+        if (array_key_exists('error', $response)){
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* Send password reset email to user */
+        $this->set('name', $user['first_name']);
+        $this->set('id', $user['id']);
+        $this->set('password_reset_token', $response['password_reset_token']);
+        $this->_sendPasswordResetEmail($user['email']);
+        $this->set('response', json_encode(array('success'=>'')));
     }
 
     /*
@@ -123,7 +188,65 @@ class UsersController extends AppController {
     */
     public function ResetPasswordRedirect()
     {
+        if (!array_key_exists('id', $this->request->query) || !array_key_exists('reset_token', $this->request->query))
+            $this->redirect('/');
 
+        $id = $this->request->query['id'];
+        $reset_token = $this->request->query['reset_token'];
+        if (!$this->User->IsValidResetToken($id, $reset_token)){
+            CakeLog::write("ErrorResetPasswordRedirect", $id . "; " . $reset_token);
+            $this->redirect('/users/login?invalid_link=true');
+        }
+
+        $this->set('id', $id);
+        $this->set('reset_token', $reset_token);
+    }
+
+    /*
+    Called from /users/ ResetPasswordRedirect.
+    Verifies the submitted user_id and password reset_token
+    If the passwords match, sets the user's password.
+    */
+    public function AjaxChangePassword()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+        if (!$this->request || !$this->request->data || 
+            !array_key_exists('new_password', $this->request->data) ||
+            !array_key_exists('confirm_password', $this->request->data) ||
+            !array_key_exists('reset_token', $this->request->data) ||
+            !array_key_exists('id', $this->request->data)){
+            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        $reset_token = $this->request->data['reset_token'];
+        $user_id = $this->request->data['id'];
+        /* Make sure that the ($id, $reset_token) pair is valid */
+        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
+            CakeLog::write("ErrorAjaxChangePassword", $id . "; " . $reset_token);
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* Make sure new_password matches the confirmed password */
+        if ($new_password != $confirm_password){
+            $response = array('error' => 'Passwords do not match.', 'error_type'=>'PASSWORDS_DONT_MATCH');
+            $this->set('response', $response);
+            return;
+        }
+
+        /* Save new password */
+        $response = $this->User->SavePassword($user_id, $new_password);
+        $this->set('response', json_encode($response));
+        return;
     }
 
     /*
@@ -198,6 +321,16 @@ class UsersController extends AppController {
         $to = $user['email'];
         $subject = 'Please verify your Cribspot account';
         $template = 'registration';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
+    private function _sendPasswordResetEmail($email)
+    {
+        $from = 'The Cribspot Team<team@cribspot.com>';
+        $to = $email;
+        $subject = 'Please reset your password';
+        $template = 'forgotpassword';
         $sendAs = 'both';
         $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }

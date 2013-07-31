@@ -296,5 +296,94 @@ class User extends AppModel {
 
 		return $idFound != null;
 	}
+
+	/*
+	Saves $password for $user_id
+	*/	
+	public function SavePassword($user_id, $password)
+	{
+		$user = array();
+		$user['id'] = $user_id;
+		$user['password'] = $password;
+		$user['User'] = $user;
+		if (!$this->save($user)){
+			$error = null;
+			$error['User'] = $user;
+			$error['validationErrors'] = $this->validationErrors;
+			$this->LogError($id, 32, $error);
+			return array("error" => array('validation' => $this->validationErrors,
+			'message' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 32'));
+		}
+
+		return array('success'=>'');
+	}
+
+	/*
+	Given a user's email address, returns that user's id, email, and first name.
+	Returns null if $email doesn't exist.
+	*/
+	public function GetUserFromEmail($email)
+	{
+		$user = $this->find('first', array(
+			'fields' => array('User.id', 'User.email', 'User.first_name'),
+			'conditions' => array('User.email' => $email)
+		));
+
+		if ($user != null)
+			return $user['User'];
+
+		return null;
+	}
+
+	/*
+	Given a user_id, returns that user's email address
+	*/
+	public function GetEmailFromId($user_id)
+	{
+		$email = $this->find('first', array(
+			'fields' => array('User.email'),
+			'conditions' => array('User.id' => $user_id)
+		));
+
+		if ($email != null)
+			return $email['User']['email'];
+
+		return null;
+	}
+
+	/*
+	Sets the password_reset_token and password_reset_date fields for user_id = $id
+	*/
+	public function SetPasswordResetToken($id)
+	{
+		$user = array();
+		$user['password_reset_token'] = uniqid();
+		$user['password_reset_date'] = date("Y-m-d H:i:s");
+		$user['id'] = $id;
+		$user['User'] = $user;
+		if (!$this->save($user)){
+			$error = null;
+			$error['User'] = $user;
+			$error['validationErrors'] = $this->validationErrors;
+			$this->LogError($id, 29, $error);
+			return array("error" => array('validation' => $this->validationErrors,
+			'message' => 'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 29'));
+			return false;
+		}
+
+		return array('password_reset_token'=>$user['password_reset_token']);
+	}
+
+	public function IsValidResetToken($id, $reset_token)
+	{
+		$result = $this->find('first', array(
+			'fields' => array('User.id'),
+			'conditions' => array(
+				'User.id' => $id,
+				'User.password_reset_token' => $reset_token
+		)));
+
+		return $result != null;
+	}
 }
 ?>

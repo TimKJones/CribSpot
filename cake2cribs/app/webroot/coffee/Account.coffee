@@ -74,26 +74,29 @@ class A2Cribs.Account
 
 	@ChangePassword: (change_password_button, new_password, confirm_password, id=null, reset_token=null, redirect=null) ->
 		change_password_button.attr 'disabled','disabled'
-		data = {
+		data =
 			'new_password' : new_password,
-			'confirm_password': confirm_password,
-			'id': id,
+			'confirm_password': confirm_password
+			'id': id
 			'reset_token': reset_token
-		}
 
-		$.post myBaseUrl + 'users/ajaxChangePassword', data, (response) ->
-			json_response = JSON.parse(response)
+		if new_password != confirm_password
+			A2Cribs.UIManager.Alert "Passwords do not match."
+			return
 
-			if json_response.success == 1
+		$.post myBaseUrl + 'users/AjaxChangePassword', data, (response) ->
+			response = JSON.parse(response)
+
+			if response.error == undefined
 				if id == null and reset_token == null
-					alertify.success('Password Changed', 1500)
+					alertify.success 'Password Changed', 1500
 					if redirect != null
 						window.location.href = redirect
 				else
 					#redirect user to dashboard
 					window.location.href = '/dashboard'
 			else
-				alertify.error('Password Failed to Change: ' + json_response.message, 1500)
+				A2Cribs.UIManager.Alert response.error
 
 			change_password_button.removeAttr 'disabled'
 
@@ -128,15 +131,18 @@ class A2Cribs.Account
 			# This may be bad if verify Facebook fails
 			document.location.href = '/account'
 
+	###
+	Submits email address for which to reset password.
+	###
 	@SubmitResetPassword: (email) ->
 		data = 'email=' + $("#UserEmail").val()
-		$.post '/users/ajaxResetPassword', data, (response) =>
+		$.post '/users/AjaxResetPassword', data, (response) =>
 			data = JSON.parse response
 			if data.success == 1
 				document.location.href = '/users/login?password_reset_redirect=true'
 				return false
 			else
-	        	alertify.error('Email address is invalid.', 1500)
+	        	A2Cribs.UIManager.Alert data.error
 	        	return false
 
 	# @JSLoginCallback: (response) ->

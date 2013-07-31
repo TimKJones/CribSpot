@@ -20,8 +20,8 @@
     $this->Js->buffer('
             $("#myModal").removeClass("hide fade").css("z-index", 0);
             $("#changePasswordButton").click(function(){
-				A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "' . $id . '","' . $reset_token . '")
-			})
+                A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "' . $id . '","' . $reset_token . '")
+            })
     ');
 ?>
 <script>
@@ -38,9 +38,9 @@ $('body').noisy({
 
 <?php
 $this->Js->buffer('
-	$("#changePasswordButton").click(function(){
-		A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "'
-			. $id . '","' . $reset_token . '")})'
+    $("#changePasswordButton").click(function(){
+        A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "'
+            . $id . '","' . $reset_token . '")})'
 );
 
 ?>

@@ -1,4 +1,3 @@
-
 <?php
 	//echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->script('src/Account');
