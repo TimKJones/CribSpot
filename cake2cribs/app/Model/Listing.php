@@ -143,7 +143,7 @@ class Listing extends AppModel {
 			'fields' => array('Listing.listing_type'),
         	'conditions' => array('Listing.listing_id' => $listing_id)
     	));
-		
+
 		if ($listingType != null)
     		return $listingType['Listing']['listing_type'];
     	else
@@ -193,7 +193,7 @@ class Listing extends AppModel {
 				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1)
 		));
-		
+
 		/* Remove sensitive user data */
 		for ($i = 0; $i < count($listings); $i++){
 			if (array_key_exists('User', $listings[$i]))

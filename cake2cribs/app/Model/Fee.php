@@ -37,7 +37,7 @@ class Fee extends AppModel {
 		{
 			$this->id = null; // reset so that the same entry is not continually overwritten in loop
 			$nextFee = $fees[$i];
-			
+
 			$nextFee = parent::_removeNullEntries($nextFee);
 
 			$nextFee['listing_id'] = $listing_id;

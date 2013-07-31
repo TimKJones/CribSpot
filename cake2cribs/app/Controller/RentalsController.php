@@ -1,9 +1,9 @@
 <?php
 class RentalsController extends AppController 
-{	
-	public $helpers = array('Html');
-	public $uses = array('Rental', 'RentalIncomplete', 'Fee', 'Listing');
-	public $components= array('RequestHandler', 'Auth', 'Session');
+{ 
+  public $helpers = array('Html');
+  public $uses = array('Rental', 'RentalIncomplete', 'Fee', 'Listing');
+  public $components= array('RequestHandler', 'Auth', 'Session');
 
   public function beforeFilter()
   {

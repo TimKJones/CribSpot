@@ -55,7 +55,6 @@ class AppModel extends Model {
 		$Error = new Error();
 		$Error->AddError($user_id, $error_code, json_encode($debug_info));
 	}
-
 	function getLastQuery()
 	{
 	    $dbo = $this->getDatasource();	
