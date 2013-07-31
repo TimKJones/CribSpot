@@ -1,7 +1,8 @@
 class A2Cribs.Object
 	constructor: (@class_name = "object", a2_object)->
 		for key, value of a2_object
-			@[key] = value
+			if value?
+				@[key] = value
 
 	GetId: (id) ->
 		return parseInt this["#{@class_name}_id"], 10
@@ -10,6 +11,8 @@ class A2Cribs.Object
 		return_object = {}
 		for key, value of @
 			if typeof value isnt "function"
+				if typeof value is "boolean"
+					value = +value
 				return_object[key] = value
 		return return_object
 

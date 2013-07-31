@@ -23,6 +23,10 @@ class A2Cribs.Dashboard
 				.find('.drop-down-list').click =>
 					@ShowContent content
 
+		$("#create-listing").find("a").click (event) =>
+			A2Cribs.MarkerModal.NewMarker()
+			A2Cribs.MarkerModal.Open()
+
 		@GetListings()
 
 	@GetListings: ->
@@ -64,9 +68,9 @@ class A2Cribs.Dashboard
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window
-		main_content = $('#main_content')
-		middle_content = $('#middle_content')
-		main_content.css 'height', Math.max((window.innerHeight - main_content.offset().top), 750) + 'px'
+		# main_content = $('#main_content')
+		# middle_content = $('#middle_content')
+		# main_content.css 'height', Math.max((window.innerHeight - main_content.offset().top), 50) + 'px'
 
 		# content_header is the jquery object for the side content headers that HAS a
 		# drop down sibling. mode is need to be either ['toggle', 'hide', 'show']

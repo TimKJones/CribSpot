@@ -34,9 +34,9 @@
 <!-- Rental Preview -->
 <div id="rentals_preview" class="row-fluid">
 	<img src="" alt="Nice" class="img-polaroid pull-left" style="width:80px; height:70px;">
-	<address id="rentals_address">
-		<strong>Zaragon</strong><br>
-		795 Folsom Ave, Suite 600<br>
+	<address class="pull-left">
+		<div id="rentals_address"></div>
+		<button class="btn btn-small edit_marker">EDIT ADDRESS &amp; TYPE</button>
 	</address>
 	<div class="btn-group pull-right">
 		<button class="btn btn-small" id="rentals_edit">Edit</button>
@@ -98,38 +98,38 @@
 			</li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane active" id="overview_grid" style="height:300px;">
+			<div class="tab-pane grid-pane active" id="overview_grid">
 				<p>I'm in Section 1.</p>
 			</div>
-			<div class="tab-pane" id="features_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="features_grid">
 				<p>Howdy, I'm in Section 2.</p>
 			</div>
-			<div class="tab-pane" id="amenities_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="amenities_grid">
 				<p>Howdy, I'm in Section 3.</p>
 			</div>
-			<div class="tab-pane" id="utilities_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="utilities_grid">
 				<p>Howdy, I'm in Section 4.</p>
 			</div>
-			<div class="tab-pane" id="buildingamenities_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="buildingamenities_grid">
 				<p>Howdy, I'm in Section 4.</p>
 			</div>
-			<div class="tab-pane" id="fees_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="fees_grid">
 				<p>Howdy, I'm in Section 5.</p>
 			</div>
-			<div class="tab-pane" id="description_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="description_grid">
 				<p>Howdy, I'm in Section 6.</p>
 			</div>
-			<div class="tab-pane" id="picture_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="picture_grid">
 				<p>Howdy, I'm in Section 6.</p>
 			</div>
-			<div class="tab-pane" id="contact_grid" style="height:300px;">
+			<div class="tab-pane grid-pane" id="contact_grid">
 				<p>Howdy, I'm in Section 6.</p>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="row-fluid">
+<div class="row-fluid" id="add_new_unit">
 	<a href="#" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
 </div>
 
