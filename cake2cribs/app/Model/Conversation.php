@@ -126,6 +126,7 @@ class Conversation extends AppModel {
 				)
 			);
 		if(!$this->save($conversation_data)){
+			$this->logError($data['participant1_id'], 41, array('data'=>$data, 'valError'=>$this->validationErrors));
 			die(debug($this->validationErrors));
 		}
 		return $this->id;
@@ -186,11 +187,13 @@ class Conversation extends AppModel {
 		}else if($conversation['Participant2']['id'] == $user['id']){
 			$conversation['Conversation']['visible2'] = 0;
 		}else{
+			$this->logError($user['id'], 42, $conversation);
 			CakeLog::write("Conversation.php", "Conversation ".$conversation['Conversation']['conversation_id']. " was attempted to be hidden by user: ". $user['id']);	
 		}
 		
 
 		if(!$this->save($conversation)){
+			$this->logError($user['id'], 43, $conversation);
 			 CakeLog::write("Conversation.php", "Hiding Conversation Failed: " . $this->validationErrors);
 		}
 	}

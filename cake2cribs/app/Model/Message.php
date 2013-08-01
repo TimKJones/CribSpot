@@ -39,6 +39,7 @@ class Message extends AppModel {
 		);
 
 		if(!$this->save($message_data)){
+			$this->logError($user['id'], 44, $message_data);
 			die(debug($this->validationErrors));
 		}
 		//Get the full data for the message

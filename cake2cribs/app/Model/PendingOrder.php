@@ -15,6 +15,7 @@ class PendingOrder extends AppModel {
         );
         $this->create($pending_order_data);
         if(!$this->save()){
+            $this->logError($user_id, 40, array("orderItems"=>$orderItems, "validationErrors"=>$this->validationErrors));
             die(debug($this->validationErrors));
         }
 

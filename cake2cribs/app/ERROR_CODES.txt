@@ -73,3 +73,27 @@
 - Marker->FindMarkerId
 35
 - Marker->FindMarkerId
+36
+- Order->generateJWT
+- Order type was not valid
+37
+- Order->logOrder
+- No Pending Order found while logging order
+38
+- Order->logOrder
+- Creating an order instance failed
+39
+- Order->validateFLOrder
+- there were validation errors with the orderItems
+40
+- PendingOrder->add
+41
+- Conversation->createConversation
+42
+- Conversation->hideConversation
+43
+- Conversation->hideConversation
+44
+- Message->createMessage
+
+
