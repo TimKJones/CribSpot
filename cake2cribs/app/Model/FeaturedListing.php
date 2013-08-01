@@ -131,6 +131,20 @@ class FeaturedListing extends AppModel {
     }
 
     /*
+        Returns an array  of all the featured listings for a given date
+    */
+    public function getByDate($date){
+        $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
+        $options = array(
+            'conditions'=>array(
+                    'FeaturedListing.date' => $date,
+                )
+            );
+
+        return $this->find('all', $options);
+    }
+
+    /*
     
         Returns an array of dates (strings) coming up that the listing is featured
         on, there is also an optional parameter that can be set to true so that it'll 

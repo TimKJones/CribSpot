@@ -37,8 +37,8 @@ class FeaturedListingsController extends AppController {
 
   public function getListings(){
 
-
-      
+    phpinfo();
+    die();  
     $up_lat = $this->request->query['up_lat'];
     $low_lat = $this->request->query['low_lat'];
 

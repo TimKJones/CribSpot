@@ -26,15 +26,15 @@
 
     FLDash.prototype.setupEventHandlers = function() {
       var _this = this;
-      this.uiListingsList.on('mouseenter', '.feature-star', function(event) {
-        $(event.currentTarget).removeClass('icon-star-empty');
-        return $(event.currentTarget).addClass('icon-star');
-      }).on('mouseleave', '.feature-star', function(event) {
-        $(event.currentTarget).removeClass('icon-star');
-        return $(event.currentTarget).addClass('icon-star-empty');
-      }).on('click', '.feature-star', function(event) {
+      this.uiListingsList.on('mouseenter', '.listing-item', function(event) {
+        $(event.currentTarget).find('.feature-star').removeClass('icon-star-empty');
+        return $(event.currentTarget).find('.feature-star').addClass('icon-star');
+      }).on('mouseleave', '.listing-item', function(event) {
+        $(event.currentTarget).find('.feature-star').removeClass('icon-star');
+        return $(event.currentTarget).find('.feature-star').addClass('icon-star-empty');
+      }).on('click', '.listing-item', function(event) {
         var listing_id;
-        listing_id = $(event.currentTarget).parent('.listing-item').data('id');
+        listing_id = $(event.currentTarget).data('id');
         if (!(_this.OrderItems[listing_id] != null)) {
           _this.addOrderItem(listing_id);
         }

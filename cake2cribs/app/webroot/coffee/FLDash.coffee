@@ -30,18 +30,18 @@ class A2Cribs.FLDash
         #Setup the listings list so when the user hovers over the star
         #it changes colors and make is so when the user clicks the star
         #it adds its to the order items.
-
-        @uiListingsList.on 'mouseenter', '.feature-star', (event)=>
-            $(event.currentTarget).removeClass 'icon-star-empty'
-            $(event.currentTarget).addClass 'icon-star'
+        @uiListingsList
+        .on 'mouseenter', '.listing-item', (event)=>
+            $(event.currentTarget).find('.feature-star').removeClass 'icon-star-empty'
+            $(event.currentTarget).find('.feature-star').addClass 'icon-star'
         
-        .on 'mouseleave', '.feature-star', (event)=>    
-            $(event.currentTarget).removeClass 'icon-star' 
-            $(event.currentTarget).addClass 'icon-star-empty'
+        .on 'mouseleave', '.listing-item', (event)=>    
+            $(event.currentTarget).find('.feature-star').removeClass 'icon-star' 
+            $(event.currentTarget).find('.feature-star').addClass 'icon-star-empty'
 
-        .on 'click', '.feature-star', (event)=>
+        .on 'click', '.listing-item', (event)=>
 
-            listing_id = $(event.currentTarget).parent('.listing-item').data('id')
+            listing_id = $(event.currentTarget).data('id')
                  
             if not @OrderItems[listing_id]?
                 #Need to add a new order item
