@@ -29,6 +29,9 @@ class A2Cribs.Dashboard
 
 		@GetListings()
 
+	###
+	Retrieves all listings for logged-in user and adds them to the cache.
+	###
 	@GetListings: ->
 		url = myBaseUrl + "listings/GetListing"
 		$.get url, (data) =>
