@@ -343,7 +343,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         <p style="margin-bottom:15px;" >
 
-    <strong>Click</strong> <a href="http://www.cribspot.com/users/verify?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to verify your account.</strong></p>
+    <strong>Click</strong> <a href="http://www.cribspot.com/users/VerifyEmailRedirect?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to verify your account.</strong></p>
 
                                     </div>
 

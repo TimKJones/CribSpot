@@ -7,13 +7,10 @@ class A2Cribs.Login
 	@setupUI:() ->
 		$('#loginForm').submit (e) =>
 			e.preventDefault()
-			@cribspotLogin() 
-
-
-
+			@cribspotLogin()
 			
 	@cribspotLogin:() ->
-		url = '/' + "users/ajaxLogin"
+		url = myBaseUrl + "users/AjaxLogin"
 		request_data = {
 			User: {
 				email: $('#inputEmail').val()
@@ -25,15 +22,19 @@ class A2Cribs.Login
 			console.log response
 			data = JSON.parse response
 			console.log data
-			if data.loginStatus == 1
+			if data.error == undefined
 				url = document.URL
 				if url == @LANDING_URL or url == @HTTP_PREFIX + @LANDING_URL or url == @HTTP_PREFIX + @LANDING_URL + '/'
 					window.location.href = '/dashboard'
 				else
 					window.location.href= document.URL
 			else
-				$('#loginStatus').html "Invalid login."
-				$('#loginStatus').effect "highlight", {color:"#FF0000"}, 3000
+				if data.error_type == "EMAIL_UNVERIFIED"
+					A2Cribs.UIManager.Alert data.error
+					$('#loginStatus').html "<a href='users/verify'>Resend verification email</a>"
+				else
+					$('#loginStatus').html data.error
+					$('#loginStatus').effect "highlight", {color:"#FF0000"}, 3000
 			
 
 

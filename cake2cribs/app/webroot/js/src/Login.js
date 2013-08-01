@@ -20,7 +20,7 @@
     Login.cribspotLogin = function() {
       var request_data, url,
         _this = this;
-      url = '/' + "users/ajaxLogin";
+      url = myBaseUrl + "users/AjaxLogin";
       request_data = {
         User: {
           email: $('#inputEmail').val(),
@@ -32,7 +32,7 @@
         console.log(response);
         data = JSON.parse(response);
         console.log(data);
-        if (data.loginStatus === 1) {
+        if (data.error === void 0) {
           url = document.URL;
           if (url === _this.LANDING_URL || url === _this.HTTP_PREFIX + _this.LANDING_URL || url === _this.HTTP_PREFIX + _this.LANDING_URL + '/') {
             return window.location.href = '/dashboard';
@@ -40,10 +40,15 @@
             return window.location.href = document.URL;
           }
         } else {
-          $('#loginStatus').html("Invalid login.");
-          return $('#loginStatus').effect("highlight", {
-            color: "#FF0000"
-          }, 3000);
+          if (data.error_type === "EMAIL_UNVERIFIED") {
+            A2Cribs.UIManager.Alert(data.error);
+            return $('#loginStatus').html("<a href='users/verify'>Resend verification email</a>");
+          } else {
+            $('#loginStatus').html(data.error);
+            return $('#loginStatus').effect("highlight", {
+              color: "#FF0000"
+            }, 3000);
+          }
         }
       });
     };

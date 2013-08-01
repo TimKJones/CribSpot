@@ -29,10 +29,18 @@ class A2Cribs.Dashboard
 
 		@GetListings()
 
-	# Returns a promise that will return the cache when complete.
-	# This can be used by other module who want to know when the dashboard
-	# has the listinngs loaded. 
+
 	
+	
+
+	###
+	Retrieves all listings for logged-in user and adds them to the cache.
+
+	Returns a promise that will return the cache when complete.
+	This can be used by other module who want to know when the dashboard
+	has the listinngs loaded. 
+	###
+
 	@GetListings: ->
 		if not @DeferedListings?
 			@DeferedListings = new $.Deferred()

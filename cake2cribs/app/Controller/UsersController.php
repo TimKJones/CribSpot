@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array();
+	public $uses = array('User');
 	public $components= array('Session','Auth' => array(
         'authenticate' => array(
             'Form' => array(
@@ -9,656 +9,338 @@ class UsersController extends AppController {
                 )
             )
         )
-        ,'Email', 'RequestHandler');
+        ,'Email', 'RequestHandler'
+    );
 
-
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->Auth->allow('add');
-		$this->Auth->allow('verify');
-        $this->Auth->allow('resetpassword');
-        $this->Auth->allow('ajaxResetPassword');
-        $this->Auth->deny('index');
-        $this->Auth->allow('getTwitterFollowers');
-        $this->Auth->allow('ajaxLogin');
-        $this->Auth->allow('ajaxRegister');
-        $this->Auth->allow('ajaxChangePassword');
+    public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow('Register');
+        $this->Auth->allow('AjaxRegister');
+        $this->Auth->allow('VerifyEmailRedirect');
+        $this->Auth->allow('ResetPassword');
+        $this->Auth->allow('AjaxResetPassword');
         $this->Auth->allow('ResetPasswordRedirect');
-	}
-
-	public function login() {
-        if ($this->Auth->loggedIn())
-        {
-            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
-        }
-		if ($this->request->is('post')) {
-			if ($this->Auth->login()) {
-      
-                
-                if ($this->Auth->user('verified') == 0) {
-                    //$this->Session->setFlash(__('Verify your account to gain credibility. Please check your email'));
-                    $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
-                }
-                else {
-                    $this->Session->setFlash(__('You were successfully logged in.'));
-                    $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));    
-                }
-                
-			} else {
-				$this->Session->setFlash(__('Invalid login, try again'));
-			}
-		}
-
-	}
+        $this->Auth->allow('AjaxChangePassword');
+        $this->Auth->allow('AjaxLogin');
+    }
 
     /*
-    User is directed here from the "reset password" link in their email.
+    User submits registration data here.
+    Returns success, or array of columns that failed validation.
+    */
+    public function AjaxRegister()
+    {
+        $this->layout = 'ajax';
+        if(!$this->request->isPost()){
+            CakeLog::write('SECURITY', 'User called AjaxRegister without a post request');
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+            return;
+        }
+
+        /* Make sure data was submitted properly */
+        if (!$this->request || !$this->request->data || !array_key_exists('User', $this->request->data)){
+            $response = array('error' => 'Failed to register. Contact help@cribspot.com if the error persists. Reference error code 24');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        $user = $this->request->data['User'];
+        /* Check if email has already been registered */
+        if ($this->_emailAlreadyRegistered($user['email'])){
+            $response = array(
+                'error' => 'This email has already been registered. If you already have an account, please login.',
+                'error_type' => 'EMAIL_EXISTS'
+            );
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* Create a new user object and save it */
+        $this->User->create();
+        $user['verified'] = 0;
+        $user['group_id'] = 1;
+        $user['vericode'] = uniqid();
+        if (!$this->User->save($user)){
+            $response = array('error' => 'Failed to register. Contact help@cribspot.com if the error persists. Reference error code 25', 'validation' => $this->User->validationErrors);
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* User record saved. Now send email to validate email address */
+        $this->set('name', $user['first_name']);
+        $this->set('vericode', $user['vericode']);
+        $this->set('id', $this->User->id);
+        $this->_sendVerificationEmail($user);
+        $this->set('response', json_encode(array('success'=>'')));
+        //$this->redirect('/landing?registration_success=true');
+    }
+
+    /*
+    Logs user in via ajax.
+    Returns success, or array of columns that failed validation.
+    */
+    public function AjaxLogin()
+    {
+        if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+        if(!$this->request->isPost()){
+            /* User cannot login without using a post request. Redirect to landing page */
+            CakeLog::write('SECURITY', 'User called AjaxLogin without a post request');
+            $this->set('response', '');
+            return;
+        }
+
+        if ($this->Auth->login()){
+            $this->set('response', json_encode(array('sucess'=>'')));
+            return;
+        }
+
+        $response = array('error' => 'Invalid username or password.');
+        $this->set('response', json_encode($response));
+        return;
+    }
+
+    /*
+    Attempt to logout the current user.
+    */
+    public function Logout()
+    {
+        $this->autoRender = false;
+        $this->Session->destroy();
+        $this->Auth->logout();
+        $this->redirect('/');
+    }
+
+    /*
+    User submits email address of account for which to reset password.
+    Returns success or error message.
+    */
+    public function AjaxResetPassword()
+    {
+        $this->layout = 'ajax';
+        if ($this->request == null || 
+            $this->request->data == null || 
+            !array_key_exists('email', $this->request->data)){
+            CakeLog::write("ErrorAjaxResetPassword", "Error code: 27;" . print_r($this->request, true));
+            $this->set('response', json_encode(array('error' => 
+                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 27')));
+            return;
+        }
+
+        /* Get user_id from given email address and check its validity */
+        $email = $this->request->data['email'];
+        $user = $this->User->GetUserFromEmail($email);
+        if (!$user){
+            $this->set('response', json_encode(array('error' => 
+                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 28')));
+            return;
+        }
+
+        /* Set password_reset_token and password_reset_date for this user_id */
+        $response = $this->User->SetPasswordResetToken($user['id']);
+        if (array_key_exists('error', $response)){
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* Send password reset email to user */
+        $this->set('name', $user['first_name']);
+        $this->set('id', $user['id']);
+        $this->set('password_reset_token', $response['password_reset_token']);
+        $this->_sendPasswordResetEmail($user['email']);
+        $this->set('response', json_encode(array('success'=>'')));
+    }
+
+    /*
+    Action for register page.
+    */
+    public function Register()
+    {
+        if ($this->Auth->loggedIn()){
+            /* User already logged in */
+            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
+        }
+    }
+
+    /*
+    Action for login page.
+    */
+    public function Login()
+    {
+        if ($this->Auth->loggedIn()){
+            /* User already logged in */
+            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
+        }
+    }
+
+    /*
+    Action for Reset Password page.
+    */
+    public function ResetPassword() 
+    {
+
+    }
+
+    /*
+    User is redirected here from the "reset password" link in their email
     */
     public function ResetPasswordRedirect()
     {
         if (!array_key_exists('id', $this->request->query) || !array_key_exists('reset_token', $this->request->query))
             $this->redirect('/');
+
         $id = $this->request->query['id'];
         $reset_token = $this->request->query['reset_token'];
-        $this->User->id = $this->request->query['id'];
+        if (!$this->User->IsValidResetToken($id, $reset_token)){
+            CakeLog::write("ErrorResetPasswordRedirect", $id . "; " . $reset_token);
+            $this->redirect('/users/login?invalid_link=true');
+        }
 
         $this->set('id', $id);
         $this->set('reset_token', $reset_token);
     }
 
     /*
-    Reset password via ajax from the page the user is directed to from the reset password email
+    Called from /users/ ResetPasswordRedirect.
+    Verifies the submitted user_id and password reset_token
+    If the passwords match, sets the user's password.
     */
-    public function ajaxResetPasswordRedirect()
+    public function AjaxChangePassword()
     {
-
-    }
-
-    public function ajaxChangePassword() 
-    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 
         $this->layout = 'ajax';
-        $new_password = null;
-        $confirm_password = null;
-        $reset_token = null;
+        if (!$this->request || !$this->request->data || 
+            !array_key_exists('new_password', $this->request->data) ||
+            !array_key_exists('confirm_password', $this->request->data) ||
+            !array_key_exists('reset_token', $this->request->data) ||
+            !array_key_exists('id', $this->request->data)){
+            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
+            $this->set('response', json_encode($response));
+            return;
+        }
 
         $new_password = $this->request->data['new_password'];
         $confirm_password = $this->request->data['confirm_password'];
         $reset_token = $this->request->data['reset_token'];
-        CakeLog::write("saveUser", "new password: " . $new_password);
-        CakeLog::write("saveUser", "confirm password: " . $confirm_password);
-        CakeLog::write("saveUser", "reset_token: " . $reset_token);
-
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
-
-        $user = null;
-
-        if ($this->Auth->User('id') != null && $this->Auth->User('id') != 0)
-        {
-            // coming from dashboard account settings
-            $user = $this->User->get($this->Auth->User('id'));
-            $user = $user['User']['id'];
-        }
-        else // coming from email 'change password' link
-        {
-            $user = $this->request->data['id'];
-        }
-
-        if ($user != null && $reset_token != null)
-        {
-            /* coming from user who is not logged in
-               Make sure the reset_token matches up with the id.
-            */
-            $credentials_correct = $this->User->find('first', array(
-                'fields' => array('id'),
-                'conditions' => array('User.id' => $user, 'User.password_reset_token' => $reset_token)
-            ));
-
-            if ($credentials_correct == null)
-            {
-                $success = 0;
-                $json = json_encode(array(
-                    'success' => 0,
-                    'message' => 'There was an error changing your password.'
-                )); 
-                $this->set('response', $json);
-                return;
-            }
-        }
-        if(empty($new_password) or empty($confirm_password) or $confirm_password != $new_password){
-            $json = json_encode(array(
-                'success' => 0,
-                'message' => "There was an error changing your password"
-            ));
-        }
-        else
-        {
-            $data = array('id' => $user, 'password' => $new_password);
-            $this->User->edit($data);
-            $json = json_encode(array(
-                'success' => 1,
-                'user' => $user
-            ));  
-        }
-
-        $this->set('response', $json);
-        return;
-        
-    }
-
-    public function ajaxLogin() {
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
-        $this->layout = 'ajax';
-        if($this->Auth->loggedIn())
-        {
-            $this->Session->setFlash(__('You are already logged in.'));
-            $json = json_encode(array(
-                'loginStatus' => 0,
-                'error'=>'You are verified'));
-                $this->set('response', $json);
-           // $this->redirect('/dashboard');
-        }
-        if(!$this->request->isPost()){
-            echo "This url only accepts post requests";
-            die();
-        }
-        if ($this->Auth->identify($this->request, $this->response))
-        {
-            if($this->Auth->login()) {
-                if($this->Auth->user('verified')==0) {
-                    $json = json_encode(array(
-                    'loginStatus' => 1,
-                    'error'=>'You are verified'));
-                    $this->set('response', $json);
-                    //$this->Session->setFlash(__('Verify your account to gain credibility. Please check your email.'));
-                 //   $this->redirect('/dashboard');
-                }
-                else {
-                    //$this->Session->setFlash(__('You were successfully logged in.'));
-                    $json = json_encode(array(
-                    'loginStatus' => 1,
-                    'error'=>'You are logged in.'));
-                    $this->set('response', $json);
-                   // $this->redirect('/dashboard');
-                }
-            }
-        
-        } else {
-            $json = json_encode(array(
-                'loginStatus' => 0,
-                'error'=>'Invalid login details.'));
-            
-            $this->set('response', $json);
-
-        }
-    }
-
-	public function add() {
-
-        if ($this->Auth->loggedIn())
-            $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
-		if ($this->request->is('post')) {
-			$this->User->create();
-			$this->request->data['User']['verified'] = 0;
-			$this->request->data['User']['group_id'] = 1;
-            $this->request->data['User']['vericode'] = uniqid();
-			if ($this->User->save($this->request->data)) {
-                //generate opcode
-
-                //send verification email
-                $this->Email->smtpOptions = array(
-                  'port'=>'587',
-                  'timeout'=>'30',
-                  'host' => 'smtp.sendgrid.net',
-                  'username'=>'cribsadmin',
-                  'password'=>'lancPA*travMInj',
-                  'client' => 'a2cribs.com'
-                );
-                $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-                $this->Email->to = $this->request->data['User']['email'];
-                $this->set('name', $this->request->data['User']['first_name']);
-                $this->Email->subject = 'Please verify your Cribspot account';
-                $this->Email->template = 'registration';
-                $this->Email->sendAs = 'html';
-                $this->set('vericode', $this->request->data['User']['vericode']);
-                $this->set('id',$this->User->id);
-                $this->Email->send();
-				$this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
-				$this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('An error occurred during registration. Please try again.'));
-			}
-		}
-	}
-
-    public function ajaxRegister() {
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
-         $this->layout = 'ajax';
-        if($this->Auth->loggedIn())
-        {
-            $json = json_encode(array(
-                'registerStatus' => 0,
-                'error'=>'You are already registered.'));
-                $this->set('response', $json);
-                return;
-           // $this->redirect('/dashboard');
-        }
-        if(!$this->request->isPost()){
-            echo "This url only accepts post requests";
-            die();
-        }
-        $this->request->data['User']['verified'] = 0;
-        $this->request->data['User']['group_id'] = 1;
-        $this->request->data['User']['vericode'] = uniqid();
-        if ($this->User->save($this->request->data)) 
-        {
-            /* Send verification email */
-            $from = 'The Cribspot Team<team@cribspot.com>';
-            $to = $this->request->data['User']['email'];
-            $subject = 'Please verify your Cribspot account';
-            $template = 'registration';
-            $sendAs = 'both';
-            $this->set('name', $this->request->data['User']['first_name']);
-            $this->set('vericode', $this->request->data['User']['vericode']);
-            $this->set('id',$this->User->id);
-            $this->SendEmail($from, $to, $subject, $template, $sendAs);
-
-            $this->Auth->login();
-            $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-            $this->Session->setFlash(__('The user has been registered. Please check your email for a verification link.'));
-            $json = json_encode(array(
-                    'registerStatus' =>1,
-                    'error' => 'Registration successful.'));
-            $this->set('response', $json);
-        }
-        else
-        {
-            $this->set('response', array());
-            $this->User->set($this->request->data);
-            //check if passes email validation
-            $json = array('registerStatus' => 0,
-                    'error' => 'Please check the fields below.');
-            $error = $this->validateErrors($this->User);
-            $json = json_encode($error);
-            $this->set('response', $json);
-        }
-    }
-
-    public function ajaxResetPassword()
-    {
-        $this->layout = 'ajax';
-        $response = null;
-        if ($this->request->data['email']!= '') // if id is not found in post, indicates user is using password reset form
-        {
-            //finding user by email
-            $user = $this->User->find('first', array( 
-                'conditions' => array(
-                    'User.email' => $this->request->data['email'])
-                ));
-
-            $this->User->id = $user['User']['id'];
-
-
-            if (!$this->User->exists()) {
-                //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
-                $response = array(
-                    'success' => 0,
-                    'message' => 'Reset password failed. Contact help@cribspot.com if the error persists.'
-                );
-                $this->set('response', json_encode($response));
-                return;
-            }
-
-            //set password reset token to a unique and random string
-            $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
-            //save the password reset token to the request data
-            $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
-            //save date of request
-            $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
-            
-            /* Send reset password email */
-            $from = 'The Cribspot Team<team@cribspot.com>';
-            $to = $this->User->field('email');
-            $subject = 'Please reset your password';
-            $template = 'forgotpassword';
-            $sendAs = 'both';
-            $this->set('name', $this->User->first_name);
-            $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
-            $this->set('id',$this->User->id);
-            $this->SendEmail($from, $to, $subject, $template, $sendAs);
-
-            $response = array(
-                'success' => 1,
-                'message' => 'Check your email for instructions on how to reset your password.'
-            );
-            
+        $user_id = $this->request->data['id'];
+        /* Make sure that the ($id, $reset_token) pair is valid */
+        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
+            CakeLog::write("ErrorAjaxChangePassword", $id . "; " . $reset_token);
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
             $this->set('response', json_encode($response));
-        }
-    }
-
-    public function resetpassword() {
-        $response = null;
-        if (array_key_exists('User', $this->request->data) && 
-        array_key_exists('email', $this->request->data['User']) && 
-        $this->request->data['User']['email']!= '') // if id is not found in post, indicates user is using password reset form
-        {
-            //finding user by email
-            //$this->User->read(null, $this->request->data['User']['email']);
-            $user = $this->User->find('first', array( 
-                'conditions' => array(
-                    'User.email' => $this->request->data['User']['email'])
-                ));
-            $this->User->id = $user['User']['id'];
-
-
-            if (!$this->User->exists()) {
-                //throw new NotFoundException(__('That user does not exist.'.$this->request->data['User']['email']."."));
-                $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-                $this->redirect('/users/resetpassword');
-            }
-            //set password reset token to a unique and random string
-            $this->request->data['User']['password_reset_token'] = uniqid(rand(),true);
-            //save the password reset token to the request data
-            $this->User->saveField('password_reset_token', $this->request->data['User']['password_reset_token']);
-            //save date of request
-            $this->User->saveField('password_reset_date',  date("Y-m-d H:i:s"));
-            
-            //email stuff
-            $this->Email->smtpOptions = array(
-              'port'=>'587',
-              'timeout'=>'30',
-              'host' => 'smtp.sendgrid.net',
-              'username'=>'cribsadmin',
-              'password'=>'lancPA*travMInj',
-              'client' => 'a2cribs.com'
-            );
-            $this->Email->delivery = 'smtp';
-            $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-            $this->Email->to = $this->User->field('email');
-            $this->set('name', $this->User->first_name);
-            $this->Email->subject = 'Please reset your password';
-            $this->Email->template = 'forgotpassword';
-            $this->Email->sendAs = 'both';
-            
-            $this->set('password_reset_token', $this->request->data['User']['password_reset_token']);
-            $this->set('id',$this->User->id);
-            $this->Email->send();
-            //end email portion
-            //$this->set('finalLink', '/users/resetpassword?id='.$this->User->id. '&password_reset_token='.$this->request->data['User']['password_reset_token']);
-            $this->Session->setFlash(__('Please check your email for instructions to reset your password.'));
-            $this->redirect(array('action' => 'login'));
-        }
-        
-        if (array_key_exists('id', $this->request->query) && $this->request->query['id']!='')
-        {
-            $this->User->id = $this->request->query['id'];
-            $password_reset_token = $this->request->query['password_reset_token'];
-            $resetdate = $this->User->password_reset_date;
-            if (!$this->User->exists()) {
-                throw new NotFoundException(__('There was an error verifying your account.'));
-                //$this->redirect('login');
-                $this->redirect('/users');
-            }
-            else if( $password_reset_token == $this->User->field('password_reset_token'))
-            {
-                //$date2 = new DateTime("now");
-                //$date1 = $this->User->password_reset_date;
-                //$date2->sub(new DateInterval('P1D'));
-                if ($this->Auth->login($this->request->query['id'])) {
-                    $this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
-
-                /*
-                THIS IS WHAT *NOT* TO DO 
-                Auth has methods to retrieve user
-
-                //write userid to session for other controllers to use
-                //writes groupid to session data, implement checks to 
-                //  prevent abuse
-
-                $this->Session->write('User.id', $this->User->id);
-                $this->Session->write('User.group_id', $this->User->group_id);
-                */
-                //redirects to user page
-                $this->Session->setFlash(__('Please change your password.'));
-                $this->redirect('/users/account');
-            } else {
-                $this->Session->setFlash(__('Invalid login, try again'));
-            }
-
-                
-                //$this->Auth->autoRedirect = false;
-                //$this->request->data['User']['username'] = $this->User->username;
-                //$this->request->data['User']['password'] = $this->User->password;
-                //$this->Auth->login();
-                //$this->redirect('account');
-                //$this->redirect(array('action' => 'index'));
-
-            }
-            else {
-                $this->Session->setFlash('There was a problem verifying the account.');
-            }
-        }
-    }
-
-
-    public function verify() {
-    	$this->User->id = $this->request->query['id'];
-    	$vericode = $this->request->query['vericode'];
-        if (!$this->User->exists()) {
-        	throw new NotFoundException(__('There was an error verifying your account.'));
-        	$this->redirect('login');
-        }
-        
-        if ($this->User->exists() && ($vericode == $this->User->field('vericode')))
-    	{
-        // Update the active flag in the database
-        $this->User->saveField('verified', 1);
-        //check if their registration email is also a university associated email
-        preg_match('/@(.*)/', $this->User->field('email'),$matches);
-
-        $userEmailDomainString = $matches[1];
-        $universities = $this->User->University->findByDomain($userEmailDomainString);
-        if ($universities)
-        {
-            $this->User->saveField('university_verified',1);
-            $this->User->saveField('university_id', $universities['University']['id']);
-        }
-        else
-        {
-            $this->User->saveField('university_verified',0);
-        }
-
-        // Let the user know they can now log in!
-        $this->Session->setFlash('Your account has been activated, please log in.');
-        $this->redirect('login');
-    	}
-    	else if ($this->User->exists() && $this->User->field('verified') == 1)
-    	{
-    		$this->Session->setFlash('Your user account is already confirmed.');
-    		$this->redirect('login');
-    	}
-    	else {
-    		$this->Session->setFlash('There was an error verifying your account.');
-        	$this->redirect('login');
-    	}
-    }
-
-    public function verifyUniversity() {
-        if ($this->request->data['university_email']!= '')
-         {
-            if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-                return;
-            $user = $this->User->get($this->Auth->User('id'));
-            $university_email = $this->request->data['university_email'];
-            if ($user['User']['university_verified'] == 1)
-            {
-                $json = json_encode(array(
-                    'success' => 0,
-                    'message' => "You are already associated with a university."
-                ));  
-                $this->layout = 'ajax';
-                $this->set('response', $json);
-                return;
-            }
-            else
-            {
-
-
-            //finding user by email
-     
-            //set password reset token to a unique and random string
-
-            //save the password reset token to the request data
-
-            $data = array('id' => $user['User']['id'], 'vericode' =>uniqid(rand(),true) );
-            $user = $this->User->edit($data);
-            
-                //send verification email
-                $this->Email->smtpOptions = array(
-                  'port'=>'587',
-                  'timeout'=>'30',
-                  'host' => 'smtp.sendgrid.net',
-                  'username'=>'cribsadmin',
-                  'password'=>'lancPA*travMInj',
-                  'client' => 'a2cribs.com'
-                );
-                $this->Email->delivery = 'smtp';
-                $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-                $this->Email->to = $university_email   ;
-                $this->set('name', $this->Auth->user('first_name'));
-                $this->Email->subject = 'Please verify your Cribspot account\'s university association!';
-                $this->Email->template = 'university_verification';
-                $this->Email->sendAs = 'both';
-                $this->set('vericode', $user['User']['vericode']);
-                $this->set('email', $university_email);
-                $this->set('id',$this->Auth->user('id'));
-                $this->Email->send();
-                $json = json_encode(array(
-                    'success' => 1,
-                    'message' => "Please check your email for a verification link."
-                ));
-            }
-            $this->layout = 'ajax';
-            $this->set('response', $json);
-         }
-        
-        else if ($this->request->query['id']!='')
-        {
-            // User has been redirected from email link
-            $email = $this->request->query['email'];
-            $this->User->id = $this->request->query['id'];
-            if ($this->User->field('id') != $this->request->query['id']) {
-                throw new NotFoundException(__('There was an error verifying your account.'));
-                //$this->redirect('login');
-                $this->redirect('/dashboard');
-            }
-            else if ($this->Auth->user('university_verified') == 1)
-            {
-                $this->Session->setFlash('You cannot associate yourself with more than one university. Please contact support.');
-                $this->redirect('/dashboard');
-            }
-            else if( $this->request->query['vericode'] == $this->User->field('vericode'))
-            {
-                preg_match('/@(.*)/', $this->request->query['email'],$matches);
-
-                $userEmailDomainString = $matches[1];
-                $universities = $this->User->University->findByDomain($userEmailDomainString);
-                if ($universities)
-                {
-                    $this->User->saveField('university_verified',1);
-                    $this->User->saveField('university_id', $universities['University']['id']);
-                    $this->User->saveField('verified',1);
-                    $this->User->saveField('email',$email);
-                    $this->Session->setFlash('You have been associated with '. $universities['University']['name'].'.');
-                }
-                else
-                {
-                    $this->Session->setFlash('The university you are trying to associate with is not in our database. Please contact support.');
-                }
-            } else {
-                $this->Session->setFlash(__('There was a problem associating your account.'));
-            }
-
-                
-                //$this->Auth->autoRedirect = false;
-                //$this->request->data['User']['username'] = $this->User->username;
-                //$this->request->data['User']['password'] = $this->User->password;
-                //$this->Auth->login();
-                //$this->redirect('account');
-                //$this->redirect(array('action' => 'index'));
-            $this->redirect('/dashboard?university_verified=true');
-        }
-    }
-
-    public function ajaxEditUser(){
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-        $user = $this->User->get($this->Auth->User('id'));
-        $first_name = $this->request->data['first_name'];
-        $last_name = $this->request->data['last_name'];
-        if(empty($first_name) or empty($last_name)){
-            $json = json_encode(array(
-                'success' => 0,
-                'message' => "A first name or last name left blank"
-            ));
-        }else{
-            $user['User']['first_name'] = $first_name;
-            $user['User']['last_name'] = $last_name;  
-
-            $data = array('id' => $user['User']['id'], 'first_name' => $first_name, 'last_name' => $last_name);
-            $user = $this->User->edit($data);
-
-
-            $json = json_encode(array(
-                'success' => 1,
-                'user' => json_encode($user)
-            ));  
         }
 
-        $this->layout = 'ajax';
-        $this->set('response', $json);
+        /* Make sure new_password matches the confirmed password */
+        if ($new_password != $confirm_password){
+            $response = array('error' => 'Passwords do not match.', 'error_type'=>'PASSWORDS_DONT_MATCH');
+            $this->set('response', $response);
+            return;
+        }
+
+        /* Save new password */
+        $response = $this->User->SavePassword($user_id, $new_password);
+        $this->set('response', json_encode($response));
         return;
-        
     }
 
-    public function getTwitterFollowers($user_id)
+    /*
+    User is redirected here from the link in the email for verifying their email.
+    Checks vericode in order to validate email.
+    */
+    public function VerifyEmailRedirect()
     {
-        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
-        App::import('Vendor', 'twitter/twitteroauth');
-        App::import('Vendor', 'twitter/twconfig');
+        $user_id = $this->request->query['id'];
+        $vericode = $this->request->query['vericode'];
 
-        $user = $this->User->get($user_id);
+        /* Check if user exists */
+        if (!$this->User->IdExists($user_id)){
+            CakeLog::write("Users_Verify_Email_Redirect", $this->request->query['id']);
+            $this->redirect('/users/login?invalid_link=true');
+        }
 
-        $connection = new TwitterOAuth(CONSUMER_KEY, 
-                                        CONSUMER_SECRET,
-                                        $user['User']['twitter_auth_token'],
-                                        $user['User']['twitter_auth_token_secret']);
+        /* Check if vericode is valid */
+        if (!($this->User->VericodeIsValid($vericode, $user_id))) {
+            CakeLog::write("Users_Verify_Email_Redirect", $this->User->id . ' ' . $vericode . ' ' . $this->User->field('vericode'));
+            $this->redirect('/users/login?invalid_link=true');
+        }
 
-        $content = $connection->get('account/verify_credentials');
-        $followers_count = $content->followers_count;
-        $json_response = json_encode(array(
-            'tw_id'=>$user['User']['twitter_userid'],
-            'followers_count'=>$followers_count
-            ));
-
-        $this->layout = 'ajax';
-        $this->set("response", $json_response);
+        $this->User->id = $user_id;
+        $email = $this->User->field('email');
+        CakeLog::write("EMAIL", $email);
+        /* Attempt to associate this user with a university (by checking for valid edu email) */
+        $university_id = $this->User->University->GetIdFromEmail($this->User->field('email'));
+        $success = $this->User->VerifyUserEmail($user_id, $university_id);
+        if (array_key_exists('error', $success)){
+            CakeLog::write("Verify_Email_Failed", $this->Auth->User('id') . ' ' . $university_id);
+            $this->redirect('/users/login?email_verify_failed=true');
+        }
+        else{
+            $this->redirect('/dashboard?email_verified=true');
+        }
     }
 
+    /*
+    Attempts to associate a user's email with a given university.
+    */
+    public function VerifyUniversityEmail()
+    {
+        preg_match('/@(.*)/', $this->User->field('email'), $matches);
 
+        if (array_key_exists(1, $matches)){
+            $userEmailDomainString = $matches[1];
+            $universities = $this->User->University->findByDomain($userEmailDomainString);
+            if ($universities)
+            {
+                $this->User->saveField('university_verified',1);
+                $this->User->saveField('university_id', $universities['University']['id']);
+            }
+        }
+    }
 
-	public function Logout()
-	{
-		$this->autoRender = false;
-		$this->facebook->destroySession();
-        $this->Session->destroy();
-        $this->Auth->logout();
-		$this->redirect('/');
-	}
+    /*
+    Redirect from "Verify University Email" email.
+    */
+    public function VerifyUniversityEmailRedirect()
+    {
+
+    }
+
+    /*
+    Generates a new vericode and sends an email to the currently logged-in user.
+    Email allows user to verify email address.
+    */
+    private function _sendVerificationEmail($user)
+    {
+        $from = 'The Cribspot Team<team@cribspot.com>';
+        $to = $user['email'];
+        $subject = 'Please verify your Cribspot account';
+        $template = 'registration';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
+    private function _sendPasswordResetEmail($email)
+    {
+        $from = 'The Cribspot Team<team@cribspot.com>';
+        $to = $email;
+        $subject = 'Please reset your password';
+        $template = 'forgotpassword';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
+    /*
+    Returns true if a user account exists with email=$email, false otherwise.
+    */
+    private function _emailAlreadyRegistered($email)
+    {
+        return $this->User->EmailExists($email);
+    }
 }
 ?>

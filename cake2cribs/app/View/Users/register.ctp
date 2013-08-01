@@ -3,7 +3,6 @@
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
 
-
 <?php echo $this->element('popups'); ?>
 <div class="top-bar">
     <ul id="right-options" class="inline unstyled pull-right">
@@ -13,15 +12,21 @@
     </ul>
 </div>
 
-<?= $this->element('reset_password_redirect'); ?>
+<div id="header" class="container">
+    <a href="/"><div class="main-logo pull-left"></div></a>
+</div>
+
+
+<div class ="side-by-side">
+<?= $this->element('login'); ?>
+<?= $this->element('register'); ?>
+</div>
 
 <?php echo $this->Html->script('jquery.noisy.min'); ?>
 <?php 
     $this->Js->buffer('
-            $("#myModal").removeClass("hide fade").css("z-index", 0);
-            $("#changePasswordButton").click(function(){
-                A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "' . $id . '","' . $reset_token . '")
-            })
+            $("#myModal").removeClass("hide fade");
+            $("#signupModal").removeClass("hide fade");
     ');
 ?>
 <script>
@@ -33,14 +38,3 @@ $('body').noisy({
     'monochrome' : true
 }).css('background-color', '#eeecec');
 </script>
-
-
-
-<?php
-$this->Js->buffer('
-    $("#changePasswordButton").click(function(){
-        A2Cribs.Account.ChangePassword($("#changePasswordButton"), $("#new_password").val(), $("#confirm_password").val(), "'
-            . $id . '","' . $reset_token . '")})'
-);
-
-?>

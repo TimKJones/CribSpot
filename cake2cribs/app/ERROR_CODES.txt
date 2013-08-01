@@ -49,3 +49,27 @@
 - Image->MoveFileToFolder()
 23
 - Rental->GetRentalIdFromListingId()
+24
+- UserController->AjaxRegister()
+25
+- UserController->AjaxRegister()
+26
+- User->VerifyUserEmail()
+27
+- User->AjaxResetPassword
+28
+- User->AjaxResetPassword
+29
+- User->SetPasswordResetToken
+30
+- UsersController->AjaxChangePassword
+31
+- UsersController->AjaxChangePassword
+32
+-User->SavePassword
+33
+- MarkerController->Save
+34
+- Marker->FindMarkerId
+35
+- Marker->FindMarkerId

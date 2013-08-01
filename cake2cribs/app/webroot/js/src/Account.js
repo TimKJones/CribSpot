@@ -105,10 +105,13 @@
         'id': id,
         'reset_token': reset_token
       };
-      return $.post(myBaseUrl + 'users/ajaxChangePassword', data, function(response) {
-        var json_response;
-        json_response = JSON.parse(response);
-        if (json_response.success === 1) {
+      if (new_password !== confirm_password) {
+        A2Cribs.UIManager.Alert("Passwords do not match.");
+        return;
+      }
+      return $.post(myBaseUrl + 'users/AjaxChangePassword', data, function(response) {
+        response = JSON.parse(response);
+        if (response.error === void 0) {
           if (id === null && reset_token === null) {
             alertify.success('Password Changed', 1500);
             if (redirect !== null) {
@@ -118,7 +121,7 @@
             window.location.href = '/dashboard';
           }
         } else {
-          alertify.error('Password Failed to Change: ' + json_response.message, 1500);
+          A2Cribs.UIManager.Alert(response.error);
         }
         return change_password_button.removeAttr('disabled');
       });
@@ -158,17 +161,22 @@
       });
     };
 
+    /*
+    	Submits email address for which to reset password.
+    */
+
+
     Account.SubmitResetPassword = function(email) {
       var data,
         _this = this;
       data = 'email=' + $("#UserEmail").val();
-      return $.post('/users/ajaxResetPassword', data, function(response) {
+      return $.post('/users/AjaxResetPassword', data, function(response) {
         data = JSON.parse(response);
         if (data.success === 1) {
           document.location.href = '/users/login?password_reset_redirect=true';
           return false;
         } else {
-          alertify.error('Email address is invalid.', 1500);
+          A2Cribs.UIManager.Alert(data.error);
           return false;
         }
       });
