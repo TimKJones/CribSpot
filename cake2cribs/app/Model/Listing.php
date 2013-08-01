@@ -179,10 +179,20 @@ class Listing extends AppModel {
 				'Listing.visible' => 1)
 		));
 
-		/* Remove sensitive user data */
+		/* Remove sensitive user data and null fields */
 		for ($i = 0; $i < count($listings); $i++){
 			if (array_key_exists('User', $listings[$i]))
 				$listings[$i]['User'] = $this->_removeSensitiveUserFields($listings[$i]['User']);
+			if (array_key_exists('Listing', $listings[$i]))
+				$listings[$i]['Listing'] = $this->_removeNullEntries($listings[$i]['Listing']);
+			if (array_key_exists('Rental', $listings[$i]))
+				$listings[$i]['Rental'] = $this->_removeNullEntries($listings[$i]['Rental']);
+			if (array_key_exists('Fee', $listings[$i]))
+				$listings[$i]['Fee'] = $this->_removeNullEntries($listings[$i]['Fee']);
+			if (array_key_exists('Image', $listings[$i]))
+				$listings[$i]['Image'] = $this->_removeNullEntries($listings[$i]['Image']);
+			if (array_key_exists('Marker', $listings[$i]))
+				$listings[$i]['Marker'] = $this->_removeNullEntries($listings[$i]['Marker']);
 		}
 
 		return $listings;

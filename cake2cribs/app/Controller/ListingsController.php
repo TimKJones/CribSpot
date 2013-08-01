@@ -79,7 +79,7 @@ class ListingsController extends AppController {
 		$this->layout = 'ajax';
 		if ($listing_id == null){
 			/* Return all listings owned by this user. */
-			$listings = $this->GetListingsByLoggedInUser();
+			$listings = $this->_getListingsByLoggedInUser();
 			$this->set('response', json_encode($listings));
 		}
 		else{
@@ -93,10 +93,21 @@ class ListingsController extends AppController {
 	}
 
 	/*
+	AJAX
+	Returns all listings of given listing_type with given marker_id
+	*/
+	public function LoadMarkerData($listing_type, $marker_id)
+	{
+		$this->layout = 'ajax';
+		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
+		$this->set('response', json_encode($listings));
+	}
+
+	/*
 	Returns all listing_data for given user_id.
 	NOTE: only returns PUBLIC user data
 	*/
-	function GetListingsByLoggedInUser()
+	private function _getListingsByLoggedInUser()
 	{
 		$user_id = $this->_getUserId();
 		if ($user_id == 0 || $user_id == null){
@@ -108,17 +119,6 @@ class ListingsController extends AppController {
 			return array('error' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 4);
 
 		return $listings;
-	}
-
-	/*
-	AJAX
-	Returns all listings of given listing_type with given marker_id
-	*/
-	function LoadMarkerData($listing_type, $marker_id)
-	{
-		$this->layout = 'ajax';
-		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
-		$this->set('response', json_encode($listings));
 	}
 }
 

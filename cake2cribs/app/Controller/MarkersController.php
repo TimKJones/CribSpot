@@ -44,7 +44,7 @@ class MarkersController extends AppController {
 				}
 			}
 		}
-
+		
 		$marker_id = $this->Marker->FindMarkerId($marker, $this->_getUserId(), $user_type);
 		$this->set('response', $marker_id);
 	}
