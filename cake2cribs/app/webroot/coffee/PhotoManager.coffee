@@ -115,7 +115,6 @@ class A2Cribs.PhotoManager
 					$(event.currentTarget).find('.image-actions-container').show()
 				else
 					$(event.currentTarget).find('.image-actions-container').hide()
-				
 
 		@div.find('#upload_image').click () =>
 			@div.find('#real-file-input').click()
@@ -136,14 +135,6 @@ class A2Cribs.PhotoManager
 			index = +event.currentTarget.id.match(/\d+/g)[0]
 			@MakePrimary index - 1
 
-		@div.find("#saveCaption").click () =>
-			if @CurrentPreviewImage?
-				@Photos[@CurrentPreviewImage].SaveCaption @div.find("#captionInput").val()
-
-		@div.find("#finish_photo").click () =>
-			@SavePhotos()
-			@div.modal('hide')
-
 		@div.find("#captionInput").keyup () =>
 			curString = @div.find("#captionInput").val()
 			if curString.length == @MAX_CAPTION_LENGTH
@@ -152,6 +143,9 @@ class A2Cribs.PhotoManager
 				@div.find("#charactersLeft").css("color", "black")
 
 			@div.find("#charactersLeft").html(@MAX_CAPTION_LENGTH - curString.length)
+			if @CurrentPreviewImage?
+				@Photos[@CurrentPreviewImage].SaveCaption @div.find("#captionInput").val()
+
 
 		@div.find(".delete").tooltip {'selector': '','placement': 'bottom', 'title': 'Delete'}
 		@div.find(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
@@ -187,17 +181,16 @@ class A2Cribs.PhotoManager
 			@div.find("#upload_image").button 'reset'
 			@Photos[@CurrentImageLoading].Reset()
 
-
-	LoadImages:(row, listing_type, listing_id = null) ->
+	LoadImages: (images, row, imageCallback) ->
 		@Reset()
-		@CurrentListingType = listing_type
-		@CurrentRow = row
-		if listing_id?
-			@CurrentListing = listing_id.toString()
-			images = A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", listing_id
+		if images?
 			for image in images
-				next_photo = @NextAvailablePhoto()
-				@Photos[next_photo].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary, @CurrentListing
+				@Photos[@NextAvailablePhoto()].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary
+
+		@div.find("#finish_photo").unbind 'click'
+		@div.find("#finish_photo").click () =>
+			imageCallback row, @GetPhotos()
+			@div.modal('hide')
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
@@ -223,6 +216,7 @@ class A2Cribs.PhotoManager
 			@CurrentPreviewImage = index
 			@div.find("#imageContent0").html @Photos[index].GetPreview()
 			@div.find("#captionInput").val @Photos[index].GetCaption()
+			@div.find("#charactersLeft").html @MAX_CAPTION_LENGTH - @Photos[index].GetCaption().length
 
 	MakePrimary: (index) ->
 		@Photos[@CurrentPrimaryImage].SetPrimary false
@@ -230,6 +224,9 @@ class A2Cribs.PhotoManager
 
 	Reset: ->
 		@div.find("#imageContent0").html '<div class="img-place-holder"></div>'
+		@div.find("#captionInput").val ""
+		@div.find("#charactersLeft").html @MAX_CAPTION_LENGTH
+
 		for photo in @Photos
 			photo.Reset()
 

@@ -21,4 +21,5 @@ class Error extends AppModel {
 		$this->save($error);
 	}
 }
+
 ?>

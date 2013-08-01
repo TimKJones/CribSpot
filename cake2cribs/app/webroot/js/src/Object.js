@@ -7,7 +7,7 @@
       this.class_name = class_name != null ? class_name : "object";
       for (key in a2_object) {
         value = a2_object[key];
-        this[key] = value;
+        if (value != null) this[key] = value;
       }
     }
 
@@ -20,7 +20,10 @@
       return_object = {};
       for (key in this) {
         value = this[key];
-        if (typeof value !== "function") return_object[key] = value;
+        if (typeof value !== "function") {
+          if (typeof value === "boolean") value = +value;
+          return_object[key] = value;
+        }
       }
       return return_object;
     };

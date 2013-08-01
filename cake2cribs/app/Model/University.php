@@ -73,5 +73,23 @@ class University extends AppModel {
  		$universities = $this->find('all', $options);
  		return $universities;
 	}
+
+	/*
+	Returns the university_id associated with $email
+	Returns null if no match found.
+	*/
+	public function GetIdFromEmail($email)
+	{
+		$domain = substr($email, strrpos($email, '@') + 1);
+		$university = $this->find('first', array(
+			'conditions' => array('University.domain' => $domain),
+			'fields' => array('University.id')
+		));
+
+		if ($university != null && array_key_exists('University', $university))
+			return $university['University']['id'];
+		
+		return null;
+	}
 }
 ?>

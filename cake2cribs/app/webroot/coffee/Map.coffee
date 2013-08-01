@@ -17,7 +17,6 @@ class A2Cribs.Map
 	@AddMarker:(m) ->
 		id = parseInt(m.marker_id, 10)
 		A2Cribs.Cache.CacheMarker id, m
-		#@VisibleMarkers.push(@IdToMarkerMap[id].GMarker)
 		@GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker)
 		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'click', @MarkerClicked)
 		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseover', @MarkerMouseIn)
@@ -27,37 +26,36 @@ class A2Cribs.Map
 	###
 	Add all markers in markerList to map
 	###
-	@InitializeMarkers:(markerList) ->
-		decodedMarkerList = JSON.parse markerList
-		for marker in decodedMarkerList
-			@AddMarker marker.Marker
+	@InitializeMarkers:(markerList, that) ->
+		if markerList == null || markerList == undefined
+			return
 
+		markerList = JSON.parse markerList
+		for marker in markerList
+			that.AddMarker marker.Marker
 
 		if A2Cribs.marker_id_to_open >= 0
 			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
-		A2Cribs.Map.LoadHoverData()
 
 	###
 	Load all markers from Markers table
 	###
 	@LoadMarkers: ->
-		#TODO: Add Loading GIF Here
+		deferred = new $.Deferred
 		if A2Cribs.Map.CurentSchoolId == undefined
+			deferred.resolve(null)
 			return
 			
 		$.ajax 
-			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId
+			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0
 			type:"GET"
 			context: this
-			success: @InitializeMarkers	
+			success: (response) ->
+				deferred.resolve(response, this)
+			error: () ->
+				deferred.resolve(null)
 
-
-		###defaultBounds = new google.maps.LatLngBounds(new google.maps.LatLng(42.23472,-83.846283), new google.maps.LatLng(42.33322,-83.627243))
-		input = $("#addressSearchBar")[0]
-		options = 
-			bounds: defaultBounds
-		@AutoComplete = new google.maps.places.Autocomplete(input, options)
-		@AutoComplete.setBounds(defaultBounds)###
+		return deferred.promise()
 
 	###
 	Used to only show markers that are within a certain bounds based on the user's current viewport.
@@ -118,7 +116,6 @@ class A2Cribs.Map
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
-		@LoadTypeTables()
 		@ClickBubble = new A2Cribs.ClickBubble @GMap
 		@HoverBubble = new A2Cribs.HoverBubble @GMap
 		@ListingPopup = new A2Cribs.ListingPopup()
@@ -135,41 +132,25 @@ class A2Cribs.Map
 		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FilterManager.InitAddressSearch()
 
-	@LoadTypeTables: ->
-		$.ajax
-			url: myBaseUrl + "Map/LoadTypeTables"
-			type: "POST"
-			success: @LoadTypeTablesCallback
-
 	@LoadHoverData: ->
+		deferred = new $.Deferred
 		$.ajax 
-			url: myBaseUrl + "Map/LoadHoverData"
+			url: myBaseUrl + "Map/LoadHoverData/" + 0
 			type: "POST"
-			success: @LoadHoverDataCallback
+			success: (responses) ->
+				deferred.resolve(responses)
+			error: () ->
+				deferred.resolve(null)
+
+		return deferred.promise()
 
 	@LoadHoverDataCallback: (response) ->
+		if response == null || response == undefined
+			return
 		hdList = JSON.parse response
-		A2Cribs.Cache.CacheHoverData hdList
+		#A2Cribs.Cache.CacheHoverData hdList
+		A2Cribs.UserCache.Set new A2Cribs.HoverData hdList
 
-	@LoadTypeTablesCallback: (types) ->
-		types = JSON.parse types
-		buildings = types[0]
-		bathrooms = types[1]
-		genders = types[2]
-		student_types = types[3]
-		for type in buildings
-			A2Cribs.Cache.BuildingIdToNameMap[parseInt type.BuildingType.id] = type.BuildingType.name
-
-		for type in bathrooms
-			A2Cribs.Cache.BathroomIdToNameMap[parseInt type.BathroomType.id] = type.BathroomType.name
-
-		for type in genders
-			A2Cribs.Cache.GenderIdToNameMap[parseInt type.GenderType.id] = type.GenderType.name
-
-		for type in student_types
-			A2Cribs.Cache.StudentTypeIdToNameMap[parseInt type.StudentType.id] = type.StudentType.name
-
-		A2Cribs.Map.LoadMarkers()
 	###
 	EVAN:
 		marker_id is the id of the marker to open
@@ -184,3 +165,19 @@ class A2Cribs.Map
 			#no sublet_id was given in url - don't do anything
 			return
 		alert marker_id
+
+	###
+	Load markers and hover data.
+	Use JQuery Deferred object to load all data asynchronously
+	###
+	@LoadAllMapData: () ->
+		markersPromise = @LoadMarkers()
+		hoverDataPromise = @LoadHoverData()
+		$.when(markersPromise).then(@InitializeMarkers)
+		$.when(hoverDataPromise).then(@LoadHoverDataCallback)
+		$.when(
+			markersPromise,
+			hoverDataPromise,
+		).done ()->
+			# everything has been loaded
+			alert 'everthing has been loaded'

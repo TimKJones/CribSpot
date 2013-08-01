@@ -8,8 +8,22 @@
     __extends(Rental, _super);
 
     function Rental(rental) {
+      var date, dates, index, _i, _len;
       Rental.__super__.constructor.call(this, "rental", rental);
+      dates = ["start_date", "end_date", "alternate_start_date"];
+      for (_i = 0, _len = dates.length; _i < _len; _i++) {
+        date = dates[_i];
+        if (this[date]) {
+          if ((index = this[date].indexOf(" ")) !== -1) {
+            this[date] = this[date].substring(0, index);
+          }
+        }
+      }
     }
+
+    Rental.prototype.GetId = function(id) {
+      return parseInt(this["listing_id"], 10);
+    };
 
     Rental.Template = data = {
       Listing: {
@@ -96,7 +110,23 @@
       }
     };
 
-    Rental.Required_Fields = ["unit_style_options", "unit_style_type", "unit_style_description", "beds", "min_occupancy", "max_occupancy", "rent", "unit_count", "start_date", "end_date", "available", "highlights", "contact_email", "contact_phone", "website"];
+    Rental.Required_Fields = {
+      unit_style_options: "overview_grid",
+      unit_style_type: "overview_grid",
+      unit_style_description: "overview_grid",
+      beds: "overview_grid",
+      min_occupancy: "overview_grid",
+      max_occupancy: "overview_grid",
+      rent: "overview_grid",
+      unit_count: "overview_grid",
+      start_date: "overview_grid",
+      end_date: "overview_grid",
+      available: "overview_grid",
+      highlights: "description_grid",
+      contact_email: "contact_grid",
+      contact_phone: "contact_grid",
+      website: "contact_grid"
+    };
 
     return Rental;
 
