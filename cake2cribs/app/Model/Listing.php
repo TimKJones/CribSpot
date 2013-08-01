@@ -252,6 +252,22 @@ class Listing extends AppModel {
 	}
 
 	/*
+	Returns true if the user with $user_id owns at least one listing at $marker_id
+	*/
+	public function UserOwnsAListingAtMarkerId($user_id, $marker_id)
+	{
+		$listings = $this->find('first', array(
+			'fields' => array('Listing.listing_id'),
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.marker_id' => $marker_id
+			)
+		));
+
+		return $listings != null;
+	}
+
+	/*
 	return all data needed for a rental hover menu (for all markers)
 	*/
 	private function _loadRentalHoverData()

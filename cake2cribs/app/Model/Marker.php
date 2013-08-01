@@ -157,67 +157,63 @@ class Marker extends AppModel {
 	/*
 	Finds marker_id by address.
 	If no marker exists, creates new marker.
+	If use is a PROPERTY_MANAGER, allow them to overwrite an existing marker.
 	Returns marker_id on success; error message on failure.
 	*/
-	public function FindMarkerId($marker, $user_id=null)
+	public function FindMarkerId($marker, $user_id=null, $user_type)
 	{
-		CakeLog::write("savingMarker", print_r($marker, true));
-		$street_address = $marker['street_address'];
-		$city = $marker['city'];
-		$state = $marker['state'];
-		$conditions = array('Marker.street_address' => $street_address,
-							'Marker.city' => $city,
-							'Marker.state' => $state);
-		$markerMatch = $this->find('first', array(
-	                     'conditions' => $conditions,
-	    	                 'fields' => array('Marker.marker_id', 'Marker.visible')
-	  	));
+		if (!array_key_exists('street_address', $marker) || 
+			!array_key_exists('city', $marker) ||
+			!array_key_exists('state', $marker)){
+			$error = null;
+			$error['marker'] = $marker;
+  			$this->LogError($user_id, 34, $error);
+  			return json_encode(array('error' =>
+	  				'Failed to save marker. Contact help@cribspot.com if the error persists. Reference error code 34'));
+		}
 
-	  	if($markerMatch != null){
-	  		/* Marker for this address already exists */
-	  		if (!array_key_exists('Marker', $markerMatch) || 
-	  			!array_key_exists('visible', $markerMatch['Marker']) || 
-	  			!array_key_exists('marker_id', $markerMatch['Marker'])){
-	  			$error = null;
-				$error['markerMatch'] = $markerMatch;
-	  			$this->LogError($user_id, 9, $error);
-	  			return array('error' =>
-	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 9');
-	  		}
+		$marker['Marker'] = $marker;
+		if (!array_key_exists('marker_id', $marker['Marker']) || $user_type == User::USER_TYPE_SUBLETTER) {
+			/* 
+			No marker_id given or user is student and doesn't have permission to change marker. 
+			Need to find an existing marker with the given address 
+			*/
+			$markerMatch = $this->_getMarkerByStreetAddress($marker['street_address'], $marker['city'], $marker['state']);
+			if ($markerMatch != null){
+				$markerMatch['Marker']['visible'] = 1;
+				$marker = $markerMatch;
+			}
+			else /* No existing marker found. We'll create a new one. */
+				$marker['Marker']['visible'] = 1;
+		}
 
-	  		if ($markerMatch['Marker']['visible']==0){
-	  			/* Marker exists but is invisible. Make it visible. */
-	  			$markerMatch['Marker']['visible']=1;
-		  		if(!$this->save($markerMatch)){
-		  			$error = null;
-					$error['markerMatch'] = $markerMatch;
-					$error['validation'] = $this->validationErrors;
-		  			$this->LogError($user_id, 10, $error);
-		  			return array('error' =>
-	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 10');
-		  		}
-	  		}
+  		if(!$this->save($marker)){
+  			$error = null;
+			$error['marker'] = $marker;
+			$error['validation'] = $this->validationErrors;
+  			$this->LogError($user_id, 35, $error);
+  			return json_encode(array('error' =>
+				'Failed to save marker. Contact help@cribspot.com if the error persists. Reference error code 35'));
+  		}
 		  		
-		  	return $markerMatch['Marker']['marker_id'];
-	  	}
-	  	else {
-	  		/* Marker for this address doesn't exist, so create a new one. */
-	  		if ($this->save(array('Marker' => $marker)))
-	  			return $this->id;
-	  		else {
-	  			$error = null;
-				$error['marker'] = $marker;
-				$error['validation'] = $this->validationErrors;
-	  			$this->LogError($user_id, 11, $error);
-	  			return array('error' =>
-	  				'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 11');
-	  		}
-	  	}
+		return $marker['Marker']['marker_id'];
 	}
 
 	public function hide($marker){
 		$marker['visible'] = 0;
 		$this->save($marker);
+	}
+
+	private function _getMarkerByStreetAddress($street_address, $city, $state)
+	{
+		$conditions = array('Marker.street_address' => $street_address,
+							'Marker.city' => $city,
+							'Marker.state' => $state);
+		$markerMatch = $this->find('first', array(
+	                     'conditions' => $conditions
+	  	));
+
+	  	return $markerMatch;
 	}
 
 }

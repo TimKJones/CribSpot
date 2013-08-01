@@ -67,3 +67,9 @@
 - UsersController->AjaxChangePassword
 32
 -User->SavePassword
+33
+- MarkerController->Save
+34
+- Marker->FindMarkerId
+35
+- Marker->FindMarkerId
