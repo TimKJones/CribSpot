@@ -98,7 +98,7 @@ class AppController extends Controller {
 
 	protected function _getUserId()
 	{
-		return $this->Auth->User('id');
+		return $this->Auth->User('id'); 
 	}
 
 	/**
