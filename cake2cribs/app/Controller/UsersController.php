@@ -1,16 +1,8 @@
 <?php
 class UsersController extends AppController {
-	public $helpers = array('Html', 'Js');
+	public $helpers = array('Html', 'Js', 'Facebook.Facebook');
 	public $uses = array('User');
-	public $components= array('Session','Auth' => array(
-        'authenticate' => array(
-            'Form' => array(
-                'fields' => array('username' => 'email')
-                )
-            )
-        )
-        ,'Email', 'RequestHandler'
-    );
+	public $components= array('Session','Auth', 'Email', 'RequestHandler', 'Facebook.Connect');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -22,6 +14,8 @@ class UsersController extends AppController {
         $this->Auth->allow('ResetPasswordRedirect');
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
+        $this->Auth->allow('Login2');
+        $this->Auth->allow('FacebookLogin');
     }
 
     /*
@@ -109,6 +103,7 @@ class UsersController extends AppController {
     {
         $this->autoRender = false;
         $this->Session->destroy();
+        $this->facebook->destroySession();
         $this->Auth->logout();
         $this->redirect('/');
     }
@@ -173,6 +168,103 @@ class UsersController extends AppController {
             /* User already logged in */
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
+    }
+
+    /*
+    Used to handle facebook login.
+    Logs user in if they already exist.
+    If they do not exist, create their record, and then log them in.
+    */
+    public function Login2($authorize=null)
+    {
+        CakeLog::write('me', 'called it');
+        $user = null;
+        if ($this->facebook->getUser())
+        {
+            try
+            {
+                $user = $this->facebook->api('/me');
+                CakeLog::write("me", print_r($user, true));
+                $this->FacebookLogin(null);
+            }
+            catch(FacebookApiException $e){
+                $this->facebook->destroySession();
+            }
+        }
+    }
+
+    public function FacebookLogin($authorize=null)
+    {
+        $user = null;
+/*
+ get users profile information
+- If user doesn't exist, create their record.
+- Log user in.
+- set fb_user session variable.
+- return response
+*/
+        $user_id = $this->facebook->getUser();
+        $user = $this->facebook->api('/'.$user_id);
+
+        /* TODO: If user doesn't exist, create a new record for them */
+
+        /* TODO: Log user in. */
+
+        /* TODO: only store fb_id in fb_user session variable? */
+        $this->Session->write('fb_user', $user);
+
+        $response = array('user_info' => $user);
+        $this->set('response', json_encode($user));
+        return;
+
+        /* ------------------------------------------ */
+
+        if ($this->Session->read('fb_user'))
+        {
+            try
+            {
+                $user = $this->facebook->api('/me');
+
+            }
+            catch(FacebookApiException $e){
+                $this->facebook->destroySession();
+            }
+        }
+
+        $userInfo = $this->facebook->api('/me');
+
+        if (!$userInfo) {
+            // nope, login failed or something went wrong, aborting
+            $this->redirect(array('action' => 'login'));
+        }
+
+        $user = array(
+            'User' => array(
+                'firstname'       => $userInfo['first_name'],
+                'lastname'        => $userInfo['last_name'],
+                'username'        => trim(parse_url($userInfo['link'], PHP_URL_PATH), '/'),
+                'email'           => $userInfo['email'],
+                'email_validated' => $userInfo['verified']
+            ),
+            'Oauth' => array(
+                'provider'        => 'facebook',
+                'provider_uid'    => $userInfo['id']
+            )
+        );
+
+        $this->Session->write('fb_user', $userInfo['id']);
+        CakeLog::write('me', print_r($user, true));
+    }
+
+    /*
+    User has been logged out of facebook.
+    Now log them out of our system
+    */
+    public function FacebookLogout()
+    {
+        $this->Session->destroy();
+        $this->facebook->destroySession();
+        $this->Logout();
     }
 
     /*
