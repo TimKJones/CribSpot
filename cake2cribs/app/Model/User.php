@@ -12,7 +12,16 @@ class User extends AppModel {
 
 	public $validate = array (
 		'id' => 'numeric',
-		'user_type' => 'numeric',
+		'user_type' => array(
+			'required' => array(
+				'rule' => 'notEmpty',
+				'message' => 'A first name is required.'
+				),
+			'numeric' => array(
+				'rule' => 'numeric',
+				'message' => 'Not a valid type'
+				)
+			),
 		'password' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -134,6 +143,19 @@ class User extends AppModel {
 		    self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
 		);
 		return parent::enum($value, $options);
+	}
+
+	public function beforeValidate($options = array())
+	{
+		$unset_array = null;
+		if ($this->data[$this->alias]['user_type'] === 0) // User type is a student
+			$unset_array = array('website', 'phone', 'street_address', 'city', 'state');
+		else
+			$unset_array = array('first_name', 'last_name');
+		foreach ($unset_array as $value) {
+			//unset($validator[$value]['required']);
+		}
+		return true;
 	}
 
 	public function beforeSave($options = array()) {
