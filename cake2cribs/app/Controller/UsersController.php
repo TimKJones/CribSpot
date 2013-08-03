@@ -193,18 +193,14 @@ class UsersController extends AppController {
         }
     }
 
-    public function FacebookLogin($authorize=null)
+    public function FacebookLogin($user_id=null)
     {
         $user = null;
-/*
- get users profile information
-- If user doesn't exist, create their record.
-- Log user in.
-- set fb_user session variable.
-- return response
-*/
-        $user_id = $this->facebook->getUser();
-        $user = $this->facebook->api('/'.$user_id);
+        $response = $_COOKIE;
+$this->set('response', json_encode($response));
+        return;
+        $this->facebook->setAccessToken($data['access_token']);
+        $user = $this->facebook->api('/'.$this->facebook->getUser());
 
         /* TODO: If user doesn't exist, create a new record for them */
 

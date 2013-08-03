@@ -1,14 +1,24 @@
-class A2Cribs.loginTest
+class A2Cribs.FacebookLogin
 
 	@FacebookLogin: () ->
 		FB.login @FacebookLoginCallback, scope: 'email'
 
 	@FacebookLoginCallback: (response) ->
 		if response.authResponse
-			console.log response
-			window.location.reload()
+			FB.api '/me', A2Cribs.loginTest.FacebookGetUserInfoCallback
 		else
 			console.log 'User canceled login'
+
+	@FacebookGetUserInfoCallback: (response) ->
+		if response.id == undefined
+			return
+
+		$.ajax
+			url: myBaseUrl + "Users/FacebookLogin/" + response.id
+			type:"GET"
+			context: this
+			success: (response) ->
+				console.log response
 
 	@FacebookLogout: () ->
 		$.ajax
