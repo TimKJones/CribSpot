@@ -148,7 +148,7 @@ class FeaturedListing extends AppModel {
 
     */ 
 
-    public function getDates($listing_id, $show_past=false){
+    public function getDates($listing_id, $university_id, $show_past=false){
         
         if($show_past){
             $date = date('Y-m-d', 0); //Time of Epoch
@@ -159,6 +159,7 @@ class FeaturedListing extends AppModel {
         $options = array(
                 "conditions"=>array(
                     "FeaturedListing.listing_id = "=>$listing_id,
+                    "FeaturedListing.university_id"=>$university_id,
                     "FeaturedListing.date >= " => $date,
                     ),
                 "fields"=>array(

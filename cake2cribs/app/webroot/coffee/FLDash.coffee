@@ -2,9 +2,11 @@ class A2Cribs.FLDash
 
     constructor:(@uiWidget)->
         
-        # Create a deffered that can be resolved to get the unavailable dates
-   
-        @OrderItems = {}
+        
+        #Map of listing id's to order stats
+        #an order states contains a list of selected dates
+        #and enableness of the universities associated with the listing
+        @OrderStates = {}
 
         @ListingUniPricing = {}
         # @UnavailableDates = null
@@ -45,7 +47,7 @@ class A2Cribs.FLDash
 
             listing_id = $(event.currentTarget).data('id')
                  
-            if not @OrderItems[listing_id]?
+            if not @OrderStates[listing_id]?
                 #Need to add a new order item
                 @addOrderItem(listing_id)
 
@@ -138,20 +140,7 @@ class A2Cribs.FLDash
         
         @uiListingsList.html list          
 
-    # Add an orderitem to the list of order items
-    addOrderItem:(listing_id)->
-        listing = A2Cribs.UserCache.Get 'listing', listing_id
-        marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
-        
-        data = {
-            address: marker.street_address
-            price: 0.00
-            id: listing.listing_id
-        }
-        #Set a place holder the OrderItems map
-        @OrderItems[listing_id] = {}
-
-        @uiOrderItemsList.append @OrderItemTemplate(data)
+   
 
     # getUnavailableDates:()->
     #     if not @UnavailableDates?
@@ -163,10 +152,11 @@ class A2Cribs.FLDash
     #     return @UnavailableDates
         
     
-    getUniPricing:(listing_id)->
+    getUniData:(listing_id = null)->
+
         if not @ListingUniPricing[listing_id]?
             d = new $.Deferred()
-            url = "/featuredListings/getUniPricingForListing/#{listing_id}"
+            url = "/featuredListings/getUniDataForListing/#{listing_id}"
             @ListingUniPricing[listing_id] = $.getJSON url, (data)=>
                 d.resolve(data)
 
@@ -175,6 +165,20 @@ class A2Cribs.FLDash
 
         return @ListingUniPricing[listing_id]
 
+     # Add an orderitem to the list of order items
+    addOrderItem:(listing_id)->
+        listing = A2Cribs.UserCache.Get 'listing', listing_id
+        marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
+        
+        data = {
+            address: marker.street_address
+            price: 0.00
+            id: listing.listing_id
+        }
+        #Set a place holder the OrderItems map
+        @OrderStates[listing_id] = {}
+
+        @uiOrderItemsList.append @OrderItemTemplate(data)
 
     editOrderItem:(listing_id)->
         listing = A2Cribs.UserCache.Get 'listing', listing_id
@@ -183,29 +187,24 @@ class A2Cribs.FLDash
         if @FL_Order?
             old_id = @FL_Order.listing_id
             @uiOrderItemsList.find(".orderItem[data-id=#{old_id}]").removeClass('editing')
-            @OrderItems[old_id] = @FL_Order.getOrderItem()
+            @OrderStates[old_id] = @FL_Order.getState()
+            
             @FL_Order.reset(false) #Tell it not to refresh after, this is a hack to prevent
                                    #The order changed event from firing with an empty calendar and
                                    #Making the price go down to 0
         
         # This sets up the featured listing form
-
-        options = {}
-        if @OrderItems[listing_id].item?.dates.length > 0
-            options['selected_dates'] = @OrderItems[listing_id].item.dates
         
-        if !$.isEmptyObject(@OrderItems[listing_id].item?.universities)
-            options['universities'] = @OrderItems[listing_id].item.universities
-
+        initialState = if @OrderStates[listing_id]? then @OrderStates[listing_id] else null
         address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address
 
         # We deffered the fetching of unavailable dates so when its ready we can 
         # continue and make the featured listing order form
         id = listing_id
-        $.when(@getUniPricing(listing_id)).then (uniPricing)=>
+        $.when(@getUniData(listing_id)).then (uniData)=>
             # unavailDates = unavailableDates.full_dates.concat unavailableDates.listing_dates[id]
             # options['disabled_dates'] = unavailDates
-            @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, address, uniPricing, options)
+            @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, address, uniData, initialState)
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
 
@@ -222,7 +221,7 @@ class A2Cribs.FLDash
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").remove()
         @removeErrors(listing_id)
 
-        delete @OrderItems[listing_id]
+        delete @OrderStates[listing_id]
         if(parseInt(@FL_Order?.listing_id,10) == listing_id)
             @FL_Order.reset()
             @FL_Order = null
@@ -305,15 +304,57 @@ class A2Cribs.FLDash
         
         @removeErrors()
 
-        if @FL_Order then @OrderItems[@FL_Order.listing_id] = @FL_Order.getOrderItem()
-        order = []
+        if @FL_Order then @OrderStates[@FL_Order.listing_id] = @FL_Order.getState()
+        
+        uniDataDefereds = []
+        for own listing_id of @OrderStates
+            uniDataDefereds.push(@getUniData(listing_id))
 
-        for own key, orderItem of @OrderItems
-            order.push(orderItem)
+        $.when.apply($, uniDataDefereds).then ()=>
+            # console.log(arguments)
+            order = []
+            orderData = _.zip(arguments, _.values(@OrderStates))
+            # OrderData is an array that contains a two item array for
+            # each listing pending to be ordered. First elemtn is the uniData
+            # and the second it the orderstate
 
-        #Featured Listing Order Type is 0
-        A2Cribs.Order.BuyItems order, 0, (errors)=>
-            @showErrors(errors)
+            for od in orderData
+                uniData = od[0]
+                orderState = od[1]
+                if orderState.selectedDates.length < 1
+                    continue
+                
+                # Need to generate an orderItem per uni
+                for uni in uniData
+                    if not uni.enabled
+                        continue
+                    oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState, uni)
+                    order.push oi
+
+            A2Cribs.Order.BuyItems order, 0, (errors)=>
+                @showErrors(errors)
+
+
+            # for uniData in arguments
+
+            #     for uni in uniData
+            #         oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem()
+
+        # order = []
+        # for orderState in @OrderStates
+        #     for own uni_id, enabled of orderState.universities
+        #         if !enabled
+        #             continue
+        #         $.when(@getUniData(listing_id)).then (uniData)=>
+        #             oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState.selected_dates, orderState.listing_id, )
+        #         order.push A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState.selected_dates, orderState.listing_id, )
+
+        # for own key, orderItem of @OrderItems
+        #     order.push(orderItem)
+
+        # #Featured Listing Order Type is 0
+        # A2Cribs.Order.BuyItems order, 0, (errors)=>
+        #     @showErrors(errors)
 
     
     toggleOrderDetailsUI:(show)->

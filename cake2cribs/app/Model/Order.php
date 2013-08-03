@@ -192,12 +192,10 @@ class Order extends AppModel {
         return $order;
     }
 
-
-
-
     public function validateFLOrder($orderItems, $user_id, $SU=false){
         $FeaturedListing = ClassRegistry::init('FeaturedListing');
         $Listing = ClassRegistry::init('Listing');
+        $University = ClassRegistry::init('University');
         // Build a map of a date and num featuredlistings on that date
         $dates = array();
         $validationErrors = array();
@@ -223,6 +221,14 @@ class Order extends AppModel {
                 }
             }
 
+            // Go through and make sure each university they are trying to feature
+            // at actually exists
+            foreach ($orderItem->item->universities as $university_id => $feature) {
+                if(!$University->UniExists($university_id)){
+                    $msg = "University with ID $university_id doesn't exist";
+                    array_push($validationErrors, array('id'=>$listing_id, 'reason'=>$msg));   
+                }
+            }
 
             // unique dates incase duplicate dates slipped in the post data
             foreach($orderItem->item->dates as $date){
@@ -246,16 +252,20 @@ class Order extends AppModel {
         foreach($dates as $date=>$info){
             
             // Convert the date string to a more readable format for the user
-
             $date = date("m/d/Y", strtotime($date));
-            // See if featuring the listings on a given date will put us over
-            // The limit
-            if($info['count'] + count($info['id']) > self::FLDailyLimit){
-                $msg = "Not enough spots left to feature on $date, only ".$info['count']." spots left";
-                foreach($info['id'] as $id){
-                    array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
-                }
-            }
+
+            // Note 8/2/2013 We aren't checking for the limit per day as Jason
+            // Says there is no limit. This check also complicates our validation flow
+            // on the front end that we'll get aroundt to later when we do need to enforce the count
+
+            // // See if featuring the listings on a given date will put us over
+            // // The limit
+            // if($info['count'] + count($info['id']) > self::FLDailyLimit){
+            //     $msg = "Not enough spots left to feature on $date, only ".$info['count']." spots left";
+            //     foreach($info['id'] as $id){
+            //         array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
+            //     }
+            // }
 
             //See if the date trying to be featured on is before the minimum start date
             if(strtotime($date) < $min_start){
@@ -265,7 +275,9 @@ class Order extends AppModel {
                 }   
             }
 
-            //See if the listing is already featured on the given day.
+            // See if the listing is already featured on the given day.
+            // If it is we want to tell the user, let them go through with it
+            // but not 
             foreach($info['id'] as $id){
                 if($FeaturedListing->featuredOnDate($id, $date)){
                     $msg = "Listing already featured on date ($date)";

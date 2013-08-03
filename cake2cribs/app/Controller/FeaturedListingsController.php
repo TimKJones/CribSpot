@@ -124,10 +124,12 @@ class FeaturedListingsController extends AppController {
   /*
     Returns a JSON array containing the universities the listing
     is eligable to be featured at mapped to the pricing rates 
-    specific to the university based on pricing.
+    specific to the university based on pricing. As well as an
+    array of dates that the listing is already listed at that 
+    univesrity for.
   */
 
-  public function getUniPricingForListing($listing_id){
+  public function getUniDataForListing($listing_id){
     
 
 
@@ -148,12 +150,13 @@ class FeaturedListingsController extends AppController {
     $response = array();
     foreach ($unis as $uni) {
       //TODO get unique price for each uni
-
+      $uni_id = $uni['University']['id'];
       array_push($response, array(
           'name' => $uni['University']['name'],
-          'university_id' => $uni['University']['id'],
+          'university_id' => $uni_id,
           'weekend_price' => 5,
           'weekday_price' => 15,
+          'unavailable_dates' => $this->FeaturedListing->getDates($listing_id, $uni_id),
         ));
     }
 

@@ -6,8 +6,10 @@
     </div>
     <br>
     <p class = 'instruc-step'>1. Pick Dates to Feature Your Listing</p>
-    <div class = 'mdp'>
-    </div>
+    
+    <div class = 'mdp'></div>
+    <ul class = 'DateConflicts'></ul>
+
     <div class = 'rst pull-right'>
         <label><input type="checkbox" checked/> Range Select Enabled</label>
         <a href='#' class = 'clear-selected-dates'>Clear Selected Dates</a>

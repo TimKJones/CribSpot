@@ -92,6 +92,11 @@ class University extends AppModel {
 		return null;
 	}
 
+	public function UniExists($university_id){
+		$this->id = $university_id;
+		return $this->exists();
+	}
+
 	public function getUniversitiesAround($lat, $lon, $radius){
 		$this->contain();
 		$this->virtualFields = array(

@@ -7,7 +7,7 @@
     function FLDash(uiWidget) {
       var _this = this;
       this.uiWidget = uiWidget;
-      this.OrderItems = {};
+      this.OrderStates = {};
       this.ListingUniPricing = {};
       this.FL_Order = null;
       this.uiFL_Form = $('.featured-listing-order-item').first();
@@ -32,7 +32,7 @@
       }).on('click', '.listing-item', function(event) {
         var listing_id;
         listing_id = $(event.currentTarget).data('id');
-        if (!(_this.OrderItems[listing_id] != null)) {
+        if (!(_this.OrderStates[listing_id] != null)) {
           _this.addOrderItem(listing_id);
         }
         return _this.editOrderItem(listing_id);
@@ -126,6 +126,23 @@
       return this.uiListingsList.html(list);
     };
 
+    FLDash.prototype.getUniData = function(listing_id) {
+      var d, url,
+        _this = this;
+      if (listing_id == null) {
+        listing_id = null;
+      }
+      if (!(this.ListingUniPricing[listing_id] != null)) {
+        d = new $.Deferred();
+        url = "/featuredListings/getUniDataForListing/" + listing_id;
+        this.ListingUniPricing[listing_id] = $.getJSON(url, function(data) {
+          return d.resolve(data);
+        });
+        this.ListingUniPricing[listing_id] = d.promise();
+      }
+      return this.ListingUniPricing[listing_id];
+    };
+
     FLDash.prototype.addOrderItem = function(listing_id) {
       var data, listing, marker;
       listing = A2Cribs.UserCache.Get('listing', listing_id);
@@ -135,45 +152,25 @@
         price: 0.00,
         id: listing.listing_id
       };
-      this.OrderItems[listing_id] = {};
+      this.OrderStates[listing_id] = {};
       return this.uiOrderItemsList.append(this.OrderItemTemplate(data));
     };
 
-    FLDash.prototype.getUniPricing = function(listing_id) {
-      var d, url,
-        _this = this;
-      if (!(this.ListingUniPricing[listing_id] != null)) {
-        d = new $.Deferred();
-        url = "/featuredListings/getUniPricingForListing/" + listing_id;
-        this.ListingUniPricing[listing_id] = $.getJSON(url, function(data) {
-          return d.resolve(data);
-        });
-        this.ListingUniPricing[listing_id] = d.promise();
-      }
-      return this.ListingUniPricing[listing_id];
-    };
-
     FLDash.prototype.editOrderItem = function(listing_id) {
-      var address, id, listing, old_id, options, _ref, _ref1,
+      var address, id, initialState, listing, old_id,
         _this = this;
       listing = A2Cribs.UserCache.Get('listing', listing_id);
       if (this.FL_Order != null) {
         old_id = this.FL_Order.listing_id;
         this.uiOrderItemsList.find(".orderItem[data-id=" + old_id + "]").removeClass('editing');
-        this.OrderItems[old_id] = this.FL_Order.getOrderItem();
+        this.OrderStates[old_id] = this.FL_Order.getState();
         this.FL_Order.reset(false);
       }
-      options = {};
-      if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
-        options['selected_dates'] = this.OrderItems[listing_id].item.dates;
-      }
-      if (!$.isEmptyObject((_ref1 = this.OrderItems[listing_id].item) != null ? _ref1.universities : void 0)) {
-        options['universities'] = this.OrderItems[listing_id].item.universities;
-      }
+      initialState = this.OrderStates[listing_id] != null ? this.OrderStates[listing_id] : null;
       address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address;
       id = listing_id;
-      $.when(this.getUniPricing(listing_id)).then(function(uniPricing) {
-        return _this.FL_Order = new A2Cribs.Order.FeaturedListing(_this.uiFL_Form, listing.listing_id, address, uniPricing, options);
+      $.when(this.getUniData(listing_id)).then(function(uniData) {
+        return _this.FL_Order = new A2Cribs.Order.FeaturedListing(_this.uiFL_Form, listing.listing_id, address, uniData, initialState);
       });
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
       return this.toggleOrderDetailsUI(true);
@@ -183,7 +180,7 @@
       var different_id, _ref;
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").remove();
       this.removeErrors(listing_id);
-      delete this.OrderItems[listing_id];
+      delete this.OrderStates[listing_id];
       if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
         this.FL_Order.reset();
         this.FL_Order = null;
@@ -238,21 +235,39 @@
     };
 
     FLDash.prototype.buy = function() {
-      var key, order, orderItem, _ref,
+      var listing_id, uniDataDefereds, _ref,
         _this = this;
       this.removeErrors();
       if (this.FL_Order) {
-        this.OrderItems[this.FL_Order.listing_id] = this.FL_Order.getOrderItem();
+        this.OrderStates[this.FL_Order.listing_id] = this.FL_Order.getState();
       }
-      order = [];
-      _ref = this.OrderItems;
-      for (key in _ref) {
-        if (!__hasProp.call(_ref, key)) continue;
-        orderItem = _ref[key];
-        order.push(orderItem);
+      uniDataDefereds = [];
+      _ref = this.OrderStates;
+      for (listing_id in _ref) {
+        if (!__hasProp.call(_ref, listing_id)) continue;
+        uniDataDefereds.push(this.getUniData(listing_id));
       }
-      return A2Cribs.Order.BuyItems(order, 0, function(errors) {
-        return _this.showErrors(errors);
+      return $.when.apply($, uniDataDefereds).then(function() {
+        var od, oi, order, orderData, orderState, uni, uniData, _i, _j, _len, _len1;
+        order = [];
+        orderData = _.zip(arguments, _.values(_this.OrderStates));
+        for (_i = 0, _len = orderData.length; _i < _len; _i++) {
+          od = orderData[_i];
+          uniData = od[0];
+          orderState = od[1];
+          if (orderState.selectedDates.length < 1) {
+            continue;
+          }
+          for (_j = 0, _len1 = uniData.length; _j < _len1; _j++) {
+            uni = uniData[_j];
+            if (!uni.enabled) {
+              continue;
+            }
+            oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState, uni);
+            order.push(oi);
+          }
+        }
+        return console.log(order);
       });
     };
 

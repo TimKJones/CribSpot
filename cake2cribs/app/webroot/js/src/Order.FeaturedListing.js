@@ -3,13 +3,13 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(Widget, listing_id, address, UniPricing, options) {
+    function FeaturedListing(Widget, listing_id, address, UniData, initialState) {
       this.Widget = Widget;
       this.listing_id = listing_id;
       this.address = address;
-      this.UniPricing = UniPricing;
-      if (options == null) {
-        options = null;
+      this.UniData = UniData;
+      if (initialState == null) {
+        initialState = null;
       }
       this.Weekdays = 0;
       this.Weekends = 0;
@@ -17,13 +17,13 @@
       this.WD_price = 0;
       this.WE_price = 0;
       this.MIN_DAY_OFFSET = 3;
-      this.initMultiDatesPicker(options);
+      this.initMultiDatesPicker(initialState);
       this.initTemplates();
       this.PrevSelectedDate = null;
       this.RangeSelectEnabled = true;
       this.Widget.find('.address').html(this.address);
       this.setupHandlers();
-      this.setupUniPriceTable(options);
+      this.setupUniPriceTable(initialState);
       this.refresh();
     }
 
@@ -42,19 +42,19 @@
       return this.Widget.on('click', 'input.uni-toggle', function(event) {
         var index;
         index = $(event.currentTarget).parents().eq(1).index();
-        _this.UniPricing[index].enabled = $(event.currentTarget).prop('checked');
+        _this.UniData[index].enabled = $(event.currentTarget).prop('checked');
         return _this.refresh();
       });
     };
 
-    FeaturedListing.prototype.setupUniPriceTable = function(options) {
+    FeaturedListing.prototype.setupUniPriceTable = function(intialState) {
       var rows, uniPrice, _i, _len, _ref, _ref1;
       rows = "";
-      _ref = this.UniPricing;
+      _ref = this.UniData;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         uniPrice = _ref[_i];
-        if (((_ref1 = options.universities) != null ? _ref1[uniPrice.university_id] : void 0) != null) {
-          uniPrice.enabled = options.universities[uniPrice.university_id];
+        if ((typeof initialState !== "undefined" && initialState !== null ? (_ref1 = initialState.universities) != null ? _ref1[uniPrice.university_id] : void 0 : void 0) != null) {
+          uniPrice.enabled = initialState.universities[uniPrice.university_id];
         } else {
           uniPrice.enabled = true;
         }
@@ -63,23 +63,28 @@
       return this.Widget.find('.uniPriceTable>tbody').html(rows);
     };
 
-    FeaturedListing.prototype.getOrderItem = function() {
-      var orderItem, uni, unis, _i, _len, _ref;
+    FeaturedListing.GenerateOrderItem = function(orderState, uni_data) {
+      var dates;
+      dates = _.without.apply(_, [orderState.selectedDates].concat(uni_data.unavailable_dates));
+      return {
+        listing_id: orderState.listing_id,
+        university_id: uni_data.university_id,
+        dates: dates
+      };
+    };
+
+    FeaturedListing.prototype.getState = function() {
+      var uni, unis, _i, _len, _ref;
       unis = {};
-      _ref = this.UniPricing;
+      _ref = this.UniData;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         uni = _ref[_i];
         unis[uni.university_id] = uni.enabled;
       }
-      return orderItem = {
-        type: 'FeaturedListing',
-        price: this.getPrice(),
-        item: {
-          address: this.address,
-          listing_id: this.listing_id,
-          dates: this.getDates('string'),
-          universities: unis
-        }
+      return {
+        selectedDates: this.getDates('string'),
+        universities: unis,
+        listing_id: this.listing_id
       };
     };
 
@@ -96,9 +101,7 @@
       this.datepicker.multiDatesPicker('resetDates', 'disabled');
       this.Widget.off('click', '.rst input');
       this.Widget.off('click', '.rst .clear-selected-dates');
-      if (refresh_after) {
-        return this.refresh();
-      }
+      return this.Widget.off('click', 'input.uni-toggle', refresh_after ? this.refresh() : void 0);
     };
 
     FeaturedListing.prototype.getDates = function(type) {
@@ -116,7 +119,7 @@
       var uni, _i, _len, _ref;
       this.WE_price = 0;
       this.WD_price = 0;
-      _ref = this.UniPricing;
+      _ref = this.UniData;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         uni = _ref[_i];
         if (uni.enabled) {
@@ -145,12 +148,9 @@
       return [this.Weekdays, this.Weekends];
     };
 
-    FeaturedListing.prototype.initMultiDatesPicker = function(options) {
+    FeaturedListing.prototype.initMultiDatesPicker = function(initialState) {
       var pickeroptions, today,
         _this = this;
-      if (options == null) {
-        options = null;
-      }
       today = new Date();
       pickeroptions = {
         dateFormat: "yy-mm-dd",
@@ -162,11 +162,8 @@
           return _this.refresh();
         }
       };
-      if ((options != null ? options.selected_dates : void 0) != null) {
-        pickeroptions.addDates = options.selected_dates;
-      }
-      if ((options != null ? options.disabled_dates : void 0) != null) {
-        pickeroptions.addDisabledDates = options.disabled_dates;
+      if (initialState != null) {
+        pickeroptions.addDates = initialState.selectedDates;
       }
       this.datepicker = $(this.Widget).find('.mdp').first().multiDatesPicker(pickeroptions);
       return this.datepicker.click();
@@ -201,15 +198,56 @@
     };
 
     FeaturedListing.prototype.initTemplates = function() {
-      var uniPriceRowHTML;
+      var dateConflictNoticeHTML, uniPriceRowHTML;
       uniPriceRowHTML = "<tr data-university_id='<%= university_id %>' >\n    <td><%=name%></td>\n    <td class = 'rates'>$<%=weekday_price.toFixed(2)%></td>\n    <td class = 'rates'>$<%=weekend_price.toFixed(2)%></td>\n    <td><input class = 'uni-toggle' type='checkbox' <% if(enabled){print('checked');} %> />\n</tr>";
-      return this.UniPriceRow = _.template(uniPriceRowHTML);
+      this.UniPriceRow = _.template(uniPriceRowHTML);
+      dateConflictNoticeHTML = "<li><i class = 'icon-warning-sign'></i> Listing already featured at <%=name%> on <%\n    $.each(dates, function(index, date){\n        d = new Date(date)\n        if(index != dates.length-1)\n            print(d.getMonth()+1 + \"-\" + d.getDate() +\"-\"+ d.getFullYear() + \", \");\n        else\n            print(d.getMonth()+1 + \"-\" + d.getDate()+\"-\"+ d.getFullYear());\n    });\n    %></li>";
+      return this.DateConflictNotice = _.template(dateConflictNoticeHTML);
+    };
+
+    FeaturedListing.prototype.checkForDateConflicts = function() {
+      var conflictNotices, d, dates, priceDif, selected_dates, unavailDate, uni, _i, _j, _len, _len1, _ref, _ref1;
+      selected_dates = this.getDates('string');
+      conflictNotices = "";
+      priceDif = 0;
+      _ref = this.UniData;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        uni = _ref[_i];
+        if (!uni.enabled) {
+          continue;
+        }
+        dates = [];
+        _ref1 = uni.unavailable_dates;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          unavailDate = _ref1[_j];
+          if ($.inArray(unavailDate, selected_dates) !== -1) {
+            dates.push(unavailDate);
+            d = new Date(unavailDate);
+            if (d.getDay() === 0 || d.getDay() === 6) {
+              priceDif += uni.weekend_price;
+            } else {
+              priceDif += uni.weekday_price;
+            }
+          }
+        }
+        if (dates.length > 0) {
+          conflictNotices += this.DateConflictNotice({
+            name: uni.name,
+            dates: dates
+          });
+        }
+      }
+      this.Widget.find('.DateConflicts').html(conflictNotices);
+      return priceDif;
     };
 
     FeaturedListing.prototype.refresh = function() {
+      var priceDiffDueToConflicts;
       this.updateDayCounts();
       this.updateRates();
       this.updatePrice();
+      priceDiffDueToConflicts = this.checkForDateConflicts();
+      this.Price -= priceDiffDueToConflicts;
       $(this.Widget).find('.price').html(" $" + (this.Price.toFixed(2)));
       $(this.Widget).find('.weekdays').html(this.Weekdays);
       $(this.Widget).find('.weekends').html(this.Weekends);
