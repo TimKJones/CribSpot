@@ -334,28 +334,6 @@ class A2Cribs.FLDash
             A2Cribs.Order.BuyItems order, 0, (errors)=>
                 @showErrors(errors)
 
-
-            # for uniData in arguments
-
-            #     for uni in uniData
-            #         oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem()
-
-        # order = []
-        # for orderState in @OrderStates
-        #     for own uni_id, enabled of orderState.universities
-        #         if !enabled
-        #             continue
-        #         $.when(@getUniData(listing_id)).then (uniData)=>
-        #             oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState.selected_dates, orderState.listing_id, )
-        #         order.push A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState.selected_dates, orderState.listing_id, )
-
-        # for own key, orderItem of @OrderItems
-        #     order.push(orderItem)
-
-        # #Featured Listing Order Type is 0
-        # A2Cribs.Order.BuyItems order, 0, (errors)=>
-        #     @showErrors(errors)
-
     
     toggleOrderDetailsUI:(show)->
         if show

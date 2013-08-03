@@ -107,7 +107,6 @@ class OrderController extends AppController {
 
         $orderItems = json_decode($orderItems_json);
         $user_id =$this->_getUserId();
-
         switch($order_type){
             case Order::ORDER_TYPE_FEATURED_LISTING:
                 $validationErrors = $this->Order->validateFLOrder($orderItems, $user_id);
@@ -161,13 +160,13 @@ class OrderController extends AppController {
         if($jwt_encry == null){
             throw new NotFoundException();
         }
-
+        ClassRegistry::init('Order');
         App::uses('JWT', 'JWT');
 
         // This should be not false, we want to verify however during testing,
         // shit comes up with it .
-
-        $jwt = JWT::decode($jwt_encry, $this->WalletSecretKey, false);
+        
+        $jwt = JWT::decode($jwt_encry, Order::WalletSecretKey, false);
 
         $user_id = $this->Auth->User('id');
         

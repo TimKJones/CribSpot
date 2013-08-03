@@ -7,7 +7,7 @@ class Order extends AppModel {
 
     const FLWeekdayCost = 15.00;
     const FLWeekendCost = 5.00;
-    const FLMinStartOffset = 259200;  // 3 * (60 * 60 * 24);   //3 days ahead is the gap needed to feature listing
+    const FLMinStartOffset = 172800;  // 3 * (60 * 60 * 24);   //3 days ahead is the gap needed to feature listing
     const FLDailyLimit = 2;
 
     const WalletSellerID = "10354430150694430158";
@@ -45,7 +45,7 @@ class Order extends AppModel {
         //in the request sellerdata for later retreival and order fulfillment
 
         $PendingOrder = ClassRegistry::init('PendingOrder');        
-        $pendingOrder = $PendingOrder->add($request['price'], $orderItems, $user_id);
+        $pendingOrder = $PendingOrder->add($request['price'], $orderItems, $order_type, $user_id);
 
         $sellerData = array(
             'pendingOrder_id'=>$pendingOrder['PendingOrder']['id']
@@ -86,7 +86,7 @@ class Order extends AppModel {
             
             // this is a two indexed array that contains the number of weekdays and weekends
             // that are contained in the dates for the order item
-            $day_counts = DateHelpers::getDayCounts($orderItem->item->dates);
+            $day_counts = DateHelpers::getDayCounts($orderItem->dates);
             $weekdays += $day_counts['weekdays'];
             $weekends += $day_counts['weekends'];
 
@@ -136,23 +136,23 @@ class Order extends AppModel {
         }
 
         $orderItems = json_decode($pendingOrder['PendingOrder']['orderItems']);
-        
+        $order_type = $pendingOrder['PendingOrder']['order_type'];
 
         foreach($orderItems as &$orderItem){
 
             // We do generic switch on type here for the various things you can buy
             // Creates the object that was purchased and we get the id for our generic fk
-            switch($orderItem->type){
-                case "FeaturedListing":
+            switch($order_type){
+                case self::ORDER_TYPE_FEATURED_LISTING:
                     $FeaturedListing = ClassRegistry::init('FeaturedListing');
                     // We want to store all the id's of the featured listings we create
                     // so we can link a users order to the specific featured listings 
                     // instances that they bought
-                    $orderItem->item->featured_listing_ids = array();
-                    foreach ($orderItem->item->dates as $date) {
-                        $featured_listing = $FeaturedListing->add($orderItem->item->listing_id, $date, $user_id);
+                    $orderItem->featured_listing_ids = array();
+                    foreach ($orderItem->dates as $date) {
+                        $featured_listing = $FeaturedListing->add($orderItem->listing_id, $orderItem->university_id, $date, $user_id);
                         $item_id = $featured_listing['FeaturedListing']['id'];
-                        array_push($orderItem->item->featured_listing_ids, $item_id);
+                        array_push($orderItem->featured_listing_ids, $item_id);
                     }
                     break;
 
@@ -171,6 +171,7 @@ class Order extends AppModel {
             'price'=>floatval($request->price),
             'currency_code'=>$request->currencyCode,
             'orderItems'=>json_encode($orderItems),
+            'order_type'=>$order_type,
             'user_id'=>$user_id,
             'wallet_order_id'=>$wallet_order_id
         
@@ -183,11 +184,13 @@ class Order extends AppModel {
         $order = $this->read();
         
         //Clean up the pending order related to this order
-        if($order != null)
+        if($order != null){
             $PendingOrder->delete($pendingOrder_id);
-        else
+        }
+        else{
             $this->logError($user_id, 38, $orderItems);
             throw new Exception("Order did not go through");
+        }
 
         return $order;
     }
@@ -202,8 +205,8 @@ class Order extends AppModel {
 
         foreach($orderItems as &$orderItem){
             //Only want unique dates, incase extras got in we remove them
-            $orderItem->item->dates = array_unique($orderItem->item->dates); 
-            $listing_id = $orderItem->item->listing_id;
+            $orderItem->dates = array_unique($orderItem->dates); 
+            $listing_id = $orderItem->listing_id;
             
             // Depending on if the order is being carried out by a super
             // user do different checks
@@ -220,18 +223,13 @@ class Order extends AppModel {
                     array_push($validationErrors, array('id'=>$listing_id, 'reason'=>$msg));   
                 }
             }
-
-            // Go through and make sure each university they are trying to feature
-            // at actually exists
-            foreach ($orderItem->item->universities as $university_id => $feature) {
-                if(!$University->UniExists($university_id)){
+             if(!$University->UniExists($orderItem->university_id)){
                     $msg = "University with ID $university_id doesn't exist";
                     array_push($validationErrors, array('id'=>$listing_id, 'reason'=>$msg));   
-                }
             }
-
-            // unique dates incase duplicate dates slipped in the post data
-            foreach($orderItem->item->dates as $date){
+            
+            
+            foreach($orderItem->dates as $date){
                 if(!array_key_exists($date, $dates)){
                     $dates[$date]['id'] = array();
                     $dates[$date]['count'] = $FeaturedListing->countListingsOnDate($date);
@@ -246,6 +244,7 @@ class Order extends AppModel {
         // a listing is already featured on a day
         
         $min_start_date = date("m/d/Y", time() + self::FLMinStartOffset); // first day they can start featuring
+                                                // -1 because we want to include today inclusively 
         $min_start = strtotime($min_start_date);
         // echo $min_start_date;
         // echo $min_start;

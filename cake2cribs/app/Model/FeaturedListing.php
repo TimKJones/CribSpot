@@ -14,30 +14,14 @@ class FeaturedListing extends AppModel {
 
     public $TAG = 'FeaturedListing'; 
 
-    public function add($listing_id, $date, $user_id){
+    public function add($listing_id, $university_id, $date, $user_id){
         
-        $listing = $this->Listing->Get($listing_id);
-        
-        if($listing == null){
-            CakeLog::write($this->$TAG, "Listing " . $listing_id . 
-                " not found while trying to buy a featured listing");
-            return null;
-        }
-
-        $latitude  = $listing['Marker']['latitude'];
-        $longitude  = $listing['Marker']['longitude'];
-
-        $type = 1; //Only one type of featured listing right now
-
         $featured_listing_data = array(
             'FeaturedListing' => array(
-                'listing_id' => $listing['Listing']['listing_id'],
-                'street_address' => $listing['Marker']['street_address'],
+                'listing_id' => $listing_id,
+                'university_id'=>$university_id,
                 'user_id' => $user_id,
                 'date'=>date('Y-m-d', strtotime($date)),
-                'type' => $type,
-                'latitude' => $latitude,
-                'longitude' => $longitude,
             )    
         );
         $this->create($featured_listing_data);

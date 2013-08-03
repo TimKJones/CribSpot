@@ -267,7 +267,9 @@
             order.push(oi);
           }
         }
-        return console.log(order);
+        return A2Cribs.Order.BuyItems(order, 0, function(errors) {
+          return _this.showErrors(errors);
+        });
       });
     };
 
