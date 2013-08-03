@@ -14,7 +14,7 @@ class A2Cribs.FacebookLogin
 			return
 
 		$.ajax
-			url: myBaseUrl + "Users/FacebookLogin/" + response.id
+			url: myBaseUrl + "Users/FacebookLogin"
 			type:"GET"
 			context: this
 			success: (response) ->
