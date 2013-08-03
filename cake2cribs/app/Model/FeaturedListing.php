@@ -85,7 +85,7 @@ class FeaturedListing extends AppModel {
 
     // A seed value is used along with the page size to pull out a select few
     // featured listings. 
-    public function cycleConditions($up_lat, $low_lat, $up_long, $low_long, $date){
+    public function getSideBarConditions($date, $region_id=null){
 
         $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
 
@@ -93,10 +93,6 @@ class FeaturedListing extends AppModel {
             'and' => array(
                         array(
                             'FeaturedListing.date = ' => $date,
-                            'FeaturedListing.latitude <=' => $up_lat,
-                            'FeaturedListing.latitude >=' => $low_lat,
-                            'FeaturedListing.longitude <=' => $up_long,
-                            'FeaturedListing.longitude >=' => $low_long
                             ),
                     )
             );

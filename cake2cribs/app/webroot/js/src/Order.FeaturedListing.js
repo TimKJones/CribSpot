@@ -3,30 +3,27 @@
 
   A2Cribs.Order.FeaturedListing = (function() {
 
-    function FeaturedListing(Widget, listing_id, address, options) {
-      var _this = this;
+    function FeaturedListing(Widget, listing_id, address, UniPricing, options) {
       this.Widget = Widget;
       this.listing_id = listing_id;
       this.address = address;
+      this.UniPricing = UniPricing;
       if (options == null) {
         options = null;
       }
       this.Weekdays = 0;
       this.Weekends = 0;
       this.Price = 0;
-      this.WD_price = 15;
-      this.WE_price = 5;
+      this.WD_price = 0;
+      this.WE_price = 0;
       this.MIN_DAY_OFFSET = 3;
       this.initMultiDatesPicker(options);
+      this.initTemplates();
       this.PrevSelectedDate = null;
       this.RangeSelectEnabled = true;
       this.Widget.find('.address').html(this.address);
-      this.Widget.on('click', '.rst input', function(event) {
-        _this.RangeSelectEnabled = !_this.RangeSelectEnabled;
-        return _this.PrevSelectedDate = null;
-      }).on('click', '.rst .clear-selected-dates', function(event) {
-        return _this.clear();
-      });
+      this.setupHandlers();
+      this.setupUniPriceTable(options);
       this.refresh();
     }
 
@@ -34,14 +31,54 @@
       return this.Price;
     };
 
+    FeaturedListing.prototype.setupHandlers = function() {
+      var _this = this;
+      this.Widget.on('click', '.rst input', function(event) {
+        _this.RangeSelectEnabled = !_this.RangeSelectEnabled;
+        return _this.PrevSelectedDate = null;
+      }).on('click', '.rst .clear-selected-dates', function(event) {
+        return _this.clear();
+      });
+      return this.Widget.on('click', 'input.uni-toggle', function(event) {
+        var index;
+        index = $(event.currentTarget).parents().eq(1).index();
+        _this.UniPricing[index].enabled = $(event.currentTarget).prop('checked');
+        return _this.refresh();
+      });
+    };
+
+    FeaturedListing.prototype.setupUniPriceTable = function(options) {
+      var rows, uniPrice, _i, _len, _ref, _ref1;
+      rows = "";
+      _ref = this.UniPricing;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        uniPrice = _ref[_i];
+        if (((_ref1 = options.universities) != null ? _ref1[uniPrice.university_id] : void 0) != null) {
+          uniPrice.enabled = options.universities[uniPrice.university_id];
+        } else {
+          uniPrice.enabled = true;
+        }
+        rows += this.UniPriceRow(uniPrice);
+      }
+      return this.Widget.find('.uniPriceTable>tbody').html(rows);
+    };
+
     FeaturedListing.prototype.getOrderItem = function() {
-      return {
+      var orderItem, uni, unis, _i, _len, _ref;
+      unis = {};
+      _ref = this.UniPricing;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        uni = _ref[_i];
+        unis[uni.university_id] = uni.enabled;
+      }
+      return orderItem = {
         type: 'FeaturedListing',
         price: this.getPrice(),
         item: {
           address: this.address,
           listing_id: this.listing_id,
-          dates: this.getDates('string')
+          dates: this.getDates('string'),
+          universities: unis
         }
       };
     };
@@ -73,6 +110,22 @@
 
     FeaturedListing.prototype.updatePrice = function() {
       return this.Price = this.Weekdays * this.WD_price + this.Weekends * this.WE_price;
+    };
+
+    FeaturedListing.prototype.updateRates = function() {
+      var uni, _i, _len, _ref;
+      this.WE_price = 0;
+      this.WD_price = 0;
+      _ref = this.UniPricing;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        uni = _ref[_i];
+        if (uni.enabled) {
+          this.WD_price += uni.weekday_price;
+          this.WE_price += uni.weekend_price;
+        }
+      }
+      this.Widget.find('#wd_rate').html(this.WD_price.toFixed(2));
+      return this.Widget.find('#we_rate').html(this.WE_price.toFixed(2));
     };
 
     FeaturedListing.prototype.updateDayCounts = function() {
@@ -147,8 +200,15 @@
       }
     };
 
+    FeaturedListing.prototype.initTemplates = function() {
+      var uniPriceRowHTML;
+      uniPriceRowHTML = "<tr data-university_id='<%= university_id %>' >\n    <td><%=name%></td>\n    <td class = 'rates'>$<%=weekday_price.toFixed(2)%></td>\n    <td class = 'rates'>$<%=weekend_price.toFixed(2)%></td>\n    <td><input class = 'uni-toggle' type='checkbox' <% if(enabled){print('checked');} %> />\n</tr>";
+      return this.UniPriceRow = _.template(uniPriceRowHTML);
+    };
+
     FeaturedListing.prototype.refresh = function() {
       this.updateDayCounts();
+      this.updateRates();
       this.updatePrice();
       $(this.Widget).find('.price').html(" $" + (this.Price.toFixed(2)));
       $(this.Widget).find('.weekdays').html(this.Weekdays);

@@ -3,11 +3,13 @@ class A2Cribs.FLDash
     constructor:(@uiWidget)->
         
         # Create a deffered that can be resolved to get the unavailable dates
-        @GetUnavailableDates = new $.Deferred()
-        $.getJSON '/featuredListings/getUnavailableDates', (data)=>
-            @GetUnavailableDates.resolve(data.full_dates, data.listing_dates)
-
+   
         @OrderItems = {}
+
+        @ListingUniPricing = {}
+        # @UnavailableDates = null
+        
+
         @FL_Order = null
         @uiFL_Form = $('.featured-listing-order-item').first()
         
@@ -151,6 +153,28 @@ class A2Cribs.FLDash
 
         @uiOrderItemsList.append @OrderItemTemplate(data)
 
+    # getUnavailableDates:()->
+    #     if not @UnavailableDates?
+    #         d = new $.Deferred()
+    #         $.getJSON '/featuredListings/getUnavailableDates', (data)=>
+    #             d.resolve(data)    
+    #         @UnavailableDates = d.promise()
+
+    #     return @UnavailableDates
+        
+    
+    getUniPricing:(listing_id)->
+        if not @ListingUniPricing[listing_id]?
+            d = new $.Deferred()
+            url = "/featuredListings/getUniPricingForListing/#{listing_id}"
+            @ListingUniPricing[listing_id] = $.getJSON url, (data)=>
+                d.resolve(data)
+
+            @ListingUniPricing[listing_id] = d.promise()
+
+
+        return @ListingUniPricing[listing_id]
+
 
     editOrderItem:(listing_id)->
         listing = A2Cribs.UserCache.Get 'listing', listing_id
@@ -170,15 +194,18 @@ class A2Cribs.FLDash
         if @OrderItems[listing_id].item?.dates.length > 0
             options['selected_dates'] = @OrderItems[listing_id].item.dates
         
+        if !$.isEmptyObject(@OrderItems[listing_id].item?.universities)
+            options['universities'] = @OrderItems[listing_id].item.universities
+
         address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address
 
         # We deffered the fetching of unavailable dates so when its ready we can 
         # continue and make the featured listing order form
         id = listing_id
-        $.when(@GetUnavailableDates).then (full_dates, listing_dates)=>
-            unavail_dates = full_dates.concat listing_dates[id]
-            options['disabled_dates'] = unavail_dates
-            @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, address, options)
+        $.when(@getUniPricing(listing_id)).then (uniPricing)=>
+            # unavailDates = unavailableDates.full_dates.concat unavailableDates.listing_dates[id]
+            # options['disabled_dates'] = unavailDates
+            @FL_Order = new A2Cribs.Order.FeaturedListing(@uiFL_Form, listing.listing_id, address, uniPricing, options)
         
         @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").addClass('editing')
 

@@ -1,48 +1,72 @@
 class A2Cribs.Order.FeaturedListing
         
         # Options can contain the properties selected_dates, and/or disabled_dates which are arrays of date strings
-        constructor:(@Widget, @listing_id, @address, options=null)->
+        constructor:(@Widget, @listing_id, @address, @UniPricing, options=null)->
             
             @Weekdays = 0
             @Weekends = 0
             @Price = 0
 
-            @WD_price = 15
-            @WE_price = 5
+            @WD_price = 0
+            @WE_price = 0
+
             @MIN_DAY_OFFSET = 3
             @initMultiDatesPicker(options)
-
+            @initTemplates()
             @PrevSelectedDate = null
             @RangeSelectEnabled = true
 
             @Widget.find('.address').html @address
 
-            @Widget.on 'click', '.rst input', (event)=>
-                @RangeSelectEnabled = !@RangeSelectEnabled
-                @PrevSelectedDate = null
+            @setupHandlers()            
 
-            .on 'click', '.rst .clear-selected-dates', (event)=>
-                @clear()
-            
-            # if options.selected_dates?
-            #     @datepicker.multiDatesPicker('addDates', dates)
-
-            # if options.disabled_dates?
-            #     @datepicker.multiDatesPicker {addDisabledDates: options.disabled_dates}
+            @setupUniPriceTable(options)
 
             @refresh()
 
         getPrice:()->
             return @Price
 
+        setupHandlers:()->
+            @Widget.on 'click', '.rst input', (event)=>
+                @RangeSelectEnabled = !@RangeSelectEnabled
+                @PrevSelectedDate = null
+
+            .on 'click', '.rst .clear-selected-dates', (event)=>
+                @clear()
+
+            @Widget.on 'click', 'input.uni-toggle', (event)=>
+                index = $(event.currentTarget).parents().eq(1).index()
+                @UniPricing[index].enabled = $(event.currentTarget).prop 'checked'
+                @refresh()
+
+
+        setupUniPriceTable:(options)->
+            rows = ""
+            for uniPrice in @UniPricing
+                if options.universities?[uniPrice.university_id]?
+                    uniPrice.enabled = options.universities[uniPrice.university_id]
+                else
+                    uniPrice.enabled = true
+                
+                rows += @UniPriceRow uniPrice
+
+            @Widget.find('.uniPriceTable>tbody').html rows
+
         getOrderItem:()->
-            return {
+            unis = {}
+            
+            for uni in @UniPricing
+                unis[uni.university_id] = uni.enabled
+
+            orderItem =  {
                 type: 'FeaturedListing'
                 price: @getPrice()
                 item: {
                     address: @address
                     listing_id: @listing_id
                     dates: @getDates('string')
+                    universities: unis
                 }
             }
 
@@ -69,6 +93,17 @@ class A2Cribs.Order.FeaturedListing
 
         updatePrice:()->
             @Price = @Weekdays * @WD_price + @Weekends * @WE_price
+
+        updateRates:()->
+            @WE_price = 0
+            @WD_price = 0
+            for uni in @UniPricing
+                if uni.enabled
+                    @WD_price += uni.weekday_price
+                    @WE_price += uni.weekend_price
+
+            @Widget.find('#wd_rate').html @WD_price.toFixed(2)
+            @Widget.find('#we_rate').html @WE_price.toFixed(2)
 
         # Returns a two element array first element being weekdays and second being weekends
         # in coffee script you can do [weekdays, weekends] = @getDayCounts() and it'll automatically
@@ -161,12 +196,23 @@ class A2Cribs.Order.FeaturedListing
 
 
 
-        
+        initTemplates:()->
+            uniPriceRowHTML = """
+            <tr data-university_id='<%= university_id %>' >
+                <td><%=name%></td>
+                <td class = 'rates'>$<%=weekday_price.toFixed(2)%></td>
+                <td class = 'rates'>$<%=weekend_price.toFixed(2)%></td>
+                <td><input class = 'uni-toggle' type='checkbox' <% if(enabled){print('checked');} %> />
+            </tr>
+            """
+            @UniPriceRow = _.template(uniPriceRowHTML)
 
 
         refresh:()->
             @updateDayCounts()
+            @updateRates()
             @updatePrice()
+
 
             $(@Widget).find('.price').html " $#{@Price.toFixed(2)}"
             $(@Widget).find('.weekdays').html @Weekdays

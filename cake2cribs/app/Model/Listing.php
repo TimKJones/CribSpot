@@ -344,6 +344,8 @@ class Listing extends AppModel {
 		$hover_data = $this->find('all', $options);
 	}
 
+	
+
 }	
 
 ?>

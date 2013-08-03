@@ -2,28 +2,12 @@
 class FeaturedListingsController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'University');
 
-  // This action can only be run by a user with Super Privalleges
-  // such as the Michigan Daily. It'll grab all the listings from
-
-  public function suDash(){
-    //We need to make sure the user has Super User rights
-    $dates = $this->FeaturedListing->getDatesWithNOrMoreListings(2);
-    
-    $user = $this->_getUserId();
-
-    // if($user['User']['type'] != SUPERUSER){
-    //     throw new NotFoundException();
-    // }
-    
-    // $listings = $this->Listing->GetListingsByType(Listing::LISTING_TYPE_RENTAL);
-    
-    $this->set("unavaildates", json_encode($dates));
-
-    // $this->set('listings', $listings);
-  }
-
+  
+  const ARBITRARY_SEED_CAP_VALUE = 100;
+  const ELIGIBLE_UNI_RADIUS_MILES = 20;
+  
   //Returns a list view of featured listing items
   //the fls selected change every time the user loads
   //the page. I use sessions to store data so I can cycle through
@@ -31,63 +15,17 @@ class FeaturedListingsController extends AppController {
   //along with the listing search parameters based on location
   //there is a limit variable and we use a session variable to hold
   //a seed
-
-
-  const ARBITRARY_SEED_CAP_VALUE = 100;
-
-  public function getListings(){
-
-    phpinfo();
-    die();  
-    $up_lat = $this->request->query['up_lat'];
-    $low_lat = $this->request->query['low_lat'];
-
-    $up_long = $this->request->query['up_long'];
-    $low_long = $this->request->query['low_long'];
-
-    $day = null;
+  
+  public function getSideBarData(){
 
     $limit = $this->request->query['limit'];
+    $listings_data = $this->cycleFeaturedListings($limit);
     
-    // If day is null we use today's date
-    if($day == null){
-      $day = time();
-    }
-    
-    //TODO get date relative to users time zone
 
-    $date = date("Y-m-d", $day);
+    // if(count($listings_data) < $limit){
+    //   // There aren't enough featuerd listings to populate the entire sidebar
 
-    // echo $date;
-
-    // Get the session data so we we know what data to get
-
-    $seed = $this->Session->read('FeaturedListing.GetListingSeed');
-    
-    if($seed == null){
-      //generate a psuedo random seed.
-      $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
-    }
-
-    //increment the seed
-    $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
-
-    $this->Session->write('FeaturedListing.GetListingSeed', $seed);
-
-    $page = ($seed % ($limit+1)) + 1;
-
-    $conditions = $this->FeaturedListing->cycleConditions($up_lat, $low_lat, $up_long, $low_long, $date);
-
-    $this->paginate = array(
-                'conditions' => $conditions,
-                'page' => $page,
-                'limit' => $limit,
-                'order' => array('FeaturedListing.id' => 'desc'),
-            );
-    
-    $listings_data = $this->paginate('FeaturedListing');
-    // debug($listings_data);
-
+    // }
     // debug($listings_data);
     // Going to build a custom array to pass to the View using the data in the listings_data
     $listings = array();
@@ -129,6 +67,42 @@ class FeaturedListingsController extends AppController {
 
   }
 
+  /*
+  Returns an array of featured listings, that get cycled
+  each time this function is invoked
+  */
+  private function cycleFeaturedListings($limit){
+    $day = time();
+    //TODO get date relative to users time zone
+
+    $date = date("Y-m-d", $day);
+
+    // Get the session data so we we know what data to get
+
+    $seed = $this->Session->read('FeaturedListing.SideBarSeed');
+    
+    if($seed == null){
+      //generate a psuedo random seed.
+      $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
+    }
+    //increment the seed
+    $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
+    $this->Session->write('FeaturedListing.SideBarSeed', $seed);
+    $page = ($seed % ($limit+1)) + 1;
+    $conditions = $this->FeaturedListing->getSideBarConditions($date);
+    // Paginate is not available in the model so it has to be in the controller
+    $this->paginate = array(
+                'conditions' => $conditions,
+                'page' => $page,
+                'limit' => $limit,
+                'order' => array('FeaturedListing.id' => 'desc'),
+            );
+    
+    $listings_data = $this->paginate('FeaturedListing');
+    return $listings_data;
+
+  }
+
   // Returns an array of date strings representing the dates
   // that are unavailable to feature a listing
   public function getUnavailableDates(){
@@ -146,6 +120,51 @@ class FeaturedListingsController extends AppController {
     $this->layout = 'ajax';
     $this->set('response', json_encode($response));
   } 
+
+  /*
+    Returns a JSON array containing the universities the listing
+    is eligable to be featured at mapped to the pricing rates 
+    specific to the university based on pricing.
+  */
+
+  public function getUniPricingForListing($listing_id){
+    
+
+
+    // TODO Add Newspaper Admin code to pull eligable uni's based
+    // on their requirements and make the cost 0 to be safe.
+    
+    $user_id = $this->_getUserId();
+    
+    if(!$this->Listing->UserOwnsListing($listing_id, $user_id)){
+      throw new NotFoundException();
+    }
+
+    $listing = $this->Listing->Get($listing_id);
+    $lat = $listing['Marker']['latitude'];
+    $lon = $listing['Marker']['longitude'];
+
+    $unis = $this->University->getUniversitiesAround($lat, $lon, 15);
+    $response = array();
+    foreach ($unis as $uni) {
+      //TODO get unique price for each uni
+
+      array_push($response, array(
+          'name' => $uni['University']['name'],
+          'university_id' => $uni['University']['id'],
+          'weekend_price' => 5,
+          'weekday_price' => 15,
+        ));
+    }
+
+    
+
+    $this->layout = 'ajax';
+    $this->set('response', json_encode($response));    
+
+
+
+  }
 
   // Return a json array containing all the data needed to order
   // a featured listing. This will include the following listing fields

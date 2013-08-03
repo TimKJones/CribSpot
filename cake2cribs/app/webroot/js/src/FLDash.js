@@ -7,11 +7,8 @@
     function FLDash(uiWidget) {
       var _this = this;
       this.uiWidget = uiWidget;
-      this.GetUnavailableDates = new $.Deferred();
-      $.getJSON('/featuredListings/getUnavailableDates', function(data) {
-        return _this.GetUnavailableDates.resolve(data.full_dates, data.listing_dates);
-      });
       this.OrderItems = {};
+      this.ListingUniPricing = {};
       this.FL_Order = null;
       this.uiFL_Form = $('.featured-listing-order-item').first();
       this.uiListingsList = this.uiWidget.find('#listings_list');
@@ -142,8 +139,22 @@
       return this.uiOrderItemsList.append(this.OrderItemTemplate(data));
     };
 
+    FLDash.prototype.getUniPricing = function(listing_id) {
+      var d, url,
+        _this = this;
+      if (!(this.ListingUniPricing[listing_id] != null)) {
+        d = new $.Deferred();
+        url = "/featuredListings/getUniPricingForListing/" + listing_id;
+        this.ListingUniPricing[listing_id] = $.getJSON(url, function(data) {
+          return d.resolve(data);
+        });
+        this.ListingUniPricing[listing_id] = d.promise();
+      }
+      return this.ListingUniPricing[listing_id];
+    };
+
     FLDash.prototype.editOrderItem = function(listing_id) {
-      var address, id, listing, old_id, options, _ref,
+      var address, id, listing, old_id, options, _ref, _ref1,
         _this = this;
       listing = A2Cribs.UserCache.Get('listing', listing_id);
       if (this.FL_Order != null) {
@@ -156,13 +167,13 @@
       if (((_ref = this.OrderItems[listing_id].item) != null ? _ref.dates.length : void 0) > 0) {
         options['selected_dates'] = this.OrderItems[listing_id].item.dates;
       }
+      if (!$.isEmptyObject((_ref1 = this.OrderItems[listing_id].item) != null ? _ref1.universities : void 0)) {
+        options['universities'] = this.OrderItems[listing_id].item.universities;
+      }
       address = A2Cribs.UserCache.Get('marker', listing.marker_id).street_address;
       id = listing_id;
-      $.when(this.GetUnavailableDates).then(function(full_dates, listing_dates) {
-        var unavail_dates;
-        unavail_dates = full_dates.concat(listing_dates[id]);
-        options['disabled_dates'] = unavail_dates;
-        return _this.FL_Order = new A2Cribs.Order.FeaturedListing(_this.uiFL_Form, listing.listing_id, address, options);
+      $.when(this.getUniPricing(listing_id)).then(function(uniPricing) {
+        return _this.FL_Order = new A2Cribs.Order.FeaturedListing(_this.uiFL_Form, listing.listing_id, address, uniPricing, options);
       });
       this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").addClass('editing');
       return this.toggleOrderDetailsUI(true);

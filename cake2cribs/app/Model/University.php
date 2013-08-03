@@ -91,5 +91,15 @@ class University extends AppModel {
 		
 		return null;
 	}
+
+	public function getUniversitiesAround($lat, $lon, $radius){
+		$this->contain();
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($lat) ) * cos( radians( University.latitude ) ) * cos( radians( University.longitude ) - radians($lon) ) + sin( radians($lat) ) * sin( radians( University.latitude ) ) ) )"
+		);
+		$data = $this->find('all', array('fields' => array('distance', 'name', 'id'), 'conditions' => array('distance <' => $radius)));
+		return $data;
+
+	}
 }
 ?>
