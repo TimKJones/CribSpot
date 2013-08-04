@@ -37,7 +37,6 @@ class PagesController extends AppController {
  * @var string
  */
 	public $name = 'Pages';
-	public $helpers = array('Facebook.Facebook');
 	public $components = array('Facebook.Connect');
 
 /**

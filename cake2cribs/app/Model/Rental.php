@@ -130,6 +130,7 @@ class Rental extends RentalPrototype {
 		'pets_type' => 'numeric',
 		'washer_dryer' => 'numeric', 
 		'smoking' => 'boolean',
+		'laundry' => 'integer',
 		/* ------------- start new fields ----------------*/
 		'tv' => 'boolean',
 		'balcony' => 'boolean',
@@ -230,6 +231,12 @@ class Rental extends RentalPrototype {
 			)
 		),
 		'pets_amount' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'amenity_amount' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
 				'required' => false

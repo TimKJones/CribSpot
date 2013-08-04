@@ -196,9 +196,8 @@ class UsersController extends AppController {
     public function FacebookLogin($user_id=null)
     {
         $user = null;
-        $response = $_COOKIE;
-$this->set('response', json_encode($response));
-        return;
+        $cookie = preg_replace("/^\"|\"$/i", "", $_COOKIE['fbm_' . Configure::read('FB_APP_ID')]);
+        parse_str($cookie, $data);
         $this->facebook->setAccessToken($data['access_token']);
         $user = $this->facebook->api('/'.$this->facebook->getUser());
 
