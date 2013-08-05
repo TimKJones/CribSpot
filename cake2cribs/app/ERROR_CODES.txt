@@ -75,3 +75,7 @@
 - Marker->FindMarkerId36
 36
 - User->RegisterUser
+37
+- User->RegisterUser
+38
+- UsersController->AjaxLogin

@@ -22,6 +22,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ResetPasswordRedirect');
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
+        $this->Auth->allow('ResendConfirmationEmail');
     }
 
     /*
@@ -96,8 +97,23 @@ class UsersController extends AppController {
             return;
         }
 
-        if ($this->Auth->login()){
-            $this->set('response', json_encode(array('sucess'=>'')));
+        /* Ensure that email address is included in $this->request->data */
+        if (!array_key_exists('User', $this->request->data) ||
+            !array_key_exists('email', $this->request->data['User'])) {
+            CakeLog::write("LogInErrors", "Email was not given in AjaxLogin data.");
+            $response = array('error' => 'Login failed. Contact help@cribspot.com if the error persists. Reference error code 38');
+            $this->set('response', json_encode($response));
+        }
+
+        /* Return an error message if the user has not yet confirmed their email address. */
+        $response = $this->User->EmailIsConfirmed($this->request->data['User']['email']);
+        if (array_key_exists('error', $response)){
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        if ($this->Auth->login()) {
+            $this->set('response', json_encode(array('success'=>'')));
             return;
         }
 
@@ -313,6 +329,20 @@ class UsersController extends AppController {
     public function VerifyUniversityEmailRedirect()
     {
 
+    }
+
+    public function ResendConfirmationEmail($email)
+    {
+        $user = $this->User->GetUserFromEmail($email);
+        if ($user == null){
+            $response = array('error' => 'No account exists for that user.');
+            $this->set('response', json_encode($response));
+            return;
+        }
+        
+        $this->set('vericode', $user['vericode']);
+        $this->set('id', $user['id']);
+        $this->_sendVerificationEmail(array('email' => $email));
     }
 
     /*

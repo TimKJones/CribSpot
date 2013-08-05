@@ -54,12 +54,30 @@
           if (data.error != null) {
             A2Cribs.UIManager.CloseLogs();
             return A2Cribs.UIManager.Error(data.error);
+            /*
+            					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
+            					if data.error_type == "EMAIL_UNVERIFIED"
+            						A2Cribs.UIManager.Alert data.error
+            */
           } else {
             return window.location.href = '/dashboard';
           }
         });
       }
       return false;
+    };
+
+    Login.ResendConfirmationEmail = function(email) {
+      return $.ajax({
+        url: myBaseUrl + "users/ResendConfirmationEmail/" + email,
+        type: "POST",
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.error != null) {
+            return A2Cribs.UIManager.Alert(response.error);
+          }
+        }
+      });
     };
 
     validate = function(user_type, required_fields) {

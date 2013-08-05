@@ -325,7 +325,7 @@ class User extends AppModel {
 	public function GetUserFromEmail($email)
 	{
 		$user = $this->find('first', array(
-			'fields' => array('User.id', 'User.email', 'User.first_name'),
+			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode'),
 			'conditions' => array('User.email' => $email)
 		));
 
@@ -412,6 +412,23 @@ class User extends AppModel {
 		}
 
 		return array('success'=>'');
+	}
+
+	/*
+	Checks if user account with $email is verified.
+	Returns an array with message
+	*/
+	public function EmailIsConfirmed($email)
+	{
+		$user = $this->GetUserFromEmail($email);
+		if ($user == null)
+			return array('error' => 'No user exists with that email address.');
+
+		if ($user['verified'] != true)
+			return array('error' => 'Your email address has not yet been confirmed. Please click the link provided in your confirmation email.',
+				'error_type' => 'EMAIL_UNVERIFIED');
+	
+		return array('success' => '');
 	}
 
 	/*
