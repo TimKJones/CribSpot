@@ -87,7 +87,7 @@ class A2Cribs.Login
 					request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
 
 				# Post the request data using AjaxRegister
-				$.post "users/AjaxRegister", request_data, (response) =>
+				$.post "/users/AjaxRegister", request_data, (response) =>
 					data = JSON.parse response
 					if data.error?
 						A2Cribs.UIManager.CloseLogs()

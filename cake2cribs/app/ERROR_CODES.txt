@@ -72,4 +72,6 @@
 34
 - Marker->FindMarkerId
 35
-- Marker->FindMarkerId
+- Marker->FindMarkerId36
+36
+- User->RegisterUser
