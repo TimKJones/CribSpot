@@ -16,7 +16,7 @@
     */
 
     RentalFilter.ApplyFilter = function(event, ui) {
-      var ajaxData;
+      var ajaxData, currentYears;
       ajaxData = null;
       /*
       		ajaxData += "minBeds=" + $("#minBedsSelect").val()
@@ -40,6 +40,21 @@
       ajaxData += "&duplex=" + 0;
       ajaxData += "&ac=" + 0;
       ajaxData += "&parking=" + 1;
+      ajaxData += "&month_1=" + 1;
+      ajaxData += "&month_2=" + 0;
+      ajaxData += "&month_3=" + 0;
+      ajaxData += "&month_4=" + 1;
+      ajaxData += "&month_5=" + 0;
+      ajaxData += "&month_6=" + 1;
+      ajaxData += "&month_7=" + 0;
+      ajaxData += "&month_8=" + 0;
+      ajaxData += "&month_9=" + 1;
+      ajaxData += "&month_10=" + 0;
+      ajaxData += "&month_11=" + 0;
+      ajaxData += "&month_12=" + 0;
+      currentYears = [13];
+      ajaxData += "&curYear=" + JSON.stringify(currentYears);
+      ajaxData += "&leaseLength=" + 7;
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
         data: ajaxData,

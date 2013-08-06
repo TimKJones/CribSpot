@@ -383,7 +383,6 @@ class Rental extends RentalPrototype {
 	public function getFilteredMarkerIdList($params)
 	{
 		$conditions = $this->_getFilteredQueryConditions($params);
-		//CakeLog::write("getFilteredMarkerIdList", print_r($conditions, true));
 
 		/* Limit which tables are queried */
 		$contains = array('Marker', 'Rental', 'Fee');
@@ -422,6 +421,8 @@ class Rental extends RentalPrototype {
 			'Rental.baths >=' => $params['min_baths'],
 			'Rental.baths <=' => $params['max_baths']));
 
+		$date_conditions = $this->_getDateConditions($params);
+		array_push($conditions, array('OR' => $date_conditions));
 		return $conditions;
 	}
 
@@ -439,6 +440,69 @@ class Rental extends RentalPrototype {
 			array_push($building_type_id_OR, Rental::BUILDING_TYPE_DUPLEX);
 
 		return $building_type_id_OR;
+	}
+
+	/*
+	Returns a piece of the conditions array for the query filter dealing with dates.
+	Specifically, adds checks to include rentals that occur within the checked months.
+	*/
+	private function _getDateConditions($params)
+	{
+		$conditions = array();
+		$startEndDatePairs = $this->_getStartEndDatePairs($params);
+		foreach ($startEndDatePairs as $pair){
+			$and_array = array();
+			$and_array['AND'] = array();
+			array_push($and_array['AND'], 'Rental.start_date >=' . $pair['start_date']);
+			array_push($and_array['AND'], 'Rental.end_date <=' . $pair['end_date']);
+			array_push($conditions, $and_array);
+		}
+
+		return $conditions;	
+	}
+
+	/*
+	Return pairs of (start_date, end_date) that are valid to be searched based on user's current filter preferences.	
+	*/
+	private function _getStartEndDatePairs($params)
+	{
+		$months_selected = $this->_getMonthsSelectedArray($params);
+		$pairs = array();
+		$start_years = json_decode($params['curYear']);
+		$lease_length = intval($params['leaseLength']);
+		for ($i = 0; $i < count($start_years); $i++) {
+			for ($j = 0; $j < count($months_selected); $j++){
+				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
+				$end_date = date('Y-m-d', strtotime('+' . ($lease_length) . ' months', strtotime($start_date)));
+				$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
+				$new_pair = array(
+					'start_date' => $start_date,
+					'end_date' => $end_date
+				);
+				array_push($pairs, $new_pair);
+			}
+		}
+
+		return $pairs;
+	}
+
+	/*
+	Returns array of months selected in filter as integer-strings
+	*/
+	private function _getMonthsSelectedArray($params)
+	{
+		$months = array();
+		foreach ($params as $key => $value) {
+			$MONTH_STRING_LENGTH = 6;
+			if (strrpos($key, 'month') !== false){
+				if (intval($value) === 1){
+					$month = substr($key, $MONTH_STRING_LENGTH);
+					array_push($months, intval($month));
+				}
+			}
+		}
+
+		return $months;
 	}
 }
 
