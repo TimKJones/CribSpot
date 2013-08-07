@@ -1,20 +1,30 @@
 class A2Cribs.Marker extends  A2Cribs.Object
+	@BuildingType = ["House", "Apartment", "Duplex"]
 	constructor: (marker) ->
 		super "marker", marker
 
 	GetName: ->
 		if @alternate_name? and @alternate_name.length then @alternate_name else @street_address
 
-	###
-	constructor: (@MarkerId, @Address, @Title, @UnitType, @Latitude, @Longitude, @City, @State) -> 
-		@ListingIds = null
-		@MarkerId = parseInt(@MarkerId)
+	GetBuildingType: ->
+		return A2Cribs.Marker.BuildingType[parseInt(@building_type_id, 10)]
+
+	Init: ->
 		@GMarker = new google.maps.Marker
-			position: new google.maps.LatLng(@Latitude, @Longitude)
+			position: new google.maps.LatLng(@latitude, @longitude)
 			icon: "/img/dots/available_dot.png"
-			id: @MarkerId
-		@Clicked = false #Used to determine if data is already in the cache
-	###
+			id: @GetId()
+		google.maps.event.addListener @GMarker, 'click', @MarkerClicked
+
+	GetObject: ->
+		return_val = super()
+		delete return_val.GMarker
+		return return_val
+
+	MarkerClicked: (event) =>
+		A2Cribs.HoverBubble.Open this
+
+
 	###
 	Filters the listing_ids at the current marker according to the user's current filter settings.
 	Returns list of listing_ids that should be visible in marker tooltip.

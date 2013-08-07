@@ -79,7 +79,7 @@
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.core.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
-		
+		echo $this->Html->css('basic');
 
 
 
@@ -114,11 +114,8 @@
 	echo '<div id="fb-root"></div><script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/all.js#xfbml=1";fjs.parentNode.insertBefore(js,fjs);}(document,"script","facebook-jssdk"));</script>';
 
 	echo '<div id="layoutsContainer">';
-		echo '<div id="content">';
-			echo $this->Session->flash();
-			echo $this->fetch('content');
-			
-		echo '</div>';
+		echo $this->Session->flash();
+		echo $this->fetch('content');
 	echo '</div>';
 
 	/*<center><h3>------------------------------------------------------- Debug Info ------------------------------------------------------------</h3></center>
