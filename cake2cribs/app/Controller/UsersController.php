@@ -22,6 +22,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ResetPasswordRedirect');
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
+        $this->Auth->allow('ResendConfirmationEmail');
     }
 
     /*
@@ -55,19 +56,23 @@ class UsersController extends AppController {
             return;
         }
 
-        /* Create a new user object and save it */
-        $this->User->create();
+
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
-        if (!$this->User->save($user)){
-            $response = array('error' => 'Failed to register. Contact help@cribspot.com if the error persists. Reference error code 25', 'validation' => $this->User->validationErrors);
+        $response = $this->User->RegisterUser($user);
+        if (array_key_exists('error', $response)) {
             $this->set('response', json_encode($response));
             return;
         }
 
         /* User record saved. Now send email to validate email address */
-        $this->set('name', $user['first_name']);
+        /* Create a new user object and save it */
+        if ($user['user_type'] == User::USER_TYPE_SUBLETTER)
+            $this->set('name', $user['first_name']);
+        else if ($user['user_type'] == User::USER_TYPE_PROPERTY_MANAGER)
+            $this->set('name', $user['company_name']);
+        
         $this->set('vericode', $user['vericode']);
         $this->set('id', $this->User->id);
         $this->_sendVerificationEmail($user);
@@ -92,8 +97,23 @@ class UsersController extends AppController {
             return;
         }
 
-        if ($this->Auth->login()){
-            $this->set('response', json_encode(array('sucess'=>'')));
+        /* Ensure that email address is included in $this->request->data */
+        if (!array_key_exists('User', $this->request->data) ||
+            !array_key_exists('email', $this->request->data['User'])) {
+            CakeLog::write("LogInErrors", "Email was not given in AjaxLogin data.");
+            $response = array('error' => 'Login failed. Contact help@cribspot.com if the error persists. Reference error code 38');
+            $this->set('response', json_encode($response));
+        }
+
+        /* Return an error message if the user has not yet confirmed their email address. */
+        $response = $this->User->EmailIsConfirmed($this->request->data['User']['email']);
+        if (array_key_exists('error', $response)){
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        if ($this->Auth->login()) {
+            $this->set('response', json_encode(array('success'=>'')));
             return;
         }
 
@@ -309,6 +329,20 @@ class UsersController extends AppController {
     public function VerifyUniversityEmailRedirect()
     {
 
+    }
+
+    public function ResendConfirmationEmail($email)
+    {
+        $user = $this->User->GetUserFromEmail($email);
+        if ($user == null){
+            $response = array('error' => 'No account exists for that user.');
+            $this->set('response', json_encode($response));
+            return;
+        }
+        
+        $this->set('vericode', $user['vericode']);
+        $this->set('id', $user['id']);
+        $this->_sendVerificationEmail(array('email' => $email));
     }
 
     /*

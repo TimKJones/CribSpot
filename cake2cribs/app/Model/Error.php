@@ -18,7 +18,10 @@ class Error extends AppModel {
 				'error_code' => $error_code,
 				'debug_info' => $debug_info
 		));
-		$this->save($error);
+
+		$error['Error'] = $this->_removeNullEntries($error['Error']);
+		if (!$this->save($error))
+			CakeLog::write("ErrorFailed", print_r($this->validationErrors, true));
 	}
 }
 

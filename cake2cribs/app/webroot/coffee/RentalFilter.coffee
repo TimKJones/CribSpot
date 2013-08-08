@@ -24,11 +24,32 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&max_baths=" + 3
 		ajaxData += "&min_rent=" + 0
 		ajaxData += "&max_rent=" + 3000
-		ajaxData += "&house=" + 1
-		ajaxData += "&apt=" + 1
-		ajaxData += "&duplex=" + 0
-		ajaxData += "&ac=" + 0
+		ajaxData += "&unit_type_house=" + 1
+		ajaxData += "&unit_type_apartment=" + 1
+		ajaxData += "&unit_type_duplex=" + 1
+		ajaxData += "&unit_type_condo=" + 1
+		ajaxData += "&unit_type_townhouse=" + 1
+		ajaxData += "&unit_type_coop=" + 1
+		ajaxData += "&unit_type_other=" + 1
 		ajaxData += "&parking=" + 1
+		ajaxData += "&month_1=" + 1
+		ajaxData += "&month_2=" + 0
+		ajaxData += "&month_3=" + 0
+		ajaxData += "&month_4=" + 1
+		ajaxData += "&month_5=" + 0
+		ajaxData += "&month_6=" + 1
+		ajaxData += "&month_7=" + 0
+		ajaxData += "&month_8=" + 0
+		ajaxData += "&month_9=" + 1
+		ajaxData += "&month_10=" + 0
+		ajaxData += "&month_11=" + 0
+		ajaxData += "&month_12=" + 0
+		ajaxData += "&amenity_air=" + 1
+		ajaxData += "&month_12=" + 0
+		currentYears = [13]
+		ajaxData += "&month_curYear=" + JSON.stringify currentYears
+		ajaxData += "&month_leaseLength=" + 7
+
 		$.ajax
 			url: myBaseUrl + "Rentals/ApplyFilter"
 			data: ajaxData

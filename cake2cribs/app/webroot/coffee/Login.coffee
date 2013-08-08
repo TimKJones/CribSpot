@@ -53,10 +53,24 @@ class A2Cribs.Login
 				if data.error?
 					A2Cribs.UIManager.CloseLogs()
 					A2Cribs.UIManager.Error data.error
+					###
+					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
+					if data.error_type == "EMAIL_UNVERIFIED"
+						A2Cribs.UIManager.Alert data.error
+					###
 				else
 					window.location.href = '/dashboard'
 
 		return false
+
+	@ResendConfirmationEmail: (email) ->
+		$.ajax 
+			url: myBaseUrl + "users/ResendConfirmationEmail/" + email
+			type:"POST"
+			success:(response) ->
+				response = JSON.parse response
+				if response.error?
+					A2Cribs.UIManager.Alert response.error
 
 	validate = (user_type, required_fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
@@ -87,7 +101,7 @@ class A2Cribs.Login
 					request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
 
 				# Post the request data using AjaxRegister
-				$.post "users/AjaxRegister", request_data, (response) =>
+				$.post "/users/AjaxRegister", request_data, (response) =>
 					data = JSON.parse response
 					if data.error?
 						A2Cribs.UIManager.CloseLogs()

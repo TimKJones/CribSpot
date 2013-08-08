@@ -193,7 +193,7 @@ class Listing extends AppModel {
 				$listings[$i]['Image'] = $this->_removeNullEntries($listings[$i]['Image']);
 			if (array_key_exists('Marker', $listings[$i]))
 				$listings[$i]['Marker'] = $this->_removeNullEntries($listings[$i]['Marker']);
-		}
+	}	
 
 		return $listings;
 	}

@@ -12,16 +12,7 @@ class User extends AppModel {
 
 	public $validate = array (
 		'id' => 'numeric',
-		'user_type' => array(
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A first name is required.'
-				),
-			'numeric' => array(
-				'rule' => 'numeric',
-				'message' => 'Not a valid type'
-				)
-			),
+		'user_type' => 'numeric',
 		'password' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -145,24 +136,11 @@ class User extends AppModel {
 		return parent::enum($value, $options);
 	}
 
-	public function beforeValidate($options = array())
-	{
-		$unset_array = null;
-		if ($this->data[$this->alias]['user_type'] === 0) // User type is a student
-			$unset_array = array('website', 'phone', 'street_address', 'city', 'state');
-		else
-			$unset_array = array('first_name', 'last_name');
-		foreach ($unset_array as $value) {
-			//unset($validator[$value]['required']);
-		}
-		return true;
-	}
-
 	public function beforeSave($options = array()) {
 		if(isset($this->data[$this->alias]['password'])) {
 			$this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
-		
+
 		return true;
 	}
 
@@ -218,7 +196,7 @@ class User extends AppModel {
 	{
 		$twitter_data = null;
 		$user = $this->get($user_id);
-		
+
 		$twitter_userid = $user['User']['twitter_userid'];
 		$twitter_auth_token = $user['User']['twitter_auth_token'];
 		$twitter_auth_token_secret = $user['User']['twitter_auth_token_secret'];
@@ -239,7 +217,7 @@ class User extends AppModel {
 	public function get($user_id){
 		return $this->find('first', array('conditions'=>'User.id='.$user_id));
 	}
-	
+
 
 	//Returns a user object will all the sensitive information removed
 	public function getSafe($user_id){
@@ -347,7 +325,7 @@ class User extends AppModel {
 	public function GetUserFromEmail($email)
 	{
 		$user = $this->find('first', array(
-			'fields' => array('User.id', 'User.email', 'User.first_name'),
+			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode'),
 			'conditions' => array('User.email' => $email)
 		));
 
@@ -406,6 +384,78 @@ class User extends AppModel {
 		)));
 
 		return $result != null;
+	}
+
+	/*
+	Ensure that all necessary fields are present based on user type.
+	Then saves user object
+	*/
+	public function RegisterUser($user)
+	{
+		$error = null;
+		if (!$this->_validateUserRegister($user)){
+			$error = null;
+			$error['user'] = $user;
+			$this->LogError(null, 36, $error);
+			return array('error' => 
+					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 36');
+		}
+
+		if (!$this->save(array('User'=>$user))) {
+			$error = null;
+			$error['user'] = $user;
+			$error['validationErrors'] = $this->validationErrors;
+			CakeLog::write('validation', print_r($this->validationErrors, true));
+			$this->LogError(null, 37, $error);
+			return array('error' => 	
+					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 37');
+		}
+
+		return array('success'=>'');
+	}
+
+	/*
+	Checks if user account with $email is verified.
+	Returns an array with message
+	*/
+	public function EmailIsConfirmed($email)
+	{
+		$user = $this->GetUserFromEmail($email);
+		if ($user == null)
+			return array('error' => 'No user exists with that email address.');
+
+		if ($user['verified'] != true)
+			return array('error' => 'Your email address has not yet been confirmed. Please click the link provided in your confirmation email.',
+				'error_type' => 'EMAIL_UNVERIFIED');
+	
+		return array('success' => '');
+	}
+
+	/*
+	Returns true if all fields are present (based on user type).
+	Returns false otherwise.
+	*/
+	private function _validateUserRegister($user)
+	{
+		if (!array_key_exists('user_type', $user))
+			return false;
+
+		$required_fields = null;
+		$user_type = intval($user['user_type']);
+		if ($user_type === User::USER_TYPE_PROPERTY_MANAGER)
+			$required_fields = array('company_name', 'website', 'phone', 'street_address', 'city', 'state');
+		else if ($user_type === User::USER_TYPE_SUBLETTER)
+			$required_fields = array('first_name', 'last_name');
+
+		foreach ($required_fields as $value) {
+			if (!array_key_exists($value, $user)){
+				CakeLog::write("validate", $value . "; user=" . print_r($user, true));
+				return false;
+			}
+				
+		}
+
+		return true;
 	}
 }
 ?>

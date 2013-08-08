@@ -32,8 +32,8 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components= array('Session',
-		'Auth');
+	public $components= array('Session','Auth');
+
 	var $facebook;
 	var $_jsVars = array();
 	public $helpers = array(
@@ -76,11 +76,11 @@ class AppController extends Controller {
 		//$this->Auth->allow('user','resetpassword');
 		//$this->Auth->allow('sublet', 'ajax_add');
 		$this->Auth->allow('verify','map');
-		/*App::import('Vendor', 'Facebook', array('file' => 'facebook/src/facebook.php'));     
+		App::import('Lib', 'Facebook.FB');   
     	$this->facebook = new Facebook(array(
       		'appId'  => Configure::read("FB_APP_ID"),
       		'secret' => Configure::read("FB_APP_SECRET"),
-    	));*/
+    	));
 	}
 
 	public function beforeRender()
