@@ -10,6 +10,7 @@ class A2Cribs.Rental extends A2Cribs.Object
 	GetId: (id) ->
 		return parseInt this["listing_id"], 10
 
+	###
 	@Template =
 		data =
 			Listing:
@@ -89,6 +90,8 @@ class A2Cribs.Rental extends A2Cribs.Object
 					image_id:276
 					caption: "heres the second one"
 					is_primary: 1
+
+	###
 
 	@Required_Fields = {
 		unit_style_options: "overview_grid"

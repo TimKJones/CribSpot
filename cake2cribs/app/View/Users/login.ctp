@@ -2,17 +2,8 @@
 <?php echo $this->Html->css('/less/User/login.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/Login.js', array('inline' => false)); ?>
 <?php echo $this->element('popups'); ?>
-<div class="top-bar">
-    <ul id="right-options" class="inline unstyled pull-right">
-        <li><a href="#about-page" data-toggle="modal">About</a></li>
-        <li><a href="#contact-page" data-toggle="modal">Contact</a></li>
-        <li><a href="#help-page" data-toggle="modal">Help</a></li>
-    </ul>
-</div>
 
-<div id="header" class="container">
-    <a href="/"><div class="main-logo pull-left"></div></a>
-</div>
+<?php echo $this->element('header', array('show_filter' => false, 'show_user' => false)); ?>
 
 <div id="login_signup" class="fluid-container">
     <div id="login_row" class="row-fluid">

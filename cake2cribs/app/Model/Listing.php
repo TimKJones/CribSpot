@@ -261,6 +261,18 @@ class Listing extends AppModel {
 		return $this->loadParkingHoverData();
 	}
 
+	public function GetBasicData($listing_type)
+	{
+		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
+			return $this->_getRentalBasicData();
+		/* Coming soon! 
+		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
+			return $this->_loadSubletHoverData();
+
+		return $this->loadParkingHoverData();
+		*/
+	}
+
 	/*
 	Returns true if the user with $user_id owns at least one listing at $marker_id
 	*/
@@ -318,6 +330,20 @@ class Listing extends AppModel {
 		$options['fields'] = array('marker_id', 'number_bedrooms', 'price_per_bedroom', 'date_begin', 'date_end');
 		$options['conditions'] = array('Sublet.visible' => 1);
 		$hover_data = $this->find('all', $options);
+	}
+
+	private function _getRentalBasicData()
+	{
+		$this->contain('Rental');
+		$options = array();
+		$options['fields'] = array(
+			'Rental.rent',
+			'Rental.listing_id',
+			'Rental.beds', 
+			'Listing.marker_id',
+			'Listing.listing_id');
+		$options['conditions'] = array('Listing.visible' => 1);
+		return $this->find('all', $options);
 	}
 }	
 

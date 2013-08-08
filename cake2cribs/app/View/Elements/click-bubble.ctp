@@ -1,37 +1,30 @@
 <?= $this->Html->css('/less/click-bubble.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div class="click-bubble multi-listing">
-	<div class="multi-content">
-		<i class="icon-map-marker icon-large"></i><i class="sublet-name">Willow Tree Apartments</i>
-		<div class="inline-block"><small>Listings: </small><div id="listing-count">5</div></div>
-	</div>
-	<a class="close-button" href="#" onclick="A2Cribs.Map.ClickBubble.Close();">X</a>
-
-	<div class="listings">
-	</div>
-
-	<div class="listing-block hide">
-		<div class="inline-block">
-			<a href="#"><img class="listing-image" src="/img/landing/house1.jpg" alt="C-House"></a>
+<div class="click-bubble hide">
+	<div class="click_header"><div class="building_name">10202  West Chester Rd.</div><div class="close_button">&times;</div></div>
+	<div class="property_image"><img src=""></div>
+	<div class="share_section">
+		<div class="unit_style_description">Style - Bi-level 3 beds</div>
+		<div class="share_button">
+			<a class="link_share" href=""><i class="icon-link"></i></a>
+			<a class="facebook_share" href=""><i class="icon-facebook"></i></a>
+			<a class="twitter_share" href=""><i class="icon-twitter"></i></a>
+			<a class="favorite_listing" href=""><i class="icon-heart"></i></a>
 		</div>
-		<div class="click-bubble-data">
-			<i class="single-content"><i class="icon-map-marker icon-large"></i><i class="sublet-name">Willow Tree Apartments</i><br></i>
-			<i class="icon-user"></i><i class="username bold-text">Michelle</i>
-			<i class="fb-mutual"><i class="icon-facebook-sign"></i><i class="bold-text friend-count">132</i></i>
-			<i class="hide"><i class="icon-time"></i><i id="posted-time">2 days ago</i></i>
-			<br>
-			<i class="icon-calendar"></i><i class="date-range bold-text">May 12-Aug 31</i><small> (Flexible)</small>
-			<br>
-			<i class="icon-money-sign">$</i><i class="bed-price bold-text">1050</i><small> /m</small>
-			<img src="/img/tooltip/bed_icon.png" alt="bed" width="24" height="12" align="middle"><i class="bed-count bold-text">3</i>
-			<br>
-			<i class="icon-building"></i><i class="building-type bold-text">House</i>
-			<div class="extended-buttons">
-				<a href="#" class="listing-popup-link" title="Detailed View"><i class="icon-plus"></i></a>
-				<a href="#" class="listing-message" title="Message this user"><i class="icon-comments"></i></a>
-				<a href="#" class="favorite-clickable"><i class="icon-heart"></i></a>
-			</div>
-		</div>
-	</div>	
+	</div>
+	<div class="general_info">
+		<div class="rent">$700</div><div class="per_month">/m</div>
+		<div class="beds">2</div><div class="bed_desc">Beds</div>
+		<div class="available">Available</div>
+	</div>
+	<div class="additional_info">
+		<div class="date_range">Aug 23rd, 2013 - Sept 9th, 2014</div>
+		<div class="unit_type">Apartment</div>&ensp;&bull;&ensp;<div class="baths">2 Baths</div>
+		<div class="property_manager">Investor's Property Management</div>
+	</div>
+	<div class="action_buttons">
+		<a href="">More Info <i class="icon-plus"></i></a>
+		<a href="">Contact <i class="icon-comment"></i></a>
+		<a href="" class="website_link">Website <i class="icon-share-alt"></i></a>
+	</div>
 </div>
-
