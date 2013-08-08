@@ -127,6 +127,9 @@ class User extends AppModel {
 	/* ---------- unit_style_options ---------- */
 	const USER_TYPE_SUBLETTER = 0;
 	const USER_TYPE_PROPERTY_MANAGER = 1;
+	const USER_TYPE_NEWSPAPER_ADMIN = 2;
+	
+
 
 	public static function user_type($value = null) {
 		$options = array(

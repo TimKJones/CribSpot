@@ -2,7 +2,7 @@
 class FeaturedListingsController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing', 'University');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'University', 'NewspaperAdmin');
 
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
@@ -216,6 +216,42 @@ class FeaturedListingsController extends AppController {
     $this->set("response", json_encode($response));
 
 
+  }
+
+
+  /*
+  For a newspaper admin to fetch the featured listings
+  they need to post at this url providing their secret token
+
+  */
+
+  public function newspaper(){
+    if(!$this->request->isPost()){
+      throw new NotFoundException();
+    }
+
+    $secret_token = $this->request->data('secret_token');
+
+    if($secret_token == null){
+      throw new NotFoundException();
+    }
+
+    $user_id = $this->_getUserId();
+    $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
+
+    if($secret_token != $newspaper_admin['NewspaperAdmin']['secret_token']){
+      throw new NotFoundException();
+    }
+
+
+    if($newspaper_admin==null){
+      throw new NotFoundException();
+    }
+
+    $listings = $this->FeaturedListing->getForNewspaper($newspaper_admin['NewspaperAdmin']['university_id']);
+    $this->layout = 'ajax';
+    $this->set("response", json_encode($listings));
+    
   }
 
   public function all(){
