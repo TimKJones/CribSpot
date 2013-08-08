@@ -9,12 +9,16 @@ Wrapper for google infobubble
 (function() {
 
   A2Cribs.HoverBubble = (function() {
+
+    function HoverBubble() {}
+
     /*
     	Constructor
     	-creates infobubble object
     */
 
-    function HoverBubble(map) {
+
+    HoverBubble.Init = function(map) {
       var obj;
       this.template = $(".hover-bubble:first").parent();
       obj = {
@@ -32,14 +36,15 @@ Wrapper for google infobubble
       this.InfoBubble = new InfoBubble(obj);
       this.InfoBubble.hideCloseButton();
       this.InfoBubble.setBackgroundClassName("map_bubble");
-    }
+      return this.template.find(".close_button").attr("onclick", "A2Cribs.HoverBubble.Close();");
+    };
 
     /*
     	Opens the tooltip given a marker, with popping animation
     */
 
 
-    HoverBubble.prototype.Open = function(marker) {
+    HoverBubble.Open = function(marker) {
       if (marker) {
         this.SetContent(marker);
         return this.InfoBubble.open(A2Cribs.Map.GMap, marker.GMarker);
@@ -51,7 +56,7 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.Refresh = function() {
+    HoverBubble.Refresh = function() {
       return this.InfoBubble.open();
     };
 
@@ -60,7 +65,7 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.Close = function() {
+    HoverBubble.Close = function() {
       return this.InfoBubble.close();
     };
 
@@ -69,7 +74,7 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.SetContent = function(marker) {
+    HoverBubble.SetContent = function(marker) {
       var key, listing, listing_info, listings, num_beds, unit_template, value, _i, _len;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
       this.template.find(".building_type").text(A2Cribs.Marker.BuildingType[+marker.building_type_id]);
@@ -99,7 +104,7 @@ Wrapper for google infobubble
       return this.InfoBubble.setContent(this.template.html());
     };
 
-    HoverBubble.prototype.resolveDate = function(minDate, maxDate) {
+    HoverBubble.resolveDate = function(minDate, maxDate) {
       var maxSplit, minSplit;
       minSplit = minDate.split("-");
       maxSplit = maxDate.split("-");

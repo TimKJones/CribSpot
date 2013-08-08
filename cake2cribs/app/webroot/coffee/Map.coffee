@@ -67,6 +67,7 @@ class A2Cribs.Map
   			mapTypeControl: false
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
+		google.maps.event.addListener A2Cribs.Map.GMap, 'center_changed', () => A2Cribs.ClickBubble.Close()
 		###imageStyles = [
 			{
 				"url": "/img/dots/group_dot.png",
@@ -87,8 +88,8 @@ class A2Cribs.Map
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
-		A2Cribs.ClickBubble.Init A2Cribs.Map.GMap
-		A2Cribs.HoverBubble = new A2Cribs.HoverBubble @GMap
+		A2Cribs.ClickBubble.Init @GMap
+		A2Cribs.HoverBubble.Init @GMap
 		
 		A2Cribs.Map.InitBoundaries();
 		@LoadAllMapData()

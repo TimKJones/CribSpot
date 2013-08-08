@@ -25,6 +25,8 @@ class A2Cribs.ClickBubble
 	###
 	@Init: (@map) ->
 		@div = $(".click-bubble:first")
+		@div.find(".close_button").click () =>
+			@Close()
 
 	###
 	Opens the tooltip given a marker, with popping animation

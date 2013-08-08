@@ -8,7 +8,7 @@ class A2Cribs.HoverBubble
 	Constructor
 	-creates infobubble object
 	###
-	constructor: (map) ->
+	@Init: (map) ->
 		@template = $(".hover-bubble:first").parent()
 		obj = 
 			map: map
@@ -25,11 +25,12 @@ class A2Cribs.HoverBubble
 		@InfoBubble = new InfoBubble obj
 		@InfoBubble.hideCloseButton()
 		@InfoBubble.setBackgroundClassName "map_bubble"
+		@template.find(".close_button").attr "onclick", "A2Cribs.HoverBubble.Close();"
 
 	###
 	Opens the tooltip given a marker, with popping animation
 	###
-	Open: (marker) ->
+	@Open: (marker) ->
 		if marker
 			@SetContent marker
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
@@ -37,19 +38,19 @@ class A2Cribs.HoverBubble
 	###
 	Refreshes the tooltip with the new content, no animation
 	###
-	Refresh: () ->
+	@Refresh: () ->
 		@InfoBubble.open()
 
 	###
 f	Closes the tooltip, no animation
 	###
-	Close: ->
+	@Close: ->
 		@InfoBubble.close()
 
 	###
 	Sets the content of the tooltip
 	###
-	SetContent: (marker) ->
+	@SetContent: (marker) ->
 		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
 		@template.find(".building_type").text A2Cribs.Marker.BuildingType[+marker.building_type_id]
 		@template.find(".unit_div").empty()
@@ -74,7 +75,7 @@ f	Closes the tooltip, no animation
 
 		@InfoBubble.setContent @template.html()
 
-	resolveDate: (minDate, maxDate) ->
+	@resolveDate: (minDate, maxDate) ->
 		minSplit = minDate.split "-"
 		maxSplit = maxDate.split "-"
 		+minSplit[1] + "/" + +minSplit[2] + "-" + +maxSplit[1] + "/" + +maxSplit[2]

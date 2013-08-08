@@ -42,8 +42,12 @@ ClickBubble class
 
 
     ClickBubble.Init = function(map) {
+      var _this = this;
       this.map = map;
-      return this.div = $(".click-bubble:first");
+      this.div = $(".click-bubble:first");
+      return this.div.find(".close_button").click(function() {
+        return _this.Close();
+      });
     };
 
     /*
