@@ -112,18 +112,19 @@ ClickBubble class
     */
 
 
-    ClickBubble.SetContent = function(listing) {
+    ClickBubble.SetContent = function(listing_object) {
       var key, marker, value;
-      for (key in listing) {
-        value = listing[key];
+      for (key in listing_object) {
+        value = listing_object[key];
         this.div.find("." + key).text(value);
       }
-      this.div.find(".date_range").text(this.resolveDateRange(listing.start_date, listing.end_date));
-      marker = A2Cribs.UserCache.Get("marker", A2Cribs.UserCache.Get("listing", listing.listing_id).marker_id);
+      this.div.find(".date_range").text(this.resolveDateRange(listing_object.start_date, listing_object.end_date));
+      marker = A2Cribs.UserCache.Get("marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id);
       this.div.find(".building_name").text(marker.GetName());
       this.div.find(".unit_type").text(marker.GetBuildingType());
-      this.div.find(".website_link").attr("href", listing.website);
-      return this.setAvailability("available", listing.available);
+      this.div.find(".website_link").attr("href", listing_object.website);
+      this.setAvailability("available", listing_object.available);
+      return this.setOwnerName("property_manager", listing_object.listing_id);
     };
 
     ClickBubble.resolveDateRange = function(startDate, endDate) {
@@ -141,6 +142,24 @@ ClickBubble class
         return $("." + div_name).text("Available");
       } else {
         return $("." + div_name).text("Leased");
+      }
+    };
+
+    ClickBubble.linkWebsite = function(div_name, link) {
+      if (link.indexOf("http" === -1)) {
+        link = "http://" + link;
+      }
+      return this.div.find(".website_link").attr("href", link);
+    };
+
+    ClickBubble.setOwnerName = function(div_name, listing_id) {
+      var listing, user;
+      listing = A2Cribs.UserCache.Get("listing", listing_id);
+      user = A2Cribs.UserCache.Get("user", listing.user_id);
+      if ((user != null ? user.company_name : void 0) != null) {
+        return $("." + div_name).text(user.company_name);
+      } else if (((user != null ? user.first_name : void 0) != null) && user.last_name) {
+        return $("." + div_name).text("" + user.first_name + " " + user.last_name);
       }
     };
 

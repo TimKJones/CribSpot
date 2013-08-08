@@ -69,15 +69,16 @@ class A2Cribs.ClickBubble
 	###
 	Sets the content of the tooltip
 	###
-	@SetContent: (listing) ->
-		for key,value of listing
+	@SetContent: (listing_object) ->
+		for key,value of listing_object
 			@div.find(".#{key}").text value
-		@div.find(".date_range").text @resolveDateRange listing.start_date, listing.end_date
-		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing.listing_id).marker_id
+		@div.find(".date_range").text @resolveDateRange listing_object.start_date, listing_object.end_date
+		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
-		@div.find(".website_link").attr "href", listing.website
-		@setAvailability "available", listing.available
+		@div.find(".website_link").attr "href", listing_object.website
+		@setAvailability "available", listing_object.available
+		@setOwnerName "property_manager", listing_object.listing_id
 
 	@resolveDateRange: (startDate, endDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -97,6 +98,14 @@ class A2Cribs.ClickBubble
 		if link.indexOf "http" is -1
 			link = "http://" + link
 		@div.find(".website_link").attr "href", link
+
+	@setOwnerName: (div_name, listing_id) ->
+		listing = A2Cribs.UserCache.Get "listing", listing_id
+		user = A2Cribs.UserCache.Get "user", listing.user_id
+		if user?.company_name?
+			$(".#{div_name}").text user.company_name
+		else if user?.first_name? and user.last_name
+			$(".#{div_name}").text "#{user.first_name} #{user.last_name}"
 
 
 
