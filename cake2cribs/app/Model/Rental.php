@@ -396,8 +396,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
 
-		/*$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -406,12 +406,38 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getFilteredQueryConditions($params)
 	{
+		/*
+		Go through every key, value pair in $params
+		Filter each into its appropriate bucket.
+		General category for true/false checkboxes.
+		Category for each multiple option dropdown
+		General category for dates
+		*/
 		$conditions = array();
-		$building_type_id_OR = $this->_getBuildingTypeOr($params);
+		$dates = array();
+		$unit_types = array();
+		$booleans = array();
 
-		array_push($conditions, array('OR' => array(
-			array('Marker.building_type_id' => $building_type_id_OR),
-			array('Marker.building_type_id' => NULL))));
+		/* Put each filter paramter (key, value) pair into an appropriate bucket */
+		foreach ($params as $key => $value) {
+			if (strrpos($key, 'month') !== false){
+				/* This is a date parameter */
+				$dates[$key] = $value;
+			}
+			else if (strrpos($key, 'amenity') !== false){
+				/* This is a boolean parameter */
+				$booleans[$key] = $value;
+			}
+			else if (strrpos($key, 'unit_type') !== false){
+				/* This is a unit_type parameter */
+				$unit_types[$key] = $value;
+			}
+		}
+
+		$date_conditions = $this->_getDateConditions($dates);
+		$boolean_conditions = $this->_getBooleanFilterConditions($booleans, 'amenity');
+		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'unit_type', 'Marker');
+		array_push($conditions, $date_conditions, $boolean_conditions, $unit_types);
 
 		array_push($conditions, array(
 			'Rental.rent >=' => $params['min_rent'],
@@ -421,25 +447,87 @@ class Rental extends RentalPrototype {
 			'Rental.baths >=' => $params['min_baths'],
 			'Rental.baths <=' => $params['max_baths']));
 
-		$date_conditions = $this->_getDateConditions($params);
-		array_push($conditions, array('OR' => $date_conditions));
 		return $conditions;
 	}
 
 	/*
-	returns a piece for the filter query dealing with building type
+	Takes an input of an array of (key, value) pairs
+	Only filters for fields that can be true, false, or null.
+	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
 	*/
-	private function _getBuildingTypeOr($params)
+	private function _getBooleanFilterConditions($params, $prefix, $table_name='Rental')
 	{
-		$building_type_id_OR = array();
-		if ($params['house'])
-			array_push($building_type_id_OR, Rental::BUILDING_TYPE_HOUSE);
-		if ($params['apt'])
-			array_push($building_type_id_OR, Rental::BUILDING_TYPE_APARTMENT);
-		if ($params['duplex'])
-			array_push($building_type_id_OR, Rental::BUILDING_TYPE_DUPLEX);
+		$conditions = array();
+		foreach ($params as $key => $value) {
+			$PREFIX_STRING_LENGTH = strlen($prefix) + 1; /* +1 accounts for last underscore after prefix */
+			if (strrpos($key, $prefix) !== false){
+				if (intval($value) == 1){
+					$trimmed_key = substr($key, $PREFIX_STRING_LENGTH);
+					$nextCondition = array('OR' => array(
+						array($table_name . '.' . $trimmed_key => true),
+						array($table_name . '.' . $trimmed_key => NULL))
+					);
 
-		return $building_type_id_OR;
+					array_push($conditions, $nextCondition);
+				}
+			}
+		}
+
+		return array('AND' => $conditions);
+	}
+
+	/*
+	Takes an input of an array of (key, value) pairs
+	Only filters for fields that can be multiple values (ex. unit_type)
+	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
+	*/
+	private function _getMultipleOptionFilterConditions($params, $prefix, $table_name='Rental')
+	{
+		$conditions = array();
+		$acceptable_values = array();
+		foreach ($params as $key => $value) {
+			$PREFIX_STRING_LENGTH = strlen($prefix) + 1; /* +1 accounts for last underscore after prefix */
+			if (strrpos($key, $prefix) !== false){
+				if (intval($value) === 1){
+					$trimmed_key = substr($key, $PREFIX_STRING_LENGTH);
+					/* Get array of acceptable values for this field */
+					$converted_value = $this->_getIntegerFromTypeString($trimmed_key, $prefix);
+					array_push($acceptable_values, $converted_value);
+				}
+			}
+		}
+
+		$safe_field_name = $this->_convertToSafeFieldName($prefix);
+		$conditions['OR'] = array(
+			array($table_name . '.' . $safe_field_name => $acceptable_values),
+			array($table_name . '.' . $safe_field_name => NULL));
+
+		return $conditions;
+	}
+
+	/*
+	We hide table names from the user for security purposes.
+	This function converts to what we show in coffee to what we actually call our tables.
+	*/
+	private function _convertToSafeFieldName($field_name)
+	{
+		if ($field_name == 'unit_type')
+			return 'building_type_id';
+
+		return $table_name;
+	}
+
+	/*
+	Given a typeString (like 'House' or 'Duplex', )
+	*/
+	private function _getIntegerFromTypeString($typeString, $prefix)
+	{
+		$int_value = null;
+		if ($prefix == 'unit_type') {
+			$int_value = $this->building_type_reverse($typeString);
+		}
+
+		return $int_value;
 	}
 
 	/*
@@ -458,7 +546,7 @@ class Rental extends RentalPrototype {
 			array_push($conditions, $and_array);
 		}
 
-		return $conditions;	
+		return array('OR' => $conditions);	
 	}
 
 	/*
@@ -468,8 +556,8 @@ class Rental extends RentalPrototype {
 	{
 		$months_selected = $this->_getMonthsSelectedArray($params);
 		$pairs = array();
-		$start_years = json_decode($params['curYear']);
-		$lease_length = intval($params['leaseLength']);
+		$start_years = json_decode($params['month_curYear']);
+		$lease_length = intval($params['month_leaseLength']);
 		for ($i = 0; $i < count($start_years); $i++) {
 			for ($j = 0; $j < count($months_selected); $j++){
 				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));

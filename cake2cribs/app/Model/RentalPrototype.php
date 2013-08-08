@@ -22,14 +22,35 @@ class RentalPrototype extends AppModel {
 	const BUILDING_TYPE_HOUSE = 0;
 	const BUILDING_TYPE_APARTMENT = 1;
 	const BUILDING_TYPE_DUPLEX = 2;
+	const BUILDING_TYPE_CONDO = 3;
+	const BUILDING_TYPE_TOWNHOUSE = 4;
+	const BUILDING_TYPE_COOP = 5;
+	const BUILDING_TYPE_OTHER = 6;
 
 	public static function building_type($value = null) {
 		$options = array(
 		    self::BUILDING_TYPE_HOUSE => __('House',true),
 		    self::BUILDING_TYPE_APARTMENT => __('Apartment',true),
 		    self::BUILDING_TYPE_DUPLEX => __('Duplex',true),
+		    self::BUILDING_TYPE_CONDO => __('Condo',true),
+		    self::BUILDING_TYPE_TOWNHOUSE => __('Townhouse',true),
+		    self::BUILDING_TYPE_COOP => __('Coop',true),
+		    self::BUILDING_TYPE_OTHER => __('Other',true),
 		);
 		return parent::enum($value, $options);
+	}
+
+	public static function building_type_reverse($value = null) {
+		$options = array(
+			'house' => self::BUILDING_TYPE_HOUSE,
+			'apartment' => self::BUILDING_TYPE_APARTMENT,
+			'duplex' => self::BUILDING_TYPE_DUPLEX,
+			'condo' => self::BUILDING_TYPE_CONDO,
+			'townhouse' => self::BUILDING_TYPE_TOWNHOUSE,
+			'coop' => self::BUILDING_TYPE_COOP,
+			'other' => self::BUILDING_TYPE_OTHER,
+		);
+		return parent::StringToInteger($value, $options);
 	}
 
 	/* ---------- air ---------- */

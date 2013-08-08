@@ -15,7 +15,7 @@ class RentalsController extends AppController
 
   public function index()
   {
-
+     
   }
 
   /*
