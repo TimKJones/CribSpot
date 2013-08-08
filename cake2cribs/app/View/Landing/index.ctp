@@ -20,22 +20,7 @@
 	echo $this->element('popups');
 ?>
 
-<div class="top-bar">
-	<ul id="left-options" class="inline unstyled pull-left">
-
-	<?php 
-	if ($this->Session->read('Auth.User.id') == 0)
-		echo '<li><a href="#myModal" data-toggle="modal">Login</a></li>';
-	else
-		echo '<li><a href="/dashboard">My Dashboard</a></li>';
-	?>
-	</ul>
-	<ul id="right-options" class="inline unstyled pull-right">
-		<li><a href="#about-page" data-toggle="modal">About</a></li>
-		<li><a href="#contact-page" data-toggle="modal">Contact</a></li>
-		<li><a href="#help-page" data-toggle="modal">Help</a></li>
-	</ul>
-</div>
+<?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 
 <div class="float" id="search-div">
 	<img src="/img/landing/logo.png" height="300px" width="300px">
