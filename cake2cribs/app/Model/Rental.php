@@ -407,15 +407,12 @@ class Rental extends RentalPrototype {
 	private function _getFilteredQueryConditions($params)
 	{
 		/*
-		Go through every key, value pair in $params
-		Filter each into its appropriate bucket.
-		General category for true/false checkboxes.
-		Category for each multiple option dropdown
-		General category for dates
+		TODO: Return error message if not all parameters are present
 		*/
+
 		$conditions = array();
 		$dates = array();
-		$unit_types = array();
+		$unit_types = json_decode($params['unit_types']);
 		$booleans = array();
 
 		/* Put each filter paramter (key, value) pair into an appropriate bucket */
@@ -428,15 +425,11 @@ class Rental extends RentalPrototype {
 				/* This is a boolean parameter */
 				$booleans[$key] = $value;
 			}
-			else if (strrpos($key, 'unit_type') !== false){
-				/* This is a unit_type parameter */
-				$unit_types[$key] = $value;
-			}
 		}
 
 		$date_conditions = $this->_getDateConditions($dates);
 		$boolean_conditions = $this->_getBooleanFilterConditions($booleans, 'amenity');
-		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'unit_type', 'Marker');
+		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'building_type_id', 'Marker');
 		array_push($conditions, $date_conditions, $boolean_conditions, $unit_types);
 
 		array_push($conditions, array(
@@ -481,26 +474,21 @@ class Rental extends RentalPrototype {
 	Only filters for fields that can be multiple values (ex. unit_type)
 	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
 	*/
-	private function _getMultipleOptionFilterConditions($params, $prefix, $table_name='Rental')
+	private function _getMultipleOptionFilterConditions($params, $field_name, $table_name='Rental')
 	{
 		$conditions = array();
 		$acceptable_values = array();
 		foreach ($params as $key => $value) {
-			$PREFIX_STRING_LENGTH = strlen($prefix) + 1; /* +1 accounts for last underscore after prefix */
-			if (strrpos($key, $prefix) !== false){
-				if (intval($value) === 1){
-					$trimmed_key = substr($key, $PREFIX_STRING_LENGTH);
-					/* Get array of acceptable values for this field */
-					$converted_value = $this->_getIntegerFromTypeString($trimmed_key, $prefix);
-					array_push($acceptable_values, $converted_value);
-				}
+			if (intval($value) === 1){
+				/* Get array of acceptable values for this field */
+				$converted_value = $this->_getIntegerFromTypeString($key, $field_name);
+				array_push($acceptable_values, $converted_value);
 			}
 		}
 
-		$safe_field_name = $this->_convertToSafeFieldName($prefix);
 		$conditions['OR'] = array(
-			array($table_name . '.' . $safe_field_name => $acceptable_values),
-			array($table_name . '.' . $safe_field_name => NULL));
+			array($table_name . '.' . $field_name => $acceptable_values),
+			array($table_name . '.' . $field_name => NULL));
 
 		return $conditions;
 	}
@@ -520,10 +508,10 @@ class Rental extends RentalPrototype {
 	/*
 	Given a typeString (like 'House' or 'Duplex', )
 	*/
-	private function _getIntegerFromTypeString($typeString, $prefix)
+	private function _getIntegerFromTypeString($typeString, $type_name)
 	{
 		$int_value = null;
-		if ($prefix == 'unit_type') {
+		if ($type_name == 'building_type_id') {
 			$int_value = $this->building_type_reverse($typeString);
 		}
 
@@ -554,7 +542,7 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getStartEndDatePairs($params)
 	{
-		$months_selected = $this->_getMonthsSelectedArray($params);
+		$months_selected = $this->_getMonthsSelectedArray($params['months']);
 		$pairs = array();
 		$start_years = json_decode($params['month_curYear']);
 		$lease_length = intval($params['month_leaseLength']);
@@ -577,21 +565,20 @@ class Rental extends RentalPrototype {
 	/*
 	Returns array of months selected in filter as integer-strings
 	*/
-	private function _getMonthsSelectedArray($params)
+	private function _getMonthsSelectedArray($months)
 	{
-		$months = array();
-		foreach ($params as $key => $value) {
-			$MONTH_STRING_LENGTH = 6;
-			if (strrpos($key, 'month') !== false){
-				if (intval($value) === 1){
-					$month = substr($key, $MONTH_STRING_LENGTH);
-					array_push($months, intval($month));
-				}
+		$months = json_decode($months);
+		$months_selected = array();
+		foreach ($months as $key => $value) {
+			if (intval($value) === 1){
+				array_push($months_selected, intval($key));
 			}
 		}
 
-		return $months;
+		return $months_selected;
 	}
+
+
 }
 
 ?>
