@@ -27,11 +27,8 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&parking=" + 1
 		ajaxData += "&months=" + JSON.stringify @GetMonths()
 		ajaxData += "&unit_types=" + JSON.stringify @GetUnitTypes()
-		ajaxData += "&amenity_air=" + 1
+		ajaxData += "&amenities=" + JSON.stringify @GetAmenities()
 		ajaxData += "&month_12=" + 0
-		currentYears = [13, 14]
-		ajaxData += "&month_curYear=" + JSON.stringify currentYears
-		ajaxData += "&month_leaseLength=" + 7
 		$.ajax
 			url: myBaseUrl + "Rentals/ApplyFilter"
 			data: ajaxData
@@ -77,6 +74,8 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			"10": 0
 			"11": 1
 			"12": 0
+			"curYear" : JSON.stringify [13, 14]
+			"leaseLength" : 7
 		return months
 
 	@GetUnitTypes: () ->
@@ -88,6 +87,10 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			"townhouse" : 0
 			"coop" : 0
 			"other" : 1
+
+	@GetAmenities: () ->
+		amenities =
+			'elevator' : 1
 
 	FilterRent: (listing) ->
 		return true

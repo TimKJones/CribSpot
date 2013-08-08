@@ -411,24 +411,12 @@ class Rental extends RentalPrototype {
 		*/
 
 		$conditions = array();
-		$dates = array();
+		$dates = $params['months'];
 		$unit_types = json_decode($params['unit_types']);
-		$booleans = array();
-
-		/* Put each filter paramter (key, value) pair into an appropriate bucket */
-		foreach ($params as $key => $value) {
-			if (strrpos($key, 'month') !== false){
-				/* This is a date parameter */
-				$dates[$key] = $value;
-			}
-			else if (strrpos($key, 'amenity') !== false){
-				/* This is a boolean parameter */
-				$booleans[$key] = $value;
-			}
-		}
+		$booleans = json_decode($params['amenities']);
 
 		$date_conditions = $this->_getDateConditions($dates);
-		$boolean_conditions = $this->_getBooleanFilterConditions($booleans, 'amenity');
+		$boolean_conditions = $this->_getBooleanFilterConditions($booleans);
 		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'building_type_id', 'Marker');
 		array_push($conditions, $date_conditions, $boolean_conditions, $unit_types);
 
@@ -448,21 +436,16 @@ class Rental extends RentalPrototype {
 	Only filters for fields that can be true, false, or null.
 	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
 	*/
-	private function _getBooleanFilterConditions($params, $prefix, $table_name='Rental')
+	private function _getBooleanFilterConditions($params, $table_name='Rental')
 	{
 		$conditions = array();
 		foreach ($params as $key => $value) {
-			$PREFIX_STRING_LENGTH = strlen($prefix) + 1; /* +1 accounts for last underscore after prefix */
-			if (strrpos($key, $prefix) !== false){
-				if (intval($value) == 1){
-					$trimmed_key = substr($key, $PREFIX_STRING_LENGTH);
-					$nextCondition = array('OR' => array(
-						array($table_name . '.' . $trimmed_key => true),
-						array($table_name . '.' . $trimmed_key => NULL))
-					);
-
-					array_push($conditions, $nextCondition);
-				}
+			if (intval($value) == 1){
+				$nextCondition = array('OR' => array(
+					array($table_name . '.' . $key => true),
+					array($table_name . '.' . $key => NULL))
+				);
+				array_push($conditions, $nextCondition);
 			}
 		}
 
@@ -526,6 +509,7 @@ class Rental extends RentalPrototype {
 	{
 		$conditions = array();
 		$startEndDatePairs = $this->_getStartEndDatePairs($params);
+CakeLog::write('pairs', print_r($startEndDatePairs, true));
 		foreach ($startEndDatePairs as $pair){
 			$and_array = array();
 			$and_array['AND'] = array();
@@ -542,10 +526,11 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getStartEndDatePairs($params)
 	{
-		$months_selected = $this->_getMonthsSelectedArray($params['months']);
+		$params = json_decode($params);
+		$months_selected = $this->_getMonthsSelectedArray($params);
 		$pairs = array();
-		$start_years = json_decode($params['month_curYear']);
-		$lease_length = intval($params['month_leaseLength']);
+		$start_years = json_decode($params->curYear);
+		$lease_length = intval($params->leaseLength);
 		for ($i = 0; $i < count($start_years); $i++) {
 			for ($j = 0; $j < count($months_selected); $j++){
 				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
@@ -567,7 +552,6 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getMonthsSelectedArray($months)
 	{
-		$months = json_decode($months);
 		$months_selected = array();
 		foreach ($months as $key => $value) {
 			if (intval($value) === 1){

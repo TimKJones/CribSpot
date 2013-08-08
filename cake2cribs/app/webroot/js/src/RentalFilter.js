@@ -16,7 +16,7 @@
     */
 
     RentalFilter.ApplyFilter = function(event, ui) {
-      var ajaxData, currentYears;
+      var ajaxData;
       ajaxData = null;
       /*
       		ajaxData += "minBeds=" + $("#minBedsSelect").val()
@@ -38,11 +38,8 @@
       ajaxData += "&parking=" + 1;
       ajaxData += "&months=" + JSON.stringify(this.GetMonths());
       ajaxData += "&unit_types=" + JSON.stringify(this.GetUnitTypes());
-      ajaxData += "&amenity_air=" + 1;
+      ajaxData += "&amenities=" + JSON.stringify(this.GetAmenities());
       ajaxData += "&month_12=" + 0;
-      currentYears = [13, 14];
-      ajaxData += "&month_curYear=" + JSON.stringify(currentYears);
-      ajaxData += "&month_leaseLength=" + 7;
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
         data: ajaxData,
@@ -95,7 +92,9 @@
         "9": 1,
         "10": 0,
         "11": 1,
-        "12": 0
+        "12": 0,
+        "curYear": JSON.stringify([13, 14]),
+        "leaseLength": 7
       };
       return months;
     };
@@ -110,6 +109,13 @@
         "townhouse": 0,
         "coop": 0,
         "other": 1
+      };
+    };
+
+    RentalFilter.GetAmenities = function() {
+      var amenities;
+      return amenities = {
+        'elevator': 1
       };
     };
 
