@@ -81,9 +81,14 @@
   function UnitFormatter (row, cell, value, columnDef, dataContext) {
     var text, text_class;
     if (typeof(dataContext.unit_style_options) == "undefined" || dataContext.unit_style_options == null)
-      text = ""
+      text = "";
     else
-      text = dataContext.unit_style_type + " - " + dataContext.unit_style_description
+      if (+dataContext.unit_style_options === 0)
+        text = "Layout" + " - " + dataContext.unit_style_description;
+      else if (+dataContext.unit_style_options === 1)
+        text = "Unit" + " - " + dataContext.unit_style_description;
+      else if (+dataContext.unit_style_options === 2)
+        text = "Entire House";
     text_class = (text.length) ? "" : "required"
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + text + "' class='" + text_class +"' type='text' required>";

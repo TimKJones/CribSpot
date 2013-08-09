@@ -92,27 +92,33 @@
     this.init();
   }
   function UnitEditor(args) {
-    var $unit_style_type, $unit_style_options, $unit_style_description;
+    var $unit_style_options, $unit_style_description;
     var scope = this;
     var right_count = 0;
 
     this.init = function () {
       $unit_style_options = $("<select style='width:70px;'/>");
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
-      $("<option />", {value: 0, text: "Style"}).appendTo($unit_style_options);
+      $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
+      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
       $(args.container).append("&nbsp;");
-      $unit_style_type = $("<INPUT type=text style='width:25px' placeholder='Unit/Style' />")
+
+      $unit_style_description = $("<INPUT type=text style='width:50px' placeholder='Style F' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
-      $(args.container).append("&nbsp; - &nbsp;");
-
-      $unit_style_description = $("<INPUT type=text style='width:50px' placeholder='Name' />")
-          .appendTo(args.container)
-          .bind("keydown", scope.handleKeyDown);
+      $unit_style_options.change(function() {
+        var value = $unit_style_options.val() ;
+        if (value === "0")
+          $unit_style_description.show().attr("placeholder", "Style F")
+        else if (value === "1")
+          $unit_style_description.show().attr("placeholder", "A7")
+        else if (value === "2")
+          $unit_style_description.hide()
+      });
 
       scope.focus();
     };
@@ -138,28 +144,27 @@
 
     this.serializeValue = function () {
       return {
-        unit_style_type: $unit_style_type.val(),
         unit_style_options: +$unit_style_options.val(),
-        unit_style_description: $unit_style_description.val(),
-        unit_style_options_text: $($unit_style_type).find("option:selected").text()
+        unit_style_description: $unit_style_description.val()
       };
     };
 
     this.applyValue = function (item, state) {
-      item.unit_style_type = state.unit_style_type;
       item.unit_style_options = state.unit_style_options;
       item.unit_style_description = state.unit_style_description;
       item.unit_style_options_text = state.unit_style_options_text
     };
 
     this.loadValue = function (item) {
-      $unit_style_type.val(item.unit_style_type);
       $unit_style_options.val(item.unit_style_options);
-      $unit_style_description.val(item.unit_style_description);
+      if (+item.unit_style_options === 2)
+        $unit_style_description.hide()
+      else
+        $unit_style_description.show().val(item.unit_style_description);
     };
 
     this.isValueChanged = function () {
-      return args.item.unit_style_type != $unit_style_type.val() || args.item.unit_style_options != $unit_style_options.val() || args.item.unit_style_description != $unit_style_description.val();
+      return args.item.unit_style_options != $unit_style_options.val() || args.item.unit_style_description != $unit_style_description.val();
     };
 
     this.validate = function () {
