@@ -135,14 +135,16 @@ class A2Cribs.RentalSave
 
 	GetObjectByRow: (row) ->
 		data = @GridMap[@VisibleGrid].getDataItem row
-		images = if data.listing_id? then A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.listing_id else []
-		for image, i in images
-			images[i] = image.GetObject()
+
+		if data.listing_id?
+			image_object = A2Cribs.UserCache.Get("image", data.listing_id)?.GetObject()
+		if not image_object?
+			image_object = []
 
 		rental_object = {
 			Rental: data
 			Listing: if data.listing_id? then A2Cribs.UserCache.Get("listing", data.listing_id).GetObject()
-			Image: images
+			Image: image_object
 		}
 		if not rental_object.Listing?
 			rental_object.Listing = {
@@ -170,12 +172,8 @@ class A2Cribs.RentalSave
 						rental_object.Listing.listing_id = response.listing_id
 						rental_object.Rental.listing_id = response.listing_id
 						for key, value of rental_object
-							if A2Cribs[key]? and not value.length?
+							if A2Cribs[key]?
 								A2Cribs.UserCache.Set new A2Cribs[key] value
-							else if A2Cribs[key]? and value.length? # Is an array
-								for i in value
-									i.listing_id = response.listing_id
-									A2Cribs.UserCache.Set new A2Cribs[key] i
 						console.log response
 					else
 						A2Cribs.UIManager.Error response.error.message
@@ -249,7 +247,7 @@ class A2Cribs.RentalSave
 	###
 	LoadImages: (row) ->
 		data = @GridMap[@VisibleGrid].getDataItem row
-		images = if data.listing_id? then A2Cribs.UserCache.GetAllAssociatedObjects "image", "listing", data.listing_id else data.Image
+		images = if data.listing_id? then A2Cribs.UserCache.Get "image", data.listing_id else data.Image
 		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
 
 
@@ -261,7 +259,7 @@ class A2Cribs.RentalSave
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images
 				image.listing_id = data.listing_id
-				A2Cribs.UserCache.Set new A2Cribs.Image image
+			A2Cribs.UserCache.Set new A2Cribs.Image images
 		else
 			data.Image = images
 		@Save row
