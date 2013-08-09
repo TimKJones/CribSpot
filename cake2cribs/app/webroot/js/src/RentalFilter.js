@@ -16,7 +16,7 @@
     */
 
     RentalFilter.ApplyFilter = function(event, ui) {
-      var ajaxData, currentYears;
+      var ajaxData;
       ajaxData = null;
       /*
       		ajaxData += "minBeds=" + $("#minBedsSelect").val()
@@ -35,31 +35,11 @@
       ajaxData += "&max_baths=" + 3;
       ajaxData += "&min_rent=" + 0;
       ajaxData += "&max_rent=" + 3000;
-      ajaxData += "&unit_type_house=" + 1;
-      ajaxData += "&unit_type_apartment=" + 1;
-      ajaxData += "&unit_type_duplex=" + 1;
-      ajaxData += "&unit_type_condo=" + 1;
-      ajaxData += "&unit_type_townhouse=" + 1;
-      ajaxData += "&unit_type_coop=" + 1;
-      ajaxData += "&unit_type_other=" + 1;
       ajaxData += "&parking=" + 1;
-      ajaxData += "&month_1=" + 1;
-      ajaxData += "&month_2=" + 0;
-      ajaxData += "&month_3=" + 0;
-      ajaxData += "&month_4=" + 1;
-      ajaxData += "&month_5=" + 0;
-      ajaxData += "&month_6=" + 1;
-      ajaxData += "&month_7=" + 0;
-      ajaxData += "&month_8=" + 0;
-      ajaxData += "&month_9=" + 1;
-      ajaxData += "&month_10=" + 0;
-      ajaxData += "&month_11=" + 0;
+      ajaxData += "&months=" + JSON.stringify(this.GetMonths());
+      ajaxData += "&unit_types=" + JSON.stringify(this.GetUnitTypes());
+      ajaxData += "&amenities=" + JSON.stringify(this.GetAmenities());
       ajaxData += "&month_12=" + 0;
-      ajaxData += "&amenity_air=" + 1;
-      ajaxData += "&month_12=" + 0;
-      currentYears = [13];
-      ajaxData += "&month_curYear=" + JSON.stringify(currentYears);
-      ajaxData += "&month_leaseLength=" + 7;
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
         data: ajaxData,
@@ -96,6 +76,47 @@
         }
       }
       return visibile_listings;
+    };
+
+    RentalFilter.GetMonths = function() {
+      var months;
+      months = {
+        "1": 1,
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 1,
+        "6": 0,
+        "7": 1,
+        "8": 0,
+        "9": 1,
+        "10": 0,
+        "11": 1,
+        "12": 0,
+        "curYear": JSON.stringify([13, 14]),
+        "leaseLength": 7
+      };
+      return months;
+    };
+
+    RentalFilter.GetUnitTypes = function() {
+      var unit_types;
+      return unit_types = {
+        "house": 0,
+        "apartment": 1,
+        "duplex": 1,
+        "condo": 1,
+        "townhouse": 0,
+        "coop": 0,
+        "other": 1
+      };
+    };
+
+    RentalFilter.GetAmenities = function() {
+      var amenities;
+      return amenities = {
+        'elevator': 1
+      };
     };
 
     RentalFilter.prototype.FilterRent = function(listing) {

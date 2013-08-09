@@ -47,6 +47,22 @@ class AppModel extends Model {
 	}
 
 	/*
+	Used for enum types.
+	Returns a numeric value for the string given as $stringToMatch
+	*/
+	public static function StringToInteger($stringToMatch, $options, $default =''){
+		if ($stringToMatch !== null) {
+			if (array_key_exists($stringToMatch, $options)){
+				return $options[$stringToMatch];
+			}
+
+	        return $default;
+	    }
+	    
+	    return null;
+	}
+
+	/*
 	Log an error to the errors table.
 	*/
 	public function LogError($user_id, $error_code, $debug_info)
