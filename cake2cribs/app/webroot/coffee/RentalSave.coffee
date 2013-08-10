@@ -69,6 +69,8 @@ class A2Cribs.RentalSave
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
 			@VisibleGrid = $(event.target).attr("href").substring(1)
 			@GridMap[@VisibleGrid].setSelectedRows selected
+			for row in @EditableRows
+				@Validate row
 			$(event.target).removeClass "highlight-tab"
 
 		$(".rentals-content").on "shown", (event) =>
@@ -285,11 +287,7 @@ class A2Cribs.RentalSave
 		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
 		$("#rentals_edit").text "Finish Editing"
 
-		# Highlight tabs
-		$('a[href="#overview_grid"]').addClass "highlight-tab"
-		$('a[href="#description_grid"]').addClass "highlight-tab"
-		$('a[href="#contact_grid"]').addClass "highlight-tab"
-		$('a[href="#' + @VisibleGrid + '"]').removeClass "highlight-tab"
+		@Validate row_number
 
 		for container,grid of @GridMap
 			grid.updateRowCount()
@@ -368,6 +366,8 @@ class A2Cribs.RentalSave
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
 					minWidth: 185
+					toolTip: "Blah Blah Blah"
+					headerCssClass: "slickgrid_header"
 				}
 				{
 					id: "beds"
@@ -453,7 +453,7 @@ class A2Cribs.RentalSave
 					name: "Baths"
 					field: "baths"
 					editor: Slick.Editors.Integer
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "parking_type"

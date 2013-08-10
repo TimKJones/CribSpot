@@ -95,9 +95,9 @@ class A2Cribs.Rental extends A2Cribs.Object
 
 	@Required_Fields = {
 		unit_style_options: "overview_grid"
-		unit_style_type: "overview_grid"
 		unit_style_description: "overview_grid"
 		beds: "overview_grid"
+		baths: "features_grid"
 		min_occupancy: "overview_grid"
 		max_occupancy: "overview_grid"
 		rent: "overview_grid"

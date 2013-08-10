@@ -87,11 +87,16 @@
         }
       });
       $(".rentals_tab").click(function(event) {
-        var selected;
+        var row, selected, _i, _len, _ref;
         _this.CommitSlickgridChanges();
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
         _this.VisibleGrid = $(event.target).attr("href").substring(1);
         _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+        _ref = _this.EditableRows;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          row = _ref[_i];
+          _this.Validate(row);
+        }
         return $(event.target).removeClass("highlight-tab");
       });
       return $(".rentals-content").on("shown", function(event) {
@@ -372,10 +377,7 @@
       });
       this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
       $("#rentals_edit").text("Finish Editing");
-      $('a[href="#overview_grid"]').addClass("highlight-tab");
-      $('a[href="#description_grid"]').addClass("highlight-tab");
-      $('a[href="#contact_grid"]').addClass("highlight-tab");
-      $('a[href="#' + this.VisibleGrid + '"]').removeClass("highlight-tab");
+      this.Validate(row_number);
       _ref1 = this.GridMap;
       _results = [];
       for (container in _ref1) {
@@ -477,7 +479,9 @@
             field: "title",
             editor: A2Cribs.Editors.Unit,
             formatter: A2Cribs.Formatters.Unit,
-            minWidth: 185
+            minWidth: 185,
+            toolTip: "Blah Blah Blah",
+            headerCssClass: "slickgrid_header"
           }, {
             id: "beds",
             name: "Beds",
@@ -551,7 +555,7 @@
             name: "Baths",
             field: "baths",
             editor: Slick.Editors.Integer,
-            formatter: A2Cribs.Formatters.Text
+            formatter: A2Cribs.Formatters.RequiredText
           }, {
             id: "parking_type",
             name: "Parking",
