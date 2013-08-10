@@ -522,25 +522,19 @@ CakeLog::write('pairs', print_r($startEndDatePairs, true));
 	}
 
 	/*
-	Return pairs of (start_date, end_date) that are valid to be searched based on user's current filter preferences.	
+	Returns start_dates that are valid to be searched based on user's current filter preferences.	
 	*/
-	private function _getStartEndDatePairs($params)
+	private function _getStartDates($params)
 	{
 		$params = json_decode($params);
 		$months_selected = $this->_getMonthsSelectedArray($params);
-		$pairs = array();
+		$start_dates = array();
 		$start_years = json_decode($params->curYear);
 		$lease_length = intval($params->leaseLength);
 		for ($i = 0; $i < count($start_years); $i++) {
 			for ($j = 0; $j < count($months_selected); $j++){
 				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
-				$end_date = date('Y-m-d', strtotime('+' . ($lease_length) . ' months', strtotime($start_date)));
-				$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
-				$new_pair = array(
-					'start_date' => $start_date,
-					'end_date' => $end_date
-				);
-				array_push($pairs, $new_pair);
+				array_push($start_dates, $start_date);
 			}
 		}
 

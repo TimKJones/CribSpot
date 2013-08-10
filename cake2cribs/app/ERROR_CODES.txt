@@ -79,3 +79,5 @@
 - User->RegisterUser
 38
 - UsersController->AjaxLogin
+39
+- User/SaveFacebookUser

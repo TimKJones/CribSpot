@@ -76,11 +76,17 @@ class AppController extends Controller {
 		//$this->Auth->allow('user','resetpassword');
 		//$this->Auth->allow('sublet', 'ajax_add');
 		$this->Auth->allow('verify','map');
-		/* App::import('Lib', 'Facebook.FB');   
+		/*App::import('Lib', 'Facebook.FB');   
     	$this->facebook = new Facebook(array(
       		'appId'  => Configure::read("FB_APP_ID"),
       		'secret' => Configure::read("FB_APP_SECRET"),
-    	)); */
+    	));*/
+		App::import('Vendor', 'Hull/Client');
+		$this->hull = new Hull_Client(array( 'hull' => array(
+		  'host' => 'https://4d7f3c95.hullapp.io',
+		  'appId' => '52059a5d4ce72fb684000024',
+		  'appSecret' => '332be32bbe05f58d5095a2d0b1043fb9'
+		)));
 	}
 
 	public function beforeRender()
