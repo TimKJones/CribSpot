@@ -536,9 +536,12 @@ class A2Cribs.RentalSave
 					formatter: A2Cribs.Formatters.Check
 				}
 				{
-					id: "washer"
+					id: "washer_dryer"
+					cssClass: "grid_checkbox"
 					name: "Washer/Dryer"
-					field: "washer"
+					field: "washer_dryer"
+					editor: Slick.Editors.Checkbox
+					formatter: A2Cribs.Formatters.Check
 				}
 				{
 					id: "fridge"
