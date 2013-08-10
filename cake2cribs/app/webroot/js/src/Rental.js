@@ -118,7 +118,7 @@
       rent: "overview_grid",
       unit_count: "overview_grid",
       start_date: "overview_grid",
-      end_date: "overview_grid",
+      lease_length: "overview_grid",
       available: "overview_grid",
       highlights: "description_grid",
       contact_email: "contact_grid",

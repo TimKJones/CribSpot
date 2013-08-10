@@ -19,32 +19,36 @@
         "Unit" : UnitFormatter,
         "Button" : ButtonFormatter,
         "Text" : TextFormatter,
-        "Availability" : AvailabilityFormatter,
         "RequiredText" : RequiredTextFormatter,
         "RequiredMoney" : RequiredMoneyFormatter,
         "Check" : CheckmarkFormatter,
-        "Utilities" : UtilitiesFormatter,
-        "Parking" : ParkingFormatter,
-        "Furnished" : FurnishedFormatter,
-        "Pets" : PetsFormatter,
-        "Smoking" : SmokingFormatter
+        "Dropdown" : makeDropdown
       }
     }
   });
 
-  var selectFormatter = function(options, value, dataContext) {
-    var text;
-    if (typeof(value) == "undefined")
-      text = "";
-    else
-    {
-      value = parseInt(value, 10);
-      text = options[value];
-    }
+  function makeDropdown(selectable_options, isRequired)
+  {
+    if (isRequired === null)
+      isRequired = false;
 
-    if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + text + "' type='text' >";
-    return "<strong>" + text + "</strong>";
+    return function (row, cell, value, columnDef, dataContext)
+    {
+      var text, text_class;
+      if (typeof(value) == "undefined")
+        text = "";
+      else
+      {
+        value = parseInt(value, 10);
+        text = selectable_options[value];
+      }
+      text_class = ""
+      if (isRequired && text.length === 0)
+        text_class = "required";
+      if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
+        return "<input value='" + text + "' type='text' class='" + text_class + "' >";
+      return "<strong>" + text + "</strong>";
+    }
   }
 
   function NumericRangeFormatter(row, cell, value, columnDef, dataContext) {
@@ -104,23 +108,6 @@
       return "<input value='" + value + "' type='text' />";
     return value;
   }
-  function AvailabilityFormatter (row, cell, value, columnDef, dataContext) {
-    var text, text_class;
-    if (typeof(value) == "undefined")
-    {
-      text = "";
-      text_class = "";
-    }
-    else
-    {
-      text = (value) ? "Available" : "Leased"
-      text_class = (value) ? "text-success" : "text-error"
-    }
-    text_class += (text.length) ? "" : " required"
-    if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input class='" + text_class + "' value='" + text + "' type='text' >";
-    return "<strong class='" + text_class + "'>" + text + "</strong>";
-  }
   function RequiredTextFormatter (row, cell, value, columnDef, dataContext) {
     var text_class;
     value = (typeof(value) != "undefined") ? value : "";
@@ -131,20 +118,5 @@
   }
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
     return value ? '<img src="/img/dashboard/yes.png" alt="Yes">' : '<img src="/img/dashboard/no.png" alt="No">' ;
-  }
-  function UtilitiesFormatter (row, cell, value, columnDef, dataContext) {
-    return selectFormatter(["No", "Yes", "Flat Rate"], value, dataContext);
-  }
-  function ParkingFormatter (row, cell, value, columnDef, dataContext) {
-    return selectFormatter(["None", "Lot", "Driveway", "Garage", "Off-Site"], value, dataContext);
-  }
-  function FurnishedFormatter (row, cell, value, columnDef, dataContext) {
-    return selectFormatter(["Unfurnished", "Fully", "Partially"], value, dataContext);
-  }
-  function PetsFormatter (row, cell, value, columnDef, dataContext) {
-    return selectFormatter(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"], value, dataContext);
-  }
-  function SmokingFormatter (row, cell, value, columnDef, dataContext) {
-    return selectFormatter(["Prohibited", "Allowed"], value, dataContext);
   }
 })(jQuery);

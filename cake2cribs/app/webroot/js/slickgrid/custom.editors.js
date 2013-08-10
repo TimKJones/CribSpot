@@ -11,13 +11,8 @@
       "Editors": {
         "Range": NumericRangeEditor,
         "Unit" : UnitEditor,
-        "Availability" : AvailabilityEditor,
-        "Utilities" : UtilitiesEditor,
-        "Pets" : PetsEditor,
-        "Furnished" : FurnishedEditor,
-        "Parking" : ParkingEditor,
-        "AC" : ACEditor,
-        "Smoking" : SmokingEditor
+        "LeaseLength": makeDropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
+        "Dropdown" : makeDropdown
       }
     }
   });
@@ -173,349 +168,58 @@
 
     this.init();
   }
-  function AvailabilityEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
 
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Available"}).appendTo($select);
-      $("<option />", {value: 0, text: "Leased"}).appendTo($select);
+function makeDropdown(selectable_options)
+{
+  return function (args) {
+      var $select;
+      var defaultValue;
+      var scope = this;
 
-      $select.appendTo(args.container);
-      $select.focus();
-    };
+      this.init = function () {
+        $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
+        for (var i = 0; i < selectable_options.length; i++) {
+          selectable_options[i]
+          $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
+        };
 
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+        $select.appendTo(args.container);
+        $select.focus();
       };
-    };
 
-    this.init();
-  }
-  function UtilitiesEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Yes"}).appendTo($select);
-      $("<option />", {value: 0, text: "No"}).appendTo($select);
-      $("<option />", {value: 2, text: "Flat Rate"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.destroy = function () {
+        $select.remove();
       };
-    };
 
-    this.init();
-  }
-  function PetsEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
-      $("<option />", {value: 1, text: "Cats Only"}).appendTo($select);
-      $("<option />", {value: 2, text: "Dogs Only"}).appendTo($select);
-      $("<option />", {value: 3, text: "Cats & Dogs"}).appendTo($select);
-      $("<option />", {value: 4, text: "All Animals"}).appendTo($select);
-      $("<option />", {value: 0, text: "Prohibited"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = +item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.focus = function () {
+        $select.focus();
       };
-    };
 
-    this.init();
-  }
-  function FurnishedEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
-      $("<option />", {value: 1, text: "Fully"}).appendTo($select);
-      $("<option />", {value: 0, text: "Unfurnished"}).appendTo($select);
-      $("<option />", {value: 2, text: "Partially"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.loadValue = function (item) {
+        defaultValue = item[args.column.field];
+        $select.val(+defaultValue);
       };
-    };
 
-    this.init();
-  }
-  function ParkingEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
-      $("<option />", {value: 1, text: "Lot"}).appendTo($select);
-      $("<option />", {value: 2, text: "Driveway"}).appendTo($select);
-      $("<option />", {value: 3, text: "Garage"}).appendTo($select);
-      $("<option />", {value: 4, text: "Off-Site"}).appendTo($select);
-      $("<option />", {value: 0, text: "None"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.serializeValue = function () {
+        return +$select.val();
       };
-    };
 
-    this.init();
-  }
-  function ACEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Central"}).appendTo($select);
-      $("<option />", {value: 0, text: "None"}).appendTo($select);
-      $("<option />", {value: 2, text: "Wall Unit"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.applyValue = function (item, state) {
+        item[args.column.field] = state;
       };
-    };
 
-    this.init();
-  }
-  function SmokingEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:100px;' />");
-      $("<option />", {value: 1, text: "Allowed"}).appendTo($select);
-      $("<option />", {value: 0, text: "Prohibited"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.isValueChanged = function () {
+        return (this.serializeValue() !== defaultValue);
       };
-    };
 
-    this.init();
+      this.validate = function () {
+        return {
+          valid: true,
+          msg: null
+        };
+      };
+
+      this.init();
+    }
   }
 })(jQuery);

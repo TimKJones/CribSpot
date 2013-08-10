@@ -413,18 +413,18 @@ class A2Cribs.RentalSave
 					formatter: A2Cribs.Formatters.Text
 				}
 				{
-					id: "end_date"
-					name: "End Date"
-					field: "end_date"
-					editor: Slick.Editors.Date 
-					formatter: A2Cribs.Formatters.RequiredText
+					id: "lease_length"
+					name: "Lease Length"
+					field: "lease_length"
+					editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"])
+					formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
 				}
 				{
 					id: "available"
 					name: "Availability"
 					field: "available"
-					editor: A2Cribs.Editors.Availability
-					formatter: A2Cribs.Formatters.Availability
+					editor: A2Cribs.Editors.Dropdown(["Leased", "Available"])
+					formatter: A2Cribs.Formatters.Dropdown(["Leased", "Available"])
 				}
 				{
 					id: "unit_count"
@@ -459,8 +459,8 @@ class A2Cribs.RentalSave
 					id: "parking_type"
 					name: "Parking"
 					field: "parking_type"
-					editor: A2Cribs.Editors.Parking
-					formatter: A2Cribs.Formatters.Parking
+					editor: A2Cribs.Editors.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"]),
+					formatter: A2Cribs.Formatters.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"]),
 				}
 				{
 					id: "parking_spots"
@@ -481,22 +481,22 @@ class A2Cribs.RentalSave
 					id: "furnished_type"
 					name: "Furnished"
 					field: "furnished_type"
-					editor: A2Cribs.Editors.Furnished
-					formatter: A2Cribs.Formatters.Furnished
+					editor: A2Cribs.Editors.Dropdown(["Unfurnished", "Fully", "Partially"])
+					formatter: A2Cribs.Formatters.Dropdown(["Unfurnished", "Fully", "Partially"])
 				}
 				{
 					id: "pets_type"
 					name: "Pets"
 					field: "pets_type"
-					editor: A2Cribs.Editors.Pets
-					formatter: A2Cribs.Formatters.Pets
+					editor: A2Cribs.Editors.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"])
+					formatter: A2Cribs.Formatters.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"])
 				}
 				{
 					id: "smoking"
 					name: "Smoking"
 					field: "smoking"
-					editor: A2Cribs.Editors.Smoking
-					formatter: A2Cribs.Formatters.Smoking
+					editor: A2Cribs.Editors.Dropdown(["Prohibited", "Allowed"])
+					formatter: A2Cribs.Formatters.Dropdown(["Prohibited", "Allowed"])
 				}
 				{
 					id: "square_feet"
@@ -694,57 +694,57 @@ class A2Cribs.RentalSave
 					id: "electric"
 					name: "Electricity"
 					field: "electric"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "water"
 					name: "Water"
 					field: "water"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "gas"
 					name: "Gas"
 					field: "gas"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "heat"
 					name: "Heat"
 					field: "heat"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "sewage"
 					name: "Sewage"
 					field: "sewage"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "trash"
 					name: "Trash"
 					field: "trash"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "cable"
 					name: "Cable"
 					field: "cable"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "internet"
 					name: "Internet"
 					field: "internet"
-					editor: A2Cribs.Editors.Utilities
-					formatter: A2Cribs.Formatters.Utilities
+					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
+					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
 				}
 				{
 					id: "utility_total_flat_rate"
