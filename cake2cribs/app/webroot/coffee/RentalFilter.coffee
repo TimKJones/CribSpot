@@ -19,16 +19,14 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
 		###
 		ajaxData = "min_beds=" + 0
-		ajaxData += "&max_beds=" + 5
-		ajaxData += "&min_baths=" + 0
+		ajaxData += "&beds=" + @GetBeds()
 		ajaxData += "&max_baths=" + 3
 		ajaxData += "&min_rent=" + 0
 		ajaxData += "&max_rent=" + 3000
 		ajaxData += "&parking=" + 1
-		ajaxData += "&months=" + JSON.stringify @GetMonths()
+		ajaxData += "&dates=" + JSON.stringify @GetMonths()
 		ajaxData += "&unit_types=" + JSON.stringify @GetUnitTypes()
 		ajaxData += "&amenities=" + JSON.stringify @GetAmenities()
-		ajaxData += "&month_12=" + 0
 		$.ajax
 			url: myBaseUrl + "Rentals/ApplyFilter"
 			data: ajaxData
@@ -60,23 +58,30 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 
 		return visibile_listings
 
+	@GetBeds: () ->
+		beds = [3, 5, 6, 10]
+		return JSON.stringify beds
+
 	@GetMonths: () ->
-		months =
-			"1" : 1
-			"2" : 0
-			"3" : 1
-			"4" : 0
-			"5" : 1
-			"6" : 0
-			"7" : 1
-			"8" : 0
-			"9" : 1
-			"10": 0
-			"11": 1
-			"12": 0
-			"curYear" : JSON.stringify [13, 14]
-			"leaseLength" : 7
-		return months
+		dates = 
+			"months" :
+				"1" : 1
+				"2" : 0
+				"3" : 1
+				"4" : 0
+				"5" : 1
+				"6" : 0
+				"7" : 1
+				"8" : 0
+				"9" : 1
+				"10": 0
+				"11": 1
+				"12": 0
+			"curYear" : [13, 14]
+			"leaseLength" :
+				'min' : 2
+				'max' : 4	
+		return dates
 
 	@GetUnitTypes: () ->
 		unit_types = 

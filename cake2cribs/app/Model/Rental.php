@@ -313,6 +313,8 @@ class Rental extends RentalPrototype {
 		'is_complete' => 'boolean'
 	);
 
+	private $MAX_BEDS = 10;
+
 	/*
 	Marks the rental as either complete or incomplete, depending on whether all fields have been filled in.
 	Then it saves the rental.
@@ -411,24 +413,49 @@ class Rental extends RentalPrototype {
 		*/
 
 		$conditions = array();
-		$dates = $params['months'];
+CakeLog::write('decodedparams', print_r($params, true));
+		$params = $params;
+		$dates = json_decode($params['dates']);
 		$unit_types = json_decode($params['unit_types']);
-		$booleans = json_decode($params['amenities']);
 
 		$date_conditions = $this->_getDateConditions($dates);
-		$boolean_conditions = $this->_getBooleanFilterConditions($booleans);
+CakeLog::write('date_conditions', print_r($date_conditions, true));
 		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'building_type_id', 'Marker');
-		array_push($conditions, $date_conditions, $boolean_conditions, $unit_types);
+		array_push($conditions, $date_conditions, $unit_types);
 
 		array_push($conditions, array(
 			'Rental.rent >=' => $params['min_rent'],
-			'Rental.rent <=' => $params['max_rent'],
-			'Rental.beds >=' => $params['min_beds'],
-			'Rental.beds <=' => $params['max_beds'],
-			'Rental.baths >=' => $params['min_baths'],
-			'Rental.baths <=' => $params['max_baths']));
+			'Rental.rent <=' => $params['max_rent']));
+
+		/* Beds */
+		$beds_conditions = $this->_getBedsConditions($params);
+		array_push($conditions, $beds_conditions);
 
 		return $conditions;
+	}
+		
+
+	private function _getBedsConditions($params)
+	{
+		if (!array_key_exists('beds', $params))
+			return null;
+
+		$beds = json_decode($params['beds']);
+		CakeLog::write('beds', print_r($beds, true));
+		$include_greater_than_max = false;
+		$processed_beds = array();
+		for ($i = 0; $i < count($beds); $i++){
+			if ($beds[$i] == $this->MAX_BEDS)
+				$include_greater_than_max = true;
+
+			array_push($processed_beds, intval($beds[$i]));
+		}
+
+		$beds_conditions = array( 'OR' => array(
+			array('Rental.beds' => $processed_beds),
+			array('Rental.beds' => NULL)));
+
+		return $beds_conditions;
 	}
 
 	/*
@@ -507,34 +534,56 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getDateConditions($params)
 	{
-		$conditions = array();
-		$startEndDatePairs = $this->_getStartEndDatePairs($params);
-CakeLog::write('pairs', print_r($startEndDatePairs, true));
-		foreach ($startEndDatePairs as $pair){
+		/* TODO: MAKE SURE ALL FIELDS ARE PRESENT BEFORE ARRAY ACCESSES */
+
+		/* get conditions related to start and end date */
+CakeLog::write('monthParams', print_r($params, true));
+		$dateConditions = array();
+		$startDateConditions = array();
+		$startDateConditions['OR'] = array();
+		$startDateRanges = $this->_getStartDateRanges($params->months, $params->curYear);
+CakeLog::write('startDateRanges', print_r($startDateRanges, true));
+		foreach ($startDateRanges as $pair){
 			$and_array = array();
-			$and_array['AND'] = array();
-			array_push($and_array['AND'], 'Rental.start_date >=' . $pair['start_date']);
-			array_push($and_array['AND'], 'Rental.end_date <=' . $pair['end_date']);
-			array_push($conditions, $and_array);
+			$and_array['AND'] = array(
+				'Rental.start_date >=' => $pair['start_date_min'],
+				'Rental.start_date <=' => $pair['start_date_max']
+			);
+			array_push($startDateConditions['OR'], $and_array);
 		}
 
-		return array('OR' => $conditions);	
+		/* get conditions for min and max lease length */
+CakeLog::write("params", print_r($params, true));
+		$leaseLengthConditions = array();
+		$leaseLengthConditions['AND'] = array(
+			'Rental.lease_length >=' => $params->leaseLength->min,
+			'Rental.lease_length <=' => $params->leaseLength->max
+		);
+		
+		array_push($dateConditions, $startDateConditions, $leaseLengthConditions);	
+		return array('AND' => $dateConditions);
 	}
 
 	/*
 	Returns start_dates that are valid to be searched based on user's current filter preferences.	
 	*/
-	private function _getStartDates($params)
+	private function _getStartDateRanges($months, $start_years)
 	{
-		$params = json_decode($params);
-		$months_selected = $this->_getMonthsSelectedArray($params);
-		$start_dates = array();
-		$start_years = json_decode($params->curYear);
-		$lease_length = intval($params->leaseLength);
+CakeLog::write('rangeParams', print_r($months, true));
+		$months_selected = $this->_getMonthsSelectedArray($months);
+CakeLog::write('months_selected', print_r($months_selected, true));
+CakeLog::write('start_years', print_r($start_years, true));
+		$pairs = array();
 		for ($i = 0; $i < count($start_years); $i++) {
 			for ($j = 0; $j < count($months_selected); $j++){
 				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
-				array_push($start_dates, $start_date);
+				$end_date = date('Y-m-d', strtotime('+1 month', strtotime($start_date)));
+				$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
+				$new_pair = array(
+					'start_date_min' => $start_date,
+					'start_date_max' => $end_date
+				);
+				array_push($pairs, $new_pair);
 			}
 		}
 
