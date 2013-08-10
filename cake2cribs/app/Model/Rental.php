@@ -420,7 +420,8 @@ CakeLog::write('decodedparams', print_r($params, true));
 
 		$date_conditions = $this->_getDateConditions($dates);
 CakeLog::write('date_conditions', print_r($date_conditions, true));
-		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'building_type_id', 'Marker');
+		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 
+			'building_type_id', Rental::BUILDING_TYPE_DUPLEX, 'Marker');
 		array_push($conditions, $date_conditions, $unit_types);
 
 		array_push($conditions, array(
@@ -433,7 +434,6 @@ CakeLog::write('date_conditions', print_r($date_conditions, true));
 
 		return $conditions;
 	}
-		
 
 	private function _getBedsConditions($params)
 	{
@@ -488,14 +488,20 @@ CakeLog::write('date_conditions', print_r($date_conditions, true));
 	Takes an input of an array of (key, value) pairs
 	Only filters for fields that can be multiple values (ex. unit_type)
 	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
+	$other_max_value - value above which all values are valid if 'other' box is checked.
 	*/
-	private function _getMultipleOptionFilterConditions($params, $field_name, $table_name='Rental')
+	private function _getMultipleOptionFilterConditions($params, $field_name, $other_max_value, $table_name='Rental')
 	{
 		$conditions = array();
 		$acceptable_values = array();
+		$other_selected = false;
 		foreach ($params as $key => $value) {
 			if (intval($value) === 1){
 				/* Get array of acceptable values for this field */
+				if ($key == 'other'){
+					$other_selected = true;
+					continue;
+				}
 				$converted_value = $this->_getIntegerFromTypeString($key, $field_name);
 				array_push($acceptable_values, $converted_value);
 			}
@@ -504,6 +510,11 @@ CakeLog::write('date_conditions', print_r($date_conditions, true));
 		$conditions['OR'] = array(
 			array($table_name . '.' . $field_name => $acceptable_values),
 			array($table_name . '.' . $field_name => NULL));
+
+		if ($other_selected)
+			array_push($conditions['OR'], array(
+				$table_name . '.' . $field_name . ' >' => $other_max_value
+		));
 
 		return $conditions;
 	}

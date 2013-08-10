@@ -88,10 +88,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			"house" : 0
 			"apartment" : 1
 			"duplex" : 1
-			"condo" : 1
-			"townhouse" : 0
-			"coop" : 0
-			"other" : 1
+			"other" : 0
 
 	@GetAmenities: () ->
 		amenities =
