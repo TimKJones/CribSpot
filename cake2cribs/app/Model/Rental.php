@@ -455,6 +455,11 @@ CakeLog::write('date_conditions', print_r($date_conditions, true));
 			array('Rental.beds' => $processed_beds),
 			array('Rental.beds' => NULL)));
 
+		if ($include_greater_than_max)
+			array_push($beds_conditions['OR'], array(
+				'Rental.beds >' => $this->MAX_BEDS
+			));
+
 		return $beds_conditions;
 	}
 
