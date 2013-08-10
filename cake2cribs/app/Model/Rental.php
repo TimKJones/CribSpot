@@ -103,9 +103,9 @@ class Rental extends RentalPrototype {
 				'required' => false
 			)
 		),
-		'end_date' => array(
-			'date' => array(
-				'rule' => 'date',
+		'lease_length' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
 				'required' => true
 			)
 		),

@@ -9,14 +9,15 @@ class A2Cribs.UserCache
 		@Cache[object.class_name][object.GetId()] = object
 
 	@Get: (object_type, id) ->
-		list = []
 		if @Cache[object_type]?
 			if id?
 				return @Cache[object_type][id]
 			else
+				list = []
 				for item of @Cache[object_type]
 					list.push @Cache[object_type][item]
-		return list
+				return list
+		return null
 
 	@Remove: (object_type, id) ->
 		if @Cache[object_type]? and id?

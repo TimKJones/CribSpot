@@ -8,7 +8,7 @@ class A2Cribs.PhotoManager
 			@_path = ""
 			@_preview = null
 
-		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary, @_listing_id) ->
+		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary) ->
 			@_isEmpty = false
 			@_preview = "<img src='#{@_path}'></img>"
 			@_div.find(".imageContent").html @_preview
@@ -175,16 +175,15 @@ class A2Cribs.PhotoManager
 			else
 				@Photos[@CurrentImageLoading].SetId data.result.image_id
 				@Photos[@CurrentImageLoading].SetPath data.result.image_path
-				@Photos[@CurrentImageLoading].SetListingId @CurrentListing
 		.on 'fileuploadfail', (e, data) =>
 			A2Cribs.UIManager.Error "Failed to upload image!"
 			@div.find("#upload_image").button 'reset'
 			@Photos[@CurrentImageLoading].Reset()
 
-	LoadImages: (images, row, imageCallback) ->
+	LoadImages: (image_object, row, imageCallback) ->
 		@Reset()
-		if images?
-			for image in images
+		if image_object?.image_array?
+			for image in image_object.image_array
 				@Photos[@NextAvailablePhoto()].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary
 
 		@div.find("#finish_photo").unbind 'click'
@@ -237,9 +236,6 @@ class A2Cribs.PhotoManager
 				results.push photo.GetObject()
 
 		if results.length is 0 then null else results
-
-	SavePhotos: ->
-		$('body').trigger "#{@CurrentListingType}_SavePhoto", [@CurrentRow, @GetPhotos(), @CurrentListing]
 
 	###
 	Send photo and photo's row_id to server

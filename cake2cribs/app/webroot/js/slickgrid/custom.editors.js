@@ -11,13 +11,8 @@
       "Editors": {
         "Range": NumericRangeEditor,
         "Unit" : UnitEditor,
-        "Availability" : AvailabilityEditor,
-        "Utilities" : UtilitiesEditor,
-        "Pets" : PetsEditor,
-        "Furnished" : FurnishedEditor,
-        "Parking" : ParkingEditor,
-        "AC" : ACEditor,
-        "Smoking" : SmokingEditor
+        "LeaseLength": makeDropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
+        "Dropdown" : makeDropdown
       }
     }
   });
@@ -92,27 +87,33 @@
     this.init();
   }
   function UnitEditor(args) {
-    var $unit_style_type, $unit_style_options, $unit_style_description;
+    var $unit_style_options, $unit_style_description;
     var scope = this;
     var right_count = 0;
 
     this.init = function () {
       $unit_style_options = $("<select style='width:70px;'/>");
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
-      $("<option />", {value: 0, text: "Style"}).appendTo($unit_style_options);
+      $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
+      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
       $(args.container).append("&nbsp;");
-      $unit_style_type = $("<INPUT type=text style='width:25px' placeholder='Unit/Style' />")
+
+      $unit_style_description = $("<INPUT type=text style='width:50px' placeholder='Style F' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown);
 
-      $(args.container).append("&nbsp; - &nbsp;");
-
-      $unit_style_description = $("<INPUT type=text style='width:50px' placeholder='Name' />")
-          .appendTo(args.container)
-          .bind("keydown", scope.handleKeyDown);
+      $unit_style_options.change(function() {
+        var value = $unit_style_options.val() ;
+        if (value === "0")
+          $unit_style_description.show().attr("placeholder", "Style F")
+        else if (value === "1")
+          $unit_style_description.show().attr("placeholder", "A7")
+        else if (value === "2")
+          $unit_style_description.hide()
+      });
 
       scope.focus();
     };
@@ -138,28 +139,27 @@
 
     this.serializeValue = function () {
       return {
-        unit_style_type: $unit_style_type.val(),
         unit_style_options: +$unit_style_options.val(),
-        unit_style_description: $unit_style_description.val(),
-        unit_style_options_text: $($unit_style_type).find("option:selected").text()
+        unit_style_description: $unit_style_description.val()
       };
     };
 
     this.applyValue = function (item, state) {
-      item.unit_style_type = state.unit_style_type;
       item.unit_style_options = state.unit_style_options;
       item.unit_style_description = state.unit_style_description;
       item.unit_style_options_text = state.unit_style_options_text
     };
 
     this.loadValue = function (item) {
-      $unit_style_type.val(item.unit_style_type);
       $unit_style_options.val(item.unit_style_options);
-      $unit_style_description.val(item.unit_style_description);
+      if (+item.unit_style_options === 2)
+        $unit_style_description.hide()
+      else
+        $unit_style_description.show().val(item.unit_style_description);
     };
 
     this.isValueChanged = function () {
-      return args.item.unit_style_type != $unit_style_type.val() || args.item.unit_style_options != $unit_style_options.val() || args.item.unit_style_description != $unit_style_description.val();
+      return args.item.unit_style_options != $unit_style_options.val() || args.item.unit_style_description != $unit_style_description.val();
     };
 
     this.validate = function () {
@@ -168,349 +168,58 @@
 
     this.init();
   }
-  function AvailabilityEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
 
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Available"}).appendTo($select);
-      $("<option />", {value: 0, text: "Leased"}).appendTo($select);
+function makeDropdown(selectable_options)
+{
+  return function (args) {
+      var $select;
+      var defaultValue;
+      var scope = this;
 
-      $select.appendTo(args.container);
-      $select.focus();
-    };
+      this.init = function () {
+        $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
+        for (var i = 0; i < selectable_options.length; i++) {
+          selectable_options[i]
+          $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
+        };
 
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+        $select.appendTo(args.container);
+        $select.focus();
       };
-    };
 
-    this.init();
-  }
-  function UtilitiesEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Yes"}).appendTo($select);
-      $("<option />", {value: 0, text: "No"}).appendTo($select);
-      $("<option />", {value: 2, text: "Flat Rate"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.destroy = function () {
+        $select.remove();
       };
-    };
 
-    this.init();
-  }
-  function PetsEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
-      $("<option />", {value: 1, text: "Cats Only"}).appendTo($select);
-      $("<option />", {value: 2, text: "Dogs Only"}).appendTo($select);
-      $("<option />", {value: 3, text: "Cats & Dogs"}).appendTo($select);
-      $("<option />", {value: 4, text: "All Animals"}).appendTo($select);
-      $("<option />", {value: 0, text: "Prohibited"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = +item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.focus = function () {
+        $select.focus();
       };
-    };
 
-    this.init();
-  }
-  function FurnishedEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:110px;' />");
-      $("<option />", {value: 1, text: "Fully"}).appendTo($select);
-      $("<option />", {value: 0, text: "Unfurnished"}).appendTo($select);
-      $("<option />", {value: 2, text: "Partially"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.loadValue = function (item) {
+        defaultValue = item[args.column.field];
+        $select.val(+defaultValue);
       };
-    };
 
-    this.init();
-  }
-  function ParkingEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
-      $("<option />", {value: 1, text: "Lot"}).appendTo($select);
-      $("<option />", {value: 2, text: "Driveway"}).appendTo($select);
-      $("<option />", {value: 3, text: "Garage"}).appendTo($select);
-      $("<option />", {value: 4, text: "Off-Site"}).appendTo($select);
-      $("<option />", {value: 0, text: "None"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.serializeValue = function () {
+        return +$select.val();
       };
-    };
 
-    this.init();
-  }
-  function ACEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:90px;' />");
-      $("<option />", {value: 1, text: "Central"}).appendTo($select);
-      $("<option />", {value: 0, text: "None"}).appendTo($select);
-      $("<option />", {value: 2, text: "Wall Unit"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.applyValue = function (item, state) {
+        item[args.column.field] = state;
       };
-    };
 
-    this.init();
-  }
-  function SmokingEditor(args) {
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    this.init = function () {
-      $select = $("<select id='selectId' name='selectName' style='width:100px;' />");
-      $("<option />", {value: 1, text: "Allowed"}).appendTo($select);
-      $("<option />", {value: 0, text: "Prohibited"}).appendTo($select);
-
-      $select.appendTo(args.container);
-      $select.focus();
-    };
-
-    this.destroy = function () {
-      $select.remove();
-    };
-
-    this.focus = function () {
-      $select.focus();
-    };
-
-    this.loadValue = function (item) {
-      defaultValue = item[args.column.field];
-      $select.val(+defaultValue);
-    };
-
-    this.serializeValue = function () {
-      return +$select.val();
-    };
-
-    this.applyValue = function (item, state) {
-      item[args.column.field] = state;
-    };
-
-    this.isValueChanged = function () {
-      return (this.serializeValue() !== defaultValue);
-    };
-
-    this.validate = function () {
-      return {
-        valid: true,
-        msg: null
+      this.isValueChanged = function () {
+        return (this.serializeValue() !== defaultValue);
       };
-    };
 
-    this.init();
+      this.validate = function () {
+        return {
+          valid: true,
+          msg: null
+        };
+      };
+
+      this.init();
+    }
   }
 })(jQuery);
