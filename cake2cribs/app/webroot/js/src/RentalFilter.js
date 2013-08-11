@@ -17,7 +17,14 @@
         'min': 100,
         'max': 3500
       },
-      'Dates': -1,
+      'Dates': {
+        'months': [3, 5],
+        'year': 13
+      },
+      'LeaseRange': {
+        'min': 3,
+        'max': 7
+      },
       'UnitTypes': [0, 1, 3],
       'PetsAllowed': 1,
       'ParkingAvailable': -1,
