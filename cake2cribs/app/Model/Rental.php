@@ -400,7 +400,7 @@ class Rental extends RentalPrototype {
 
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
-			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
+			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
 
 		$log = $this->getDataSource()->getLog(false, false); 
 	  	CakeLog::write("lastQuery", print_r($log, true));
