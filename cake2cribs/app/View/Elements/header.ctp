@@ -21,24 +21,33 @@
 		<div class="container" style="width: auto;">
 			<a class="header_logo" href="#"><img src="/img/header/logo.png"></a>
 			<ul class="nav pull-right">
-				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ ?>
+				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ 
+					if ($this->Session->read('Auth.User.id') != 0) { ?>
 					<li class="personal_menu dropdown">
-						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="">Micheal <b class="caret"></b></a>
+						<?
+						$pic_url = "/img/head_large.jpg";
+						if($AuthUser['facebook_userid'])
+							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_userid']."/picture?width=80&height=80";
+						?>
+						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="<?= $pic_url ?>"><?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">About</a></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Contact</a></li>
-							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Help</a></li>
+							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 						</ul>
 					</li>
 					<li class="personal_buttons">
 						<a href=""><i class="icon-comment"></i></a>
 						<a href=""><i class="icon-heart"></i></a>
 					</li>
-				<?php } ?>
+				<?php } 
+				} ?>
 				<li class="menu dropdown">
 					<a href="#" id="menu_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
 						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">About</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="http://blog.cribspot.com" target="_blank">Blog</a></li>
 						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Contact</a></li>
 						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Help</a></li>
 					</ul>

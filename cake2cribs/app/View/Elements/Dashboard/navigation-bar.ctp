@@ -15,7 +15,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="#" class = 'content-header' classname = 'account'>
+		<a id = 'account-content-header' href="#" class = 'content-header' classname = 'account'>
 			<i class="icon-user icon-large"></i>
 			Account
 		</a>
@@ -27,7 +27,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="#" class = 'rental-content-header content-header list-dropdown-header' classname = 'rentals'>
+		<a id='rental-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'rentals'>
 			<i class="icon-home icon-large"></i>
 			Rentals
 		</a>
