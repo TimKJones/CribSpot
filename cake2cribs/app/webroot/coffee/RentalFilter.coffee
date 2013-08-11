@@ -1,25 +1,17 @@
 class A2Cribs.RentalFilter extends A2Cribs.FilterManager
+	@Beds = ''
+	@Rent = ''
+	@Months = ''
 
 	###
 	Called immediately after user applies a filter.
 	Submits an ajax call with all current filter parameters
 	###
-	@ApplyFilter: (event, ui) ->
-		#A2Cribs.Map.ClickBubble.Close()	
-		ajaxData = null
-		###
-		ajaxData += "minBeds=" + $("#minBedsSelect").val()
-		ajaxData += "&maxBeds=" + $("#maxBedsSelect").val()
-		ajaxData += "&minBaths=" + $("#minBathsSelect").val()
-		ajaxData += "&maxBaths=" + $("#maxBathsSelect").val()
-		ajaxData += "&house=" + $("#houseCheck").is(':checked')
-		ajaxData += "&apt=" + $("#aptCheck").is(':checked')
-		ajaxData += "&duplex=" + $("#duplexCheck").is(':checked')
-		ajaxData += "&ac=" + $("#acCheck").is(':checked')
-		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
-		###
+	@ApplyFilter: (field, value) ->
+		@[field] = value
+		#A2Cribs.Map.ClickBubble.Close()
 		ajaxData += "&beds=" + @GetBeds()
-		ajaxData += "&rent=" + @GetRent()
+		ajaxData += "&rent=" + @Rent
 		ajaxData += "&parking=" + 1
 		ajaxData += "&dates=" + JSON.stringify @GetMonths()
 		ajaxData += "&unit_types=" + JSON.stringify @GetUnitTypes()
@@ -60,6 +52,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		return JSON.stringify beds
 
 	@GetRent: () ->
+		return @
 		rent =
 			"min" : 100
 			"max" : 5000
