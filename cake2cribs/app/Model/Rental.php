@@ -401,8 +401,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
 
-		$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));
+		/*$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));*/
 		return json_encode($formattedIdList);
 	}
 
@@ -411,9 +411,6 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getFilteredQueryConditions($params)
 	{
-		/*
-		TODO: Return error message if not all parameters are present
-		*/
 		if (!array_key_exists('dates', $params) || !array_key_exists('unit_types', $params) || 
 			!array_key_exists('rent', $params))
 			return null;
@@ -422,26 +419,31 @@ class Rental extends RentalPrototype {
 		$dates = json_decode($params['dates']);
 		$unit_types = json_decode($params['unit_types']);
 
+		/* Get a separate piece of the conditions array for each field */
+
 		$date_conditions = $this->_getDateConditions($dates);
-		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 
+		$unit_types_conditions = $this->_getMultipleOptionFilterConditions($unit_types, 
 			'building_type_id', Rental::BUILDING_TYPE_DUPLEX, 'Marker');
-		array_push($conditions, $date_conditions, $unit_types);
+		$beds_conditions = $this->_getBedsConditions($params);
+
 		$rent = json_decode($params['rent']);
 
 		if (intval($rent->max) === $this->MAX_RENT)
 			$rent->max = 9999999;
 
-		array_push($conditions, array(
+		$rent_conditions = array(
 			'Rental.rent >=' => $rent->min,
-			'Rental.rent <=' => $rent->max));
+			'Rental.rent <=' => $rent->max);
 
-		/* Beds */
-		$beds_conditions = $this->_getBedsConditions($params);
-		array_push($conditions, $beds_conditions);
+		/* Merge all separate conditions arrays together */
+		array_push($conditions, $date_conditions, $unit_types_conditions, $beds_conditions, $rent_conditions);
 
 		return $conditions;
 	}
 
+	/*
+	Get the piece of the filter conditions array related to beds
+	*/
 	private function _getBedsConditions($params)
 	{
 		if (!array_key_exists('beds', $params))
