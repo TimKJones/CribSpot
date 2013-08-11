@@ -418,13 +418,21 @@ CakeLog::write("params", print_r($params, true));
 		/* Get a separate piece of the conditions array for each field */
 
 		if (array_key_exists('Dates', $params)) {
-			$dates = json_decode($params['Dates']);
-			if ($dates !== -1){
-				$date_conditions = $this->_getDateConditions($dates);
+			$months = json_decode($params['Dates']);
+			if ($months !== -1){
+				$date_conditions = $this->_getDateConditions($months);
 				array_push($conditions, $date_conditions);
 			}
 		}
-/* STOPPED HERE TESTING OUT UNITTYPES */		
+
+		if (array_key_exists('LeaseRange', $params)){
+			$leaseRange = json_decode($params['LeaseRange']);
+			$rent_conditions = array(
+				'Rental.lease_length >=' => $leaseRange->min,
+				'Rental.lease_length <=' => $leaseRange->max);
+			array_push($conditions, $rent_conditions);
+		}
+	
 		if (array_key_exists('UnitTypes', $params)) {
 			$unit_types = json_decode($params['UnitTypes']);
 CakeLog::write("unittypes", print_r($unit_types, true));
@@ -572,7 +580,8 @@ CakeLog::write("unittypes", print_r($unit_types, true));
 		$dateConditions = array();
 		$startDateConditions = array();
 		$startDateConditions['OR'] = array();
-		$startDateRanges = $this->_getStartDateRanges($params->months, $params->curYear);
+		CakeLog::write("dateparams", print_r($params, true));
+		$startDateRanges = $this->_getStartDateRanges($params->months, $params->year);
 		foreach ($startDateRanges as $pair){
 			$and_array = array();
 			$and_array['AND'] = array(
@@ -581,36 +590,26 @@ CakeLog::write("unittypes", print_r($unit_types, true));
 			);
 			array_push($startDateConditions['OR'], $and_array);
 		}
-
-		/* get conditions for min and max lease length */
-		$leaseLengthConditions = array();
-		$leaseLengthConditions['AND'] = array(
-			'Rental.lease_length >=' => $params->leaseLength->min,
-			'Rental.lease_length <=' => $params->leaseLength->max
-		);
 		
-		array_push($dateConditions, $startDateConditions, $leaseLengthConditions);	
+		array_push($dateConditions, $startDateConditions);	
 		return array('AND' => $dateConditions);
 	}
 
 	/*
 	Returns start_dates that are valid to be searched based on user's current filter preferences.	
 	*/
-	private function _getStartDateRanges($months, $start_years)
+	private function _getStartDateRanges($months, $start_year)
 	{
-		$months_selected = $this->_getMonthsSelectedArray($months);
 		$pairs = array();
-		for ($i = 0; $i < count($start_years); $i++) {
-			for ($j = 0; $j < count($months_selected); $j++){
-				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
-				$end_date = date('Y-m-d', strtotime('+1 month', strtotime($start_date)));
-				$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
-				$new_pair = array(
-					'start_date_min' => $start_date,
-					'start_date_max' => $end_date
-				);
-				array_push($pairs, $new_pair);
-			}
+		for ($j = 0; $j < count($months); $j++){
+			$start_date = date('Y-m-d', strtotime('20' . $start_year . '-' . $months[$j] . '-01'));
+			$end_date = date('Y-m-d', strtotime('+1 month', strtotime($start_date)));
+			$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
+			$new_pair = array(
+				'start_date_min' => $start_date,
+				'start_date_max' => $end_date
+			);
+			array_push($pairs, $new_pair);
 		}
 
 		return $pairs;
