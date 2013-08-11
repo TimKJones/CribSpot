@@ -1,14 +1,14 @@
 class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	@FilterData =
-		'Beds' : [2,5,10]
-		'Rent' : 
-			'min' : 100
-			'max' : 3500
+		'Beds' : -1 # [2,5,10]
+		'Rent' : -1
+		#	'min' : 100
+		#	'max' : 3500
 		'Dates': -1
-		'UnitTypes' : [0,1, 3] #'other' is the value 3
-		'PetsAllowed' : 1
+		'UnitTypes' : -1 #[0,1, 3] 'other' is the value 3
+		'PetsAllowed' : -1
 		'ParkingAvailable' : -1
-		'Air' : 1
+		'Air' : -1
 		'UtilitiesIncluded' : -1
 
 	###
@@ -39,6 +39,8 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 				selected_list.push val
 				min = Math.min min, val
 				max = Math.max max, val
+
+			@ApplyFilter "Beds", selected_list
 
 			# If nothing is selected then set text to blank
 			if selected_list.length is 0
@@ -122,6 +124,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			else
 				loadPreviewText event.delegateTarget, "<div class='filter_data'>#{event.value[0]}-#{event.value[1]}</div><div class='filter_label'>#{max_desc}</div>"
 
+
 		# Init rent_slider
 		@div.find(".rent_slider").slider
 			min: 0
@@ -137,7 +140,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			@div.find("#rent_min").text min_amount
 			@div.find("#rent_max").text max_amount
 			loadPreviewText event.delegateTarget, "<div class='filter_data'>#{min_amount}-#{max_amount}</div>"
-
+			@ApplyFilter "Rent", { min: parseInt(event.value[0], 10), max: parseInt(event.value[1], 10)}
 
 		# Dropdown listener on header filter clicks
 		@div.find(".filter_link").click (event) =>
