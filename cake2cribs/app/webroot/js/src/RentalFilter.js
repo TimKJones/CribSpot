@@ -29,11 +29,8 @@
       		ajaxData += "&ac=" + $("#acCheck").is(':checked')
       		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
       */
-      ajaxData = "min_beds=" + 0;
       ajaxData += "&beds=" + this.GetBeds();
-      ajaxData += "&max_baths=" + 3;
-      ajaxData += "&min_rent=" + 0;
-      ajaxData += "&max_rent=" + 3000;
+      ajaxData += "&rent=" + this.GetRent();
       ajaxData += "&parking=" + 1;
       ajaxData += "&dates=" + JSON.stringify(this.GetMonths());
       ajaxData += "&unit_types=" + JSON.stringify(this.GetUnitTypes());
@@ -80,6 +77,15 @@
       var beds;
       beds = [3, 5, 6, 10];
       return JSON.stringify(beds);
+    };
+
+    RentalFilter.GetRent = function() {
+      var rent;
+      rent = {
+        "min": 100,
+        "max": 5000
+      };
+      return JSON.stringify(rent);
     };
 
     RentalFilter.GetMonths = function() {

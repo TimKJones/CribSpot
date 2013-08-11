@@ -18,11 +18,8 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		ajaxData += "&ac=" + $("#acCheck").is(':checked')
 		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
 		###
-		ajaxData = "min_beds=" + 0
 		ajaxData += "&beds=" + @GetBeds()
-		ajaxData += "&max_baths=" + 3
-		ajaxData += "&min_rent=" + 0
-		ajaxData += "&max_rent=" + 3000
+		ajaxData += "&rent=" + @GetRent()
 		ajaxData += "&parking=" + 1
 		ajaxData += "&dates=" + JSON.stringify @GetMonths()
 		ajaxData += "&unit_types=" + JSON.stringify @GetUnitTypes()
@@ -61,6 +58,12 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	@GetBeds: () ->
 		beds = [3, 5, 6, 10]
 		return JSON.stringify beds
+
+	@GetRent: () ->
+		rent =
+			"min" : 100
+			"max" : 5000
+		return JSON.stringify rent
 
 	@GetMonths: () ->
 		dates = 
