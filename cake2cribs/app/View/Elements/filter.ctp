@@ -1,73 +1,95 @@
-<div id="filterBoxBackground">
-	<input id="addressSearchBar" type="text" size="29" placeholder=" Search for a place or address">
-	<button id="addressSearchSubmit" onclick = 'A2Cribs.FilterManager.SearchForAddress()'>Search</button>
-	<div id="filterBox">
-		<form id="filterForm" method="get" action="index.php">
-			<div class="filterRegion"> <!-- Start of rent section -->
-				<div class="filterIcon" id="priceIcon" title="Rent"></div>
-				<input type="text" id="rentMin" class="filterRangeInputMin filterRangeInput" readonly="readonly" value="$0"/>
-				<div class="sliderDiv">
-					<div id="rentSlider"></div>
-				</div>
-				<input type="text" id="rentMax" class="filterRangeInputMax filterRangeInput" readonly="readonly" value="$4000"/>
-			</div> <!-- End of rent section -->
-			<div class="filterRegion"> <!-- Start of bedrooms section -->
-				<div class="filterIcon" id="bedIcon" title="Bedrooms"></div>
-				<input type="text" id="bedsMin" class="filterRangeInputMin filterRangeInput" readonly="readonly" value="0"/>
-				<div class="sliderDiv">
-					<div id="bedSlider"></div>
-				</div>
-				<input type="text" id="bedsMax" class="filterRangeInputMax filterRangeInput" readonly="readonly" value="10"/>
-			</div> <!-- End of bedroom section -->
-			<div class="filterRegion"> <!-- Start of Lease Period section -->
-				<div class="filterIcon" id="leaseIcon" title="Lease Period"></div>
-				<div class="filterOptions" id="rentTermFilter">
-				<input type="checkbox" class="filterCheck" id="fallCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-				<div class="filterOptionsText">Fall-Fall</div>
-				<input type="checkbox" class="filterCheck" id="springCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-				<div class="filterOptionsText">Spring-Spring</div>
-				<input type="checkbox" class="filterCheck" id="otherCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-				<div class="filterOptionsText">Other </div>
-				</div>
-			</div> <!-- End of Lease Period section -->
-			<div class="filterRegion"> <!-- Start of Unit Type section -->
-				<div class="filterIcon" id="houseIcon" title="Unit Type"></div>
-				<div class="filterOptions" id="houseTypeFilter">
-					<input type="checkbox" class="filterCheck" id="houseCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-					<div class="filterOptionsText">House</div>
-					<input type="checkbox" class="filterCheck" id="aptCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-					<div class="filterOptionsText">Apartment</div>
-					<input type="checkbox" class="filterCheck" id="duplexCheck" checked="checked" onclick="A2Cribs.FilterManager.ApplyFilter()"/>
-					<div class="filterOptionsText">Duplex</div>
-				</div>
-			</div> <!-- End of Unit Type section -->
-		</form>
+<?php echo $this->Html->css('/less/Filter/filter.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->script('src/FilterManager', array('inline' => false)); ?>
+<?php echo $this->Html->script('src/RentalFilter', array('inline' => false)); ?>
+
+<div id="map_filter">
+	<div id="filter_label_group">
+		<div class="btn-group filter_div">
+			<a class="btn listing_type" href="#">Rentals</a>
+			<a class="btn disabled filter_label" href="#">Searching for:</a>
+			<?php
+				$filters = array('Bedrooms', 'Budget', 'Starts In', 'Length', 'Type', 'More');
+				$filter_links = array('bed', 'rent', 'start', 'lease', 'building', 'more');
+				$length = count($filters);
+				for ($i = 0; $i < $length; $i++) {
+					echo '<a id="' . $filter_links[$i] . '_filter_link" class="btn filter_link" data-filter="#' . $filter_links[$i] . '_filter_content" href="#">
+						<div class="filter_title">' . $filters[$i] . '</div><div class="filter_preview hide"></div>
+					</a>';
+				}
+			?>
+		</div>
 	</div>
-</div> <!-- end of filterBoxBackground -->
+	<div id="filter_dropdown">
+		<div id="bed_filter_content" class="filter_content hide" data-link="#bed_filter_link"> <!-- Beds -->
+			<div class="content_label">Bedrooms:</div>
+			<div id="bed_filter" class="btn-group">
+				<button value="0" type="button" class="btn">Studio</button>
+				<?php
+				for ($i=1; $i < 10; $i++) { 
+					echo '<button type="button" class="btn" value="' . $i . '">' . $i . '</button>';
+				}
+				?>
+				<button type="button" class="btn" value="10">10+</button>
+			</div>
+		</div>
+		<div id="building_filter_content" class="filter_content hide" data-link="#building_filter_link"> <!-- Building Type -->
+			<?php
+				$building_types = array('House', 'Apartment', 'Duplex', 'Other');
+				foreach ($building_types as $type) {
+					echo '
+						<label class="checkbox">
+							<input type="checkbox"> ' . $type . '
+						</label>';
+				}
+			?>
+		</div>
+		<div id="start_filter_content" class="filter_content hide" data-link="#start_filter_link"> <!-- Start Date -->
+			<div class="content_label">Start In:</div>
+			<div id="start_filter" class="btn-group">
+				<?php
+				$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+				foreach ($months as $month) {
+					echo '<button type="button" class="btn">' . $month . '</button>';
+				}
+				?>
+			</div>
+			<select>
+				<?php
+					$currentYear = intval(date("Y"));
+					for ($i=0; $i < 3; $i++) { 
+						echo "<option>" . $currentYear++ . "</option>";
+					}
+				?>
+			</select>
+		</div>
+		<div id="more_filter_content" class="filter_content hide" data-link="#more_filter_link"> <!-- More Info -->
+			<?php
+				$building_types = array('Pets Allowed', 'Parking Available', 'A/C In-Unit', 'Utilities Included');
+				foreach ($building_types as $type) {
+					echo '
+						<label class="checkbox">
+							<input type="checkbox"> ' . $type . '
+						</label>';
+				}
+			?>
+		</div>
+		<div id="lease_filter_content" class="filter_content hide" data-link="#lease_filter_link"> <!-- Lease Length -->
+			<div class="content_label">Lease:</div>
+			<div id="lease_min" class="slider_data filter_data">2</div><div id="lease_min_desc" class="slider_data filter_label">&nbsp;months</div>
+			<div class="lease_slider slider"></div>
+			<div id="lease_max" class="slider_data filter_data">10</div><div id="lease_max_desc" class="slider_data filter_label">&nbsp;months</div>
+		</div>
+		<div id="rent_filter_content" class="filter_content hide" data-link="#rent_filter_link"> <!-- Rent Amount -->
+			<div class="content_label">Monthly Rent:</div>
+			<div id="rent_min" class="slider_data filter_data">$0</div>
+			<div class="rent_slider slider"></div>
+			<div id="rent_max" class="slider_data filter_data">$5,000+</div>
+		</div>
 
-<?php
-	$this->Js->get('#rentSlider');
-	$this->Js->slider(array(
-		'range' => true,
-		'slide' => 'function(event, ui) { $( "#rentMin" ).val( "$" + ui.values[ 0 ] ); $( "#rentMax" ).val( "$" + ui.values[ 1 ] ); }',
-		'change' => 'A2Cribs.FilterManager.ApplyFilter',
-		'min' => 0,
-		'max' => 4000,
-		'step' => 100,
-		'values' => array(0, 4000),
-		'direction' => 'horizontal',
-		'wrapCallbacks' => false
-	));
-
-	$this->Js->get('#bedSlider');
-	$this->Js->slider(array(
-		'range' => true,
-		'slide' => 'function(event, ui) { $( "#bedsMin" ).val( ui.values[ 0 ] ); $( "#bedsMax" ).val( ui.values[ 1 ] ); }',
-		'change' => 'A2Cribs.FilterManager.ApplyFilter',
-		'min' => 0,
-		'max' => 10,
-		'values' => array(0, 10),
-		'direction' => 'horizontal',
-		'wrapCallbacks' => false
-	));
+	</div>
+</div>
+<?php 
+	$this->Js->buffer('
+		A2Cribs.RentalFilter.SetupUI();
+	');
 ?>

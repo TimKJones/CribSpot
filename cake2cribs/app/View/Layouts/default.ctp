@@ -50,7 +50,6 @@
 		echo $this->Html->script('src/Listing');
 		echo $this->Html->script('src/Realtor');
 		echo $this->Html->script('src/Marker');
-		echo $this->Html->script('src/FilterManager');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
 		echo $this->Html->script('src/UtilityFunctions');
