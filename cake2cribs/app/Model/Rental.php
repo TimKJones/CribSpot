@@ -392,12 +392,11 @@ class Rental extends RentalPrototype {
 
 		$findConditions = array(
 		    'contain' => $contains,
-			'fields' => array('DISTINCT (Listing.marker_id)'));
+			'fields' => array('DISTINCT (Listing.listing_id)'));
 		if (count($conditions) > 0)
 			$findConditions['conditions'] = $conditions;
 
 		$markerIdList = $this->Listing->find('all', $findConditions);
-CakeLog::write('markeridresult', print_r($markerIdList, true));
 
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
@@ -414,7 +413,6 @@ CakeLog::write('markeridresult', print_r($markerIdList, true));
 	private function _getFilteredQueryConditions($params)
 	{
 		$conditions = array();
-CakeLog::write("params", print_r($params, true));
 		/* Get a separate piece of the conditions array for each field */
 
 		if (array_key_exists('Dates', $params)) {
@@ -435,11 +433,9 @@ CakeLog::write("params", print_r($params, true));
 	
 		if (array_key_exists('UnitTypes', $params)) {
 			$unit_types = json_decode($params['UnitTypes']);
-CakeLog::write("unittypes", print_r($unit_types, true));
 			if ($unit_types !== -1){
 				$unit_types_conditions = $this->_getMultipleOptionFilterConditions($unit_types, 
 					'building_type_id', Rental::BUILDING_TYPE_DUPLEX + 1, 'Marker');
-				CakeLog::write('buildingtypes', print_r($unit_types_conditions, true));
 				array_push($conditions, $unit_types_conditions);
 			}
 		}
@@ -497,7 +493,6 @@ CakeLog::write("unittypes", print_r($unit_types, true));
 	*/
 	private function _getBedsConditions($beds)
 	{
-		CakeLog::write('beds', print_r($beds, true));
 		$include_greater_than_max = false;
 		$processed_beds = array();
 		for ($i = 0; $i < count($beds); $i++){
@@ -580,7 +575,6 @@ CakeLog::write("unittypes", print_r($unit_types, true));
 		$dateConditions = array();
 		$startDateConditions = array();
 		$startDateConditions['OR'] = array();
-		CakeLog::write("dateparams", print_r($params, true));
 		$startDateRanges = $this->_getStartDateRanges($params->months, $params->year);
 		foreach ($startDateRanges as $pair){
 			$and_array = array();
