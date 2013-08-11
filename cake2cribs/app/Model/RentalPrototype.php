@@ -54,9 +54,10 @@ class RentalPrototype extends AppModel {
 	}
 
 	/* ---------- air ---------- */
-	const AIR_CENTRAL = 0;
-	const AIR_WALL_UNIT = 1;
-	const AIR_NONE= 2; 
+	const AIR_NO_AIR = 0;
+	const AIR_CENTRAL = 1;
+	const AIR_WALL_UNIT = 2;
+	const AIR_NONE= 3; 
 
 	public static function air($value = null) {
 		$options = array(
@@ -68,10 +69,11 @@ class RentalPrototype extends AppModel {
 	}
 
 	/* ---------- parking ---------- */
-	const PARKING_PARKING_LOT = 0;
-	const PARKING_DRIVEWAY = 1;
-	const PARKING_GARAGE = 2;
-	const PARKING_OFF_SITE = 3;
+	const PARKING_NO_PARKING = 0;
+	const PARKING_PARKING_LOT = 1;
+	const PARKING_DRIVEWAY = 2;
+	const PARKING_GARAGE = 3;
+	const PARKING_OFF_SITE = 4;
 
 	public static function parking($value = null) {
 		$options = array(
@@ -98,9 +100,10 @@ class RentalPrototype extends AppModel {
 	}
 
 	/* ---------- pets ---------- */
-	const PETS_CATS_ONLY = 0;
-	const PETS_DOGS_ONLY = 1;
-	const PETS_CATS_AND_DOGS = 2;
+	const PETS_NOT_ALLOWED = 0;
+	const PETS_CATS_ONLY = 1;
+	const PETS_DOGS_ONLY = 2;
+	const PETS_CATS_AND_DOGS = 3;
 
 	public static function pets($value = null) {
 		$options = array(
