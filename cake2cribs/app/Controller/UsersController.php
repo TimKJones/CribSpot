@@ -23,6 +23,16 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
+        $this->Auth->allow('Login2');
+    }
+
+    public function Login2()
+    {
+        $id = $this->hull->currentUserId();
+        $hull_user = $this->hull->get($id);
+        if ($hull_user) {
+            $this->_facebookLogin($hull_user);
+        }
     }
 
     /*
@@ -84,7 +94,7 @@ class UsersController extends AppController {
     Logs user in via ajax.
     Returns success, or array of columns that failed validation.
     */
-    public function AjaxLogin()
+    public function AjaxLogin($user=null)
     {
         if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
@@ -230,7 +240,7 @@ class UsersController extends AppController {
     public function AjaxChangePassword()
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-            return;
+            return; 
 
         $this->layout = 'ajax';
         if (!$this->request || !$this->request->data || 
@@ -292,7 +302,6 @@ class UsersController extends AppController {
 
         $this->User->id = $user_id;
         $email = $this->User->field('email');
-        CakeLog::write("EMAIL", $email);
         /* Attempt to associate this user with a university (by checking for valid edu email) */
         $university_id = $this->User->University->GetIdFromEmail($this->User->field('email'));
         $success = $this->User->VerifyUserEmail($user_id, $university_id);
@@ -343,6 +352,58 @@ class UsersController extends AppController {
         $this->set('vericode', $user['vericode']);
         $this->set('id', $user['id']);
         $this->_sendVerificationEmail(array('email' => $email));
+    }
+
+    /*
+    Logs a user in via facebook
+    $fb_user is the facebook user object returned from hull
+    */
+    private function _facebookLogin($fb_user)
+    {
+        if ($fb_user){
+            $local_user = $this->User->GetUserFromFacebookId($fb_user->identities[0]->uid);
+
+            /* User exists, so log them in. */
+            if ($local_user){
+                $this->Auth->login($local_user['User']);
+                $this->redirect('/dashboard');
+            } 
+
+            /* User doesn't exist, so create a new user. */
+            else { 
+                $names = explode(" ", $fb_user->name);
+                $first_name = null;
+                $last_name = null;
+                if (count($names) >= 1)
+                    $first_name = $names[0];
+                if (count($names) >= 2)
+                    $last_name = $names[1];
+
+                $new_fb_user['User'] = array(
+                    'email'      => $fb_user->email,
+                    'password'      => uniqid(), // Set random password
+                    'user_type' => User::USER_TYPE_SUBLETTER,
+                    'facebook_userid' => $fb_user->identities[0]->uid
+                );
+
+                if ($first_name != null)
+                    $new_fb_user['User']['first_name'] = $first_name;
+                if ($last_name)
+                    $new_fb_user['User']['last_name'] = $last_name;
+                
+                $response = $this->User->SaveFacebookUser($new_fb_user);
+                if (array_key_exists('error', $response)){
+                    return $response;
+                }
+
+                // After registration we will redirect them back here so they will be logged in
+                $this->redirect('/users/login');
+            }
+        }
+
+        else{
+            // User login failed..
+        }
     }
 
     /*

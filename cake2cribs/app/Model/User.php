@@ -259,6 +259,7 @@ class User extends AppModel {
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;
+			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 26, $error);
 			return array('error' => 
 					'Failed to verify user email. Contact help@cribspot.com if the error persists. Reference error code 26');
@@ -429,6 +430,40 @@ class User extends AppModel {
 				'error_type' => 'EMAIL_UNVERIFIED');
 	
 		return array('success' => '');
+	}
+
+	/*
+	Returns a user object given a facebook id.
+	Returns null if user doesn't exist.
+	*/
+	public function GetUserFromFacebookId($fb_id)
+	{
+		if ($fb_id == null)
+			return null;
+
+		$local_user = $this->find('first', array(
+			'conditions' => array('facebook_userid' => $fb_id)
+        ));
+CakeLog::write("localuser", print_r($local_user, true));
+		return $local_user;
+	}
+
+	/*
+	Attempts to save a new user object after facebook registration.
+	*/
+	public function SaveFacebookUser($user)
+	{
+		CakeLog::write('savinguser', print_r($user, true));
+		if (!$this->save($user)){
+			$error = null;
+			$error['user'] = $user;
+			$error['validation'] = $this->validationErrors;
+			$this->LogError(null, 39, $error);
+			return array('error' => 
+					'Failed to login with Facebook. Contact help@cribspot.com if the error persists. Reference error code 39');
+		}
+
+		return array('success'=>'');
 	}
 
 	/*

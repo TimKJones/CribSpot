@@ -313,6 +313,9 @@ class Rental extends RentalPrototype {
 		'is_complete' => 'boolean'
 	);
 
+	private $MAX_BEDS = 10;
+	private $MAX_RENT = 5000;
+
 	/*
 	Marks the rental as either complete or incomplete, depending on whether all fields have been filled in.
 	Then it saves the rental.
@@ -383,6 +386,8 @@ class Rental extends RentalPrototype {
 	public function getFilteredMarkerIdList($params)
 	{
 		$conditions = $this->_getFilteredQueryConditions($params);
+		if (!$conditions)
+			return json_encode(array());
 
 		/* Limit which tables are queried */
 		$contains = array('Marker', 'Rental', 'Fee');
@@ -396,8 +401,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
 
-		$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));
+		/*$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));*/
 		return json_encode($formattedIdList);
 	}
 
@@ -406,29 +411,64 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getFilteredQueryConditions($params)
 	{
-		/*
-		TODO: Return error message if not all parameters are present
-		*/
+		if (!array_key_exists('dates', $params) || !array_key_exists('unit_types', $params) || 
+			!array_key_exists('rent', $params))
+			return null;
 
 		$conditions = array();
-		$dates = $params['months'];
+		$dates = json_decode($params['dates']);
 		$unit_types = json_decode($params['unit_types']);
-		$booleans = json_decode($params['amenities']);
+
+		/* Get a separate piece of the conditions array for each field */
 
 		$date_conditions = $this->_getDateConditions($dates);
-		$boolean_conditions = $this->_getBooleanFilterConditions($booleans);
-		$unit_types = $this->_getMultipleOptionFilterConditions($unit_types, 'building_type_id', 'Marker');
-		array_push($conditions, $date_conditions, $boolean_conditions, $unit_types);
+		$unit_types_conditions = $this->_getMultipleOptionFilterConditions($unit_types, 
+			'building_type_id', Rental::BUILDING_TYPE_DUPLEX, 'Marker');
+		$beds_conditions = $this->_getBedsConditions($params);
 
-		array_push($conditions, array(
-			'Rental.rent >=' => $params['min_rent'],
-			'Rental.rent <=' => $params['max_rent'],
-			'Rental.beds >=' => $params['min_beds'],
-			'Rental.beds <=' => $params['max_beds'],
-			'Rental.baths >=' => $params['min_baths'],
-			'Rental.baths <=' => $params['max_baths']));
+		$rent = json_decode($params['rent']);
+
+		if (intval($rent->max) === $this->MAX_RENT)
+			$rent->max = 9999999;
+
+		$rent_conditions = array(
+			'Rental.rent >=' => $rent->min,
+			'Rental.rent <=' => $rent->max);
+
+		/* Merge all separate conditions arrays together */
+		array_push($conditions, $date_conditions, $unit_types_conditions, $beds_conditions, $rent_conditions);
 
 		return $conditions;
+	}
+
+	/*
+	Get the piece of the filter conditions array related to beds
+	*/
+	private function _getBedsConditions($params)
+	{
+		if (!array_key_exists('beds', $params))
+			return null;
+
+		$beds = json_decode($params['beds']);
+		$include_greater_than_max = false;
+		$processed_beds = array();
+		for ($i = 0; $i < count($beds); $i++){
+			if ($beds[$i] == $this->MAX_BEDS)
+				$include_greater_than_max = true;
+
+			array_push($processed_beds, intval($beds[$i]));
+		}
+
+		$beds_conditions = array( 'OR' => array(
+			array('Rental.beds' => $processed_beds),
+			array('Rental.beds' => NULL)));
+
+		if ($include_greater_than_max)
+			array_push($beds_conditions['OR'], array(
+				'Rental.beds >' => $this->MAX_BEDS
+			));
+
+		return $beds_conditions;
 	}
 
 	/*
@@ -456,14 +496,20 @@ class Rental extends RentalPrototype {
 	Takes an input of an array of (key, value) pairs
 	Only filters for fields that can be multiple values (ex. unit_type)
 	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
+	$other_max_value - value above which all values are valid if 'other' box is checked.
 	*/
-	private function _getMultipleOptionFilterConditions($params, $field_name, $table_name='Rental')
+	private function _getMultipleOptionFilterConditions($params, $field_name, $other_max_value, $table_name='Rental')
 	{
 		$conditions = array();
 		$acceptable_values = array();
+		$other_selected = false;
 		foreach ($params as $key => $value) {
 			if (intval($value) === 1){
 				/* Get array of acceptable values for this field */
+				if ($key == 'other'){
+					$other_selected = true;
+					continue;
+				}
 				$converted_value = $this->_getIntegerFromTypeString($key, $field_name);
 				array_push($acceptable_values, $converted_value);
 			}
@@ -472,6 +518,11 @@ class Rental extends RentalPrototype {
 		$conditions['OR'] = array(
 			array($table_name . '.' . $field_name => $acceptable_values),
 			array($table_name . '.' . $field_name => NULL));
+
+		if ($other_selected)
+			array_push($conditions['OR'], array(
+				$table_name . '.' . $field_name . ' >' => $other_max_value
+		));
 
 		return $conditions;
 	}
@@ -507,38 +558,48 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getDateConditions($params)
 	{
-		$conditions = array();
-		$startEndDatePairs = $this->_getStartEndDatePairs($params);
-CakeLog::write('pairs', print_r($startEndDatePairs, true));
-		foreach ($startEndDatePairs as $pair){
+		/* TODO: MAKE SURE ALL FIELDS ARE PRESENT BEFORE ARRAY ACCESSES */
+
+		/* get conditions related to start and end date */
+		$dateConditions = array();
+		$startDateConditions = array();
+		$startDateConditions['OR'] = array();
+		$startDateRanges = $this->_getStartDateRanges($params->months, $params->curYear);
+		foreach ($startDateRanges as $pair){
 			$and_array = array();
-			$and_array['AND'] = array();
-			array_push($and_array['AND'], 'Rental.start_date >=' . $pair['start_date']);
-			array_push($and_array['AND'], 'Rental.end_date <=' . $pair['end_date']);
-			array_push($conditions, $and_array);
+			$and_array['AND'] = array(
+				'Rental.start_date >=' => $pair['start_date_min'],
+				'Rental.start_date <=' => $pair['start_date_max']
+			);
+			array_push($startDateConditions['OR'], $and_array);
 		}
 
-		return array('OR' => $conditions);	
+		/* get conditions for min and max lease length */
+		$leaseLengthConditions = array();
+		$leaseLengthConditions['AND'] = array(
+			'Rental.lease_length >=' => $params->leaseLength->min,
+			'Rental.lease_length <=' => $params->leaseLength->max
+		);
+		
+		array_push($dateConditions, $startDateConditions, $leaseLengthConditions);	
+		return array('AND' => $dateConditions);
 	}
 
 	/*
-	Return pairs of (start_date, end_date) that are valid to be searched based on user's current filter preferences.	
+	Returns start_dates that are valid to be searched based on user's current filter preferences.	
 	*/
-	private function _getStartEndDatePairs($params)
+	private function _getStartDateRanges($months, $start_years)
 	{
-		$params = json_decode($params);
-		$months_selected = $this->_getMonthsSelectedArray($params);
+		$months_selected = $this->_getMonthsSelectedArray($months);
 		$pairs = array();
-		$start_years = json_decode($params->curYear);
-		$lease_length = intval($params->leaseLength);
 		for ($i = 0; $i < count($start_years); $i++) {
 			for ($j = 0; $j < count($months_selected); $j++){
 				$start_date = date('Y-m-d', strtotime('20' . $start_years[$i] . '-' . $months_selected[$j] . '-01'));
-				$end_date = date('Y-m-d', strtotime('+' . ($lease_length) . ' months', strtotime($start_date)));
+				$end_date = date('Y-m-d', strtotime('+1 month', strtotime($start_date)));
 				$end_date = date('Y-m-d', strtotime('-1 day', strtotime($end_date)));
 				$new_pair = array(
-					'start_date' => $start_date,
-					'end_date' => $end_date
+					'start_date_min' => $start_date,
+					'start_date_max' => $end_date
 				);
 				array_push($pairs, $new_pair);
 			}

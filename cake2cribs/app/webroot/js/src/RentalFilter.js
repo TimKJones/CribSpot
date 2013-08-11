@@ -187,17 +187,12 @@
       		ajaxData += "&parking=" + $("#parkingCheck").is(':checked')
       */
 
-      ajaxData = "min_beds=" + 0;
-      ajaxData += "&max_beds=" + 5;
-      ajaxData += "&min_baths=" + 0;
-      ajaxData += "&max_baths=" + 3;
-      ajaxData += "&min_rent=" + 0;
-      ajaxData += "&max_rent=" + 3000;
+      ajaxData += "&beds=" + this.GetBeds();
+      ajaxData += "&rent=" + this.GetRent();
       ajaxData += "&parking=" + 1;
-      ajaxData += "&months=" + JSON.stringify(this.GetMonths());
+      ajaxData += "&dates=" + JSON.stringify(this.GetMonths());
       ajaxData += "&unit_types=" + JSON.stringify(this.GetUnitTypes());
       ajaxData += "&amenities=" + JSON.stringify(this.GetAmenities());
-      ajaxData += "&month_12=" + 0;
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
         data: ajaxData,
@@ -237,25 +232,45 @@
       return visibile_listings;
     };
 
-    RentalFilter.GetMonths = function() {
-      var months;
-      months = {
-        "1": 1,
-        "2": 0,
-        "3": 1,
-        "4": 0,
-        "5": 1,
-        "6": 0,
-        "7": 1,
-        "8": 0,
-        "9": 1,
-        "10": 0,
-        "11": 1,
-        "12": 0,
-        "curYear": JSON.stringify([13, 14]),
-        "leaseLength": 7
+    RentalFilter.GetBeds = function() {
+      var beds;
+      beds = [3, 5, 6, 10];
+      return JSON.stringify(beds);
+    };
+
+    RentalFilter.GetRent = function() {
+      var rent;
+      rent = {
+        "min": 100,
+        "max": 5000
       };
-      return months;
+      return JSON.stringify(rent);
+    };
+
+    RentalFilter.GetMonths = function() {
+      var dates;
+      dates = {
+        "months": {
+          "1": 1,
+          "2": 0,
+          "3": 1,
+          "4": 0,
+          "5": 1,
+          "6": 0,
+          "7": 1,
+          "8": 0,
+          "9": 1,
+          "10": 0,
+          "11": 1,
+          "12": 0
+        },
+        "curYear": [13, 14],
+        "leaseLength": {
+          'min': 2,
+          'max': 4
+        }
+      };
+      return dates;
     };
 
     RentalFilter.GetUnitTypes = function() {
@@ -264,10 +279,7 @@
         "house": 0,
         "apartment": 1,
         "duplex": 1,
-        "condo": 1,
-        "townhouse": 0,
-        "coop": 0,
-        "other": 1
+        "other": 0
       };
     };
 
