@@ -44,11 +44,8 @@ class A2Cribs.ClickBubble
 						response_data = JSON.parse data
 						for item in response_data
 							for key, value of item
-								if A2Cribs[key]? and not value.length?
+								if A2Cribs[key]?
 									A2Cribs.UserCache.Set new A2Cribs[key] value
-								else if A2Cribs[key]? and value.length? # Is an array
-									for i in value
-										A2Cribs.UserCache.Set new A2Cribs[key] i
 
 						listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 						@SetContent listing.GetObject()
@@ -74,32 +71,33 @@ class A2Cribs.ClickBubble
 	@SetContent: (listing_object) ->
 		for key,value of listing_object
 			@div.find(".#{key}").text value
-		@div.find(".date_range").text @resolveDateRange listing_object.start_date, listing_object.end_date
+		@div.find(".date_range").text @resolveDateRange listing_object.start_date
 		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
-		@div.find(".website_link").attr "href", listing_object.website
+		@linkWebsite ".website_link", listing_object.website
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
+		@setPrimaryImage "property_image", listing_object.listing_id
 
-	@resolveDateRange: (startDate, endDate) ->
+	@resolveDateRange: (startDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		range = ""
 		startSplit = startDate.split "-"
-		endSplit = endDate.split "-"
-		range = "#{rmonth[+startSplit[1] - 1]} #{parseInt(startSplit[2], 10)}, #{startSplit[0]} - "
-		range += "#{rmonth[+endSplit[1] - 1]} #{parseInt(endSplit[2], 10)}, #{endSplit[0]}"
+		range = "#{rmonth[+startSplit[1] - 1]} #{parseInt(startSplit[2], 10)}, #{startSplit[0]}"
 
 	@setAvailability: (div_name, availability) ->
 		if availability
 			$(".#{div_name}").text "Available"
+			$(".#{div_name}").removeClass "leased"
 		else
 			$(".#{div_name}").text "Leased"
+			$(".#{div_name}").addClass "leased"
 
 	@linkWebsite: (div_name, link) ->
 		if link.indexOf "http" is -1
 			link = "http://" + link
-		@div.find(".website_link").attr "href", link
+		@div.find(div_name).attr "href", link
 
 	@setOwnerName: (div_name, listing_id) ->
 		listing = A2Cribs.UserCache.Get "listing", listing_id
@@ -108,6 +106,11 @@ class A2Cribs.ClickBubble
 			$(".#{div_name}").text user.company_name
 		else if user?.first_name? and user.last_name
 			$(".#{div_name}").text "#{user.first_name} #{user.last_name}"
+
+	@setPrimaryImage: (div_name, listing_id) ->
+		image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary()
+		if image_url?
+			$(".#{div_name}").css "background-image", "url(/#{image_url})"
 
 
 

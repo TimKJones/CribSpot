@@ -67,19 +67,14 @@ ClickBubble class
             url: myBaseUrl + "Listings/GetListing/" + listing_id,
             type: "GET",
             success: function(data) {
-              var i, item, key, response_data, value, _i, _j, _len, _len1;
+              var item, key, response_data, value, _i, _len;
               response_data = JSON.parse(data);
               for (_i = 0, _len = response_data.length; _i < _len; _i++) {
                 item = response_data[_i];
                 for (key in item) {
                   value = item[key];
-                  if ((A2Cribs[key] != null) && !(value.length != null)) {
+                  if (A2Cribs[key] != null) {
                     A2Cribs.UserCache.Set(new A2Cribs[key](value));
-                  } else if ((A2Cribs[key] != null) && (value.length != null)) {
-                    for (_j = 0, _len1 = value.length; _j < _len1; _j++) {
-                      i = value[_j];
-                      A2Cribs.UserCache.Set(new A2Cribs[key](i));
-                    }
                   }
                 }
               }
@@ -122,30 +117,31 @@ ClickBubble class
         value = listing_object[key];
         this.div.find("." + key).text(value);
       }
-      this.div.find(".date_range").text(this.resolveDateRange(listing_object.start_date, listing_object.end_date));
+      this.div.find(".date_range").text(this.resolveDateRange(listing_object.start_date));
       marker = A2Cribs.UserCache.Get("marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id);
       this.div.find(".building_name").text(marker.GetName());
       this.div.find(".unit_type").text(marker.GetBuildingType());
-      this.div.find(".website_link").attr("href", listing_object.website);
+      this.linkWebsite(".website_link", listing_object.website);
       this.setAvailability("available", listing_object.available);
-      return this.setOwnerName("property_manager", listing_object.listing_id);
+      this.setOwnerName("property_manager", listing_object.listing_id);
+      return this.setPrimaryImage("property_image", listing_object.listing_id);
     };
 
-    ClickBubble.resolveDateRange = function(startDate, endDate) {
-      var endSplit, range, rmonth, startSplit;
+    ClickBubble.resolveDateRange = function(startDate) {
+      var range, rmonth, startSplit;
       rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       range = "";
       startSplit = startDate.split("-");
-      endSplit = endDate.split("-");
-      range = "" + rmonth[+startSplit[1] - 1] + " " + (parseInt(startSplit[2], 10)) + ", " + startSplit[0] + " - ";
-      return range += "" + rmonth[+endSplit[1] - 1] + " " + (parseInt(endSplit[2], 10)) + ", " + endSplit[0];
+      return range = "" + rmonth[+startSplit[1] - 1] + " " + (parseInt(startSplit[2], 10)) + ", " + startSplit[0];
     };
 
     ClickBubble.setAvailability = function(div_name, availability) {
       if (availability) {
-        return $("." + div_name).text("Available");
+        $("." + div_name).text("Available");
+        return $("." + div_name).removeClass("leased");
       } else {
-        return $("." + div_name).text("Leased");
+        $("." + div_name).text("Leased");
+        return $("." + div_name).addClass("leased");
       }
     };
 
@@ -153,7 +149,7 @@ ClickBubble class
       if (link.indexOf("http" === -1)) {
         link = "http://" + link;
       }
-      return this.div.find(".website_link").attr("href", link);
+      return this.div.find(div_name).attr("href", link);
     };
 
     ClickBubble.setOwnerName = function(div_name, listing_id) {
@@ -164,6 +160,14 @@ ClickBubble class
         return $("." + div_name).text(user.company_name);
       } else if (((user != null ? user.first_name : void 0) != null) && user.last_name) {
         return $("." + div_name).text("" + user.first_name + " " + user.last_name);
+      }
+    };
+
+    ClickBubble.setPrimaryImage = function(div_name, listing_id) {
+      var image_url;
+      image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary();
+      if (image_url != null) {
+        return $("." + div_name).css("background-image", "url(/" + image_url + ")");
       }
     };
 

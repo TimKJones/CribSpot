@@ -48,6 +48,8 @@
 		width: 100%;
 		box-shadow: inset 0 0 5px #888888;
 		height: 155px;
+		background-size: cover;
+		background-position: center;
 	}
 	.share_section
 	{
@@ -99,12 +101,22 @@
 		text-align: left;
 		padding: 10px 0;
 		border-bottom: solid 1px #d9d9d9;
-		.rent, .beds
+		.bubble_label
 		{
 			font-weight: bold;
 			display: inline-block;
 			margin-left: 10px;
 			color: #454545;
+		}
+		.rent, .beds
+		{
+			font-weight: bold;
+			display: inline-block;
+			color: #454545;
+		}
+		.beds
+		{
+			margin-left: 10px;
 		}
 		.per_month, .bed_desc
 		{
@@ -126,6 +138,12 @@
 			float: right;
 			box-shadow: inset 0 0 5px #72ae57;
 			margin-right: 10px;
+
+			&.leased
+			{
+				background-color: #cf5e5e;
+				box-shadow: inset 0 0 5px #c73d3d;
+			}
 		}
 	}
 	.additional_info
@@ -138,13 +156,18 @@
 		padding: 5px 0;
 		background-color: #f2efef;
 		border-top: solid 1px white;
+		.bubble_label
+		{
+			display: inline-block;
+		}
 		.date_range
 		{
 			font-size: 12px;
 			margin-left: 10px;
 			line-height: 18px;
+			display: inline-block;
 		}
-		.unit_type, .baths
+		.unit_type, .baths, .lease_length
 		{
 			display: inline-block;
 		}

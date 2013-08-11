@@ -17,7 +17,7 @@ class A2Cribs.UserCache
 				for item of @Cache[object_type]
 					list.push @Cache[object_type][item]
 				return list
-		return null
+		return if id? then null else []
 
 	@Remove: (object_type, id) ->
 		if @Cache[object_type]? and id?

@@ -75,9 +75,9 @@
 		</div>
 		<div id="lease_filter_content" class="filter_content hide" data-link="#lease_filter_link"> <!-- Lease Length -->
 			<div class="content_label">Lease:</div>
-			<div id="lease_min" class="slider_data filter_data">2</div><div id="lease_min_desc" class="slider_data filter_label">&nbsp;months</div>
+			<div id="lease_min" class="slider_data filter_data">0</div><div id="lease_min_desc" class="slider_data filter_label">&nbsp;months</div>
 			<div class="lease_slider slider"></div>
-			<div id="lease_max" class="slider_data filter_data">10</div><div id="lease_max_desc" class="slider_data filter_label">&nbsp;months</div>
+			<div id="lease_max" class="slider_data filter_data">12</div><div id="lease_max_desc" class="slider_data filter_label">&nbsp;months</div>
 		</div>
 		<div id="rent_filter_content" class="filter_content hide" data-link="#rent_filter_link"> <!-- Rent Amount -->
 			<div class="content_label">Monthly Rent:</div>

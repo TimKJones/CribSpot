@@ -29,7 +29,11 @@
           return list;
         }
       }
-      return null;
+      if (id != null) {
+        return null;
+      } else {
+        return [];
+      }
     };
 
     UserCache.Remove = function(object_type, id) {
