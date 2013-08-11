@@ -1,7 +1,15 @@
 class A2Cribs.RentalFilter extends A2Cribs.FilterManager
-	@Beds = ''
-	@Rent = ''
-	@Months = ''
+	@FilterData =
+		'Beds' : [2,5,10]
+		'Rent' : 
+			'min' : 100
+			'max' : 3500
+		'Dates': -1
+		'UnitTypes' : [0,1, 3] #'other' is the value 3
+		'PetsAllowed' : 1
+		'ParkingAvailable' : -1
+		'Air' : 1
+		'UtilitiesIncluded' : -1
 
 	###
 	Private method for loading the contents of the filter preview into the header filter
@@ -161,14 +169,15 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	Submits an ajax call with all current filter parameters
 	###
 	@ApplyFilter: (field, value) ->
-		@[field] = value
-		#A2Cribs.Map.ClickBubble.Close()
-		ajaxData += "&beds=" + @GetBeds()
-		ajaxData += "&rent=" + @Rent
-		ajaxData += "&parking=" + 1
-		ajaxData += "&dates=" + JSON.stringify @GetMonths()
-		ajaxData += "&unit_types=" + JSON.stringify @GetUnitTypes()
-		ajaxData += "&amenities=" + JSON.stringify @GetAmenities()
+		@FilterData[field] = value
+		ajaxData = ''
+		first = true
+		for key,value of @FilterData
+			if !first
+				ajaxData += "&"
+			first = false
+			ajaxData += key + "=" + JSON.stringify value
+
 		$.ajax
 			url: myBaseUrl + "Rentals/ApplyFilter"
 			data: ajaxData

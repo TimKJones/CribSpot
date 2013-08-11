@@ -122,7 +122,7 @@ class Rental extends RentalPrototype {
 			)
 		),
 		'baths' => 'numeric',
-		'air' => 'boolean',
+		'air' => 'integer',
 		'parking_type' => 'numeric',
 		'parking_spots' => 'numeric',
 		'street_parking' => 'boolean',
@@ -386,23 +386,25 @@ class Rental extends RentalPrototype {
 	public function getFilteredMarkerIdList($params)
 	{
 		$conditions = $this->_getFilteredQueryConditions($params);
-		if (!$conditions)
-			return json_encode(array());
 
 		/* Limit which tables are queried */
-		$contains = array('Marker', 'Rental', 'Fee');
+		$contains = array('Marker', 'Rental');
 
-		$markerIdList = $this->Listing->find('all', array(
-			'conditions' => $conditions,
+		$findConditions = array(
 		    'contain' => $contains,
-			'fields' => array('Listing.marker_id')));
+			'fields' => array('DISTINCT (Listing.marker_id)'));
+		if (count($conditions) > 0)
+			$findConditions['conditions'] = $conditions;
+
+		$markerIdList = $this->Listing->find('all', $findConditions);
+CakeLog::write('markeridresult', print_r($markerIdList, true));
 
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['marker_id']);
 
-		/*$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -411,32 +413,73 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getFilteredQueryConditions($params)
 	{
-		if (!array_key_exists('dates', $params) || !array_key_exists('unit_types', $params) || 
-			!array_key_exists('rent', $params))
-			return null;
-
 		$conditions = array();
-		$dates = json_decode($params['dates']);
-		$unit_types = json_decode($params['unit_types']);
-
+CakeLog::write("params", print_r($params, true));
 		/* Get a separate piece of the conditions array for each field */
 
-		$date_conditions = $this->_getDateConditions($dates);
-		$unit_types_conditions = $this->_getMultipleOptionFilterConditions($unit_types, 
-			'building_type_id', Rental::BUILDING_TYPE_DUPLEX, 'Marker');
-		$beds_conditions = $this->_getBedsConditions($params);
+		if (array_key_exists('Dates', $params)) {
+			$dates = json_decode($params['Dates']);
+			if ($dates !== -1){
+				$date_conditions = $this->_getDateConditions($dates);
+				array_push($conditions, $date_conditions);
+			}
+		}
+/* STOPPED HERE TESTING OUT UNITTYPES */		
+		if (array_key_exists('UnitTypes', $params)) {
+			$unit_types = json_decode($params['UnitTypes']);
+CakeLog::write("unittypes", print_r($unit_types, true));
+			if ($unit_types !== -1){
+				$unit_types_conditions = $this->_getMultipleOptionFilterConditions($unit_types, 
+					'building_type_id', Rental::BUILDING_TYPE_DUPLEX + 1, 'Marker');
+				CakeLog::write('buildingtypes', print_r($unit_types_conditions, true));
+				array_push($conditions, $unit_types_conditions);
+			}
+		}
 
-		$rent = json_decode($params['rent']);
+		if (array_key_exists('Beds', $params)){
+			$beds = json_decode($params['Beds']);
+			if ($beds !== -1){
+				$beds_conditions = $this->_getBedsConditions($beds);
+				array_push($conditions, $beds_conditions);
+			}
+		}
 
-		if (intval($rent->max) === $this->MAX_RENT)
-			$rent->max = 9999999;
+		if (array_key_exists('Rent', $params)){
+			$rent = json_decode($params['Rent']);
+			if ($rent !== -1){
+				if (intval($rent->max) === $this->MAX_RENT)
+					$rent->max = 9999999;
 
-		$rent_conditions = array(
-			'Rental.rent >=' => $rent->min,
-			'Rental.rent <=' => $rent->max);
+				$rent_conditions = array(
+					'Rental.rent >=' => $rent->min,
+					'Rental.rent <=' => $rent->max);
+				array_push($conditions, $rent_conditions);
+			}
+		}
 
-		/* Merge all separate conditions arrays together */
-		array_push($conditions, $date_conditions, $unit_types_conditions, $beds_conditions, $rent_conditions);
+		if (array_key_exists('PetsAllowed', $params)) {
+			$pets_allowed = json_decode($params['PetsAllowed']);
+			if (intval($pets_allowed) == 1){
+				$pets_conditions = $this->_getBooleanFilterConditions('pets_type', Rental::PETS_NOT_ALLOWED);
+				array_push($conditions, $pets_conditions);
+			}			
+		}
+
+		if (array_key_exists('ParkingAvailable', $params)) {
+			$parking_available = json_decode($params['ParkingAvailable']);
+			if (intval($parking_available) == 1){
+				$parking_conditions = $this->_getBooleanFilterConditions('parking_type', Rental::PARKING_NO_PARKING);
+				array_push($conditions, $parking_conditions);
+			}			
+		}
+
+		if (array_key_exists('Air', $params)) {
+			$air = json_decode($params['Air']);
+			if (intval($pets_allowed) == 1){
+				$air_conditions = $this->_getBooleanFilterConditions('air', Rental::AIR_NO_AIR);
+				array_push($conditions, $air_conditions);
+			}			
+		}
 
 		return $conditions;
 	}
@@ -444,12 +487,9 @@ class Rental extends RentalPrototype {
 	/*
 	Get the piece of the filter conditions array related to beds
 	*/
-	private function _getBedsConditions($params)
+	private function _getBedsConditions($beds)
 	{
-		if (!array_key_exists('beds', $params))
-			return null;
-
-		$beds = json_decode($params['beds']);
+		CakeLog::write('beds', print_r($beds, true));
 		$include_greater_than_max = false;
 		$processed_beds = array();
 		for ($i = 0; $i < count($beds); $i++){
@@ -472,24 +512,17 @@ class Rental extends RentalPrototype {
 	}
 
 	/*
-	Takes an input of an array of (key, value) pairs
-	Only filters for fields that can be true, false, or null.
-	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
+	$field_name is the name of the field in $table_name that is being filtered
+	Adds a condition to return all rows where value of $field_name is GREATER THAN OR EQUAL TO $min_value
 	*/
-	private function _getBooleanFilterConditions($params, $table_name='Rental')
+	private function _getBooleanFilterConditions($field_name, $min_value, $table_name='Rental')
 	{
-		$conditions = array();
-		foreach ($params as $key => $value) {
-			if (intval($value) == 1){
-				$nextCondition = array('OR' => array(
-					array($table_name . '.' . $key => true),
-					array($table_name . '.' . $key => NULL))
-				);
-				array_push($conditions, $nextCondition);
-			}
-		}
+		$conditions = array('OR' => array(
+			array($table_name . '.' . $field_name . ' >' => $min_value),
+			array($table_name . '.' . $field_name => NULL))
+		);
 
-		return array('AND' => $conditions);
+		return $conditions;
 	}
 
 	/*
@@ -498,45 +531,20 @@ class Rental extends RentalPrototype {
 	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
 	$other_max_value - value above which all values are valid if 'other' box is checked.
 	*/
-	private function _getMultipleOptionFilterConditions($params, $field_name, $other_max_value, $table_name='Rental')
+	private function _getMultipleOptionFilterConditions($params, $field_name, $other_value, $table_name='Rental')
 	{
 		$conditions = array();
-		$acceptable_values = array();
-		$other_selected = false;
-		foreach ($params as $key => $value) {
-			if (intval($value) === 1){
-				/* Get array of acceptable values for this field */
-				if ($key == 'other'){
-					$other_selected = true;
-					continue;
-				}
-				$converted_value = $this->_getIntegerFromTypeString($key, $field_name);
-				array_push($acceptable_values, $converted_value);
-			}
-		}
 
 		$conditions['OR'] = array(
-			array($table_name . '.' . $field_name => $acceptable_values),
+			array($table_name . '.' . $field_name => $params),
 			array($table_name . '.' . $field_name => NULL));
 
-		if ($other_selected)
+		if (in_array($other_value, $params))
 			array_push($conditions['OR'], array(
-				$table_name . '.' . $field_name . ' >' => $other_max_value
-		));
+				$table_name . '.' . $field_name . ' >' => $other_value
+			));
 
 		return $conditions;
-	}
-
-	/*
-	We hide table names from the user for security purposes.
-	This function converts to what we show in coffee to what we actually call our tables.
-	*/
-	private function _convertToSafeFieldName($field_name)
-	{
-		if ($field_name == 'unit_type')
-			return 'building_type_id';
-
-		return $table_name;
 	}
 
 	/*
