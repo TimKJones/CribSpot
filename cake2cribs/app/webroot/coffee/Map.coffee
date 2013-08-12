@@ -118,6 +118,11 @@ class A2Cribs.Map
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
 
+		# Set all listings to visible
+		all_listings = A2Cribs.UserCache.Get "listings"
+		for listing in all_listings
+			listing.visible = true
+
 	###
 	EVAN:
 		marker_id is the id of the marker to open

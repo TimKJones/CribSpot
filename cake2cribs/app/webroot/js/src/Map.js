@@ -147,23 +147,23 @@
     };
 
     Map.LoadBasicDataCallback = function(response) {
-      var key, listing, listings, value, _i, _len, _results;
+      var all_listings, key, listing, listings, value, _i, _j, _len, _len1, _results;
       if (response === null || response === void 0) {
         return;
       }
       listings = JSON.parse(response);
-      _results = [];
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
-        _results.push((function() {
-          var _results1;
-          _results1 = [];
-          for (key in listing) {
-            value = listing[key];
-            _results1.push(A2Cribs.UserCache.Set(new A2Cribs[key](value)));
-          }
-          return _results1;
-        })());
+        for (key in listing) {
+          value = listing[key];
+          A2Cribs.UserCache.Set(new A2Cribs[key](value));
+        }
+      }
+      all_listings = A2Cribs.UserCache.Get("listings");
+      _results = [];
+      for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
+        listing = all_listings[_j];
+        _results.push(listing.visible = true);
       }
       return _results;
     };

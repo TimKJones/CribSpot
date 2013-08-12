@@ -229,7 +229,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			data: ajaxData
 			type: "GET"
 			context: this
-			success: A2Cribs.FilterManager.UpdateMarkers
+			success: A2Cribs.FilterManager.UpdateListings
 
 	###
 	Retrieves all listing_ids for a given marker_id that fit the current filter criteria

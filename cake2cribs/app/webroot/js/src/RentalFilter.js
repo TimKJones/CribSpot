@@ -261,7 +261,7 @@
         data: ajaxData,
         type: "GET",
         context: this,
-        success: A2Cribs.FilterManager.UpdateMarkers
+        success: A2Cribs.FilterManager.UpdateListings
       });
     };
 

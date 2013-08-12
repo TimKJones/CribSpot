@@ -13,6 +13,7 @@ class MapController extends AppController {
     $this->Auth->allow('ViewListing');
     $this->Auth->allow('LoadTypeTables');
     $this->Auth->allow('LoadHoverData');
+    $this->Auth->allow('GetBasicData');
   }
 
     public function sublet($school_name = null, $address = null, $sublet_id = null)
