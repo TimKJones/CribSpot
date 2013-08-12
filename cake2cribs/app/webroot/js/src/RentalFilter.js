@@ -12,26 +12,26 @@
       return RentalFilter.__super__.constructor.apply(this, arguments);
     }
 
-    RentalFilter.FilterData = {
-      'Beds': [2, 5, 10],
-      'Rent': {
-        'min': 100,
-        'max': 3500
-      },
-      'Dates': {
-        'months': [3, 5],
-        'year': 13
-      },
-      'LeaseRange': {
-        'min': 3,
-        'max': 7
-      },
-      'UnitTypes': [0, 1, 3],
-      'PetsAllowed': 1,
-      'ParkingAvailable': -1,
-      'Air': -1,
-      'UtilitiesIncluded': -1
-    };
+    RentalFilter.FilterData = {};
+
+    /*
+    		'Beds' : [2,5,10]
+    		'Rent' : 
+    			'min' : 100
+    			'max' : 3500
+    		'Dates': 
+    			'months': [3, 5]
+    			'year' : 13
+    		'LeaseRange' : 
+    			'min' : 3
+    			'max' : 7
+    		'UnitTypes' : [0,1, 3] #'other' is the value 3
+    		'PetsAllowed' : 1
+    		'ParkingAvailable' : -1
+    		'Air' : -1
+    		'UtilitiesIncluded' : -1
+    */
+
 
     /*
     	Private method for loading the contents of the filter preview into the header filter
@@ -49,12 +49,24 @@
       		On Change listeners for applying changed fields
       */
 
+      var _this = this;
+      this.div.find(".lease_slider").on("slideStop", function(event) {
+        return _this.ApplyFilter("LeaseRange", {
+          min: parseInt(event.value[0], 10),
+          max: parseInt(event.value[1], 10)
+        });
+      });
+      this.div.find(".rent_slider").on("slideStop", function(event) {
+        return _this.ApplyFilter("Rent", {
+          min: parseInt(event.value[0], 10),
+          max: parseInt(event.value[1], 10)
+        });
+      });
       /*
       		Bed filter click event listener
       		Finds range of beds and applies the changes of bed amounts
       */
 
-      var _this = this;
       this.div.find("#bed_filter").find(".btn").click(function(event) {
         var button_group, max, min, selected_list, text;
         selected_list = [];
@@ -69,47 +81,79 @@
           min = Math.min(min, val);
           return max = Math.max(max, val);
         });
-        _this.ApplyFilter("Beds", selected_list);
         if (selected_list.length === 0) {
-          return loadPreviewText(event.delegateTarget, "");
-        } else if (selected_list.length === 1) {
-          if (min === 0) {
-            text = "<div class='filter_data'>Studio</div>";
-          } else if (min === 1) {
-            text = "<div class='filter_data'>" + min + "</div><div class='filter_label'>&nbsp;bed</div>";
-          } else {
-            text = "<div class='filter_data'>" + min + "</div><div class='filter_label'>&nbsp;beds</div>";
-          }
-          return loadPreviewText(event.delegateTarget, text);
+          loadPreviewText(event.delegateTarget, "");
+          return _this.ApplyFilter("Beds", null);
         } else {
-          return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + min + "-" + max + "</div><div class='filter_label'>&nbsp;beds</div>");
+          _this.ApplyFilter("Beds", selected_list);
+          if (selected_list.length === 1) {
+            if (min === 0) {
+              text = "<div class='filter_data'>Studio</div>";
+            } else if (min === 1) {
+              text = "<div class='filter_data'>" + min + "</div><div class='filter_label'>&nbsp;bed</div>";
+            } else {
+              text = "<div class='filter_data'>" + min + "</div><div class='filter_label'>&nbsp;beds</div>";
+            }
+            return loadPreviewText(event.delegateTarget, text);
+          } else {
+            return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + min + "-" + max + "</div><div class='filter_label'>&nbsp;beds</div>");
+          }
+        }
+      });
+      this.div.find("#year_filter").change(function(event) {
+        var dates, year;
+        dates = _this.FilterData.Dates;
+        year = $(event.delegateTarget).val();
+        if (dates != null) {
+          dates.year = year;
+          return _this.ApplyFilter("Dates", dates);
+        } else {
+          return _this.ApplyFilter("Dates", {
+            months: [],
+            year: year
+          });
         }
       });
       this.div.find("#start_filter").find(".btn").click(function(event) {
-        var button_group, selected_list;
+        var button_group, monthText, selected_list;
         selected_list = [];
         $(event.delegateTarget).toggleClass("active");
         button_group = $(event.delegateTarget).parent();
+        monthText = "";
         button_group.find(".btn.active").each(function() {
-          return selected_list.push($(this).text());
+          selected_list.push($(this).attr("data-month"));
+          return monthText = $(this).text();
         });
         if (selected_list.length === 0) {
-          return loadPreviewText(event.delegateTarget, "");
-        } else if (selected_list.length === 1) {
-          return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + selected_list[0] + "</div><div class='filter_label'>&nbsp;start</div>");
+          loadPreviewText(event.delegateTarget, "");
+          return _this.ApplyFilter('Dates', null);
         } else {
-          return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + selected_list.length + "</div><div class='filter_label'>&nbsp;starts</div>");
+          _this.ApplyFilter('Dates', {
+            months: selected_list,
+            year: _this.div.find("#year_filter").val()
+          });
+          if (selected_list.length === 1) {
+            return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + monthText + "</div><div class='filter_label'>&nbsp;start</div>");
+          } else {
+            return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + selected_list.length + "</div><div class='filter_label'>&nbsp;starts</div>");
+          }
         }
       });
       return this.div.find("input[type='checkbox']").change(function(event) {
-        var group, selected_list;
+        var filterType, group, selected_list;
         group = $(event.target).closest(".filter_content");
+        filterType = $(event.delegateTarget).attr("data-filter");
         selected_list = [];
         group.find("input[type='checkbox']").each(function() {
           if (this.checked) {
-            return selected_list.push("0");
+            return selected_list.push($(this).attr("data-value"));
           }
         });
+        if (filterType === "UnitTypes") {
+          _this.ApplyFilter(filterType, selected_list);
+        } else {
+          _this.ApplyFilter(filterType, +event.delegateTarget.checked);
+        }
         if (selected_list.length === 0) {
           return loadPreviewText(event.delegateTarget, "");
         } else {
@@ -165,11 +209,7 @@
         max_amount = event.value[1] === 5000 ? "$" + event.value[1] + "+" : "$" + event.value[1];
         _this.div.find("#rent_min").text(min_amount);
         _this.div.find("#rent_max").text(max_amount);
-        loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + min_amount + "-" + max_amount + "</div>");
-        return _this.ApplyFilter("Rent", {
-          min: parseInt(event.value[0], 10),
-          max: parseInt(event.value[1], 10)
-        });
+        return loadPreviewText(event.delegateTarget, "<div class='filter_data'>" + min_amount + "-" + max_amount + "</div>");
       });
       this.div.find(".filter_link").click(function(event) {
         var content, lastTab;
@@ -200,7 +240,11 @@
 
     RentalFilter.ApplyFilter = function(field, value) {
       var ajaxData, first, key, _ref;
-      this.FilterData[field] = value;
+      if (value != null) {
+        this.FilterData[field] = value;
+      } else {
+        delete this.FilterData[field];
+      }
       ajaxData = '';
       first = true;
       _ref = this.FilterData;

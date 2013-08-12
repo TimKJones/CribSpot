@@ -35,10 +35,11 @@
 		<div id="building_filter_content" class="filter_content hide" data-link="#building_filter_link"> <!-- Building Type -->
 			<?php
 				$building_types = array('House', 'Apartment', 'Duplex', 'Other');
-				foreach ($building_types as $type) {
+				$length = count($building_types);
+				for ($i=0; $i < $length; $i++) { 
 					echo '
 						<label class="checkbox">
-							<input type="checkbox"> ' . $type . '
+							<input data-value="' . $i . '" data-filter="UnitTypes" type="checkbox"> ' . $building_types[$i] . '
 						</label>';
 				}
 			?>
@@ -48,16 +49,17 @@
 			<div id="start_filter" class="btn-group">
 				<?php
 				$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-				foreach ($months as $month) {
-					echo '<button type="button" class="btn">' . $month . '</button>';
+				$length = count($months);
+				for ($i=0; $i < $length; $i++) { 
+					echo '<button type="button" class="btn" data-month="' . ($i + 1) . '">' . $months[$i] . '</button>';
 				}
 				?>
 			</div>
-			<select>
+			<select id="year_filter">
 				<?php
 					$currentYear = intval(date("Y"));
 					for ($i=0; $i < 3; $i++) { 
-						echo "<option>" . $currentYear++ . "</option>";
+						echo "<option value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";
 					}
 				?>
 			</select>
@@ -65,10 +67,12 @@
 		<div id="more_filter_content" class="filter_content hide" data-link="#more_filter_link"> <!-- More Info -->
 			<?php
 				$building_types = array('Pets Allowed', 'Parking Available', 'A/C In-Unit', 'Utilities Included');
-				foreach ($building_types as $type) {
+				$building_filters = array('PetsAllowed', 'ParkingAvailable', 'Air', 'UtilitiesIncluded');
+				$length = count($building_types);
+				for ($i=0; $i < $length; $i++) {
 					echo '
 						<label class="checkbox">
-							<input type="checkbox"> ' . $type . '
+							<input data-value="0" data-filter="' . $building_filters[$i] . '" type="checkbox"> ' . $building_types[$i] . '
 						</label>';
 				}
 			?>

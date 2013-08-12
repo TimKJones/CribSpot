@@ -1,5 +1,6 @@
 class A2Cribs.RentalFilter extends A2Cribs.FilterManager
-	@FilterData =
+	@FilterData = {}
+	###
 		'Beds' : [2,5,10]
 		'Rent' : 
 			'min' : 100
@@ -15,6 +16,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		'ParkingAvailable' : -1
 		'Air' : -1
 		'UtilitiesIncluded' : -1
+	###
 
 	###
 	Private method for loading the contents of the filter preview into the header filter
@@ -27,6 +29,15 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		###
 		On Change listeners for applying changed fields
 		###
+		@div.find(".lease_slider").on "slideStop", (event) =>
+			@ApplyFilter "LeaseRange", 
+				min: parseInt event.value[0], 10
+				max: parseInt event.value[1], 10
+
+		@div.find(".rent_slider").on "slideStop", (event) =>
+			@ApplyFilter "Rent", 
+				min: parseInt event.value[0], 10
+				max: parseInt event.value[1], 10
 		###
 		Bed filter click event listener
 		Finds range of beds and applies the changes of bed amounts
@@ -45,50 +56,75 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 				min = Math.min min, val
 				max = Math.max max, val
 
-			@ApplyFilter "Beds", selected_list
-
 			# If nothing is selected then set text to blank
 			if selected_list.length is 0
 				loadPreviewText event.delegateTarget, ""
+				@ApplyFilter "Beds", null
 			# Check to see amount of beds or to make a range of beds
-			else if selected_list.length is 1
-				if min is 0
-					text = "<div class='filter_data'>Studio</div>"
-				else if min is 1
-					text = "<div class='filter_data'>#{min}</div><div class='filter_label'>&nbsp;bed</div>"
+			else 
+				@ApplyFilter "Beds", selected_list
+				if selected_list.length is 1
+					if min is 0
+						text = "<div class='filter_data'>Studio</div>"
+					else if min is 1
+						text = "<div class='filter_data'>#{min}</div><div class='filter_label'>&nbsp;bed</div>"
+					else
+						text = "<div class='filter_data'>#{min}</div><div class='filter_label'>&nbsp;beds</div>"
+					loadPreviewText event.delegateTarget, text
 				else
-					text = "<div class='filter_data'>#{min}</div><div class='filter_label'>&nbsp;beds</div>"
-				loadPreviewText event.delegateTarget, text
+					loadPreviewText event.delegateTarget, "<div class='filter_data'>#{min}-#{max}</div><div class='filter_label'>&nbsp;beds</div>"
+
+		@div.find("#year_filter").change (event) =>
+			dates = @FilterData.Dates
+			year = $(event.delegateTarget).val()
+			if dates?
+				dates.year = year
+				@ApplyFilter "Dates", dates
 			else
-				loadPreviewText event.delegateTarget, "<div class='filter_data'>#{min}-#{max}</div><div class='filter_label'>&nbsp;beds</div>"
+				@ApplyFilter "Dates", 
+					months: []
+					year: year
 
 		# Listener for start month filter
 		@div.find("#start_filter").find(".btn").click (event) =>
 			selected_list = []
 			$(event.delegateTarget).toggleClass "active"
 			button_group = $(event.delegateTarget).parent()
+			monthText = ""
 
 			# Gets list of all the months selected
 			button_group.find(".btn.active").each () ->
-				selected_list.push $(this).text()
+				selected_list.push $(this).attr "data-month"
+				monthText = $(this).text()
 
 			# Pluralize text depending on amount of start months
 			if selected_list.length is 0
 				loadPreviewText event.delegateTarget, ""
-			else if selected_list.length is 1
-				loadPreviewText event.delegateTarget, "<div class='filter_data'>#{selected_list[0]}</div><div class='filter_label'>&nbsp;start</div>"
+				@ApplyFilter 'Dates', null
 			else
-				loadPreviewText event.delegateTarget, "<div class='filter_data'>#{selected_list.length}</div><div class='filter_label'>&nbsp;starts</div>"
+				@ApplyFilter 'Dates', 
+					months: selected_list
+					year: @div.find("#year_filter").val()
+				if selected_list.length is 1
+					loadPreviewText event.delegateTarget, "<div class='filter_data'>#{monthText}</div><div class='filter_label'>&nbsp;start</div>"
+				else
+					loadPreviewText event.delegateTarget, "<div class='filter_data'>#{selected_list.length}</div><div class='filter_label'>&nbsp;starts</div>"
 		
 		# Filter for checkbox containers (Building type and more filter)
 		@div.find("input[type='checkbox']").change (event) =>
 			group = $(event.target).closest(".filter_content")
+			filterType = $(event.delegateTarget).attr "data-filter"
 			selected_list = []
 
 			# Finds all the checked boxes
 			group.find("input[type='checkbox']").each () ->
 				if this.checked
-					selected_list.push "0"
+					selected_list.push $(this).attr "data-value"
+
+			if filterType is "UnitTypes"
+				@ApplyFilter filterType, selected_list
+			else
+				@ApplyFilter filterType, +event.delegateTarget.checked
 
 			# Clears out text for header if nothing checked
 			if selected_list.length is 0
@@ -145,7 +181,6 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			@div.find("#rent_min").text min_amount
 			@div.find("#rent_max").text max_amount
 			loadPreviewText event.delegateTarget, "<div class='filter_data'>#{min_amount}-#{max_amount}</div>"
-			@ApplyFilter "Rent", { min: parseInt(event.value[0], 10), max: parseInt(event.value[1], 10)}
 
 		# Dropdown listener on header filter clicks
 		@div.find(".filter_link").click (event) =>
@@ -177,7 +212,10 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	Submits an ajax call with all current filter parameters
 	###
 	@ApplyFilter: (field, value) ->
-		@FilterData[field] = value
+		if value?
+			@FilterData[field] = value
+		else
+			delete @FilterData[field]
 		ajaxData = ''
 		first = true
 		for key,value of @FilterData

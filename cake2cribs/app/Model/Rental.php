@@ -479,7 +479,7 @@ class Rental extends RentalPrototype {
 
 		if (array_key_exists('Air', $params)) {
 			$air = json_decode($params['Air']);
-			if (intval($pets_allowed) == 1){
+			if (intval($air) == 1){
 				$air_conditions = $this->_getBooleanFilterConditions('air', Rental::AIR_NO_AIR);
 				array_push($conditions, $air_conditions);
 			}			
