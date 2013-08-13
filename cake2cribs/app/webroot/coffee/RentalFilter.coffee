@@ -12,9 +12,9 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			'max' : 7
 		'UnitTypes' : [0,1, 3] #'other' is the value 3
 		'PetsAllowed' : 1
-		'ParkingAvailable' : -1
+		'ParkingAvailable' : 1
 		'Air' : 1
-		'UtilitiesIncluded' : -1
+		'UtilitiesIncluded' : 1
 
 	###
 	Private method for loading the contents of the filter preview into the header filter
