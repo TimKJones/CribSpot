@@ -9,7 +9,7 @@ class UsersController extends AppController {
                 )
             )
         )
-        ,'Email', 'RequestHandler'
+        ,'Email', 'RequestHandler', 'Cookie'
     );
 
     public function beforeFilter() {
@@ -24,6 +24,15 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
         $this->Auth->allow('Login2');
+    }
+
+    // Sets the directive to view account information
+    public function AccountInfo()
+    {
+        $directive['classname'] = 'account';
+        $json = json_encode($directive);
+        $this->Cookie->write('dashboard-directive', $json);
+        $this->redirect('/dashboard');
     }
 
     public function Login2()

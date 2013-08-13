@@ -12,20 +12,30 @@ class A2Cribs.FilterManager
 	#@CurrentCity = null
 	#@CurrentState = null
 
-	@UpdateMarkers: (visibleMarkerIds) ->
-		visibleMarkerIds = JSON.parse visibleMarkerIds
-		#map.VisibleMarkers = []
-		for marker, markerid in A2Cribs.Cache.IdToMarkerMap
-			if markerid.toString() in visibleMarkerIds
-				if (marker)
-					#map.VisibleMarkers.push(marker.GMarker)
-					marker.GMarker.setVisible true
+	@UpdateListings: (visibleListingIds) ->
+		visible_listings = JSON.parse visibleListingIds
+
+		# Make all of the listings hidden
+		all_listings = A2Cribs.UserCache.Get "listing"
+		for listing in all_listings
+			listing.visible = false
+
+		# Make only the listings visible with id's in visibleListingIds
+		visible_markers = {}
+		for listing_id in visible_listings
+			listing = A2Cribs.UserCache.Get "listing", listing_id
+			if listing?
+				listing.visible = true
+				visible_markers[+listing.marker_id] = true
+
+		# Set the markers to visible
+		all_markers = A2Cribs.UserCache.Get "marker"
+		for marker in all_markers
+			if visible_markers[+marker.marker_id]
+				marker.GMarker.setVisible true
 			else
-				if (marker)
-					marker.GMarker.setVisible false
-		
-		#map.GMarkerClusterer.setMap(null)
-		#map.GMarkerClusterer = new MarkerClusterer(@GMap, map.VisibleMarkers, mcOptions)
+				marker.GMarker.setVisible false
+
 		A2Cribs.Map.GMarkerClusterer.repaint()
 
 	@WheneverButtonClicked: (event) ->

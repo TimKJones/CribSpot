@@ -3,7 +3,7 @@ class RentalsController extends AppController
 { 
   public $helpers = array('Html');
   public $uses = array('Rental', 'RentalIncomplete', 'Fee', 'Listing');
-  public $components= array('RequestHandler', 'Auth', 'Session');
+  public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
   public function beforeFilter()
   {
@@ -13,9 +13,12 @@ class RentalsController extends AppController
     $this->Auth->allow('ApplyFilter');
   }
 
-  public function index()
+  public function View()
   {
-     
+    $directive['classname'] = 'rental';
+    $json = json_encode($directive);
+    $this->Cookie->write('dashboard-directive', $json);
+    $this->redirect('/dashboard');
   }
 
   /*

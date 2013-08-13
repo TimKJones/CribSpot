@@ -81,25 +81,27 @@ Wrapper for google infobubble
       this.template.find(".unit_div").empty();
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
-        listing_info = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId());
-        unit_template = this.template.find('.templates:first').children().clone();
-        unit_template.attr("onclick", "A2Cribs.ClickBubble.Open(" + (listing.GetId()) + ")");
-        for (key in listing_info) {
-          value = listing_info[key];
-          if (key === "rent") {
-            unit_template.find("." + key).text("$" + value);
-          } else if (key === "beds") {
-            num_beds = parseInt(value, 10);
-            if (num_beds === 0) {
-              unit_template.find("." + key).text("Studio");
-              unit_template.find(".bed_desc").text("");
-            } else {
-              unit_template.find("." + key).text(num_beds);
-              unit_template.find(".bed_desc").text(num_beds === 1 ? "Bed" : "Beds");
+        if (listing.visible) {
+          listing_info = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId());
+          unit_template = this.template.find('.templates:first').children().clone();
+          unit_template.attr("onclick", "A2Cribs.ClickBubble.Open(" + (listing.GetId()) + ")");
+          for (key in listing_info) {
+            value = listing_info[key];
+            if (key === "rent") {
+              unit_template.find("." + key).text("$" + value);
+            } else if (key === "beds") {
+              num_beds = parseInt(value, 10);
+              if (num_beds === 0) {
+                unit_template.find("." + key).text("Studio");
+                unit_template.find(".bed_desc").text("");
+              } else {
+                unit_template.find("." + key).text(num_beds);
+                unit_template.find(".bed_desc").text(num_beds === 1 ? "Bed" : "Beds");
+              }
             }
           }
+          this.template.find(".unit_div").append(unit_template);
         }
-        this.template.find(".unit_div").append(unit_template);
       }
       return this.InfoBubble.setContent(this.template.html());
     };
