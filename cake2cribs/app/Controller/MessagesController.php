@@ -76,28 +76,17 @@
         $data = $this->request->data;
         $user = $this->Auth->User();
         //Create send reply
-        CakeLog::write("sendMessage", "1");
         $msg_id = $this->Message->createMessage($data['message_text'], $data['conversation_id'], $user);
-        CakeLog::write("sendMessage", "2");
         $message = $this->Message->read();
-        CakeLog::write("sendMessage", "3");
         $options['conditions'] = array('Conversation.conversation_id'=>$message['Message']['conversation_id']);
         $conversation = $this->Conversation->find('first', $options);
-        CakeLog::write("sendMessage", "4");
         $participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
         if ($participant == null) {
-            CakeLog::write("sendMessage", "Participant is empty");
             $json = json_encode(array('success'=>false));
         }else{
-            CakeLog::write("sendMessage", "5");
-            CakeLog::write("sendMessage", print_r($participant, true));
             $this->emailUserAboutMessage($participant['email'], $user, $conversation);
-            CakeLog::write("sendMessage", "6");   
             $json = json_encode(array('success'=>$msg_id > 0)); 
         }
-        
-
-
         
         $this->layout = 'ajax';
         $this->set('response', $json);

@@ -14,25 +14,6 @@ class Rental extends RentalPrototype {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'street_address' => array(
-			'between' => array(
-				'rule' => array('between', 1, 255)
-			)
-		),
-		'city' => array(
-			'between' => array(
-				'rule' => array('between', 1, 255)
-			)
-		),
-		'state' => array(
-			'between' => array(
-				'rule' => array('between',2, 2),
-				'message' => 'Must be 2 characters'
-			)
-		),
-		'zipcode' => array(
-        	'rule' => array('postal', null, 'us')
-    	),
 		'unit_style_options' => array(
 			'numeric' => array(
 				'rule' => 'numeric',

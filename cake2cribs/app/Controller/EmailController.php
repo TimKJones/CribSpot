@@ -10,7 +10,6 @@ class EmailController extends AppController {
     public function InitializeNewUsers()
     {
         $this->resetpassword(); // all users now have a password_reset_token
-
     }
 
     public function resetpassword() 

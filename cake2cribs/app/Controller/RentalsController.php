@@ -56,20 +56,4 @@ Returns a list of marker_ids that will be visible based on the current filter se
     $response = $this->Rental->getFilteredMarkerIdList($filterSettings);
     $this->set('response', $response);
   }
-
-  /*
-    Check if user owns listing_id. Returns true if so, false otherwise.
-  */
-  function UserOwnsListing($listing_id)
-  {
-    $user_id = $this->_getUserId();
-    if ($user_id == null || $user_id == 0)
-      return false;
-
-    $listingType = $this->Listing->GetListingType($listing_id);
-    if ($listingType == Listing::LISTING_TYPE_RENTAL)
-      return $this->Listing->UserOwnsListing($listing_id, $user_id);
-
-    return false;
-  }
 }
