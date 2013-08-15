@@ -128,6 +128,7 @@ class User extends AppModel {
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
+		'last_login' => 'datetime',
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -454,7 +455,7 @@ class User extends AppModel {
 		$local_user = $this->find('first', array(
 			'conditions' => array('facebook_userid' => $fb_id)
         ));
-CakeLog::write("localuser", print_r($local_user, true));
+
 		return $local_user;
 	}
 
@@ -463,7 +464,6 @@ CakeLog::write("localuser", print_r($local_user, true));
 	*/
 	public function SaveFacebookUser($user)
 	{
-		CakeLog::write('savinguser', print_r($user, true));
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;
@@ -474,6 +474,14 @@ CakeLog::write("localuser", print_r($local_user, true));
 		}
 
 		return array('success'=>'');
+	}
+
+	public function UpdateLastLogin($user_id)
+	{
+		date_default_timezone_set('America/New_York');
+		$now = DboSource::expression('NOW()');
+		$this->id = $user_id;
+		$this->saveField('last_login', $now);
 	}
 
 	/*

@@ -135,6 +135,7 @@ class UsersController extends AppController {
         }
 
         if ($this->Auth->login()) {
+            $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->set('response', json_encode(array('success'=>'')));
             return;
         }
@@ -216,6 +217,7 @@ class UsersController extends AppController {
     {
         if ($this->Auth->loggedIn()){
             /* User already logged in */
+            $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
     }
@@ -380,6 +382,7 @@ class UsersController extends AppController {
 
             /* User exists, so log them in. */
             if ($local_user){
+                $this->User->UpdateLastLogin($this->Auth->User('id'));
                 $this->Auth->login($local_user['User']);
                 $this->redirect('/dashboard');
             } 
