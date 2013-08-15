@@ -7,11 +7,45 @@ class ListingsController extends AppController {
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
+		$this->Auth->allow('view');
 		$this->Auth->allow('GetListing');
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('LoadMarkerData');
 		$this->Auth->allow('Save');
 		$this->Auth->allow('Delete');
+	}
+
+	/*
+	View a full page listing. Grabs the listing data and modifies it for
+	the full page listing view (view.ctp)
+	*/
+	public function view($listing_id = null, $address = null)
+	{
+		if ($listing_id == null)
+			throw new NotFoundException('There is no listing provided!');
+
+		$listing = $this->Listing->GetListing($listing_id);
+		$listing = $listing[0];
+
+		if ($listing == null)
+			throw new NotFoundException('There is no listing provided!');
+
+		$full_address = $listing["Marker"]["street_address"];
+		$full_address .= " " . $listing["Marker"]["city"];
+		$full_address .= " " . $listing["Marker"]["state"];
+		$full_address .= " " . $listing["Marker"]["zip"];
+		$full_address = str_replace(" ", "-", $full_address);
+
+		if ($address == null)
+			$this->redirect(array('action' => 'view', $listing_id, $full_address));
+
+		$this->_refactorMoneyFields($listing);
+		$this->_refactorTextFields($listing);
+		$this->_refactorOwnerFields($listing);
+		$this->_setPrimaryImage($listing);
+
+		$this->set('listing_json', json_encode($listing));
+		$this->set('listing', $listing);
 	}
 
 	/*
@@ -131,6 +165,80 @@ class ListingsController extends AppController {
 			return array('error' => 'FAILED_TO_RETRIEVE_LISTINGS', 'code' => 4);
 
 		return $listings;
+	}
+
+	private function _refactorMoneyFields(&$listing)
+	{
+		if (array_key_exists("Rental", $listing))
+		{
+			$money_fields = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
+				'amenity_amount', 'upper_floor_amount', 'deposit_amount', 'admin_amount');
+			$monthly_fees = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
+				'amenity_amount', 'upper_floor_amount');
+			$listing_type = "Rental";
+		}
+
+		$listing[$listing_type]["total_fees"] = 0;
+		foreach ($monthly_fees as $fee) {
+			if (array_key_exists($fee, $listing[$listing_type]) && $listing[$listing_type][$fee] != 0)
+					$listing[$listing_type]["total_fees"] += intval($listing[$listing_type]["rent"]);
+		}
+
+		$listing[$listing_type]["total_fees"] = "$" . number_format($listing[$listing_type]["total_fees"]);
+
+		foreach ($money_fields as $field)
+		{
+			if (array_key_exists($field, $listing[$listing_type]))
+			{
+				if ($listing[$listing_type][$field] != 0)
+				{
+					// add $ and comma's appropriately
+					$listing[$listing_type][$field] = "$" . number_format($listing[$listing_type][$field]);
+				}
+				else
+				{
+					$listing[$listing_type][$field] = "-";
+				}
+			}
+			else
+				$listing[$listing_type][$field] = "??";
+		}
+	}
+
+	private function _refactorTextFields(&$listing)
+	{
+		if (array_key_exists("Rental", $listing))
+		{
+			$text_fields = array('description', 'highlights');
+			$listing_type = "Rental";
+		}
+
+		foreach ($text_fields as $field) {
+			if (!array_key_exists($field, $listing[$listing_type]) || 
+				$listing[$listing_type][$field] == null || strlen($listing[$listing_type][$field]) == 0)
+				$listing[$listing_type][$field] = "The user has not entered " . $field . " yet.";
+
+		}
+
+	}
+
+	private function _refactorOwnerFields(&$listing)
+	{
+		if (!array_key_exists("company_name", $listing["User"]))
+			$listing["User"]["company_name"] = $listing["User"]["first_name"] . " " . $listing["User"]["last_name"];
+	}
+
+	private function _setPrimaryImage(&$listing)
+	{
+		$length = count($listing["Image"]);
+		for ($i=0; $i < $length; $i++)
+		{
+			if ($listing["Image"][$i]["is_primary"])
+			{
+				$listing["primary_image"] = $i;
+				break;
+			}
+		}
 	}
 }
 
