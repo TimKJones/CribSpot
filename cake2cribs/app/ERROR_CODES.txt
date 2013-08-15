@@ -96,4 +96,12 @@
 44
 - Message->createMessage
 
+45
+- User->RegisterUser
+46
+- User->RegisterUser
+47
+- UsersController->AjaxLogin
+48
+- User/SaveFacebookUser
 

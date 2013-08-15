@@ -16,4 +16,5 @@ echo $this->Html->script('src/FilterManager');
 echo $this->Html->script('src/RentalFilter');
 echo $this->Html->script('src/Map');
 echo $this->Html->script('src/UserCache');
+echo $this->Html->script('src/Dashboard');
 ?>

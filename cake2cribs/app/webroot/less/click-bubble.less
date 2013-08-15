@@ -1,224 +1,206 @@
-.click-bubble.multi-listing
-{
-	max-width: 300px;
-	position: relative;
-	.single-content
-	{
-		display: none !important;
-	}
-	.listing-image
-	{
-		height: 65px;
-		width: 80px;
-		display: inline-block;
-		float: left;
-		margin-top: 2px;
-		margin-right: 5px;
-	}
-}
-
-.click-bubble.single-listing
-{
-	min-width: 200px;
-	max-width: 400px;
-	overflow: auto;
-	white-space: nowrap;
-	display: inline-block;
-	//max-height: 100px;
-	.multi-content
-	{
-		display: none !important;
-	}
-	.listing-image
-	{
-		height: 90px;
-		width: 125px;
-		float: left;
-		margin-top: 2px;
-	}
-}
-
 .click-bubble
 {
-	@title-color: #4673b2;
-	@user-color: #ffbd56;
-	@fb-color: blue;
-	@time-color: gray;
-	@calendar-color: #87c2ff;
-	@money-color: #00BB00;
-	@bed-color: #d25555;
-	@apt-color: black;
-	@button-color: #B0B0B0;
-	position: relative;
-
-	.close-button
+	padding: 0;
+	width: 250px;
+	background-color: #f9f9f9;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	position: absolute;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: 0 0 5px #888888;
+	.click_header
 	{
-		z-index: 1;
-		position: absolute;
-		top: 0;
-		right: 0;
-		font-size: 8px;
-		height: 8px;
-		width: 8px;
-		line-height: 8px;
-		color: @button-color;
-	}
-
-	.sublet-name
-	{
-		color: @title-color;
-		font-style: normal;
+		width: 100%;
+		color: #454545;
+		border-bottom: solid 1px #e1e1e1;
 		font-weight: bold;
-	}
-	#posted-time
-	{
-		font-size: 12px;
-		font-style: normal;
-	}
-	.listings
-	{
-		overflow-y: scroll;
-		max-height: 160px;
-	}
-	.bed-icon
-	{
-		height: 12px;
-		width: 24px;
-	}
-	.single-content
-	{
-		//display: none;
-		.listing-image
-		{
-		}
-	}
-	.click-bubble-data
-	{
-		display: inline-block;
-		white-space: nowrap;
-	}
-	.multi-content
-	{
-		//display: none;
-		.listing-image
-		{
-
-		}
-		.click-bubble-data
-		{
-
-		}
-		#listing-count
-		{
-			@start_color: #404040;
-			@stop_color: #616161;
-			background-color: @start_color;
-			background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@start_color), to(@stop_color));
-			background: -webkit-linear-gradient(top, @stop_color, @start_color);
-			background: -moz-linear-gradient(top, @stop_color, @start_color);
-			background: -ms-linear-gradient(top, @stop_color, @start_color);
-			background: -o-linear-gradient(top, @stop_color, @start_color);
-			border: solid 1px black;
-			border-radius: 4px;
-			-webkit-border-radius: 4px;
-			-moz-border-radius: 4px;
-			color: white;
-			text-align: center;
-			height: 20px;
-			width: 20px;
-			display: inline-block;
-			font-size: 13px;
-			font-weight: bold;
-			margin-right: 12px;
-		}
-	}
-	.click-bubble-data
-	{
+		font-size: 14px;
+		padding: 8px 0;
 		position: relative;
-		line-height: 17px;
-		padding: 5px;
-	}
-	.bold-text
-	{
-		font-style: normal;
-		font-weight: bold;
-		font-size: 12px;
-	}
-	.gray-text
-	{
-		color: gray;
-	}
-	.icon-map-marker
-	{
-		color: @title-color;
-		margin-right: 5px;
-	}
-	.icon-user
-	{
-		color: @user-color;
-		margin-right: 5px;
-	}
-	.icon-facebook-sign
-	{
-		color: @fb-color;
-		margin-left: 5px;
-		margin-right: 2px;
-	}
-	.icon-time
-	{
-		color: @time-color;
-		margin-left: 5px;
-		margin-right: 2px;
-	}
-	.icon-calendar
-	{
-		color: @calendar-color;
-		margin-right: 5px;
-	}
-	.icon-money-sign
-	{
-		color: #83c95d;
-		margin-right: 6px;
-		margin-left: 1px;
-		font-style: normal;
-		font-weight: bolder;
-		font-size: 16px;
-	}
-	.icon-building
-	{
-		margin-right: 5px;
-	}
-	.inline-block
-	{
-		display: inline-block;
-	}
-	.extended-buttons
-	{
-		position: absolute;
-		bottom: 5px;
-		right: 5px;
-		font-size: 16px;
-		.favorite-clickable.active
+		.building_name
 		{
-			i
+			margin-left: 10px;
+		}
+	}
+	.close_button
+	{
+		height: 20px;
+		width: 20px;
+		color: #9a9a9a;
+		font-size: 18px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		font-weight: lighter;
+		line-height: 19px;
+		text-align: center;
+		-moz-border-radius: 18px;
+		border-radius: 18px;
+		border: solid 1px #dedbdb;
+		margin: 8px;
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+	.property_image
+	{
+		width: 100%;
+		box-shadow: inset 0 0 5px #888888;
+		height: 155px;
+		background-size: cover;
+		background-position: center;
+	}
+	.share_section
+	{
+		width: 100%;
+		border-bottom: solid 1px #d9d9d9;
+		padding: 2px 0;
+		.unit_style_description
+		{
+			font-size: 11px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-left: 10px;
+			max-width: 170px;
+			display: inline;
+			color: #454545;
+		}
+		.share_button
+		{
+			display: inline-block;
+			float: right;
+			margin-right: 5px;
+			a
 			{
-				color: red;
+				text-decoration: none;
+				color: #bfbfbf;
+			}
+			.link_share:hover
+			{
+				color: #4d4d4d;
+			}
+			.facebook_share:hover
+			{
+				color: #3b5a9b;
+			}
+			.twitter_share:hover
+			{
+				color: #31bbee;
+			}
+			.favorite_listing:hover
+			{
+				color: #f47878;
 			}
 		}
+	}
+	.general_info
+	{
+		width: 100%;
+		font-size: 14px;
+		text-align: left;
+		padding: 10px 0;
+		border-bottom: solid 1px #d9d9d9;
+		.bubble_label
+		{
+			font-weight: bold;
+			display: inline-block;
+			margin-left: 10px;
+			color: #454545;
+		}
+		.rent, .beds
+		{
+			font-weight: bold;
+			display: inline-block;
+			color: #454545;
+		}
+		.beds
+		{
+			margin-left: 10px;
+		}
+		.per_month, .bed_desc
+		{
+			display: inline-block;
+			margin-left: 2px;
+			color:  #a3a0a0;
+			font-size: 13px;
+		}
+		.available
+		{
+			background-color: #7bb660;
+			color: #ececec;
+			display: inline-block;
+			font-size: 11px;
+			text-transform: uppercase;
+			padding: 0 5px;
+			border-radius: 2px;
+			font-weight: bold;
+			float: right;
+			box-shadow: inset 0 0 5px #72ae57;
+			margin-right: 10px;
+
+			&.leased
+			{
+				background-color: #cf5e5e;
+				box-shadow: inset 0 0 5px #c73d3d;
+			}
+		}
+	}
+	.additional_info
+	{
+		width: 100%;
+		text-align: left;
+		font-size: 11px;
+		border-bottom: solid 1px #d9d9d9;
+		line-height: 16px;
+		padding: 5px 0;
+		background-color: #f2efef;
+		border-top: solid 1px white;
+		.bubble_label
+		{
+			display: inline-block;
+		}
+		.date_range
+		{
+			font-size: 12px;
+			margin-left: 10px;
+			line-height: 18px;
+			display: inline-block;
+		}
+		.unit_type, .baths, .lease_length
+		{
+			display: inline-block;
+		}
+		.unit_type
+		{
+			margin-left: 10px;
+		}
+		.property_manager
+		{
+			margin-left: 10px;
+		}
+	}
+	.action_buttons
+	{
 		a
 		{
+			font-size: 11px;
+			display: inline-block;
+			padding: 6.5px 9px;
+			border-right: solid 1px #d9d9d9;
+			color: #3772c9;
+			font-weight: bold;
 			text-decoration: none;
+			&:last-child
+			{
+				border: none;
+			}
 			i
 			{
-				color: @button-color;
-			}
-			&:hover
-			{
-				i
-				{
-					color: #989898;
-				}
+				color: #bfbfbf;
+				font-size: 15px;
 			}
 		}
+
 	}
 }

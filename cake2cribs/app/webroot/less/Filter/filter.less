@@ -1,0 +1,183 @@
+#map_filter
+{
+	position: absolute;
+	top: 5px;
+	z-index: 1;
+	background-color: hsl(0, 100%, 100%);
+	left: 5px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	.filter_clickable
+	{
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+	.filter_div
+	{
+		box-shadow: 1px 1px 5px gray;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+		.listing_type
+		{
+			font-size: 13px;
+			font-weight: bold;
+			color: #393939;
+		}
+
+		.filter_data
+		{
+			display: inline;
+			color: #6289cc;
+			font-weight: bold;
+			font-size: 12px;
+		}
+		.filter_label
+		{
+			color: #505050;
+			font-size: 10.5px;
+		}
+		.filter_title
+		{
+			font-size: 12px;
+			font-weight: bold;
+			color: #393939;
+		}
+		.filter_link
+		{
+			max-height: 20px;
+			&.active
+			{
+				.filter_title
+				{
+					color: white;
+				}
+			}
+		}
+	}
+	#filter_dropdown
+	{
+		.filter_content
+		{
+			margin: 10px 15px;
+		}
+		.btn-group
+		{
+			.btn
+			{
+				//border-color: gray;
+				font-size: 12px;
+				font-weight: bold;
+			}
+		}
+		.content_label
+		{
+			display: inline;
+			font-size: 11px;
+			font-weight: bold;
+			margin-right: 5px;
+			color: #676767;
+		}
+		.checkbox
+		{
+			display: inline-block;
+			margin: 0 5px;
+			font-size: 12px;
+			font-weight: bold;
+		}
+	}
+	#bed_filter_content
+	{
+		.btn-group
+		{
+			.btn
+			{
+				padding: 1px 9px;
+			}
+		}
+	}
+	#start_filter_content
+	{
+		.btn-group
+		{
+			.btn
+			{
+				padding: 1px 4px;
+			}
+		}
+		select
+		{
+			width: 60px;
+			font-size: 13px;
+			font-weight: bold;
+			padding: 0px 0px;
+			height: 25px;
+			margin: 0;
+		}
+	}
+	.btn
+	{
+		background-image: none !important;
+		padding: 5px 9px;
+		background-color: white;
+
+		&.active
+		{
+			background-color: #6289cc;
+			border-bottom: solid 1px #6289cc;
+			color: white;
+			text-shadow: none;
+			box-shadow: inset 0 0 5px hsl(217, 57%, 35%);
+		}
+	}
+	#lease_filter_content
+	{
+		.slider
+		{
+			width: 285px;
+		}
+	}
+	#rent_filter_content
+	{
+		.slider
+		{
+			width: 285px;
+		}
+	}
+	.slider
+	{
+		margin: 0 10px;
+	}
+	.slider_data
+	{
+		display: inline-block;
+
+		&.filter_data
+		{
+			font-size: 13px;
+			color: #6289cc;
+			font-weight: bold;
+		}
+		&.filter_label
+		{
+			font-size: 11px;
+			color: #676767;
+		}
+	}
+	.filter_preview
+	{
+		.filter_data
+		{
+			color: #6289cc;
+			display: inline-block;
+		}
+		.filter_label
+		{
+			color: #676767;
+			display: inline-block;
+		}
+	}
+}

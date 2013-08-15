@@ -6,55 +6,23 @@
     function Map() {}
 
     /*
-    	Called when a marker is clicked
-    */
-
-
-    Map.MarkerClicked = function(event) {
-      return A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData();
-    };
-
-    Map.MarkerMouseIn = function(event) {
-      return A2Cribs.Map.HoverBubble.Open(A2Cribs.Cache.IdToMarkerMap[this.id]);
-    };
-
-    Map.MarkerMouseOut = function(event) {
-      return A2Cribs.Map.HoverBubble.Close();
-    };
-
-    /*
-    	Add a marker to the map
-    */
-
-
-    Map.AddMarker = function(m) {
-      var id;
-      id = parseInt(m.marker_id, 10);
-      A2Cribs.Cache.CacheMarker(id, m);
-      this.GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker);
-      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'click', this.MarkerClicked);
-      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseover', this.MarkerMouseIn);
-      google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseout', this.MarkerMouseOut);
-      return A2Cribs.Cache.AddressToMarkerIdMap[m.address] = parseInt(m.marker_id);
-    };
-
-    /*
     	Add all markers in markerList to map
     */
 
 
-    Map.InitializeMarkers = function(markerList, that) {
-      var marker, _i, _len;
-      if (markerList === null || markerList === void 0) {
-        return;
-      }
-      markerList = JSON.parse(markerList);
-      for (_i = 0, _len = markerList.length; _i < _len; _i++) {
-        marker = markerList[_i];
-        that.AddMarker(marker.Marker);
-      }
-      if (A2Cribs.marker_id_to_open >= 0) {
-        return A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon("/img/dots/clicked_dot.png");
+    Map.InitializeMarkers = function(markerList) {
+      var marker, marker_object, _i, _len, _results;
+      if (markerList != null) {
+        markerList = JSON.parse(markerList);
+        _results = [];
+        for (_i = 0, _len = markerList.length; _i < _len; _i++) {
+          marker_object = markerList[_i];
+          marker = new A2Cribs.Marker(marker_object.Marker);
+          marker.Init();
+          A2Cribs.UserCache.Set(marker);
+          _results.push(Map.GMarkerClusterer.addMarker(marker.GMarker));
+        }
+        return _results;
       }
     };
 
@@ -105,18 +73,16 @@
       };
     };
 
-    Map.Init = function(school_id, latitude, longitude, city, state, school_name) {
-      var imageStyles, mcOptions, style, zoom;
+    Map.Init = function(school_id, latitude, longitude, city, state, school_name, active_listing_type) {
+      var imageStyles, mcOptions, style, zoom,
+        _this = this;
       this.CurentSchoolId = school_id;
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
+      this.ACTIVE_LISTING_TYPE = active_listing_type;
       zoom = 15;
-      if (A2Cribs.marker_id_to_open >= 0) {
-        this.MapCenter = new google.maps.LatLng(A2Cribs.loaded_sublet_data.Marker.latitude, A2Cribs.loaded_sublet_data.Marker.longitude, zoom = 18);
-      } else {
-        this.MapCenter = new google.maps.LatLng(latitude, longitude);
-      }
+      this.MapCenter = new google.maps.LatLng(latitude, longitude);
       style = [];
       this.MapOptions = {
         zoom: zoom,
@@ -129,6 +95,9 @@
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);
       google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
+      google.maps.event.addListener(A2Cribs.Map.GMap, 'center_changed', function() {
+        return A2Cribs.ClickBubble.Close();
+      });
       /*imageStyles = [
       			{
       				"url": "/img/dots/group_dot.png",
@@ -152,27 +121,20 @@
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
       this.GMarkerClusterer.ignoreHidden_ = true;
-      this.ClickBubble = new A2Cribs.ClickBubble(this.GMap);
-      this.HoverBubble = new A2Cribs.HoverBubble(this.GMap);
-      this.ListingPopup = new A2Cribs.ListingPopup();
-      if (A2Cribs.marker_id_to_open >= 0) {
-        A2Cribs.Cache.CacheMarker(A2Cribs.marker_id_to_open, A2Cribs.loaded_sublet_data.Marker);
-        A2Cribs.Cache.CacheMarkerData([A2Cribs.loaded_sublet_data]);
-        this.ListingPopup.Open(A2Cribs.loaded_sublet_data.Sublet.id);
-      } else if (A2Cribs.marker_id_to_open === -2) {
-        alertify.alert("Sorry. This listing no longer exists!");
-      }
+      A2Cribs.ClickBubble.Init(this.GMap);
+      A2Cribs.HoverBubble.Init(this.GMap);
       A2Cribs.Map.InitBoundaries();
+      this.LoadAllMapData();
       A2Cribs.MarkerTooltip.Init();
       A2Cribs.FavoritesManager.LoadFavorites();
       return A2Cribs.FilterManager.InitAddressSearch();
     };
 
-    Map.LoadHoverData = function() {
+    Map.LoadBasicData = function() {
       var deferred;
       deferred = new $.Deferred;
       $.ajax({
-        url: myBaseUrl + "Map/LoadHoverData/" + 0,
+        url: myBaseUrl + "Map/GetBasicData/" + 0,
         type: "POST",
         success: function(responses) {
           return deferred.resolve(responses);
@@ -184,13 +146,26 @@
       return deferred.promise();
     };
 
-    Map.LoadHoverDataCallback = function(response) {
-      var hdList;
+    Map.LoadBasicDataCallback = function(response) {
+      var all_listings, key, listing, listings, value, _i, _j, _len, _len1, _results;
       if (response === null || response === void 0) {
         return;
       }
-      hdList = JSON.parse(response);
-      return A2Cribs.UserCache.Set(new A2Cribs.HoverData(hdList));
+      listings = JSON.parse(response);
+      for (_i = 0, _len = listings.length; _i < _len; _i++) {
+        listing = listings[_i];
+        for (key in listing) {
+          value = listing[key];
+          A2Cribs.UserCache.Set(new A2Cribs[key](value));
+        }
+      }
+      all_listings = A2Cribs.UserCache.Get("listings");
+      _results = [];
+      for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
+        listing = all_listings[_j];
+        _results.push(listing.visible = true);
+      }
+      return _results;
     };
 
     /*
@@ -218,18 +193,15 @@
 
 
     Map.LoadAllMapData = function() {
-      var hoverDataPromise, markersPromise;
+      var basicData, markersPromise;
       markersPromise = this.LoadMarkers();
-      hoverDataPromise = this.LoadHoverData();
+      basicData = this.LoadBasicData();
       $.when(markersPromise).then(this.InitializeMarkers);
-      $.when(hoverDataPromise).then(this.LoadHoverDataCallback);
-      return $.when(markersPromise, hoverDataPromise).done(function() {
-        return alert('everthing has been loaded');
-      });
+      return $.when(basicData).then(this.LoadBasicDataCallback);
     };
 
     return Map;
 
-  })();
+  }).call(this);
 
 }).call(this);

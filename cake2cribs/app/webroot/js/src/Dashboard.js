@@ -60,7 +60,7 @@
           item = response_data[_i];
           for (key in item) {
             value = item[key];
-            if ((A2Cribs[key] != null) && !(value.length != null)) {
+            if (A2Cribs[key] != null) {
               A2Cribs.UserCache.Set(new A2Cribs[key](value));
             } else if ((A2Cribs[key] != null) && (value.length != null)) {
               for (_j = 0, _len1 = value.length; _j < _len1; _j++) {

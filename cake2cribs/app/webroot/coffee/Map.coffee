@@ -1,41 +1,16 @@
 class A2Cribs.Map
 	###
-	Called when a marker is clicked
-	###
-	@MarkerClicked:(event) ->
-		A2Cribs.Cache.IdToMarkerMap[this.id].LoadMarkerData()
-
-	@MarkerMouseIn: (event) ->
-		A2Cribs.Map.HoverBubble.Open A2Cribs.Cache.IdToMarkerMap[this.id]
-
-	@MarkerMouseOut: (event) ->
-		A2Cribs.Map.HoverBubble.Close()
-
-	###
-	Add a marker to the map
-	###
-	@AddMarker:(m) ->
-		id = parseInt(m.marker_id, 10)
-		A2Cribs.Cache.CacheMarker id, m
-		@GMarkerClusterer.addMarker(A2Cribs.Cache.IdToMarkerMap[id].GMarker)
-		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'click', @MarkerClicked)
-		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseover', @MarkerMouseIn)
-		google.maps.event.addListener(A2Cribs.Cache.IdToMarkerMap[id].GMarker, 'mouseout', @MarkerMouseOut)
-		A2Cribs.Cache.AddressToMarkerIdMap[m.address] = parseInt m.marker_id
-
-	###
 	Add all markers in markerList to map
 	###
-	@InitializeMarkers:(markerList, that) ->
-		if markerList == null || markerList == undefined
-			return
-
-		markerList = JSON.parse markerList
-		for marker in markerList
-			that.AddMarker marker.Marker
-
-		if A2Cribs.marker_id_to_open >= 0
-			A2Cribs.Cache.IdToMarkerMap[A2Cribs.marker_id_to_open].GMarker.setIcon "/img/dots/clicked_dot.png"
+	@InitializeMarkers:(markerList) =>
+		if markerList?
+			markerList = JSON.parse markerList
+			for marker_object in markerList
+				marker = new A2Cribs.Marker marker_object.Marker
+				marker.Init()
+				A2Cribs.UserCache.Set marker
+				@GMarkerClusterer.addMarker marker.GMarker
+		
 
 	###
 	Load all markers from Markers table
@@ -72,18 +47,14 @@ class A2Cribs.Map
 			TOP: 0
 			CONTROL_BOX_LEFT: 95
 
-	@Init: (school_id, latitude, longitude, city, state, school_name) ->
+	@Init: (school_id, latitude, longitude, city, state, school_name, active_listing_type) ->
 		@CurentSchoolId = school_id
 		A2Cribs.FilterManager.CurrentCity = city
 		A2Cribs.FilterManager.CurrentState = state
 		A2Cribs.FilterManager.CurrentSchool = school_name
+		@ACTIVE_LISTING_TYPE = active_listing_type
 		zoom = 15
-		if A2Cribs.marker_id_to_open >= 0
-			@MapCenter = new google.maps.LatLng A2Cribs.loaded_sublet_data.Marker.latitude,
-				A2Cribs.loaded_sublet_data.Marker.longitude
-				zoom = 18
-		else
-			@MapCenter = new google.maps.LatLng(latitude, longitude);
+		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
 		style = []
 		@MapOptions =
@@ -96,6 +67,7 @@ class A2Cribs.Map
   			mapTypeControl: false
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
+		google.maps.event.addListener A2Cribs.Map.GMap, 'center_changed', () => A2Cribs.ClickBubble.Close()
 		###imageStyles = [
 			{
 				"url": "/img/dots/group_dot.png",
@@ -116,26 +88,19 @@ class A2Cribs.Map
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.ignoreHidden_ = true;
-		@ClickBubble = new A2Cribs.ClickBubble @GMap
-		@HoverBubble = new A2Cribs.HoverBubble @GMap
-		@ListingPopup = new A2Cribs.ListingPopup()
-
-		if A2Cribs.marker_id_to_open >= 0
-			A2Cribs.Cache.CacheMarker A2Cribs.marker_id_to_open, A2Cribs.loaded_sublet_data.Marker
-			A2Cribs.Cache.CacheMarkerData [A2Cribs.loaded_sublet_data]
-			@ListingPopup.Open A2Cribs.loaded_sublet_data.Sublet.id
-		else if A2Cribs.marker_id_to_open is -2
-			alertify.alert "Sorry. This listing no longer exists!"
+		A2Cribs.ClickBubble.Init @GMap
+		A2Cribs.HoverBubble.Init @GMap
 		
 		A2Cribs.Map.InitBoundaries();
+		@LoadAllMapData()
 		A2Cribs.MarkerTooltip.Init()
 		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FilterManager.InitAddressSearch()
 
-	@LoadHoverData: ->
+	@LoadBasicData: ->
 		deferred = new $.Deferred
 		$.ajax 
-			url: myBaseUrl + "Map/LoadHoverData/" + 0
+			url: myBaseUrl + "Map/GetBasicData/" + 0
 			type: "POST"
 			success: (responses) ->
 				deferred.resolve(responses)
@@ -144,12 +109,19 @@ class A2Cribs.Map
 
 		return deferred.promise()
 
-	@LoadHoverDataCallback: (response) ->
+	@LoadBasicDataCallback: (response) ->
 		if response == null || response == undefined
 			return
-		hdList = JSON.parse response
+		listings = JSON.parse response
 		#A2Cribs.Cache.CacheHoverData hdList
-		A2Cribs.UserCache.Set new A2Cribs.HoverData hdList
+		for listing in listings
+			for key,value of listing
+				A2Cribs.UserCache.Set new A2Cribs[key] value
+
+		# Set all listings to visible
+		all_listings = A2Cribs.UserCache.Get "listings"
+		for listing in all_listings
+			listing.visible = true
 
 	###
 	EVAN:
@@ -172,12 +144,6 @@ class A2Cribs.Map
 	###
 	@LoadAllMapData: () ->
 		markersPromise = @LoadMarkers()
-		hoverDataPromise = @LoadHoverData()
+		basicData = @LoadBasicData()
 		$.when(markersPromise).then(@InitializeMarkers)
-		$.when(hoverDataPromise).then(@LoadHoverDataCallback)
-		$.when(
-			markersPromise,
-			hoverDataPromise,
-		).done ()->
-			# everything has been loaded
-			alert 'everthing has been loaded'
+		$.when(basicData).then(@LoadBasicDataCallback)

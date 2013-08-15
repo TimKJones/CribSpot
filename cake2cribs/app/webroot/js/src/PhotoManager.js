@@ -16,11 +16,10 @@
         this._preview = null;
       }
 
-      Photo.prototype.LoadPhoto = function(_imageId, _path, _caption, isPrimary, _listing_id) {
+      Photo.prototype.LoadPhoto = function(_imageId, _path, _caption, isPrimary) {
         this._imageId = _imageId;
         this._path = _path;
         this._caption = _caption;
-        this._listing_id = _listing_id;
         this._isEmpty = false;
         this._preview = "<img src='" + this._path + "'></img>";
         this._div.find(".imageContent").html(this._preview);
@@ -233,8 +232,7 @@
           return _this.Photos[_this.CurrentImageLoading].Reset();
         } else {
           _this.Photos[_this.CurrentImageLoading].SetId(data.result.image_id);
-          _this.Photos[_this.CurrentImageLoading].SetPath(data.result.image_path);
-          return _this.Photos[_this.CurrentImageLoading].SetListingId(_this.CurrentListing);
+          return _this.Photos[_this.CurrentImageLoading].SetPath(data.result.image_path);
         }
       }).on('fileuploadfail', function(e, data) {
         A2Cribs.UIManager.Error("Failed to upload image!");
@@ -243,13 +241,14 @@
       });
     };
 
-    PhotoManager.prototype.LoadImages = function(images, row, imageCallback) {
-      var image, _i, _len,
+    PhotoManager.prototype.LoadImages = function(image_object, row, imageCallback) {
+      var image, _i, _len, _ref,
         _this = this;
       this.Reset();
-      if (images != null) {
-        for (_i = 0, _len = images.length; _i < _len; _i++) {
-          image = images[_i];
+      if ((image_object != null ? image_object.image_array : void 0) != null) {
+        _ref = image_object.image_array;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          image = _ref[_i];
           this.Photos[this.NextAvailablePhoto()].LoadPhoto(image.image_id, image.image_path, image.caption, image.is_primary);
         }
       }
@@ -339,10 +338,6 @@
       } else {
         return results;
       }
-    };
-
-    PhotoManager.prototype.SavePhotos = function() {
-      return $('body').trigger("" + this.CurrentListingType + "_SavePhoto", [this.CurrentRow, this.GetPhotos(), this.CurrentListing]);
     };
 
     /*

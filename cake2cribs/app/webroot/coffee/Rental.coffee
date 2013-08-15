@@ -10,6 +10,7 @@ class A2Cribs.Rental extends A2Cribs.Object
 	GetId: (id) ->
 		return parseInt this["listing_id"], 10
 
+	###
 	@Template =
 		data =
 			Listing:
@@ -90,17 +91,19 @@ class A2Cribs.Rental extends A2Cribs.Object
 					caption: "heres the second one"
 					is_primary: 1
 
+	###
+
 	@Required_Fields = {
 		unit_style_options: "overview_grid"
-		unit_style_type: "overview_grid"
 		unit_style_description: "overview_grid"
 		beds: "overview_grid"
+		baths: "features_grid"
 		min_occupancy: "overview_grid"
 		max_occupancy: "overview_grid"
 		rent: "overview_grid"
 		unit_count: "overview_grid"
 		start_date: "overview_grid"
-		end_date: "overview_grid"
+		lease_length: "overview_grid"
 		available: "overview_grid"
 		highlights: "description_grid"
 		contact_email: "contact_grid"

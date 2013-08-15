@@ -1,4 +1,4 @@
-<?php echo $this->element('dashboard-header'); ?>
+<?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <?php echo $this->element('popups'); ?>
 <?php echo $this->element('Dashboard/marker-modal');?>
 <?php echo $this->element('Dashboard/picture-modal');?>

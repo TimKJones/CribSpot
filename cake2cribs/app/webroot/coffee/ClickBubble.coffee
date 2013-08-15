@@ -1,126 +1,116 @@
 ###
 ClickBubble class
-Wrapper for google infobubble
 ###
 
 class A2Cribs.ClickBubble
+	@OFFSET = 
+		TOP: -190
+		LEFT: 140
+	###
+	Private function that relocates the bubble near the marker
+	###
+	move_near_marker = (listing_id) =>
+		marker = A2Cribs.UserCache.Get("marker", 1).GMarker
+		# marker = A2Cribs.UserCache.GetAllAssociatedObjects "marker", "listing", listing_id
+		scale = Math.pow 2, @map.getZoom()
+		nw = new google.maps.LatLng @map.getBounds().getNorthEast().lat(), @map.getBounds().getSouthWest().lng()
+		worldCoordinateNW = @map.getProjection().fromLatLngToPoint nw
+		worldCoordinate = @map.getProjection().fromLatLngToPoint marker.getPosition()
+		@div.offset
+			left: Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale) + @OFFSET.LEFT
+			top: Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale) + @OFFSET.TOP
+
 	###
 	Constructor
-	-creates infobubble object
 	###
-	constructor: (map) ->
-		obj = 
-			map: map
-			arrowStyle: 0
-			arrowPosition: 20
-			shadowStyle: 1
-			borderRadius: 5
-			arrowSize: 17
-			borderWidth: 0
-			disableAutoPan: true
-			padding: 7
-			maxWidth: 350
-			maxHeight: 400
-			disableAnimation: true
-
-		@InfoBubble = new InfoBubble obj
-		@InfoBubble.hideCloseButton()
-		#@InfoBubble.setBackgroundClassName "markerTooltip"
+	@Init: (@map) ->
+		@div = $(".click-bubble:first")
+		@div.find(".close_button").click () =>
+			@Close()
 
 	###
 	Opens the tooltip given a marker, with popping animation
 	###
-	Open: (marker, sublet_ids = null) ->
-		if marker
-			@SetContent marker, sublet_ids
-			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
+	@Open: (listing_id) ->
+		if listing_id?
+			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+			if listing.rental_id?
+				@SetContent listing.GetObject()
+			else
+				$.ajax 
+					url: myBaseUrl + "Listings/GetListing/" + listing_id
+					type:"GET"
+					success: (data) =>
+						response_data = JSON.parse data
+						for item in response_data
+							for key, value of item
+								if A2Cribs[key]?
+									A2Cribs.UserCache.Set new A2Cribs[key] value
+
+						listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+						@SetContent listing.GetObject()
+
+			move_near_marker listing_id
+			@div.show 'fade' 
 
 	###
 	Refreshes the tooltip with the new content, no animation
 	###
-	Refresh: () ->
-		@InfoBubble.open()
+	@Refresh: () ->
+		@div.show 'fade'
 
 	###
-f	Closes the tooltip, no animation
+	Closes the tooltip, no animation
 	###
-	Close: ->
-		@InfoBubble.close()
+	@Close: ->
+		@div.hide 'fade'
 
 	###
 	Sets the content of the tooltip
 	###
-	SetContent: (marker, sublet_ids) ->
-		subletIds = if not sublet_ids? then A2Cribs.Cache.MarkerIdToSubletIdsMap[marker.MarkerId] else sublet_ids
-		template = $(".click-bubble:first").wrap('<p/>').parent()
-		content = template.children().first()
-		content.find('.listings').empty()
-		dataTemplate = content.find('.listing-block').first()
+	@SetContent: (listing_object) ->
+		for key,value of listing_object
+			@div.find(".#{key}").text value
+		@div.find(".date_range").text @resolveDateRange listing_object.start_date
+		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
+		@div.find(".building_name").text marker.GetName()
+		@div.find(".unit_type").text marker.GetBuildingType()
+		@linkWebsite ".website_link", listing_object.website
+		@setAvailability "available", listing_object.available
+		@setOwnerName "property_manager", listing_object.listing_id
+		@setPrimaryImage "property_image", listing_object.listing_id
 
-		content.find('#listing-count').text subletIds.length
-		if (marker.Title)
-			content.find('.sublet-name').text marker.Title
-		else
-			content.find('.sublet-name').text marker.Address
-		
-		if subletIds.length is 1
-			content.addClass "single-listing"
-			content.removeClass "multi-listing"
-		else
-			content.addClass "multi-listing"
-			content.removeClass "single-listing"
-		for subletId in subletIds
-			div = dataTemplate.clone()
-			div.removeClass "hide"
-			firstSublet = A2Cribs.Cache.IdToSubletMap[subletId]
-			subletOwner = A2Cribs.Cache.SubletIdToOwnerMap[subletId]
-			div.removeClass "single-content"
-			div.find('.username').text subletOwner.FirstName
-			if subletOwner.FBUserId
-				div.find('.friend-count').text 100
-			else
-				div.find('.fb-mutual').hide()
-
-			if A2Cribs.Cache.SubletIdToImagesMap[subletId]? and A2Cribs.Cache.SubletIdToImagesMap[subletId].length
-				for image in A2Cribs.Cache.SubletIdToImagesMap[subletId]
-					if image.IsPrimary
-						div.find('.listing-image').attr 'src', image.Path
-			else
-				div.find('.listing-image').attr 'src', '/img/tooltip/default_house.png'
-
-			div.find('.date-range').text @resolveDateRange firstSublet.StartDate, firstSublet.EndDate
-			div.find('.bed-price').text firstSublet.PricePerBedroom
-			div.find('.bed-count').text firstSublet.Bedrooms
-			div.find('.building-type').text firstSublet.BuildingType
-			div.find('.listing-popup-link').attr 'onclick', 'A2Cribs.Map.ListingPopup.Open(' + subletId + ')'
-			div.find('.listing-message').attr 'onclick', 'A2Cribs.Map.ListingPopup.Message(' + subletId + ')'
-			is_favorite = subletId in A2Cribs.Cache.FavoritesSubletIdsList
-			if is_favorite
-				div.find('.favorite-clickable').attr 'title', 'Delete from Favorites'
-				div.find('.favorite-clickable').addClass 'active'
-				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + subletId + ', this)'
-			else
-				div.find('.favorite-clickable').attr 'title', 'Add to Favorites'
-				div.find('.favorite-clickable').removeClass 'active'
-				div.find('.favorite-clickable').attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + subletId + ', this)'
-			content.find('.listings').append div
-		
-		if subletIds.length > 2
-			$('.listings').css
-				'overflow-y': 'scroll'
-		else
-			$('.listings').css
-				'overflow-y': 'hidden'
-		@InfoBubble.setContent template.html()
-		$(".click-bubble:first").unwrap()
-
-	resolveDateRange: (startDate, endDate) ->
+	@resolveDateRange: (startDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 		range = ""
 		startSplit = startDate.split "-"
-		endSplit = endDate.split "-"
-		range += rmonth[startSplit[1] - 1]
-		range += " " + parseInt(startSplit[2]) + "-"
-		range + rmonth[endSplit[1] - 1] + " " + parseInt endSplit[2]
+		range = "#{rmonth[+startSplit[1] - 1]} #{parseInt(startSplit[2], 10)}, #{startSplit[0]}"
+
+	@setAvailability: (div_name, availability) ->
+		if availability
+			$(".#{div_name}").text "Available"
+			$(".#{div_name}").removeClass "leased"
+		else
+			$(".#{div_name}").text "Leased"
+			$(".#{div_name}").addClass "leased"
+
+	@linkWebsite: (div_name, link) ->
+		if link.indexOf "http" is -1
+			link = "http://" + link
+		@div.find(div_name).attr "href", link
+
+	@setOwnerName: (div_name, listing_id) ->
+		listing = A2Cribs.UserCache.Get "listing", listing_id
+		user = A2Cribs.UserCache.Get "user", listing.user_id
+		if user?.company_name?
+			$(".#{div_name}").text user.company_name
+		else if user?.first_name? and user.last_name
+			$(".#{div_name}").text "#{user.first_name} #{user.last_name}"
+
+	@setPrimaryImage: (div_name, listing_id) ->
+		image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary()
+		if image_url?
+			$(".#{div_name}").css "background-image", "url(/#{image_url})"
+
 
 

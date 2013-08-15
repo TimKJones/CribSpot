@@ -51,9 +51,30 @@
 	}
 }
 
+@-webkit-keyframes flash {
+	from{
+		background-color: hsla(0, 0%, 0%, 0);
+	}
+	to{
+		background-color: #FF9999;
+	}
+}
+
+@keyframes flash {
+	from{
+		background-color: hsla(0, 0%, 0%, 0);
+	}
+	to{
+		background-color: #FF9999;
+	}
+}
+
 .highlight-tab
 {
-	background-color: #FF9999
+	animation: flash 1s linear infinite;
+	animation-direction: alternate;
+	-webkit-animation: flash 1s linear infinite;
+	-webkit-animation-direction: alternate;
 }
 
 .active

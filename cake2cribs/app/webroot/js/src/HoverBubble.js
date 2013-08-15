@@ -9,37 +9,42 @@ Wrapper for google infobubble
 (function() {
 
   A2Cribs.HoverBubble = (function() {
+
+    function HoverBubble() {}
+
     /*
     	Constructor
     	-creates infobubble object
     */
 
-    function HoverBubble(map) {
+
+    HoverBubble.Init = function(map) {
       var obj;
+      this.template = $(".hover-bubble:first").parent();
       obj = {
         map: map,
         arrowStyle: 0,
         arrowPosition: 20,
-        shadowStyle: 1,
+        shadowStyle: 0,
         borderRadius: 5,
         arrowSize: 17,
         borderWidth: 0,
         disableAutoPan: true,
-        padding: 7,
-        maxWidth: 300,
-        maxHeight: 200,
+        padding: 0,
         disableAnimation: true
       };
       this.InfoBubble = new InfoBubble(obj);
       this.InfoBubble.hideCloseButton();
-    }
+      this.InfoBubble.setBackgroundClassName("map_bubble");
+      return this.template.find(".close_button").attr("onclick", "A2Cribs.HoverBubble.Close();");
+    };
 
     /*
     	Opens the tooltip given a marker, with popping animation
     */
 
 
-    HoverBubble.prototype.Open = function(marker) {
+    HoverBubble.Open = function(marker) {
       if (marker) {
         this.SetContent(marker);
         return this.InfoBubble.open(A2Cribs.Map.GMap, marker.GMarker);
@@ -51,7 +56,7 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.Refresh = function() {
+    HoverBubble.Refresh = function() {
       return this.InfoBubble.open();
     };
 
@@ -60,7 +65,7 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.Close = function() {
+    HoverBubble.Close = function() {
       return this.InfoBubble.close();
     };
 
@@ -69,35 +74,39 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.prototype.SetContent = function(marker) {
-      var content, hoverdata, template;
-      hoverdata = A2Cribs.Cache.MarkerIdToHoverDataMap[marker.MarkerId];
-      template = $(".hover-bubble:first").wrap('<p/>').parent();
-      content = template.children().first();
-      if (hoverdata.NumListings > 1) {
-        content.find('.hover-listing-count').text(hoverdata.NumListings + " Listings:");
-        if (hoverdata.MinBeds === hoverdata.MaxBeds) {
-          content.find('.hover-bed-count').text(hoverdata.MinBeds);
-        } else {
-          content.find('.hover-bed-count').text(hoverdata.MinBeds + "-" + hoverdata.MaxBeds);
+    HoverBubble.SetContent = function(marker) {
+      var key, listing, listing_info, listings, num_beds, unit_template, value, _i, _len;
+      listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
+      this.template.find(".building_type").text(A2Cribs.Marker.BuildingType[+marker.building_type_id]);
+      this.template.find(".unit_div").empty();
+      for (_i = 0, _len = listings.length; _i < _len; _i++) {
+        listing = listings[_i];
+        if (listing.visible) {
+          listing_info = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId());
+          unit_template = this.template.find('.templates:first').children().clone();
+          unit_template.attr("onclick", "A2Cribs.ClickBubble.Open(" + (listing.GetId()) + ")");
+          for (key in listing_info) {
+            value = listing_info[key];
+            if (key === "rent") {
+              unit_template.find("." + key).text("$" + value);
+            } else if (key === "beds") {
+              num_beds = parseInt(value, 10);
+              if (num_beds === 0) {
+                unit_template.find("." + key).text("Studio");
+                unit_template.find(".bed_desc").text("");
+              } else {
+                unit_template.find("." + key).text(num_beds);
+                unit_template.find(".bed_desc").text(num_beds === 1 ? "Bed" : "Beds");
+              }
+            }
+          }
+          this.template.find(".unit_div").append(unit_template);
         }
-        if (hoverdata.MinRent === hoverdata.MaxRent) {
-          content.find('.hover-price').text("$" + hoverdata.MinRent);
-        } else {
-          content.find('.hover-price').text("$" + hoverdata.MinRent + "-$" + hoverdata.MaxRent);
-        }
-      } else {
-        content.find('.hover-listing-count').empty();
-        content.find('.hover-bed-count').text(hoverdata.MinBeds);
-        content.find('.hover-price').text("$" + hoverdata.MinRent);
       }
-      content.find('.hover-apt-type').text(hoverdata.UnitType);
-      content.find('.hover-date-range').text(this.resolveDate(hoverdata.MinDate, hoverdata.MaxDate));
-      this.InfoBubble.setContent(template.html());
-      return $(".hover-bubble:first").unwrap();
+      return this.InfoBubble.setContent(this.template.html());
     };
 
-    HoverBubble.prototype.resolveDate = function(minDate, maxDate) {
+    HoverBubble.resolveDate = function(minDate, maxDate) {
       var maxSplit, minSplit;
       minSplit = minDate.split("-");
       maxSplit = maxDate.split("-");

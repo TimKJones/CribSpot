@@ -52,7 +52,7 @@ class A2Cribs.Dashboard
 			response_data = JSON.parse data
 			for item in response_data
 				for key, value of item
-					if A2Cribs[key]? and not value.length?
+					if A2Cribs[key]?
 						A2Cribs.UserCache.Set new A2Cribs[key] value
 					else if A2Cribs[key]? and value.length? # Is an array
 						for i in value

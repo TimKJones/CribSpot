@@ -18,17 +18,22 @@
 
     UserCache.Get = function(object_type, id) {
       var item, list;
-      list = [];
       if (this.Cache[object_type] != null) {
         if (id != null) {
           return this.Cache[object_type][id];
         } else {
+          list = [];
           for (item in this.Cache[object_type]) {
             list.push(this.Cache[object_type][item]);
           }
+          return list;
         }
       }
-      return list;
+      if (id != null) {
+        return null;
+      } else {
+        return [];
+      }
     };
 
     UserCache.Remove = function(object_type, id) {
