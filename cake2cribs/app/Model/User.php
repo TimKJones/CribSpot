@@ -52,6 +52,16 @@ class User extends AppModel {
 				'message' => 'Names must only contain letters and numbers.'
 				)
 		),
+		'company_name' => array(
+			'between' => array(
+				'rule' => array('between',0,50),
+				'message' => 'Must be between 0 and 50 characters'
+				),
+			'alphaNumeric' => array(
+				'rule' => 'alphaNumeric',
+				'message' => 'Names must only contain letters and numbers.'
+				)
+		),
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 255)
