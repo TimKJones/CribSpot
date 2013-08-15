@@ -163,11 +163,32 @@ class Listing extends AppModel {
 		));
 
 		/* Remove sensitive user data */
+		/* Convert type fields to their appropriate string values */
 		for ($i = 0; $i < count($listing); $i++){
 			if (array_key_exists('User', $listing[$i]))
 				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
+				$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
 		}
 
+		return $listing;
+	}
+
+	private function _convertTypesToStrings($listing)
+	{
+		/*
+baths, air, parking_type, furnished_type, pets_type, washer_dryer, laundry,
+water, gas, heat, sewage, trash, cable, internet, 
+		*/
+		if ($listing['Marker']['building_type_id'] != null)
+			$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
+		if ($listing['Rental']['parking_type'] != null)
+			$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
+		if ($listing['Rental']['furnished_type'] != null)
+			$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
+		if ($listing['Rental']['pets_type'] != null)
+			$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
+		if ($listing['Rental']['washer_dryer'] != null)
+			$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
 		return $listing;
 	}
 

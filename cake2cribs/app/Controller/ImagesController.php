@@ -63,7 +63,7 @@ class ImagesController extends AppController {
 				$from_add_page = true;
 			}
 		}
-		CakeLog::write('imageDebug', "data: " . print_r($data, true));
+
 		$response = $this->Image->AddImage($data, $this->Auth->User('id'));
 		$errors = $response['errors'];
 
@@ -71,7 +71,6 @@ class ImagesController extends AppController {
 		{
 			$imageSlot = $this->request->data['imageSlot'];
 			$this->Session->write("image" . $imageSlot, $filePath); 
-			CakeLog::write('sessionDebug', $imageSlot . ": " . $filePath);
 		}
 		$this->layout = 'ajax';
 		$this->set('response', json_encode($response));
@@ -115,16 +114,17 @@ class ImagesController extends AppController {
 
 	function LoadImages($listing_id)
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+		
 		$images = $this->Image->getImagesForListingId($listing_id);
 		$primary_image_index = $images[0] + 1; // in UI, index is offset by 1
 		$files = $images[1];
 		$captions = $images[2];
 
 		$secondary = array();
-		CakeLog::write("makePrimary", print_r($files, true));
 		for ($i = 0; $i < count($files); $i++)
 		{
-			//CakeLog::write("loadingImages", "imageSlot" . $i ).
 			$full_path = "/" . $files[$i];
 			$next_slot = $i + 1;
 			$this->Session->write('image' . $next_slot, $files[$i]); // get rid of the first slash
@@ -143,75 +143,25 @@ class ImagesController extends AppController {
 
 	function DeleteImage()
 	{
-		CakeLog::write('imageDebug', 'deleting');
-		CakeLog::write('imageDebug', 'params: ' . print_r($this->params[0], true));
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
 		$file = null;
 		$listing_id = $this->listing_id;
 		$image_slot = $this->params[0]['image_slot'];
 		$path = $this->Session->read('image' . $image_slot);
-		CakeLog::write('imageDebug', $path);
 		$this->set('path', $path);
 		$this->set('listing_id', $listing_id);
-		//CakeLog::write('imageDebug', 'listing_id: ' . $listing_id . "; path: " . $path);
 		$response = $this->Image->DeleteImage($this->Auth->user('id'), $listing_id, $path);
 		if ($response == "DELETE_SUCCESSFUL")
 			$this->Session->write("image" . $image_slot, null);
 
-		CakeLog::write('imageDebug', 'error code: ' . $response);
 		$this->set('error', $response);
 	}
 
 	function MakePrimary($image_slot)
 	{
-	//	CakeLog::write("makePrimary", print_r($this->Session, true));
 		$path = $this->Session->read('image' . $image_slot);
-		CakeLog::write('makePrimary', "selectedPath: " . $path);
 		$this->Image->MakePrimary($this->listing_id, $path);
-	}
-
-	function uploadFile() 
-	{
-		$file = $this->data["Image"]["file"];
-		//$file = $this->data["Image"]["listing_id"];
-		$this->set('file', $file);
-		if ($file["error"] === UPLOAD_ERR_OK) {
-			$name = String::uuid(); 
-			/* 
-			TODO: ID NEEDS TO BE MODIFIED LATER AFTER ENTRY IS PUT INTO DB
-			*/
-			$file_path = WWW_ROOT."img/sublets/tmp/".$name;
-			if (move_uploaded_file($file["tmp_name"], $file_path)) {
-				$this->set("uploaded_img", "sublets/tmp/".$name);
-				/*$this->Image->AddImage($file*/
-
-			  /*$this->data["Image"]["id"] = $id;
-			  $this->data["Image"]["user_id"] = $this->Session->read('user_id');
-			  $this->data["Image"]["path"] = $file["name"];*/
-			 /* $this->data[‘Upload’][‘filesize’] = $file[‘size’];
-			  $this->data[‘Upload’][‘filemime’] = $file[‘type’];*/
-			  return true;
-			}
-		}
-
-		return false;
-	}
-
-	function SubmitCaption($caption, $image_slot)
-	{
-		CakeLog::write("addCaption", 'here0');
-		$user_id = $this->Auth->user('id');
-		CakeLog::write("addCaption", 'here1');
-		//TODO: Change this
-		if (!$user_id)
-			$user_id = 0;
-		CakeLog::write("addCaption", 'here2');
-		$path = $this->Session->read('image' . $image_slot);
-		CakeLog::write("addCaption", "adding caption: " . $caption . " | " . $image_slot . " | " . $path . " | " . $user_id);
-		if (!$path)
-			return false; // RETURN ERROR MESSAGE
-
-		$response = $this->Image->SubmitCaption($caption, $user_id, $path);
-		$this->layout = 'ajax';
-		$this->set("response", $response);
 	}
 }

@@ -12,6 +12,9 @@
 		}
 		
 	 	public function getAll(){
+	 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            	return;
+
 	 		$options['fields'] = array('University.name', 'University.id', 'University.city', 'University.state', 'University.latitude', 'University.longitude');
 	 		$options['recursive'] = -1;
 	 		$options['orderby'] = array('University.name' => 'desc');

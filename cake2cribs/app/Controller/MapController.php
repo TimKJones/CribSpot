@@ -16,6 +16,9 @@ class MapController extends AppController {
     $this->Auth->allow('GetBasicData');
   }
 
+    /*
+    Action for main sublet map page
+    */
     public function sublet($school_name = null, $address = null, $sublet_id = null)
     {
         if ($school_name == null)
@@ -69,6 +72,9 @@ class MapController extends AppController {
         $this->InitFilterValues();
     }
 
+    /*
+    Action for main map page for rentals
+    */
     public function rental($school_name = null)
     {
         if ($school_name == null)
@@ -107,31 +113,19 @@ class MapController extends AppController {
         $this->InitFilterValues();
     }
 
-    public function LoadTypeTables()
-    {
-    //CakeLog::write("sessionValues", "in loadTypeTables: " . print_r($this->getSessionValues(), true));
-    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-        return;
-
-    $buildings = $this->BuildingType->LoadAll();
-    $bathrooms = $this->BathroomType->LoadAll();
-    $genders = $this->GenderType->LoadAll();
-    $student_types = $this->StudentType->LoadAll();
-    $response = array();
-    array_push($response, $buildings, $bathrooms, $genders, $student_types);
-    $this->layout = 'ajax';
-    $this->set('response', json_encode($response));
-    }
-
     public function ViewListing($listing_id = null)
     {
         if (!$listing_id)
             $this->redirect(array('controller' => 'map', 'action' => 'index'));
     }
 
+    /*
+    Loads all marker data to return via ajax to client.
+    */
     public function LoadMarkers($school_id, $listing_type) {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
+
         $target_lat_long = $this->University->getTargetLatLong($school_id);
         $markers = $this->Marker->getAllMarkers($target_lat_long);
         $markerData = null;
@@ -139,53 +133,16 @@ class MapController extends AppController {
         $this->set('response', $markers);
     }
 
+    /*
+    Loads the listing data necessary for the first marker click popup
+    */
     public function GetBasicData($listing_type)
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
         $data = $this->Listing->GetBasicData($listing_type);
         $response = json_encode($data);
         $this->set("response", $response);
-    }
-
-  public function LoadHoverData($listing_type)
-  {
-    $data = $this->Listing->GetBasicData($listing_type);
-    $response = json_encode($data);
-    $this->set("response", $response);
-    /*
-    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-        return;
-    //$hover_data = $this->Sublet->LoadHoverData();
-    $hover_data = $this->Listing->LoadHoverData($listing_type);
-    $this->layout = 'ajax';
-    $response = json_encode($hover_data);
-    $this->set("response", $response);
-    */
-  }
-
-  public function getSessionValues()
-    {
-        $sessionValues = array(
-            'user_id' => $this->Auth->User('id'),
-            'start_date' => $this->Session->read('start_date'),
-            'end_date' => $this->Session->read('end_date'),
-            'min_rent' => $this->Session->read('min_rent'),
-            'max_rent' => $this->Session->read('max_rent'),
-            'beds' => $this->Session->read('beds'),
-            'house' => $this->Session->read('house'),
-            'apt' => $this->Session->read('apt'),
-            'unit_type_other' => $this->Session->read('unit_type_other'),
-            'male' => $this->Session->read('male'),
-            'female' => $this->Session->read('female'),
-            'students_only' => $this->Session->read('students_only'),
-            'grad' => $this->Session->read('grad'),
-            'undergrad' => $this->Session->read('undergrad'),
-            'bathroom_type' => $this->Session->read('bathroom_type'),
-            'ac' => $this->Session->read('ac'),
-            'parking' => $this->Session->read('parking'),
-            'utilities_included' => $this->Session->read('utilities_included'),
-            'no_security_deposit' => $this->Session->read('no_security_deposit'),
-        );
-
-        return $sessionValues;
     }
 }

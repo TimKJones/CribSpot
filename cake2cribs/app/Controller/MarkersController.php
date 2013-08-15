@@ -24,6 +24,9 @@ class MarkersController extends AppController {
 	*/
 	public function Save()
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+		
 		$this->layout = 'ajax';
 		$marker = $this->params['data'];
 		

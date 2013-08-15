@@ -162,6 +162,9 @@
 
 	 	// Ajax function that will return a json response with a url that'll will let the user verify their account
 	 	public function getTwitterVerificationUrl(){
+	 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+				return;
+			
 	 		App::import('Vendor', 'twitter/twitteroauth');
 			App::import('Vendor', 'twitter/twconfig');
 			App::uses('Xml', 'Utility');

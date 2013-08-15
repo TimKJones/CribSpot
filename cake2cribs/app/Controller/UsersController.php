@@ -50,6 +50,9 @@ class UsersController extends AppController {
     */
     public function AjaxRegister()
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
         $this->layout = 'ajax';
         if(!$this->request->isPost()){
             CakeLog::write('SECURITY', 'User called AjaxRegister without a post request');
@@ -158,6 +161,9 @@ class UsersController extends AppController {
     */
     public function AjaxResetPassword()
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
         $this->layout = 'ajax';
         if ($this->request == null || 
             $this->request->data == null || 

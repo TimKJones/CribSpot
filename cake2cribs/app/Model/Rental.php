@@ -14,25 +14,6 @@ class Rental extends RentalPrototype {
 	public $validate = array(
 		'rental_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'street_address' => array(
-			'between' => array(
-				'rule' => array('between', 1, 255)
-			)
-		),
-		'city' => array(
-			'between' => array(
-				'rule' => array('between', 1, 255)
-			)
-		),
-		'state' => array(
-			'between' => array(
-				'rule' => array('between',2, 2),
-				'message' => 'Must be 2 characters'
-			)
-		),
-		'zipcode' => array(
-        	'rule' => array('postal', null, 'us')
-    	),
 		'unit_style_options' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -120,9 +101,9 @@ class Rental extends RentalPrototype {
 				'rule' => 'boolean',
 				'required' => true
 			)
-		),
+		), 
 		'baths' => 'numeric',
-		'air' => 'integer',
+		'air' => 'boolean',
 		'parking_type' => 'numeric',
 		'parking_spots' => 'numeric',
 		'street_parking' => 'boolean',
@@ -130,7 +111,6 @@ class Rental extends RentalPrototype {
 		'pets_type' => 'numeric',
 		'washer_dryer' => 'numeric', 
 		'smoking' => 'boolean',
-		'laundry' => 'integer',
 		/* ------------- start new fields ----------------*/
 		'tv' => 'boolean',
 		'balcony' => 'boolean',
@@ -152,14 +132,14 @@ class Rental extends RentalPrototype {
 		'yard_space' => 'boolean',
 		'elevator' => 'boolean',
 		/* ------------ end new fields --------------- */
-		'electric' => 'numeric',
-		'water' => 'numeric',
-		'gas' => 'numeric',
-		'heat' => 'numeric',
-		'sewage' => 'numeric',
-		'trash' => 'numeric',
-		'cable' => 'numeric',
-		'internet' => 'numeric',
+		'electric' => 'numeric', 
+		'water' => 'boolean',
+		'gas' => 'boolean',
+		'heat' => 'boolean',
+		'sewage' => 'boolean',
+		'trash' => 'boolean',
+		'cable' => 'boolean',
+		'internet' => 'boolean',
 		'utility_total_flat_rate' => 'numeric',
 		'utility_estimate_winter' => 'numeric',
 		'utility_estimate_summer' => 'numeric',

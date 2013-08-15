@@ -21,6 +21,9 @@ class ListingsController extends AppController {
 	*/
 	public function Save()
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
 		$listing = $listingObject['Listing'];
@@ -48,6 +51,9 @@ class ListingsController extends AppController {
 	/* Deletes the listings in $listing_ids */
 	public function Delete ($listing_ids)
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
 		$this->layout = 'ajax';
 		$listing_ids = json_decode($listing_ids);	
 
@@ -76,20 +82,23 @@ class ListingsController extends AppController {
 	*/
 	function GetListing($listing_id = null)
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
 		$this->layout = 'ajax';
 		if ($listing_id == null){
 			/* Return all listings owned by this user. */
 			$listings = $this->_getListingsByLoggedInUser();
 			$this->set('response', json_encode($listings));
+			return;
 		}
-		else{
-			/* Return the listing given by $listing_id */
-			$listing = $this->Listing->GetListing($listing_id);
-			if ($listing == null)
-				$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
+		
+		/* Return the listing given by $listing_id */
+		$listing = $this->Listing->GetListing($listing_id);
+		if ($listing == null)
+			$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
-			$this->set('response', json_encode($listing));
-		}
+		$this->set('response', json_encode($listing));
 	}
 
 	/*
@@ -98,6 +107,9 @@ class ListingsController extends AppController {
 	*/
 	public function LoadMarkerData($listing_type, $marker_id)
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+		
 		$this->layout = 'ajax';
 		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
 		$this->set('response', json_encode($listings));
