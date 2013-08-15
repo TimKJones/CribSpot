@@ -248,6 +248,18 @@ water, gas, heat, sewage, trash, cable, internet,
 		return array_values($listing_ids);
 	}
 
+	public function GetListingIdsByMarkerId($marker_id){
+		$listing_ids = $this->find('list', array(
+			'conditions' => array(
+				'Listing.marker_id' => $marker_id,
+				'Listing.visible' => 1),
+			'fields' => array(
+				'Listing.listing_id'
+			)
+		));
+		return array_values($listing_ids);
+	}
+
 	/*
 	Returns all listings of given listing_type with given marker_id
 	*/
@@ -400,6 +412,8 @@ water, gas, heat, sewage, trash, cable, internet,
 		$options['conditions'] = array('Listing.visible' => 1);
 		return $this->find('all', $options);
 	}
+
+
 
 }	
 

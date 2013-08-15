@@ -2,7 +2,7 @@
 class FeaturedListingsController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing', 'University', 'NewspaperAdmin');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'University', 'NewspaperAdmin', 'Marker');
 
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
@@ -58,10 +58,6 @@ class FeaturedListingsController extends AppController {
       array_push($listings, $_listing);
     }
 
-
-    // die(debug($listings));
-    // $listings = $this->FeaturedListing->find('all');
-
     // $this->layout = 'ajax';
     $this->set('listings', $listings);
 
@@ -106,7 +102,32 @@ class FeaturedListingsController extends AppController {
   // Returns an array of date strings representing the dates
   // that are unavailable to feature a listing
   public function getUnavailableDates(){
-    $listing_ids = $this->Listing->GetListingIdsByUserId($this->_getUserId());
+    
+    $user_id = $this->_getUserId();
+    $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
+    if($newspaper_admin != null){
+      //newspaper admin so we fetch all the listings in a ELIGIBLE_UNI_RADIUS radius
+      //of their campus center
+      $uni_id = $newspaper_admin['NewspaperAdmin']['university_id'];
+      $uni = $this->University->findById(intval($uni_id));
+      $markers = $this->Marker->getNear($uni['University']['latitude'], $uni['University']['longitude'], self::ELIGIBLE_UNI_RADIUS_MILES);
+      $listing_ids = array();
+      foreach ($markers as $key => $marker) {
+
+        $ids = $this->Listing->GetListingIdsByMarkerId($marker['Marker']['marker_id']);
+        foreach ($ids as $id){
+           array_push($listing_ids, $id);
+        }
+         
+      }
+
+    }else{
+      //non admin
+      $listing_ids = $this->Listing->GetListingIdsByUserId($user_id);
+    }
+
+    
+
     $listing_dates = array();
     foreach($listing_ids as $listing_id){
       $listing_dates[$listing_id] = $this->FeaturedListing->getDates($listing_id);
@@ -133,15 +154,19 @@ class FeaturedListingsController extends AppController {
     
 
 
-    // TODO Add Newspaper Admin code to pull eligable uni's based
-    // on their requirements and make the cost 0 to be safe.
-    
     $user_id = $this->_getUserId();
-    
-    if(!$this->Listing->UserOwnsListing($listing_id, $user_id)){
-      throw new NotFoundException();
-    }
+    $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
 
+    if($newspaper_admin == null){
+      if(!$this->Listing->UserOwnsListing($listing_id, $user_id)){
+        throw new NotFoundException();
+      }
+    }else{
+      if(!$this->Listing->ListingExists($listing_id)){
+        throw new NotFoundException();
+      }
+    }
+    
     $listing = $this->Listing->Get($listing_id);
     $lat = $listing['Marker']['latitude'];
     $lon = $listing['Marker']['longitude'];
@@ -149,13 +174,28 @@ class FeaturedListingsController extends AppController {
     $unis = $this->University->getUniversitiesAround($lat, $lon, 15);
     $response = array();
     foreach ($unis as $uni) {
+      
       //TODO get unique price for each uni
       $uni_id = $uni['University']['id'];
+      
+      if($newspaper_admin != null){
+        if($newspaper_admin['NewspaperAdmin']['university_id'] != $uni_id){
+          //can't feature at a uni they aren't linked to.
+          continue;
+        }
+
+        $wd_price = $we_price = 0;
+      }else{
+        $wd_price = 15;
+        $we_rice = 5;
+      }
+
+
       array_push($response, array(
           'name' => $uni['University']['name'],
           'university_id' => $uni_id,
-          'weekend_price' => 5,
-          'weekday_price' => 15,
+          'weekend_price' => $wd_price,
+          'weekday_price' => $we_price,
           'unavailable_dates' => $this->FeaturedListing->getDates($listing_id, $uni_id),
         ));
     }
@@ -165,55 +205,6 @@ class FeaturedListingsController extends AppController {
     $this->layout = 'ajax';
     $this->set('response', json_encode($response));    
 
-
-
-  }
-
-  // Return a json array containing all the data needed to order
-  // a featured listing. This will include the following listing fields
-  // listing_id, address, alt_name for property, listing_type (string)
-  // as well as any dates specific to that listing that its already 
-  // featured on.
-
-  public function flOrderData(){
-    $user_id = $this->_getUserId();
-    $response = array();
-    
-
-    // TODO if super user (Mich Daily) fetch all listings
-    
-    // if (super user){
-    //   blah blah blah
-    // }
-
-    $listings = $this->Listing->GetListingsByUserId($user_id);
-
-
-    // Push onto the response array the specifc data mentioned above
-    foreach($listings as $listing){
-      $listing_id = $listing['Listing']['listing_id'];
-      $address = $listing['Marker']['street_address'];
-      $alt_name = $listing['Marker']['alternate_name'];
-      $listing_type = $listing['Listing']['listing_type'];
-      $listing_type_str = Listing::listing_type($listing['Listing']['listing_type']);
-      $dates = $this->FeaturedListing->getDates($listing_id);
-      
-      $data = array(
-          'listing_id' => $listing_id,
-          'marker_id' => $listing['Marker']['marker_id'],
-          'address' => $address,
-          'alt_name' => $alt_name,
-          'listing_type_str' => $listing_type_str,
-          'listing_type' => intval($listing_type),
-          'unavailable_dates'=>$dates
-        );
-
-      array_push($response, $data);
-
-    }
-
-    $this->layout = 'ajax';
-    $this->set("response", json_encode($response));
 
 
   }
@@ -253,15 +244,5 @@ class FeaturedListingsController extends AppController {
     $this->set("response", json_encode($listings));
     
   }
-
-  public function all(){
-    $featured_listings = $this->FeaturedListing->find('all');
-    die(debug($featured_listings));
-  }
-
-  
-
-
-  
 
 }

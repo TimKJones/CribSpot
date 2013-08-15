@@ -86,7 +86,39 @@ class Marker extends AppModel {
 		'latitude' => 'decimal',
 		'longitude' => 'decimal'
 	);
+	
 
+	/*
+	Retrieves the markers near a certain point. Options can be any
+	options you'd add to a find all statement. I safely add a condition
+	to filter by distance, none of your conditions will be affects
+	*/
+
+	public function getNear($latitude, $longitude, $radius, $options=null){
+		if($options==null){
+			$options = array();
+		}
+
+		$this->contain();
+
+
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+		);
+
+		
+		if(array_key_exists("conditions", $options)){
+			array_push($options['conditions'], array('distance <' => $radius));
+		}else{
+			$options['conditions'] = array('distance <' => $radius);
+		}
+
+		$data = $this->find('all', $options);
+		return $data;
+	}
+
+
+	
 	public function getAllMarkers($target_lat_long)
 	{
 		if (($markers = Cache::read('markers')) === false)
@@ -198,6 +230,7 @@ class Marker extends AppModel {
 		  		
 		return $marker['Marker']['marker_id'];
 	}
+
 
 	public function hide($marker){
 		$marker['visible'] = 0;

@@ -12,7 +12,7 @@
 	echo $this->Html->css('datepicker');
 
 	/* Datepicker and slider javascript */
-	echo $this->Html->script('bootstrap-datepicker');
+	// echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
 	echo $this->Html->script('src/PageHeader');
 ?>
