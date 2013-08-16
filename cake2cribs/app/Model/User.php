@@ -9,6 +9,7 @@ class User extends AppModel {
 	);
 	public $belongsTo = 'University'; 	
 	public $primaryKey = 'id';
+	public $helpers = array('Html');
 
 	public $validate = array (
 		'id' => 'numeric',
@@ -129,6 +130,7 @@ class User extends AppModel {
 		'twitter_userid' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
 		'last_login' => 'datetime',
+		'preferred_university' => 'numeric',
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -491,9 +493,29 @@ class User extends AppModel {
 	public function UpdateLastLogin($user_id)
 	{
 		date_default_timezone_set('America/New_York');
-		$now = DboSource::expression('NOW()');
+		$db = ConnectionManager::getDataSource('default');
+		$now = $db->expression('NOW()');
 		$this->id = $user_id;
 		$this->saveField('last_login', $now);
+	}
+
+	public function SavePreferredUniversity($user_id, $university_id)
+	{
+		CakeLog::write("saving_university", $user_id . " " . $university_id);
+		$this->id = $user_id;
+		$this->saveField('preferred_university', $university_id);
+	}
+
+	public function GetPreferredUniversity($user_id)
+	{
+		$this->id = $user_id;
+		$university_id = $this->find('first', array(
+			'fields' => array('User.preferred_university'),
+			'conditions' => array('User.id' => $user_id)
+		));
+
+		if ($university_id != null)
+			return $university_id['User']['preferred_university'];
 	}
 
 	/*

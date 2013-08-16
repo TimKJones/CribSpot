@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
-	public $uses = array('User');
+	public $uses = array('User', 'University');
 	public $components= array('Session','Auth' => array(
         'authenticate' => array(
             'Form' => array(
@@ -98,6 +98,7 @@ class UsersController extends AppController {
         $this->set('vericode', $user['vericode']);
         $this->set('id', $this->User->id);
         $this->_sendVerificationEmail($user);
+        $this->_savePreferredUniversity($this->User->id);
         $this->set('response', json_encode(array('success'=>'')));
         //$this->redirect('/landing?registration_success=true');
     }
@@ -133,9 +134,10 @@ class UsersController extends AppController {
             $this->set('response', json_encode($response));
             return;
         }
-
+CakeLog::write('user', print_r($this->request->data['User'], true));
         if ($this->Auth->login()) {
             $this->User->UpdateLastLogin($this->Auth->User('id'));
+            $this->_savePreferredUniversity($this->Auth->User('id'));
             $this->set('response', json_encode(array('success'=>'')));
             return;
         }
@@ -370,6 +372,26 @@ class UsersController extends AppController {
         $this->set('id', $user['id']);
         $this->_sendVerificationEmail(array('email' => $email));
     }
+    
+    public function GetBackToMapUrl()
+    {
+        $preferred_university = $this->User->GetPreferredUniversity($this->Auth->User('id'));
+        $university_name = $this->University->GetNameFromId($preferred_university);
+        $url = null;
+        if (empty($university_name))
+            $url = Router::url('/', true);
+        else
+            $url = Router::url('/map/rental/'.str_replace(" ", "_", $university_name), true);
+
+        return $url;
+    }
+
+    private function _savePreferredUniversity($user_id)
+    {
+        $preferred_university = $this->Session->read('preferredUniversity');
+        if ($preferred_university)
+            $this->User->SavePreferredUniversity($this->Auth->User('id'), $preferred_university);
+    }
 
     /*
     Logs a user in via facebook
@@ -401,7 +423,8 @@ class UsersController extends AppController {
                     'email'      => $fb_user->email,
                     'password'      => uniqid(), // Set random password
                     'user_type' => User::USER_TYPE_SUBLETTER,
-                    'facebook_userid' => $fb_user->identities[0]->uid
+                    'facebook_userid' => $fb_user->identities[0]->uid,
+                    'verified' => 1
                 );
 
                 if ($first_name != null)

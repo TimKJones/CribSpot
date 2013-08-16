@@ -1,7 +1,13 @@
 <?php
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
-  public $components = array('RequestHandler');
+  public $components = array('RequestHandler', 'Session','Auth' => array(
+        'authenticate' => array(
+            'Form' => array(
+                'fields' => array('username' => 'email')
+                )
+            )
+        ));
   public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
 
   public function beforeFilter() {
@@ -87,13 +93,25 @@ class MapController extends AppController {
 
         if ($school_name != null)
         {
-            if (is_numeric($school_name))
+            if (is_numeric($school_name)){
+                /* why are you going to sublets here? */
                 $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
+            }
+             
             $this->Session->write("currentUniversity", $school_name);
             $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
             if ($id == null)
-                throw new NotFoundException();  
+                throw new NotFoundException();
+
+            /* store university id to enable 'back to map' button */
+            if ($this->Auth->User('id') != null)
+                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
+            else{
+                CakeLog::write("user", print_r($this->Auth->User, true));
+                $this->Session->write('preferredUniversity', $id); 
+            } 
+            
             $this->set('school_id', $id);
             $lat_long = $this->University->getTargetLatLong($id);
             if ($lat_long == null)
