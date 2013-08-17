@@ -1,4 +1,4 @@
-<?= $this->Html->script('src/Rental.js', array('inline' => false)); ?>
+<?= $this->Html->script('src/Map', array('inline' => false)); ?>
 
 <style type="text/css">
 	#map_region
