@@ -158,7 +158,7 @@
     var calendarOpen = false;
 
     this.init = function () {
-      $input = $("<INPUT type=text class='editor-text' />");
+      $input = $("<INPUT type=text class='editor-text' readonly>");
       $input.appendTo(args.container);
       $input.focus().select();
       $input.datepicker({ 
@@ -168,6 +168,14 @@
         onClose: function () {
           calendarOpen = false
         }
+      }).keyup(function(e) {
+          if(e.keyCode == 8 || e.keyCode == 46) {
+              if (calendarOpen) {
+                $.datepicker.dpDiv.clearFields();
+                $.datepicker.dpDiv.stop(true, true).hide();
+              }
+              $input.val("");
+          }
       });
       $input.datepicker("show");
       $input.width($input.width() - 18);
@@ -208,20 +216,27 @@
       defaultValue = item[args.column.field];
       $input.val(defaultValue);
       $input[0].defaultValue = defaultValue;
-      $input.select();
+      //$input.select();
     };
 
     this.serializeValue = function () {
-      var date = $input.val().split("/");
+      var date;
+      if ($input.val().length === 0)
+        return null;
+
+      date = $input.val().split("/");
       return date[2] + "-" + date[0] + "-" + date[1];
     };
 
     this.applyValue = function (item, state) {
-      item[args.column.field] = state;
+      if (state === null)
+        delete item[args.column.field];
+      else
+        item[args.column.field] = state;
     };
 
     this.isValueChanged = function () {
-      return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+      return ($input.val() != defaultValue);
     };
 
     this.validate = function () {
