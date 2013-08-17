@@ -40,6 +40,7 @@ class A2Cribs.MarkerModal
 				A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
 				return
 			marker_id = @modal.find("#Marker_marker_id").val()
+			latLng = @MiniMap.GetMarkerPosition()
 			marker_object = {
 				alternate_name: @modal.find('#Marker_alternate_name').val()
 				building_type_id: @modal.find('#Marker_building_type_id').val()
@@ -47,8 +48,8 @@ class A2Cribs.MarkerModal
 				city: @modal.find('#Marker_city').val()
 				state: @modal.find('#Marker_state').val()
 				zip: @modal.find('#Marker_zip').val()
-				latitude: @modal.find('#Marker_latitude').val()
-				longitude: @modal.find('#Marker_longitude').val()
+				latitude: latLng['latitude']
+				longitude: latLng['longitude']
 			}
 			if marker_id?.length isnt 0
 				marker_object.marker_id = marker_id
@@ -158,6 +159,10 @@ class A2Cribs.MarkerModal
 
 	FindAddress: (div) ->
 		if @MarkerValidate()
+			if div.find("#Marker_latitude").val() and div.find("#Marker_longitude").val()
+				latLng = new google.maps.LatLng div.find("#Marker_latitude").val(), div.find("#Marker_longitude").val()
+				@MiniMap.SetMarkerPosition latLng
+				return
 			addressObj = 
 				address: div.find("#Marker_street_address").val() + " " + 
 					div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()

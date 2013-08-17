@@ -200,7 +200,7 @@ class Marker extends AppModel {
 					'at help@cribspot.com. Reference error code 35'));
   		}
 		  		
-		return $marker['Marker']['marker_id'];
+		return $this->id;
 	}
 
 	public function hide($marker){
