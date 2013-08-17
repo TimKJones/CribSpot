@@ -13,7 +13,8 @@
         "Unit" : UnitEditor,
         "LeaseLength": makeDropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
         "Dropdown" : makeDropdown,
-        "Year": YearEditor
+        "Year": YearEditor,
+        "Email": EmailEditor
       }
     }
   });
@@ -296,6 +297,70 @@ function makeDropdown(selectable_options)
           msg: "That's a really old building"
         };
       }
+
+      return {
+        valid: true,
+        msg: null
+      };
+    };
+
+    this.init();
+  }
+
+  function EmailEditor(args) {
+    var $input;
+    var defaultValue;
+    var scope = this;
+
+    this.init = function () {
+      $input = $("<INPUT type=text class='editor-text' />");
+
+      $input.bind("keydown.nav", function (e) {
+        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+          e.stopImmediatePropagation();
+        }
+      });
+
+      $input.appendTo(args.container);
+      $input.focus().select();
+    };
+
+    this.destroy = function () {
+      $input.remove();
+    };
+
+    this.focus = function () {
+      $input.focus();
+    };
+
+    this.loadValue = function (item) {
+      defaultValue = item[args.column.field];
+      $input.val(defaultValue);
+      $input[0].defaultValue = defaultValue;
+      $input.select();
+    };
+
+    this.serializeValue = function () {
+      return $input.val();
+    };
+
+    this.applyValue = function (item, state) {
+      item[args.column.field] = state;
+    };
+
+    this.isValueChanged = function () {
+      return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+    };
+
+    this.validate = function () {
+      var at_index = $input.val().indexOf("@");
+      var dot_index = $input.val().lastIndexOf(".");
+
+      if (at_index < 1 || dot_index < at_index + 2 || dot_index + 2 >= $input.val().length)
+        return {
+          valid: false,
+          msg: "Please input a valid email address"
+        }
 
       return {
         valid: true,

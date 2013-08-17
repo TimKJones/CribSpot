@@ -917,7 +917,7 @@ class A2Cribs.RentalSave
 					id: "contact_email"
 					name: "Contact Email"
 					field: "contact_email"
-					editor: Slick.Editors.Text
+					editor: A2Cribs.Editors.Email
 					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
