@@ -411,14 +411,14 @@ class A2Cribs.RentalSave
 					name: "Start Date"
 					field: "start_date"
 					editor: Slick.Editors.Date
-					formatter: A2Cribs.Formatters.RequiredText
+					formatter: A2Cribs.Formatters.Date true
 				}
 				{
 					id: "alternate_start_date"
 					name: "Alt. Start Date"
 					field: "alternate_start_date"
 					editor: Slick.Editors.Date 
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.Date()
 				}
 				{
 					id: "lease_length"
@@ -517,7 +517,7 @@ class A2Cribs.RentalSave
 					id: "year_built"
 					name: "Year Built"
 					field: "year_built"
-					editor: Slick.Editors.Integer
+					editor: A2Cribs.Editors.Year
 					formatter: A2Cribs.Formatters.Text
 				}
 			]
@@ -705,76 +705,55 @@ class A2Cribs.RentalSave
 					id: "electric"
 					name: "Electricity"
 					field: "electric"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "water"
 					name: "Water"
 					field: "water"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "gas"
 					name: "Gas"
 					field: "gas"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "heat"
 					name: "Heat"
 					field: "heat"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
-				}
-				{
-					id: "sewage"
-					name: "Sewage"
-					field: "sewage"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "trash"
 					name: "Trash"
 					field: "trash"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "cable"
 					name: "Cable"
 					field: "cable"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "internet"
 					name: "Internet"
 					field: "internet"
-					editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"])
-					formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+					editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"])
+					formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
 				}
 				{
 					id: "utility_total_flat_rate"
 					name: "Total Flat Rate"
 					field: "utility_total_flat_rate"
-					editor: A2Cribs.Editors.Integer
-					formatter: A2Cribs.Formatters.Money
-				}
-				{
-					id: "utility_estimate_winter"
-					name: "Est. Winter Utility Cost"
-					field: "utility_estimate_winter"
-					editor: A2Cribs.Editors.Integer
-					formatter: A2Cribs.Formatters.Money
-				}
-				{
-					id: "utility_estimate_summer"
-					name: "Est. Summer Utility Cost"
-					field: "utility_estimate_summer"
 					editor: A2Cribs.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
@@ -925,7 +904,7 @@ class A2Cribs.RentalSave
 					name: "Waitlist Open Date"
 					field: "waitlist_open_date"
 					editor: Slick.Editors.Date 
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.Date()
 				}
 				{
 					id: "lease_office_address"
