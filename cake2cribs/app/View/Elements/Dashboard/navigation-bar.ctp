@@ -9,7 +9,7 @@
 	</li>
 	<li class="spacer"></li>
 	<li>
-		<a href="#">
+		<a href="/map">
 			<i class="icon-map-marker icon-large"></i>
 			Return to Map
 		</a>
