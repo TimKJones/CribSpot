@@ -14,7 +14,8 @@
         "LeaseLength": makeDropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
         "Dropdown" : makeDropdown,
         "Year": YearEditor,
-        "Email": EmailEditor
+        "Email": EmailEditor,
+        "Phone": PhoneEditor
       }
     }
   });
@@ -366,6 +367,102 @@ function makeDropdown(selectable_options)
         valid: true,
         msg: null
       };
+    };
+
+    this.init();
+  }
+  function PhoneEditor(args) {
+    var $areacode, $first_numbers, $last_numbers;
+    var scope = this;
+    var right_count = 0;
+
+    this.init = function () {
+      $(args.container).append("(");
+      $areacode = $("<INPUT type=text style='width:25px' />")
+          .appendTo(args.container)
+          .bind("keydown", scope.handleKeyDown)
+          .bind("change", function () {
+            if ($areacode.val().length > 3)
+              $areacode.val($areacode.val().substr(0, 3));
+          });
+
+      $(args.container).append(")&nbsp;-&nbsp;");
+
+      $first_numbers = $("<INPUT type=text style='width:25px' />")
+          .appendTo(args.container)
+          .bind("keydown", scope.handleKeyDown)
+          .bind("change", function () {
+            if ($first_numbers.val().length > 3)
+              $first_numbers.val($first_numbers.val().substr(0, 3));
+          });
+      
+      $(args.container).append("&nbsp;-&nbsp;");
+
+      $last_numbers = $("<INPUT type=text style='width:35px' />")
+          .appendTo(args.container)
+          .bind("keydown", scope.handleKeyDown)
+          .bind("change", function () {
+            if ($last_numbers.val().length > 4)
+              $last_numbers.val($last_numbers.val().substr(0, 4));
+          });
+
+      scope.focus();
+    };
+
+    this.handleKeyDown = function (e) {
+      if (e.keyCode == $.ui.keyCode.LEFT)
+        right_count--;
+
+      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
+        right_count++;
+
+      if (right_count >= 0 && right_count < 3)
+        e.stopImmediatePropagation();
+    };
+
+    this.destroy = function () {
+      $(args.container).empty();
+    };
+
+    this.focus = function () {
+      $areacode.focus();
+      right_count = 0;
+    };
+
+    this.serializeValue = function () {
+      return {
+        contact_phone: $areacode.val() + $first_numbers.val() + $last_numbers.val()
+      };
+    };
+
+    this.applyValue = function (item, state) {
+      item.contact_phone = state.contact_phone;
+    };
+
+    this.loadValue = function (item) {
+      $areacode.val(item.contact_phone.substr(0, 3));
+      $first_numbers.val(item.contact_phone.substr(3, 3));
+      $last_numbers.val(item.contact_phone.substr(6, 4));
+    };
+
+    this.isValueChanged = function () {
+      var phone = $areacode.val() + $first_numbers.val() + $last_numbers.val();
+      if (args.item.contact_phone != phone)
+        return true;
+    };
+
+    this.validate = function () {
+      if ($areacode.val().length !== 3 || $first_numbers.val().length !== 3 || $last_numbers.val().length !== 4)
+        return {
+          valid: false,
+          msg: "Please input a valid number"
+        };
+      if (isNaN($areacode.val()) || isNaN($first_numbers.val()) || isNaN($last_numbers.val()))
+        return {
+          valid: false,
+          msg: "Please input a valid number"
+        }
+      return {valid: true, msg: null};
     };
 
     this.init();

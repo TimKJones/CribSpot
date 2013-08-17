@@ -924,7 +924,7 @@ class A2Cribs.RentalSave
 					id: "contact_phone"
 					name: "Contact Phone"
 					field: "contact_phone"
-					editor: Slick.Editors.Text
+					editor: A2Cribs.Editors.Phone
 					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
