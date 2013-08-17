@@ -24,12 +24,14 @@
 		<a id='messages-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'messages'>
 			<i class="icon-envelope icon-large"></i>
 			Messages
+			<div id="message_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
 	<li>
 		<a id='rental-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'rentals'>
 			<i class="icon-home icon-large"></i>
 			Rentals
+			<div id="rentals_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
 <!--	<li>
@@ -45,15 +47,25 @@
 		</a>
 	</li> -->
 </ul>
-<ul class="nav nav-list hide list-dropdown" id = "messages_list">
-	<li class="nav-header">MESSAGES</li>
-</ul>
-<ul class="nav nav-list hide list-dropdown" id = "rentals_list">
-	<li class="nav-header">RENTALS</li>
-</ul>
-<!--<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
-	<li class="nav-header">SUBLETS</li>
-</ul>
-<ul class="nav nav-list hide list-dropdown" id = "parking_list">
-	<li class="nav-header">PARKING</li>
-</ul>-->
+<div class="row-fluid">
+	<ul class="nav nav-list hide list-dropdown span12" id = "messages_list">
+		<li class="nav-header">MESSAGES</li>
+	</ul>
+</div>
+<div class="row-fluid">
+	<ul class="nav nav-list hide list-dropdown span12" id = "rentals_list">
+		<li class="nav-header">RENTALS</li>
+	</ul>
+</div>
+	<!--
+	<div class="row-fluid">
+	<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
+		<li class="nav-header">SUBLETS</li>
+	</ul>
+	</div>
+	<div class="row-fluid">
+	<ul class="nav nav-list hide list-dropdown" id = "parking_list">
+		<li class="nav-header">PARKING</li>
+	</ul>
+	</div>
+	-->

@@ -63,7 +63,7 @@ class A2Cribs.Messages
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
 			response_data = JSON.parse data
-			$('#unread_conversations_count span').html response_data.unread_conversations 
+			$('#message_count').html response_data.unread_conversations 
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"

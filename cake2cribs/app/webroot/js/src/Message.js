@@ -59,7 +59,7 @@
       return $.get(url, function(data) {
         var response_data;
         response_data = JSON.parse(data);
-        return $('#unread_conversations_count span').html(response_data.unread_conversations);
+        return $('#message_count').html(response_data.unread_conversations);
       });
     };
 
