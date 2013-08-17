@@ -79,9 +79,8 @@ class Rental extends RentalPrototype {
 			)
 		),
 		'alternate_start_date' => array(
-			'date' => array(
-				'rule' => 'date',
-				'required' => false
+			'alphaNumeric'=>array(
+				'allowEmpty' => true
 			)
 		),
 		'lease_length' => array(

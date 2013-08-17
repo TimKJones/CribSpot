@@ -37,11 +37,64 @@ class UsersController extends AppController {
 
     public function Login2()
     {
-        $id = $this->hull->currentUserId();
-        $hull_user = $this->hull->get($id);
-        if ($hull_user) {
-            $this->_facebookLogin($hull_user);
+        if (array_key_exists('code', $_GET)){
+            $redirect_uri = urlencode('http://localhost/users/login2');
+            $client_id = Configure::read('FB_APP_ID');
+            $client_secret = Configure::read('FB_APP_SECRET');
+            $code = urlencode($_GET['code']);
+            $url = 'https://graph.facebook.com/oauth/access_token?';
+            $url .= '&redirect_uri=' . $redirect_uri;
+            $url .= '&client_id=' . urlencode($client_id);
+            $url .= '&client_secret=' . urlencode($client_secret);
+            $url .= '&code=' . $code;
+            $fb_user = urldecode(file_get_contents($url));
+            parse_str($fb_user); /* Sets access token value in $access_token */
+            
+            /* 
+            We have the access token.
+            We now have to verify its validity
+            */
+            $response = $this->_verifyFBAccessToken($access_token);
+            if ($response === false){
+                /* TODO: HANDLE ERROR HERE */
+            }  
+
+            $userData = $this->_getUserData($access_token);
+
+            /* Set variables to populate registration form */
+            $this->set('email', $userData->email);
+            $this->set('firstName', $userData->first_name);
+            $this->set('lastName', $userData->last_name);
         }
+    }
+
+    /*
+    Verifies that the access_token retrieved from FB belongs to the person who is logging in,
+    and that our app generated the token
+    */
+    private function _verifyFBAccessToken($access_token)
+    {
+        $client_id = Configure::read('FB_APP_ID');
+        $client_secret = Configure::read('FB_APP_SECRET');
+        $url = 'https://graph.facebook.com/debug_token?';
+        $url .= 'input_token=' . $access_token;
+        $url .= '&access_token=' . $client_id . '|' . $client_secret;
+        $response = json_decode(file_get_contents($url));
+        if ($response->data->app_id !== Configure::read('APP_ID')){
+            return false;
+        }
+
+        return $response;
+    }
+
+    private function _getUserData($access_token)
+    {
+        $client_id = Configure::read('FB_APP_ID');
+        $client_secret = Configure::read('FB_APP_SECRET');
+        $url = 'https://graph.facebook.com/me?';
+        $url .= '&access_token=' . $access_token;
+        $response = json_decode(file_get_contents($url));
+        return $response;
     }
 
     /*

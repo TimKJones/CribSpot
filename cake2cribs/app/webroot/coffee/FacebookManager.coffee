@@ -3,6 +3,13 @@ Manager class for all social networking functionality
 ###
 class A2Cribs.FacebookManager
 
+	@FacebookLogin: () ->
+		url = 'https://www.facebook.com/dialog/oauth?'
+		url += 'client_id=488039367944782'
+		url += '&redirect_uri=http://localhost/users/login2'
+		url += '&scope=email'
+		window.location.href = url 
+
 	@Logout: ->
 		alert 'logging out'
 		$.ajax 
