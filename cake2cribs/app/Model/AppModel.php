@@ -88,7 +88,7 @@ class AppModel extends Model {
 	{
 		foreach ($rental as $key => $value)
 		{
-			if ($rental[$key] == null || $rental[$key] == "")
+			if ($rental[$key] === null || $rental[$key] === "")
 				unset($rental[$key]);
 		}
 
