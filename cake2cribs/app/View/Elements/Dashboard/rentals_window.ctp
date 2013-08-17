@@ -65,7 +65,7 @@
 			</li>
 			<li>
 				<a href="#amenities_grid" class="rentals_tab" data-toggle="tab">
-					AMENITIES
+					UNIT AMENITIES
 				</a>
 			</li>
 			<li>

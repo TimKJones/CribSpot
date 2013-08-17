@@ -468,8 +468,12 @@
           }
           return false;
         });
-        _results.push(this.GridMap[container].onCellChange.subscribe(function(e, args) {
+        this.GridMap[container].onCellChange.subscribe(function(e, args) {
           return _this.Save(args.row);
+        });
+        _results.push(this.GridMap[container].onValidationError.subscribe(function(e, args) {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Error(args.validationResults.msg);
         }));
       }
       return _results;

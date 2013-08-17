@@ -52,6 +52,7 @@
 
     this.focus = function () {
       $min_occupancy.focus();
+      right_count = 0;
     };
 
     this.serializeValue = function () {
@@ -73,12 +74,19 @@
     };
 
     this.validate = function () {
+      var min = $min_occupancy.val(), max = $max_occupancy.val()
+      // Copy fields if only one filled in
+      if (min.length === 0 && max.length > 0)
+        $min_occupancy.val(max);
+      else if (min.length > 0 && max.length === 0)
+        $max_occupancy.val(min);
+
       if (isNaN(parseInt($min_occupancy.val(), 10)) || isNaN(parseInt($max_occupancy.val(), 10))) {
         return {valid: false, msg: "Please type in valid numbers."};
       }
 
       if (parseInt($min_occupancy.val(), 10) > parseInt($max_occupancy.val(), 10)) {
-        return {valid: false, msg: "'min_occupancy' cannot be greater than 'to'"};
+        return {valid: false, msg: "Invalid Range. Min cannot be larger than max!"};
       }
 
       return {valid: true, msg: null};
@@ -125,7 +133,7 @@
       if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
         right_count++;
 
-      if (right_count >= 0 && right_count < 3)
+      if (right_count >= 0 && right_count < 2)
         e.stopImmediatePropagation();
     };
 

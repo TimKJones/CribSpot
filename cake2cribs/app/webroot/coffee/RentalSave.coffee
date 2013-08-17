@@ -357,6 +357,10 @@ class A2Cribs.RentalSave
 			@GridMap[container].onCellChange.subscribe (e, args) =>
 				@Save args.row
 
+			@GridMap[container].onValidationError.subscribe (e, args) =>
+				A2Cribs.UIManager.CloseLogs()
+				A2Cribs.UIManager.Error args.validationResults.msg
+
 	GetColumns: (container) ->
 		OverviewColumns = ->
 			columns = [
