@@ -71,15 +71,15 @@ class A2Cribs.Messages
 			url+='?only_unread=1'
 
 		$.get url, (data) =>
-			$('.conversation_list').html data
-			$('#conversation_count').html $('.conversation_list_item').length
-			# add a handler to each of the conversation list items
-			# so when the user clicks then the conversation is loaded
-			
-			# Update the classes for the selected conversation
-			SelectedConversationDiv = $('#cli_' + @CurrentConversation)
-			SelectedConversationDiv.addClass 'selected_conversation'
-			SelectedConversationDiv.removeClass 'unread_conversation' #Just in case it was unread
+			conversations = JSON.parse data
+			for convo in conversations
+				list_item = $ "<li />", {
+					text: convo.Conversation.title
+					class: "messages_list_item"
+					id: convo.Conversation.conversation_id
+					"data-participant": convo.Participant.id
+				}
+				$("#messages_list").append list_item
 
 			@attachConversationListItemHandler() 
 
@@ -141,7 +141,7 @@ class A2Cribs.Messages
 
 
 	@loadConversation:(event)->
-
+		###
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
 		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
 
@@ -149,9 +149,10 @@ class A2Cribs.Messages
 			.addClass('selected_conversation')
 			.removeClass('unread_conversation')
 
-		@CurrentConversation = parseInt $(event.currentTarget).attr('convid')
-		@CurrentParticipantID = $('#cli_' + @CurrentConversation).find('meta')
-												.attr('participantid')
+		###
+
+		@CurrentConversation = parseInt $(event.delegateTarget).attr('id')
+		@CurrentParticipantID = $(event.delegateTarget).attr('data-participant')
 
 		$('#message_reply').show()
 		$('#participant_info_short').show()
@@ -203,8 +204,8 @@ class A2Cribs.Messages
 		# We use a one time event so the user can't stack a backlog 
 		# of loadConversation Events
 		# After a conversation is loaded events will be put in again.
-		$('.conversation_list_item').one 'click', (event)=>
-				@loadConversation(event)
+		$('.messages_list_item').one 'click', (event)=>
+			@loadConversation(event)
 
 	@refreshMessages:(event)->
 		@NumMessagePages = 1

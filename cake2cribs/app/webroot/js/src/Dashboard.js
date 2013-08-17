@@ -32,6 +32,9 @@
         A2Cribs.MarkerModal.NewMarker();
         return A2Cribs.MarkerModal.Open();
       });
+      $("body").on('click', '.messages_list_item', function(event) {
+        return _this.ShowContent($('.messages-content'));
+      });
       return this.GetListings();
     };
 

@@ -106,7 +106,8 @@
         $conversations = $this->Conversation->getConversations($user['id'], ($only_unread==1));
         
         $this->layout = 'ajax';
-        $this->set(array('conversations'=> $conversations));    
+        $json = json_encode($conversations);
+        $this->set('response', $json);
     }
 
     // Ajax function to get a json response with the number of unread messages and conversations a user has
@@ -160,7 +161,7 @@
         $count = ($page-1) * $limit;
 
         $this->layout = 'ajax';
-        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));    
+        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));
     }
 
     public function getParticipantInfo($conv_id){

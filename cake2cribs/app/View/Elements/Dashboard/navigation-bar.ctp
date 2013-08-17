@@ -21,7 +21,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="#">
+		<a id='messages-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'messages'>
 			<i class="icon-envelope icon-large"></i>
 			Messages
 		</a>
@@ -45,7 +45,7 @@
 		</a>
 	</li> -->
 </ul>
-<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
+<ul class="nav nav-list hide list-dropdown" id = "messages_list">
 	<li class="nav-header">MESSAGES</li>
 </ul>
 <ul class="nav nav-list hide list-dropdown" id = "rentals_list">

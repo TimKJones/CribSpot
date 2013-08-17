@@ -27,6 +27,9 @@ class A2Cribs.Dashboard
 			A2Cribs.MarkerModal.NewMarker()
 			A2Cribs.MarkerModal.Open()
 
+		$("body").on 'click', '.messages_list_item', (event) =>
+			@ShowContent $('.messages-content')
+
 		@GetListings()
 
 	###
