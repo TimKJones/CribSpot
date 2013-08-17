@@ -11,6 +11,7 @@
 	
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
+	echo $this->Html->script('src/MiniMap', array('inline' => false));
 
 	//echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
@@ -33,7 +34,8 @@
 
 <!-- Rental Preview -->
 <div id="rentals_preview" class="row-fluid">
-	<img src="" alt="Nice" class="img-polaroid pull-left" style="width:80px; height:70px;">
+	<div id="correctLocationMap" class="pull-left">
+	</div>
 	<address class="pull-left">
 		<div id="rentals_address"></div>
 		<button class="btn btn-small edit_marker">EDIT ADDRESS &amp; TYPE</button>

@@ -76,6 +76,7 @@ class A2Cribs.RentalSave
 		$(".rentals-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
 			height = $('#add_new_unit').position().top - $("##{@VisibleGrid}").position().top
+			@Map?.Resize()
 			for grid of @GridMap
 				$("##{grid}").css "width", "#{width}px"
 				$("##{grid}").css "height", "#{height}px"
@@ -118,6 +119,9 @@ class A2Cribs.RentalSave
 		marker_object = A2Cribs.UserCache.Get "marker", marker_id
 		name = marker_object.GetName()
 		$("#rentals_address").html "<strong>#{name}</strong><br>"
+		if not @Map?
+			@Map = new A2Cribs.MiniMap $("#rentals_preview")
+		@Map.SetMarkerPosition new google.maps.LatLng marker_object.latitude, marker_object.longitude
 
 	Validate: (row) ->
 		required = A2Cribs.Rental.Required_Fields

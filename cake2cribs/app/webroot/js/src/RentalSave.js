@@ -100,9 +100,12 @@
         return $(event.target).removeClass("highlight-tab");
       });
       return $(".rentals-content").on("shown", function(event) {
-        var grid, height, width, _results;
+        var grid, height, width, _ref, _results;
         width = $("#" + _this.VisibleGrid).width();
         height = $('#add_new_unit').position().top - $("#" + _this.VisibleGrid).position().top;
+        if ((_ref = _this.Map) != null) {
+          _ref.Resize();
+        }
         _results = [];
         for (grid in _this.GridMap) {
           $("#" + grid).css("width", "" + width + "px");
@@ -158,7 +161,11 @@
       var marker_object, name;
       marker_object = A2Cribs.UserCache.Get("marker", marker_id);
       name = marker_object.GetName();
-      return $("#rentals_address").html("<strong>" + name + "</strong><br>");
+      $("#rentals_address").html("<strong>" + name + "</strong><br>");
+      if (!(this.Map != null)) {
+        this.Map = new A2Cribs.MiniMap($("#rentals_preview"));
+      }
+      return this.Map.SetMarkerPosition(new google.maps.LatLng(marker_object.latitude, marker_object.longitude));
     };
 
     RentalSave.prototype.Validate = function(row) {
