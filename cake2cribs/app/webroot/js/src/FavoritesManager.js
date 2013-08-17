@@ -5,13 +5,14 @@ Call functions using FavoritesManager.FunctionName()
 */
 
 (function() {
-  var __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   A2Cribs.FavoritesManager = (function() {
 
     function FavoritesManager() {}
 
     FavoritesManager.FavoritesListingIds = [];
+
+    FavoritesManager.FavoritesVisible = false;
 
     /*
     	Add a favorite
@@ -108,30 +109,38 @@ Call functions using FavoritesManager.FunctionName()
       });
     };
 
+    /*
+    	Called when user clicks the heart icon in the header.
+    	Toggles visibility of markers where user has favorited a listing.
+    */
+
     FavoritesManager.ToggleFavoritesVisibility = function(button) {
-      var marker, marker_id, markerid, _len, _len2, _ref, _ref2;
+      var listing, listing_id, marker, markers, _i, _j, _k, _len, _len2, _len3, _ref;
       $(button).toggleClass('active');
-      A2Cribs.Map.ClickBubble.Close();
-      if (!A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()) {
+      if (A2Cribs.Map.ClickBubble) A2Cribs.Map.ClickBubble.Close();
+      markers = A2Cribs.UserCache.Get('marker');
+      if (!A2Cribs.FavoritesManager.FavoritesVisible) {
         $("#FavoritesHeaderIcon").addClass("pressed");
-        _ref = A2Cribs.Cache.IdToMarkerMap;
-        for (markerid = 0, _len = _ref.length; markerid < _len; markerid++) {
-          marker = _ref[markerid];
-          if (__indexOf.call(A2Cribs.Cache.FavoritesMarkerIdsList, markerid) >= 0) {
-            if (marker) marker.GMarker.setVisible(true);
-          } else {
-            if (marker) marker.GMarker.setVisible(false);
-          }
+        for (_i = 0, _len = markers.length; _i < _len; _i++) {
+          marker = markers[_i];
+          if (marker.GMarker) marker.GMarker.setVisible(false);
+        }
+        _ref = A2Cribs.FavoritesManager.FavoritesListingIds;
+        for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+          listing_id = _ref[_j];
+          listing = A2Cribs.UserCache.Get('listing', listing_id);
+          marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
+          if (marker.GMarker) marker.GMarker.setVisible(true);
         }
       } else {
-        _ref2 = A2Cribs.Cache.IdToMarkerMap;
-        for (marker_id = 0, _len2 = _ref2.length; marker_id < _len2; marker_id++) {
-          marker = _ref2[marker_id];
-          if (marker) marker.GMarker.setVisible(true);
+        for (_k = 0, _len3 = markers.length; _k < _len3; _k++) {
+          marker = markers[_k];
+          if (marker && marker.GMarker) marker.GMarker.setVisible(true);
         }
         $("#FavoritesHeaderIcon").removeClass("pressed");
       }
-      return A2Cribs.Map.GMarkerClusterer.repaint();
+      A2Cribs.Map.GMarkerClusterer.repaint();
+      return A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible;
     };
 
     FavoritesManager.FavoritesVisibilityIsOn = function() {

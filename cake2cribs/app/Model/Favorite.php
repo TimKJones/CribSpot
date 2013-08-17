@@ -86,40 +86,5 @@ class Favorite extends AppModel {
 		$this->delete($favorite_id_query['Favorite']['favorite_id']);
 		return array('success' => '');
 	}
-
-/*
-If record for current user and requested listing_id does no exists, then creates one;
-Otherwise, deletes this record.
-*/
-	public function EditFavorite($listing_id, $user_id){
-	/*TODO: HANDLE CASES OF FAILURE WITH DATABASE UPDATES */
-		$conditions = array(
-			'Favorite.user_id' => $user_id,
-			'Favorite.listing_id' => $listing_id);
-
-		if (!$this->hasAny($conditions)){
-			/* Add new  favorite for this $listing_id */	
-			//return $this->Session;
-			$newFavorite = array(
-				'listing_id' => $listing_id, 
-				'user_id' => $user_id
-			);
-			$this->create();
-			if ($this->save($newFavorite))
-				return;
-			else
-			{
-				/*TODO: Need error handling response here. */
-			}
-		}
-		
-		/* Favorite already exists
-		 * Find favorite_id and delete the row */
-		$favorite_id_query = $this->find('first', array(
-			'conditions' => array('Favorite.listing_id' => $listing_id,
-								  'Favorite.user_id'	=> $user_id),
-			'fields' => 	array('favorite_id')));
-		$this->delete($favorite_id_query['Favorite']['favorite_id']);
-	}
 }
 ?>

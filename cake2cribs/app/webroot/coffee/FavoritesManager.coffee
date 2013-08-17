@@ -5,6 +5,7 @@ Call functions using FavoritesManager.FunctionName()
 
 class A2Cribs.FavoritesManager
 	@FavoritesListingIds = []
+	@FavoritesVisible = false
 
 	###
 	Add a favorite
@@ -77,25 +78,37 @@ class A2Cribs.FavoritesManager
 			context: this
 			success: A2Cribs.FavoritesManager.InitializeFavorites
 
+	###
+	Called when user clicks the heart icon in the header.
+	Toggles visibility of markers where user has favorited a listing.
+	###
 	@ToggleFavoritesVisibility: (button) ->
 		$(button).toggleClass 'active'
-		A2Cribs.Map.ClickBubble.Close()
-		if !A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()
+		if A2Cribs.Map.ClickBubble
+			A2Cribs.Map.ClickBubble.Close()
+		markers = A2Cribs.UserCache.Get 'marker'
+		if !A2Cribs.FavoritesManager.FavoritesVisible
+			# make only markers that are in user's favorites visible
 			$("#FavoritesHeaderIcon").addClass("pressed")
-			for marker, markerid in A2Cribs.Cache.IdToMarkerMap
-				if markerid in A2Cribs.Cache.FavoritesMarkerIdsList
-					if (marker)
-						marker.GMarker.setVisible true
-				else
-					if (marker)
+			# Set visibility of ALL markers to false
+			for marker in markers
+				if marker.GMarker
 						marker.GMarker.setVisible false
+			# Set visibility of all markers with listings in user's favorites to true
+			for listing_id in A2Cribs.FavoritesManager.FavoritesListingIds
+				listing = A2Cribs.UserCache.Get 'listing', listing_id
+				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
+				if marker.GMarker
+					marker.GMarker.setVisible true
 		else
-			for marker, marker_id in A2Cribs.Cache.IdToMarkerMap
-				if (marker)
-						marker.GMarker.setVisible true
+			# make all markers visible
+			for marker in markers
+				if marker and marker.GMarker
+					marker.GMarker.setVisible true
 			$("#FavoritesHeaderIcon").removeClass("pressed")
 
 		A2Cribs.Map.GMarkerClusterer.repaint()
+		A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible
 
 	@FavoritesVisibilityIsOn: () ->
 		return $("#FavoritesHeaderIcon").hasClass("pressed")
