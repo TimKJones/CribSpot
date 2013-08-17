@@ -516,6 +516,7 @@ class User extends AppModel {
 
 		if ($university_id != null)
 			return $university_id['User']['preferred_university'];
+		return null;
 	}
 
 	/*
