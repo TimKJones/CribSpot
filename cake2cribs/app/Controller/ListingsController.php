@@ -43,9 +43,11 @@ class ListingsController extends AppController {
 		$this->_refactorTextFields($listing);
 		$this->_refactorOwnerFields($listing);
 		$this->_setPrimaryImage($listing);
+		$this->_refactorAmenities($listing['Rental']);
 
 		$this->set('listing_json', json_encode($listing));
 		$this->set('listing', $listing);
+
 	}
 
 	/*
@@ -167,6 +169,45 @@ class ListingsController extends AppController {
 		return $listings;
 	}
 
+	/*
+	Convert numeric values or null into their corresponding string values
+	*/
+	private function _refactorAmenities(&$listing)
+	{
+		CakeLog::write('viewAmenities', print_r($listing, true));
+		$this->_refactorBooleanAmenities($listing);
+
+		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
+		foreach ($amenities as $field){
+			if (empty($listing[$field]))
+				$listing[$field] = '-';
+		}
+
+		if ($listing['furnished_type'] != '-')
+			$listing['furnished_type'] = Rental::furnished($listing['furnished_type']);
+
+		if ($listing['washer_dryer'] != '-')
+			$listing['washer_dryer'] = Rental::washer_dryer($listing['washer_dryer']);
+
+		if ($listing['parking_type'] != '-')
+			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
+	}
+
+	private function _refactorBooleanAmenities(&$listing)
+	{
+		$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
+		foreach ($amenities as $field){
+			if (array_key_exists($field, $listing)){
+				if ($listing[$field] === true)
+					$listing[$field] = 'Yes';
+				else if ($listing[$field] === false)
+					$listing[$field] = 'No';
+				else
+					$listing[$field] = '-';
+			}
+		}
+	}
+
 	private function _refactorMoneyFields(&$listing)
 	{
 		if (array_key_exists("Rental", $listing))
@@ -192,7 +233,7 @@ class ListingsController extends AppController {
 			{
 				if ($listing[$listing_type][$field] != 0)
 				{
-					// add $ and comma's appropriately
+					// add $ and commas appropriately
 					$listing[$listing_type][$field] = "$" . number_format($listing[$listing_type][$field]);
 				}
 				else

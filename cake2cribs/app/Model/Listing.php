@@ -18,6 +18,10 @@ class Listing extends AppModel {
 		'Image' => array(
 			'className' => 'Image',
 			'dependent' => true
+		),
+		'Favorite' => array(
+			'className' => 'Favorite',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
@@ -92,7 +96,9 @@ class Listing extends AppModel {
 		$error['validationErrors'] = $this->validationErrors;
 		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
+			'message' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 6'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -124,7 +130,9 @@ class Listing extends AppModel {
 				$error['validation'] = $this->validationErrors;
 				$this->LogError($user_id, 2, $error);
 				return array("error" => array('validation' => $this->validationErrors,
-				'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 2'));
+			'message' => 'Looks like we had some problems deleting your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 2'));
 			}
 		}
 
@@ -308,6 +316,24 @@ water, gas, heat, sewage, trash, cable, internet,
 		));
 
 		return $listings != null;
+	}
+
+	/*
+	Pulls marker_ids for listings in the logged-in users favorites
+	*/
+	public function GetFavoritesMarkerIds($listingIds)
+	{
+		$this->contain();	
+		$marker_ids = $this->find('all', array(
+			'conditions' => array('Listing.listing_id' => $listingIds),
+			'fields' => array('Listing.marker_id')));
+
+		$ids = array();
+		foreach ($marker_ids as $markerId){
+			array_push($ids, $markerId['Listing']['marker_id']);
+		}
+
+		return $ids;
 	}
 
 	/*

@@ -1,6 +1,6 @@
 <?php echo $this->Html->css('/less/Listing/full_page.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/FullListing.js', array('inline' => false)); ?>
-<?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
+<?php //secho $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <script type="text/javascript">
   var lolz = <?php echo $listing_json; ?>;
 </script>
@@ -323,7 +323,7 @@
 										<td><?= $listing["Rental"]["tv"] ?></td>
 									</tr>
 									<tr>
-										<td>Belcony</td>
+										<td>Balcony</td>
 										<td><?= $listing["Rental"]["balcony"] ?></td>
 									</tr>
 									<tr>

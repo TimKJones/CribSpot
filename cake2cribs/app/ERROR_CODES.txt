@@ -81,3 +81,11 @@
 - UsersController->AjaxLogin
 39
 - User/SaveFacebookUser
+40
+- Image->SaveImage
+41
+- Favorite->AddFavorite
+42
+- Favorite->DeleteFavorite
+43
+- Favorite->AddFavorite
