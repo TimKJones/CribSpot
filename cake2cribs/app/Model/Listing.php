@@ -85,6 +85,11 @@ class Listing extends AppModel {
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
+		/*if (!array_key_exists('alternate_start_date', $listing['Rental']) || !$listing['Rental']['alternate_start_date']) {
+			$listing['Rental']['alternate_start_date'] = '';
+		}
+		CakeLog::write("listing", print_r($listing, true));
+		$listing['Rental']['alternate_start_date'] = '';*/
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
 			return array('listing_id' => $this->id);
@@ -203,6 +208,7 @@ water, gas, heat, sewage, trash, cable, internet,
 	public function GetListingsByUserId($user_id)
 	{
 		$listings = $this->find('all', array(
+			'contain' => array('Image', 'Rental', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1)
