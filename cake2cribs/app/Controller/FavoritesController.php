@@ -14,39 +14,43 @@ class FavoritesController extends AppController {
   	
 	public function LoadFavorites()
 	{
-		if( $this->request->is('ajax') || Configure::read('debug') > 0)
-		{
-			$sublet_ids = $this->Favorite->GetFavoritesSubletIds($this->Auth->User('id'));
-			$marker_ids = $this->Sublet->GetFavoritesMarkerIds($sublet_ids);
-			$response = array();
-			array_push($response, $sublet_ids, $marker_ids);
-			$this->layout = 'ajax';
-			$this->set('response', json_encode($response));
-		}
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		$this->layout = 'ajax';
+		$listing_ids = $this->Favorite->GetFavoritesListingIds($this->Auth->User('id'));
+		$this->set('response', json_encode($listing_ids));
 	}
 
-	public function AddFavorite($sublet_id)
+	/*
+	Add $listing_id to the logged-in user's favorites
+	*/	
+	public function AddFavorite($listing_id)
 	{
-		if( $this->request->is('ajax') || Configure::read('debug') > 0)
-		{
-			$response = null;
-			if ($this->Auth->User('id') == 0)
-				$response = array('ERROR' => 'USER_NOT_LOGGED_IN');
-			else
-				$response = $this->Favorite->AddFavorite($sublet_id, $this->Auth->User('id'));
-			$this->layout = 'ajax';
-			$this->set('response', json_encode($response));
-		}
+		if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		$response = null;
+		if ($this->Auth->User('id') == 0)
+			$response = array('error' => array('message'=>"You must log in to add favorites."));
+		else
+			$response = $this->Favorite->AddFavorite($listing_id, $this->Auth->User('id'));
+
+		$this->layout = 'ajax';
+		$this->set('response', json_encode($response));
 	}
 
-	public function DeleteFavorite($sublet_id)
+	/*
+	Delete $listing_id from the logged-in user's favorites
+	*/
+	public function DeleteFavorite($listing_id)
 	{
-		if( $this->request->is('ajax') || Configure::read('debug') > 0)
-		{
-			$response = $this->Favorite->DeleteFavorite($sublet_id, $this->Auth->User('id'));
-			$this->layout = 'ajax';
-			$this->set('response', json_encode($response));
-		}
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		$response = $this->Favorite->DeleteFavorite($listing_id, $this->Auth->User('id'));
+		$this->layout = 'ajax';
+		$this->set('response', json_encode($response));
 	}
 
 }

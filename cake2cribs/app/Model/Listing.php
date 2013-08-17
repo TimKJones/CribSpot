@@ -18,6 +18,10 @@ class Listing extends AppModel {
 		'Image' => array(
 			'className' => 'Image',
 			'dependent' => true
+		),
+		'Favorite' => array(
+			'className' => 'Favorite',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
@@ -312,6 +316,24 @@ water, gas, heat, sewage, trash, cable, internet,
 		));
 
 		return $listings != null;
+	}
+
+	/*
+	Pulls marker_ids for listings in the logged-in users favorites
+	*/
+	public function GetFavoritesMarkerIds($listingIds)
+	{
+		$this->contain();	
+		$marker_ids = $this->find('all', array(
+			'conditions' => array('Listing.listing_id' => $listingIds),
+			'fields' => array('Listing.marker_id')));
+
+		$ids = array();
+		foreach ($marker_ids as $markerId){
+			array_push($ids, $markerId['Listing']['marker_id']);
+		}
+
+		return $ids;
 	}
 
 	/*
