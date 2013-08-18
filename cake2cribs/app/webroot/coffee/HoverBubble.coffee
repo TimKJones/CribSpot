@@ -55,24 +55,25 @@ f	Closes the tooltip, no animation
 		@template.find(".building_type").text A2Cribs.Marker.BuildingType[+marker.building_type_id]
 		@template.find(".unit_div").empty()
 		for listing in listings
-			if listing.visible
+			if not listing.visible? or listing.visible
 				listing_info = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId()
-				unit_template = @template.find('.templates:first').children().clone()
+				unit_template = $ "<div />",
+					class: "unit"
 				unit_template.attr "onclick", "A2Cribs.ClickBubble.Open(#{listing.GetId()})"
-				for key,value of listing_info
-					if key is "rent"
-						unit_template.find(".#{key}").text "$#{value}"
-					else if key is "beds"
-						num_beds = parseInt value, 10
-						if num_beds is 0
-							unit_template.find(".#{key}").text "Studio"
-							unit_template.find(".bed_desc").text ""
-						else
-							unit_template.find(".#{key}").text num_beds
-							unit_template.find(".bed_desc").text if num_beds is 1 then "Bed" else "Beds"
+				$ "<div />",
+					class: "beds"
+					text: listing_info["beds"]
+				.appendTo unit_template
+				$ "<div />",
+					class: "bed_desc"
+					text: if listing_info["beds"]? is 1 then "Bed" else "Beds"
+				.appendTo unit_template
+				$ "<div />",
+					class: "rent"
+					text: "$#{listing_info["rent"]}"
+				.appendTo unit_template
+
 				@template.find(".unit_div").append unit_template
-
-
 
 		@InfoBubble.setContent @template.html()
 
