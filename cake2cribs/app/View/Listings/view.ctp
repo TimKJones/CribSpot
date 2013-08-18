@@ -407,5 +407,6 @@
 <?php 
 	$this->Js->buffer('
 		A2Cribs.FullListing.SetupUI();
+		A2Cribs.FullListing.Directive(' . $directive . ');
 	');
 ?>

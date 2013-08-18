@@ -24,8 +24,9 @@ ClickBubble class
 
 
     move_near_marker = function(listing_id) {
-      var marker, nw, scale, worldCoordinate, worldCoordinateNW;
-      marker = A2Cribs.UserCache.Get("marker", 1).GMarker;
+      var listing, marker, nw, scale, worldCoordinate, worldCoordinateNW;
+      listing = A2Cribs.UserCache.Get("listing", listing_id);
+      marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker;
       scale = Math.pow(2, ClickBubble.map.getZoom());
       nw = new google.maps.LatLng(ClickBubble.map.getBounds().getNorthEast().lat(), ClickBubble.map.getBounds().getSouthWest().lng());
       worldCoordinateNW = ClickBubble.map.getProjection().fromLatLngToPoint(nw);
@@ -73,7 +74,7 @@ ClickBubble class
                 item = response_data[_i];
                 for (key in item) {
                   value = item[key];
-                  if (A2Cribs[key] != null) {
+                  if (key !== "Marker" && (A2Cribs[key] != null)) {
                     A2Cribs.UserCache.Set(new A2Cribs[key](value));
                   }
                 }
@@ -124,7 +125,9 @@ ClickBubble class
       this.linkWebsite(".website_link", listing_object.website);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
-      return this.setPrimaryImage("property_image", listing_object.listing_id);
+      this.setPrimaryImage("property_image", listing_object.listing_id);
+      this.setFullPage("full_page_link", listing_object.listing_id);
+      return this.setFullPageContact("full_page_contact", listing_object.listing_id);
     };
 
     ClickBubble.resolveDateRange = function(startDate) {
@@ -169,6 +172,18 @@ ClickBubble class
       if (image_url != null) {
         return $("." + div_name).css("background-image", "url(/" + image_url + ")");
       }
+    };
+
+    ClickBubble.setFullPage = function(div_name, listing_id) {
+      var link;
+      link = "/listings/view/" + listing_id;
+      return $("." + div_name).attr("href", link);
+    };
+
+    ClickBubble.setFullPageContact = function(div_name, listing_id) {
+      var link;
+      link = "/messages/contact/" + listing_id;
+      return $("." + div_name).attr("href", link);
     };
 
     return ClickBubble;

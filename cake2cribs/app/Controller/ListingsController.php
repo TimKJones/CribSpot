@@ -2,7 +2,7 @@
 
 class ListingsController extends AppController {
 	public $uses = array('Listing', 'Rental', 'Image', 'Favorite');
-	public $components= array('Session');
+	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
 	{
@@ -46,13 +46,19 @@ class ListingsController extends AppController {
 			$listing['Favorite'] = in_array($listing_id, $favorites);
 		}
 
+		$directive = $this->Cookie->read('fullpage-directive');
+ 		$this->Cookie->delete('fullpage-directive');
+ 		if($directive == null){
+ 			$directive = array('contact_owner'=>null);
+ 		}
+
 		$this->_refactorMoneyFields($listing);
 		$this->_refactorTextFields($listing);
 		$this->_refactorOwnerFields($listing);
 		$this->_setPrimaryImage($listing);
 		$this->_refactorAmenities($listing['Rental']);
 
-		$this->set('listing_json', json_encode($listing));
+		$this->set('directive', json_encode($directive));
 		$this->set('listing', $listing);
 
 	}

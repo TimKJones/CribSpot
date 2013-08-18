@@ -7,11 +7,7 @@
 
     function beforeFilter(){
         parent::beforeFilter();
-        if(!$this->Auth->user()){
-            //$this->flash("You may not access this page until you login.", array('controller' => 'users', 'action' => 'login'));
-            $this->Session->setFlash(__('Please login to view messages.'));
-            $this->redirect(array('controller'=>'users', 'action'=>'login'));
-        }
+        $this->Auth->allow('contact');
     }
 
     //Shows the base messages page
@@ -52,6 +48,13 @@
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
+    }
+
+    public function contact($listing_id)
+    {
+        $directive['contact_owner'] = true;
+        $this->Cookie->write('fullpage-directive', json_encode($directive));
+        $this->redirect(array('controller' => 'listings', 'action' => 'view', $listing_id));
     }
 
     // //Create a new conversation and the first message thats in the conversation

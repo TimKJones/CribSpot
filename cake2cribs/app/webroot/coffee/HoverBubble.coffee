@@ -52,7 +52,7 @@ f	Closes the tooltip, no animation
 	###
 	@SetContent: (marker) ->
 		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
-		@template.find(".building_type").text A2Cribs.Marker.BuildingType[+marker.building_type_id]
+		@template.find(".building_type").text marker.GetBuildingType()
 		@template.find(".unit_div").empty()
 		for listing in listings
 			if not listing.visible? or listing.visible

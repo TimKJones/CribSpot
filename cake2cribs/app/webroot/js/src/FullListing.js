@@ -66,6 +66,12 @@
       });
     };
 
+    FullListing.Directive = function(directive) {
+      if (directive.contact_owner != null) {
+        return this.div.find("#contact_owner").click();
+      }
+    };
+
     return FullListing;
 
   })();

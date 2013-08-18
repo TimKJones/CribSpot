@@ -49,3 +49,7 @@ class A2Cribs.FullListing
 					else
 						A2Cribs.UIManager.Error "Message Failed! Please Try Again."
 					$("#message_send").button "reset"
+
+	@Directive: (directive) ->
+		if directive.contact_owner?
+			@div.find("#contact_owner").click()

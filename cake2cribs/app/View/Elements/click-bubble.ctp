@@ -23,8 +23,8 @@
 		<div class="property_manager">Investor's Property Management</div>
 	</div>
 	<div class="action_buttons">
-		<a href="">More Info <i class="icon-plus"></i></a>
-		<a href="">Contact <i class="icon-comment"></i></a>
+		<a class="full_page_link" href="/listing/view/">More Info <i class="icon-plus"></i></a>
+		<a class="full_page_contact" href="">Contact <i class="icon-comment"></i></a>
 		<a href="" class="website_link" target="_blank">Website <i class="icon-share-alt"></i></a>
 	</div>
 </div>

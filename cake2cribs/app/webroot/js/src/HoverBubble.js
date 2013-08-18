@@ -77,7 +77,7 @@ Wrapper for google infobubble
     HoverBubble.SetContent = function(marker) {
       var listing, listing_info, listings, unit_template, _i, _len;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
-      this.template.find(".building_type").text(A2Cribs.Marker.BuildingType[+marker.building_type_id]);
+      this.template.find(".building_type").text(marker.GetBuildingType());
       this.template.find(".unit_div").empty();
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
