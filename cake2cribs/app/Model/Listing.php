@@ -85,11 +85,10 @@ class Listing extends AppModel {
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
-		/*if (!array_key_exists('alternate_start_date', $listing['Rental']) || !$listing['Rental']['alternate_start_date']) {
+		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */
+		if (!array_key_exists('alternate_start_date', $listing['Rental']))
 			$listing['Rental']['alternate_start_date'] = '';
-		}
-		CakeLog::write("listing", print_r($listing, true));
-		$listing['Rental']['alternate_start_date'] = '';*/
+	
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
 			return array('listing_id' => $this->id);
