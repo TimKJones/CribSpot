@@ -47,7 +47,18 @@
 					?>
 				</div>
 			</div>
-			<div class="favorite_listing"><i class="icon-heart icon-large"></i></div>
+			<?php
+			if ($this->Session->read('Auth.User.id') != 0)
+			{
+				if ($listing['Favorite'])
+					echo '<a href="#" class="favorite_listing active" onclick="A2Cribs.FavoritesManager.DeleteFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
+				else 
+					echo '<a href="#" class="favorite_listing" onclick="A2Cribs.FavoritesManager.AddFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
+			}
+			else
+				echo '<a href="#" class="favorite_listing" onclick="A2Cribs.UIManager.Error(\'Please log in or sign up to favorite!\')"><i class="icon-heart icon-large"></i></a>';
+
+			?>
 		</div>
 
 		<div class="row-fluid more_info">
@@ -78,16 +89,7 @@
 			?>
 			<div class="row-fluid detail_row">
 				<div class="span12">
-					<i class="icon-home"></i>&nbsp;<?= $listing["Rental"]["square_feet"] ?> SQ FT | 6 Other Layouts
-				</div>
-			</div>
-			<?php } ?>
-
-			<?php
-			if ($listing["Rental"]["smoking"] != null || $listing["Rental"]["pets_type"]) { ?>
-			<div class="row-fluid detail_row">
-				<div class="span12">
-					<i class="icon-ban-circle"></i>&nbsp;Pets Allowed | Smoking Allowed
+					<i class="icon-home"></i>&nbsp;<?= $listing["Rental"]["square_feet"] ?> SQ FT
 				</div>
 			</div>
 			<?php } ?>
