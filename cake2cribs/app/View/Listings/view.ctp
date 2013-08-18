@@ -93,8 +93,13 @@
 			<?php } ?>
 
 			<div class="row-fluid detail_row">
-				<div class="span12">
-					What's Included: lol
+				<div class="span12 included_mini">
+					What's Included:
+					<img src="/img/full_page/icon/electric<?= (strcmp($listing['Rental']['electric'], "0") === 0) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/gas<?= (!$listing['Rental']['gas']) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/water<?= (!$listing['Rental']['water']) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/parking<?= (strlen($listing['Rental']['parking_type']) == 0) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/furnished<?= (strlen($listing['Rental']['furnished_type']) == 0) ? "_not_included" : "" ; ?>.png">
 				</div>
 			</div>
 
