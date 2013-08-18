@@ -187,13 +187,13 @@ class Listing extends AppModel {
 	*/
 	private function _convertTypesToStrings($listing)
 	{
-		if (array_key_exists('Marker', $listing){
+		if (array_key_exists('Marker', $listing)) {
 			if (array_key_exists('building_type_id', $listing['Marker']) &&
 				$listing['Marker']['building_type_id'] != null)
 					$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
 		}
 
-		if (array_key_exists('Rental', $listing){
+		if (array_key_exists('Rental', $listing)) {
 			if (array_key_exists('parking_type', $listing['Rental']) &&
 				$listing['Rental']['parking_type'] != null)
 					$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
