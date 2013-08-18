@@ -280,17 +280,17 @@
 					<div class="span12 amenities_table">
 						<table>
 							<tr>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
+								<?php
+								$fields = array('pool', 'hot_tub', 'fitness_center', 'game_room', 'front_desk', 'security_system', 'tanning_beds', 'study_lounge', 'patio_deck', 'yard_space', 'elevator');
+								foreach ($fields as $field) {
+									if ($listing["Rental"][$field] === null)
+										echo "<td>?</td>";
+									elseif ($listing["Rental"][$field])
+										echo "<td><img src='/img/full_page/amenities_check.png' ></td>";
+									else
+										echo "<td><img src='/img/full_page/amenities_no_check.png' ></td>";
+								}
+								?>
 							</tr>
 							<tr>
 								<td>Pool</td>
