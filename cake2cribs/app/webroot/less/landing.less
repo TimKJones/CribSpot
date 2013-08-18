@@ -5,58 +5,12 @@
 @btn-contains-height: 22px;
 @header-height: 50px;
 
-html
+#layoutsContainer
 {
-	background: url(/img/landing/background.jpg) no-repeat center center fixed;
+	background-image: url(/img/landing/background_wood.jpg);
+	background-repeat: no-repeat;
 	background-size: cover;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-}
-
-body
-{
-	padding: 0;
-}
-
-.top-bar
-{
-	position: fixed;
-	background-color: black;
-	background: black; /* Old browsers */
-	background-image: url(/img/header/black_header.jpg);
-	background-repeat: repeat no-repeat;
-	top: 0;
-	z-index: 1000;
-	height: 25px;
-	width: 100%;
-	ul
-	{
-		margin-top: 2px;
-		margin-bottom: 0;
-		margin-right: 10px;
-		margin-left: 10px;
-		a
-		{
-			color: gray;
-			text-decoration: none;
-			transition: color .25s ease-in-out;
-			-moz-transition: color .25s ease-in-out;
-			-webkit-transition: color .25s ease-in-out;
-			&:hover
-			{
-				color: white;
-			}
-		}
-		.disabled
-		{
-			a { color: gray; }
-		}
-		.active
-		{
-			a { color: white; }
-		}
-	}
+	background-position: center;
 }
 
 #landing-footer
@@ -210,7 +164,7 @@ table
 		border-radius: @radius;
 		background-color: @baby-blue; 
 		padding: 5px;
-		width: 430px;
+		width: 336px;
 		display: block;
 		margin: auto;
 	}

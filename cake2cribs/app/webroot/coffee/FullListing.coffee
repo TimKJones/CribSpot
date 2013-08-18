@@ -25,12 +25,12 @@ class A2Cribs.FullListing
 				@div.find("#main_photo").css "background-image", next_photo.css "background-image"
 
 		@div.find("#contact_owner").click () =>
-			@div.find("#contact_message").slideDown()
 			@div.find("#contact_owner").hide()
+			@div.find("#contact_message").slideDown()
 
 		@div.find("#message_cancel").click () =>
-			@div.find("#contact_owner").slideUp()
-			@div.find("#contact_message").hide()			
+			@div.find("#contact_message").slideUp 'fast', () =>
+				@div.find("#contact_owner").show()
 
 		@div.find("#message_send").click () =>
 			$("#message_send").button("loading")

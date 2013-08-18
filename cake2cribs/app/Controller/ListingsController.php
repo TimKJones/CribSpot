@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite');
 	public $components= array('Session');
 
 	public function beforeFilter()
@@ -38,6 +38,13 @@ class ListingsController extends AppController {
 
 		if ($address == null)
 			$this->redirect(array('action' => 'view', $listing_id, $full_address));
+
+		$listing['Favorite'] = false;
+		if ($this->_getUserId() !== null)
+		{
+			$favorites = $this->Favorite->GetFavoritesListingIds($this->_getUserId());
+			$listing['Favorite'] = in_array($listing_id, $favorites);
+		}
 
 		$this->_refactorMoneyFields($listing);
 		$this->_refactorTextFields($listing);

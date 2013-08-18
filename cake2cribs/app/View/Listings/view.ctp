@@ -1,6 +1,6 @@
 <?php echo $this->Html->css('/less/Listing/full_page.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/FullListing.js', array('inline' => false)); ?>
-<?php //secho $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
+<?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <script type="text/javascript">
   var lolz = <?php echo $listing_json; ?>;
 </script>
@@ -47,7 +47,18 @@
 					?>
 				</div>
 			</div>
-			<div class="favorite_listing"><i class="icon-heart icon-large"></i></div>
+			<?php
+			if ($this->Session->read('Auth.User.id') != 0)
+			{
+				if ($listing['Favorite'])
+					echo '<a href="#" class="favorite_listing active" onclick="A2Cribs.FavoritesManager.DeleteFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
+				else 
+					echo '<a href="#" class="favorite_listing" onclick="A2Cribs.FavoritesManager.AddFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
+			}
+			else
+				echo '<a href="#" class="favorite_listing" onclick="A2Cribs.UIManager.Error(\'Please log in or sign up to favorite!\')"><i class="icon-heart icon-large"></i></a>';
+
+			?>
 		</div>
 
 		<div class="row-fluid more_info">
@@ -78,23 +89,19 @@
 			?>
 			<div class="row-fluid detail_row">
 				<div class="span12">
-					<i class="icon-home"></i>&nbsp;<?= $listing["Rental"]["square_feet"] ?> SQ FT | 6 Other Layouts
-				</div>
-			</div>
-			<?php } ?>
-
-			<?php
-			if ($listing["Rental"]["smoking"] != null || $listing["Rental"]["pets_type"]) { ?>
-			<div class="row-fluid detail_row">
-				<div class="span12">
-					<i class="icon-ban-circle"></i>&nbsp;Pets Allowed | Smoking Allowed
+					<i class="icon-home"></i>&nbsp;<?= $listing["Rental"]["square_feet"] ?> SQ FT
 				</div>
 			</div>
 			<?php } ?>
 
 			<div class="row-fluid detail_row">
-				<div class="span12">
-					What's Included: lol
+				<div class="span12 included_mini">
+					What's Included:
+					<img src="/img/full_page/icon/electric<?= (strcmp($listing['Rental']['electric'], "0") === 0) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/gas<?= (!$listing['Rental']['gas']) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/water<?= (!$listing['Rental']['water']) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/parking<?= (strlen($listing['Rental']['parking_type']) == 0) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/furnished<?= (strlen($listing['Rental']['furnished_type']) == 0) ? "_not_included" : "" ; ?>.png">
 				</div>
 			</div>
 
@@ -106,24 +113,31 @@
 		</div>
 
 		<div class="row-fluid contact_info">
-			<div class="row-fluid">
-				<div class="span12 owner_info">
-					<img src="" class="pull-left">
-					<div class="pull-left owner"><?= $listing["User"]["company_name"] ?></div>
-				</div>
-			</div>
-			<div class="row-fluid hide" id="contact_message">
+			<div class="span12">
 				<div class="row-fluid">
-					<textarea id="message_area" class="span12" rows="3"></textarea>
+					<div class="span12 owner_info">
+						<?
+						$pic_url = "/img/head_large.jpg";
+						if($listing['User']['facebook_userid'] !== null)
+							$pic_url = "https://graph.facebook.com/".$listing['User']['facebook_userid']."/picture?width=80&height=80";
+						?>
+						<img src="<?= $pic_url ?>" class="pull-left">
+						<div class="pull-left owner"><?= $listing["User"]["company_name"] ?></div>
+					</div>
+				</div>
+				<div class="row-fluid hide" id="contact_message">
+					<div class="row-fluid">
+						<textarea id="message_area" class="span12" rows="3"></textarea>
+					</div>
+					<div class="row-fluid">
+						<button id="message_cancel" class="btn span5">Cancel</button>
+						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
+					</div>
 				</div>
 				<div class="row-fluid">
-					<button id="message_cancel" class="span5">Cancel</button>
-					<button id="message_send" class="btn btn-primary span7" type="button" data-loading-text="Sending...">Send Message</button>
-				</div>
-			</div>
-			<div class="row-fluid">
-				<div class="span12">
-					<button id="contact_owner">CONTACT RENTAL OWNER</button>
+					<div class="span12">
+						<button class="btn" id="contact_owner">CONTACT RENTAL OWNER</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -133,16 +147,16 @@
 		<div class="navbar option_panel">
 			<div class="navbar-inner">
 				<ul class="nav">
-					<li><a href="#">Return to Map</a></li>
+					<li><a href="/map">Return to Map</a></li>
 					<li class="active"><a href="#photo_content" data-toggle="tab">Photos</a></li>
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
 				</ul>
 				<ul class="nav pull-right share_buttons">
 					<li class="disabled"><a href="">Share This Listing:</a></li>
-					<li><a href=""><i class="icon-link"></i></a></li>
-					<li><a href=""><i class="icon-facebook"></i></a></li>
-					<li><a href=""><i class="icon-twitter"></i></a></li>
+					<li><a onclick="A2Cribs.ShareManager.CopyListingUrl(<?= $listing["Listing"]["listing_id"] . ",'" . $listing["Marker"]["street_address"] . "','" . $listing["Marker"]["city"] . "','" . $listing["Marker"]["state"] . "'," . $listing["Marker"]["zip"] ?>)" href="#"><i class="icon-link"></i></a></li>
+					<li><a onclick="A2Cribs.ShareManager.ShareListingOnFacebook(<?= $listing["Listing"]["listing_id"] . ",'" . $listing["Marker"]["street_address"] . "','" . $listing["Marker"]["city"] . "','" . $listing["Marker"]["state"] . "'," . $listing["Marker"]["zip"] ?>)" href="#"><i class="icon-facebook"></i></a></li>
+					<li><a id="twitter_link" onclick="A2Cribs.ShareManager.ShareListingOnTwitter(<?= $listing["Listing"]["listing_id"] . ",'" . $listing["Marker"]["street_address"] . "','" . $listing["Marker"]["city"] . "','" . $listing["Marker"]["state"] . "'," . $listing["Marker"]["zip"] ?>)" href="#"><i class="icon-twitter"></i></a></li>
 				</ul>
 			</div>
 		</div>
@@ -175,10 +189,22 @@
 				</div>
 				<div class="row-fluid">
 					<div class="span12">
-						<ul>
-							<li>Electricity</li>
-							<li>Parking</li>
-							<li>Internet</li>
+						<ul class="large_included_list">
+							<?php
+								$included = array('electric', 'air', 'gas', 'water', 'cable', 'internet', 'trash');
+								$descriptions = array('Electricity', 'A/C', 'Gas', 'Water', 'Cable', 'Internet', 'Trash');
+
+								$length = count($included);
+
+								for ($i=0; $i < $length; $i++) { 
+									if (intval($listing["Rental"][$included[$i]]) > 0)
+										echo '<li><img src="/img/full_page/large_' . $included[$i] . '.png">' . $descriptions[$i] . '</li>';
+									//else if (strcmp($listing["Rental"][$included[$i]], "Yes") == 0)
+									//	echo '<li><img src="/img/listings/large_' . $included[$i] . '.png">' . $descriptions[$i] . '</li>';
+									else
+										echo '<li class="disabled"><img src="/img/full_page/large_' . $included[$i] . '_not_included.png">' . $descriptions[$i] . '</li>';
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -268,17 +294,17 @@
 					<div class="span12 amenities_table">
 						<table>
 							<tr>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
-								<td>?</td>
+								<?php
+								$fields = array('pool', 'hot_tub', 'fitness_center', 'game_room', 'front_desk', 'security_system', 'tanning_beds', 'study_lounge', 'patio_deck', 'yard_space', 'elevator');
+								foreach ($fields as $field) {
+									if ($listing["Rental"][$field] === null)
+										echo "<td>?</td>";
+									elseif ($listing["Rental"][$field])
+										echo "<td><img src='/img/full_page/amenities_check.png' ></td>";
+									else
+										echo "<td><img src='/img/full_page/amenities_no_check.png' ></td>";
+								}
+								?>
 							</tr>
 							<tr>
 								<td>Pool</td>
