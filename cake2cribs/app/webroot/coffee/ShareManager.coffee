@@ -1,68 +1,58 @@
 class A2Cribs.ShareManager
 
 	###
-	Prompts user to share listing on facebook using facebook api.
-	INPUT:
-		university_encoded = University with spaces replaced by '_' (as it is in url)
-		address_encoded = address for listing encoded in the same fasion
-		listing_id = listing to be shared
+	Creates a listing url from its individual components
 	###
-	@GetShareUrl: (university_encoded=null, address_encoded=null, sublet_id=null) ->
-		if university_encoded == null or address_encoded == null or sublet_id == null
-			return
-
-		url = 'http://cribspot.com/sublet/' + university_encoded + '/' + address_encoded + '/' + sublet_id
+	@GetShareUrl: (listing_id, street_address, city, state, zip) ->
+		if listing_id == null or street_address == null or city == null or state == null or zip == null
+			return null
+		street_address = street_address.split(' ').join('-')
+		city = city.split(' ').join('-')
+		url = 'http://cribspot.com/listing/' + listing_id + '/' + street_address + '-' + city + '-' + state + '-' + zip
 		return url
 
-	@ShareListingOnFacebook: (university_encoded=null, address_encoded=null, sublet_id=null, description=null) ->
+	###
+	Brings up a dialog box for user to add a message and then post to their facebook timeline
+	###
+	@ShareListingOnFacebook: (listing_id, street_address, city, state, zip, description=null, building_name=null) ->
 
-		url = A2Cribs.ShareManager.GetShareUrl(university_encoded, address_encoded, sublet_id)
-
-		###sublet = null
-		if A2Cribs.Map.IdToListingMap[sublet_id] != undefined
-			sublet = A2Cribs.Map.IdToListingMap[sublet_id]
+		url = @GetShareUrl(listing_id, street_address, city, state, zip)
+		caption = 'Check out this listing on Cribspot!'
+		if building_name == null
+			building_name = street_address
 		else
-			A2Cribs.Map.GetSubletData sublet_id###
-		address = null
-		if description == null
-			address = A2Cribs.Cache.IdToMarkerMap[A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId].Address
-			description = A2Cribs.Cache.IdToSubletMap[sublet_id].Description
-		else
-			address = address_encoded.split("_").join(" ")
+			caption = street_address
 
 		fbObj = 
 			method: 'feed'
 			link: url
 			picture: 'http://www.cribspot.com/img/upright_logo.png'
-			name: address
-			caption: 'Check out this listing on Cribspot!'
-			description: description
+			name: building_name
+			caption: caption
+
+		if description != null
+			fbObj['description'] = description
+
 		FB.ui fbObj
 
-	@GetTwitterShareUrl: (university_encoded=null, address_encoded=null, sublet_id=null) ->
-		if university_encoded == null or address_encoded == null or sublet_id == null
-			return ""
-		url = A2Cribs.ShareManager.GetShareUrl university_encoded, address_encoded, sublet_id
-		'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot'
+	@GetTwitterShareUrl: (listing_id, street_address, city, state, zip) ->
+		if listing_id == null or street_address == null or city == null or state == null or zip == null
+			return null
+		url = @GetShareUrl(listing_id, street_address, city, state, zip)
+		return 'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot'
 
 
-	@InitTweetButton: (university_encoded=null, address_encoded=null, sublet_id=null) ->
-		if university_encoded == null or address_encoded == null or sublet_id == null
-			return
+	@InitTweetButton: (listing_id, street_address, city, state, zip) ->
+		if listing_id == null or street_address == null or city == null or state == null or zip == null
+			return null
 
-		url = A2Cribs.ShareManager.GetShareUrl(university_encoded, address_encoded, sublet_id)
+		url = @GetShareUrl(listing_id, street_address, city, state, zip)
 		$('#twitterDiv iframe').remove();
 		tweetBtn = $('<a></a>').addClass('twitter-share-button')
 		.attr('href', 'http://twitter.com/share')
 		.attr('data-url', url)
-		.attr('data-text','Check out my sublease on Cribspot.com! ' + url)
+		.attr('data-text','Check out this awesome property on Cribspot.com! ' + url)
 		.attr('data-via', 'TheCribspot')
 		$('#twitterDiv').append(tweetBtn);
 
 		twttr.widgets.load();
-
-	@GetSubletData: (sublet_id) ->
-		$.ajax
-			url: myBaseUrl + "Sublets/GetSubletData/" + sublet_id
-			type: "GET"
-			success: A2Cribs.Map.GetSubletDataCallback

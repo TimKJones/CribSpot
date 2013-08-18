@@ -85,7 +85,7 @@ class Listing extends AppModel {
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
-		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */
+		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
 		if (!array_key_exists('alternate_start_date', $listing['Rental']))
 			$listing['Rental']['alternate_start_date'] = '';
 	
@@ -182,22 +182,34 @@ class Listing extends AppModel {
 		return $listing;
 	}
 
+	/*
+	Converts all integer 'type' fields to their string values
+	*/
 	private function _convertTypesToStrings($listing)
 	{
-		/*
-baths, air, parking_type, furnished_type, pets_type, washer_dryer, laundry,
-water, gas, heat, sewage, trash, cable, internet, 
-		*/
-		if ($listing['Marker']['building_type_id'] != null)
-			$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
-		if ($listing['Rental']['parking_type'] != null)
-			$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
-		if ($listing['Rental']['furnished_type'] != null)
-			$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
-		if ($listing['Rental']['pets_type'] != null)
-			$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
-		if ($listing['Rental']['washer_dryer'] != null)
-			$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
+		if (array_key_exists('Marker', $listing){
+			if (array_key_exists('building_type_id', $listing['Marker']) &&
+				$listing['Marker']['building_type_id'] != null)
+					$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
+		}
+
+		if (array_key_exists('Rental', $listing){
+			if (array_key_exists('parking_type', $listing['Rental']) &&
+				$listing['Rental']['parking_type'] != null)
+					$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
+			if (array_key_exists('furnished_type', $listing['Rental']) &&
+				$listing['Rental']['furnished_type'] != null)
+					$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
+
+			if (array_key_exists('pets_type', $listing['Rental']) &&
+				$listing['Rental']['pets_type'] != null)
+					$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
+
+			if (array_key_exists('washer_dryer', $listing['Rental']) &&
+				$listing['Rental']['washer_dryer'] != null)
+					$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
+		}
+	
 		return $listing;
 	}
 
