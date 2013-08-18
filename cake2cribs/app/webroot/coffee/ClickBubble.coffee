@@ -81,6 +81,16 @@ class A2Cribs.ClickBubble
 		@setPrimaryImage "property_image", listing_object.listing_id
 		@setFullPage "full_page_link", listing_object.listing_id
 		@setFullPageContact "full_page_contact", listing_object.listing_id
+		@div.find(".facebook_share").click ()->
+			A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@div.find(".link_share").click ()->
+			A2Cribs.ShareManager.CopyListingUrl(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@div.find(".twitter_share").click ()->
+			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@setFavoriteButton "favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
 
 	@resolveDateRange: (startDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -122,5 +132,11 @@ class A2Cribs.ClickBubble
 		link = "/messages/contact/#{listing_id}"
 		$(".#{div_name}").attr "href", link
 
-
+	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
+		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1
+			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.AddFavorite(#{listing_id}, this)"
+			$(".#{div_name}").removeClass "active"
+		else
+			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite(#{listing_id}, this)"
+			$(".#{div_name}").addClass "active"
 

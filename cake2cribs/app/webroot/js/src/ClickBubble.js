@@ -127,7 +127,17 @@ ClickBubble class
       this.setOwnerName("property_manager", listing_object.listing_id);
       this.setPrimaryImage("property_image", listing_object.listing_id);
       this.setFullPage("full_page_link", listing_object.listing_id);
-      return this.setFullPageContact("full_page_contact", listing_object.listing_id);
+      this.setFullPageContact("full_page_contact", listing_object.listing_id);
+      this.div.find(".facebook_share").click(function() {
+        return A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
+      });
+      this.div.find(".link_share").click(function() {
+        return A2Cribs.ShareManager.CopyListingUrl(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
+      });
+      this.div.find(".twitter_share").click(function() {
+        return A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
+      });
+      return this.setFavoriteButton("favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
     };
 
     ClickBubble.resolveDateRange = function(startDate) {
@@ -184,6 +194,16 @@ ClickBubble class
       var link;
       link = "/messages/contact/" + listing_id;
       return $("." + div_name).attr("href", link);
+    };
+
+    ClickBubble.setFavoriteButton = function(div_name, listing_id, favorites_list) {
+      if (favorites_list.indexOf(parseInt(listing_id, 10)) === -1) {
+        $("." + div_name).attr("onclick", "A2Cribs.FavoritesManager.AddFavorite(" + listing_id + ", this)");
+        return $("." + div_name).removeClass("active");
+      } else {
+        $("." + div_name).attr("onclick", "A2Cribs.FavoritesManager.DeleteFavorite(" + listing_id + ", this)");
+        return $("." + div_name).addClass("active");
+      }
     };
 
     return ClickBubble;
