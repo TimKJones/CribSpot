@@ -147,7 +147,7 @@ class RentalPrototype extends AppModel {
 	const WASHER_DRYER_ON_SITE_FREE = 1;
 	const WASHER_DRYER_ON_SITE_COIN_OPERATED = 2;
 	const WASHER_DRYER_OFF_SITE = 3;
-	const WASHER_DRYER_OFF_NONE = 4;
+	const WASHER_DRYER_NONE = 4;
 
 	public static function washer_dryer($value = null) {
 		$options = array(
