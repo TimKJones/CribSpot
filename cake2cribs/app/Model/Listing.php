@@ -166,6 +166,7 @@ class Listing extends AppModel {
 	public function GetListing($listing_id)
 	{
 		$listing = $this->find('all', array(
+			'contain' => array('Image', 'Rental', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.listing_id' => $listing_id,
 				'Listing.visible' => 1)
