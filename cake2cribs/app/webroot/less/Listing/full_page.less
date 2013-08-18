@@ -361,4 +361,30 @@
 			font-size: 12px;
 		}
 	}
+	.large_included_list
+	{
+		list-style-type: none;
+		display: inline-block;
+		border-radius: 4px;
+		box-shadow: 0 0 3px gray;
+		.disabled
+		{
+			color: #D8D8D8 !important;
+		}
+		li
+		{
+			width: 70px;
+			display: inline-block;
+			text-align: center;
+			padding: 5px;
+			border-left: 1px solid #D8D8D8;
+			font-size: 13px;
+			color: #5c5c5c;
+
+			&:first-child
+			{
+				border-left: none;
+			}
+		}
+	}
 }
