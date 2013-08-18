@@ -106,24 +106,31 @@
 		</div>
 
 		<div class="row-fluid contact_info">
-			<div class="row-fluid">
-				<div class="span12 owner_info">
-					<img src="" class="pull-left">
-					<div class="pull-left owner"><?= $listing["User"]["company_name"] ?></div>
-				</div>
-			</div>
-			<div class="row-fluid hide" id="contact_message">
+			<div class="span12">
 				<div class="row-fluid">
-					<textarea id="message_area" class="span12" rows="3"></textarea>
+					<div class="span12 owner_info">
+						<?
+						$pic_url = "/img/head_large.jpg";
+						if($listing['User']['facebook_userid'] !== null)
+							$pic_url = "https://graph.facebook.com/".$listing['User']['facebook_userid']."/picture?width=80&height=80";
+						?>
+						<img src="<?= $pic_url ?>" class="pull-left">
+						<div class="pull-left owner"><?= $listing["User"]["company_name"] ?></div>
+					</div>
+				</div>
+				<div class="row-fluid hide" id="contact_message">
+					<div class="row-fluid">
+						<textarea id="message_area" class="span12" rows="3"></textarea>
+					</div>
+					<div class="row-fluid">
+						<button id="message_cancel" class="btn span5">Cancel</button>
+						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
+					</div>
 				</div>
 				<div class="row-fluid">
-					<button id="message_cancel" class="span5">Cancel</button>
-					<button id="message_send" class="btn btn-primary span7" type="button" data-loading-text="Sending...">Send Message</button>
-				</div>
-			</div>
-			<div class="row-fluid">
-				<div class="span12">
-					<button id="contact_owner">CONTACT RENTAL OWNER</button>
+					<div class="span12">
+						<button class="btn" id="contact_owner">CONTACT RENTAL OWNER</button>
+					</div>
 				</div>
 			</div>
 		</div>

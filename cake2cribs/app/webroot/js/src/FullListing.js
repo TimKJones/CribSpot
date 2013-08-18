@@ -34,12 +34,13 @@
         }
       });
       this.div.find("#contact_owner").click(function() {
-        _this.div.find("#contact_message").slideDown();
-        return _this.div.find("#contact_owner").hide();
+        _this.div.find("#contact_owner").hide();
+        return _this.div.find("#contact_message").slideDown();
       });
       this.div.find("#message_cancel").click(function() {
-        _this.div.find("#contact_owner").slideUp();
-        return _this.div.find("#contact_message").hide();
+        return _this.div.find("#contact_message").slideUp('fast', function() {
+          return _this.div.find("#contact_owner").show();
+        });
       });
       return this.div.find("#message_send").click(function() {
         $("#message_send").button("loading");
