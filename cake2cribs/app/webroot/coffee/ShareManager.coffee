@@ -35,6 +35,17 @@ class A2Cribs.ShareManager
 
 		FB.ui fbObj
 
+	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->
+		url = @GetShareUrl(listing_id, street_address, city, state, zip)
+		window.prompt "Copy to clipboard: Ctrl+C, Enter", url
+
+	@ShareListingOnTwitter: (listing_id, street_address, city, state, zip) ->
+		url = @GetTwitterShareUrl listing_id, street_address, city, state, zip
+		# Center popup based on the screen size
+		x = screen.width / 2 - 600 / 2
+		y = screen.height / 2 - 350 / 2
+		window.open url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=#{y},left=#{x}"
+
 	@GetTwitterShareUrl: (listing_id, street_address, city, state, zip) ->
 		if listing_id == null or street_address == null or city == null or state == null or zip == null
 			return null
