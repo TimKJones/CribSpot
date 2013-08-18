@@ -24,8 +24,8 @@ class A2Cribs.HoverBubble
 
 		@InfoBubble = new InfoBubble obj
 		@InfoBubble.hideCloseButton()
-		#	@InfoBubble.setBackgroundClassName "map_bubble"
-		#@template.find(".close_button").attr "onclick", "A2Cribs.HoverBubble.Close();"
+		@InfoBubble.setBackgroundClassName "map_bubble"
+		@template.find(".close_button").attr "onclick", "A2Cribs.HoverBubble.Close();"
 
 	###
 	Opens the tooltip given a marker, with popping animation

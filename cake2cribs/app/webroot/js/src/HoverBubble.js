@@ -34,7 +34,9 @@ Wrapper for google infobubble
         disableAnimation: true
       };
       this.InfoBubble = new InfoBubble(obj);
-      return this.InfoBubble.hideCloseButton();
+      this.InfoBubble.hideCloseButton();
+      this.InfoBubble.setBackgroundClassName("map_bubble");
+      return this.template.find(".close_button").attr("onclick", "A2Cribs.HoverBubble.Close();");
     };
 
     /*
