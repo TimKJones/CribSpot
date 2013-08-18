@@ -124,6 +124,7 @@ class User extends AppModel {
 
 		),
 		'verified' => 'boolean',
+		'number_email_confirmations_sent' => 'numeric',
 		'university_verified' => 'boolean',
 		'vericode' => 'alphaNumeric',
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
@@ -343,7 +344,8 @@ class User extends AppModel {
 	public function GetUserFromEmail($email)
 	{
 		$user = $this->find('first', array(
-			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode'),
+			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode',
+				'User.number_email_confirmations_sent'),
 			'conditions' => array('User.email' => $email)
 		));
 
@@ -351,6 +353,17 @@ class User extends AppModel {
 			return $user['User'];
 
 		return null;
+	}
+
+	/*
+	Increment number_email_confirmations_sent by one after sending email confirmation email
+	*/
+	public function IncrementNumberEmailConfirmationsSent($user_id)
+	{
+		$this->id = $user_id;
+		$this->updateAll(array(
+			'User.number_email_confirmations_sent' => 'User.number_email_confirmations_sent+1'
+		));
 	}
 
 	/*

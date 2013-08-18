@@ -11,6 +11,7 @@ class UsersController extends AppController {
         )
         ,'Email', 'RequestHandler', 'Cookie'
     );
+    private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -62,39 +63,11 @@ class UsersController extends AppController {
             $userData = $this->_getUserData($access_token);
 
             /* Set variables to populate registration form */
+            $this->Session->write('fb_id', $userData->id);
             $this->set('email', $userData->email);
             $this->set('firstName', $userData->first_name);
             $this->set('lastName', $userData->last_name);
         }
-    }
-
-    /*
-    Verifies that the access_token retrieved from FB belongs to the person who is logging in,
-    and that our app generated the token
-    */
-    private function _verifyFBAccessToken($access_token)
-    {
-        $client_id = Configure::read('FB_APP_ID');
-        $client_secret = Configure::read('FB_APP_SECRET');
-        $url = 'https://graph.facebook.com/debug_token?';
-        $url .= 'input_token=' . $access_token;
-        $url .= '&access_token=' . $client_id . '|' . $client_secret;
-        $response = json_decode(file_get_contents($url));
-        if ($response->data->app_id !== Configure::read('APP_ID')){
-            return false;
-        }
-
-        return $response;
-    }
-
-    private function _getUserData($access_token)
-    {
-        $client_id = Configure::read('FB_APP_ID');
-        $client_secret = Configure::read('FB_APP_SECRET');
-        $url = 'https://graph.facebook.com/me?';
-        $url .= '&access_token=' . $access_token;
-        $response = json_decode(file_get_contents($url));
-        return $response;
     }
 
     /*
@@ -184,10 +157,12 @@ class UsersController extends AppController {
         /* Return an error message if the user has not yet confirmed their email address. */
         $response = $this->User->EmailIsConfirmed($this->request->data['User']['email']);
         if (array_key_exists('error', $response)){
+            /* Save the user's email so that we can resend the email confirmation email if they request it */
+            $this->Session->write('user_email_not_verified', $this->request->data['User']['email']);
             $this->set('response', json_encode($response));
             return;
         }
-CakeLog::write('user', print_r($this->request->data['User'], true));
+
         if ($this->Auth->login()) {
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->_savePreferredUniversity($this->Auth->User('id'));
@@ -412,18 +387,32 @@ CakeLog::write('user', print_r($this->request->data['User'], true));
 
     }
 
-    public function ResendConfirmationEmail($email)
+    public function ResendConfirmationEmail()
     {
+        $email = $this->Session->read('user_email_not_verified');
+        if ($email === null){
+            $response = array('error' => array('message'=> "Oops! We're having trouble re-sending you " .
+                "that email to confirm your email address. You can message us by clicking the tab along the bottom of the screen, " . 
+                "or by emailing us at help@cribspot.com"));
+            $this->set('response', $response);
+            return;
+        }
+
         $user = $this->User->GetUserFromEmail($email);
-        if ($user == null){
-            $response = array('error' => 'No account exists for that user.');
+        /* The confirmation email can only be sent 3 times total */
+        if ($user['number_email_confirmations_sent'] >= $this->MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT){
+            $response = array('error' => array('message'=> "Oops! Looks like we've already sent a few emails to " . 
+            "help confirm your email address. Contact us and we'll help you out! You can message us " . 
+            "by clicking the tab along the bottom of the screen or by emailing us at help@cribspot.com"));
             $this->set('response', json_encode($response));
             return;
         }
-        
+
+        $this->User->IncrementNumberEmailConfirmationsSent($user['id']);
         $this->set('vericode', $user['vericode']);
         $this->set('id', $user['id']);
         $this->_sendVerificationEmail(array('email' => $email));
+        $this->set('response', json_encode(array('success'=>'')));
     }
     
     public function GetBackToMapUrl()
@@ -437,6 +426,35 @@ CakeLog::write('user', print_r($this->request->data['User'], true));
             $url = Router::url('/map/rental/'.str_replace(" ", "_", $university_name), true);
 
         return $url;
+    }
+
+    /*
+    Verifies that the access_token retrieved from FB belongs to the person who is logging in,
+    and that our app generated the token
+    */
+    private function _verifyFBAccessToken($access_token)
+    {
+        $client_id = Configure::read('FB_APP_ID');
+        $client_secret = Configure::read('FB_APP_SECRET');
+        $url = 'https://graph.facebook.com/debug_token?';
+        $url .= 'input_token=' . $access_token;
+        $url .= '&access_token=' . $client_id . '|' . $client_secret;
+        $response = json_decode(file_get_contents($url));
+        if ($response->data->app_id !== Configure::read('APP_ID')){
+            return false;
+        }
+
+        return $response;
+    }
+
+    private function _getUserData($access_token)
+    {
+        $client_id = Configure::read('FB_APP_ID');
+        $client_secret = Configure::read('FB_APP_SECRET');
+        $url = 'https://graph.facebook.com/me?';
+        $url .= '&access_token=' . $access_token;
+        $response = json_decode(file_get_contents($url));
+        return $response;
     }
 
     private function _savePreferredUniversity($user_id)
