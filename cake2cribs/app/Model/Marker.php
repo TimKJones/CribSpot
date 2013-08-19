@@ -201,7 +201,9 @@ class Marker extends AppModel {
 			$error['marker'] = $marker;
   			$this->LogError($user_id, 34, $error);
   			return json_encode(array('error' =>
-	  				'Failed to save marker. Contact help@cribspot.com if the error persists. Reference error code 34'));
+	  				'Looks like we had some issues...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 34'));
 		}
 
 		$marker['Marker'] = $marker;
@@ -225,7 +227,9 @@ class Marker extends AppModel {
 			$error['validation'] = $this->validationErrors;
   			$this->LogError($user_id, 35, $error);
   			return json_encode(array('error' =>
-				'Failed to save marker. Contact help@cribspot.com if the error persists. Reference error code 35'));
+	  				'Looks like we had some issues...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 35'));
   		}
 		  		
 		return $marker['Marker']['marker_id'];

@@ -2,7 +2,7 @@
 
 class Conversation extends AppModel {
 	public $name = 'Conversation';	
-	public $uses = array('Conversation', 'Sublet', 'User', 'Message');
+	public $uses = array('Conversation', 'Listing', 'User', 'Message');
 	public $primaryKey = 'conversation_id';
 	public $actsAs = array('Containable');
 	public $belongsTo = array(
@@ -14,9 +14,9 @@ class Conversation extends AppModel {
             'className' => 'User',
             'foreignKey' => 'participant2_id'
         ),
-        'Sublet' => array(
-        	'className' => 'Sublet',
-        	'foreignKey' => 'sublet_id',
+        'Listing' => array(
+        	'className' => 'Listing',
+        	'foreignKey' => 'listing_id',
         ),
         'Last_Message' => array(
         	'className' => 'Message',
@@ -119,7 +119,7 @@ class Conversation extends AppModel {
 	public function createConversation($data){
 		$conversation_data = array(
 			'Conversation' => array(
-				'sublet_id' => $data['sublet_id'],
+				'listing_id' => $data['listing_id'],
 				'participant1_id' => $data['participant1_id'],
 				'participant2_id' => $data['participant2_id'],
 				'title' => $data['title'],

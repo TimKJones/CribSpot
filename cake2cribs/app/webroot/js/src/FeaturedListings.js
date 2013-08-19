@@ -2,25 +2,143 @@
 (function() {
 
   A2Cribs.FeaturedListings = (function() {
+    var Sidebar;
 
     function FeaturedListings(widget) {
       this.widget = widget;
     }
 
-    FeaturedListings.prototype.find = function(up_lat, low_lat, up_long, low_long) {
-      var data, url,
+    FeaturedListings.GetFlIds = function(university_id) {
+      var deferred,
         _this = this;
-      data = {
-        'up_lat': up_lat,
-        'low_lat': low_lat,
-        'up_long': up_long,
-        'low_long': low_long
-      };
-      url = "/FeaturedListings/getListings";
-      return $.get(url, data, function(response) {
-        return _this.widget.find('.listings_list').html(response);
+      deferred = new $.Deferred();
+      $.get("/featuredListings/cycleIds/" + university_id + "/" + this.FL_LIMIT, function(response) {
+        var listing_ids;
+        listing_ids = JSON.parse(response);
+        if (listing_ids != null) {
+          return deferred.resolve(listing_ids);
+        } else {
+          return deferred.resolve(null);
+        }
+      });
+      return deferred.promise();
+    };
+
+    FeaturedListings.FL_LIMIT = 5;
+
+    FeaturedListings.GetListing = function(id, type) {
+      var deferred, listing_id, listing_type,
+        _this = this;
+      deferred = new $.Deferred();
+      listing_id = id;
+      listing_type = type;
+      $.ajax({
+        url: myBaseUrl + "Listings/GetListing/" + listing_id,
+        type: "GET",
+        success: function(data) {
+          var item, key, listing, response_data, value, _i, _len;
+          response_data = JSON.parse(data);
+          for (_i = 0, _len = response_data.length; _i < _len; _i++) {
+            item = response_data[_i];
+            for (key in item) {
+              value = item[key];
+              if (A2Cribs[key] != null) {
+                A2Cribs.UserCache.Set(new A2Cribs[key](value));
+              }
+            }
+          }
+          listing = A2Cribs.UserCache.Get(listing_type, listing_id);
+          return deferred.resolve(item);
+        },
+        error: function() {
+          return deferred.resolve(null);
+        }
+      });
+      return deferred.promise();
+    };
+
+    FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
+      var getFLIds,
+        _this = this;
+      if (!(this.SidebarListingCache != null)) {
+        this.SidebarListingCache = {};
+      }
+      getFLIds = this.GetFlIds(university_id);
+      console.log("Initing sidebar");
+      return $.when(getFLIds).then(function(listing_ids) {
+        var sidebar;
+        console.log(listing_ids);
+        return sidebar = new Sidebar($('#fl-side-bar'), listing_ids, active_listing_type);
       });
     };
+
+    Sidebar = (function() {
+
+      function Sidebar(SidebarUI, FL_Listing_Ids, ActiveListingType) {
+        this.SidebarUI = SidebarUI;
+        this.FL_Listing_Ids = FL_Listing_Ids;
+        this.ActiveListingType = ActiveListingType;
+        this.ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML);
+        this.fetchListings(this.FL_Listing_Ids);
+      }
+
+      Sidebar.prototype.getDateString = function(date) {
+        var month, year;
+        if (!(this.MonthArray != null)) {
+          this.MonthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        }
+        month = this.MonthArray[date.getMonth()];
+        year = date.getFullYear();
+        return "" + month + " " + year;
+      };
+
+      Sidebar.prototype.fetchListings = function(listing_ids) {
+        var deferred, id, listingDefereds, _i, _len, _ref,
+          _this = this;
+        deferred = new $.Deferred();
+        listingDefereds = [];
+        _ref = this.FL_Listing_Ids;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          id = _ref[_i];
+          listingDefereds.push(A2Cribs.FeaturedListings.GetListing(id, this.ActiveListingType));
+        }
+        return $.when.apply($, listingDefereds).then(function() {
+          var beds, data, end_date, list, listing, name, start_date, _j, _len1;
+          list = "";
+          for (_j = 0, _len1 = arguments.length; _j < _len1; _j++) {
+            listing = arguments[_j];
+            start_date = new Date(listing.Rental.start_date);
+            end_date = new Date(listing.Rental.end_date);
+            if (listing.Marker.alternate_name != null) {
+              name = listing.Marker.alternate_name;
+            } else {
+              name = listing.Marker.street_address;
+            }
+            if (listing.Rental.beds > 1) {
+              beds = "" + listing.Rental.beds + " beds";
+            } else {
+              beds = "" + listing.Rental.beds + " bed";
+            }
+            data = {
+              rent: parseFloat(listing.Rental.rent).toFixed(2),
+              beds: beds,
+              building_type: listing.Marker.building_type_id,
+              start_date: _this.getDateString(start_date),
+              end_date: _this.getDateString(end_date),
+              name: name,
+              img: "http://lorempixel.com/96/64/city/"
+            };
+            list += _this.ListItemTemplate(data);
+          }
+          return _this.SidebarUI.find('#featured-listings').html(list);
+        });
+      };
+
+      return Sidebar;
+
+    })();
+
+    FeaturedListings.ListItemHTML = "<div class = 'fl-sb-item'>\n    <span class = 'img-wrapper'>\n        <img src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease-end'><%= end_date %></span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 

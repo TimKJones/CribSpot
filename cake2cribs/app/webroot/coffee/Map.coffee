@@ -97,6 +97,8 @@ class A2Cribs.Map
 		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FilterManager.InitAddressSearch()
 
+		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE)
+
 	@LoadBasicData: ->
 		deferred = new $.Deferred
 		$.ajax 

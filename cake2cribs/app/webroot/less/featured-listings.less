@@ -181,150 +181,180 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
 /* Featured Listing Map CSS */
 
-.featured-listing-map-sidebar{
-    @SidebarWidth: 350px;
-    width: @SidebarWidth;
+.featured-listings-wrapper{
+    position: absolute;
+    top: 60px;
+    width: 340px;
+    right: 10px;
+    bottom: 10px;
 
-    .map-listing-item{
+    border-left: 2px solid #f5f5f5;
+    box-shadow: -1px 0 0 2px rgba(0,0,0,0.2);
+
+    #fl-side-bar{
+        top: 0;
+        bottom: 0;
+        width: 340px
         position: relative;
-        border-top: 1px solid #c1c1c1;
-        height: 70px;
+    }
+
+    #uni-banner{
+        height: 80px;
+        width: 100%;
+        background: #a2bfe3;
+    }
+
+    #uni-name{
+        height: 32px;
+        width: 100%;
+        line-height: 32px;
+        background: #FFF;
+        border-bottom: 1px solid rgb(206, 206, 206);
+        #name{
+            font-size: 18px;
+            padding-left: 10px;
+            color: #3f3f3f;
+            font-family: ReklameScriptRegular, ReklameScriptMedium,Serif;
+
+        }
         
-        background: #f5f5f5;
+        #like-us{
+            a{
+                color:#3d6ec0;
+                font-weight: bold;
+                font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+                // font-weight: 300;
+                &:hover{
+                    text-decoration: none;
+                }
 
-        .property-picture{
-            position:absolute;
-            left: 10px;
-            top: 7px;
-
-            height: 55px;
-            width: 60px;
-
-            img{
-                border-radius: 2px;
             }
-        }
-
-        .listing-info{
-            @BorderColor: #d5d5d5;
-
-            position: absolute;
-            height: 100%;
-            left: 85px;
-            right: 0;
-
-            .top-section{
-                position:relative;
-                height: 30px;
-                margin-top: 5px;
-                line-height: 35px;
-                
-                .left{
-                    position: absolute;
-                    left:0;
-                    right: 75px;
-
-                    border-right: 2px solid @BorderColor;
-                    border-bottom: 2px solid @BorderColor;
-
-                    .favorite-listing{
-                        
-                        float: right;
-                        padding-top: 4px;
-                        padding-right: 10px;
-                        // font-size: 13px;
-                        color: #bbbbbb;
-                     
-                        i.icon-heart{ //little fix to center the heart within the circle
-                            padding-top: 1px;
-                            // padding-left: 1px;
-                        }                         
-                        &:hover{
-                            cursor: pointer;
-                            color: #d89090;
-                        }
-                    }
-                        
-                }
-
-                .right{
-                    
-                    position: absolute;
-                    right: 0;
-                    width: 75px;
-                    text-align: center;
-                    .price{
-                        font-size: 16px;
-                        color: #6bac74;
-                    }
-
-                    .bottom-border{
-                        position:absolute;
-                        bottom: -2px; // hacky to get the two borders to line up
-                        right:30px;
-                        width:45px;
-                        border-bottom: 2px solid @BorderColor;
-                    }
-
-                }
-                
-            }
-
-
-            .bottom-section{
-                position:relative;
-                color: #80838a;
-                padding-top: 10px;
-                font-size: 12px;
-                // overflow: auto;
-                span.listing-type{
-                    width:30%;
-                }
-                span.num-occupants{
-                    width:18%;
-                }
-                span.lease-type{
-                    width: 25%;
-                }
-                span.lease-duration{
-                    width: 20%;
-                }
-
-                span{
-                //     // padding-left: 4px;
-                //     // padding-right: 4px;
-                //     width: 23%; 
-                    display:inline-block;
-                //     // margin: auto;
-                }
-            }
-
+            font-size: 12px;
+            color: #797979;
+            padding-right: 5px; 
         }
 
 
     }
 
+    #list-info{
 
-}
-
-
-
-
-
-
-
-
-
-
-@widget_width: 350px;
-.fl_sidebar{    
-    width: @widget_width;
-    #listings_list{
-        overflow: auto;
+        height: 24px;
+        width: 100%;
+        background: #f9f4de;
+        border-bottom: 3px solid rgb(206, 206, 206);
+        line-height: 24px;
+        font-size: 12px;
+        color: #797979;
+        span{
+            padding-left: 10px
+        }
     }
-}
-.test-controls{
-    padding-top: 20px;
-}
 
 
+
+    #listings-list{
+        position: absolute;
+        top: 139px;
+        left: 0px;
+        right: 0px;
+        // width: 100%;
+        bottom: 0px;
+        // /bottom: 0;
+        // width: 100%;
+        background: #ecedee;
+        #featured-listings{
+            padding-bottom: 5px;
+            border-bottom: 2px solid #d7d7d7;
+        }
+    }
+
+    .spacer{
+        width: 320px;
+        height: 2px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background: black;
+    }
+
+}
+
+.fl-sb-item{
+
+    width: 327px;
+    height: 77px;
+
+    color: #797979;
+    font-size: 13px; 
+    
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    background: #FFFFFF;       
+
+    border: 3px solid #cacaca;
+    border-radius: 5px;
+
+    position: relative;
+    .img-wrapper{
+        position: absolute;
+        left: 5px;
+        top:6px;
+        width: 96px;
+        height: 64px;
+    }
+    .vert-line{
+        position: absolute;
+        left: 106px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #d5d5d5
+    }
+
+    .row-div{
+        width: 100%;
+        height: 1px;
+        background: #d7d7d7;
+    }
+
+    .price-text{
+        color: #5f5f5f;
+        font-weight: bold;
+
+    }
+    .info-wrapper{
+        position: absolute;
+        left: 106px;
+        top: 8px;
+        bottom: 5px;
+        right: 0px;
+
+    }
+
+    .info-row{
+        padding-left: 10px;
+    }
+
+    .divider{
+        color: #d3d3d3;
+    }
+    span.name{
+        padding-left: 5px;
+    }
+    .fav-icon{
+        padding-right: 5px;
+        font-size: 14px;
+        color: #bfbfbf;
+        &:hover{
+            cursor: pointer;
+            color: #dc4444;
+        }
+    }
+    
+}

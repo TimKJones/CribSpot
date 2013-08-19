@@ -127,7 +127,8 @@
       this.LoadAllMapData();
       A2Cribs.MarkerTooltip.Init();
       A2Cribs.FavoritesManager.LoadFavorites();
-      return A2Cribs.FilterManager.InitAddressSearch();
+      A2Cribs.FilterManager.InitAddressSearch();
+      return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE);
     };
 
     Map.LoadBasicData = function() {

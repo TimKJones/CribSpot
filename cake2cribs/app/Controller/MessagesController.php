@@ -2,7 +2,7 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Sublet');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
@@ -241,10 +241,10 @@
             throw new NotFoundException();
         }  
 
-        $sublet_id = $this->request->data['sublet_id'];
+        $listing_id = $this->request->data['listing_id'];
         $message_body = $this->request->data['message_body'];
 
-        if(!($sublet_id && $message_body)){
+        if(!($listing_id && $message_body)){
             $json = json_encode(array(
                 'success' => false,
                 'message' => "Not all parameters received in request",
@@ -256,11 +256,11 @@
 
         $user = $this->User->get($this->Auth->User('id'));
 
-        $sublet = $this->Sublet->find('first', array('conditions'=>'Sublet.id='.$sublet_id));
-        if($sublet == null){
+        $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$listing_id));
+        if($listing_id == null){
             $json = json_encode(array(
                 'success' => false,
-                'message' => "sublet with id $sublet_id does not exist",
+                'message' => "listing with id $listing_id does not exist",
             ));
             $this->layout = 'ajax';
             $this->set('response', $json);
@@ -268,11 +268,10 @@
         }
 
 
-
         $options['conditions'] = array(
-            'Conversation.sublet_id'=>$sublet['Sublet']['id'],
+            'Conversation.listing_id'=>$listing['Listing']['listing_id'],
             'Conversation.participant1_id'=>$user['User']['id'],
-            'Conversation.participant2_id'=>$sublet['User']['id']
+            'Conversation.participant2_id'=>$listing['User']['id']
             );
         $conversation = $this->Conversation->find('first', $options);
         if($conversation){
@@ -287,12 +286,12 @@
             
             
             $data = array();
-            $data['sublet_id'] = $sublet_id;
+            $data['listing_id'] = $listing_id;
             $data['participant1_id'] = $user['User']['id'];
-            $data['participant2_id'] = $sublet['Sublet']['user_id'];
+            $data['participant2_id'] = $listing['User']['id'];
             // We need to get the street address of the marker the sublet
             // Corresponds to since that will be the title of the conversation
-            $data['title'] = $sublet['Marker']['street_address'];
+            $data['title'] = $listing['Marker']['street_address'];
 
             $this->Conversation->createConversation($data);
             $conversation = $this->Conversation->read();
@@ -304,7 +303,7 @@
 
         }   
 
-        $this->emailUserAboutMessage($sublet['User']['email'], $user['User'], $conversation);
+        $this->emailUserAboutMessage($listing['User']['email'], $user['User'], $conversation); 
         $json = json_encode(array(
                 'success' => true,
         ));

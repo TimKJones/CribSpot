@@ -104,4 +104,5 @@
 - UsersController->AjaxLogin
 48
 - User/SaveFacebookUser
+- Image->SaveImage
 

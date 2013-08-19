@@ -1,4 +1,3 @@
-<?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->script('src/Order'); ?>
 <?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
 <?php echo $this->Html->script('less.js'); ?>

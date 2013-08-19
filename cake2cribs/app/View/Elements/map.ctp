@@ -3,7 +3,7 @@
 	{
 		position: absolute;
 		top: 60px;
-		right: 10px;
+		right: 370px;
 		left: 10px;
 		bottom: 10px;
 		box-shadow: 0 0 5px black;

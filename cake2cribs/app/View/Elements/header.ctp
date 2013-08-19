@@ -16,6 +16,45 @@
 	echo $this->Html->script('bootstrap-slider');
 	echo $this->Html->script('src/PageHeader');
 ?>
+<style> 
+@font-face {
+    font-family: 'ReklameScriptRegularDEMORg';
+    src: url('/font/ReklameScript-Regular_DEMO-webfont.eot');
+    src: url('/font/ReklameScript-Regular_DEMO-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/font/ReklameScript-Regular_DEMO-webfont.woff') format('woff'),
+         url('/font/ReklameScript-Regular_DEMO-webfont.ttf') format('truetype'),
+         url('/font/ReklameScript-Regular_DEMO-webfont.svg#ReklameScriptRegularDEMORg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ReklameScriptRegular';
+    src: url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.eot');
+    src: url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.woff') format('woff'),
+         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.ttf') format('truetype'),
+         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.svg#ReklameScriptRegularRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'ReklameScriptMedium';
+    src: url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.eot');
+    src: url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.woff') format('woff'),
+         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.ttf') format('truetype'),
+         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.svg#ReklameScriptMediumRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+</style>
 <div id="header" class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">

@@ -93,7 +93,9 @@ class Listing extends AppModel {
 		$error['validationErrors'] = $this->validationErrors;
 		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
+			'message' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 6'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -127,7 +129,9 @@ class Listing extends AppModel {
 				$error['validation'] = $this->validationErrors;
 				$this->LogError($user_id, 2, $error);
 				return array("error" => array('validation' => $this->validationErrors,
-				'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 2'));
+			'message' => 'Looks like we had some problems deleting your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 2'));
 			}
 		}
 

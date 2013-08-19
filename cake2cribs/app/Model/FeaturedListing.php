@@ -69,7 +69,7 @@ class FeaturedListing extends AppModel {
 
     // A seed value is used along with the page size to pull out a select few
     // featured listings. 
-    public function getSideBarConditions($date, $region_id=null){
+    public function getSideBarConditions($date, $university_id){
 
         $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
 
@@ -77,6 +77,7 @@ class FeaturedListing extends AppModel {
             'and' => array(
                         array(
                             'FeaturedListing.date = ' => $date,
+                            'FeaturedListing.university_id = ' => $university_id
                             ),
                     )
             );

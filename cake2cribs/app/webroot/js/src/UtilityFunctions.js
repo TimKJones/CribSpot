@@ -26,7 +26,9 @@
         x: lx,
         y: ly
       };
-      return x;
+      return x({
+        this.MonthArray: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      });
     };
 
     /*

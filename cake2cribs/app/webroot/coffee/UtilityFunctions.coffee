@@ -14,7 +14,7 @@ class A2Cribs.UtilityFunctions
 			x: lx
 			y: ly
 		return x
-
+    @MonthArray : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 	###
 	Returns a date (year, month, day) formatted for Mysql

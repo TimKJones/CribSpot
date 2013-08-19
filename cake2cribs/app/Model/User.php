@@ -52,6 +52,16 @@ class User extends AppModel {
 				'message' => 'Names must only contain letters and numbers.'
 				)
 		),
+		'company_name' => array(
+			'between' => array(
+				'rule' => array('between',0,50),
+				'message' => 'Must be between 0 and 50 characters'
+				),
+			'alphaNumeric' => array(
+				'rule' => 'alphaNumeric',
+				'message' => 'Names must only contain letters and numbers.'
+				)
+		),
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 255)
@@ -118,6 +128,7 @@ class User extends AppModel {
 		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
+		'last_login' => 'datetime',
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -265,7 +276,9 @@ class User extends AppModel {
 			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 26, $error);
 			return array('error' => 
-					'Failed to verify user email. Contact help@cribspot.com if the error persists. Reference error code 26');
+					'Looks like we had some issues verifying your email address...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 26');
 		}
 
 		return array('success' => '');
@@ -316,7 +329,9 @@ class User extends AppModel {
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 32, $error);
 			return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 32'));
+			'message' => 'Looks like we had some issues changing your password...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 32'));
 		}
 
 		return array('success'=>'');
@@ -371,7 +386,9 @@ class User extends AppModel {
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 29, $error);
 			return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 29'));
+			'message' => 'Looks like we had some issues resetting your password...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 29'));
 			return false;
 		}
 
@@ -402,7 +419,9 @@ class User extends AppModel {
 			$error['user'] = $user;
 			$this->LogError(null, 45, $error);
 			return array('error' => 
-					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 36');
+					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 36');
 		}
 
 		if (!$this->save(array('User'=>$user))) {
@@ -412,7 +431,9 @@ class User extends AppModel {
 			CakeLog::write('validation', print_r($this->validationErrors, true));
 			$this->LogError(null, 46, $error);
 			return array('error' => 	
-					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 37');
+					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 37');
 		}
 
 		return array('success'=>'');
@@ -447,7 +468,7 @@ class User extends AppModel {
 		$local_user = $this->find('first', array(
 			'conditions' => array('facebook_userid' => $fb_id)
         ));
-CakeLog::write("localuser", print_r($local_user, true));
+
 		return $local_user;
 	}
 
@@ -456,17 +477,26 @@ CakeLog::write("localuser", print_r($local_user, true));
 	*/
 	public function SaveFacebookUser($user)
 	{
-		CakeLog::write('savinguser', print_r($user, true));
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;
 			$error['validation'] = $this->validationErrors;
 			$this->LogError(null, 48, $error);
 			return array('error' => 
-					'Failed to login with Facebook. Contact help@cribspot.com if the error persists. Reference error code 39');
+					'Looks like we had some issues logging you in with Facebook...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
+					'at help@cribspot.com. Reference error code 39');
 		}
 
 		return array('success'=>'');
+	}
+
+	public function UpdateLastLogin($user_id)
+	{
+		date_default_timezone_set('America/New_York');
+		$now = DboSource::expression('NOW()');
+		$this->id = $user_id;
+		$this->saveField('last_login', $now);
 	}
 
 	/*

@@ -3,11 +3,26 @@ class FeaturedListingsController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
   public $uses = array('Listing', 'User', 'FeaturedListing', 'University', 'NewspaperAdmin', 'Marker');
-
+  public function beforeFilter()
+  {
+    parent::beforeFilter();
+    $this->Auth->allow('cycleIds');
+  }
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
   const ELIGIBLE_UNI_RADIUS_MILES = 20;
   
+  public function cycleIds($university_id, $limit){
+    $listings_data = $this->cycleFeaturedListings($limit, $university_id);
+    $listing_ids = array();
+    foreach ($listings_data as $listing) {
+      array_push($listing_ids, $listing['Listing']['listing_id']);
+    }
+    $this->layout = 'ajax';
+    $this->set('response', json_encode($listing_ids));
+
+  }
+
   //Returns a list view of featured listing items
   //the fls selected change every time the user loads
   //the page. I use sessions to store data so I can cycle through
@@ -67,35 +82,42 @@ class FeaturedListingsController extends AppController {
   Returns an array of featured listings, that get cycled
   each time this function is invoked
   */
-  private function cycleFeaturedListings($limit){
-    $day = time();
-    //TODO get date relative to users time zone
+  private function cycleFeaturedListings($limit, $university_id){
+    // $day = time();
+    // //TODO get date relative to users time zone
 
-    $date = date("Y-m-d", $day);
+    // $date = date("Y-m-d", $day);
 
-    // Get the session data so we we know what data to get
+    // // Get the session data so we we know what data to get
 
-    $seed = $this->Session->read('FeaturedListing.SideBarSeed');
+    // $seed = $this->Session->read('FeaturedListing.SideBarSeed');
     
-    if($seed == null){
-      //generate a psuedo random seed.
-      $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
-    }
-    //increment the seed
-    $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
-    $this->Session->write('FeaturedListing.SideBarSeed', $seed);
-    $page = ($seed % ($limit+1)) + 1;
-    $conditions = $this->FeaturedListing->getSideBarConditions($date);
-    // Paginate is not available in the model so it has to be in the controller
-    $this->paginate = array(
-                'conditions' => $conditions,
-                'page' => $page,
-                'limit' => $limit,
-                'order' => array('FeaturedListing.id' => 'desc'),
-            );
+    // if($seed == null){
+    //   //generate a psuedo random seed.
+    //   $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
+    // }
+    // //increment the seed
+    // $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
+    // $this->Session->write('FeaturedListing.SideBarSeed', $seed);
+    // $page = ($seed % ($limit+1)) + 1;
+    // $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
+    // // Paginate is not available in the model so it has to be in the controller
+    // $this->paginate = array(
+    //             'conditions' => $conditions,
+    //             'page' => $page,
+    //             'limit' => $limit,
+    //             'order' => array('FeaturedListing.id' => 'desc'),
+    //         );
     
-    $listings_data = $this->paginate('FeaturedListing');
-    return $listings_data;
+    // $listings_data = $this->paginate('FeaturedListing');
+    // if(count($listings_data) == 0){
+    //   return $this->cycleFeaturedListings($limit, $university_id);
+    // }
+
+    return $this->FeaturedListing->find('all', array('limit'=>$limit));
+
+
+    // return $listings_data;
 
   }
 
