@@ -86,6 +86,7 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
 		echo $this->Html->css('basic');
+		echo $this->Html->css('/font/stylesheet.css');
 
 
 

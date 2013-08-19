@@ -2,7 +2,6 @@
 	/* Less files for style */
 	/* Eventually switch to css */
 	echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false));
-	echo $this->Html->css('/font/stylesheet.css', 'stylesheet', array('inline' => false));
 
 	echo $this->element('popups');
 	echo $this->element('login');
