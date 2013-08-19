@@ -4,7 +4,6 @@
 	echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false));
 
 	echo $this->element('popups');
-	echo $this->element('login');
 
 	echo $this->Html->script('src/PageHeader');
 ?>
@@ -35,8 +34,15 @@
 					</li>
 				<?php } 
 					else { ?>
-					<li class="signup_btn">
-						<a href="#login_modal" role="button" class="signup" data-toggle="modal">Login</a>
+					<li class="menu dropdown signup_btn">
+						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Login</a>
+						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
+							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
+								<input type="email" id="inputEmail" name="email" placeholder="Email">
+								<input type="password" id="inputPassword" name="password" placeholder="Password">
+								<button type="submit" id="submitButton" class="btn">Sign in</button>
+							</form>
+						</div>
 					</li>
 					<li class="signup_btn">
 						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem')); ?>
@@ -60,29 +66,10 @@
 	</div>
 </div>
 
-<?php
-/*	$this->Js->buffer('
-		$(".tooltip-btn").tooltip();	
-		$(".popover-btn").popover();
-		var nowTemp = new Date();
-		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		A2Cribs.FilterManager.StartDateObject = $("#startDate").datepicker({
-		  onRender: function(date) {
-		    return date.valueOf() < now.valueOf() ? "disabled" : "";
-		  }
-		}).on("changeDate", function(ev) {
-    		A2Cribs.FilterManager.ApplyFilter(ev);
-    	}).data("datepicker");
-
-		A2Cribs.FilterManager.EndDateObject = $("#endDate").datepicker({
-		  onRender: function(date) {
-		    return date.valueOf() < now.valueOf() ? "disabled" : "";
-		  }
-		}).on("changeDate", function(ev) {
-    		A2Cribs.FilterManager.ApplyFilter(ev);
-    	}).data("datepicker");
-		A2Cribs.PageHeader.renderUnreadConversationsCount();
-		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
+<?php 
+	$this->Js->buffer('
+		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
+			e.stopPropagation();
+		});
 	');
-	*/
 ?>
