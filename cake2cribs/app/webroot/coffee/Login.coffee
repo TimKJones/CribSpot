@@ -26,8 +26,8 @@ class A2Cribs.Login
 			@div.find("##{$(target).attr("id")}_signup").show()
 
 		# Click and form handlers for login
-		@div.find("#login_button").click @cribspotLogin
-		@div.find("#login_content").submit @cribspotLogin
+		@div.find("#login_content").submit (event) => 
+			@cribspotLogin event.delegateTarget
 
 		# Click and form handlers for student user creation
 		@div.find("#student_submit").click @CreateStudent
@@ -38,12 +38,12 @@ class A2Cribs.Login
 		@div.find("#pm_signup").submit @CreatePropertyManager
 
 			
-	@cribspotLogin:() ->
+	@cribspotLogin:(div) ->
 		url = myBaseUrl + "users/AjaxLogin"
 		request_data = {
 			User: {
-				email: $('#inputEmail').val()
-				password: $('#inputPassword').val()
+				email: $(div).find('#inputEmail').val()
+				password: $(div).find('#inputPassword').val()
 			}
 			
 		}
@@ -59,7 +59,7 @@ class A2Cribs.Login
 						A2Cribs.UIManager.Alert data.error
 					###
 				else
-					window.location.href = '/dashboard'
+					window.location.reload()
 
 		return false
 

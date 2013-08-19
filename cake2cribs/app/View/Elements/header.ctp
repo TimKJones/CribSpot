@@ -5,6 +5,7 @@
 	echo $this->Html->css('/font/stylesheet.css', 'stylesheet', array('inline' => false));
 
 	echo $this->element('popups');
+	echo $this->element('login');
 
 	echo $this->Html->script('src/PageHeader');
 ?>
@@ -34,7 +35,18 @@
 						<a href=""><i class="icon-heart icon-large"></i></a>
 					</li>
 				<?php } 
-				} ?>
+					else { ?>
+					<li class="signup_btn">
+						<a href="#login_modal" role="button" class="signup" data-toggle="modal">Login</a>
+					</li>
+					<li class="signup_btn">
+						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem')); ?>
+					</li>
+				<?php
+					}
+				}
+				?>
+
 				<li class="menu dropdown">
 					<a href="#" id="menu_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
