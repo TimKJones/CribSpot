@@ -21,7 +21,7 @@
                 <input class="span12" type="email" id="inputEmail" name="email">
                 <h5>Password</h5>
                 <input class="span12" type="password" id="inputPassword" name="password">
-                <a href="#" class="pull-right">Forgot your password?</a>
+                <?= $this->Html->link('Forgot Your Password?' , array('controller' => 'users', 'action' => 'resetpassword'), array('class' => 'pull-right')); ?>
                 <button id="login_button" type="submit" class="btn btn-primary">Sign in</button>
                 <br>
                 <a href="#" class="show_signup pull-right">Don't have an account? Join the party!</a>
