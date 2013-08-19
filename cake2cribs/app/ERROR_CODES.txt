@@ -89,3 +89,5 @@
 - Favorite->DeleteFavorite
 43
 - Favorite->AddFavorite
+44
+- Users/ResendConfirmationEmail

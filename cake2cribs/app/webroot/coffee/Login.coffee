@@ -63,14 +63,14 @@ class A2Cribs.Login
 
 		return false
 
-	@ResendConfirmationEmail: (email) ->
+	@ResendConfirmationEmail: () ->
 		$.ajax 
-			url: myBaseUrl + "users/ResendConfirmationEmail/" + email
+			url: myBaseUrl + "users/ResendConfirmationEmail"
 			type:"POST"
 			success:(response) ->
 				response = JSON.parse response
 				if response.error?
-					A2Cribs.UIManager.Alert response.error
+					A2Cribs.UIManager.Alert response.error.message
 
 	validate = (user_type, required_fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"

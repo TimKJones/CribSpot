@@ -70,14 +70,14 @@
       return false;
     };
 
-    Login.ResendConfirmationEmail = function(email) {
+    Login.ResendConfirmationEmail = function() {
       return $.ajax({
-        url: myBaseUrl + "users/ResendConfirmationEmail/" + email,
+        url: myBaseUrl + "users/ResendConfirmationEmail",
         type: "POST",
         success: function(response) {
           response = JSON.parse(response);
           if (response.error != null) {
-            return A2Cribs.UIManager.Alert(response.error);
+            return A2Cribs.UIManager.Alert(response.error.message);
           }
         }
       });
