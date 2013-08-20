@@ -143,30 +143,27 @@ class RentalPrototype extends AppModel {
 	}
 
 	/* ---------- washer_dryer ---------- */
-	const WASHER_DRYER_IN_UNIT = 0;
-	const WASHER_DRYER_ON_SITE_FREE = 1;
-	const WASHER_DRYER_ON_SITE_COIN_OPERATED = 2;
+	const WASHER_DRYER_NONE = 0;
+	const WASHER_DRYER_IN_UNIT = 1;
+	const WASHER_DRYER_ON_SITE = 2;
 	const WASHER_DRYER_OFF_SITE = 3;
-	const WASHER_DRYER_NONE = 4;
 
 	public static function washer_dryer($value = null) {
 		$options = array(
+			self::WASHER_DRYER_NONE => __('None',true),
 		    self::WASHER_DRYER_IN_UNIT => __('In-Unit',true),
-		    self::WASHER_DRYER_ON_SITE_FREE => __('On-Site Free',true),
-		    self::WASHER_DRYER_ON_SITE_COIN_OPERATED => __('On-Site Coin Operated',true),
+		    self::WASHER_DRYER_ON_SITE => __('On-Site',true),
 		    self::WASHER_DRYER_OFF_SITE => __('Off-Site',true),
-		    self::WASHER_DRYER_NONE => __('None',true),
 		);
 		return parent::enum($value, $options);
 	}
 
 	public static function washer_dryer_reverse($value = null) {
 		$options = array(
-			'In-Unit' => self::WASHER_DRYER_IN_UNIT,
-			'On-Site Free' => self::WASHER_DRYER_ON_SITE_FREE,
-			'On-Site Coin Operated' => self::WASHER_DRYER_ON_SITE_COIN_OPERATED,
-			'Off-Site' => self::WASHER_DRYER_OFF_SITE,
 			'None' => self::WASHER_DRYER_NONE,
+			'In-Unit' => self::WASHER_DRYER_IN_UNIT,
+			'On-Site' => self::WASHER_DRYER_ON_SITE,
+			'Off-Site' => self::WASHER_DRYER_OFF_SITE,
 		);
 		return parent::StringToInteger($value, $options);
 	}

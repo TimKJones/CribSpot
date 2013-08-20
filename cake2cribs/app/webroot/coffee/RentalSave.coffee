@@ -545,11 +545,10 @@ class A2Cribs.RentalSave
 				}
 				{
 					id: "washer_dryer"
-					cssClass: "grid_checkbox"
 					name: "Washer/Dryer"
 					field: "washer_dryer"
-					editor: Slick.Editors.Checkbox
-					formatter: A2Cribs.Formatters.Check
+					editor: A2Cribs.Editors.Dropdown(["None", "In-Unit", "On-Site", "Off-Site"])
+					formatter: A2Cribs.Formatters.Dropdown(["None", "In-Unit", "On-Site", "Off-Site"])
 				}
 				{
 					id: "fridge"
