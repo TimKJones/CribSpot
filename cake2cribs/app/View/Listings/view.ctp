@@ -127,6 +127,9 @@
 					</div>
 				</div>
 				<div class="row-fluid hide" id="contact_message">
+					<div class="row-fluid phone">
+						Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
+					</div>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
 					</div>
