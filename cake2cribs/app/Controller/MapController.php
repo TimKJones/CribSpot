@@ -155,6 +155,9 @@ class MapController extends AppController {
     public function LoadMarkers($school_id, $listing_type) {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
+/* 
+change names for building_type_id to string
+Only return */
 
         $target_lat_long = $this->University->getTargetLatLong($school_id);
         $markers = $this->Marker->getAllMarkers($target_lat_long);
@@ -166,12 +169,13 @@ class MapController extends AppController {
     /*
     Loads the listing data necessary for the first marker click popup
     */
-    public function GetBasicData($listing_type)
+    public function GetBasicData($listing_type, $university_id)
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
-        $data = $this->Listing->GetBasicData($listing_type);
+        $target_lat_long = $this->University->getTargetLatLong($university_id);
+        $data = $this->Listing->GetBasicData($listing_type, $target_lat_long);
         $response = json_encode($data);
         $this->set("response", $response);
     }
