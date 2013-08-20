@@ -12,7 +12,7 @@ class A2Cribs.PageHeader
 				# console.log "user is not logged in so error occured while checking messages" + error 
 
 			count = response_data.unread_conversations
-			notification = $('#unread-conversation-notification')
+			notification = $('.message_count')
 			if count == 0
 				notification.hide()
 			else

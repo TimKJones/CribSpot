@@ -4,7 +4,7 @@
 	#map_region
 	{
 		position: absolute;
-		top: 60px;
+		top: 55px;
 		right: 10px;
 		left: 10px;
 		bottom: 10px;

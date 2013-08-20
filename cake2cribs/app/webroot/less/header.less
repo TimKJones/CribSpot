@@ -59,6 +59,27 @@ body
 	}
 	.personal_buttons
 	{
+		.personal_button
+		{
+			display: inline;
+			position: relative;
+		}
+		.personal_count
+		{
+			position: absolute;
+			background-color: hsl(60, 100%, 90%);
+			font-size: 12px;
+			color: #E63300;
+			bottom: -29px;
+			right: 2px;
+			left: 2px;
+			text-align: center;
+			box-shadow: 0 0 5px hsl(0, 0%, 50%);
+			border-radius: 4px;
+			z-index: -1;
+			font-weight: bold;
+			line-height: 16px;
+		}
 		a
 		{
 			display: inline-block;
@@ -68,9 +89,13 @@ body
 		{
 			color: #d7d7d7;
 		}
-		.icon-heart
+		.favorite_button
 		{
-			color: #e95a4b;
+			&.active
+			{
+				color: #e95a4b;
+			}
+			color: #d7d7d7;
 		}
 		padding-right: 10px;
 		border-right: solid 1px hsl(0, 0%, 0%);

@@ -28,10 +28,18 @@
 							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 						</ul>
 					</li>
+					<?php if (isset($show_personal) && $show_personal) { ?>
 					<li class="personal_buttons">
-						<a href="/messages/"><i class="icon-comment icon-large"></i></a>
-						<a href=""><i class="icon-heart icon-large"></i></a>
+						<div class="personal_button">
+							<a href="/messages/"><i class="icon-comment icon-large"></i></a>
+							<div class="message_count personal_count"></div>
+						</div>
+						<div class="personal_button">
+							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility(this)"><i class="icon-heart icon-large"></i></a>
+							<div class="favorite_count personal_count"></div>
+						</div>
 					</li>
+					<?php } ?>
 				<?php } 
 					else { ?>
 					<li class="menu dropdown signup_btn">
@@ -71,5 +79,6 @@
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
 			e.stopPropagation();
 		});
+		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
 ?>
