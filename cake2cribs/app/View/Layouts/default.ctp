@@ -52,6 +52,7 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 		echo $this->Html->script('src/User');
 		echo $this->Html->script('src/MarkerTooltip');
 		echo $this->Html->script('src/Favorite');
+		echo $this->Html->script('src/Listing');
 		echo $this->Html->script('src/Realtor');
 		echo $this->Html->script('src/Marker');
 		echo $this->Html->script('src/FavoritesManager');

@@ -5,7 +5,7 @@
 	{
 		position: absolute;
 		top: 60px;
-		right: 370px;
+		right: 360px;
 		left: 10px;
 		bottom: 10px;
 		box-shadow: 0 0 5px black;

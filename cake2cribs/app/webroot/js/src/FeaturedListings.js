@@ -26,7 +26,7 @@
 
     FeaturedListings.FL_LIMIT = 5;
 
-    FeaturedListings.GetListing = function(id, type) {
+    FeaturedListings.GetListingDeferred = function(id, type) {
       var deferred, listing_id, listing_type,
         _this = this;
       deferred = new $.Deferred();
@@ -57,29 +57,75 @@
       return deferred.promise();
     };
 
-    FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
-      var getFLIds,
+    FeaturedListings.FetchListingsByIds = function(listing_ids, active_listing_type) {
+      var deferred, id, listingDefereds, _i, _len,
         _this = this;
+      deferred = new $.Deferred();
+      listingDefereds = [];
+      for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
+        id = listing_ids[_i];
+        listingDefereds.push(A2Cribs.FeaturedListings.GetListingDeferred(id, active_listing_type));
+      }
+      return $.when.apply($, listingDefereds).then(function() {
+        return deferred.resolve(arguments);
+      });
+    };
+
+    FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
+      var alt, getFLIds, getRanIds,
+        _this = this;
+      alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) {
         this.SidebarListingCache = {};
       }
       getFLIds = this.GetFlIds(university_id);
+      getRanIds = this.GetRandomListingIdsFromMap(5);
       console.log("Initing sidebar");
-      return $.when(getFLIds).then(function(listing_ids) {
-        var sidebar;
-        console.log(listing_ids);
-        return sidebar = new Sidebar($('#fl-side-bar'), listing_ids, active_listing_type);
+      $.when(getFLIds, getRanIds).then(function(fl_ids, ran_ids) {
+        var get_fl_listings, get_ran_listings;
+        get_fl_listings = _this.FetchListingsByIds(fl_ids, alt);
+        get_ran_listings = _this.FetchListingsByIds(ran_ids, alt);
+        return $.when(get_fl_listings, get_ran_listings).then(function(fl_listings, ran_listings) {
+          var sidebar;
+          return sidebar = new Sidebar($('#fl-side-bar'), fl_listings, ran_listings);
+        });
       });
+      return this.GetRandomListingIdsFromMap(5, function(listing_ids) {
+        return console.log(listing_ids);
+      });
+    };
+
+    FeaturedListings.GetRandomListingIdsFromMap = function(num_) {
+      var num,
+        _this = this;
+      if (!(this.RanIdDeferred != null)) {
+        this.RanIdDeferred = new $.Deferred();
+      }
+      num = num_;
+      $.when(A2Cribs.Map.LoadBasicData()).then(function(data) {
+        var basic_data, d, ids, shuf_ids, _i, _len;
+        basic_data = JSON.parse(data);
+        ids = [];
+        for (_i = 0, _len = basic_data.length; _i < _len; _i++) {
+          d = basic_data[_i];
+          ids.push(d.Listing.listing_id);
+        }
+        shuf_ids = _.shuffle(ids);
+        return _this.RanIdDeferred.resolve(shuf_ids.slice(0, shuf_ids.length % num));
+      });
+      return this.RanIdDeferred.promise();
     };
 
     Sidebar = (function() {
 
-      function Sidebar(SidebarUI, FL_Listing_Ids, ActiveListingType) {
+      function Sidebar(SidebarUI, fl_listings, ran_listings) {
+        var fl_list, ran_list;
         this.SidebarUI = SidebarUI;
-        this.FL_Listing_Ids = FL_Listing_Ids;
-        this.ActiveListingType = ActiveListingType;
         this.ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML);
-        this.fetchListings(this.FL_Listing_Ids);
+        fl_list = this.getListHtml(fl_listings);
+        ran_list = this.getListHtml(ran_listings);
+        this.SidebarUI.find('#featured-listings').html(fl_list);
+        this.SidebarUI.find('#ran-listings').html(ran_list);
       }
 
       Sidebar.prototype.getDateString = function(date) {
@@ -92,46 +138,35 @@
         return "" + month + " " + year;
       };
 
-      Sidebar.prototype.fetchListings = function(listing_ids) {
-        var deferred, id, listingDefereds, _i, _len, _ref,
-          _this = this;
-        deferred = new $.Deferred();
-        listingDefereds = [];
-        _ref = this.FL_Listing_Ids;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          id = _ref[_i];
-          listingDefereds.push(A2Cribs.FeaturedListings.GetListing(id, this.ActiveListingType));
-        }
-        return $.when.apply($, listingDefereds).then(function() {
-          var beds, data, end_date, list, listing, name, start_date, _j, _len1;
-          list = "";
-          for (_j = 0, _len1 = arguments.length; _j < _len1; _j++) {
-            listing = arguments[_j];
-            start_date = new Date(listing.Rental.start_date);
-            end_date = new Date(listing.Rental.end_date);
-            if (listing.Marker.alternate_name != null) {
-              name = listing.Marker.alternate_name;
-            } else {
-              name = listing.Marker.street_address;
-            }
-            if (listing.Rental.beds > 1) {
-              beds = "" + listing.Rental.beds + " beds";
-            } else {
-              beds = "" + listing.Rental.beds + " bed";
-            }
-            data = {
-              rent: parseFloat(listing.Rental.rent).toFixed(2),
-              beds: beds,
-              building_type: listing.Marker.building_type_id,
-              start_date: _this.getDateString(start_date),
-              end_date: _this.getDateString(end_date),
-              name: name,
-              img: "http://lorempixel.com/96/64/city/"
-            };
-            list += _this.ListItemTemplate(data);
+      Sidebar.prototype.getListHtml = function(listings) {
+        var beds, data, end_date, list, listing, name, start_date, _i, _len;
+        list = "";
+        for (_i = 0, _len = listings.length; _i < _len; _i++) {
+          listing = listings[_i];
+          start_date = new Date(listing.Rental.start_date);
+          end_date = new Date(listing.Rental.end_date);
+          if (listing.Marker.alternate_name != null) {
+            name = listing.Marker.alternate_name;
+          } else {
+            name = listing.Marker.street_address;
           }
-          return _this.SidebarUI.find('#featured-listings').html(list);
-        });
+          if (listing.Rental.beds > 1) {
+            beds = "" + listing.Rental.beds + " beds";
+          } else {
+            beds = "" + listing.Rental.beds + " bed";
+          }
+          data = {
+            rent: parseFloat(listing.Rental.rent).toFixed(2),
+            beds: beds,
+            building_type: listing.Marker.building_type_id,
+            start_date: this.getDateString(start_date),
+            end_date: this.getDateString(end_date),
+            name: name,
+            img: "http://lorempixel.com/96/64/city/"
+          };
+          list += this.ListItemTemplate(data);
+        }
+        return list;
       };
 
       return Sidebar;

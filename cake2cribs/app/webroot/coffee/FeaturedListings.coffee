@@ -16,7 +16,7 @@ class A2Cribs.FeaturedListings
 
     @FL_LIMIT: 5
 
-    @GetListing:(id, type)->
+    @GetListingDeferred:(id, type)->
         deferred = new $.Deferred()
         # Need closure
         listing_id = id
@@ -39,31 +39,67 @@ class A2Cribs.FeaturedListings
         return deferred.promise()
 
 
+    @FetchListingsByIds:(listing_ids, active_listing_type)->
+            deferred = new $.Deferred()
+            listingDefereds = []
+            for id in listing_ids
+                listingDefereds.push A2Cribs.FeaturedListings.GetListingDeferred(id, active_listing_type)
+
+            $.when.apply($, listingDefereds).then ()=>
+                deferred.resolve(arguments)
+
+
 
     @InitializeSidebar:(university_id, active_listing_type)->
-        
+        alt = active_listing_type
         if not @SidebarListingCache?
             @SidebarListingCache = {}
         
         getFLIds = @GetFlIds(university_id)
+        getRanIds = @GetRandomListingIdsFromMap(5)
         console.log("Initing sidebar")
         
-        $.when(getFLIds).then (listing_ids)=>
-            console.log(listing_ids)
-            sidebar = new Sidebar($('#fl-side-bar'), listing_ids, active_listing_type)
+        $.when(getFLIds, getRanIds).then (fl_ids, ran_ids)=>
+            get_fl_listings = @FetchListingsByIds(fl_ids, alt)
+            get_ran_listings = @FetchListingsByIds(ran_ids, alt)
 
+            $.when(get_fl_listings, get_ran_listings).then (fl_listings, ran_listings)=>
+                sidebar = new Sidebar($('#fl-side-bar'), fl_listings, ran_listings)
 
+            # @FetchListingsByIds listing_ids, alt, (listings)=>
+            #     sidebar = new Sidebar($('#fl-side-bar'), listings)
+
+        @GetRandomListingIdsFromMap 5, (listing_ids)=>
+            console.log listing_ids
+
+    @GetRandomListingIdsFromMap:(num_)->
+        if not @RanIdDeferred?
+            @RanIdDeferred = new $.Deferred()
+        
+        num = num_
+
+        $.when(A2Cribs.Map.LoadBasicData()).then (data)=>
+            basic_data = JSON.parse(data)
+            ids = []
+            for d in basic_data
+                ids.push d.Listing.listing_id
+            shuf_ids = _.shuffle(ids)
+
+            @RanIdDeferred.resolve(shuf_ids.slice 0, shuf_ids.length % num)
+
+        return @RanIdDeferred.promise()
+
+            
 
     class Sidebar
-        constructor:(@SidebarUI, @FL_Listing_Ids, @ActiveListingType)->
+        constructor:(@SidebarUI, fl_listings, ran_listings)->
             @ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML)
-            # list = ""
-            @fetchListings(@FL_Listing_Ids)
+            fl_list = @getListHtml(fl_listings)
+            ran_list = @getListHtml(ran_listings)
 
-            # for listing in fl_listings
-            #     list += ListItemTemplate(listing)
+            @SidebarUI.find('#featured-listings').html fl_list
+            @SidebarUI.find('#ran-listings').html ran_list
 
-            # @SidebarUI.find('featured_listings').html list
 
         getDateString:(date)->
             
@@ -75,44 +111,40 @@ class A2Cribs.FeaturedListings
             year = date.getFullYear()
             return "#{month} #{year}"
 
-        fetchListings:(listing_ids)->
-            deferred = new $.Deferred()
-            
-            listingDefereds = []
-            for id in @FL_Listing_Ids
-                listingDefereds.push A2Cribs.FeaturedListings.GetListing(id, @ActiveListingType)
+        
+        getListHtml:(listings)->
+            list = ""
+            for listing in listings
+                start_date = new Date(listing.Rental.start_date)
+                end_date = new Date(listing.Rental.end_date)
 
-            $.when.apply($, listingDefereds).then ()=>
-                list = ""
-                for listing in arguments
-                    start_date = new Date(listing.Rental.start_date)
-                    end_date = new Date(listing.Rental.end_date)
+                if listing.Marker.alternate_name? 
+                    name = listing.Marker.alternate_name
+                else
+                    name = listing.Marker.street_address
+                
+                if listing.Rental.beds > 1
+                    beds = "#{listing.Rental.beds} beds"
+                else
+                    beds = "#{listing.Rental.beds} bed"
 
-                    if listing.Marker.alternate_name? 
-                        name = listing.Marker.alternate_name
-                    else
-                        name = listing.Marker.street_address
-                    
-                    if listing.Rental.beds > 1
-                        beds = "#{listing.Rental.beds} beds"
-                    else
-                        beds = "#{listing.Rental.beds} bed"
+                data = {
+                    rent: parseFloat(listing.Rental.rent).toFixed(2)
+                    beds: beds
+                    building_type: listing.Marker.building_type_id
+                    start_date: @getDateString(start_date)
+                    end_date: @getDateString(end_date)
+                    name: name
+                    img: "http://lorempixel.com/96/64/city/"
 
-                    data = {
-                        rent: parseFloat(listing.Rental.rent).toFixed(2)
-                        beds: beds
-                        building_type: listing.Marker.building_type_id
-                        start_date: @getDateString(start_date)
-                        end_date: @getDateString(end_date)
-                        name: name
-                        img: "http://lorempixel.com/96/64/city/"
+                }
 
-                    }
+                list += @ListItemTemplate(data)
 
-                    list += @ListItemTemplate(data)
+            return list
 
-                @SidebarUI.find('#featured-listings').html list
-
+        
+                
 
 
 
