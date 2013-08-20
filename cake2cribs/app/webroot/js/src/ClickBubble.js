@@ -170,9 +170,14 @@ ClickBubble class
       listing = A2Cribs.UserCache.Get("listing", listing_id);
       user = A2Cribs.UserCache.Get("user", listing.user_id);
       if ((user != null ? user.company_name : void 0) != null) {
-        return $("." + div_name).text(user.company_name);
+        $("." + div_name).text(user.company_name);
       } else if (((user != null ? user.first_name : void 0) != null) && user.last_name) {
-        return $("." + div_name).text("" + user.first_name + " " + user.last_name);
+        $("." + div_name).text("" + user.first_name + " " + user.last_name);
+      }
+      if (user != null ? user.verified : void 0) {
+        return this.div.find(".verified").show();
+      } else {
+        return this.div.find(".verified").hide();
       }
     };
 

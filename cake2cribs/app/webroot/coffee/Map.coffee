@@ -100,7 +100,7 @@ class A2Cribs.Map
 	@LoadBasicData: ->
 		deferred = new $.Deferred
 		$.ajax 
-			url: myBaseUrl + "Map/GetBasicData/" + 0
+			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
 			type: "POST"
 			success: (responses) ->
 				deferred.resolve(responses)

@@ -118,6 +118,10 @@ class A2Cribs.ClickBubble
 			$(".#{div_name}").text user.company_name
 		else if user?.first_name? and user.last_name
 			$(".#{div_name}").text "#{user.first_name} #{user.last_name}"
+		if user?.verified
+			@div.find(".verified").show()
+		else
+			@div.find(".verified").hide()
 
 	@setPrimaryImage: (div_name, listing_id) ->
 		image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary()

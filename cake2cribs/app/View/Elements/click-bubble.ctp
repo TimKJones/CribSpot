@@ -21,6 +21,7 @@
 		<div class="date_range">Aug 23rd, 2013</div>&nbsp;&bull;&nbsp;<div class="lease_length"></div><div class="bubble_label">&nbsp;month(s)</div><br>
 		<div class="unit_type">Apartment</div>&nbsp;&bull;&nbsp;<div class="baths">2</div><div class="bubble_label">&nbsp;bath(s)</div>
 		<div class="property_manager">Investor's Property Management</div>
+		<div class="verified hide">VERIFIED</div>
 	</div>
 	<div class="action_buttons">
 		<a class="full_page_link" href="/listing/view/">More Info <i class="icon-plus"></i></a>
