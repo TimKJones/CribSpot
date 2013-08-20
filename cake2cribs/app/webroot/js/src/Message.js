@@ -59,7 +59,7 @@
       return $.get(url, function(data) {
         var response_data;
         response_data = JSON.parse(data);
-        return $('#unread_conversations_count span').html(response_data.unread_conversations);
+        return $('#message_count').html(response_data.unread_conversations);
       });
     };
 
@@ -71,12 +71,18 @@
         url += '?only_unread=1';
       }
       return $.get(url, function(data) {
-        var SelectedConversationDiv;
-        $('.conversation_list').html(data);
-        $('#conversation_count').html($('.conversation_list_item').length);
-        SelectedConversationDiv = $('#cli_' + _this.CurrentConversation);
-        SelectedConversationDiv.addClass('selected_conversation');
-        SelectedConversationDiv.removeClass('unread_conversation');
+        var conversations, convo, list_item, _i, _len;
+        conversations = JSON.parse(data);
+        for (_i = 0, _len = conversations.length; _i < _len; _i++) {
+          convo = conversations[_i];
+          list_item = $("<li />", {
+            text: convo.Conversation.title,
+            "class": "messages_list_item",
+            id: convo.Conversation.conversation_id,
+            "data-participant": convo.Participant.id
+          });
+          $("#messages_list").append(list_item);
+        }
         return _this.attachConversationListItemHandler();
       });
     };
@@ -138,12 +144,18 @@
     };
 
     Messages.loadConversation = function(event) {
+      /*
+      		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
+      		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
+      
+      		$(event.currentTarget)
+      			.addClass('selected_conversation')
+      			.removeClass('unread_conversation')
+      */
+
       var sublet_url, title;
-      $('#cli_' + this.CurrentConversation).removeClass('selected_conversation');
-      $('#cli_' + this.CurrentConversation).addClass('read_conversation');
-      $(event.currentTarget).addClass('selected_conversation').removeClass('unread_conversation');
-      this.CurrentConversation = parseInt($(event.currentTarget).attr('convid'));
-      this.CurrentParticipantID = $('#cli_' + this.CurrentConversation).find('meta').attr('participantid');
+      this.CurrentConversation = parseInt($(event.delegateTarget).attr('id'));
+      this.CurrentParticipantID = $(event.delegateTarget).attr('data-participant');
       $('#message_reply').show();
       $('#participant_info_short').show();
       title = $('#cli_' + this.CurrentConversation).find('.conversation_title').text();
@@ -186,7 +198,7 @@
 
     Messages.attachConversationListItemHandler = function() {
       var _this = this;
-      return $('.conversation_list_item').one('click', function(event) {
+      return $('.messages_list_item').one('click', function(event) {
         return _this.loadConversation(event);
       });
     };

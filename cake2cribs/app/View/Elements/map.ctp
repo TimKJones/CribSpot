@@ -1,3 +1,5 @@
+<?= $this->Html->script('src/Map', array('inline' => false)); ?>
+
 <style type="text/css">
 	#map_region
 	{

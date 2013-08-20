@@ -7,11 +7,7 @@
 
     function beforeFilter(){
         parent::beforeFilter();
-        if(!$this->Auth->user()){
-            //$this->flash("You may not access this page until you login.", array('controller' => 'users', 'action' => 'login'));
-            $this->Session->setFlash(__('Please login to view messages.'));
-            $this->redirect(array('controller'=>'users', 'action'=>'login'));
-        }
+        $this->Auth->allow('contact');
     }
 
     //Shows the base messages page
@@ -52,6 +48,13 @@
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
+    }
+
+    public function contact($listing_id)
+    {
+        $directive['contact_owner'] = true;
+        $this->Cookie->write('fullpage-directive', json_encode($directive));
+        $this->redirect(array('controller' => 'listings', 'action' => 'view', $listing_id));
     }
 
     // //Create a new conversation and the first message thats in the conversation
@@ -106,7 +109,8 @@
         $conversations = $this->Conversation->getConversations($user['id'], ($only_unread==1));
         
         $this->layout = 'ajax';
-        $this->set(array('conversations'=> $conversations));    
+        $json = json_encode($conversations);
+        $this->set('response', $json);
     }
 
     // Ajax function to get a json response with the number of unread messages and conversations a user has
@@ -160,7 +164,7 @@
         $count = ($page-1) * $limit;
 
         $this->layout = 'ajax';
-        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));    
+        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));
     }
 
     public function getParticipantInfo($conv_id){

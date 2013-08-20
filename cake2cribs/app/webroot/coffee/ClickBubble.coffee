@@ -10,8 +10,8 @@ class A2Cribs.ClickBubble
 	Private function that relocates the bubble near the marker
 	###
 	move_near_marker = (listing_id) =>
-		marker = A2Cribs.UserCache.Get("marker", 1).GMarker
-		# marker = A2Cribs.UserCache.GetAllAssociatedObjects "marker", "listing", listing_id
+		listing = A2Cribs.UserCache.Get "listing", listing_id
+		marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker
 		scale = Math.pow 2, @map.getZoom()
 		nw = new google.maps.LatLng @map.getBounds().getNorthEast().lat(), @map.getBounds().getSouthWest().lng()
 		worldCoordinateNW = @map.getProjection().fromLatLngToPoint nw
@@ -44,7 +44,7 @@ class A2Cribs.ClickBubble
 						response_data = JSON.parse data
 						for item in response_data
 							for key, value of item
-								if A2Cribs[key]?
+								if key isnt "Marker" and A2Cribs[key]?
 									A2Cribs.UserCache.Set new A2Cribs[key] value
 
 						listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
@@ -79,6 +79,18 @@ class A2Cribs.ClickBubble
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
 		@setPrimaryImage "property_image", listing_object.listing_id
+		@setFullPage "full_page_link", listing_object.listing_id
+		@setFullPageContact "full_page_contact", listing_object.listing_id
+		@div.find(".facebook_share").click ()->
+			A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@div.find(".link_share").click ()->
+			A2Cribs.ShareManager.CopyListingUrl(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@div.find(".twitter_share").click ()->
+			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
+				marker.street_address, marker.city, marker.state, marker.zip)
+		@setFavoriteButton "favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
 
 	@resolveDateRange: (startDate) ->
 		rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -112,5 +124,19 @@ class A2Cribs.ClickBubble
 		if image_url?
 			$(".#{div_name}").css "background-image", "url(/#{image_url})"
 
+	@setFullPage: (div_name, listing_id) ->
+		link = "/listings/view/#{listing_id}"
+		$(".#{div_name}").attr "href", link
 
+	@setFullPageContact: (div_name, listing_id) ->
+		link = "/messages/contact/#{listing_id}"
+		$(".#{div_name}").attr "href", link
+
+	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
+		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1
+			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.AddFavorite(#{listing_id}, this)"
+			$(".#{div_name}").removeClass "active"
+		else
+			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite(#{listing_id}, this)"
+			$(".#{div_name}").addClass "active"
 

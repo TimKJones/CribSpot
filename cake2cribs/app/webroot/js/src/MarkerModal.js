@@ -50,7 +50,7 @@
     };
 
     MarkerModal.prototype.Save = function(trigger) {
-      var marker_id, marker_object,
+      var latLng, marker_id, marker_object,
         _this = this;
       if (this.MarkerValidate()) {
         if (!this.modal.find('#Marker_latitude').val()) {
@@ -58,6 +58,7 @@
           return;
         }
         marker_id = this.modal.find("#Marker_marker_id").val();
+        latLng = this.MiniMap.GetMarkerPosition();
         marker_object = {
           alternate_name: this.modal.find('#Marker_alternate_name').val(),
           building_type_id: this.modal.find('#Marker_building_type_id').val(),
@@ -65,8 +66,8 @@
           city: this.modal.find('#Marker_city').val(),
           state: this.modal.find('#Marker_state').val(),
           zip: this.modal.find('#Marker_zip').val(),
-          latitude: this.modal.find('#Marker_latitude').val(),
-          longitude: this.modal.find('#Marker_longitude').val()
+          latitude: latLng['latitude'],
+          longitude: latLng['longitude']
         };
         if ((marker_id != null ? marker_id.length : void 0) !== 0) {
           marker_object.marker_id = marker_id;
@@ -200,9 +201,14 @@
     };
 
     MarkerModal.prototype.FindAddress = function(div) {
-      var addressObj,
+      var addressObj, latLng,
         _this = this;
       if (this.MarkerValidate()) {
+        if (div.find("#Marker_latitude").val() && div.find("#Marker_longitude").val()) {
+          latLng = new google.maps.LatLng(div.find("#Marker_latitude").val(), div.find("#Marker_longitude").val());
+          this.MiniMap.SetMarkerPosition(latLng);
+          return;
+        }
         addressObj = {
           address: div.find("#Marker_street_address").val() + " " + div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()
         };

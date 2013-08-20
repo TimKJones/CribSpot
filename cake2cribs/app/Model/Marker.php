@@ -128,9 +128,9 @@ class Marker extends AppModel {
 		}
 
 		$markers = Cache::read('markers');
-		$this->contain();
 
 		//Find all visible markers
+		$this->contain();
 		$markers = $this->find('all', array('conditions'=>'Marker.visible=1'));
 		$filtered_markers = array();
 		CakeLog::write("loadMarkers", print_r($markers, true));
@@ -138,22 +138,19 @@ class Marker extends AppModel {
 		// TODO change this functionality to use a custom sql query
 		// to eliminate the need to filter all the markers everytime
 
+		App::Import('model', 'Rental');
 		for ($i = 0; $i < count($markers); $i++)
 		{
 			$lat = $markers[$i]['Marker']['latitude'];
 			$long = $markers[$i]['Marker']['longitude'];
 			$distance = $this->distance($lat, $long, $target_lat_long['latitude'], $target_lat_long['longitude']);
-			CakeLog::write('distance', $distance);
 			if ($distance < $this->RADIUS)
 			{
+				$markers[$i]['Marker']['building_type_id'] = Rental::building_type(intval($markers[$i]['Marker']['building_type_id']));
 				array_push($filtered_markers, $markers[$i]);
-			}
-			//else
-				//CakeLog::write('distance', print_r($markers[$i], true) . " | " . $distance);
-				
+			}				
 		}
 
-		//die(debug($markers));
 		return json_encode($filtered_markers);
 	}
 
@@ -232,7 +229,7 @@ class Marker extends AppModel {
 					'at help@cribspot.com. Reference error code 35'));
   		}
 		  		
-		return $marker['Marker']['marker_id'];
+		return $this->id;
 	}
 
 

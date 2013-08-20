@@ -26,7 +26,8 @@
         mapTypeControl: false,
         panControl: false,
         zoomControl: false,
-        streetViewControl: false
+        streetViewControl: false,
+        draggable: enabled
       };
       this.Map = new google.maps.Map(mapDiv, MapOptions);
       this.Marker = new google.maps.Marker({
@@ -35,9 +36,6 @@
         map: this.Map,
         visible: marker_visible
       });
-      if (!enabled) {
-        this.Disable();
-      }
       this.Resize();
     }
 

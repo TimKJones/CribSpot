@@ -6,13 +6,16 @@ body
 {
 	padding: 0;
 }
+
 #header
 {
 	.navbar-inner
 	{
+		background-color: #383838;
+		background-image: url(/img/header/header_bg.png);
 		.container
 		{
-			background-color: #383838;
+			background-image: url(/img/header/noise.png);
 		}
 	}
 	.header_logo
@@ -22,6 +25,7 @@ body
 		img
 		{
 			width: 120px;
+			margin-top: 5px;
 		}
 	}
 	box-shadow: 1px 1px 1px gray;
@@ -39,6 +43,8 @@ body
 			color: white;
 			text-shadow: black 0px 1px 1px;
 			padding: 12px;
+			font-size: 14px;
+			font-weight: bold;
 			.caret
 			{
 				border-top-color: white !important;
@@ -53,6 +59,14 @@ body
 			display: inline-block;
 			padding: 12px 0;
 		}
+		.icon-comment
+		{
+			color: #d7d7d7;
+		}
+		.icon-heart
+		{
+			color: #e95a4b;
+		}
 		padding-right: 10px;
 		border-right: solid 1px hsl(0, 0%, 0%);
 	}
@@ -64,6 +78,8 @@ body
 			text-shadow: black 0px 1px 1px;
 			padding: 12px;
 			border-left: solid 1px black;
+			font-family: 'ReklameScriptRegularDEMORg';
+			font-size: 22px;
 			img
 			{
 				height: 31px;
@@ -75,6 +91,17 @@ body
 				border-top-color: white !important;
 				border-bottom-color: white !important;
 			}
+		}
+	}
+	.signup_btn
+	{
+		a 
+		{
+			color: white;
+			text-shadow: black 0px 1px 1px;
+			padding: 12px;
+			font-size: 20px;
+			font-family: 'ReklameScriptRegularDEMORg';
 		}
 	}
 }

@@ -30,22 +30,23 @@
         _this.div.find(".signup").hide();
         return _this.div.find("#" + ($(target).attr("id")) + "_signup").show();
       });
-      this.div.find("#login_button").click(this.cribspotLogin);
-      this.div.find("#login_content").submit(this.cribspotLogin);
+      this.div.find("#login_content").submit(function(event) {
+        return _this.cribspotLogin(event.delegateTarget);
+      });
       this.div.find("#student_submit").click(this.CreateStudent);
       this.div.find("#student_signup").submit(this.CreateStudent);
       this.div.find("#pm_submit").click(this.CreatePropertyManager);
       return this.div.find("#pm_signup").submit(this.CreatePropertyManager);
     };
 
-    Login.cribspotLogin = function() {
+    Login.cribspotLogin = function(div) {
       var request_data, url,
         _this = this;
       url = myBaseUrl + "users/AjaxLogin";
       request_data = {
         User: {
-          email: $('#inputEmail').val(),
-          password: $('#inputPassword').val()
+          email: $(div).find('#inputEmail').val(),
+          password: $(div).find('#inputPassword').val()
         }
       };
       if ((request_data.User.email != null) && (request_data.User.password != null)) {
@@ -62,21 +63,21 @@
             */
 
           } else {
-            return window.location.href = '/dashboard';
+            return window.location.reload();
           }
         });
       }
       return false;
     };
 
-    Login.ResendConfirmationEmail = function(email) {
+    Login.ResendConfirmationEmail = function() {
       return $.ajax({
-        url: myBaseUrl + "users/ResendConfirmationEmail/" + email,
+        url: myBaseUrl + "users/ResendConfirmationEmail",
         type: "POST",
         success: function(response) {
           response = JSON.parse(response);
           if (response.error != null) {
-            return A2Cribs.UIManager.Alert(response.error);
+            return A2Cribs.UIManager.Alert(response.error.message);
           }
         }
       });

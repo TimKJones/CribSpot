@@ -95,7 +95,6 @@
 - Conversation->hideConversation
 44
 - Message->createMessage
-
 45
 - User->RegisterUser
 46
@@ -105,4 +104,12 @@
 48
 - User/SaveFacebookUser
 - Image->SaveImage
+41
+- Favorite->AddFavorite
+49
+- Favorite->DeleteFavorite
+50
+- Favorite->AddFavorite
+51
+- Users/ResendConfirmationEmail
 

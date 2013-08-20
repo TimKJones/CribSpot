@@ -78,12 +78,7 @@ class Rental extends RentalPrototype {
 				'required' => true
 			)
 		),
-		'alternate_start_date' => array(
-			'date' => array(
-				'rule' => 'date',
-				'required' => false
-			)
-		),
+		'alternate_start_date',
 		'lease_length' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -290,7 +285,9 @@ class Rental extends RentalPrototype {
 			'rule' => array('phone', null, 'us')
 		),
 		'website' => 'url',
-		'is_complete' => 'boolean'
+		'is_complete' => 'boolean',
+		'created',
+		'modified'
 	);
 
 	private $MAX_BEDS = 10;

@@ -25,7 +25,7 @@
     };
 
     Marker.prototype.GetBuildingType = function() {
-      return A2Cribs.Marker.BuildingType[parseInt(this.building_type_id, 10)];
+      return this.building_type_id;
     };
 
     Marker.prototype.Init = function() {

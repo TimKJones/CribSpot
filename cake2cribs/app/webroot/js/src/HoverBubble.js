@@ -75,31 +75,30 @@ Wrapper for google infobubble
 
 
     HoverBubble.SetContent = function(marker) {
-      var key, listing, listing_info, listings, num_beds, unit_template, value, _i, _len;
+      var listing, listing_info, listings, unit_template, _i, _len;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
-      this.template.find(".building_type").text(A2Cribs.Marker.BuildingType[+marker.building_type_id]);
+      this.template.find(".building_type").text(marker.GetBuildingType());
       this.template.find(".unit_div").empty();
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
-        if (listing.visible) {
+        if (!(listing.visible != null) || listing.visible) {
           listing_info = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId());
-          unit_template = this.template.find('.templates:first').children().clone();
+          unit_template = $("<div />", {
+            "class": "unit"
+          });
           unit_template.attr("onclick", "A2Cribs.ClickBubble.Open(" + (listing.GetId()) + ")");
-          for (key in listing_info) {
-            value = listing_info[key];
-            if (key === "rent") {
-              unit_template.find("." + key).text("$" + value);
-            } else if (key === "beds") {
-              num_beds = parseInt(value, 10);
-              if (num_beds === 0) {
-                unit_template.find("." + key).text("Studio");
-                unit_template.find(".bed_desc").text("");
-              } else {
-                unit_template.find("." + key).text(num_beds);
-                unit_template.find(".bed_desc").text(num_beds === 1 ? "Bed" : "Beds");
-              }
-            }
-          }
+          $("<div />", {
+            "class": "beds",
+            text: listing_info["beds"]
+          }).appendTo(unit_template);
+          $("<div />", {
+            "class": "bed_desc",
+            text: (listing_info["beds"] != null) === 1 ? "Bed" : "Beds"
+          }).appendTo(unit_template);
+          $("<div />", {
+            "class": "rent",
+            text: "$" + listing_info["rent"]
+          }).appendTo(unit_template);
           this.template.find(".unit_div").append(unit_template);
         }
       }

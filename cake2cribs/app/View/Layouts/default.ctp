@@ -9,7 +9,7 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
-boo * @link          http://cakephp.org CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View.Layouts
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -50,8 +50,6 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/User');
-		echo $this->Html->script('src/Listing');
-		echo $this->Html->script('src/Map');
 		echo $this->Html->script('src/MarkerTooltip');
 		echo $this->Html->script('src/Favorite');
 		echo $this->Html->script('src/Realtor');
@@ -129,10 +127,10 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 	<?php echo $this->element('sql_dump'); ?> */
 ?>
 <script>
-  /*window.fbAsyncInit = function() {
+  window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
-      appId      : '450938858319396', // App ID from the App Dashboard
+      appId      : '<?php echo Configure::read('FB_APP_ID');?>', // App ID from the App Dashboard
       channelUrl : 'http://www.cribspot.com:8888/channel.html', // Channel File for x-domain communication
       status     : true, // check the login status upon init?
       cookie     : true, // set sessions cookies to allow your server to access the session?
@@ -142,19 +140,16 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 
     // Additional initialization code such as adding Event Listeners goes here
 
-  };*/
+  };
 
-  // Load the SDK's source Asynchronously
-  // Note that the debug version is being actively developed and might 
-  // contain some type checks that are overly strict. 
-  // Please report such bugs using the bugs tool.
-  /*(function(d, debug){
-     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
      if (d.getElementById(id)) {return;}
-     js = d.createElement('script'); js.id = id; js.async = true;
-     js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
-     ref.parentNode.insertBefore(js, ref);
-   }(document, debug false));*/
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 </script>
 <?php
 

@@ -46,6 +46,15 @@
 
 			</div>
 
+			<div class = 'row-fluid messages-content hidden'>
+				<div class = 'span9 message-display'>
+					<?php echo $this->element('Messages/message_window') ?>
+				</div>
+				<div class = 'span3'>
+					<?php echo $this->element('Messages/participant_info') ?>
+				</div>
+			</div>
+
 			<div class = 'rentals-content hidden'>
 				<?php echo $this->element('Dashboard/rentals_window') ?>
 			</div>

@@ -13,7 +13,6 @@
 			border-bottom-color: #D8D8D8;
 			border-bottom-width: 1px;
 			font-weight: bold;
-			padding-left: 5px;
 			a
 			{
 				font-size: 13px;
@@ -21,11 +20,37 @@
 				padding: 0;
 				width: 100%;
 				margin: 0;
+				position: relative;
+
+				i
+				{
+					margin-left: 10px;
+				}
+
+				&:hover, &.active
+				{
+					background-color: hsla(240, 100%, 50%, 0.1);
+				}
+				&.active
+				{
+					color: #3366FF;
+				}
 			}
 
-			.item-count
+			.notification_count
 			{
-
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin-right: 20px;
+				background-color: hsl(60, 100%, 90%);
+				padding: 0 10px;
+				height: 20px;
+				margin-top: 10px;
+				margin-bottom: 10px;
+				line-height: 20px;
+				border: 1px solid #D8D8D8;
+				border-radius: 7px;
 			}
 		}
 		li + .active
