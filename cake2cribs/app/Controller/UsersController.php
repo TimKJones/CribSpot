@@ -15,6 +15,8 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
+        $this->Auth->allow('add');
+        $this->Auth->allow('Login');
         $this->Auth->allow('Register');
         $this->Auth->allow('AjaxRegister');
         $this->Auth->allow('VerifyEmailRedirect');
@@ -25,6 +27,11 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
         $this->Auth->allow('Login2');
+    }
+
+    public function add()
+    {
+        $this->redirect(array('action' => 'login', "signup"));
     }
 
     // Sets the directive to view account information
@@ -243,13 +250,15 @@ class UsersController extends AppController {
     /*
     Action for login page.
     */
-    public function Login()
+    public function Login($signup=false)
     {
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
+
+        $this->set('show_signup', $signup);
     }
 
     /*

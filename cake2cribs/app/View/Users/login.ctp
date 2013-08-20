@@ -7,7 +7,7 @@
 
 <div id="login_signup" class="fluid-container">
     <div id="login_row" class="row-fluid">
-        <form id="login_content" class="span4">
+        <form id="login_content" class="span4 <?= ($show_signup) ? "hide" : ""; ?>">
             <div class="row-fluid">
                 <h2>Welcome Back!</h2>
                 <a href="#"><img src="/img/user/btn-facebook-login.png"></a>
@@ -27,7 +27,7 @@
                 <a href="#" class="show_signup pull-right">Don't have an account? Join the party!</a>
             </div>
         </form>
-        <div id="signup_content" class="pull-right span7 hide">
+        <div id="signup_content" class="pull-right span7 <?= ($show_signup) ? "" : "hide"; ?>">
             <div class="row-fluid">
                 <div class="row-fluid">
                     <h2>Let us get to know you.</h2>
