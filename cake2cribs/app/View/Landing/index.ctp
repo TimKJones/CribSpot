@@ -39,5 +39,7 @@
 		?>
 
 	</div>
+	<script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+	<a id="subprobs" href="https://twitter.com/intent/tweet?text=This%20%40TheCribspot%20is%20%23idealideal...Please%20bring%20it%20to%20my%20campus%20%23makeithappen">Tweet to bring to your school!</a>
 </div>
 
