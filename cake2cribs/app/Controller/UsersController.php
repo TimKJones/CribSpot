@@ -15,7 +15,6 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('Register');
         $this->Auth->allow('AjaxRegister');
         $this->Auth->allow('VerifyEmailRedirect');
         $this->Auth->allow('ResetPassword');
@@ -24,7 +23,7 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
-        $this->Auth->allow('Login2');
+        //$this->Auth->allow('Login2');
     }
 
     // Sets the directive to view account information

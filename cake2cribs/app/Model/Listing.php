@@ -44,11 +44,13 @@ class Listing extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'visible' => 'boolean' /* visible is set to false when listing is deleted */
 	);
+
+	public $RADIUS = 12; // radius from center (km) encompassing area to pull properties from
 
 	/* ---------- unit_style_options ---------- */
 	const LISTING_TYPE_RENTAL = 0;
@@ -354,10 +356,10 @@ class Listing extends AppModel {
 		return $this->loadParkingHoverData();
 	}
 
-	public function GetBasicData($listing_type)
+	public function GetBasicData($listing_type, $target_lat_long)
 	{
 		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
-			return $this->_getRentalBasicData();
+			return $this->_getRentalBasicData($target_lat_long);
 		/* Coming soon! 
 		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
 			return $this->_loadSubletHoverData();
@@ -443,18 +445,61 @@ class Listing extends AppModel {
 		$hover_data = $this->find('all', $options);
 	}
 
-	private function _getRentalBasicData()
+	/*
+	Returns basic data for all listings within $RADIUS of $target_lat_long
+	*/
+	private function _getRentalBasicData($target_lat_long)
 	{
-		$this->contain('Rental');
+		$this->contain('Rental', 'Marker');
 		$options = array();
 		$options['fields'] = array(
 			'Rental.rent',
 			'Rental.listing_id',
 			'Rental.beds', 
 			'Listing.marker_id',
-			'Listing.listing_id');
+			'Listing.listing_id',
+			'Marker.marker_id',
+			'Marker.latitude',
+			'Marker.longitude'
+			);
 		$options['conditions'] = array('Listing.visible' => 1);
-		return $this->find('all', $options);
+		$basicData = $this->find('all', $options);
+		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		return $locationFilteredBasicData;
+	}
+
+	function distance($lat1,$lon1,$lat2,$lon2) {
+	  $R = 6371; // Radius of the earth in km
+	  $dLat = deg2rad($lat2-$lat1);  // deg2rad below
+	  $dLon = deg2rad($lon2-$lon1); 
+	  $a = 
+	    sin($dLat/2) * sin($dLat/2) +
+	    cos($this->deg2rad($lat1)) * cos($this->deg2rad($lat2)) * 
+	    sin($dLon/2) * sin($dLon/2); 
+	  $c = 2 * atan2(sqrt($a), sqrt(1-$a)); 
+	  $d = $R * $c; // Distance in km
+	  return $d;
+	}
+
+	function deg2rad($deg) {
+	  return $deg * (pi()/180);
+	}
+
+	private function _filterBasicDataByLocation($target_lat_long, $basicData)
+	{
+		$filteredBasicData = array();
+		for ($i = 0; $i < count($basicData); $i++)
+		{
+			$lat = $basicData[$i]['Marker']['latitude'];
+			$long = $basicData[$i]['Marker']['longitude'];
+			$distance = $this->distance($lat, $long, $target_lat_long['latitude'], $target_lat_long['longitude']);
+			if ($distance < $this->RADIUS)
+			{
+				array_push($filteredBasicData, $basicData[$i]);
+			}				
+		}
+
+		return $filteredBasicData;
 	}
 
 

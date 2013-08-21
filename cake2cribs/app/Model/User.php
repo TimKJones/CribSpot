@@ -7,7 +7,7 @@ class User extends AppModel {
 			'foreignKey' => 'user_id'
 		)
 	);
-	public $belongsTo = 'University'; 	
+	
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
 
