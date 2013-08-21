@@ -2,7 +2,7 @@
 <?php echo $this->Html->script('src/FilterManager', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/RentalFilter', array('inline' => false)); ?>
 
-<?php echo $this->Html->css('slider', 'stylesheet', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('bootstrap-slider', array('inline' => false)); ?>
 
 <div id="map_filter">
