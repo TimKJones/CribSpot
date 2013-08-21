@@ -43,7 +43,7 @@ class Listing extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'visible' => 'boolean' /* visible is set to false when listing is deleted */
