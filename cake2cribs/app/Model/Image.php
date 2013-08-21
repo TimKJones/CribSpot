@@ -52,8 +52,8 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$this->LogError($user_id, 40, $error);
 			return array('error' => 'Looks like we had some problems saving your image! We want to help! If this issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 40');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 40.');
 		}
 
 		if ($currentPath == null)
@@ -79,8 +79,8 @@ class Image extends AppModel {
 				$error['new_path'] = $newPath;
 				$this->LogError($user_id, 14, $error);
 				return array('error' => 'Looks like we had some problems saving your image! We want to help! If this issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 14');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 14.');
 			}
 		}
 
@@ -100,8 +100,8 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$this->LogError($user_id, 21, $error);
 			return array('error' => 'Your file is a little too big.  We don\'t accept images over 5 MB. If you\'re having issues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 21');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 21.');
 		}
 
 		if (!$this->_isValidFileType($file, $user_id)){
@@ -109,8 +109,8 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$this->LogError($user_id, 22, $error);
 			return array('error' => 'Sorry, we only accept jpeg, jpg, or png images.  If you\'re having issues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 22');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 22.');
 		}
 
 		if (!$this->_createFolder($this->_getDeepestDirectoryFromPath($newPath))){
@@ -119,8 +119,8 @@ class Image extends AppModel {
 			$error['path'] = $newPath;
 			$this->LogError($user_id, 18, $error);
 			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 18');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 18.');
 		}
 
 		if (!array_key_exists('tmp_name', $file) || !array_key_exists(0, $file['tmp_name'])){
@@ -128,8 +128,8 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$this->LogError($user_id, 19, $error);
 			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 19');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 19.');
 		}
 
 		if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
@@ -138,8 +138,8 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$this->LogError($user_id, 20, $error);
 			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 20');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 20.');
 		}
 
 		return array('success' => 'file moved successfully'); 
@@ -167,8 +167,8 @@ class Image extends AppModel {
 			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 15, $error);
 			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 15');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 15.');
 		}
 	}
 
@@ -209,8 +209,8 @@ class Image extends AppModel {
 				$error['images'] = $images;
 				$this->LogError($user_id, 16, $error);
 				return array('error' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 16');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 16.');
 			}
 
 			$images[$i]['Image']['listing_id'] = $listing_id;
@@ -222,8 +222,8 @@ class Image extends AppModel {
 			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 17, $error);
 			return array('error' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 17');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 17.');
 		}
 
 		return array('success' => '');

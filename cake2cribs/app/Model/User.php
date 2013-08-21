@@ -277,8 +277,8 @@ class User extends AppModel {
 			$this->LogError($user_id, 26, $error);
 			return array('error' => 
 					'Looks like we had some issues verifying your email address...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 26');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 26.');
 		}
 
 		return array('success' => '');
@@ -330,8 +330,8 @@ class User extends AppModel {
 			$this->LogError($id, 32, $error);
 			return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some issues changing your password...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 32'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 32.'));
 		}
 
 		return array('success'=>'');
@@ -399,8 +399,8 @@ class User extends AppModel {
 			$this->LogError($id, 29, $error);
 			return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some issues resetting your password...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 29'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 29.'));
 			return false;
 		}
 
@@ -432,8 +432,8 @@ class User extends AppModel {
 			$this->LogError(null, 36, $error);
 			return array('error' => 
 					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 36');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 36.');
 		}
 
 		if (!$this->save(array('User'=>$user))) {
@@ -444,8 +444,8 @@ class User extends AppModel {
 			$this->LogError(null, 37, $error);
 			return array('error' => 	
 					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 37');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 37.');
 		}
 
 		return array('success'=>'');
@@ -496,8 +496,8 @@ class User extends AppModel {
 			$this->LogError(null, 39, $error);
 			return array('error' => 
 					'Looks like we had some issues logging you in with Facebook...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 39');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 39.');
 		}
 
 		return array('success'=>'');
