@@ -95,6 +95,9 @@
 
 	</div>
 </div>
+
+<div id="filter_search_btn"><i class="icon-search icon-large"></i></div>
+<input id="filter_search_content" type="text" placeholder="Search By Address">
 <?php 
 	$this->Js->buffer('
 		A2Cribs.RentalFilter.SetupUI();

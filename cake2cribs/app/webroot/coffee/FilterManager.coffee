@@ -174,8 +174,9 @@ class A2Cribs.FilterManager
 		else
 			$("#addressSearchBar").effect("highlight", {color: "#FF0000"}, 2000)
 
-	@SearchForAddress: ->
-		address = $("#AddressSearchText").val()
+	@SearchForAddress: (div) ->
+		if not A2Cribs.FilterManager.Geocoder? then A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder()
+		address = $(div).val()
 		request = 
 			location: A2Cribs.Map.GMap.getCenter()
 			radius: 8100 # in meters (approximately 5 miles)
