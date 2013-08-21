@@ -167,8 +167,8 @@ class Marker extends AppModel {
   			$this->LogError($user_id, 34, $error);
   			return json_encode(array('error' =>
 	  				'Looks like we had some issues...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 34'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 34.'));
 		}
 
 		$marker['Marker'] = $marker;
@@ -193,8 +193,8 @@ class Marker extends AppModel {
   			$this->LogError($user_id, 35, $error);
   			return json_encode(array('error' =>
 	  				'Looks like we had some issues...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 35'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 35.'));
   		}
 		  		
 		return $this->id;

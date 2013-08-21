@@ -17,7 +17,7 @@ class Rental extends RentalPrototype {
 		'unit_style_options' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'unit_style_type' => array(
@@ -39,7 +39,7 @@ class Rental extends RentalPrototype {
 		'beds' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'min_occupancy' => array(
@@ -51,13 +51,13 @@ class Rental extends RentalPrototype {
 		'max_occupancy' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		), 
 		'rent_negotiable' => array(
@@ -75,14 +75,14 @@ class Rental extends RentalPrototype {
 		'start_date' => array(
 			'date' => array(
 				'rule' => 'date',
-				'required' => true
+				'required' => false
 			)
 		),
 		'alternate_start_date',
 		'lease_length' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'dates_negotiable' => array(
@@ -94,7 +94,7 @@ class Rental extends RentalPrototype {
 		'available' => array(
 			'boolean' => array(
 				'rule' => 'boolean',
-				'required' => true
+				'required' => false
 			)
 		), 
 		'baths' => 'numeric',
@@ -127,7 +127,7 @@ class Rental extends RentalPrototype {
 		'yard_space' => 'boolean',
 		'elevator' => 'boolean',
 		/* ------------ end new fields --------------- */
-		'electric' => 'numeric', 
+		'electric' => 'boolean', 
 		'water' => 'boolean',
 		'gas' => 'boolean',
 		'heat' => 'boolean',
@@ -316,8 +316,8 @@ class Rental extends RentalPrototype {
 			$this->LogError($user_id, 12, $error);
 			return array('error' =>
 	  				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 12');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 12.');
 		}
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
@@ -333,8 +333,8 @@ class Rental extends RentalPrototype {
 			$this->LogError($user_id, 13, $error);
 			return array('error' => array('message' => 
 				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 13',
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 13.',
 				'validation' => $this->validationErrors));
 		}
 	}

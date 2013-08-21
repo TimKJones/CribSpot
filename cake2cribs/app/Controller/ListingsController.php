@@ -75,6 +75,7 @@ class ListingsController extends AppController {
 			return;
 
 		$this->layout = 'ajax';
+		CakeLog::write("fuckthis", print_r($this->request, true));
 		$listingObject = $this->params['data'];
 		$listing = $listingObject['Listing'];
 		$listing['Listing'] = $listing;

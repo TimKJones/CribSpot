@@ -26,7 +26,7 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
-        $this->Auth->allow('Login2');
+        //$this->Auth->allow('Login2');
     }
 
     public function add()

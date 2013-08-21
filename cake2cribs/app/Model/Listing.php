@@ -43,7 +43,7 @@ class Listing extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'visible' => 'boolean' /* visible is set to false when listing is deleted */
@@ -103,8 +103,8 @@ class Listing extends AppModel {
 		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 6'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 6.'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -137,8 +137,8 @@ class Listing extends AppModel {
 				$this->LogError($user_id, 2, $error);
 				return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some problems deleting your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 2'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 2.'));
 			}
 		}
 
