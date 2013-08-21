@@ -9,21 +9,29 @@ class A2Cribs.Login
 
 		# Shows the signup page with a fade animation
 		@div.find(".show_signup").click =>
-			@div.find("#login_content").hide 'fade'
-			@div.find("#signup_content").show 'fade'
+			@div.find(".login_row").hide 'fade'
+			@div.find(".signup_row").show 'fade'
 
 		# Shows the login page with a fade animation
 		@div.find(".show_login").click =>
-			@div.find("#signup_content").hide 'fade'
-			@div.find("#login_content").show 'fade'
+			@div.find(".signup_row").hide 'fade'
+			@div.find(".login_row").show 'fade'
 
-		# Switches between different signups (property manager/student)
-		@div.find(".user_types").click (event) =>
-			target = $(event.target).closest "li"
-			@div.find(".user_types").removeClass "active"
-			$(target).addClass "active"
-			@div.find(".signup").hide()
-			@div.find("##{$(target).attr("id")}_signup").show()
+		# Click on property manager
+		@div.find(".show_pm").click =>
+			@div.find(".student_icon").removeClass "active"
+			@div.find(".pm_icon").addClass "active"
+			@div.find(".fb_box").hide()
+			@div.find(".student_signup").hide()
+			@div.find(".pm_signup").show()
+
+		# Click on student signup
+		@div.find(".show_student").click =>
+			@div.find(".pm_icon").removeClass "active"
+			@div.find(".student_icon").addClass "active"
+			@div.find(".pm_signup").hide()
+			@div.find(".fb_box").show()
+			@div.find(".student_signup").show()
 
 		# Click and form handlers for login
 		@div.find("#login_content").submit (event) => 

@@ -15,20 +15,26 @@
       var _this = this;
       this.div = $("#login_signup");
       this.div.find(".show_signup").click(function() {
-        _this.div.find("#login_content").hide('fade');
-        return _this.div.find("#signup_content").show('fade');
+        _this.div.find(".login_row").hide('fade');
+        return _this.div.find(".signup_row").show('fade');
       });
       this.div.find(".show_login").click(function() {
-        _this.div.find("#signup_content").hide('fade');
-        return _this.div.find("#login_content").show('fade');
+        _this.div.find(".signup_row").hide('fade');
+        return _this.div.find(".login_row").show('fade');
       });
-      this.div.find(".user_types").click(function(event) {
-        var target;
-        target = $(event.target).closest("li");
-        _this.div.find(".user_types").removeClass("active");
-        $(target).addClass("active");
-        _this.div.find(".signup").hide();
-        return _this.div.find("#" + ($(target).attr("id")) + "_signup").show();
+      this.div.find(".show_pm").click(function() {
+        _this.div.find(".student_icon").removeClass("active");
+        _this.div.find(".pm_icon").addClass("active");
+        _this.div.find(".fb_box").hide();
+        _this.div.find(".student_signup").hide();
+        return _this.div.find(".pm_signup").show();
+      });
+      this.div.find(".show_student").click(function() {
+        _this.div.find(".pm_icon").removeClass("active");
+        _this.div.find(".student_icon").addClass("active");
+        _this.div.find(".pm_signup").hide();
+        _this.div.find(".fb_box").show();
+        return _this.div.find(".student_signup").show();
       });
       this.div.find("#login_content").submit(function(event) {
         return _this.cribspotLogin(event.delegateTarget);

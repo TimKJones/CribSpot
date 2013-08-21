@@ -79,6 +79,7 @@
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
 			e.stopPropagation();
 		});
-		A2Cribs.PageHeader.renderUnreadConversationsCount();
 	');
+	if ($this->Session->read('Auth.User.id') != 0)
+		$this->Js->buffer('A2Cribs.PageHeader.renderUnreadConversationsCount();');
 ?>
