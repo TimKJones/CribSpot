@@ -1,8 +1,8 @@
 <?php
 class UsersController extends AppController {
-	public $helpers = array('Html', 'Js');
-	public $uses = array('User', 'University');
-	public $components= array('Email', 'RequestHandler', 'Cookie');
+    public $helpers = array('Html', 'Js');
+    public $uses = array('User', 'University');
+    public $components= array('Email', 'RequestHandler', 'Cookie');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {

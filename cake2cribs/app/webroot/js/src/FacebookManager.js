@@ -13,7 +13,7 @@ Manager class for all social networking functionality
       var url;
       url = 'https://www.facebook.com/dialog/oauth?';
       url += 'client_id=488039367944782';
-      url += '&redirect_uri=http://localhost/users/login2';
+      url += '&redirect_uri=http://localhost/users/login';
       url += '&scope=email';
       return window.location.href = url;
     };
