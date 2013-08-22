@@ -72,7 +72,7 @@
 
 <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 <a id="tweet_to_school" href="https://twitter.com/intent/tweet?text=This%20%40TheCribspot%20is%20%23idealideal...Please%20bring%20it%20to%20my%20campus%20%23makeithappen">Tweet to bring to your school!</a>
-<div class="fb-facepile" data-href="http://facebook.com/FacebookDevelopers" data-action="Comma separated list of action of action types" data-width="300" data-max-rows="2" data-colorscheme="dark"></div>
+<div class="fb-facepile" data-href="http://facebook.com/Cribspot" data-action="Comma separated list of action of action types" data-width="300" data-max-rows="2" data-colorscheme="dark"></div>
 
 <?php 
 	$this->Js->buffer('
