@@ -7,12 +7,14 @@ class User extends AppModel {
 			'foreignKey' => 'user_id'
 		)
 	);
+	public $belongsTo = array('University');
 	
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
 
 	public $validate = array (
 		'id' => 'numeric',
+		'facebook_id' => 'numeric',
 		'user_type' => 'numeric',
 		'password' => array(
 			'required' => array(
@@ -58,10 +60,7 @@ class User extends AppModel {
 				'rule' => array('between',0,50),
 				'message' => 'Must be between 0 and 50 characters'
 				),
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric',
-				'message' => 'Names must only contain letters and numbers.'
-				)
+			'rule' => array('custom', '/^[a-z0-9 ]*$/i')
 		),
 		'street_address' => array(
 			'between' => array(
@@ -127,7 +126,6 @@ class User extends AppModel {
 		'number_email_confirmations_sent' => 'numeric',
 		'university_verified' => 'boolean',
 		'vericode' => 'alphaNumeric',
-		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
 		'last_login' => 'datetime',
@@ -237,7 +235,7 @@ class User extends AppModel {
 	public function getSafe($user_id){
 		$options = array();
 		$options['conditions'] = array('User.id'=>$user_id);
-		$options['fields'] = array ('User.first_name', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
+		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
 		$options['recursive'] = -1;
 		return $this->find('first', $options);
 	}
@@ -425,6 +423,7 @@ class User extends AppModel {
 	*/
 	public function RegisterUser($user)
 	{
+		CakeLog::write('savinguser', print_r($user, true));
 		$error = null;
 		if (!$this->_validateUserRegister($user)){
 			$error = null;
@@ -440,7 +439,6 @@ class User extends AppModel {
 			$error = null;
 			$error['user'] = $user;
 			$error['validationErrors'] = $this->validationErrors;
-			CakeLog::write('validation', print_r($this->validationErrors, true));
 			$this->LogError(null, 37, $error);
 			return array('error' => 	
 					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
@@ -478,7 +476,7 @@ class User extends AppModel {
 			return null;
 
 		$local_user = $this->find('first', array(
-			'conditions' => array('facebook_userid' => $fb_id)
+			'conditions' => array('facebook_id' => $fb_id)
         ));
 
 		return $local_user;
@@ -500,7 +498,11 @@ class User extends AppModel {
 					'at help@cribspot.com. Reference error code 39.');
 		}
 
-		return array('success'=>'');
+		/* return the user object we just saved */
+		$user = $this->find('first', array(
+			'conditions' => array('User.id' => $this->id)
+		));
+		return array('user' => $user);
 	}
 
 	public function UpdateLastLogin($user_id)
@@ -514,7 +516,6 @@ class User extends AppModel {
 
 	public function SavePreferredUniversity($user_id, $university_id)
 	{
-		CakeLog::write("saving_university", $user_id . " " . $university_id);
 		$this->id = $user_id;
 		$this->saveField('preferred_university', $university_id);
 	}
@@ -550,7 +551,6 @@ class User extends AppModel {
 
 		foreach ($required_fields as $value) {
 			if (!array_key_exists($value, $user)){
-				CakeLog::write("validate", $value . "; user=" . print_r($user, true));
 				return false;
 			}
 				

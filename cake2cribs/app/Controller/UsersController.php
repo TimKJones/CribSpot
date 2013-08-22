@@ -2,15 +2,7 @@
 class UsersController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('User', 'University');
-	public $components= array('Session','Auth' => array(
-        'authenticate' => array(
-            'Form' => array(
-                'fields' => array('username' => 'email')
-                )
-            )
-        )
-        ,'Email', 'RequestHandler', 'Cookie'
-    );
+	public $components= array('Email', 'RequestHandler', 'Cookie');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {
@@ -26,7 +18,6 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('ResendConfirmationEmail');
-        //$this->Auth->allow('Login2');
     }
 
     public function add()
@@ -46,7 +37,7 @@ class UsersController extends AppController {
     public function Login2()
     {
         if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://localhost/users/login2');
+            $redirect_uri = urlencode('http://localhost/users/login');
             $client_id = Configure::read('FB_APP_ID');
             $client_secret = Configure::read('FB_APP_SECRET');
             $code = urlencode($_GET['code']);
@@ -256,6 +247,41 @@ class UsersController extends AppController {
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
+        }
+
+        /* 
+        After the user is redirected from facebook, these URL parameters will have been set.
+        We'll use these to get their access token, which we'll use to query for their basic information.
+        */
+        if (array_key_exists('code', $_GET)){
+            $redirect_uri = urlencode('http://localhost/users/login');
+            $client_id = Configure::read('FB_APP_ID');
+            $client_secret = Configure::read('FB_APP_SECRET');
+            $code = urlencode($_GET['code']);
+            $url = 'https://graph.facebook.com/oauth/access_token?';
+            $url .= '&redirect_uri=' . $redirect_uri;
+            $url .= '&client_id=' . urlencode($client_id);
+            $url .= '&client_secret=' . urlencode($client_secret);
+            $url .= '&code=' . $code;
+            $fb_user = urldecode(file_get_contents($url));
+            parse_str($fb_user); /* Sets access token value in $access_token */
+            /* 
+            We have the access token.
+            We now have to verify its validity
+            */
+            $response = $this->_verifyFBAccessToken($access_token);
+            if ($response === false){
+                /* TODO: HANDLE ERROR HERE */
+            }  
+
+            $userData = $this->_getUserData($access_token);
+            $user = array(
+                'email' => $userData->email,
+                'first_name' => $userData->first_name,
+                'last_name' => $userData->last_name,
+                'facebook_id' => $userData->id
+            );
+            $this->_facebookLogin($user);
         }
 
         $this->set('show_signup', $signup);
@@ -474,56 +500,43 @@ class UsersController extends AppController {
     }
 
     /*
-    Logs a user in via facebook
-    $fb_user is the facebook user object returned from hull
+    Receives user data as given by facebook.
+    Attempts to log user in with this data.
     */
     private function _facebookLogin($fb_user)
     {
         if ($fb_user){
-            $local_user = $this->User->GetUserFromFacebookId($fb_user->identities[0]->uid);
+            $local_user = $this->User->GetUserFromFacebookId($fb_user['facebook_id']);
 
             /* User exists, so log them in. */
             if ($local_user){
-                $this->User->UpdateLastLogin($this->Auth->User('id'));
+                $this->User->UpdateLastLogin($local_user['User']['id']);
                 $this->Auth->login($local_user['User']);
                 $this->redirect('/dashboard');
             } 
 
             /* User doesn't exist, so create a new user. */
-            else { 
-                $names = explode(" ", $fb_user->name);
-                $first_name = null;
-                $last_name = null;
-                if (count($names) >= 1)
-                    $first_name = $names[0];
-                if (count($names) >= 2)
-                    $last_name = $names[1];
-
-                $new_fb_user['User'] = array(
-                    'email'      => $fb_user->email,
-                    'password'      => uniqid(), // Set random password
-                    'user_type' => User::USER_TYPE_SUBLETTER,
-                    'facebook_userid' => $fb_user->identities[0]->uid,
-                    'verified' => 1
-                );
-
-                if ($first_name != null)
-                    $new_fb_user['User']['first_name'] = $first_name;
-                if ($last_name)
-                    $new_fb_user['User']['last_name'] = $last_name;
+            else {
+                $new_user = array('User' => $fb_user); 
+                $new_user['User'] = $fb_user;
+                $new_user['User']['verified'] = 1;
+                $new_user['User']['user_type'] = User::USER_TYPE_SUBLETTER;
+                $new_user['User']['password'] = uniqid();
                 
-                $response = $this->User->SaveFacebookUser($new_fb_user);
+                $response = $this->User->SaveFacebookUser($new_user);
+
                 if (array_key_exists('error', $response)){
                     return $response;
                 }
 
-                // After registration we will redirect them back here so they will be logged in
-                $this->redirect('/users/login');
+                /* After they have registered, log them in and redirect to the dashboard */
+                $this->Auth->login($response['user']['User']);
+                $this->redirect('/dashboard');
             }
         }
 
         else{
-            // User login failed..
+            
         }
     }
 
