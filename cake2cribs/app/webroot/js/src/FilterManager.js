@@ -198,9 +198,12 @@
       }
     };
 
-    FilterManager.SearchForAddress = function() {
+    FilterManager.SearchForAddress = function(div) {
       var address, request;
-      address = $("#AddressSearchText").val();
+      if (!(A2Cribs.FilterManager.Geocoder != null)) {
+        A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder();
+      }
+      address = $(div).val();
       request = {
         location: A2Cribs.Map.GMap.getCenter(),
         radius: 8100,

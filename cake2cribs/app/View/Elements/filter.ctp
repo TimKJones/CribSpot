@@ -2,7 +2,7 @@
 <?php echo $this->Html->script('src/FilterManager', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/RentalFilter', array('inline' => false)); ?>
 
-<?php echo $this->Html->css('slider', 'stylesheet', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->script('bootstrap-slider', array('inline' => false)); ?>
 
 <div id="map_filter">
@@ -95,6 +95,9 @@
 
 	</div>
 </div>
+
+<div id="filter_search_btn"><i class="icon-search icon-large"></i></div>
+<input id="filter_search_content" type="text" placeholder="Search By Address">
 <?php 
 	$this->Js->buffer('
 		A2Cribs.RentalFilter.SetupUI();

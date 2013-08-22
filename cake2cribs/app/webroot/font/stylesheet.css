@@ -45,3 +45,15 @@
     font-style: normal;
 
 }
+
+@font-face {
+    font-family:"Fava Black";
+    src:url("Fava-black.eot?") format("eot"),
+        url("Fava-black.woff") format("woff"),
+        url("Fava-black.ttf") format("truetype"),
+        url("Fava-black.svg#Fava-Black") format("svg");
+    font-weight:normal;
+    font-style:normal;
+}
+
+
