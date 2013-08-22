@@ -27,7 +27,17 @@
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">
 			<ul class="nav pull-right">
-				<li clas="">
+				<?php if ($this->Session->read('Auth.User.id') != 0) { ?>
+					<li class="personal_menu dropdown">
+						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">Hi <?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
+							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+						</ul>
+					</li>
+				<?php } else { ?>
 					<li class="menu dropdown signup_btn">
 						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">Login</a>
 						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
@@ -44,7 +54,7 @@
 					<li>
 						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem', 'class' => 'nav-btn')); ?>
 					</li>
-				</li>
+				<?php } ?>
 			</ul>
 		</div>
 	</div>
