@@ -32,7 +32,7 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components= array('Session','Auth' => array(
+	public $components= array('Session', 'Cookie', 'Auth' => array(
         'authenticate' => array(
             'Form' => array(
                 'fields' => array('username' => 'email')
@@ -99,6 +99,10 @@ class AppController extends Controller {
 	{
 		// Set the jsVars array which holds the variables to be used in js
         $this->set('jsVars', $this->_jsVars);
+
+		$flash_message = $this->Cookie->read('flash-message');
+	 	$this->Cookie->delete('flash-message');
+        $this->set("flash_message", json_encode($flash_message));
 
 		if($this->Auth->User()){
 			$Users = ClassRegistry::init('User');

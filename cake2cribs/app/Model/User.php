@@ -235,7 +235,7 @@ class User extends AppModel {
 	public function getSafe($user_id){
 		$options = array();
 		$options['conditions'] = array('User.id'=>$user_id);
-		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
+		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id', 'User.user_type');
 		$options['recursive'] = -1;
 		return $this->find('first', $options);
 	}

@@ -40,7 +40,7 @@
                         <input class="span7" type="password" id="inputPassword" placeholder="Password">
                     </div>
                     <div class="row-fluid">
-                        <a href="#" id="forgot_password" class="pull-left">Forgot Your Password?</a>
+                        <a href="/users/resetpassword" id="forgot_password" class="pull-left">Forgot Your Password?</a>
                         <input id="sign_in" type="submit" class="btn pull-right" value="SIGN IN">
                     </div>
                     <div class="row-fluid">

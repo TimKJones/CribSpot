@@ -17,6 +17,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ResetPasswordRedirect');
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
+        $this->Auth->allow('AjaxEditUser');
         $this->Auth->allow('ResendConfirmationEmail');
     }
 
@@ -212,6 +213,10 @@ class UsersController extends AppController {
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "You are now logged in!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
 
@@ -291,17 +296,17 @@ class UsersController extends AppController {
             return; 
 
         $this->layout = 'ajax';
-
-        /*
-        Check if they should be logged in
-        - if no get variable for reset_token exists
-            - check if they're logged in
-                - get user id
-        - else
-            - check if the token is valid
-                grab user id from url
-        process is same as before
-        */
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        $reset_token = $this->request->data['reset_token'];
+        $user_id = $this->request->data['id'];
+        /* Make sure that the ($id, $reset_token) pair is valid */
+        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
+            CakeLog::write("ErrorAjaxChangePassword", $user_id . "; " . $reset_token);
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+            $this->set('response', json_encode($response));
+            return;
+        }
 
         /* If no $_GET parameter exists for reset_token and id, then user must be logged in */
         $user_id = null;
@@ -363,13 +368,21 @@ class UsersController extends AppController {
         /* Check if user exists */
         if (!$this->User->IdExists($user_id)){
             CakeLog::write("Users_Verify_Email_Redirect", $this->request->query['id']);
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Email failed to validate user. Please sign up.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login', 'signup'));
         }
 
         /* Check if vericode is valid */
         if (!($this->User->VericodeIsValid($vericode, $user_id))) {
             CakeLog::write("Users_Verify_Email_Redirect", $this->User->id . ' ' . $vericode . ' ' . $this->User->field('vericode'));
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Validation code is not legit! Please check your email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
 
         $this->User->id = $user_id;
@@ -379,10 +392,18 @@ class UsersController extends AppController {
         $success = $this->User->VerifyUserEmail($user_id, $university_id);
         if (array_key_exists('error', $success)){
             CakeLog::write("Verify_Email_Failed", $this->Auth->User('id') . ' ' . $university_id);
-            $this->redirect('/users/login?email_verify_failed=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Gosh darn it. Failed to verify email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
         else{
-            $this->redirect('/dashboard?email_verified=true');
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "Email successfully verified!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
     }
 
@@ -410,6 +431,32 @@ class UsersController extends AppController {
     public function VerifyUniversityEmailRedirect()
     {
 
+    }
+
+    /*
+    Called from the dashboard to edit basic account information from the 'My Account' tab.
+    */
+    public function AjaxEditUser(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+
+        $editable_fields = array('first_name', 'last_name', 'company_name', 'street_address',
+            'city', 'state', 'phone', 'website');
+
+        $user = $this->Auth->User();
+
+        foreach ($editable_fields as $field){
+            if (array_key_exists($field, $this->request->data) &&
+                !empty($this->request->data[$field])) {
+                    $user['User'][$field] = $this->request->data[$field];
+            }
+        }
+
+        $response = $this->User->edit($user);
+        $this->set('response', $json);
+        return;
     }
 
     public function ResendConfirmationEmail()

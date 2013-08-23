@@ -29,6 +29,7 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 <!-- end Mixpanel -->
 
 		<script type="text/javascript">var myBaseUrl = '<?php echo $this->Html->url('/'); ?>';</script> 
+		<script type="text/javascript">var flash_message = <?php echo $flash_message; ?></script>
 <?php
 		echo $this->Html->charset();
 		echo $this->Html->script('http://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
