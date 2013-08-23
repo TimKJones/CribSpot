@@ -377,13 +377,21 @@ class UsersController extends AppController {
         /* Check if user exists */
         if (!$this->User->IdExists($user_id)){
             CakeLog::write("Users_Verify_Email_Redirect", $this->request->query['id']);
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Email failed to validate user. Please sign up.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login', 'signup'));
         }
 
         /* Check if vericode is valid */
         if (!($this->User->VericodeIsValid($vericode, $user_id))) {
             CakeLog::write("Users_Verify_Email_Redirect", $this->User->id . ' ' . $vericode . ' ' . $this->User->field('vericode'));
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Validation code is not legit! Please check your email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
 
         $this->User->id = $user_id;
@@ -393,10 +401,18 @@ class UsersController extends AppController {
         $success = $this->User->VerifyUserEmail($user_id, $university_id);
         if (array_key_exists('error', $success)){
             CakeLog::write("Verify_Email_Failed", $this->Auth->User('id') . ' ' . $university_id);
-            $this->redirect('/users/login?email_verify_failed=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Gosh darn it. Failed to verify email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
         else{
-            $this->redirect('/dashboard?email_verified=true');
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "Email successfully verified! Nice";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
     }
 
