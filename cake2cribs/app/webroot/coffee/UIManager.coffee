@@ -11,3 +11,10 @@ class A2Cribs.UIManager
 
 	@CloseLogs: () ->
 		$('.alertify-log').remove()
+
+	@FlashMessage: () ->
+		if flash_message?
+			@[flash_message.method] flash_message.message
+
+$(document).ready () =>
+	setTimeout (() => A2Cribs.UIManager.FlashMessage()), 2000

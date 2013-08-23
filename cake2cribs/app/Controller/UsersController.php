@@ -246,6 +246,10 @@ class UsersController extends AppController {
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "You are now logged in!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
 
