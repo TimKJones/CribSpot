@@ -29,6 +29,9 @@
     };
 
     UIManager.Confirm = function(message, callback) {
+      alertify.set({
+        buttonFocus: "cancel"
+      });
       return alertify.confirm(message, callback);
     };
 

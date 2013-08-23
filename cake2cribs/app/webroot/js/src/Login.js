@@ -92,6 +92,8 @@
           response = JSON.parse(response);
           if (response.error != null) {
             return A2Cribs.UIManager.Alert(response.error.message);
+          } else {
+            return A2Cribs.UIManager.Success("Email has been sent! Click the link to verify.");
           }
         }
       });

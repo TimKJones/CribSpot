@@ -85,6 +85,8 @@ class A2Cribs.Login
 				response = JSON.parse response
 				if response.error?
 					A2Cribs.UIManager.Alert response.error.message
+				else
+					A2Cribs.UIManager.Success "Email has been sent! Click the link to verify."
 
 	validate = (user_type, required_fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
