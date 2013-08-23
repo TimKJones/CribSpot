@@ -65,8 +65,8 @@
 <div class="float" id="search-div">
 	<img src="/img/landing/logo.png" height="200px" width="400px">
 	<div id="slogan" class="text-center">
-		<i class="small_font">Every</i><i class="large_font blue_font"> college rental</i>
-		<i class="large_font">All</i><i class="small_font"> in</i><i class="large_font blue_font"> one place</i>
+		<i class="large_font">More </i><i class="large_font blue_font"> Listings</i><br/>
+		<i class="large_font">Less</i><i class="small_font"></i><i class="large_font blue_font"> Bullshit</i>
 	</div>
 	<div>
 		<form id="school-form">

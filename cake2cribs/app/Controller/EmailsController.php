@@ -7,6 +7,36 @@ class EmailsController extends AppController {
 	public $uses = array('User');
 	public $components= array('Email', 'RequestHandler');   
 
+    public function beforeFilter(){
+     $this->Auth->allow('WelcomeExistingUsers');
+    }
+
+    public function WelcomeExistingUsers()
+    {
+        $people = array(
+            array(
+                'first_name' => 'Tim',
+                'email' => 'tim@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Evan',
+                'email' => 'evan@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Jason',
+                'email' => 'jason@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Alex',
+                'email' => 'alex@cribspot.com'
+            )
+        );
+
+        foreach ($people as $person){
+            $this->_sendWelcomeSubletUsersEmail($person);
+        }
+
+    }
 
     public function InitializeNewUsers()
     {
@@ -100,6 +130,21 @@ class EmailsController extends AppController {
         $this->Email->sendAs = 'html';
         $this->set('id',$this->User->id);
         $this->Email->send($message);
+    }
+
+     /*
+    Generates a new vericode and sends an email to the currently logged-in user.
+    Email allows user to verify email address.
+    */
+    private function _sendWelcomeSubletUsersEmail($person)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $person['email'];
+        $subject = "The New Cribspot is Here!";
+        $template = 'WelcomeExistingUsers';
+        $sendAs = 'both';
+        $this->set('first_name', $person['first_name']);
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 }
 ?>
