@@ -171,9 +171,10 @@
             direction: 'left'
           }, 300);
         } else {
-          return $("#filter_search_content").show('slide', {
+          $("#filter_search_content").show('slide', {
             direction: 'left'
           }, 300);
+          return $("#filter_search_content").focus();
         }
       });
       this.div.find(".lease_slider").slider({

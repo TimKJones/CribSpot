@@ -138,6 +138,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 				$("#filter_search_content").hide 'slide', {direction: 'left'}, 300
 			else
 				$("#filter_search_content").show 'slide', {direction: 'left'}, 300
+				$("#filter_search_content").focus()
 
 		# Init Sliders from bootstrap-slider.js
 		@div.find(".lease_slider").slider
