@@ -77,8 +77,9 @@ class A2Cribs.Account
 		data =
 			'new_password' : new_password,
 			'confirm_password': confirm_password
-			'id': id
-			'reset_token': reset_token
+		if id != null and reset_token != null
+			data['id'] = id
+			data['reset_token'] = reset_token
 
 		if new_password != confirm_password
 			A2Cribs.UIManager.Alert "Passwords do not match."

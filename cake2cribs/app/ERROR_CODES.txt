@@ -93,3 +93,5 @@
 - Users/ResendConfirmationEmail
 45
 - Users/AjaxChangePassword_LoggedIn
+46
+- Users/AjaxChangePassword
