@@ -28,7 +28,7 @@ class A2Cribs.ImportManager
 		parking_cost:26
 		furnished_type:27
 		building_type:28
-		building_name:29
+		alternate_name:29
 		company_name:30
 		phone:31
 		email:32
@@ -132,11 +132,11 @@ class A2Cribs.ImportManager
 			listing['Rental']['parking_amount'] = l[@Indices['parking_amount']]
 			listing['Rental']['furnished_type'] = l[@Indices['furnished_type']]
 			listing['Marker']['building_type'] = l[@Indices['building_type']]
-			listing['Marker']['building_name'] = l[@Indices['building_name']]
+			listing['Marker']['alternate_name'] = l[@Indices['alternate_name']]
 			listing['User']['company_name'] = l[@Indices['company_name']]
 			listing['User']['phone'] = l[@Indices['phone']]
 			listing['User']['email'] = l[@Indices['email']]
-			listing['User']['website'] = l[@Indices['website']]
+			listing['Rental']['website'] = l[@Indices['website']]
 			listing['Rental']['tv'] = l[@Indices['tv']]
 			listing['Rental']['balcony'] = l[@Indices['balcony']]
 			listing['Rental']['fridge'] = l[@Indices['fridge']]
@@ -167,15 +167,18 @@ class A2Cribs.ImportManager
 			listing['User']['street_address'] = l[@Indices['user_street_address']]
 			processedListings.push listing
 		#nextListingList = [] #send back in groups of 10
-		for listing in processedListings
+		#for listing in processedListings
 			#if nextListingList.length < 1
 			#	nextListingList.push listing
 			#	continue
+		#jsonString = JSON.stringify processedListings
+		#escapedJSON = @escapeJSON jsonString
 			$.ajax 
 				url: myBaseUrl + "Import/SaveListings"
 				type:"POST"
 				data: listing
 				context: this
+				async: false
 				success: (response) ->
 					console.log response
 
@@ -184,3 +187,9 @@ class A2Cribs.ImportManager
 			return max_rent
 		else
 			return min_rent
+
+	@delay: (ms, func) ->
+		setTimeout func, ms
+
+	@escapeJSON : (str) ->
+		return str.replace(/[\\]/g, '\\\\').replace(/[\"]/g, '\\\"').replace(/[\/]/g, '\\/').replace(/[\b]/g, '\\b').replace(/[\f]/g, '\\f').replace(/[\n]/g, '\\n').replace(/[\r]/g, '\\r').replace(/[\t]/g, '\\t');
