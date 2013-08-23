@@ -5,7 +5,7 @@
 ?>
 	<form id="accountInfoForm" class="form-horizontal">
 	  <div class="control-group">
-	    <label class="control-label" for="first_name">First Name: <?= $AuthUser['user_type'] ?></label>
+	    <label class="control-label" for="first_name">First Name:</label>
 	    <div class="controls">
 	      <input type="text" id="first_name_input" placeholder="First Name" value = '<?php echo $user['User']['first_name'];?>'>
 	    </div>
