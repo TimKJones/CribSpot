@@ -95,3 +95,5 @@
 - Users/AjaxChangePassword_LoggedIn
 46
 - Users/AjaxChangePassword
+47
+- User->edit

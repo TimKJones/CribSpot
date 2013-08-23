@@ -110,14 +110,14 @@ class A2Cribs.Account
 			'last_name': last_name,
 		}
 
-		$.post myBaseUrl + 'users/ajaxEditUser', data, (response)->
+		$.post myBaseUrl + 'users/AjaxEditUser', data, (response)->
 			# console.log response
 			json_response = JSON.parse(response)
-			if json_response.success == 1
+			if json_response.error == undefined
 				alertify.success('Account Saved', 1500)
 				# console.log JSON.parse(json_response.user)
 			else
-				alertify.error('Account Failed to Save: ' + json_response.message, 1500)
+				alertify.error('Account Failed to Save: ' + json_response.error.message, 1500)
 
 
 			$('#save_btn').removeAttr 'disabled'

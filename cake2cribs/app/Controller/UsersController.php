@@ -445,17 +445,17 @@ class UsersController extends AppController {
         $editable_fields = array('first_name', 'last_name', 'company_name', 'street_address',
             'city', 'state', 'phone', 'website');
 
-        $user = $this->Auth->User();
+        $user = array('id' => $this->Auth->User('id'));
 
         foreach ($editable_fields as $field){
             if (array_key_exists($field, $this->request->data) &&
                 !empty($this->request->data[$field])) {
-                    $user['User'][$field] = $this->request->data[$field];
+                    $user[$field] = $this->request->data[$field];
             }
         }
 
-        $response = $this->User->edit($user);
-        $this->set('response', $json);
+        $response = $this->User->edit(array('User' => $user));
+        $this->set('response', json_encode($response));
         return;
     }
 
