@@ -27,7 +27,7 @@ class A2Cribs.ImportManager
 		parking_type:25
 		parking_cost:26
 		furnished_type:27
-		building_type:28
+		building_type_id:28
 		alternate_name:29
 		company_name:30
 		phone:31
@@ -131,7 +131,7 @@ class A2Cribs.ImportManager
 			listing['Rental']['parking_description'] = l[@Indices['parking_description']]
 			listing['Rental']['parking_amount'] = l[@Indices['parking_amount']]
 			listing['Rental']['furnished_type'] = l[@Indices['furnished_type']]
-			listing['Marker']['building_type'] = l[@Indices['building_type']]
+			listing['Marker']['building_type_id'] = l[@Indices['building_type_id']]
 			listing['Marker']['alternate_name'] = l[@Indices['alternate_name']]
 			listing['User']['company_name'] = l[@Indices['company_name']]
 			listing['User']['phone'] = l[@Indices['phone']]
