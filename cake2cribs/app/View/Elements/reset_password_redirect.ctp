@@ -12,7 +12,7 @@
 		</div>
 		<div id="modal-center">
 			<!--<div class="facebook-login-button">Login with Facebook</div>-->
-				<form id="passwordForm" action="ajaxChangePassword" method="POST" class="form-horizontal">
+				<form id="passwordForm" method="POST" class="form-horizontal">
 				  <div class="control-group">
 				    <label class="control-label" for="new_password">New Password:</label>
 				    <div class="controls">

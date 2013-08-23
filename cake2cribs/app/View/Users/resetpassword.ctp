@@ -8,7 +8,7 @@
 <div id="login-box">
 	<div id="userLogin">
 <div class="users form">
-<?php echo $this->Form->create('User'); ?>
+<?php echo $this->Form->create('User'); ?> 
     <fieldset>
         <legend><h3><?php echo __('Password Reset'); ?></h3></legend>
         <?php echo $this->Form->input('email', array('label' => 'Please enter your email address.'));

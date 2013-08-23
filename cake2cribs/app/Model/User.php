@@ -218,12 +218,24 @@ class User extends AppModel {
 		return $twitter_data;
 	}
 
-	public function edit($data){
-		if (!$this->save($data))
-			CakeLog::write("saveUser", print_r($this->validationErrors, true));
-		else
-			CakeLog::write("saveUser", print_r($data, true));
-		return $this->read();
+	public function edit($user){
+		CakeLog::write('savinguser', print_r($user, true));
+		if ($user['User']['id'] === 0 || !$this->save($user)){
+			$error = null;
+			$error['User'] = $user;
+			$error['validationErrors'] = $this->validationErrors;
+			$user_id = null;
+			if (array_key_exists('User', $user) && array_key_exists('id', $user['User']))
+				$user_id = $user['User']['id'];
+
+			$this->LogError($user_id, 47, $error);
+			return array("error" => array('validation' => $this->validationErrors,
+				'message' => 'Looks like we had an issue editing your account. If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 47.'));
+		}
+
+		return array('success' => '');
 	}
 
 	public function get($user_id){
