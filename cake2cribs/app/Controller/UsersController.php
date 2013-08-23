@@ -312,7 +312,7 @@ class UsersController extends AppController {
         $user_id = $this->request->data['id'];
         /* Make sure that the ($id, $reset_token) pair is valid */
         if (!$this->User->IsValidResetToken($user_id, $reset_token)){
-            CakeLog::write("ErrorAjaxChangePassword", $id . "; " . $reset_token);
+            CakeLog::write("ErrorAjaxChangePassword", $user_id . "; " . $reset_token);
             $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
             $this->set('response', json_encode($response));
             return;
