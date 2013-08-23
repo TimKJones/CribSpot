@@ -42,9 +42,11 @@
 						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">Login</a>
 						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
 							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
+								<a href="#" class="fb_login" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
 								<input type="email" id="inputEmail" name="email" placeholder="Email">
 								<input type="password" id="inputPassword" name="password" placeholder="Password">
 								<button type="submit" id="submitButton" class="btn">Sign in</button>
+								<?php echo $this->Html->link('Forgot Password?', array('controller' => 'users', 'action' => 'resetpassword'), array('class' => 'forgot_password')); ?>
 							</form>
 						</div>
 					</li>
