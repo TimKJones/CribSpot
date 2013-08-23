@@ -285,11 +285,11 @@ class UsersController extends AppController {
     }
 
     /*
-    Called from /users/ ResetPasswordRedirect.
+    Called from /users/ResetPasswordRedirect (user is logged out).
     Verifies the submitted user_id and password reset_token
     If the passwords match, sets the user's password.
     */
-    public function AjaxChangePassword()
+    public function AjaxChangePassword_LoggedOut()
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return; 
@@ -317,6 +317,50 @@ class UsersController extends AppController {
             $this->set('response', json_encode($response));
             return;
         }
+
+        /* Make sure new_password matches the confirmed password */
+        if ($new_password != $confirm_password){
+            $response = array('error' => 'Passwords do not match.', 'error_type'=>'PASSWORDS_DONT_MATCH');
+            $this->set('response', $response);
+            return;
+        }
+
+        /* Save new password */
+        $response = $this->User->SavePassword($user_id, $new_password);
+        $this->set('response', json_encode($response));
+        return;
+    }
+
+    /*
+    Called from dashboard (user is logged in).
+    If the passwords match, sets the user's password to new_password.
+    */
+    public function AjaxChangePassword_LoggedIn()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return; 
+
+        $this->layout = 'ajax';
+
+        if (!$this->Auth->User()){
+            CakeLog::write("ErrorAjaxChangePassword", "error_code: 45;" . 'USER_NOT_LOGGED_IN');
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 45');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        if (!$this->request || !$this->request->data || 
+            !array_key_exists('new_password', $this->request->data) ||
+            !array_key_exists('confirm_password', $this->request->data)){
+                CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
+                $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
+                $this->set('response', json_encode($response));
+                return;
+        }
+
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        $user_id = $this->Auth->User('id');
 
         /* Make sure new_password matches the confirmed password */
         if ($new_password != $confirm_password){

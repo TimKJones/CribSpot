@@ -91,3 +91,5 @@
 - Favorite->AddFavorite
 44
 - Users/ResendConfirmationEmail
+45
+- Users/AjaxChangePassword_LoggedIn
