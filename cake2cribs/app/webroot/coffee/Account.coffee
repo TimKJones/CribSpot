@@ -138,8 +138,8 @@ class A2Cribs.Account
 		data = 'email=' + $("#UserEmail").val()
 		$.post '/users/AjaxResetPassword', data, (response) =>
 			data = JSON.parse response
-			if data.success == 1
-				document.location.href = '/users/login?password_reset_redirect=true'
+			if data.success?
+				A2Cribs.UIManager.Alert "Email sent to reset password!"
 				return false
 			else
 	        	A2Cribs.UIManager.Alert data.error

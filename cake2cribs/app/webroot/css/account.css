@@ -32,6 +32,15 @@
 	background-image: none;
 }
 
+.address_controls
+{
+	width: 220px;
+}
+
+#street_address_input
+{
+	margin-bottom: 10px;
+}
 
 /******************************************************************************/
 /********************************Right Side Content*****************************/
