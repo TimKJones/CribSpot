@@ -238,6 +238,20 @@ table
 	form
 	{
 		margin: 0;
+		position: relative;
+		#search-submit
+		{
+			&:hover
+			{
+				cursor: pointer;
+			}
+			position: absolute;
+			top: 0;
+			right: 5px;
+			font-size: 28px;
+			margin-top: 10px;
+			color: hsl(0, 100%, 100%);	
+		}
 	}
 	#post-btn
 	{
@@ -318,6 +332,8 @@ table
 		margin-left: -5px;
 		font-family: 'ReklameScriptMediumRegular';
 		line-height: 36px;
+		padding-right: 50px;
+		width: 400px;
 	}
 	.btn-group
 	{

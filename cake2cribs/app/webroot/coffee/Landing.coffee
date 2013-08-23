@@ -14,7 +14,7 @@ class A2Cribs.Landing
 	@Submit: () ->
 		location = $("#search-text").val()
 		if location not in @schoolList 
-			alert location + " is not a valid location."
+			A2Cribs.UIManager.Error location + " is not a valid location."
 			return false
 
 		window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');

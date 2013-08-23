@@ -37,14 +37,4 @@
 	  		</div>
 	  </div>
 	</form>
-	</form>
-	<form id="verifyUniversityForm" class="form-horizontal">
-	  <div class="control-group">
-	    <label class="control-label" for="verify_university">Verify University Email:</label>
-	    <div class="controls">
-	      <input type="text" id="university_email" placeholder="Enter a valid .edu email address">
-	      <button id="VerifyUniversityButton">Verify</button>
-	    </div>
-	  </div>
-	</form>
 </div>

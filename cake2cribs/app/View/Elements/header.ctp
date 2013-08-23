@@ -17,8 +17,8 @@
 					<li class="personal_menu dropdown">
 						<?
 						$pic_url = "/img/head_large.jpg";
-						if($AuthUser['facebook_userid'])
-							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_userid']."/picture?width=80&height=80";
+						if($AuthUser['facebook_id'])
+							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
 						?>
 						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="<?= $pic_url ?>"><?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">

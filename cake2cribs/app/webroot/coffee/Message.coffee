@@ -111,33 +111,12 @@ class A2Cribs.Messages
 		$(".from_participant")
 			.html(participant['first_name'])
 			.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
-		$(".participant-university").html participant['University']['name']
 		
 		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
 			veripanel = $('#verification-panel')
 
 			if verification_info.verified_email
 				veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-
-			if verification_info.verified_edu
-				veripanel.find('#veri-edu  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-			else
-				$('.participant-university').html("No Associated University")
-
-			if verification_info.verified_fb
-				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
-				console.log(url)
-				$('#p_pic').attr 'src', url
-				veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-				if verification_info.mut_friends? and not isNaN(verification_info.mut_friends)
-					veripanel.find('#participant-friends').html("- #{verification_info.mut_friends} mutual")
-				else if verification_info.tot_friends? and not isNaN(verification_info.tot_friends)
-					veripanel.find('#participant-friends').html("- #{verification_info.tot_friends} friends")
-
-			if verification_info.verified_tw
-				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')  
-				if verification_info.tot_followers? and not isNaN(verification_info.tot_followers)
-					veripanel.find("#participant-followers").html("- #{verification_info.tot_followers} followers")
 
 
 	@loadConversation:(event)->
