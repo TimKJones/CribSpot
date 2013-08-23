@@ -34,40 +34,6 @@ class UsersController extends AppController {
         $this->redirect('/dashboard');
     }
 
-    public function Login2()
-    {
-        if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://localhost/users/login');
-            $client_id = Configure::read('FB_APP_ID');
-            $client_secret = Configure::read('FB_APP_SECRET');
-            $code = urlencode($_GET['code']);
-            $url = 'https://graph.facebook.com/oauth/access_token?';
-            $url .= '&redirect_uri=' . $redirect_uri;
-            $url .= '&client_id=' . urlencode($client_id);
-            $url .= '&client_secret=' . urlencode($client_secret);
-            $url .= '&code=' . $code;
-            $fb_user = urldecode(file_get_contents($url));
-            parse_str($fb_user); /* Sets access token value in $access_token */
-            
-            /* 
-            We have the access token.
-            We now have to verify its validity
-            */
-            $response = $this->_verifyFBAccessToken($access_token);
-            if ($response === false){
-                /* TODO: HANDLE ERROR HERE */
-            }  
-
-            $userData = $this->_getUserData($access_token);
-
-            /* Set variables to populate registration form */
-            $this->Session->write('fb_id', $userData->id);
-            $this->set('email', $userData->email);
-            $this->set('firstName', $userData->first_name);
-            $this->set('lastName', $userData->last_name);
-        }
-    }
-
     /*
     User submits registration data here.
     Returns success, or array of columns that failed validation.
