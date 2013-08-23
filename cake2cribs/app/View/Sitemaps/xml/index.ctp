@@ -16,6 +16,13 @@
             <?php endforeach ?>
         </image:image>
         <priority>0.8</priority> 
-    </url> 
-    <?php endforeach; ?> 
+    </url>
+    <?php endforeach; ?>
+    <?php foreach ($universities as $university):?>
+    <url>
+        <loc><?php echo Router::url('/' . $university['url'], true); ?></loc>
+        <priority>0.8</priority> 
+        <?php CakeLog::write('url_university', Router::url('/' . $university['url'], true)); ?>
+    </url>
+    <?php endforeach; ?>
 </urlset> 
