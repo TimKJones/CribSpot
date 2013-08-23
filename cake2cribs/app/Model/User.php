@@ -60,7 +60,7 @@ class User extends AppModel {
 				'rule' => array('between',0,50),
 				'message' => 'Must be between 0 and 50 characters'
 				),
-			'rule' => array('custom', '/^[a-z0-9 ]*$/i')
+			'rule' => array('custom', '/^[a-z0-9 \.]*$/i')
 		),
 		'street_address' => array(
 			'between' => array(
@@ -86,7 +86,7 @@ class User extends AppModel {
 			'email' => array(
         		'rule'    => array('email', true),
         		'message' => 'Please supply a valid email address.'
-    			),
+    			)/*,
 			'required' => array(
 				'rule' => 'notEmpty',
 				'message' => 'An email is required.'
@@ -94,13 +94,13 @@ class User extends AppModel {
 			'unique' => array(
 				'rule' => 'isUnique',
 				'message' => 'Someone already registered with that email.'
-				)
+				)*/
 			),
 		'phone' => array(
 			'phone' => array(
         		'rule' => array('phone', null, 'us'),
         		'message' => 'Please enter a valid phone number'
-   				),
+   				)/*,
    			'required' => array(
 				'rule' => 'notEmpty',
 				'message' => 'A phone number is required.'
@@ -108,7 +108,7 @@ class User extends AppModel {
    			'unique' => array(
 				'rule' => 'isUnique',
 				'message' => 'Someone already registered with that phone number. Try again.'
-				)
+				)*/
 			),
 		'group_id' => 'alphaNumeric', 
 		'university_id' => array(
@@ -531,6 +531,27 @@ class User extends AppModel {
 		if ($university_id != null)
 			return $university_id['User']['preferred_university'];
 		return null;
+	}
+
+	/* 
+	Used during user importing
+	Returns a user with the given company name
+	*/
+	public function GetUserByCompanyName($company_name)
+	{
+		if (empty($company_name))
+			return null;
+
+		$user = $this->find('first', array(
+			'conditions' => array('User.company_name' => $company_name)
+		));
+
+		if ($user != null){
+			/* Unset fields that shouldn't be modified */
+			unset($user['User']['password']);
+		}
+
+		return $user;
 	}
 
 	/*

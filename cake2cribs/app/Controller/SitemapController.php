@@ -2,7 +2,7 @@
 class SitemapController extends AppController{ 
 
     var $name = 'Sitemaps'; 
-    var $uses = array('Listing', 'Image'); 
+    var $uses = array('Listing', 'Image', 'University'); 
     var $helpers = array('Time');
     var $components = array('RequestHandler'); 
 
@@ -15,7 +15,10 @@ class SitemapController extends AppController{
     		'conditions' => array('Listing.visible' => 1)	
     	));
 
-    	CakeLog::write('sitemapListings', print_r($listings, true));
+        $universities = $this->University->find('all', array(
+            'contains' => array('University')
+        ));
+
     	foreach ($listings as &$listing){
 			$full_address = $listing["Marker"]["street_address"];
 			$full_address .= " " . $listing["Marker"]["city"];
@@ -25,7 +28,14 @@ class SitemapController extends AppController{
 			$listing['url'] = 'listings/' . $listing['Listing']['listing_id'] . '/' . $full_address;
     	}
 
+        foreach ($universities as &$university){
+            $school_name = str_replace(" ", "_", $university['University']['name']);
+            $university['url'] = urlencode('rental/' . $school_name);
+        }
+
     	$this->set('listings', $listings);
+        $this->set('universities', $universities);
+        CakeLog::write('universities_sitemap', print_r($universities, true));
 
     	$this->RequestHandler->respondAs('xml');
     } 

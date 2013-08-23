@@ -109,6 +109,15 @@ class AppController extends Controller {
 			$safe_user = $Users->getSafe($this->Auth->User('id'));
 			$this->set('AuthUser', $safe_user['User']);
 		}
+
+		/* Set default meta content */
+		$title = 'Cribspot - College House Made Simple';
+		$description = "Cribspot takes the pain out of finding college housing. We've gathered thousands of listings so " .
+		"you can stop stressing about housing and get back to making the most of your college experience.";
+		$this->set('meta', array(
+			'title' => $title,
+			'description' => $description
+		));
 	}
 
 	protected function _getUserId()

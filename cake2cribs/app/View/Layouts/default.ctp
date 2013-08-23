@@ -99,7 +99,8 @@ mixpanel.init("f7b344b1778a8db9efa82cecc2635f56");</script>
 		echo $this->Html->meta('keywords',
 			'ann arbor housing, ann arbor apartments, student housing, university of michigan housing, umich housing, ann arbor rentals, ann arbor subleases, UM housing, cribspot, a2cribs, off-campus housing'
 		);
-		echo $this->Html->meta('description', 'Cribspot is a free service tailored towards college students searching for rentals and sublets. We make it simple and quick to filter thousands of listings by price, beds, fall/spring leases, etc.');
+		echo $this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college " .
+			"campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.");
 		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=2', array('type' => 'icon'));
 
 		/* Fetch data */

@@ -4,19 +4,14 @@ class Marker extends AppModel {
 	public $name = 'Marker';
 	public $actsAs = array('Containable');
 	public $primaryKey = 'marker_id';
-	public $belongsTo = array('BuildingType');
 	public $hasMany = array(
-						'Sublet' => array(
-							'className' => 'Sublet', 
-							'foreignKey' => 'marker_id'
-						),
 						'Listing' => array(
 							'className' => 'Listing', 
 							'foreignKey' => 'marker_id'
 						)
 	);
 
-	public $RADIUS = 12; // radius from center (km) encompassing area to pull properties from
+	public $RADIUS = 500; // radius from center (km) encompassing area to pull properties from
 
 	public $validate = array(
 		'marker_id' =>'alphaNumeric', 
@@ -118,7 +113,7 @@ class Marker extends AppModel {
 				array_push($filtered_markers, $markers[$i]);
 			}				
 		}
-
+		CakeLog::write('filteredMarkers', print_r($filtered_markers, true));
 		return json_encode($filtered_markers);
 	}
 
@@ -200,6 +195,30 @@ class Marker extends AppModel {
 		return $this->id;
 	}
 
+	public function GetMarkerByAddress($address)
+	{
+		if (!array_key_exists('street_address', $address) || 
+			!array_key_exists('city', $address) ||
+			!array_key_exists('state', $address)) {
+				return null;
+		}
+
+		$marker = $this->find('first', array(
+			'conditions' => array(
+				'Marker.street_address' => $address['street_address'],
+				'Marker.city' => $address['city'],
+				'Marker.state' => $address['state']
+		)));
+
+		/* remove some fields that shouldn't be saved again */
+		if ($marker){
+			unset($marker['Marker']['created']);
+			unset($marker['Marker']['modified']);
+		}
+		
+		return $marker;
+	}
+
 	public function hide($marker){
 		$marker['visible'] = 0;
 		$this->save($marker);
@@ -213,6 +232,7 @@ class Marker extends AppModel {
 		$markerMatch = $this->find('first', array(
 	                     'conditions' => $conditions
 	  	));
+
 
 	  	return $markerMatch;
 	}

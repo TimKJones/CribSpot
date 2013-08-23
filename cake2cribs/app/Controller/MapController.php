@@ -141,6 +141,8 @@ class MapController extends AppController {
         }
         $this->set('user', json_encode($user));
         $this->InitFilterValues();
+
+        
     }
 
     public function ViewListing($listing_id = null)
