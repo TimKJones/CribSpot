@@ -16,5 +16,8 @@ class A2Cribs.UIManager
 		if flash_message?
 			@[flash_message.method] flash_message.message
 
+	@Confirm: (message, callback) ->
+		alertify.confirm message, callback
+
 $(document).ready () =>
 	setTimeout (() => A2Cribs.UIManager.FlashMessage()), 2000

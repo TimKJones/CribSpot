@@ -59,8 +59,14 @@ class A2Cribs.Login
 			$.post url, request_data, (response) =>
 				data = JSON.parse response
 				if data.error?
-					A2Cribs.UIManager.CloseLogs()
-					A2Cribs.UIManager.Error data.error
+					if data.error_type is "EMAIL_UNVERIFIED"
+						A2Cribs.UIManager.Confirm "Your email address has not yet been confirmed. 
+							Please click the link provided in your confirmation email. 
+							Do you want us to resend you the email?", (resend) =>
+							if resend then @ResendConfirmationEmail()
+					else
+						A2Cribs.UIManager.CloseLogs()
+						A2Cribs.UIManager.Error data.error
 					###
 					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
 					if data.error_type == "EMAIL_UNVERIFIED"
@@ -115,7 +121,9 @@ class A2Cribs.Login
 						A2Cribs.UIManager.CloseLogs()
 						A2Cribs.UIManager.Error data.error
 					else
-						window.location.href = '/dashboard'
+						@div.find(".show_login").click()
+						A2Cribs.UIManager.Alert "Check your email to validate your credentials!"
+						
 
 	# Creates a Student user
 	@CreateStudent: ->

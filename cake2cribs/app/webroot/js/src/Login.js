@@ -60,8 +60,16 @@
           var data;
           data = JSON.parse(response);
           if (data.error != null) {
-            A2Cribs.UIManager.CloseLogs();
-            return A2Cribs.UIManager.Error(data.error);
+            if (data.error_type === "EMAIL_UNVERIFIED") {
+              return A2Cribs.UIManager.Confirm("Your email address has not yet been confirmed. 							Please click the link provided in your confirmation email. 							Do you want us to resend you the email?", function(resend) {
+                if (resend) {
+                  return _this.ResendConfirmationEmail();
+                }
+              });
+            } else {
+              A2Cribs.UIManager.CloseLogs();
+              return A2Cribs.UIManager.Error(data.error);
+            }
             /*
             					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
             					if data.error_type == "EMAIL_UNVERIFIED"
@@ -129,7 +137,8 @@
               A2Cribs.UIManager.CloseLogs();
               return A2Cribs.UIManager.Error(data.error);
             } else {
-              return window.location.href = '/dashboard';
+              Login.div.find(".show_login").click();
+              return A2Cribs.UIManager.Alert("Check your email to validate your credentials!");
             }
           });
         }

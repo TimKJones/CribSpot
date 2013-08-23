@@ -409,7 +409,7 @@ class UsersController extends AppController {
         }
         else{
             $flash_message['method'] = "Success";
-            $flash_message['message'] = "Email successfully verified! Nice";
+            $flash_message['message'] = "Email successfully verified!";
             $json = json_encode($flash_message);
             $this->Cookie->write('flash-message', $json);
             $this->redirect(array('action' => 'login'));

@@ -28,6 +28,10 @@
       }
     };
 
+    UIManager.Confirm = function(message, callback) {
+      return alertify.confirm(message, callback);
+    };
+
     return UIManager;
 
   })();
