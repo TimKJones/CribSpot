@@ -176,10 +176,17 @@ class Listing extends AppModel {
 
 		/* Remove sensitive user data */
 		/* Convert type fields to their appropriate string values */
+		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
 		for ($i = 0; $i < count($listing); $i++){
 			if (array_key_exists('User', $listing[$i]))
 				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
-				$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
+			if (array_key_exists('Rental', $listing[$i])){
+				foreach ($amenities as $field){
+					if (empty($listing[$i]['Rental'][$field]))
+						$listing[$i]['Rental'][$field] = '-';
+				}
+			}
+			$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
 		}
 
 		return $listing;
@@ -192,24 +199,24 @@ class Listing extends AppModel {
 	{
 		if (array_key_exists('Marker', $listing)) {
 			if (array_key_exists('building_type_id', $listing['Marker']) &&
-				$listing['Marker']['building_type_id'] != null)
+				$listing['Marker']['building_type_id'] !== '-')
 					$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
 		}
 
 		if (array_key_exists('Rental', $listing)) {
 			if (array_key_exists('parking_type', $listing['Rental']) &&
-				$listing['Rental']['parking_type'] != null)
+				$listing['Rental']['parking_type'] !== '-')
 					$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
 			if (array_key_exists('furnished_type', $listing['Rental']) &&
-				$listing['Rental']['furnished_type'] != null)
+				$listing['Rental']['furnished_type'] !== '-')
 					$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
 
 			if (array_key_exists('pets_type', $listing['Rental']) &&
-				$listing['Rental']['pets_type'] != null)
+				$listing['Rental']['pets_type'] !== '-')
 					$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
 
 			if (array_key_exists('washer_dryer', $listing['Rental']) &&
-				$listing['Rental']['washer_dryer'] != null)
+				$listing['Rental']['washer_dryer'] !== '-')
 					$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
 		}
 	

@@ -129,9 +129,14 @@ class UsersController extends AppController {
         }
 
         if ($this->Auth->login()) {
+            $user = $this->Auth->User();
+            $first_log_in_ever = ($user['last_login'] === null);
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->_savePreferredUniversity($this->Auth->User('id'));
-            $this->set('response', json_encode(array('success'=>'')));
+            $this->set('response', json_encode(array('success'=>array(
+                'first_login' => $first_log_in_ever,
+                'user_id' => $this->Auth->User('id')
+            ))));
             return;
         }
 
@@ -568,6 +573,10 @@ class UsersController extends AppController {
 
                 /* After they have registered, log them in and redirect to the dashboard */
                 $this->Auth->login($response['user']['User']);
+
+                /* This is the first time the user has logged in, so register them with mixpanel */
+                //$this->Js->buffer("mixpanel.alias(" . $this->Auth->User('id') . ");");
+
                 $this->redirect('/dashboard');
             }
         }
