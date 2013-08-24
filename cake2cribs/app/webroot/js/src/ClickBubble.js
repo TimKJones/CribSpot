@@ -31,10 +31,8 @@ ClickBubble class
       nw = new google.maps.LatLng(ClickBubble.map.getBounds().getNorthEast().lat(), ClickBubble.map.getBounds().getSouthWest().lng());
       worldCoordinateNW = ClickBubble.map.getProjection().fromLatLngToPoint(nw);
       worldCoordinate = ClickBubble.map.getProjection().fromLatLngToPoint(marker.getPosition());
-      return ClickBubble.div.offset({
-        left: Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale) + ClickBubble.OFFSET.LEFT,
-        top: Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale) + ClickBubble.OFFSET.TOP
-      });
+      ClickBubble.div.css("left", Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale) + ClickBubble.OFFSET.LEFT);
+      return ClickBubble.div.css("top", Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale) + ClickBubble.OFFSET.TOP);
     };
 
     /*
@@ -63,8 +61,9 @@ ClickBubble class
         listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
         if (listing.rental_id != null) {
           this.SetContent(listing.GetObject());
+          return this.Show(listing_id);
         } else {
-          $.ajax({
+          return $.ajax({
             url: myBaseUrl + "Listings/GetListing/" + listing_id,
             type: "GET",
             success: function(data) {
@@ -80,13 +79,17 @@ ClickBubble class
                 }
               }
               listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
-              return _this.SetContent(listing.GetObject());
+              _this.SetContent(listing.GetObject());
+              return _this.Show(listing_id);
             }
           });
         }
-        move_near_marker(listing_id);
-        return this.div.show('fade');
       }
+    };
+
+    ClickBubble.Show = function(listing_id) {
+      move_near_marker(listing_id);
+      return this.div.show('fade');
     };
 
     /*
@@ -107,6 +110,10 @@ ClickBubble class
       return this.div.hide('fade');
     };
 
+    ClickBubble.Clear = function() {
+      return this.div.find(".clear_field").text("?").html("?").val("?");
+    };
+
     /*
     	Sets the content of the tooltip
     */
@@ -114,6 +121,7 @@ ClickBubble class
 
     ClickBubble.SetContent = function(listing_object) {
       var key, marker, value;
+      this.Clear();
       for (key in listing_object) {
         value = listing_object[key];
         this.div.find("." + key).text(value);
@@ -128,6 +136,7 @@ ClickBubble class
       this.setPrimaryImage("property_image", listing_object.listing_id);
       this.setFullPage("full_page_link", listing_object.listing_id);
       this.setFullPageContact("full_page_contact", listing_object.listing_id);
+      this.div.find(".share_btn").unbind("click");
       this.div.find(".facebook_share").click(function() {
         return A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
       });
@@ -142,27 +151,38 @@ ClickBubble class
 
     ClickBubble.resolveDateRange = function(startDate) {
       var range, rmonth, startSplit;
-      rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      range = "";
-      startSplit = startDate.split("-");
-      return range = "" + rmonth[+startSplit[1] - 1] + " " + (parseInt(startSplit[2], 10)) + ", " + startSplit[0];
+      range = "Unknown Start Date";
+      if (startDate != null) {
+        rmonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        range = "";
+        startSplit = startDate.split("-");
+        range = "" + rmonth[+startSplit[1] - 1] + " " + (parseInt(startSplit[2], 10)) + ", " + startSplit[0];
+      }
+      return range;
     };
 
     ClickBubble.setAvailability = function(div_name, availability) {
-      if (availability) {
-        $("." + div_name).text("Available");
+      if (!(availability != null)) {
+        return $("." + div_name).hide();
+      } else if (availability) {
+        $("." + div_name).show().text("Available");
         return $("." + div_name).removeClass("leased");
       } else {
-        $("." + div_name).text("Leased");
+        $("." + div_name).show().text("Leased");
         return $("." + div_name).addClass("leased");
       }
     };
 
     ClickBubble.linkWebsite = function(div_name, link) {
-      if (link.indexOf("http" === -1)) {
-        link = "http://" + link;
+      if (link != null) {
+        if (link.indexOf("http" === -1)) {
+          link = "http://" + link;
+        }
+        this.div.find(div_name).attr("href", link);
+        return this.div.find(div_name).attr("onclick", "");
+      } else {
+        return this.div.find(div_name).attr("onclick", "A2Cribs.UIManager.Error('This owner does not have a website for this listing')");
       }
-      return this.div.find(div_name).attr("href", link);
     };
 
     ClickBubble.setOwnerName = function(div_name, listing_id) {
@@ -170,9 +190,11 @@ ClickBubble class
       listing = A2Cribs.UserCache.Get("listing", listing_id);
       user = A2Cribs.UserCache.Get("user", listing.user_id);
       if ((user != null ? user.company_name : void 0) != null) {
-        $("." + div_name).text(user.company_name);
+        $("." + div_name).show().text(user.company_name);
       } else if (((user != null ? user.first_name : void 0) != null) && user.last_name) {
-        $("." + div_name).text("" + user.first_name + " " + user.last_name);
+        $("." + div_name).show().text("" + user.first_name + " " + user.last_name);
+      } else {
+        $("." + div_name).hide();
       }
       if (user != null ? user.verified : void 0) {
         return this.div.find(".verified").show();
@@ -183,9 +205,13 @@ ClickBubble class
 
     ClickBubble.setPrimaryImage = function(div_name, listing_id) {
       var image_url;
-      image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary();
-      if (image_url != null) {
-        return $("." + div_name).css("background-image", "url(/" + image_url + ")");
+      if (A2Cribs.UserCache.Get("image", listing_id) != null) {
+        image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary();
+        if (image_url != null) {
+          return $("." + div_name).css("background-image", "url(/" + image_url + ")");
+        }
+      } else {
+        return $("." + div_name).css("background-image", "url()");
       }
     };
 

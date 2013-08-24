@@ -414,11 +414,20 @@ class Listing extends AppModel {
 			'Listing.listing_id',
 			'Marker.marker_id',
 			'Marker.latitude',
-			'Marker.longitude'
+			'Marker.longitude',
+			'Marker.street_address',
+			'Marker.building_type_id',
+			'Marker.alternate_name',
+			'Marker.city',
+			'Marker.state',
+			'Marker.zip'
 			);
 		$options['conditions'] = array('Listing.visible' => 1);
 		$basicData = $this->find('all', $options);
 		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		foreach ($locationFilteredBasicData as $listing) {
+			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
+		}
 		return $locationFilteredBasicData;
 	}
 

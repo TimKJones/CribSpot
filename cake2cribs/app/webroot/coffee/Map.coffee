@@ -108,7 +108,7 @@ class A2Cribs.Map
 
 		return deferred.promise()
 
-	@LoadBasicDataCallback: (response) ->
+	@LoadBasicDataCallback: (response) =>
 		if response == null || response == undefined
 			return
 		listings = JSON.parse response
@@ -116,6 +116,12 @@ class A2Cribs.Map
 		for listing in listings
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
+
+		# Initialize all markers and add tehm to the map
+		all_markers = A2Cribs.UserCache.Get "marker"
+		for marker in all_markers
+			marker.Init()
+			@GMarkerClusterer.addMarker marker.GMarker		
 
 		# Set all listings to visible
 		all_listings = A2Cribs.UserCache.Get "listings"
@@ -142,9 +148,7 @@ class A2Cribs.Map
 	Use JQuery Deferred object to load all data asynchronously
 	###
 	@LoadAllMapData: () ->
-		markersPromise = @LoadMarkers()
 		basicData = @LoadBasicData()
-		$.when(markersPromise).then(@InitializeMarkers)
 		$.when(basicData).then(@LoadBasicDataCallback)
 
 	@style = [

@@ -146,7 +146,7 @@
     };
 
     Map.LoadBasicDataCallback = function(response) {
-      var all_listings, key, listing, listings, value, _i, _j, _len, _len1, _results;
+      var all_listings, all_markers, key, listing, listings, marker, value, _i, _j, _k, _len, _len1, _len2, _results;
       if (response === null || response === void 0) {
         return;
       }
@@ -158,10 +158,16 @@
           A2Cribs.UserCache.Set(new A2Cribs[key](value));
         }
       }
+      all_markers = A2Cribs.UserCache.Get("marker");
+      for (_j = 0, _len1 = all_markers.length; _j < _len1; _j++) {
+        marker = all_markers[_j];
+        marker.Init();
+        Map.GMarkerClusterer.addMarker(marker.GMarker);
+      }
       all_listings = A2Cribs.UserCache.Get("listings");
       _results = [];
-      for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
-        listing = all_listings[_j];
+      for (_k = 0, _len2 = all_listings.length; _k < _len2; _k++) {
+        listing = all_listings[_k];
         _results.push(listing.visible = true);
       }
       return _results;
@@ -192,10 +198,8 @@
 
 
     Map.LoadAllMapData = function() {
-      var basicData, markersPromise;
-      markersPromise = this.LoadMarkers();
+      var basicData;
       basicData = this.LoadBasicData();
-      $.when(markersPromise).then(this.InitializeMarkers);
       return $.when(basicData).then(this.LoadBasicDataCallback);
     };
 
