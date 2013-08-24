@@ -90,25 +90,35 @@ class A2Cribs.FavoritesManager
 		$(button).toggleClass 'active'
 		A2Cribs.HoverBubble?.Close()
 		A2Cribs.ClickBubble?.Close()
-		markers = A2Cribs.UserCache.Get 'marker'
+
+		all_markers = A2Cribs.UserCache.Get 'marker'
+		all_listings = A2Cribs.UserCache.Get 'listing'
+
 		if !A2Cribs.FavoritesManager.FavoritesVisible
 			# make only markers that are in user's favorites visible
 			$("#FavoritesHeaderIcon").addClass("pressed")
+
 			# Set visibility of ALL markers to false
-			for marker in markers
-				if marker.GMarker
-						marker.GMarker.setVisible false
+			for marker in all_markers
+				marker.GMarker?.setVisible false
+
+			for listing in all_listings
+				listing.visible = false
+
 			# Set visibility of all markers with listings in user's favorites to true
 			for listing_id in A2Cribs.FavoritesManager.FavoritesListingIds
 				listing = A2Cribs.UserCache.Get 'listing', listing_id
 				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
-				if marker.GMarker
-					marker.GMarker.setVisible true
+				marker.GMarker?.setVisible true
+				listing.visible = true
 		else
 			# make all markers visible
-			for marker in markers
-				if marker and marker.GMarker
-					marker.GMarker.setVisible true
+			for marker in all_markers
+				marker?.GMarker?.setVisible true
+
+			for listing in all_listings
+				listing.visible = true
+
 			$("#FavoritesHeaderIcon").removeClass("pressed")
 
 		A2Cribs.Map.GMarkerClusterer.repaint()
