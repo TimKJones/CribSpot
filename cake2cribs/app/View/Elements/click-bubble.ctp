@@ -24,8 +24,8 @@
 		<div class="verified hide">VERIFIED</div>
 	</div>
 	<div class="action_buttons">
-		<a class="full_page_link" href="/listing/view/">More Info <i class="icon-plus"></i></a>
-		<a class="full_page_contact" href="">Contact <i class="icon-comment"></i></a>
+		<a class="full_page_link" href="#" target="_blank">More Info <i class="icon-plus"></i></a>
+		<a class="full_page_contact" href="#" target="_blank">Contact <i class="icon-comment"></i></a>
 		<a href="" class="website_link" target="_blank">Website <i class="icon-share-alt"></i></a>
 	</div>
 </div>
