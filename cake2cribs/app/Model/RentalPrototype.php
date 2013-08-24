@@ -93,6 +93,7 @@ class RentalPrototype extends AppModel {
 
 	public static function parking($value = null) {
 		$options = array(
+		    self::PARKING_NO_PARKING => __('No',true),
 		    self::PARKING_PARKING_LOT => __('Parking Lot',true),
 		    self::PARKING_DRIVEWAY => __('Driveway',true),
 		    self::PARKING_GARAGE => __('Garage',true),

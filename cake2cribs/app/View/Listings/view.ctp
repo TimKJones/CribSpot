@@ -111,8 +111,17 @@
 					<img src="/img/full_page/icon/electric<?= (intval($listing["Rental"]["electric"]) > 0) ? "" : "_not_included" ; ?>.png">
 					<img src="/img/full_page/icon/gas<?= (!$listing['Rental']['gas']) ? "_not_included" : "" ; ?>.png">
 					<img src="/img/full_page/icon/water<?= (!$listing['Rental']['water']) ? "_not_included" : "" ; ?>.png">
-					<img src="/img/full_page/icon/parking<?= (intval($listing["Rental"]["parking_type"]) > 0) ? "" : "_not_included"  ?>.png">
-					<img src="/img/full_page/icon/furnished<?= (intval($listing["Rental"]["furnished_type"]) > 0) ? "" : "_not_included"  ?>.png">
+					<?php
+					if (strcmp($listing["Rental"]["parking_type"], "No") == 0 || strcmp($listing["Rental"]["parking_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/parking_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/parking.png">';
+
+					if (strcmp($listing["Rental"]["furnished_type"], "No") == 0 || strcmp($listing["Rental"]["furnished_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/furnished_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/furnished.png">';
+					?>
 				</div>
 			</div>
 
