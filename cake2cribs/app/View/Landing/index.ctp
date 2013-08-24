@@ -86,8 +86,7 @@
 
 <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 <a id="tweet_to_school" href="https://twitter.com/intent/tweet?text=This%20%40TheCribspot%20is%20%23idealideal...Please%20bring%20it%20to%20my%20campus%20%23makeithappen">Tweet to bring to your school!</a>
-<div class="fb-facepile" data-href="http://facebook.com/Cribspot" data-action="Comma separated list of action of action types" data-width="300" data-max-rows="2" data-colorscheme="dark"></div>
-
+<div class="fb-like-box" data-href="https://www.facebook.com/Cribspot" data-width="292" data-colorscheme="dark" data-show-faces="true" data-header="false" data-stream="false" data-show-border="false"></div>
 <?php 
 	$this->Js->buffer('
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
