@@ -1,9 +1,5 @@
 class A2Cribs.FeaturedListings
 
-    # widget is a div where the featured listings for the supplied lat, lon
-    # will be loaded into
-    constructor: (@widget)->
-
     @GetFlIds:(university_id)->
         deferred = new $.Deferred()
         $.get "/featuredListings/cycleIds/#{university_id}/#{@FL_LIMIT}", (response)=>
@@ -40,7 +36,13 @@ class A2Cribs.FeaturedListings
 
 
     @FetchListingsByIds:(listing_ids, active_listing_type)->
+            
             deferred = new $.Deferred()
+            
+            if not listing_ids or listing_ids.length < 1
+                deferred.resolve(null)
+                return deferred
+
             listingDefereds = []
             for id in listing_ids
                 listingDefereds.push A2Cribs.FeaturedListings.GetListingDeferred(id, active_listing_type)
@@ -48,58 +50,59 @@ class A2Cribs.FeaturedListings
             $.when.apply($, listingDefereds).then ()=>
                 deferred.resolve(arguments)
 
+            return deferred.promise()
+
+    @GetRandomListingsFromMap:(num_)->
+        if not @RanListingsDeferred?
+            @RanListingsDeferred = new $.Deferred()
+        
+        num = num_
+
+        $.when(A2Cribs.Map.LoadBasicData()).then (data)=>
+            basic_data = JSON.parse(data)
+            shuf = _.shuffle(basic_data)
+            sliced = shuf.slice 0, num
+            @RanListingsDeferred.resolve(sliced)
+
+        return @RanListingsDeferred.promise()
+
+            
 
 
     @InitializeSidebar:(university_id, active_listing_type)->
         alt = active_listing_type
         if not @SidebarListingCache?
             @SidebarListingCache = {}
+
+        NUM_RANDOM_LISTINGS = 35
         
         getFLIds = @GetFlIds(university_id)
-        getRanIds = @GetRandomListingIdsFromMap(5)
-        console.log("Initing sidebar")
         
-        $.when(getFLIds, getRanIds).then (fl_ids, ran_ids)=>
-            get_fl_listings = @FetchListingsByIds(fl_ids, alt)
-            get_ran_listings = @FetchListingsByIds(ran_ids, alt)
+        sidebar = new Sidebar($('#fl-side-bar'))
+    
+        @GetFlIds(university_id).done (ids)=>
+            if ids is null then return
+            @FetchListingsByIds(ids, alt).done (listings)=>
+                sidebar.addListings listings, 'featured'
 
-            $.when(get_fl_listings, get_ran_listings).then (fl_listings, ran_listings)=>
-                sidebar = new Sidebar($('#fl-side-bar'), fl_listings, ran_listings)
+        $.when(@GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then (listings)=>
+            if listings is null then return
+            sidebar.addListings listings, 'ran'             
+    
 
-            # @FetchListingsByIds listing_ids, alt, (listings)=>
-            #     sidebar = new Sidebar($('#fl-side-bar'), listings)
-
-        @GetRandomListingIdsFromMap 5, (listing_ids)=>
-            console.log listing_ids
-
-    @GetRandomListingIdsFromMap:(num_)->
-        if not @RanIdDeferred?
-            @RanIdDeferred = new $.Deferred()
-        
-        num = num_
-
-        $.when(A2Cribs.Map.LoadBasicData()).then (data)=>
-            basic_data = JSON.parse(data)
-            ids = []
-            for d in basic_data
-                ids.push d.Listing.listing_id
-            shuf_ids = _.shuffle(ids)
-
-            @RanIdDeferred.resolve(shuf_ids.slice 0, shuf_ids.length % num)
-
-        return @RanIdDeferred.promise()
-
-            
+    
 
     class Sidebar
-        constructor:(@SidebarUI, fl_listings, ran_listings)->
+        constructor:(@SidebarUI)->
             @ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML)
-            fl_list = @getListHtml(fl_listings)
-            ran_list = @getListHtml(ran_listings)
 
-            @SidebarUI.find('#featured-listings').html fl_list
-            @SidebarUI.find('#ran-listings').html ran_list
-
+        addListings:(listings, list, clear=true)->
+            if listings is null then return
+            list_html = @getListHtml(listings)
+            if clear
+                @SidebarUI.find("##{list}-listings").html list_html
+            else
+                @SidebarUI.find("##{list}-listings").append list_html
 
         getDateString:(date)->
             
@@ -116,7 +119,7 @@ class A2Cribs.FeaturedListings
             list = ""
             for listing in listings
                 start_date = new Date(listing.Rental.start_date)
-                end_date = new Date(listing.Rental.end_date)
+                end_date = new Date(new Date(start_date).setMonth(start_date.getMonth()+listing.Rental.lease_length))
 
                 if listing.Marker.alternate_name? 
                     name = listing.Marker.alternate_name

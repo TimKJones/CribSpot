@@ -159,6 +159,11 @@ class A2Cribs.Map
 		basicData = @LoadBasicData()
 		$.when(basicData).then(@LoadBasicDataCallback)
 
+	@CenterMap:(latitude, longitude)->
+		if not @GMap? then return
+		@GMap.setCenter new google.maps.LatLng(latitude, longitude);
+
+
 	@style = [
 		{
 			"featureType": "road.highway"

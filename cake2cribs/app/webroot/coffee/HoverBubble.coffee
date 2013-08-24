@@ -30,10 +30,14 @@ class A2Cribs.HoverBubble
 	###
 	Opens the tooltip given a marker, with popping animation
 	###
-	@Open: (marker) ->
+	@Open: (marker, focus=false) ->
 		if marker
+			if focus
+				A2Cribs.Map.CenterMap(marker.latitude, marker.longitude)
+
 			@SetContent marker
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
+
 
 	###
 	Refreshes the tooltip with the new content, no animation

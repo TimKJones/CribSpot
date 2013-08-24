@@ -4,9 +4,7 @@
   A2Cribs.FeaturedListings = (function() {
     var Sidebar;
 
-    function FeaturedListings(widget) {
-      this.widget = widget;
-    }
+    function FeaturedListings() {}
 
     FeaturedListings.GetFlIds = function(university_id) {
       var deferred,
@@ -61,72 +59,86 @@
       var deferred, id, listingDefereds, _i, _len,
         _this = this;
       deferred = new $.Deferred();
+      if (!listing_ids || listing_ids.length < 1) {
+        deferred.resolve(null);
+        return deferred;
+      }
       listingDefereds = [];
       for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
         id = listing_ids[_i];
         listingDefereds.push(A2Cribs.FeaturedListings.GetListingDeferred(id, active_listing_type));
       }
-      return $.when.apply($, listingDefereds).then(function() {
+      $.when.apply($, listingDefereds).then(function() {
         return deferred.resolve(arguments);
       });
+      return deferred.promise();
+    };
+
+    FeaturedListings.GetRandomListingsFromMap = function(num_) {
+      var num,
+        _this = this;
+      if (!(this.RanListingsDeferred != null)) {
+        this.RanListingsDeferred = new $.Deferred();
+      }
+      num = num_;
+      $.when(A2Cribs.Map.LoadBasicData()).then(function(data) {
+        var basic_data, shuf, sliced;
+        basic_data = JSON.parse(data);
+        shuf = _.shuffle(basic_data);
+        sliced = shuf.slice(0, num);
+        return _this.RanListingsDeferred.resolve(sliced);
+      });
+      return this.RanListingsDeferred.promise();
     };
 
     FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
-      var alt, getFLIds, getRanIds,
+      var NUM_RANDOM_LISTINGS, alt, getFLIds, sidebar,
         _this = this;
       alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) {
         this.SidebarListingCache = {};
       }
+      NUM_RANDOM_LISTINGS = 35;
       getFLIds = this.GetFlIds(university_id);
-      getRanIds = this.GetRandomListingIdsFromMap(5);
-      console.log("Initing sidebar");
-      $.when(getFLIds, getRanIds).then(function(fl_ids, ran_ids) {
-        var get_fl_listings, get_ran_listings;
-        get_fl_listings = _this.FetchListingsByIds(fl_ids, alt);
-        get_ran_listings = _this.FetchListingsByIds(ran_ids, alt);
-        return $.when(get_fl_listings, get_ran_listings).then(function(fl_listings, ran_listings) {
-          var sidebar;
-          return sidebar = new Sidebar($('#fl-side-bar'), fl_listings, ran_listings);
+      sidebar = new Sidebar($('#fl-side-bar'));
+      this.GetFlIds(university_id).done(function(ids) {
+        if (ids === null) {
+          return;
+        }
+        return _this.FetchListingsByIds(ids, alt).done(function(listings) {
+          return sidebar.addListings(listings, 'featured');
         });
       });
-      return this.GetRandomListingIdsFromMap(5, function(listing_ids) {
-        return console.log(listing_ids);
-      });
-    };
-
-    FeaturedListings.GetRandomListingIdsFromMap = function(num_) {
-      var num,
-        _this = this;
-      if (!(this.RanIdDeferred != null)) {
-        this.RanIdDeferred = new $.Deferred();
-      }
-      num = num_;
-      $.when(A2Cribs.Map.LoadBasicData()).then(function(data) {
-        var basic_data, d, ids, shuf_ids, _i, _len;
-        basic_data = JSON.parse(data);
-        ids = [];
-        for (_i = 0, _len = basic_data.length; _i < _len; _i++) {
-          d = basic_data[_i];
-          ids.push(d.Listing.listing_id);
+      return $.when(this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then(function(listings) {
+        if (listings === null) {
+          return;
         }
-        shuf_ids = _.shuffle(ids);
-        return _this.RanIdDeferred.resolve(shuf_ids.slice(0, shuf_ids.length % num));
+        return sidebar.addListings(listings, 'ran');
       });
-      return this.RanIdDeferred.promise();
     };
 
     Sidebar = (function() {
 
-      function Sidebar(SidebarUI, fl_listings, ran_listings) {
-        var fl_list, ran_list;
+      function Sidebar(SidebarUI) {
         this.SidebarUI = SidebarUI;
         this.ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML);
-        fl_list = this.getListHtml(fl_listings);
-        ran_list = this.getListHtml(ran_listings);
-        this.SidebarUI.find('#featured-listings').html(fl_list);
-        this.SidebarUI.find('#ran-listings').html(ran_list);
       }
+
+      Sidebar.prototype.addListings = function(listings, list, clear) {
+        var list_html;
+        if (clear == null) {
+          clear = true;
+        }
+        if (listings === null) {
+          return;
+        }
+        list_html = this.getListHtml(listings);
+        if (clear) {
+          return this.SidebarUI.find("#" + list + "-listings").html(list_html);
+        } else {
+          return this.SidebarUI.find("#" + list + "-listings").append(list_html);
+        }
+      };
 
       Sidebar.prototype.getDateString = function(date) {
         var month, year;
@@ -144,7 +156,7 @@
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
           start_date = new Date(listing.Rental.start_date);
-          end_date = new Date(listing.Rental.end_date);
+          end_date = new Date(new Date(start_date).setMonth(start_date.getMonth() + listing.Rental.lease_length));
           if (listing.Marker.alternate_name != null) {
             name = listing.Marker.alternate_name;
           } else {

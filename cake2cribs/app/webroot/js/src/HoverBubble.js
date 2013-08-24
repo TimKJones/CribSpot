@@ -44,8 +44,14 @@ Wrapper for google infobubble
     */
 
 
-    HoverBubble.Open = function(marker) {
+    HoverBubble.Open = function(marker, focus) {
+      if (focus == null) {
+        focus = false;
+      }
       if (marker) {
+        if (focus) {
+          A2Cribs.Map.CenterMap(marker.latitude, marker.longitude);
+        }
         this.SetContent(marker);
         return this.InfoBubble.open(A2Cribs.Map.GMap, marker.GMarker);
       }

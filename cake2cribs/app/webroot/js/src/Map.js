@@ -207,6 +207,13 @@
       return $.when(basicData).then(this.LoadBasicDataCallback);
     };
 
+    Map.CenterMap = function(latitude, longitude) {
+      if (!(this.GMap != null)) {
+        return;
+      }
+      return this.GMap.setCenter(new google.maps.LatLng(latitude, longitude));
+    };
+
     Map.style = [
       {
         "featureType": "road.highway",
