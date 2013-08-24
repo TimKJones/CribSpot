@@ -211,7 +211,7 @@ ClickBubble class
           return $("." + div_name).css("background-image", "url(/" + image_url + ")");
         }
       } else {
-        return $("." + div_name).css("background-image", "url()");
+        return $("." + div_name).css("background-image", "url(/img/tooltip/no_photo.jpg)");
       }
     };
 

@@ -197,7 +197,7 @@
 			<div id="photo_content" class="tab-pane active">
 				<div class="large_image_container">
 					<?php
-					$primary_url = '';
+					$primary_url = 'img/full_page/no_photo.jpg';
 					if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing)) {
 						$primary_url = $listing["Image"][$listing["primary_image"]]["image_path"];
 					}
