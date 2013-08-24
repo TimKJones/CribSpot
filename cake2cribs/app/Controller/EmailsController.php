@@ -7,6 +7,52 @@ class EmailsController extends AppController {
 	public $uses = array('User');
 	public $components= array('Email', 'RequestHandler');   
 
+    public function beforeFilter(){
+     $this->Auth->allow('WelcomeExistingUsers');
+     $this->Auth->allow('WelcomePropertyManagers');
+    }
+
+    public function WelcomeExistingUsers()
+    {
+        $people = array(
+            array(
+                'first_name' => 'Tim',
+                'email' => 'tim@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Evan',
+                'email' => 'evan@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Jason',
+                'email' => 'jason@cribspot.com'
+            ),
+            array(
+                'first_name' => 'Alex',
+                'email' => 'alex@cribspot.com'
+            )
+        );
+
+        foreach ($people as $person){
+            $this->_sendWelcomeSubletUsersEmail($person);
+        }
+
+    }
+
+    public function WelcomePropertyManagers()
+    {
+        /* Initialize password_reset_tokens */
+        $this->User->InitializePMPasswordResetTokens();
+        $people = $this->User->find('all', array(
+            'fields' => array('User.password_reset_token', 'User.email'),
+            'contains' => array(),
+            'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
+        ));
+
+        foreach ($people as $person){
+            $this->_sendWelcomePropertyManagersEmail($person['User']);
+        }
+    }
 
     public function InitializeNewUsers()
     {
@@ -66,7 +112,7 @@ class EmailsController extends AppController {
 
         $user = $this->User->get($user_id);
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $user['User']['email'];
         $this->set('name', $user['User']['first_name']);
         $this->Email->subject = 'Thanks for posting on Cribspot ' . $user['User']['first_name'] . '! Register to view your listing';
@@ -91,7 +137,7 @@ class EmailsController extends AppController {
 
         $user = $this->User->get($user_id);
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $user['User']['email'];
         $this->set('name', $user['User']['first_name']);
         $this->Email->subject = 'Information regarding setting up your account';
@@ -100,6 +146,34 @@ class EmailsController extends AppController {
         $this->Email->sendAs = 'html';
         $this->set('id',$this->User->id);
         $this->Email->send($message);
+    }
+
+     /*
+    Generates a new vericode and sends an email to the currently logged-in user.
+    Email allows user to verify email address.
+    */
+    private function _sendWelcomeSubletUsersEmail($person)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $person['email'];
+        $subject = "The New Cribspot is Here!";
+        $template = 'WelcomeExistingUsers';
+        $sendAs = 'both';
+        $this->set('first_name', $person['first_name']);
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
+    
+    public function _sendWelcomePropertyManagersEmail($person)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $person['email'];
+        $subject = "Welcome to Cribspot at the University of Michigan!";
+        $template = 'WelcomePropertyManagers';
+        $sendAs = 'both';
+        $this->set('reset_password_url', "www.cribspot.com/users/ResetPasswordRedirect?id=".$person['id'] . 
+            "&reset_token=".$person['password_reset_token']);
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 }
 ?>

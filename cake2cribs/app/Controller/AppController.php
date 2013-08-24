@@ -32,7 +32,13 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components= array('Session','Auth');
+	public $components= array('Session', 'Cookie', 'Auth' => array(
+        'authenticate' => array(
+            'Form' => array(
+                'fields' => array('username' => 'email')
+                )
+            )
+    ));
 
 	var $facebook;
 	var $_jsVars = array();
@@ -94,12 +100,24 @@ class AppController extends Controller {
 		// Set the jsVars array which holds the variables to be used in js
         $this->set('jsVars', $this->_jsVars);
 
+		$flash_message = $this->Cookie->read('flash-message');
+	 	$this->Cookie->delete('flash-message');
+        $this->set("flash_message", json_encode($flash_message));
+
 		if($this->Auth->User()){
 			$Users = ClassRegistry::init('User');
 			$safe_user = $Users->getSafe($this->Auth->User('id'));
-
 			$this->set('AuthUser', $safe_user['User']);
 		}
+
+		/* Set default meta content */
+		$title = 'Cribspot - College House Made Simple';
+		$description = "Cribspot takes the pain out of finding college housing. We've gathered thousands of listings so " .
+		"you can stop stressing about housing and get back to making the most of your college experience.";
+		$this->set('meta', array(
+			'title' => $title,
+			'description' => $description
+		));
 	}
 
 	protected function _getUserId()

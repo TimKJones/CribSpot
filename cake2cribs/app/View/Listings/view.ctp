@@ -122,10 +122,14 @@
 							$pic_url = "https://graph.facebook.com/".$listing['User']['facebook_userid']."/picture?width=80&height=80";
 						?>
 						<img src="<?= $pic_url ?>" class="pull-left">
-						<div class="pull-left owner"><?= $listing["User"]["company_name"] ?></div>
+						<div class="owner"><?= $listing["User"]["company_name"] ?></div>
+						<?= ($listing["User"]["verified"]) ? '<div class="verified">VERIFIED</div>' : '' ; ?>
 					</div>
 				</div>
 				<div class="row-fluid hide" id="contact_message">
+					<div class="row-fluid phone">
+						Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
+					</div>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
 					</div>

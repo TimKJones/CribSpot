@@ -101,10 +101,12 @@
       change_password_button.attr('disabled', 'disabled');
       data = {
         'new_password': new_password,
-        'confirm_password': confirm_password,
-        'id': id,
-        'reset_token': reset_token
+        'confirm_password': confirm_password
       };
+      if (id !== null && reset_token !== null) {
+        data['id'] = id;
+        data['reset_token'] = reset_token;
+      }
       if (new_password !== confirm_password) {
         A2Cribs.UIManager.Alert("Passwords do not match.");
         return;
@@ -136,13 +138,13 @@
         'first_name': first_name,
         'last_name': last_name
       };
-      return $.post(myBaseUrl + 'users/ajaxEditUser', data, function(response) {
+      return $.post(myBaseUrl + 'users/AjaxEditUser', data, function(response) {
         var json_response;
         json_response = JSON.parse(response);
-        if (json_response.success === 1) {
+        if (json_response.error === void 0) {
           alertify.success('Account Saved', 1500);
         } else {
-          alertify.error('Account Failed to Save: ' + json_response.message, 1500);
+          alertify.error('Account Failed to Save: ' + json_response.error.message, 1500);
         }
         return $('#save_btn').removeAttr('disabled');
       });
@@ -172,8 +174,8 @@
       data = 'email=' + $("#UserEmail").val();
       return $.post('/users/AjaxResetPassword', data, function(response) {
         data = JSON.parse(response);
-        if (data.success === 1) {
-          document.location.href = '/users/login?password_reset_redirect=true';
+        if (data.success != null) {
+          A2Cribs.UIManager.Alert("Email sent to reset password!");
           return false;
         } else {
           A2Cribs.UIManager.Alert(data.error);

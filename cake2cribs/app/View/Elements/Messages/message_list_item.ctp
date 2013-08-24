@@ -9,8 +9,8 @@
 	}else{
 		$side = "left";
 	}
-	if($message['User']['facebook_userid']){
-		$pic = "https://graph.facebook.com/".$message['User']['facebook_userid']."/picture?width=80&height=80";	
+	if($message['User']['facebook_id']){
+		$pic = "https://graph.facebook.com/".$message['User']['facebook_id']."/picture?width=80&height=80";	
 	}
 		
 ?>

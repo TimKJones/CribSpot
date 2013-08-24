@@ -18,7 +18,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 
 	GetObject: ->
 		return_val = super()
-		delete return_val.GMarker
+		return_val.GMarker = null
 		return return_val
 
 	MarkerClicked: (event) =>

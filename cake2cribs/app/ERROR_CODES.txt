@@ -112,4 +112,9 @@
 - Favorite->AddFavorite
 51
 - Users/ResendConfirmationEmail
-
+52
+- Users/AjaxChangePassword_LoggedIn
+53
+- Users/AjaxChangePassword
+54
+- User->edit

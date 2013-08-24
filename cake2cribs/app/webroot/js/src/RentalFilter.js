@@ -26,11 +26,21 @@
     };
 
     RentalFilter.CreateListeners = function() {
+      var _this = this;
+      $("#filter_search_content").keyup(function(event) {
+        if (event.keyCode === 13) {
+          A2Cribs.FilterManager.SearchForAddress(event.delegateTarget);
+          return $(event.delegateTarget).select();
+        }
+      });
       /*
       		On Change listeners for applying changed fields
       */
 
+<<<<<<< HEAD
       var _this = this;
+=======
+>>>>>>> 80369850090a5f8396237c87f52f994a82f516a7
       this.div.find(".lease_slider").on("slideStop", function(event) {
         return _this.ApplyFilter("LeaseRange", {
           min: parseInt(event.value[0], 10),
@@ -159,6 +169,18 @@
     RentalFilter.SetupUI = function() {
       var _this = this;
       this.div = $("#map_filter");
+      $("#filter_search_btn").click(function() {
+        if ($("#filter_search_content").is(":visible")) {
+          return $("#filter_search_content").hide('slide', {
+            direction: 'left'
+          }, 300);
+        } else {
+          $("#filter_search_content").show('slide', {
+            direction: 'left'
+          }, 300);
+          return $("#filter_search_content").focus();
+        }
+      });
       this.div.find(".lease_slider").slider({
         min: 0,
         max: 12,

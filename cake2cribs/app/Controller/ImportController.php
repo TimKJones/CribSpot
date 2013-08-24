@@ -3,7 +3,7 @@
 Contains functionality for importing listings from csv to database
 */
 class ImportController extends AppController {
-	public $uses = array('Listing', 'Rental', 'GeocoderAddress');
+	public $uses = array('Listing', 'Rental', 'GeocoderAddress', 'User', 'Marker', 'Image');
 	public $components= array();
 	private $NUM_LISTING_COLUMNS = 0; /* number of columns in the excel doc for a listing */
 	private $MAPS_HOST = "maps.google.com";
@@ -21,6 +21,7 @@ class ImportController extends AppController {
 		$this->Auth->allow('SaveListings');
 		$this->Auth->allow('TestGeocoderFunctionality');
 		$this->Auth->allow('Index');
+		$this->Auth->allow('ImportImages');
   	}
 
   	public function index()
@@ -69,6 +70,8 @@ Then saves the array of listing objects.
 */
 	public function SaveListings()
 	{
+		App::Import('model', 'User');
+
 		$this->layout = 'ajax';
 		$listing = $this->request->data;
 		//CakeLog::write("listings_preprocessing", print_r($listing, true));
@@ -91,13 +94,28 @@ Then saves the array of listing objects.
 			/* Convert fields from strings to their database values */
 			$listing = $this->_convertTypeStringsToIntegers($listing);
 
+			/* Get existing marker object if this address has already been used */
+			$marker = $this->Marker->GetMarkerByAddress($listing['Marker']);
+			if ($marker != null)
+				$listing['Marker'] = $marker['Marker'];
+
+			/* Get existing user object if this company name has already been used */
+			$user = $this->User->GetUserByCompanyName($listing['User']['company_name']);
+			if ($user != null)
+				$listing['User'] = $user['User'];
+			else{
+				/* Add in some user fields that are blank */
+				$listing['User']['user_type'] = User::USER_TYPE_PROPERTY_MANAGER;
+				$listing['User']['password'] = uniqid();
+				$listing['User']['verified'] = 0;
+				//$listing['User']['company_name'] = preg_replace('/([^[:alnum:]])/', '\\\\$1', $listing['User']['company_name']);
+			}
+
 			/* remove null fields */
+			$listing['User'] = $this->_removeNullEntries($listing['User']);
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
 			$listing['Marker'] = $this->_removeNullEntries($listing['Marker']);
-			$listing['User'] = $this->_removeNullEntries($listing['User']);
 			$listing['Listing'] = $this->_removeNullEntries($listing['Listing']);
-
-			$listing['User'] = preg_replace('/([^[:alnum:]])/', '\\\\$1', $listing['User']['company_name']);
 		//}
 
 		CakeLog::write('imported_listings', print_r($listing, true));
@@ -121,43 +139,62 @@ Then saves the array of listing objects.
 	private function _convertTypeStringsToIntegers(&$listing)
 	{
 		App::Import('model', 'Rental');
+
+		if (array_key_exists('start_date', $listing['Rental']) && !empty($listing['Rental']['start_date']))
+			$listing['Rental']['start_date'] = date('Y-m-d', strtotime($listing['Rental']['start_date']));
+		else
+			unset($listing['Rental']['start_date']);
+
+		if (array_key_exists('alternate_start_date', $listing['Rental']) && !empty($listing['Rental']['alternate_start_date']))
+			$listing['Rental']['alternate_start_date'] = date('Y-m-d', strtotime($listing['Rental']['alternate_start_date']));
+		else
+			unset($listing['Rental']['alternate_start_date']);
+
+		if (array_key_exists('end_date', $listing['Rental']) && !empty($listing['Rental']['end_date']))
+			$listing['Rental']['end_date'] = date('Y-m-d', strtotime($listing['Rental']['end_date']));
+		else
+			unset($listing['Rental']['end_date']);
+
+CakeLog::write("listingWithDates", print_r($listing, true));
 		/* Convert combo of move_in/move_out to lease_length */
-		if (!empty($listing['Rental']['start_date']) && !empty($listing['Rental']['alternate_start_date']) &&
-			!empty($listing['Rental']['end_date'])){
-			$startMonth = date('m', $listing['Rental']['start_date']);
-			$startDay = date('d', $listing['Rental']['start_date']);
-			$startYear = date('Y', $listing['Rental']['start_date']);
-			$endMonth = date('m', $listing['Rental']['end_date']);
-			$endDay = date('d', $listing['Rental']['end_date']);
-			$endYear = date('Y', $listing['Rental']['start_date']);
+		if (array_key_exists('start_date', $listing['Rental']) &&
+			array_key_exists('end_date', $listing['Rental']) &&
+			!empty($listing['Rental']['start_date']) &&
+			!empty($listing['Rental']['end_date'])) {
+			$startMonth = intval(date('n', strtotime($listing['Rental']['start_date'])));
+			$startDay = intval(date('j', strtotime($listing['Rental']['start_date'])));
+			$startYear = intval(date('Y', strtotime($listing['Rental']['start_date'])));
+			$endMonth = intval(date('n', strtotime($listing['Rental']['end_date'])));
+			$endDay = intval(date('j', strtotime($listing['Rental']['end_date'])));
+			$endYear = intval(date('Y', strtotime($listing['Rental']['end_date'])));
+			CakeLog::write("dates", 'start_month: ' . $startMonth);
+			CakeLog::write("dates", 'start_day: ' . $startDay);
+			CakeLog::write("dates", 'start_year: ' . $startYear);
+			CakeLog::write("dates", 'end_month: ' . $endMonth);
+			CakeLog::write("dates", 'end_day: ' . $endDay);
+			CakeLog::write("dates", 'end_year: ' . $endYear);
 			$leaseLength = abs(($endYear - $startYear) * 12 - ($endMonth - $startMonth));
 			$leaseLength = $leaseLength + ($endDay > $startDay);
-			$listing['Rental']['start_date'] = date('Y-m-d', $listing['Rental']['start_date']);
+			$listing['Rental']['lease_length'] = $leaseLength;
 			CakeLog::write('dates', 'start: ' . $listing['Rental']['start_date']);
-			$listing['Rental']['alternate_start_date'] = date('Y-m-d', $listing['Rental']['alternate_start_date']);
-			CakeLog::write('dates', 'alternate_start_date: ' . $listing['Rental']['alternate_start_date']);
-			$listing['Rental']['end_date'] = date('Y-m-d', $listing['Rental']['end_date']);
+			//$listing['Rental']['start_date'] = date('Y-m-d', $listing['Rental']['start_date']);
+			//CakeLog::write('dates', 'start: ' . $listing['Rental']['start_date']);
+			//$listing['Rental']['end_date'] = date('Y-m-d', $listing['Rental']['end_date']);
 			CakeLog::write('dates', 'end_date: ' . $listing['Rental']['end_date']);
-			$listing['Rental']['lease_length'] = date('Y-m-d', $listing['Rental']['lease_length']);
-			CakeLog::write('dates', 'lease_length: ' . $listing['Rental']['lease_length	']);
+			//$listing['Rental']['lease_length'] = date('Y-m-d', $listing['Rental']['lease_length']);
+			CakeLog::write('dates', 'lease_length: ' . $listing['Rental']['lease_length']);
 		}
+		else if (array_key_exists('lease_length', $listing['Rental']))
+			unset($listing['Rental']['lease_length']);
 
-		if (!empty($listing['Rental']['start_date'])){
-			$listing['Rental']['start_date'] = date('Y-m-d', $listing['Rental']['start_date']);
-		}
-
-		if (!empty($listing['Rental']['alternate_start_date'])){
-			$listing['Rental']['alternate_start_date'] = date('Y-m-d', $listing['Rental']['alternate_start_date']);
-		}
-
-
-
-		if ($listing['Rental']['beds'] === 'Studio')
-			$listing['Rental']['beds'] = 0;
+		if (array_key_exists('beds', $listing['Rental']) &&
+			$listing['Rental']['beds'] === 'Studio')
+				$listing['Rental']['beds'] = 0;
 
 		/* Convert utilities to boolean values (or remove from array if '?') */
 		foreach ($this->utilities as $utility){
-			if ($listing['Rental'][$utility] === '?' || 
+			if (!array_key_exists($utility, $listing['Rental']) || 
+				$listing['Rental'][$utility] === '?' || 
 				empty($listing['Rental'][$utility]) ||
 				$listing['Rental'][$utility] === '')
 					unset($listing['Rental'][$utility]);
@@ -171,64 +208,81 @@ Then saves the array of listing objects.
 
 		/* square_feet */
 		$listing['Rental']['square_feet'] = intval($listing['Rental']['square_feet']);
+		if (!array_key_exists('square_feet', $listing['Rental']) ||
+			$listing['Rental']['square_feet'] === 0)
+				unset($listing['Rental']['square_feet']);
 
 		/* pets_type */
-		if ($listing['Rental']['pets'] === 'Dogs')
-			$listing['Rental']['pets_type'] = Rental::PETS_DOGS_ONLY;
-		else if ($listing['Rental']['pets'] === 'Cats')
-			$listing['Rental']['pets_type'] = Rental::PETS_CATS_ONLY;
-		else if ($listing['Rental']['pets'] === 'Both')
-			$listing['Rental']['pets_type'] = Rental::PETS_CATS_AND_DOGS;
-		else if ($listing['Rental']['pets'] === 'No')
-			$listing['Rental']['pets_type'] = Rental::PETS_NOT_ALLOWED;
-		else
-			unset($listing['Rental']['pets']);
+		if (array_key_exists('pets', $listing['Rental'])){
+			if ($listing['Rental']['pets'] === 'Dogs')
+				$listing['Rental']['pets_type'] = Rental::PETS_DOGS_ONLY;
+			else if ($listing['Rental']['pets'] === 'Cats')
+				$listing['Rental']['pets_type'] = Rental::PETS_CATS_ONLY;
+			else if ($listing['Rental']['pets'] === 'Both')
+				$listing['Rental']['pets_type'] = Rental::PETS_CATS_AND_DOGS;
+			else if ($listing['Rental']['pets'] === 'No')
+				$listing['Rental']['pets_type'] = Rental::PETS_NOT_ALLOWED;
+			else
+				unset($listing['Rental']['pets']);
+		}
 
 		/* parking_type */
-		if ($listing['Rental']['parking_type'] === 'Garage')
-			$listing['Rental']['parking_type'] = Rental::PARKING_GARAGE;
-		else if ($listing['Rental']['parking_type'] === 'Lot')
-			$listing['Rental']['parking_type'] = Rental::PARKING_PARKING_LOT;
-		else if ($listing['Rental']['parking_type'] === 'Driveway')
-			$listing['Rental']['parking_type'] = Rental::PARKING_DRIVEWAY;
-		else if ($listing['Rental']['parking_type'] === 'Other')
-			$listing['Rental']['parking_type'] = Rental::PARKING_OTHER;
-		else
-			unset($listing['Rental']['parking_type']);
+		if (array_key_exists('parking_type', $listing['Rental'])){
+			if ($listing['Rental']['parking_type'] === 'Garage')
+				$listing['Rental']['parking_type'] = Rental::PARKING_GARAGE;
+			else if ($listing['Rental']['parking_type'] === 'Lot')
+				$listing['Rental']['parking_type'] = Rental::PARKING_PARKING_LOT;
+			else if ($listing['Rental']['parking_type'] === 'Driveway')
+				$listing['Rental']['parking_type'] = Rental::PARKING_DRIVEWAY;
+			else if ($listing['Rental']['parking_type'] === 'Other')
+				$listing['Rental']['parking_type'] = Rental::PARKING_OTHER;
+			else
+				unset($listing['Rental']['parking_type']);
+		}	
 
 		/* furnished_type */
-		if ($listing['Rental']['furnished_type'] === 'Yes' || 
-			$listing['Rental']['furnished_type'] === 'Y')
-			$listing['Rental']['furnished_type'] = Rental::FURNISHED_FULLY;
-		else if ($listing['Rental']['furnished_type'] === 'Partial')
-			$listing['Rental']['furnished_type'] = Rental::FURNISHED_PARTIALLY;
-		else if ($listing['Rental']['furnished_type'] === 'No' ||
-			$listing['Rental']['furnished_type'] === 'N')
-			$listing['Rental']['furnished_type'] = Rental::FURNISHED_NO;
-		else
-			unset($listing['Rental']['furnished_type']);
+		if (array_key_exists('furnished_type', $listing['Rental'])){
+			if ($listing['Rental']['furnished_type'] === 'Yes' || 
+				$listing['Rental']['furnished_type'] === 'Y')
+				$listing['Rental']['furnished_type'] = Rental::FURNISHED_FULLY;
+			else if ($listing['Rental']['furnished_type'] === 'Partial')
+				$listing['Rental']['furnished_type'] = Rental::FURNISHED_PARTIALLY;
+			else if ($listing['Rental']['furnished_type'] === 'No' ||
+				$listing['Rental']['furnished_type'] === 'N')
+				$listing['Rental']['furnished_type'] = Rental::FURNISHED_NO;
+			else
+				unset($listing['Rental']['furnished_type']);
+		}
 
 		/* building_type_id */
 
-		$listing['Marker']['building_type_id'] = Rental::building_type_reverse($listing['Marker']['building_type']);
+		if (array_key_exists('building_type_id', $listing['Marker']))
+			$listing['Marker']['building_type_id'] = Rental::building_type_reverse($listing['Marker']['building_type']);
 
 		/* amenities */
 		foreach ($this->amenities as $amenity){
-			if ($listing['Rental'][$amenity] === '-')
-				unset($listing['Rental'][$amenity]);
+			if (!array_key_exists($amenity, $listing['Rental']) ||
+				$listing['Rental'][$amenity] === '-' ||
+				$listing['Rental'][$amenity] === '' ||
+				empty($listing['Rental'][$amenity]))
+					unset($listing['Rental'][$amenity]);
+			else if ($listing['Rental'][$amenity] === 'N' ||
+				$listing['Rental'][$amenity] === 'No')
+					$listing['Rental'][$amenity] = false;
 			else
 				$listing['Rental'][$amenity] = true;
 		}
 
 		/* smoking */
-		if ($listing['Rental']['smoking'] === '?')
+		if (!array_key_exists('smoking', $listing['Rental']) || $listing['Rental']['smoking'] === '?')
 			unset($listing['Rental']['smoking']);
 		else
 			$listing['Rental']['smoking'] = ($listing['Rental']['smoking'] === 'Allowed');
 
 		/* washer_dryer */
-		$listing['Rental']['washer_dryer'] = Rental::washer_dryer_reverse($listing['Rental']['washer_dryer']);
-
+		if (array_key_exists('washer_dryer', $listing['Rental']))
+			$listing['Rental']['washer_dryer'] = Rental::washer_dryer_reverse($listing['Rental']['washer_dryer']);
+CakeLog::write("finalprocesslisting", print_r($listing, true));
 		return $listing;
 	}
 
@@ -264,6 +318,46 @@ return null on failure
 		}
 
 		return null;
+	}
+
+	public function ImportImages($directory='img/temp/michigan/')
+	{
+		$path_to_directory = WWW_ROOT.$directory;
+		$counter = 0;
+		foreach (scandir($path_to_directory) as $file) {
+		    if ('.' === $file) continue;
+		    if ('..' === $file) continue;
+		    if ($counter > 3) break;
+		    $counter ++;
+
+		    $dashPos = strrpos($file, '-');
+		    $dotPos = strrpos($file, '.');
+		    $address_length = $dotPos;
+		    if ($dashPos)
+		    	$address_length = min($dashPos, $dotPos);
+
+		    $address = substr($file, 0, $address_length);
+		    $full_address = array(
+		    	'street_address' => $address, 
+		    	'city' => 'Ann Arbor',
+		    	'state' => 'MI'
+		    );
+
+		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
+		    $listing = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		    if ($listing === null || !(array_key_exists('Listing', $listing))){
+		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
+		    	continue;
+		    }
+CakeLog::write('wtf', print_r($listing, true));
+		    $listing_id = $listing['Listing']['listing_id'];
+		    $user_id = $listing['Listing']['user_id'];
+		    $path = $directory . $file;
+			$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id);
+			if (array_key_exists('error', $response) || $response === null){
+				CakeLog::write('FailedImageSave', print_r($path, true));
+			}
+		}
 	}
 
 /*
@@ -310,7 +404,7 @@ Unit test for _convertAddressToGeocoderFormat and _convertAddressToLatLong
 Takes an address as input as an array of (street_address, city, state)
 Returns the lat, long coordinates as well as a formatted address.
 */
-	private function _geocoderProcessAddress($input_address, $use_geocoder=false)
+	private function _geocoderProcessAddress($input_address, $use_geocoder=true)
 	{
 		if (!array_key_exists('street_address', $input_address) ||
 			!array_key_exists('city', $input_address) ||
@@ -320,7 +414,7 @@ Returns the lat, long coordinates as well as a formatted address.
 		}
 
 		if (!$use_geocoder)
-			return $this->_processGeocoderFromSavedData($input_address);
+			return $this->_processGeocoderFromSavedData($input_address);	
 
 		$base_url = "http://maps.googleapis.com/maps/api/geocode/json?address=";
 		$address = urlencode(trim($input_address['street_address'])) . ',' . urlencode(trim($input_address['city'])) . ',' . 
@@ -330,14 +424,15 @@ Returns the lat, long coordinates as well as a formatted address.
         $geocode_pending = true;
         $delay = 0;
         while ($geocode_pending){
+        	//sleep(1);
         	$json = file_get_contents($request_url) or die("url not loading");
 	        $address = json_decode($json);
 	        CakeLog::write('address_1', print_r($address, true));
 	        $status = $address->status;
 	        if (strcmp($status, "200") == 0 || strcmp($status, "OK") == 0) {
 	        	 // Successful geocode
-	        	$this->GeocoderAddress->Save($listing['Marker']['street_address'], $json);
-	        	$geocode_pending = false;
+	        	$this->GeocoderAddress->SaveAddress($input_address['street_address'], $json);
+	        	$geocode_pending = false;	
 	        	$address_components = $this->_getAddressComponents($address);
 	        	CakeLog::write("address_components", print_r($address_components, true));
 	        	$lat_long = $this->_getLatLong($address);
@@ -345,11 +440,12 @@ Returns the lat, long coordinates as well as a formatted address.
 	        		'street_address' => $address_components['street_address'],
 	        		'city' => $address_components['city'],
 	        		'state' => $address_components['state'],
-	        		'zip' => $address_components['zip'],
 	        		'latitude' => $lat_long['lat'],
-	        		'longitude' => $lat_long['lng'],
+	        		'longitude' => $lat_long['lng']
 	        	);
-CakeLog::write("response", print_r($response, true));
+	        	if (array_key_exists('zip', $address_components))
+	        		$response['zip'] = $address_components['zip'];
+	        	
 	            return $response;
 	        }
 	        else if (strcmp($status, "620") == 0) {
@@ -358,7 +454,10 @@ CakeLog::write("response", print_r($response, true));
 	        }
 	        else {
 	            // failure to geocode
+	            CakeLog::write('failedToGeocode', print_r($input_address, true));
+	            CakeLog::write('failedToGeocode', 'status: ' . $status);
 	            $geocode_pending = false;
+	            $delay += 100000;
 	        }
 
 	        usleep($delay);

@@ -118,7 +118,7 @@
     return value;
   }
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? '<img src="/img/dashboard/yes.png" alt="Yes">' : '<img src="/img/dashboard/no.png" alt="No">' ;
+    return value ? '<img src="/img/full_page/amenities_check.png" alt="Yes">' : '<img src="/img/full_page/amenities_no_check.png" alt="No">' ;
   }
   function DateFormatter (isRequired)
   {

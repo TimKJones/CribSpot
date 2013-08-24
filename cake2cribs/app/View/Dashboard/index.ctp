@@ -16,7 +16,7 @@
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
-
+<?php $this->set('title_for_layout', 'Dashboard'); ?>
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>

@@ -177,30 +177,13 @@
       return A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder();
     };
 
-    FilterManager.AddressSearchCallback = function(response, status) {
-      var formattedAddress;
-      if (status === google.maps.GeocoderStatus.OK && response[0].types[0] !== "postal_code") {
-        $("#addressSearchBar").effect("highlight", {
-          color: "#5858FA"
-        }, 2000);
-        A2Cribs.Map.GMap.panTo(response[0].geometry.location);
-        A2Cribs.Map.GMap.setZoom(18);
-        if (response[0].address_components.length >= 2) {
-          formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[1].short_name;
-          if (A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]) {
-            return alert(A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]);
-          }
-        }
-      } else {
-        return $("#addressSearchBar").effect("highlight", {
-          color: "#FF0000"
-        }, 2000);
+    FilterManager.SearchForAddress = function(div) {
+      var address, request,
+        _this = this;
+      if (!(A2Cribs.FilterManager.Geocoder != null)) {
+        A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder();
       }
-    };
-
-    FilterManager.SearchForAddress = function() {
-      var address, request;
-      address = $("#AddressSearchText").val();
+      address = $(div).val();
       request = {
         location: A2Cribs.Map.GMap.getCenter(),
         radius: 8100,
@@ -210,7 +193,19 @@
       };
       return A2Cribs.FilterManager.Geocoder.geocode({
         'address': address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState
-      }, A2Cribs.FilterManager.AddressSearchCallback);
+      }, function(response, status) {
+        if (status === google.maps.GeocoderStatus.OK && response[0].types[0] !== "postal_code") {
+          $(div).effect("highlight", {
+            color: "#5858FA"
+          }, 2000);
+          A2Cribs.Map.GMap.panTo(response[0].geometry.location);
+          return A2Cribs.Map.GMap.setZoom(18);
+        } else {
+          return $(div).effect("highlight", {
+            color: "#FF0000"
+          }, 2000);
+        }
+      });
     };
 
     return FilterManager;

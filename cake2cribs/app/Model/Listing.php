@@ -104,8 +104,8 @@ class Listing extends AppModel {
 		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 6'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 6.'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -140,8 +140,8 @@ class Listing extends AppModel {
 				$this->LogError($user_id, 2, $error);
 				return array("error" => array('validation' => $this->validationErrors,
 			'message' => 'Looks like we had some problems deleting your listing! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 2'));
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 2.'));
 			}
 		}
 
@@ -403,6 +403,45 @@ class Listing extends AppModel {
 	}
 
 	/*
+	Returns street_address for given $listing_id
+	*/
+	public function GetStreetAddressFromListingId($listing_id)
+	{
+		$listing = $this->find('first', array(
+			'fields' => 'Marker.street_address',
+			'contains' => array('Marker'),
+			'conditions' => array('Marker.listing_id' => $listing_id)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing['Marker']['street_address'];
+	}
+
+	public function GetListingIdFromAddress($address)
+	{
+		if (!array_key_exists('street_address', $address) ||
+			!array_key_exists('city', $address) ||
+			!array_key_exists('state', $address))
+			return null;
+
+		$listing = $this->find('first', array(
+			'fields' => array('Listing.marker_id', 'Listing.user_id'),
+			'conditions' => array(
+				'Marker.street_address' => $address['street_address'],
+				'Marker.city' => $address['city'],
+				'Marker.state' => $address['state']
+			)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing;
+	}
+
+	/*
 	return all data needed for a rental hover menu (for all markers)
 	*/
 	private function _loadRentalHoverData()
@@ -460,11 +499,20 @@ class Listing extends AppModel {
 			'Listing.listing_id',
 			'Marker.marker_id',
 			'Marker.latitude',
-			'Marker.longitude'
+			'Marker.longitude',
+			'Marker.street_address',
+			'Marker.building_type_id',
+			'Marker.alternate_name',
+			'Marker.city',
+			'Marker.state',
+			'Marker.zip'
 			);
 		$options['conditions'] = array('Listing.visible' => 1);
 		$basicData = $this->find('all', $options);
 		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		foreach ($locationFilteredBasicData as $listing) {
+			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
+		}
 		return $locationFilteredBasicData;
 	}
 

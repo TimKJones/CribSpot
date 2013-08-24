@@ -345,16 +345,39 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                 <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
 
-                                    <p align="left" class="article-title" style="font-size:18px;line-height:24px;color:#3c95c9;font-weight:bold;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >You've received a new message!</p>
 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
 
-                                        	
-	
-     <strong>Click</strong>
-     <a href = '<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;" > here</a> <strong> to view it.</strong></p>
+
+You've received a new message on Cribspot 
+
+<?php if ($is_property_manager && $street_address !== null){ ?>
+    about your property at <?php echo $street_address;?>
+<?php } ?>! <br/>
+
+<?php if ($is_property_manager && !$email_verified){ ?>
+In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/>
+
+In order to view this message and communicate with this prospective tenant, you'll first need to finish registration.  Click <a href='<?php echo $reset_password_url; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your password or copy and paste this url into your browser:<br/>
+
+<?php echo $reset_password_url; ?><br/>
+
+After logging in with your new password, you'll be directed to the dashboard where you can view this message and respond. 
+
+<?php } else { ?>
+
+Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/>
+
+<?php echo $view_msg; ?>
+
+<?php } ?>
+
+If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.
+
+Tim, Jason, Evan, and Alex
+<i>The Cribspot Team</i>
 
                                     </div>
 
@@ -395,7 +418,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
             <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
 
             <td class="w580" width="360" valign="top" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:2px;color:#888888;margin-top:0px;margin-bottom:15px;" >&nbsp;</p>
-              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="http://cribspot.com/sublet/University_of_Michigan-Ann_Arbor" lang="en" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Post a Listing</a> | <a href="mailto:help@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a> | <a href="mailto:info@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Contact</a></p>
+              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="mailto:help@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a> | <a href="mailto:info@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Contact</a></p>
 
             </td>
 

@@ -54,9 +54,35 @@ f	Closes the tooltip, no animation
 		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
 		@template.find(".building_type").text marker.GetBuildingType()
 		@template.find(".unit_div").empty()
-		for listing in listings
+		sortedListings = listings.sort (a, b) ->
+			listing_a = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, a.GetId()
+			listing_b = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, b.GetId()
+			if not listing_a.rent? and not listing_b.rent?
+				return 0
+			else if listing_a.rent? and not listing_b.rent?
+				return 1
+			else if not listing_a.rent? and listing_b.rent?
+				return -1
+			return parseInt(listing_a.rent, 10) - parseInt(listing_b.rent, 10);
+
+		for listing in sortedListings
 			if not listing.visible? or listing.visible
 				listing_info = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId()
+
+				codes = (k for k of listings)
+				sortedCodes = codes.sort (a, b) -> listings[b] - listings[a]
+
+				if not listing_info["beds"]?
+					listing_info["beds"] = "??"
+					listing_info["bed_desc"] = "Beds"
+				else if parseInt(listing_info["beds"], 10) is 0
+					listing_info["beds"] = "Studio"
+					listing_info["bed_desc"] = ""
+				else if parseInt(listing_info["beds"], 10) is 1
+					listing_info["bed_desc"] = "Bed"
+				else
+					listing_info["bed_desc"] = "Beds"
+
 				unit_template = $ "<div />",
 					class: "unit"
 				unit_template.attr "onclick", "A2Cribs.ClickBubble.Open(#{listing.GetId()})"
@@ -66,11 +92,11 @@ f	Closes the tooltip, no animation
 				.appendTo unit_template
 				$ "<div />",
 					class: "bed_desc"
-					text: if listing_info["beds"]? is 1 then "Bed" else "Beds"
+					text: listing_info["bed_desc"]
 				.appendTo unit_template
 				$ "<div />",
 					class: "rent"
-					text: "$#{listing_info["rent"]}"
+					text: if listing_info["rent"]? then "$#{listing_info["rent"]}" else "??"
 				.appendTo unit_template
 
 				@template.find(".unit_div").append unit_template

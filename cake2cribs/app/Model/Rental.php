@@ -316,8 +316,8 @@ class Rental extends RentalPrototype {
 			$this->LogError($user_id, 12, $error);
 			return array('error' =>
 	  				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 12');
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 12.');
 		}
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
@@ -333,8 +333,8 @@ class Rental extends RentalPrototype {
 			$this->LogError($user_id, 13, $error);
 			return array('error' => array('message' => 
 				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email . ' . 
-					'at help@cribspot.com. Reference error code 13',
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 13.',
 				'validation' => $this->validationErrors));
 		}
 	}

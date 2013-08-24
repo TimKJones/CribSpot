@@ -9,21 +9,29 @@ class A2Cribs.Login
 
 		# Shows the signup page with a fade animation
 		@div.find(".show_signup").click =>
-			@div.find("#login_content").hide 'fade'
-			@div.find("#signup_content").show 'fade'
+			@div.find(".login_row").hide 'fade'
+			@div.find(".signup_row").show 'fade'
 
 		# Shows the login page with a fade animation
 		@div.find(".show_login").click =>
-			@div.find("#signup_content").hide 'fade'
-			@div.find("#login_content").show 'fade'
+			@div.find(".signup_row").hide 'fade'
+			@div.find(".login_row").show 'fade'
 
-		# Switches between different signups (property manager/student)
-		@div.find(".user_types").click (event) =>
-			target = $(event.target).closest "li"
-			@div.find(".user_types").removeClass "active"
-			$(target).addClass "active"
-			@div.find(".signup").hide()
-			@div.find("##{$(target).attr("id")}_signup").show()
+		# Click on property manager
+		@div.find(".show_pm").click =>
+			@div.find(".student_icon").removeClass "active"
+			@div.find(".pm_icon").addClass "active"
+			@div.find(".fb_box").hide()
+			@div.find(".student_signup").hide()
+			@div.find(".pm_signup").show()
+
+		# Click on student signup
+		@div.find(".show_student").click =>
+			@div.find(".pm_icon").removeClass "active"
+			@div.find(".student_icon").addClass "active"
+			@div.find(".pm_signup").hide()
+			@div.find(".fb_box").show()
+			@div.find(".student_signup").show()
 
 		# Click and form handlers for login
 		@div.find("#login_content").submit (event) => 
@@ -51,8 +59,14 @@ class A2Cribs.Login
 			$.post url, request_data, (response) =>
 				data = JSON.parse response
 				if data.error?
-					A2Cribs.UIManager.CloseLogs()
-					A2Cribs.UIManager.Error data.error
+					if data.error_type is "EMAIL_UNVERIFIED"
+						A2Cribs.UIManager.Confirm "Your email address has not yet been confirmed. 
+							Please click the link provided in your confirmation email. 
+							Do you want us to resend you the email?", (resend) =>
+							if resend then @ResendConfirmationEmail()
+					else
+						A2Cribs.UIManager.CloseLogs()
+						A2Cribs.UIManager.Error data.error
 					###
 					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
 					if data.error_type == "EMAIL_UNVERIFIED"
@@ -71,21 +85,32 @@ class A2Cribs.Login
 				response = JSON.parse response
 				if response.error?
 					A2Cribs.UIManager.Alert response.error.message
+				else
+					A2Cribs.UIManager.Success "Email has been sent! Click the link to verify."
 
 	validate = (user_type, required_fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
 		A2Cribs.UIManager.CloseLogs()
 		isValid = yes
 		for field in required_fields
-				if @div.find("##{type_prefix}#{field}").val().length is 0
-					isValid = no
+			if @div.find("##{type_prefix}#{field}").val().length is 0
+				isValid = no
 		if not isValid
 			A2Cribs.UIManager.Error "Please fill in all of the fields!"
+		phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
+		if phone_number.length isnt 10 or isNaN phone_number
+			isValid = false
+			A2Cribs.UIManager.Error "Please enter a valid phone number"
+
+		if @div.find("##{type_prefix}password").val().length < 6
+			isValid = false
+			A2Cribs.UIManager.Error "Please enter a password of 6 or more characters"
+
 		return isValid
 
 
 	# Static private function that creates and posts a user based on user_type
-	createUser = (user_type, required_fields) =>
+	createUser = (user_type, required_fields, fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
 		if validate user_type, required_fields
 			# Check to see if confirm password matches the actual password
@@ -97,8 +122,9 @@ class A2Cribs.Login
 					User:
 						user_type: user_type
 				# Loop through all the required fields and grab based on id's
-				for field in required_fields
-					request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
+				for field in fields
+					if @div.find("##{type_prefix}#{field}").val().length isnt 0
+						request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
 
 				# Post the request data using AjaxRegister
 				$.post "/users/AjaxRegister", request_data, (response) =>
@@ -107,18 +133,23 @@ class A2Cribs.Login
 						A2Cribs.UIManager.CloseLogs()
 						A2Cribs.UIManager.Error data.error
 					else
-						window.location.href = '/dashboard'
+						@div.find(".show_login").click()
+						A2Cribs.UIManager.Alert "Check your email to validate your credentials!"
+						
 
 	# Creates a Student user
 	@CreateStudent: ->
 		required_fields = ["email", "password", "first_name", "last_name"]
-		createUser 0, required_fields
+		fields = required_fields.slice 0 # Used to copy the required array
+		createUser 0, required_fields, fields
 		return false
 
 	# Creates a Property manager user
 	@CreatePropertyManager: ->
-		required_fields = ["email", "password", "company_name", "street_address", "phone", "website", "city", "state"]
-		createUser 1, required_fields
+		required_fields = ["email", "password", "company_name", "street_address", "phone", "city", "state"]
+		fields = required_fields.slice 0 # Used to copy the required array
+		fields.push "website"
+		createUser 1, required_fields, fields
 		return false
 				
 

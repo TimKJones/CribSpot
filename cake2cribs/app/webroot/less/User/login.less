@@ -1,75 +1,153 @@
+#layoutsContainer
+{
+	background-color: #F0F0F0;
+}
+
 #login_signup
 {
-	position: absolute;
-	top: 75px;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	padding: 25px 50px;
-	#login_row
+	padding-top: 55px;
+
+	form
 	{
-		height: 100%;
-		background-color: #E0E0E0;
-		border: solid 1px gray;
-		box-shadow: 2px 2px 5px gray;
+		margin-bottom: 0;
 	}
-	.divider
+
+	.info_box
 	{
-		margin-top: 25px;
-		height: 2px;
-		background-color: black;
-		text-align: center;
-		span
-		{
-			background-color: white;
-			position: relative;
-			top: -0.5em;
-		}
+		background-color: white;
+		border-radius: 4px;
+		box-shadow: 0 0 3px gray;
+		margin-bottom: 20px;
+		color: #5c5c5c;
+		font-size: 12px;
+
 	}
-	#logo_footer
+	.login_row
 	{
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		text-align: center;
+		width: 350px;
+		margin-top: 20px;
+		margin-left: 70px;
 	}
 	#login_content
 	{
-		min-width: 350px;
-		height: 100%;
+		margin-bottom: 0;
+	}
+	.signup_row
+	{
+		width: 450px;
+		margin-top: 10px;
+		margin-right: 70px;
+	}
+	.signup_input_container
+	{
+		padding: 0 15px;
+		.right_input
+		{
+			margin-left: 5px;
+			margin-right: 0;
+		}
+	}
+	.user_desc
+	{
+		font-family: 'ReklameScriptRegularRegular';
+		font-size: 20px;
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+	.student_icon
+	{
+		background-image: url(/img/signup/student_grey_icon.png);
+		background-size: contain;
+		background-position: center;
+		background-repeat: no-repeat;
+		height: 70px;
+		margin: 10px 0;
+		&:hover
+		{
+			cursor: pointer;
+		}
+		&.active
+		{
+			background-image: url(/img/signup/student_icon.png);
+		}
+	}
+	.pm_icon
+	{
+		background-image: url(/img/signup/pm_grey_icon.png);
+		background-size: contain;
+		background-position: center;
+		background-repeat: no-repeat;
+		height: 70px;
+		margin: 10px 0;
+		&:hover
+		{
+			cursor: pointer;
+		}
+		&.active
+		{
+			background-image: url(/img/signup/pm_icon.png);
+		}
+	}
+	.pm_signup
+	{
+		padding-top: 15px;
+	}
+	.welcome_message
+	{
+		font-size: 30px;
+		line-height: 30px;
+		font-family: 'ReklameScriptRegularRegular';
+		border-bottom: 1px solid hsl(0, 0%, 82%);
+		padding: 10px 20px;
+	}
+	.fb_login_container
+	{
 		padding: 20px;
-		background-color: white;
-		box-shadow: 2px 2px 5px gray;
+		text-align: center;
 	}
-	#signup_content
+	.email_login_message
 	{
-		height: 100%;
-		padding: 20px;
-		background-color: white;
-		box-shadow: 2px 2px 5px gray;
-		h6
-		{
-			margin: 0;
-		}
-		#fb-signup
-		{
-			img
-			{
-				margin-bottom: 20px;
-			}
-		}
-		.signup-btn
-		{
-			margin-top: 20px;
-		}
+		font-size: 20px;
+		line-height: 20px;
+		font-family: 'ReklameScriptRegularRegular';
+		border-bottom: 1px solid hsl(0, 0%, 82%);
+		padding: 10px 20px;
+		margin-bottom: 30px;
 	}
-	#user_type_select
+	.control-label
 	{
-		margin-left: 40px;
+		line-height: 30px;
 	}
-	.personal_data
+	#sign_in
 	{
-		margin-top: 20px;
+		margin-right: 25px;
+		margin-bottom: 15px;
+	}
+	#forgot_password
+	{
+		margin-left: 25px;
+		font-family: 'ReklameScriptRegularRegular';
+		font-size: 16px;
+	}
+	.create_account_container
+	{
+		font-family: 'ReklameScriptRegularRegular';
+		font-size: 18px;
+		padding: 15px 20px;
+		border-top: 1px solid hsl(0, 0%, 82%);
+	}
+	.btn
+	{
+		background-color: #6289cc;
+		border-bottom: solid 1px #6289cc;
+		color: white;
+		font-size: 14px;
+		font-weight: bold;
+		text-shadow: none;
+		box-shadow: inset 0 0 5px hsl(217, 57%, 35%);
+		background-image: none;
+		text-transform: uppercase;
 	}
 }

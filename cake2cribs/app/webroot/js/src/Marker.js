@@ -40,7 +40,7 @@
     Marker.prototype.GetObject = function() {
       var return_val;
       return_val = Marker.__super__.GetObject.call(this);
-      delete return_val.GMarker;
+      return_val.GMarker = null;
       return return_val;
     };
 

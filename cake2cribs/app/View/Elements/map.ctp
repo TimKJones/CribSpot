@@ -4,16 +4,24 @@
 	#map_region
 	{
 		position: absolute;
-		top: 60px;
+		top: 55px;
 		right: 360px;
 		left: 10px;
 		bottom: 10px;
 		box-shadow: 0 0 5px black;
 	}
+	#map_canvas
+	{
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+	}
 </style>
 <div id="map_region">
 	<?php echo $this->element('filter'); ?>
-	<div id="map_canvas" style="height:100%; width:100%;">
+	<div id="map_canvas"> <!-- style="height:100%; width:100%;"> -->
 	</div>
 </div>
 

@@ -1,13 +1,14 @@
 #map_filter
 {
-	position: absolute;
-	top: 5px;
 	z-index: 1;
 	background-color: hsl(0, 100%, 100%);
-	left: 5px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+	margin: 10px;
+	display: inline-table;
+	float: left;
+	position: relative;
 	.filter_clickable
 	{
 		&:hover
@@ -180,4 +181,46 @@
 			display: inline-block;
 		}
 	}
+}
+
+#filter_search_container
+{
+	position: relative;
+	display: inline-block;
+	margin: 10px;
+	z-index: 1;
+	height: 30px;
+	width: 250px;
+}
+
+#filter_search_btn
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	background-color: hsl(0, 100%, 100%);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	padding: 6px 8px;
+	box-shadow: 1px 1px 5px gray;
+	color: #555555;
+	&:hover
+	{
+		cursor: pointer;
+	}
+}
+
+#filter_search_content
+{
+	padding: 0;
+	padding-left: 40px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	margin: 0;
+	height: 30px;
+	display: none;
 }

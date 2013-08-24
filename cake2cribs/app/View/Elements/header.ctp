@@ -2,13 +2,8 @@
 	/* Less files for style */
 	/* Eventually switch to css */
 	echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false));
-	echo $this->Html->css('/font/stylesheet.css', 'stylesheet', array('inline' => false));
 
 	echo $this->element('popups');
-	echo $this->element('login');
-	/* Datepicker and slider javascript */
-	
-	// echo $this->Html->script('bootstrap-slider');
 
 	echo $this->Html->script('src/PageHeader');
 ?>
@@ -61,8 +56,8 @@
 					<li class="personal_menu dropdown">
 						<?
 						$pic_url = "/img/head_large.jpg";
-						if($AuthUser['facebook_userid'])
-							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_userid']."/picture?width=80&height=80";
+						if($AuthUser['facebook_id'])
+							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
 						?>
 						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="<?= $pic_url ?>"><?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
@@ -72,14 +67,31 @@
 							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 						</ul>
 					</li>
+					<?php if (isset($show_personal) && $show_personal) { ?>
 					<li class="personal_buttons">
-						<a href="/messages/"><i class="icon-comment icon-large"></i></a>
-						<a href=""><i class="icon-heart icon-large"></i></a>
+						<div class="personal_button">
+							<a href="/messages/"><i class="icon-comment icon-large"></i></a>
+							<div class="message_count personal_count"></div>
+						</div>
+						<div class="personal_button">
+							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility(this)"><i class="icon-heart icon-large"></i></a>
+							<div class="favorite_count personal_count"></div>
+						</div>
 					</li>
+					<?php } ?>
 				<?php } 
 					else { ?>
-					<li class="signup_btn">
-						<a href="#login_modal" role="button" class="signup" data-toggle="modal">Login</a>
+					<li class="menu dropdown signup_btn">
+						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Login</a>
+						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
+							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
+								<a href="#" class="fb_login" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
+								<input type="email" id="inputEmail" name="email" placeholder="Email">
+								<input type="password" id="inputPassword" name="password" placeholder="Password">
+								<button type="submit" id="submitButton" class="btn">Sign in</button>
+								<?php echo $this->Html->link('Forgot Password?', array('controller' => 'users', 'action' => 'resetpassword'), array('class' => 'forgot_password')); ?>
+							</form>
+						</div>
 					</li>
 					<li class="signup_btn">
 						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem')); ?>
@@ -103,29 +115,12 @@
 	</div>
 </div>
 
-<?php
-/*	$this->Js->buffer('
-		$(".tooltip-btn").tooltip();	
-		$(".popover-btn").popover();
-		var nowTemp = new Date();
-		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		A2Cribs.FilterManager.StartDateObject = $("#startDate").datepicker({
-		  onRender: function(date) {
-		    return date.valueOf() < now.valueOf() ? "disabled" : "";
-		  }
-		}).on("changeDate", function(ev) {
-    		A2Cribs.FilterManager.ApplyFilter(ev);
-    	}).data("datepicker");
-
-		A2Cribs.FilterManager.EndDateObject = $("#endDate").datepicker({
-		  onRender: function(date) {
-		    return date.valueOf() < now.valueOf() ? "disabled" : "";
-		  }
-		}).on("changeDate", function(ev) {
-    		A2Cribs.FilterManager.ApplyFilter(ev);
-    	}).data("datepicker");
-		A2Cribs.PageHeader.renderUnreadConversationsCount();
-		$("#search-form").submit(function() { A2Cribs.FilterManager.SearchForAddress(); return false; });
+<?php 
+	$this->Js->buffer('
+		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
+			e.stopPropagation();
+		});
 	');
-	*/
+	if ($this->Session->read('Auth.User.id') != 0)
+		$this->Js->buffer('A2Cribs.PageHeader.renderUnreadConversationsCount();');
 ?>

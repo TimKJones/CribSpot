@@ -1,20 +1,15 @@
 <?php
 class UsersController extends AppController {
-	public $helpers = array('Html', 'Js');
-	public $uses = array('User', 'University');
-	public $components= array('Session','Auth' => array(
-        'authenticate' => array(
-            'Form' => array(
-                'fields' => array('username' => 'email')
-                )
-            )
-        )
-        ,'Email', 'RequestHandler', 'Cookie'
-    );
+    public $helpers = array('Html', 'Js');
+    public $uses = array('User', 'University');
+    public $components= array('Email', 'RequestHandler', 'Cookie');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {
         parent::beforeFilter();
+        $this->Auth->allow('add');
+        $this->Auth->allow('Login');
+        $this->Auth->allow('Register');
         $this->Auth->allow('AjaxRegister');
         $this->Auth->allow('VerifyEmailRedirect');
         $this->Auth->allow('ResetPassword');
@@ -22,8 +17,13 @@ class UsersController extends AppController {
         $this->Auth->allow('ResetPasswordRedirect');
         $this->Auth->allow('AjaxChangePassword');
         $this->Auth->allow('AjaxLogin');
+        $this->Auth->allow('AjaxEditUser');
         $this->Auth->allow('ResendConfirmationEmail');
-        //$this->Auth->allow('Login2');
+    }
+
+    public function add()
+    {
+        $this->redirect(array('action' => 'login', "signup"));
     }
 
     // Sets the directive to view account information
@@ -33,40 +33,6 @@ class UsersController extends AppController {
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
-    }
-
-    public function Login2()
-    {
-        if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://localhost/users/login2');
-            $client_id = Configure::read('FB_APP_ID');
-            $client_secret = Configure::read('FB_APP_SECRET');
-            $code = urlencode($_GET['code']);
-            $url = 'https://graph.facebook.com/oauth/access_token?';
-            $url .= '&redirect_uri=' . $redirect_uri;
-            $url .= '&client_id=' . urlencode($client_id);
-            $url .= '&client_secret=' . urlencode($client_secret);
-            $url .= '&code=' . $code;
-            $fb_user = urldecode(file_get_contents($url));
-            parse_str($fb_user); /* Sets access token value in $access_token */
-            
-            /* 
-            We have the access token.
-            We now have to verify its validity
-            */
-            $response = $this->_verifyFBAccessToken($access_token);
-            if ($response === false){
-                /* TODO: HANDLE ERROR HERE */
-            }  
-
-            $userData = $this->_getUserData($access_token);
-
-            /* Set variables to populate registration form */
-            $this->Session->write('fb_id', $userData->id);
-            $this->set('email', $userData->email);
-            $this->set('firstName', $userData->first_name);
-            $this->set('lastName', $userData->last_name);
-        }
     }
 
     /*
@@ -242,13 +208,54 @@ class UsersController extends AppController {
     /*
     Action for login page.
     */
-    public function Login()
+    public function Login($signup=false)
     {
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "You are now logged in!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
+
+        /* 
+        After the user is redirected from facebook, these URL parameters will have been set.
+        We'll use these to get their access token, which we'll use to query for their basic information.
+        */
+        if (array_key_exists('code', $_GET)){
+            $redirect_uri = urlencode('http://localhost/users/login');
+            $client_id = Configure::read('FB_APP_ID');
+            $client_secret = Configure::read('FB_APP_SECRET');
+            $code = urlencode($_GET['code']);
+            $url = 'https://graph.facebook.com/oauth/access_token?';
+            $url .= '&redirect_uri=' . $redirect_uri;
+            $url .= '&client_id=' . urlencode($client_id);
+            $url .= '&client_secret=' . urlencode($client_secret);
+            $url .= '&code=' . $code;
+            $fb_user = urldecode(file_get_contents($url));
+            parse_str($fb_user); /* Sets access token value in $access_token */
+            /* 
+            We have the access token.
+            We now have to verify its validity
+            */
+            $response = $this->_verifyFBAccessToken($access_token);
+            if ($response === false){
+                /* TODO: HANDLE ERROR HERE */
+            }  
+
+            $userData = $this->_getUserData($access_token);
+            $user = array(
+                'email' => $userData->email,
+                'first_name' => $userData->first_name,
+                'last_name' => $userData->last_name,
+                'facebook_id' => $userData->id
+            );
+            $this->_facebookLogin($user);
+        }
+
+        $this->set('show_signup', $signup);
     }
 
     /*
@@ -279,7 +286,7 @@ class UsersController extends AppController {
     }
 
     /*
-    Called from /users/ ResetPasswordRedirect.
+    Called from /users/ResetPasswordRedirect (user is logged out).
     Verifies the submitted user_id and password reset_token
     If the passwords match, sets the user's password.
     */
@@ -289,11 +296,44 @@ class UsersController extends AppController {
             return; 
 
         $this->layout = 'ajax';
+        $new_password = $this->request->data['new_password'];
+        $confirm_password = $this->request->data['confirm_password'];
+        $reset_token = $this->request->data['reset_token'];
+        $user_id = $this->request->data['id'];
+        /* Make sure that the ($id, $reset_token) pair is valid */
+        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
+            CakeLog::write("ErrorAjaxChangePassword", $user_id . "; " . $reset_token);
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* If no $_GET parameter exists for reset_token and id, then user must be logged in */
+        $user_id = null;
+        if (array_key_exists('reset_token', $this->params->data) &&
+            array_key_exists('id', $this->params->data)) {
+                /* Make sure that the ($id, $reset_token) pair is valid */
+                $user_id = $this->params->data['id'];
+                $reset_token = $this->params->data['reset_token'];
+                if (!$this->User->IsValidResetToken($user_id, $reset_token)){
+                    CakeLog::write("ErrorAjaxChangePassword", $id . "; " . $reset_token);
+                    $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+                    $this->set('response', json_encode($response));
+                    return;
+                }
+        }
+        else if ($this->Auth->User())
+            $user_id = $this->Auth->User('id');
+        else{
+            CakeLog::write("ErrorAjaxChangePassword", 'Error Code: 46');
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 46');
+            $this->set('response', json_encode($response));
+            return;
+        }
+
         if (!$this->request || !$this->request->data || 
             !array_key_exists('new_password', $this->request->data) ||
-            !array_key_exists('confirm_password', $this->request->data) ||
-            !array_key_exists('reset_token', $this->request->data) ||
-            !array_key_exists('id', $this->request->data)){
+            !array_key_exists('confirm_password', $this->request->data)) {
             CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
             $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
             $this->set('response', json_encode($response));
@@ -302,15 +342,6 @@ class UsersController extends AppController {
 
         $new_password = $this->request->data['new_password'];
         $confirm_password = $this->request->data['confirm_password'];
-        $reset_token = $this->request->data['reset_token'];
-        $user_id = $this->request->data['id'];
-        /* Make sure that the ($id, $reset_token) pair is valid */
-        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
-            CakeLog::write("ErrorAjaxChangePassword", $id . "; " . $reset_token);
-            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
-            $this->set('response', json_encode($response));
-            return;
-        }
 
         /* Make sure new_password matches the confirmed password */
         if ($new_password != $confirm_password){
@@ -337,13 +368,21 @@ class UsersController extends AppController {
         /* Check if user exists */
         if (!$this->User->IdExists($user_id)){
             CakeLog::write("Users_Verify_Email_Redirect", $this->request->query['id']);
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Email failed to validate user. Please sign up.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login', 'signup'));
         }
 
         /* Check if vericode is valid */
         if (!($this->User->VericodeIsValid($vericode, $user_id))) {
             CakeLog::write("Users_Verify_Email_Redirect", $this->User->id . ' ' . $vericode . ' ' . $this->User->field('vericode'));
-            $this->redirect('/users/login?invalid_link=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Validation code is not legit! Please check your email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
 
         $this->User->id = $user_id;
@@ -353,10 +392,18 @@ class UsersController extends AppController {
         $success = $this->User->VerifyUserEmail($user_id, $university_id);
         if (array_key_exists('error', $success)){
             CakeLog::write("Verify_Email_Failed", $this->Auth->User('id') . ' ' . $university_id);
-            $this->redirect('/users/login?email_verify_failed=true');
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "Gosh darn it. Failed to verify email.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
         else{
-            $this->redirect('/dashboard?email_verified=true');
+            $flash_message['method'] = "Success";
+            $flash_message['message'] = "Email successfully verified!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect(array('action' => 'login'));
         }
     }
 
@@ -384,6 +431,32 @@ class UsersController extends AppController {
     public function VerifyUniversityEmailRedirect()
     {
 
+    }
+
+    /*
+    Called from the dashboard to edit basic account information from the 'My Account' tab.
+    */
+    public function AjaxEditUser(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+
+        $editable_fields = array('first_name', 'last_name', 'company_name', 'street_address',
+            'city', 'state', 'phone', 'website');
+
+        $user = array('id' => $this->Auth->User('id'));
+
+        foreach ($editable_fields as $field){
+            if (array_key_exists($field, $this->request->data) &&
+                !empty($this->request->data[$field])) {
+                    $user[$field] = $this->request->data[$field];
+            }
+        }
+
+        $response = $this->User->edit(array('User' => $user));
+        $this->set('response', json_encode($response));
+        return;
     }
 
     public function ResendConfirmationEmail()
@@ -464,56 +537,43 @@ class UsersController extends AppController {
     }
 
     /*
-    Logs a user in via facebook
-    $fb_user is the facebook user object returned from hull
+    Receives user data as given by facebook.
+    Attempts to log user in with this data.
     */
     private function _facebookLogin($fb_user)
     {
         if ($fb_user){
-            $local_user = $this->User->GetUserFromFacebookId($fb_user->identities[0]->uid);
+            $local_user = $this->User->GetUserFromFacebookId($fb_user['facebook_id']);
 
             /* User exists, so log them in. */
             if ($local_user){
-                $this->User->UpdateLastLogin($this->Auth->User('id'));
+                $this->User->UpdateLastLogin($local_user['User']['id']);
                 $this->Auth->login($local_user['User']);
                 $this->redirect('/dashboard');
             } 
 
             /* User doesn't exist, so create a new user. */
-            else { 
-                $names = explode(" ", $fb_user->name);
-                $first_name = null;
-                $last_name = null;
-                if (count($names) >= 1)
-                    $first_name = $names[0];
-                if (count($names) >= 2)
-                    $last_name = $names[1];
-
-                $new_fb_user['User'] = array(
-                    'email'      => $fb_user->email,
-                    'password'      => uniqid(), // Set random password
-                    'user_type' => User::USER_TYPE_SUBLETTER,
-                    'facebook_userid' => $fb_user->identities[0]->uid,
-                    'verified' => 1
-                );
-
-                if ($first_name != null)
-                    $new_fb_user['User']['first_name'] = $first_name;
-                if ($last_name)
-                    $new_fb_user['User']['last_name'] = $last_name;
+            else {
+                $new_user = array('User' => $fb_user); 
+                $new_user['User'] = $fb_user;
+                $new_user['User']['verified'] = 1;
+                $new_user['User']['user_type'] = User::USER_TYPE_SUBLETTER;
+                $new_user['User']['password'] = uniqid();
                 
-                $response = $this->User->SaveFacebookUser($new_fb_user);
+                $response = $this->User->SaveFacebookUser($new_user);
+
                 if (array_key_exists('error', $response)){
                     return $response;
                 }
 
-                // After registration we will redirect them back here so they will be logged in
-                $this->redirect('/users/login');
+                /* After they have registered, log them in and redirect to the dashboard */
+                $this->Auth->login($response['user']['User']);
+                $this->redirect('/dashboard');
             }
         }
 
         else{
-            // User login failed..
+            
         }
     }
 

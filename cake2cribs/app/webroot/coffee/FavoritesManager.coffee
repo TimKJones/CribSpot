@@ -31,6 +31,7 @@ class A2Cribs.FavoritesManager
 				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Delete from Favorites'
 				$(button).addClass 'active'
+				@_setFavoriteCount()
 
 	###
 	Delete a favorite
@@ -56,6 +57,7 @@ class A2Cribs.FavoritesManager
 				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Add to Favorites'
 				$(button).removeClass 'active'
+				@_setFavoriteCount()
 
 	###
 	response contains a list of listing_ids that have been favorited by the logged-in user
@@ -67,6 +69,8 @@ class A2Cribs.FavoritesManager
 		listing_ids = JSON.parse response
 		for listing_id in listing_ids
 			A2Cribs.FavoritesManager.FavoritesListingIds.push parseInt(listing_id)
+
+		@_setFavoriteCount()
 
 	###
 	Loads all favorites for current user.
@@ -84,8 +88,8 @@ class A2Cribs.FavoritesManager
 	###
 	@ToggleFavoritesVisibility: (button) ->
 		$(button).toggleClass 'active'
-		if A2Cribs.Map.ClickBubble
-			A2Cribs.Map.ClickBubble.Close()
+		A2Cribs.HoverBubble?.Close()
+		A2Cribs.ClickBubble?.Close()
 		markers = A2Cribs.UserCache.Get 'marker'
 		if !A2Cribs.FavoritesManager.FavoritesVisible
 			# make only markers that are in user's favorites visible
@@ -143,6 +147,12 @@ class A2Cribs.FavoritesManager
 		content = $('#favoriteTemplate').html()
 		$('#personalFavoritesList').append content
 
+
+	@_setFavoriteCount: () ->
+		if @FavoritesListingIds.length is 0
+			$(".favorite_count").hide()
+		else
+			$(".favorite_count").show().text @FavoritesListingIds.length
 
 	###
 	Removes the recent favorite into the favorites tab

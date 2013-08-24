@@ -17,7 +17,7 @@
           return;
         }
         count = response_data.unread_conversations;
-        notification = $('#unread-conversation-notification');
+        notification = $('.message_count');
         if (count === 0) {
           return notification.hide();
         } else {

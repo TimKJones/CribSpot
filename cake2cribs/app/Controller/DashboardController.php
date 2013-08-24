@@ -37,6 +37,7 @@
 
 
 	 	public function index(){
+	 		CakeLog::write('loggedin', print_r($this->Auth->User(), true));
 	 		$directive = $this->Cookie->read('dashboard-directive');
 	 		$this->Cookie->delete('dashboard-directive');
 	 		if($directive == null){

@@ -4,8 +4,8 @@
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', 'Cribspot Sublet');
-	echo $this->element('header', array('show_filter' => false, 'show_user' => true));
+	$this->set('title_for_layout', 'Cribspot Off-Campus Housing');
+	echo $this->element('header', array('show_filter' => false, 'show_user' => true, 'show_personal' => true));
 	echo $this->element('map');
 	echo $this->element('FeaturedListings/fl_sidebar', $school_name);
 	//echo $this->element('login');
