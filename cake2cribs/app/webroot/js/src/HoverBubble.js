@@ -45,6 +45,11 @@ Wrapper for google infobubble
 
 
     HoverBubble.Open = function(marker) {
+      var _ref;
+      this.Close();
+      if ((_ref = A2Cribs.ClickBubble) != null) {
+        _ref.Close();
+      }
       if (marker) {
         this.SetContent(marker);
         return this.InfoBubble.open(A2Cribs.Map.GMap, marker.GMarker);
