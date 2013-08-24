@@ -43,7 +43,8 @@ class AppModel extends Model {
 	        }
 	        return $default;
 	    }
-	    return $options;
+
+	    return $default;
 	}
 
 	/*
