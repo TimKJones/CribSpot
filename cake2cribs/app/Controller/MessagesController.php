@@ -327,7 +327,7 @@
           'username'=>'cribsadmin',
           'password'=>'lancPA*travMInj',
           'client' => 'a2cribs.com'
-        );
+        );  
 
         $this->Email->delivery = 'smtp';
         $this->Email->from = 'The Cribspot Team<team@cribspot.com>';

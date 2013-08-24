@@ -8,7 +8,7 @@ class User extends AppModel {
 		)
 	);
 	public $belongsTo = array('University');
-	
+	public $actsAs = array('Containable');
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
 
@@ -564,6 +564,29 @@ class User extends AppModel {
 		}
 
 		return $user;
+	}
+
+	/*
+	Initialize password_reset_tokens for all property managers
+	*/
+	public function InitializePMPasswordResetTokens()
+	{
+		$users = $this->find('all', array(
+			'contains' => array('User'),
+			'fields' => array('User.id'),
+			'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
+		));
+		foreach ($users as &$user){
+			$user['User']['password_reset_token'] = uniqid();
+		}
+
+		foreach ($users as $user){
+			$just_user = array('User' => $user['User']);
+
+			if (!$this->save($just_user))
+				CakeLog::write('failed', print_r($this->validationErrors, true));
+		}
+		
 	}
 
 	/*
