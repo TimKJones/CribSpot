@@ -12,6 +12,7 @@
 		<div class="container" style="width: auto;">
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
 			<ul class="nav pull-right">
+				<li class="signup_btn"><a href="#claim_listing" data-toggle="modal">Claim a Listing</a></li>
 				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ 
 					if ($this->Session->read('Auth.User.id') != 0) { ?>
 					<li class="personal_menu dropdown">
