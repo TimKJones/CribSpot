@@ -283,7 +283,7 @@ class ListingsController extends AppController {
 		if (!array_key_exists("company_name", $listing["User"]))
 			$listing["User"]["company_name"] = $listing["User"]["first_name"] . " " . $listing["User"]["last_name"];
 
-		if (array_key_exists("contact_phone", $listing["Rental"]))
+		if (array_key_exists("contact_phone", $listing["Rental"]) && $listing["Rental"]["contact_phone"] != null)
 		{
 			$phone = $listing["Rental"]["contact_phone"];
 			$listing["Rental"]["contact_phone"] = "(" . substr($phone, 0, 3) . ") " . substr($phone, 3, 3) . "-" . substr($phone, 6, 4);
