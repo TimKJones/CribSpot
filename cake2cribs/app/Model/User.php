@@ -578,7 +578,7 @@ class User extends AppModel {
 		$required_fields = null;
 		$user_type = intval($user['user_type']);
 		if ($user_type === User::USER_TYPE_PROPERTY_MANAGER)
-			$required_fields = array('company_name', 'website', 'phone', 'street_address', 'city', 'state');
+			$required_fields = array('company_name', 'phone', 'street_address', 'city', 'state');
 		else if ($user_type === User::USER_TYPE_SUBLETTER)
 			$required_fields = array('first_name', 'last_name');
 

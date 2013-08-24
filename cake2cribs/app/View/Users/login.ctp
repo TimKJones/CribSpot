@@ -117,24 +117,24 @@
                     <div class="row-fluid">
                         <form id="pm_signup" class="span12 signup_input_container">
                             <div class="row-fluid">
-                                <input id="pm_company_name" class="span12" type="text" placeholder="Company or Main Contact Name">
+                                <input id="pm_company_name" class="span12" type="text" placeholder="Company or Main Contact Name" required>
                             </div>
                             <div class="row-fluid">
-                                <input id="pm_email" class="span7" type="email" placeholder="Email">
-                                <input id="pm_phone" class="span5 right_input" type="text" placeholder="Phone">
+                                <input id="pm_email" class="span7" type="email" placeholder="Email" required>
+                                <input id="pm_phone" class="span5 right_input" type="text" placeholder="Phone" required>
                             </div>
                             <div class="row-fluid">
-                                <input id="pm_password" class="span6" type="password" placeholder="Password">
-                                <input id="pm_confirm_password" class="span6 right_input" type="password" placeholder="Confirm Password">
+                                <input id="pm_password" class="span6" type="password" placeholder="Password" required>
+                                <input id="pm_confirm_password" class="span6 right_input" type="password" placeholder="Confirm Password" required>
                             </div>
                             <div class="row-fluid">
-                                <input id="pm_website" class="span12" type="text" placeholder="Website URL">
+                                <input id="pm_website" class="span12" type="text" placeholder="Website (Optional)">
                             </div>
                             <div class="row-fluid">
-                                <input id="pm_street_address" class="span12" type="text" placeholder="Leasing Office Address">
+                                <input id="pm_street_address" class="span12" type="text" placeholder="Leasing Office Address" required>
                             </div>
                             <div class="row-fluid">
-                                <input id="pm_city" class="span4" type="text" placeholder="City">
+                                <input id="pm_city" class="span4" type="text" placeholder="City" required>
                                 <select id="pm_state" class="span3" id="pm_state">
                                     <option></option>
                                     <option value="AL">AL</option>

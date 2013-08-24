@@ -93,15 +93,24 @@ class A2Cribs.Login
 		A2Cribs.UIManager.CloseLogs()
 		isValid = yes
 		for field in required_fields
-				if @div.find("##{type_prefix}#{field}").val().length is 0
-					isValid = no
+			if @div.find("##{type_prefix}#{field}").val().length is 0
+				isValid = no
 		if not isValid
 			A2Cribs.UIManager.Error "Please fill in all of the fields!"
+		phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
+		if phone_number.length isnt 10 or isNaN phone_number
+			isValid = false
+			A2Cribs.UIManager.Error "Please enter a valid phone number"
+
+		if @div.find("##{type_prefix}password").val().length < 6
+			isValid = false
+			A2Cribs.UIManager.Error "Please enter a password of 6 or more characters"
+
 		return isValid
 
 
 	# Static private function that creates and posts a user based on user_type
-	createUser = (user_type, required_fields) =>
+	createUser = (user_type, required_fields, fields) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
 		if validate user_type, required_fields
 			# Check to see if confirm password matches the actual password
@@ -113,8 +122,9 @@ class A2Cribs.Login
 					User:
 						user_type: user_type
 				# Loop through all the required fields and grab based on id's
-				for field in required_fields
-					request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
+				for field in fields
+					if @div.find("##{type_prefix}#{field}").val().length isnt 0
+						request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
 
 				# Post the request data using AjaxRegister
 				$.post "/users/AjaxRegister", request_data, (response) =>
@@ -130,13 +140,16 @@ class A2Cribs.Login
 	# Creates a Student user
 	@CreateStudent: ->
 		required_fields = ["email", "password", "first_name", "last_name"]
-		createUser 0, required_fields
+		fields = required_fields.slice 0 # Used to copy the required array
+		createUser 0, required_fields, fields
 		return false
 
 	# Creates a Property manager user
 	@CreatePropertyManager: ->
-		required_fields = ["email", "password", "company_name", "street_address", "phone", "website", "city", "state"]
-		createUser 1, required_fields
+		required_fields = ["email", "password", "company_name", "street_address", "phone", "city", "state"]
+		fields = required_fields.slice 0 # Used to copy the required array
+		fields.push "website"
+		createUser 1, required_fields, fields
 		return false
 				
 
