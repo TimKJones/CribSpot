@@ -161,19 +161,6 @@ class A2Cribs.FilterManager
 		#@PlacesService = new google.maps.places.PlacesService(@GMap)
 		A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder()
 
-	@AddressSearchCallback: (response, status) ->
-		# Need to detect invalid addresses
-		if status == google.maps.GeocoderStatus.OK && response[0].types[0] != "postal_code"
-			$("#addressSearchBar").effect("highlight", {color: "#5858FA"}, 2000)
-			A2Cribs.Map.GMap.panTo response[0].geometry.location
-			A2Cribs.Map.GMap.setZoom(18)
-			if (response[0].address_components.length >= 2)
-				formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[1].short_name
-				if A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]
-					alert A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]
-		else
-			$("#addressSearchBar").effect("highlight", {color: "#FF0000"}, 2000)
-
 	@SearchForAddress: (div) ->
 		if not A2Cribs.FilterManager.Geocoder? then A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder()
 		address = $(div).val()
@@ -183,5 +170,11 @@ class A2Cribs.FilterManager
 			types: ['street_address', 'street_number', 'postal_code', 'postal_code_prefix', 'point_of_interest', 'neighborhood', 'intersection', 'transit_station']
 			keyword: address
 			name: address
-		A2Cribs.FilterManager.Geocoder.geocode({ 'address' : address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState}, A2Cribs.FilterManager.AddressSearchCallback)
-		#@PlacesService.nearbySearch(request, @AddressSearchCallback)
+		A2Cribs.FilterManager.Geocoder.geocode { 'address' : address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState },
+			(response, status) =>
+				if status == google.maps.GeocoderStatus.OK && response[0].types[0] != "postal_code"
+					$(div).effect("highlight", {color: "#5858FA"}, 2000)
+					A2Cribs.Map.GMap.panTo response[0].geometry.location
+					A2Cribs.Map.GMap.setZoom(18)
+				else
+					$(div).effect("highlight", {color: "#FF0000"}, 2000)
