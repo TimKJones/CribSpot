@@ -80,16 +80,21 @@
 				<div class="span12">
 					<i class="icon-calendar"></i>&nbsp;
 					<?php
+					if (array_key_exists('start_date', $listing['Rental']) && $listing['Rental']['start_date'] != null)
+					{
 						$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 						list($year, $month, $day, $time) = split('[ /.-]', $listing["Rental"]["start_date"]);
 						echo $months[intval($month) - 1] . " " . intval($day) . ", " . $year;
+					}
+					else
+						echo "Unknown Start Date";
 
-						if (array_key_exists('lease_length', $listing['Rental']) && $listing['Rental']['lease_length'] != null)
-						{
-							echo " | " . $listing['Rental']['lease_length'] . "month";
-							if (intval($listing['Rental']['lease_length']) > 1)
-								echo "s";
-						}
+					if (array_key_exists('lease_length', $listing['Rental']) && $listing['Rental']['lease_length'] != null)
+					{
+						echo " | " . $listing['Rental']['lease_length'] . "month";
+						if (intval($listing['Rental']['lease_length']) > 1)
+							echo "s";
+					}
 					?>
 				</div>
 			</div>
