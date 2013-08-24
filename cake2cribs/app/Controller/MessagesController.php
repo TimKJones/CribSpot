@@ -87,7 +87,7 @@
         if ($participant == null) {
             $json = json_encode(array('success'=>false));
         }else{
-            $this->emailUserAboutMessage($participant['email'], $user, $conversation);
+            $this->emailUserAboutMessage($participant, $user, $conversation);
             $json = json_encode(array('success'=>$msg_id > 0)); 
         }
         
@@ -307,7 +307,7 @@
 
         }   
 
-        $this->emailUserAboutMessage($listing['User']['email'], $user['User'], $conversation); 
+        $this->emailUserAboutMessage($listing['User'], $user['User'], $conversation); 
         $json = json_encode(array(
                 'success' => true,
         ));
@@ -318,7 +318,7 @@
     }
 
 
-    private function emailUserAboutMessage($email_addr, $from_user, $conversation){
+    private function emailUserAboutMessage($recipient, $from_user, $conversation){
             //send unread message email
         $this->Email->smtpOptions = array(
           'port'=>'587',
@@ -327,14 +327,13 @@
           'username'=>'cribsadmin',
           'password'=>'lancPA*travMInj',
           'client' => 'a2cribs.com'
-        );
-
+        );  
 
         $this->Email->delivery = 'smtp';
         $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-        $this->Email->to = $email_addr;
+        $this->Email->to = $recipient['email'];
         
-        $this->Email->subject = 'New message received from ' . $from_user['first_name'];
+        $this->Email->subject = "You've received a new message from " . $from_user['first_name'] . " on Cribspot!";
         $this->Email->template = 'unread_message';
         $this->Email->sendAs = 'html';
         $this->set(array(
@@ -344,6 +343,19 @@
             )
         );
         
+        /* Get the data we need to fill in fields in the email */
+        $is_property_manager = ($recipient['user_type'] === USER_TYPE_PROPERTY_MANAGER);
+        $street_address = $this->Marker->GetStreetAddressFromListingId($conversation['listing_id']);
+        if ($street_address !== null)
+            $this->Email->subject = "You've received a message from ".$from_user['first_name']." about ".$street_address;
+
+        $email_verified = $recipient['verified'];
+        $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
+            "&reset_token=".$recipient['password_reset_token'];
+        $this->set('is_property_manager', $is_property_manager);
+        $this->set('street_address', $street_address);
+        $this->set('email_verified', $email_verified);
+        $this->set('reset_password_url', $reset_password_url);
 
         $this->Email->send();
 

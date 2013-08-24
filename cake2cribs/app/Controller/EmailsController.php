@@ -9,6 +9,7 @@ class EmailsController extends AppController {
 
     public function beforeFilter(){
      $this->Auth->allow('WelcomeExistingUsers');
+     $this->Auth->allow('WelcomePropertyManagers');
     }
 
     public function WelcomeExistingUsers()
@@ -36,6 +37,23 @@ class EmailsController extends AppController {
             $this->_sendWelcomeSubletUsersEmail($person);
         }
 
+    }
+
+    public function WelcomePropertyManagers()
+    {
+        /* Initialize password_reset_tokens */
+        $this->User->InitializePMPasswordResetTokens();
+        $people = $this->User->find('all', array(
+            'fields' => array('User.password_reset_token', 'User.email'),
+            'contains' => array(),
+            'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
+        ));
+$counter = 0;
+        foreach ($people as $person){
+            if ($counter < 1)
+                $this->_sendWelcomePropertyManagersEmail($person['User']);
+            $counter++;
+        }
     }
 
     public function InitializeNewUsers()
@@ -144,6 +162,19 @@ class EmailsController extends AppController {
         $template = 'WelcomeExistingUsers';
         $sendAs = 'both';
         $this->set('first_name', $person['first_name']);
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
+    
+    public function _sendWelcomePropertyManagersEmail($person)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $person['email'];
+        $subject = "Welcome to Cribspot at the University of Michigan!";
+        $template = 'WelcomePropertyManagers';
+        $sendAs = 'both';
+        $this->set('reset_password_url', "www.cribspot.com/users/ResetPasswordRedirect?id=".$person['id'] . 
+            "&reset_token=".$person['password_reset_token']);
         $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 }

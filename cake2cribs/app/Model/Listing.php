@@ -357,6 +357,45 @@ class Listing extends AppModel {
 	}
 
 	/*
+	Returns street_address for given $listing_id
+	*/
+	public function GetStreetAddressFromListingId($listing_id)
+	{
+		$listing = $this->find('first', array(
+			'fields' => 'Marker.street_address',
+			'contains' => array('Marker'),
+			'conditions' => array('Marker.listing_id' => $listing_id)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing['Marker']['street_address'];
+	}
+
+	public function GetListingIdFromAddress($address)
+	{
+		if (!array_key_exists('street_address', $address) ||
+			!array_key_exists('city', $address) ||
+			!array_key_exists('state', $address))
+			return null;
+
+		$listing = $this->find('first', array(
+			'fields' => array('Listing.marker_id', 'Listing.user_id'),
+			'conditions' => array(
+				'Marker.street_address' => $address['street_address'],
+				'Marker.city' => $address['city'],
+				'Marker.state' => $address['state']
+			)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing;
+	}
+
+	/*
 	return all data needed for a rental hover menu (for all markers)
 	*/
 	private function _loadRentalHoverData()

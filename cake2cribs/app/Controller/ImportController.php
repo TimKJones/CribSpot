@@ -3,7 +3,7 @@
 Contains functionality for importing listings from csv to database
 */
 class ImportController extends AppController {
-	public $uses = array('Listing', 'Rental', 'GeocoderAddress', 'User', 'Marker');
+	public $uses = array('Listing', 'Rental', 'GeocoderAddress', 'User', 'Marker', 'Image');
 	public $components= array();
 	private $NUM_LISTING_COLUMNS = 0; /* number of columns in the excel doc for a listing */
 	private $MAPS_HOST = "maps.google.com";
@@ -21,6 +21,7 @@ class ImportController extends AppController {
 		$this->Auth->allow('SaveListings');
 		$this->Auth->allow('TestGeocoderFunctionality');
 		$this->Auth->allow('Index');
+		$this->Auth->allow('ImportImages');
   	}
 
   	public function index()
@@ -317,6 +318,46 @@ return null on failure
 		}
 
 		return null;
+	}
+
+	public function ImportImages($directory='img/temp/michigan/')
+	{
+		$path_to_directory = WWW_ROOT.$directory;
+		$counter = 0;
+		foreach (scandir($path_to_directory) as $file) {
+		    if ('.' === $file) continue;
+		    if ('..' === $file) continue;
+		    if ($counter > 3) break;
+		    $counter ++;
+
+		    $dashPos = strrpos($file, '-');
+		    $dotPos = strrpos($file, '.');
+		    $address_length = $dotPos;
+		    if ($dashPos)
+		    	$address_length = min($dashPos, $dotPos);
+
+		    $address = substr($file, 0, $address_length);
+		    $full_address = array(
+		    	'street_address' => $address, 
+		    	'city' => 'Ann Arbor',
+		    	'state' => 'MI'
+		    );
+
+		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
+		    $listing = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		    if ($listing === null || !(array_key_exists('Listing', $listing))){
+		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
+		    	continue;
+		    }
+CakeLog::write('wtf', print_r($listing, true));
+		    $listing_id = $listing['Listing']['listing_id'];
+		    $user_id = $listing['Listing']['user_id'];
+		    $path = $directory . $file;
+			$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id);
+			if (array_key_exists('error', $response) || $response === null){
+				CakeLog::write('FailedImageSave', print_r($path, true));
+			}
+		}
 	}
 
 /*

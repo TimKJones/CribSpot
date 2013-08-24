@@ -38,8 +38,6 @@ class Image extends AppModel {
 
 	/*
 	VARIABLES: 
-	$file = $image data
-	$row_id = row  of listing in user's current slickgrid
 	$listing_id = listing_id of of this listing, if already saved.
 	Moves file to /img/listings/random_id
 	Add new record to images table
@@ -87,6 +85,32 @@ class Image extends AppModel {
 		$newPath = $newPath . '/';
 		return $this->SaveImage($file, $user_id, $listing_id, $newPath);
 	}
+
+	/*
+	Only to be called when importing listings to prepare for a university launch
+	Moves file with path $image_path to $new_directory
+	Then adds record to images table.
+	*/
+	public function SaveImageFromImport($image_path, $user_id, $listing_id, $new_directory = 'img/listings/')
+	{
+		$fileType = substr($image_path, strrpos($image_path, '.') + 1);
+		$newPath = $new_directory . uniqid() . '.' . $fileType;
+		/* Move file to $new_path */
+		if (!copy($image_path, WWW_ROOT.$newPath)){
+			CakeLog::write('failed_to_move_image', $image_path . '; user_id = ' . $user_id . '; listing_id: ' . $listing_id);
+			return null;
+		}
+
+		/* Create image entry for this image */
+		$response = $this->AddImageEntry($newPath, $user_id, $listing_id);
+		if (array_key_exists('error', $response))
+		{
+			CakeLog::write('failed_to_save_image_entry', $newPath . '; ' . $user_id . '; ' . $listing_id);
+			return null;
+		}
+
+		return $response;
+	}	
 
 	/*
 	Moves file to the path specified.

@@ -1,13 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?php 
-    // [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
-    // There was issue invalid links while testing on the dev enviorment
-
-    $partic_link = "http://www.cribspot.com/users/view/$participant[id]/";
-    $view_msg = "http://www.cribspot.com/messages/view/$conv_id";
-    // BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
-?>
-<html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
 
 @media only screen and (max-device-width: 480px) { 
 
@@ -345,39 +336,25 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                 <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
 
-
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
+Hello,</p>
 
+Today we're excited to announce the re-launch of Cribspot at the University of Michigan! Partnered with the Michigan Daily newspaper and officially endorsed by the University of Michigan Central Student Government, Cribspot is about to revolutionize the way you find and communicate with prospective tenants. We've already compiled thousands of listings across Ann Arbor, displaying them on a beautiful map interface. Best of all - it's <b>free</b>. That's right...<b>free</b> to post, <b>free</b> to receive leads</b>, and <b>free</b> to respond to interested students directly on the site. Unlike other services out there, we'll never charge you to upload your listings or photos. <br/><br/>
 
-You've received a new message on Cribspot 
+We've already uploaded some of your listings.  Click <a href='<?php echo $reset_password_url?>'>here</a> to set a password and get started! Alternatively, copy and paste the following link into your browser:<br/><br/>
 
-<?php if ($is_property_manager && $street_address !== null){ ?>
-    about your property at <?php echo $street_address;?>
-<?php } ?>! <br/>
+<?php echo $reset_password_url; ?><br/><br/>
 
-<?php if ($is_property_manager && !$email_verified){ ?>
-In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/>
+We want to make this process as easy as possible. We'll even upload the rest of your listings for you, or update the ones we already have if you have more up-to-date information. If you have any questions or concerns, don't hesitate to contact us. Send us an email at info@cribspot.com or contact us directly through the tab along the bottom of every page.
+<br/><br/>
+Let's summarize - Cribspot is free to post (we'll even upload listings for you!), free to receive high quality leads, and free to message interested students...all on a site being pushed to each and every student by the Michigan Daily, Central Student Government, and, in the near future, dozens of other student groups on campus.
+<br/><br/>
+We're right here in Ann Arbor and would love to hear from you about how Cribspot can continue to make your life easier.<br/><br/><br/>
 
-In order to view this message and communicate with this prospective tenant, you'll first need to finish registration.  Click <a href='<?php echo $reset_password_url; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your password or copy and paste this url into your browser:<br/>
-
-<?php echo $reset_password_url; ?><br/>
-
-After logging in with your new password, you'll be directed to the dashboard where you can view this message and respond. 
-
-<?php } else { ?>
-
-Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/>
-
-<?php echo $view_msg; ?>
-
-<?php } ?>
-
-If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.
-
-Tim, Jason, Evan, and Alex
-<i>The Cribspot Team</i>
+ Tim, Jason, Evan, and Alex<br/>
+ <i>The Cribspot Team</i>
 
                                     </div>
 
