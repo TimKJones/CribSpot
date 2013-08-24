@@ -356,6 +356,23 @@ class Listing extends AppModel {
 		return $ids;
 	}
 
+	/*
+	Returns street_address for given $listing_id
+	*/
+	public function GetStreetAddressFromListingId($listing_id)
+	{
+		$listing = $this->find('first', array(
+			'fields' => 'Marker.street_address',
+			'contains' => array('Marker'),
+			'conditions' => array('Marker.listing_id' => $listing_id)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing['Marker']['street_address'];
+	}
+
 	public function GetListingIdFromAddress($address)
 	{
 		if (!array_key_exists('street_address', $address) ||
