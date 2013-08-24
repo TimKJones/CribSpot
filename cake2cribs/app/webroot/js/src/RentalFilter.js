@@ -37,10 +37,6 @@
       		On Change listeners for applying changed fields
       */
 
-<<<<<<< HEAD
-      var _this = this;
-=======
->>>>>>> 80369850090a5f8396237c87f52f994a82f516a7
       this.div.find(".lease_slider").on("slideStop", function(event) {
         return _this.ApplyFilter("LeaseRange", {
           min: parseInt(event.value[0], 10),

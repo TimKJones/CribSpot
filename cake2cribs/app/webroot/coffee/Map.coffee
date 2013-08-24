@@ -107,6 +107,7 @@ class A2Cribs.Map
 		
 		$.ajax 
 			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
+
 			type: "POST"
 			success: (responses) =>
 				@BasicDataDeferred.resolve(responses)

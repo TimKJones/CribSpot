@@ -92,11 +92,7 @@ Call functions using FavoritesManager.FunctionName()
 
 
     FavoritesManager.InitializeFavorites = function(response) {
-<<<<<<< HEAD
-      var listing_id, listing_ids, _i, _len, _results;
-=======
       var listing_id, listing_ids, _i, _len;
->>>>>>> 80369850090a5f8396237c87f52f994a82f516a7
       if (response === null || response === void 0) {
         return;
       }
@@ -129,12 +125,6 @@ Call functions using FavoritesManager.FunctionName()
 
 
     FavoritesManager.ToggleFavoritesVisibility = function(button) {
-<<<<<<< HEAD
-      var listing, listing_id, marker, markers, _i, _j, _k, _len, _len1, _len2, _ref;
-      $(button).toggleClass('active');
-      if (A2Cribs.Map.ClickBubble) {
-        A2Cribs.Map.ClickBubble.Close();
-=======
       var listing, listing_id, marker, markers, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       $(button).toggleClass('active');
       if ((_ref = A2Cribs.HoverBubble) != null) {
@@ -142,7 +132,6 @@ Call functions using FavoritesManager.FunctionName()
       }
       if ((_ref1 = A2Cribs.ClickBubble) != null) {
         _ref1.Close();
->>>>>>> 80369850090a5f8396237c87f52f994a82f516a7
       }
       markers = A2Cribs.UserCache.Get('marker');
       if (!A2Cribs.FavoritesManager.FavoritesVisible) {
@@ -153,15 +142,9 @@ Call functions using FavoritesManager.FunctionName()
             marker.GMarker.setVisible(false);
           }
         }
-<<<<<<< HEAD
-        _ref = A2Cribs.FavoritesManager.FavoritesListingIds;
-        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-          listing_id = _ref[_j];
-=======
         _ref2 = A2Cribs.FavoritesManager.FavoritesListingIds;
         for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
           listing_id = _ref2[_j];
->>>>>>> 80369850090a5f8396237c87f52f994a82f516a7
           listing = A2Cribs.UserCache.Get('listing', listing_id);
           marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
           if (marker.GMarker) {

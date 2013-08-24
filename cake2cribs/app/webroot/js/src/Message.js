@@ -111,7 +111,6 @@
 
     Messages.setParticipantInfoUI = function(participant) {
       $(".from_participant").html(participant['first_name']).attr('href', myBaseUrl + 'users/view/' + participant['id']);
-      $(".participant-university").html(participant['University']['name']);
       return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
         var veripanel;
         veripanel = $('#verification-panel');

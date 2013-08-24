@@ -121,6 +121,19 @@ class FeaturedListingsController extends AppController {
 
   }
 
+  public function getListingsForNPA(){
+    $user_id = $this->_getUserId();
+    $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
+
+    if($newspaper_admin == null){
+      throw new NotFoundException();
+    }
+
+    
+
+
+  }
+
   // Returns an array of date strings representing the dates
   // that are unavailable to feature a listing
   public function getUnavailableDates(){
@@ -252,12 +265,11 @@ class FeaturedListingsController extends AppController {
     $user_id = $this->_getUserId();
     $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
 
-    if($secret_token != $newspaper_admin['NewspaperAdmin']['secret_token']){
+    if($newspaper_admin == null){
       throw new NotFoundException();
     }
 
-
-    if($newspaper_admin==null){
+    if($secret_token != $newspaper_admin['NewspaperAdmin']['secret_token']){
       throw new NotFoundException();
     }
 

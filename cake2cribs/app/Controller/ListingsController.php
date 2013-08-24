@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin');
 	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
@@ -130,6 +130,8 @@ class ListingsController extends AppController {
 	Returns json-encoded listing
 	NOTE: only returns PUBLIC user data
 	If $listing_id is null, returns all listings owned by logged-in user
+	unless the user is a newspaper admin in which case they are returned
+	all the listings near their university.
 	*/
 	function GetListing($listing_id = null)
 	{
@@ -138,8 +140,17 @@ class ListingsController extends AppController {
 
 		$this->layout = 'ajax';
 		if ($listing_id == null){
-			/* Return all listings owned by this user. */
-			$listings = $this->_getListingsByLoggedInUser();
+			
+			$newspaper_admin = $this->NewspaperAdmin->getByUserId($this->_getUserId());
+			
+			if($newspaper_admin != null){
+				$university = $this->University->getByUniversityId($newspaper_admin['NewspaperAdmin']['university_id']);
+			}else{
+				/* Return all listings owned by this user. */
+				$listings = $this->_getListingsByLoggedInUser();
+			}
+
+
 			$this->set('response', json_encode($listings));
 			return;
 		}
