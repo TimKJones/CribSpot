@@ -56,7 +56,7 @@ class ListingsController extends AppController {
 		$this->_refactorTextFields($listing);
 		$this->_refactorOwnerFields($listing);
 		$this->_setPrimaryImage($listing);
-		$this->_refactorAmenities($listing['Rental']);
+		//$this->_refactorAmenities($listing['Rental']);
 
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
@@ -197,15 +197,17 @@ class ListingsController extends AppController {
 			if (empty($listing[$field]))
 				$listing[$field] = '-';
 		}
-
-		if ($listing['furnished_type'] != '-')
+CakeLog::write('hmmm', print_r($listing, true));
+		if ($listing['furnished_type'] !== '-')
 			$listing['furnished_type'] = Rental::furnished($listing['furnished_type']);
 
-		if ($listing['washer_dryer'] != '-')
+		if ($listing['washer_dryer'] !== '-')
 			$listing['washer_dryer'] = Rental::washer_dryer($listing['washer_dryer']);
 
-		if ($listing['parking_type'] != '-')
+		if ($listing['parking_type'] !== '-')
 			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
+
+		CakeLog::write('hmmm', print_r($listing, true));
 	}
 
 	private function _refactorBooleanAmenities(&$listing)
@@ -272,7 +274,7 @@ class ListingsController extends AppController {
 		foreach ($text_fields as $field) {
 			if (!array_key_exists($field, $listing[$listing_type]) || 
 				$listing[$listing_type][$field] == null || strlen($listing[$listing_type][$field]) == 0)
-				$listing[$listing_type][$field] = "The user has not entered " . $field . " yet.";
+				$listing[$listing_type][$field] = "The user has not entered a " . $field . " yet.";
 
 		}
 

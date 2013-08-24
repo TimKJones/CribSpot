@@ -103,9 +103,10 @@ class RentalPrototype extends AppModel {
 	}
 
 	/* ---------- furnished ---------- */
-	const FURNISHED_FULLY = 0;
+	const FURNISHED_NO = 0;
 	const FURNISHED_PARTIALLY = 1;
-	const FURNISHED_NO = 2;
+	const FURNISHED_FULLY = 2;
+	
 
 	public static function furnished($value = null) {
 		$options = array(

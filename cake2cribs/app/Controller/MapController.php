@@ -27,8 +27,11 @@ class MapController extends AppController {
         if(!$this->Auth->user())
             return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
         $school_id = $this->User->GetPreferredUniversity($this->Auth->user('id'));
-        if ($school_id === null)
-            return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+        if ($school_id === null){
+            $school_id = $this->Session->read('preferredUniversity');
+            if ($school_id === null)
+                return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+        }
         $school_name = $this->University->getNameFromId($school_id);
         $school_name = str_replace(" ", "_", $school_name);
         return $this->redirect(array('action' => 'rental', $school_name));

@@ -48,11 +48,9 @@ class EmailsController extends AppController {
             'contains' => array(),
             'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
         ));
-$counter = 0;
+
         foreach ($people as $person){
-            if ($counter < 1)
-                $this->_sendWelcomePropertyManagersEmail($person['User']);
-            $counter++;
+            $this->_sendWelcomePropertyManagersEmail($person['User']);
         }
     }
 
@@ -114,7 +112,7 @@ $counter = 0;
 
         $user = $this->User->get($user_id);
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $user['User']['email'];
         $this->set('name', $user['User']['first_name']);
         $this->Email->subject = 'Thanks for posting on Cribspot ' . $user['User']['first_name'] . '! Register to view your listing';
@@ -139,7 +137,7 @@ $counter = 0;
 
         $user = $this->User->get($user_id);
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $user['User']['email'];
         $this->set('name', $user['User']['first_name']);
         $this->Email->subject = 'Information regarding setting up your account';
