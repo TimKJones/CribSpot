@@ -28,15 +28,15 @@
       var _this = this;
       $('body').on("Rental_marker_added", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list").find("#" + marker_id).length === 0) {
+        if ($("#rentals_list_content").find("#" + marker_id).length === 0) {
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item = $("<li />", {
             text: name,
             "class": "rentals_list_item",
             id: marker_id
           });
-          $("#rentals_list").append(list_item);
-          $("#rentals_list").slideDown();
+          $("#rentals_list_content").append(list_item);
+          $("#rentals_list_content").slideDown();
         }
         A2Cribs.Dashboard.Direct({
           classname: 'rentals',
@@ -47,8 +47,8 @@
       });
       $('body').on("Rental_marker_updated", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list").find("#" + marker_id).length === 1) {
-          list_item = $("#rentals_list").find("#" + marker_id);
+        if ($("#rentals_list_content").find("#" + marker_id).length === 1) {
+          list_item = $("#rentals_list_content").find("#" + marker_id);
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item.text(name);
           return _this.CreateListingPreview(marker_id);

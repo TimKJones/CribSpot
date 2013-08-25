@@ -18,22 +18,22 @@ class A2Cribs.RentalSave
 
 	CreateCallbacks: () ->
 		$('body').on "Rental_marker_added", (event, marker_id) =>
-			if $("#rentals_list").find("##{marker_id}").length is 0
+			if $("#rentals_list_content").find("##{marker_id}").length is 0
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item = $ "<li />", {
 					text: name
 					class: "rentals_list_item"
 					id: marker_id
 				}
-				$("#rentals_list").append list_item
-				$("#rentals_list").slideDown()
+				$("#rentals_list_content").append list_item
+				$("#rentals_list_content").slideDown()
 			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
 			@Open marker_id
 			@AddNewUnit()
 
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
-			if $("#rentals_list").find("##{marker_id}").length is 1
-				list_item = $("#rentals_list").find("##{marker_id}")
+			if $("#rentals_list_content").find("##{marker_id}").length is 1
+				list_item = $("#rentals_list_content").find("##{marker_id}")
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item.text name
 				@CreateListingPreview marker_id

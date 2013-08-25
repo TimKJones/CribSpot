@@ -6,7 +6,8 @@
     function Dashboard() {}
 
     Dashboard.SetupUI = function() {
-      var _this = this;
+      var list_content_height,
+        _this = this;
       $(window).resize(function() {
         return _this.SizeContent();
       });
@@ -36,6 +37,22 @@
       });
       $("body").on('click', '.messages_list_item', function(event) {
         return _this.ShowContent($('.messages-content'));
+      });
+      list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 68;
+      $(".list_content").css("height", list_content_height + "px");
+      /*
+      		Search listener
+      */
+
+      $('.dropdown-search').keyup(function(event) {
+        var list;
+        list = $(event.delegateTarget).attr("data-filter-list");
+        return $("" + list + " li").show().filter(function() {
+          if ($(this).text().toLowerCase().indexOf($(event.delegateTarget).val().toLowerCase()) === -1) {
+            return true;
+          }
+          return false;
+        }).hide();
       });
       return this.GetListings();
     };
@@ -84,7 +101,7 @@
               "class": "" + type + "_list_item",
               id: marker.marker_id
             });
-            $("#" + type + "_list").append(list_item);
+            $("#" + type + "_list_content").append(list_item);
           }
         }
         _results = [];
