@@ -846,7 +846,7 @@ class A2Cribs.RentalSave
 					name: "Highlights"
 					field: "highlights"
 					editor: Slick.Editors.LongText
-					formatter: A2Cribs.Formatters.RequiredText
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "description"
@@ -916,7 +916,7 @@ class A2Cribs.RentalSave
 					name: "Contact Email"
 					field: "contact_email"
 					editor: A2Cribs.Editors.Email
-					formatter: A2Cribs.Formatters.RequiredText
+					formatter: A2Cribs.Formatters.Text
 				}
 				{
 					id: "contact_phone"

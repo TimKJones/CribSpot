@@ -899,7 +899,7 @@
             name: "Highlights",
             field: "highlights",
             editor: Slick.Editors.LongText,
-            formatter: A2Cribs.Formatters.RequiredText
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "description",
             name: "Description",
@@ -959,7 +959,7 @@
             name: "Contact Email",
             field: "contact_email",
             editor: A2Cribs.Editors.Email,
-            formatter: A2Cribs.Formatters.RequiredText
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "contact_phone",
             name: "Contact Phone",

@@ -120,10 +120,8 @@
       start_date: "overview_grid",
       lease_length: "overview_grid",
       available: "overview_grid",
-      highlights: "description_grid",
       contact_email: "contact_grid",
-      contact_phone: "contact_grid",
-      website: "contact_grid"
+      contact_phone: "contact_grid"
     };
 
     return Rental;
