@@ -345,6 +345,10 @@ class UsersController extends AppController {
 
         /* Save new password */
         $response = $this->User->SavePassword($user_id, $new_password);
+        $user = $this->User->get($user_id);
+        if ($user != null)
+            $this->Auth->login($user['User']);
+            
         $this->set('response', json_encode($response));
         return;
     }

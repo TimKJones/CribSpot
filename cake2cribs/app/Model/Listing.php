@@ -371,7 +371,7 @@ class Listing extends AppModel {
 		$listing = $this->find('first', array(
 			'fields' => 'Marker.street_address',
 			'contains' => array('Marker'),
-			'conditions' => array('Marker.listing_id' => $listing_id)
+			'conditions' => array('Listing.listing_id' => $listing_id)
 		));
 
 		if ($listing === null)

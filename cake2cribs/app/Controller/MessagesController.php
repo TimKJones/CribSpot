@@ -2,7 +2,7 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
@@ -342,21 +342,27 @@
             'host_name' => $_SERVER['HTTP_HOST'],
             )
         );
-        
         /* Get the data we need to fill in fields in the email */
-        $is_property_manager = ($recipient['user_type'] === USER_TYPE_PROPERTY_MANAGER);
-        $street_address = $this->Marker->GetStreetAddressFromListingId($conversation['listing_id']);
+        $is_property_manager = (intval($recipient['user_type']) === 1);
+        $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
         if ($street_address !== null)
             $this->Email->subject = "You've received a message from ".$from_user['first_name']." about ".$street_address;
 
         $email_verified = $recipient['verified'];
-        $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
-            "&reset_token=".$recipient['password_reset_token'];
+        $reset_password_url = null;
+        if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
+            !empty($recipient['id']) && !empty($recipient['password_reset_token']))
+                $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
+                "&reset_token=".$recipient['password_reset_token'];
         $this->set('is_property_manager', $is_property_manager);
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
-
+CakeLog::write('unread_message_variables', print_r($recipient, true));
+CakeLog::write('unread_message_variables', 'is_property_manager: ' . $is_property_manager);
+CakeLog::write('unread_message_variables', 'street_address: ' . $street_address);
+CakeLog::write('unread_message_variables', 'email_verified: ' . $email_verified);
+CakeLog::write('unread_message_variables', 'reset_password_url: ' . $reset_password_url);
         $this->Email->send();
 
     }

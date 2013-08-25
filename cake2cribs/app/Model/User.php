@@ -138,7 +138,9 @@ class User extends AppModel {
 
 	/* ---------- unit_style_options ---------- */
 	const USER_TYPE_SUBLETTER = 0;
-	const USER_TYPE_PROPERTY_MANAGER = 1;
+	const USER_TYPE_PROPERTY_MANAGER = 1; 
+	/* NOTE: messagesController->emailUserAboutMessage
+	   uses a hard-coded '1' for this */
 
 	public static function user_type($value = null) {
 		$options = array(
@@ -332,10 +334,11 @@ class User extends AppModel {
 		$user = array();
 		$user['id'] = $user_id;
 		$user['password'] = $password;
-		$user['User'] = $user;
-		if (!$this->save($user)){
+		$user['verified'] = 1; /* Verify the user's email */
+		$new_user = array('User' => $user);
+		if (!$this->save($new_user)){
 			$error = null;
-			$error['User'] = $user;
+			$error['User'] = $new_user;
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 32, $error);
 			return array("error" => array('validation' => $this->validationErrors,
