@@ -51,6 +51,7 @@
 		<div class="container" style="width: auto;">
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
 			<ul class="nav pull-right">
+				<li class="signup_btn"><a href="#claim_listing" data-toggle="modal">Claim a Listing</a></li>
 				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ 
 					if ($this->Session->read('Auth.User.id') != 0) { ?>
 					<li class="personal_menu dropdown">
@@ -59,7 +60,18 @@
 						if($AuthUser['facebook_id'])
 							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
 						?>
-						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown"><img src="<?= $pic_url ?>"><?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
+						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">
+							<?php
+							if (intval($AuthUser["user_type"]) == 0)
+							{
+								echo '<img src="' . $pic_url . '">';
+								echo $AuthUser['first_name'];
+							}
+							else
+								echo $AuthUser['company_name'];
+							?>
+							 <b class="caret"></b>
+						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
 							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>

@@ -11,7 +11,7 @@
     };
 
     UIManager.Error = function(message) {
-      return alertify.error(message);
+      return alertify.error(message, 7000);
     };
 
     UIManager.Success = function(message) {

@@ -32,6 +32,20 @@ class A2Cribs.Dashboard
 		$("body").on 'click', '.messages_list_item', (event) =>
 			@ShowContent $('.messages-content')
 
+		list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 68
+		$(".list_content").css "height", list_content_height + "px"
+
+		###
+		Search listener
+		###
+		$('.dropdown-search').keyup (event) ->
+			list = $(event.delegateTarget).attr "data-filter-list"
+			$("#{list} li").show().filter () ->
+				if $(this).text().toLowerCase().indexOf($(event.delegateTarget).val().toLowerCase()) is -1
+					return true
+				return false
+			.hide()
+
 		@GetListings()
 
 
@@ -83,8 +97,8 @@ class A2Cribs.Dashboard
 						class: "#{type}_list_item"
 						id: marker.marker_id
 					}
-					$("##{type}_list").append list_item
-					
+					$("##{type}_list_content").append list_item
+
 			for type, i in listing_types
 				$("##{type}_count").text listings_count[i]
 			

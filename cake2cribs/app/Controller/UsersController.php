@@ -129,9 +129,14 @@ class UsersController extends AppController {
         }
 
         if ($this->Auth->login()) {
+            $user = $this->Auth->User();
+            $first_log_in_ever = ($user['last_login'] === null);
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->_savePreferredUniversity($this->Auth->User('id'));
-            $this->set('response', json_encode(array('success'=>'')));
+            $this->set('response', json_encode(array('success'=>array(
+                'first_login' => $first_log_in_ever,
+                'user_id' => $this->Auth->User('id')
+            ))));
             return;
         }
 
@@ -166,7 +171,9 @@ class UsersController extends AppController {
             !array_key_exists('email', $this->request->data)){
             CakeLog::write("ErrorAjaxResetPassword", "Error code: 27;" . print_r($this->request, true));
             $this->set('response', json_encode(array('error' => 
-                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 27')));
+                'Hmmm...something went wrong when trying to reset your password. ' .
+                'If the error continues, message us via the tab along the bottom of the screen or ' . 
+                'contact help@cribspot.com.. Reference error code 27.')));
             return;
         }
 
@@ -175,7 +182,7 @@ class UsersController extends AppController {
         $user = $this->User->GetUserFromEmail($email);
         if (!$user){
             $this->set('response', json_encode(array('error' => 
-                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 28')));
+                "We couldn't find anyone signed up with that email address!")));
             return;
         }
 
@@ -225,7 +232,7 @@ class UsersController extends AppController {
         We'll use these to get their access token, which we'll use to query for their basic information.
         */
         if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://localhost/users/login');
+            $redirect_uri = urlencode('http://ec2-54-244-203-91.us-west-2.compute.amazonaws.com/login');
             $client_id = Configure::read('FB_APP_ID');
             $client_secret = Configure::read('FB_APP_SECRET');
             $code = urlencode($_GET['code']);
@@ -296,14 +303,11 @@ class UsersController extends AppController {
             return; 
 
         $this->layout = 'ajax';
-        $new_password = $this->request->data['new_password'];
-        $confirm_password = $this->request->data['confirm_password'];
-        $reset_token = $this->request->data['reset_token'];
-        $user_id = $this->request->data['id'];
-        /* Make sure that the ($id, $reset_token) pair is valid */
-        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
-            CakeLog::write("ErrorAjaxChangePassword", $user_id . "; " . $reset_token);
-            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+        if (!$this->request || !$this->request->data || 
+            !array_key_exists('new_password', $this->request->data) ||
+            !array_key_exists('confirm_password', $this->request->data)) {
+            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
             $this->set('response', json_encode($response));
             return;
         }
@@ -331,15 +335,6 @@ class UsersController extends AppController {
             return;
         }
 
-        if (!$this->request || !$this->request->data || 
-            !array_key_exists('new_password', $this->request->data) ||
-            !array_key_exists('confirm_password', $this->request->data)) {
-            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
-            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
-            $this->set('response', json_encode($response));
-            return;
-        }
-
         $new_password = $this->request->data['new_password'];
         $confirm_password = $this->request->data['confirm_password'];
 
@@ -352,6 +347,10 @@ class UsersController extends AppController {
 
         /* Save new password */
         $response = $this->User->SavePassword($user_id, $new_password);
+        $user = $this->User->get($user_id);
+        if ($user != null)
+            $this->Auth->login($user['User']);
+            
         $this->set('response', json_encode($response));
         return;
     }
@@ -568,6 +567,10 @@ class UsersController extends AppController {
 
                 /* After they have registered, log them in and redirect to the dashboard */
                 $this->Auth->login($response['user']['User']);
+
+                /* This is the first time the user has logged in, so register them with mixpanel */
+                //$this->Js->buffer("mixpanel.alias(" . $this->Auth->User('id') . ");");
+
                 $this->redirect('/dashboard');
             }
         }

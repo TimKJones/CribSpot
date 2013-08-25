@@ -39,8 +39,12 @@
 	<address class="pull-left">
 		<div id="rentals_address"></div>
 		<button class="btn btn-small edit_marker">EDIT ADDRESS &amp; TYPE</button>
+		<a href="#" id="add_new_unit" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
 	</address>
-	<div class="btn-group pull-right">
+</div>
+
+<div class="row-fluid">
+	<div class="btn-group pull-left edit_buttons">
 		<button class="btn btn-small" id="rentals_edit">Edit</button>
 		<!--<button class="btn">Copy</button>-->
 		<button class="btn btn-small" id="rentals_delete">Delete</button>
@@ -131,12 +135,8 @@
 	</div>
 </div>
 
-<div class="row-fluid" id="add_new_unit">
-	<a href="#" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
-</div>
-
 <?php 
 	$this->Js->buffer('
-		A2Cribs.RentalSave = new A2Cribs.RentalSave();
+		A2Cribs.RentalSave = new A2Cribs.RentalSave(' . $dropdowns . ');
 	');
 ?>

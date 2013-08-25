@@ -113,10 +113,12 @@
       if (!isValid) {
         A2Cribs.UIManager.Error("Please fill in all of the fields!");
       }
-      phone_number = Login.div.find("#" + type_prefix + "phone").val().split("-").join("");
-      if (phone_number.length !== 10 || isNaN(phone_number)) {
-        isValid = false;
-        A2Cribs.UIManager.Error("Please enter a valid phone number");
+      if (user_type === 1) {
+        phone_number = Login.div.find("#" + type_prefix + "phone").val().split("-").join("");
+        if (phone_number.length !== 10 || isNaN(phone_number)) {
+          isValid = false;
+          A2Cribs.UIManager.Error("Please enter a valid phone number");
+        }
       }
       if (Login.div.find("#" + type_prefix + "password").val().length < 6) {
         isValid = false;

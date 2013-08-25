@@ -29,7 +29,10 @@
 			<ul class="nav pull-right">
 				<?php if ($this->Session->read('Auth.User.id') != 0) { ?>
 					<li class="personal_menu dropdown">
-						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">Hi <?= $AuthUser['first_name'] ?> <b class="caret"></b></a>
+						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
+							Hi <?= (intval($AuthUser['user_type']) == 0) ? $AuthUser['first_name'] : $AuthUser['company_name'] ; ?> 
+							<b class="caret"></b>
+						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
 							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>

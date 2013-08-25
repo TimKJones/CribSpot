@@ -193,7 +193,7 @@
         _this = this;
       message_text = $('#message_text textarea').val();
       if (message_text.length === 0) {
-        alertify.error("Message can not be empty", 1500);
+        A2Cribs.UIManager.Error("Message can not be empty");
         return false;
       }
       $('#send_reply').attr('disabled', 'disabled');
@@ -210,7 +210,7 @@
         $('#message_text textarea').val('');
         response = JSON.parse(data);
         if ((data != null ? data.success : void 0) === false) {
-          return alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
+          return A2Cribs.UIManager.Error("Something went wrong while sending a reply, please refresh the page and try again");
         }
       }).always(function() {
         return $('#send_reply').removeAttr('disabled');
@@ -230,17 +230,17 @@
         try {
           data = JSON.parse(response);
         } catch (e) {
-          alertify.error('Failed to delete the conversation', 1500);
+          A2Cribs.UIManager.Error('Failed to delete the conversation');
           return;
         }
         if (data.success === 1) {
-          alertify.success('Conversation deleted', 1500);
+          alertify.success('Conversation deleted', 3000);
           _this.CurrentConversation = -1;
           _this.CurrentParticipantID = -1;
           A2Cribs.Dashboard.HideContent('messages');
           return _this.refresh();
         } else {
-          return alertify.error('Failed to delete the conversation', 1500);
+          return A2Cribs.UIManager.Error('Failed to delete the conversation');
         }
       });
     };

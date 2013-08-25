@@ -393,8 +393,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
 
-		/*$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -479,9 +479,7 @@ class Rental extends RentalPrototype {
 		$conditions = array();
 		$possibleValues = json_decode($params[$safe_field_name]);
 
-		$conditions['OR'] = array(
-			array($table_name . '.' . $field_name => $possibleValues),
-			array($table_name . '.' . $field_name => NULL));
+		$conditions['OR'] = array(array($table_name . '.' . $field_name => $possibleValues));
 
 		if (in_array($other_value, $possibleValues))
 			array_push($conditions['OR'], array(

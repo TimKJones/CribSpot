@@ -45,8 +45,13 @@ Wrapper for google infobubble
 
 
     HoverBubble.Open = function(marker, focus) {
+      var _ref;
       if (focus == null) {
         focus = false;
+      }
+      this.Close();
+      if ((_ref = A2Cribs.ClickBubble) != null) {
+        _ref.Close();
       }
       if (marker) {
         if (focus) {

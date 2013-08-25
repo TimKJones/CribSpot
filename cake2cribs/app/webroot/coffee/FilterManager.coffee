@@ -15,6 +15,9 @@ class A2Cribs.FilterManager
 	@UpdateListings: (visibleListingIds) ->
 		visible_listings = JSON.parse visibleListingIds
 
+		A2Cribs.HoverBubble?.Close()
+		A2Cribs.ClickBubble?.Close()
+
 		# Make all of the listings hidden
 		all_listings = A2Cribs.UserCache.Get "listing"
 		for listing in all_listings

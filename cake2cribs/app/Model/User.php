@@ -138,9 +138,11 @@ class User extends AppModel {
 
 	/* ---------- unit_style_options ---------- */
 	const USER_TYPE_SUBLETTER = 0;
-	const USER_TYPE_PROPERTY_MANAGER = 1;
+	const USER_TYPE_PROPERTY_MANAGER = 1; 
+	/* NOTE: messagesController->emailUserAboutMessage
+	   uses a hard-coded '1' for this */
+
 	const USER_TYPE_NEWSPAPER_ADMIN = 2;
-	
 
 
 	public static function user_type($value = null) {
@@ -250,7 +252,7 @@ class User extends AppModel {
 	public function getSafe($user_id){
 		$options = array();
 		$options['conditions'] = array('User.id'=>$user_id);
-		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id', 'User.user_type');
+		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id', 'User.user_type', 'User.company_name');
 		$options['recursive'] = -1;
 		return $this->find('first', $options);
 	}
@@ -335,10 +337,11 @@ class User extends AppModel {
 		$user = array();
 		$user['id'] = $user_id;
 		$user['password'] = $password;
-		$user['User'] = $user;
-		if (!$this->save($user)){
+		$user['verified'] = 1; /* Verify the user's email */
+		$new_user = array('User' => $user);
+		if (!$this->save($new_user)){
 			$error = null;
-			$error['User'] = $user;
+			$error['User'] = $new_user;
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 32, $error);
 			return array("error" => array('validation' => $this->validationErrors,

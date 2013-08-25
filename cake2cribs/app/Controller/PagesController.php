@@ -55,8 +55,14 @@ class PagesController extends AppController {
 	public function beforeFilter(){
 	parent::beforeFilter();
      $this->Auth->allow('display');
+     $this->Auth->allow('TermsOfService');
   	}
   	
+  	public function TermsOfUse()
+  	{
+
+  	}
+
   	public function login()
   	{
 

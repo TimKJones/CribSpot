@@ -4,7 +4,7 @@ class A2Cribs.UIManager
 		alertify.alert message
 
 	@Error: (message) ->
-		alertify.error message
+		alertify.error message, 7000
 
 	@Success: (message) ->
 		alertify.success message

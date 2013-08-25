@@ -72,13 +72,12 @@ class RentalPrototype extends AppModel {
 	const AIR_NO_AIR = 0;
 	const AIR_CENTRAL = 1;
 	const AIR_WALL_UNIT = 2;
-	const AIR_NONE= 3; 
 
 	public static function air($value = null) {
 		$options = array(
+			self::AIR_NO_AIR => __('None',true),
 		    self::AIR_CENTRAL => __('Central',true),
 		    self::AIR_WALL_UNIT => __('Wall Unit',true),
-		    self::AIR_NONE => __('None',true),
 		);
 		return parent::enum($value, $options);
 	}
@@ -93,6 +92,7 @@ class RentalPrototype extends AppModel {
 
 	public static function parking($value = null) {
 		$options = array(
+		    self::PARKING_NO_PARKING => __('No',true),
 		    self::PARKING_PARKING_LOT => __('Parking Lot',true),
 		    self::PARKING_DRIVEWAY => __('Driveway',true),
 		    self::PARKING_GARAGE => __('Garage',true),
@@ -110,9 +110,9 @@ class RentalPrototype extends AppModel {
 
 	public static function furnished($value = null) {
 		$options = array(
+			self::FURNISHED_NO => __('No',true),
+			self::FURNISHED_PARTIALLY => __('Partially',true),
 		    self::FURNISHED_FULLY => __('Fully',true),
-		    self::FURNISHED_PARTIALLY => __('Partially',true),
-		    self::FURNISHED_NO => __('No',true),
 		);
 		return parent::enum($value, $options);
 	}

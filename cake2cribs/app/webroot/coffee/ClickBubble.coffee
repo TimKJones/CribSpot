@@ -148,7 +148,7 @@ class A2Cribs.ClickBubble
 			if image_url?
 				$(".#{div_name}").css "background-image", "url(/#{image_url})"
 		else
-			$(".#{div_name}").css "background-image", "url()"
+			$(".#{div_name}").css "background-image", "url(/img/tooltip/no_photo.jpg)"
 
 	@setFullPage: (div_name, listing_id) ->
 		link = "/listings/view/#{listing_id}"

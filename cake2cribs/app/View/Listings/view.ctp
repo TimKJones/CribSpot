@@ -19,7 +19,10 @@
 			</div>
 			<div class="building_type">
 				<?php
-				echo $listing["Marker"]["building_type_id"] . " | " . $listing["Rental"]["unit_style_description"];
+				if (array_key_exists("building_type_id", $listing["Marker"]))
+					echo $listing["Marker"]["building_type_id"];
+				if (array_key_exists("unit_style_description", $listing["Rental"]) && $listing["Rental"]["unit_style_description"])
+					echo " | " . $listing["Rental"]["unit_style_description"];
 				?>
 			</div>
 			<div class="row-fluid detail_table">
@@ -32,7 +35,7 @@
 				</div>
 				<div class="span4 detail_table_cell">
 					<?php
-					echo "<i class='big'>" . $listing["Rental"]["baths"] . "</i>&nbsp;Bed";
+					echo "<i class='big'>" . $listing["Rental"]["baths"] . "</i>&nbsp;Bath";
 					if ($listing["Rental"]["baths"] > 1)
 						echo "s";
 					?>
@@ -40,7 +43,9 @@
 				<div class="span4 detail_table_cell">
 					<?php
 					echo "<div class='available ";
-					if ($listing["Rental"]["available"])
+					if (!array_key_exists("available", $listing["Rental"]) || $listing["Rental"]["available"] == null)
+						echo "leased'>Maybe Avail</div>";
+					else if ($listing["Rental"]["available"])
 						echo "'>Available</div>";
 					else
 						echo "leased'>Leased</div>";
@@ -75,11 +80,22 @@
 				<div class="span12">
 					<i class="icon-calendar"></i>&nbsp;
 					<?php
+					if (array_key_exists('start_date', $listing['Rental']) && $listing['Rental']['start_date'] != null)
+					{
 						$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 						list($year, $month, $day, $time) = split('[ /.-]', $listing["Rental"]["start_date"]);
 						echo $months[intval($month) - 1] . " " . intval($day) . ", " . $year;
+					}
+					else
+						echo "Unknown Start Date";
+
+					if (array_key_exists('lease_length', $listing['Rental']) && $listing['Rental']['lease_length'] != null)
+					{
+						echo " | " . $listing['Rental']['lease_length'] . "month";
+						if (intval($listing['Rental']['lease_length']) > 1)
+							echo "s";
+					}
 					?>
-					 | 8 months
 				</div>
 			</div>
 
@@ -97,11 +113,20 @@
 			<div class="row-fluid detail_row">
 				<div class="span12 included_mini">
 					What's Included:
-					<img src="/img/full_page/icon/electric<?= (strcmp($listing['Rental']['electric'], "0") === 0) ? "_not_included" : "" ; ?>.png">
+					<img src="/img/full_page/icon/electric<?= (intval($listing["Rental"]["electric"]) > 0) ? "" : "_not_included" ; ?>.png">
 					<img src="/img/full_page/icon/gas<?= (!$listing['Rental']['gas']) ? "_not_included" : "" ; ?>.png">
 					<img src="/img/full_page/icon/water<?= (!$listing['Rental']['water']) ? "_not_included" : "" ; ?>.png">
-					<img src="/img/full_page/icon/parking<?= (strlen($listing['Rental']['parking_type']) == 0) ? "_not_included" : "" ; ?>.png">
-					<img src="/img/full_page/icon/furnished<?= (strlen($listing['Rental']['furnished_type']) == 0) ? "_not_included" : "" ; ?>.png">
+					<?php
+					if (strcmp($listing["Rental"]["parking_type"], "No") == 0 || strcmp($listing["Rental"]["parking_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/parking_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/parking.png">';
+
+					if (strcmp($listing["Rental"]["furnished_type"], "No") == 0 || strcmp($listing["Rental"]["furnished_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/furnished_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/furnished.png">';
+					?>
 				</div>
 			</div>
 
@@ -118,7 +143,7 @@
 					<div class="span12 owner_info">
 						<?
 						$pic_url = "/img/head_large.jpg";
-						if($listing['User']['facebook_userid'] !== null)
+						if(array_key_exists('facebook_userid', $listing['User']) && $listing['User']['facebook_userid'] !== null)
 							$pic_url = "https://graph.facebook.com/".$listing['User']['facebook_userid']."/picture?width=80&height=80";
 						?>
 						<img src="<?= $pic_url ?>" class="pull-left">
@@ -127,9 +152,13 @@
 					</div>
 				</div>
 				<div class="row-fluid hide" id="contact_message">
-					<div class="row-fluid phone">
-						Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
-					</div>
+					<?php
+					if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null)
+					{ ?>
+						<div class="row-fluid phone">
+							Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
+						</div>
+					<?php } ?>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
 					</div>
@@ -167,7 +196,13 @@
 		<div class="tab-content">
 			<div id="photo_content" class="tab-pane active">
 				<div class="large_image_container">
-					<div id="main_photo" style="background-image:url(/<?= $listing["Image"][$listing["primary_image"]]["image_path"] ?>)"></div>
+					<?php
+					$primary_url = 'img/full_page/no_photo.jpg';
+					if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing)) {
+						$primary_url = $listing["Image"][$listing["primary_image"]]["image_path"];
+					}
+					?>
+					<div id="main_photo" style="background-image:url(/<?= $primary_url ?>)"></div>
 				</div>
 				<div class="image_footer">
 					<div class="page_left"><i class="icon-chevron-left icon-large"></i></div>

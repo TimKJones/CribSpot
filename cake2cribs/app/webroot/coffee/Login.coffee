@@ -97,10 +97,11 @@ class A2Cribs.Login
 				isValid = no
 		if not isValid
 			A2Cribs.UIManager.Error "Please fill in all of the fields!"
-		phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
-		if phone_number.length isnt 10 or isNaN phone_number
-			isValid = false
-			A2Cribs.UIManager.Error "Please enter a valid phone number"
+		if user_type is 1
+			phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
+			if phone_number.length isnt 10 or isNaN phone_number
+				isValid = false
+				A2Cribs.UIManager.Error "Please enter a valid phone number"
 
 		if @div.find("##{type_prefix}password").val().length < 6
 			isValid = false

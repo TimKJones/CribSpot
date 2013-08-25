@@ -31,6 +31,8 @@ class A2Cribs.HoverBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (marker, focus=false) ->
+		@Close()
+		A2Cribs.ClickBubble?.Close()
 		if marker
 			if focus
 				A2Cribs.Map.CenterMap(marker.latitude, marker.longitude)

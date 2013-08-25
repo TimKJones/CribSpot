@@ -23,13 +23,14 @@ class ListingsController extends AppController {
 	{
 		if ($listing_id == null)
 			throw new NotFoundException('There is no listing provided!');
-
+		
 		$listing = $this->Listing->GetListing($listing_id);
-		$listing = $listing[0];
-
-		if ($listing == null)
+		
+		if (!array_key_exists(0, $listing) || $listing === null)
 			throw new NotFoundException('There is no listing provided!');
-
+		
+		$listing = $listing[0];
+		
 		$full_address = $listing["Marker"]["street_address"];
 		$full_address .= " " . $listing["Marker"]["city"];
 		$full_address .= " " . $listing["Marker"]["state"];
@@ -56,7 +57,9 @@ class ListingsController extends AppController {
 		$this->_refactorTextFields($listing);
 		$this->_refactorOwnerFields($listing);
 		$this->_setPrimaryImage($listing);
+		$this->_refactorBooleanAmenities($listing['Rental']);
 		//$this->_refactorAmenities($listing['Rental']);
+		CakeLog::write("boolean", print_r($listing, true));
 
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
@@ -208,7 +211,7 @@ class ListingsController extends AppController {
 			if (empty($listing[$field]))
 				$listing[$field] = '-';
 		}
-CakeLog::write('hmmm', print_r($listing, true));
+
 		if ($listing['furnished_type'] !== '-')
 			$listing['furnished_type'] = Rental::furnished($listing['furnished_type']);
 
@@ -221,17 +224,17 @@ CakeLog::write('hmmm', print_r($listing, true));
 		CakeLog::write('hmmm', print_r($listing, true));
 	}
 
-	private function _refactorBooleanAmenities(&$listing)
+	private function _refactorBooleanAmenities(&$rental)
 	{
 		$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
 		foreach ($amenities as $field){
-			if (array_key_exists($field, $listing)){
-				if ($listing[$field] === true)
-					$listing[$field] = 'Yes';
-				else if ($listing[$field] === false)
-					$listing[$field] = 'No';
+			if (array_key_exists($field, $rental)){
+				if ($rental[$field] === true)
+					$rental[$field] = 'Yes';
+				else if ($rental[$field] === false)
+					$rental[$field] = 'No';
 				else
-					$listing[$field] = '-';
+					$rental[$field] = '-';
 			}
 		}
 	}
@@ -296,7 +299,7 @@ CakeLog::write('hmmm', print_r($listing, true));
 		if (!array_key_exists("company_name", $listing["User"]))
 			$listing["User"]["company_name"] = $listing["User"]["first_name"] . " " . $listing["User"]["last_name"];
 
-		if (array_key_exists("contact_phone", $listing["Rental"]))
+		if (array_key_exists("contact_phone", $listing["Rental"]) && $listing["Rental"]["contact_phone"] != null)
 		{
 			$phone = $listing["Rental"]["contact_phone"];
 			$listing["Rental"]["contact_phone"] = "(" . substr($phone, 0, 3) . ") " . substr($phone, 3, 3) . "-" . substr($phone, 6, 4);
