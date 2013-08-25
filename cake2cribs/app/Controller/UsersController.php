@@ -171,7 +171,9 @@ class UsersController extends AppController {
             !array_key_exists('email', $this->request->data)){
             CakeLog::write("ErrorAjaxResetPassword", "Error code: 27;" . print_r($this->request, true));
             $this->set('response', json_encode(array('error' => 
-                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 27')));
+                'Hmmm...something went wrong when trying to reset your password. ' .
+                'If the error continues, message us via the tab along the bottom of the screen or ' . 
+                'contact help@cribspot.com.. Reference error code 27.')));
             return;
         }
 
@@ -180,7 +182,7 @@ class UsersController extends AppController {
         $user = $this->User->GetUserFromEmail($email);
         if (!$user){
             $this->set('response', json_encode(array('error' => 
-                'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 28')));
+                "We couldn't find anyone signed up with that email address!")));
             return;
         }
 

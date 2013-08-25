@@ -61,13 +61,13 @@ class A2Cribs.Account
 				json_response = JSON.parse(response)
 
 				if json_response.success == 1
-					alertify.success('Please check your email for a verification link.', 1500)
+					A2Cribs.UIManager.Error 'Please check your email for a verification link.'
 				else
-					alertify.error('Verification not successful: ' + json_response.message, 1500)
+					A2Cribs.UIManager.Error 'Verification not successful: ' + json_response.message
 
 				$('#VerifyUniversityButton').removeAttr 'disabled'
 		else
-			alertify.error('Please enter a university email.', 1500)
+			A2Cribs.UIManager.Error 'Please enter a university email.'
 			
 
 		
@@ -90,7 +90,7 @@ class A2Cribs.Account
 
 			if response.error == undefined
 				if id == null and reset_token == null
-					alertify.success 'Password Changed', 1500
+					alertify.success 'Password Changed', 3000
 					if redirect != null
 						window.location.href = redirect
 				else
@@ -114,10 +114,10 @@ class A2Cribs.Account
 			# console.log response
 			json_response = JSON.parse(response)
 			if json_response.error == undefined
-				alertify.success('Account Saved', 1500)
+				alertify.success('Account Saved', 3000)
 				# console.log JSON.parse(json_response.user)
 			else
-				alertify.error('Account Failed to Save: ' + json_response.error.message, 1500)
+				A2Cribs.UIManager.Error 'Account Failed to Save: ' + json_response.error.message
 
 
 			$('#save_btn').removeAttr 'disabled'
@@ -143,7 +143,7 @@ class A2Cribs.Account
 				A2Cribs.UIManager.Alert "Email sent to reset password!"
 				return false
 			else
-	        	A2Cribs.UIManager.Alert data.error
+	        	A2Cribs.UIManager.Error data.error
 	        	return false
 
 	# @JSLoginCallback: (response) ->
