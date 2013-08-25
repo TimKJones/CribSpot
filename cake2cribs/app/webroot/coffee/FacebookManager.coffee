@@ -6,7 +6,7 @@ class A2Cribs.FacebookManager
 	@FacebookLogin: () ->
 		url = 'https://www.facebook.com/dialog/oauth?'
 		url += 'client_id=488039367944782'
-		url += '&redirect_uri=http://ec2-54-244-203-91.us-west-2.compute.amazonaws.com/login'
+		url += '&redirect_uri=' + encodeURIComponent 'http://ec2-54-244-203-91.us-west-2.compute.amazonaws.com/login'
 		url += '&scope=email'
 		window.location.href = url 
 
