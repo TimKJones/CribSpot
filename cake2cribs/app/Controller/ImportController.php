@@ -88,6 +88,9 @@ Then saves the array of listing objects.
 			$listing['Marker']['street_address'] = $formatted_address['street_address'];
 			$listing['Marker']['city'] = $formatted_address['city'];
 			$listing['Marker']['state'] = $formatted_address['state'];
+			if (array_key_exists('zip', $formatted_address))
+				$listing['Marker']['zip'] = $formatted_address['zip'];
+
 			$listing['Marker']['latitude'] = $formatted_address['latitude'];
 			$listing['Marker']['longitude'] = $formatted_address['longitude'];
 
@@ -257,7 +260,7 @@ CakeLog::write("listingWithDates", print_r($listing, true));
 		/* building_type_id */
 
 		if (array_key_exists('building_type_id', $listing['Marker']))
-			$listing['Marker']['building_type_id'] = Rental::building_type_reverse($listing['Marker']['building_type']);
+			$listing['Marker']['building_type_id'] = Rental::building_type_reverse($listing['Marker']['building_type_id']);
 
 		/* amenities */
 		foreach ($this->amenities as $amenity){
