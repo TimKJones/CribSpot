@@ -301,14 +301,11 @@ class UsersController extends AppController {
             return; 
 
         $this->layout = 'ajax';
-        $new_password = $this->request->data['new_password'];
-        $confirm_password = $this->request->data['confirm_password'];
-        $reset_token = $this->request->data['reset_token'];
-        $user_id = $this->request->data['id'];
-        /* Make sure that the ($id, $reset_token) pair is valid */
-        if (!$this->User->IsValidResetToken($user_id, $reset_token)){
-            CakeLog::write("ErrorAjaxChangePassword", $user_id . "; " . $reset_token);
-            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 31');
+        if (!$this->request || !$this->request->data || 
+            !array_key_exists('new_password', $this->request->data) ||
+            !array_key_exists('confirm_password', $this->request->data)) {
+            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
+            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
             $this->set('response', json_encode($response));
             return;
         }
@@ -332,15 +329,6 @@ class UsersController extends AppController {
         else{
             CakeLog::write("ErrorAjaxChangePassword", 'Error Code: 46');
             $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 46');
-            $this->set('response', json_encode($response));
-            return;
-        }
-
-        if (!$this->request || !$this->request->data || 
-            !array_key_exists('new_password', $this->request->data) ||
-            !array_key_exists('confirm_password', $this->request->data)) {
-            CakeLog::write("ErrorAjaxChangePassword", "error_code: 30;" . print_r($this->request->data, true));
-            $response = array('error' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 30');
             $this->set('response', json_encode($response));
             return;
         }
