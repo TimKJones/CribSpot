@@ -1,6 +1,10 @@
 <?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?','stylesheet/less', array('inline' => false)); ?>
 
 <ul id="navigation-bar" class="nav nav-list">
+	<?php
+	if (intval($AuthUser['user_type']) == 1)
+	{
+	?>
 	<li id="create-listing">
 		<a href="#">
 			<i class="icon-plus-sign icon-large"></i>
@@ -8,6 +12,7 @@
 		</a>
 	</li>
 	<li class="spacer"></li>
+	<? } ?>
 	<li>
 		<a href="/map">
 			<i class="icon-map-marker icon-large"></i>
@@ -27,6 +32,10 @@
 			<div id="message_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
+	<?php
+	if (intval($AuthUser['user_type']) == 1)
+	{
+	?>
 	<li>
 		<a id='rental-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'rentals'>
 			<i class="icon-home icon-large"></i>
@@ -34,6 +43,7 @@
 			<div id="rentals_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
+	<?php } ?>
 <!--	<li>
 		<a href="#">
 			<i></i>
