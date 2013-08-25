@@ -232,7 +232,7 @@ class UsersController extends AppController {
         We'll use these to get their access token, which we'll use to query for their basic information.
         */
         if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://localhost/users/login');
+            $redirect_uri = urlencode('http://' . gethostname() . '/users/login');
             $client_id = Configure::read('FB_APP_ID');
             $client_secret = Configure::read('FB_APP_SECRET');
             $code = urlencode($_GET['code']);
