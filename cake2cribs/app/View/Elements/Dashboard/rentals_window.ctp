@@ -137,6 +137,6 @@
 
 <?php 
 	$this->Js->buffer('
-		A2Cribs.RentalSave = new A2Cribs.RentalSave();
+		A2Cribs.RentalSave = new A2Cribs.RentalSave(' . $dropdowns . ');
 	');
 ?>

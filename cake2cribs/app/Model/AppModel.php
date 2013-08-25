@@ -43,7 +43,7 @@ class AppModel extends Model {
 	        if (array_key_exists($value, $options)) {
 	            return $options[$value];
 	        }
-	        else if ($value === GET_ALL_OF_THIS_TYPE)
+	        else if ($value === AppModel::GET_ALL_OF_THIS_TYPE)
 	        	return $options;
 	        
 	        return $default;
