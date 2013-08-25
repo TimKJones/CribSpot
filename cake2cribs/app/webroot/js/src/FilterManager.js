@@ -24,8 +24,14 @@
     FilterManager.Geocoder = null;
 
     FilterManager.UpdateListings = function(visibleListingIds) {
-      var all_listings, all_markers, listing, listing_id, marker, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2;
+      var all_listings, all_markers, listing, listing_id, marker, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       visible_listings = JSON.parse(visibleListingIds);
+      if ((_ref = A2Cribs.HoverBubble) != null) {
+        _ref.Close();
+      }
+      if ((_ref1 = A2Cribs.ClickBubble) != null) {
+        _ref1.Close();
+      }
       all_listings = A2Cribs.UserCache.Get("listing");
       for (_i = 0, _len = all_listings.length; _i < _len; _i++) {
         listing = all_listings[_i];

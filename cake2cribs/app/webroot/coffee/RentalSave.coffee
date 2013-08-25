@@ -1,39 +1,39 @@
 class A2Cribs.RentalSave
-	constructor: (modal) ->
+	constructor: (dropdown_content) ->
 		@div = $('.rentals-content')
 		@EditableRows = []
 		@Editable = false
 		@VisibleGrid = 'overview_grid'
-		@SetupUI()
+		@SetupUI dropdown_content
 		@NextListing
 
-	SetupUI: ->
+	SetupUI: (dropdown_content) ->
 		if not A2Cribs.Geocoder?
 			A2Cribs.Geocoder = new google.maps.Geocoder()
 
 		$('#middle_content').height()
 		@div.find("grid-pane").height 
 		@CreateCallbacks()
-		@CreateGrids()
+		@CreateGrids dropdown_content
 
 	CreateCallbacks: () ->
 		$('body').on "Rental_marker_added", (event, marker_id) =>
-			if $("#rentals_list").find("##{marker_id}").length is 0
+			if $("#rentals_list_content").find("##{marker_id}").length is 0
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item = $ "<li />", {
 					text: name
 					class: "rentals_list_item"
 					id: marker_id
 				}
-				$("#rentals_list").append list_item
-				$("#rentals_list").slideDown()
+				$("#rentals_list_content").append list_item
+				$("#rentals_list_content").slideDown()
 			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
 			@Open marker_id
 			@AddNewUnit()
 
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
-			if $("#rentals_list").find("##{marker_id}").length is 1
-				list_item = $("#rentals_list").find("##{marker_id}")
+			if $("#rentals_list_content").find("##{marker_id}").length is 1
+				list_item = $("#rentals_list_content").find("##{marker_id}")
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item.text name
 				@CreateListingPreview marker_id
@@ -318,7 +318,7 @@ class A2Cribs.RentalSave
 			grid.setData data
 			grid.render()
 
-	CreateGrids: ->
+	CreateGrids: (dropdown_content) ->
 		# Method to create grids for each tab
 		containers = [
 			"overview_grid", "features_grid", "amenities_grid", "utilities_grid", "buildingamenities_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"
@@ -336,7 +336,7 @@ class A2Cribs.RentalSave
 
 		data = []
 		for container in containers
-			columns = @GetColumns container
+			columns = @GetColumns container, dropdown_content
 
 			checkboxSelector = new Slick.CheckboxSelectColumn
 				cssClass: "grid_checkbox"
@@ -361,7 +361,7 @@ class A2Cribs.RentalSave
 				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error args.validationResults.msg
 
-	GetColumns: (container) ->
+	GetColumns: (container, dropdown_content) ->
 		OverviewColumns = ->
 			columns = [
 				{
@@ -374,7 +374,6 @@ class A2Cribs.RentalSave
 					editor: A2Cribs.Editors.Unit
 					formatter: A2Cribs.Formatters.Unit
 					minWidth: 185
-					toolTip: "Blah Blah Blah"
 					headerCssClass: "slickgrid_header"
 				}
 				{
@@ -424,8 +423,8 @@ class A2Cribs.RentalSave
 					id: "lease_length"
 					name: "Lease Length"
 					field: "lease_length"
-					editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"])
-					formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
+					editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"])
+					formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"], true)
 				}
 				{
 					id: "available"
@@ -467,8 +466,8 @@ class A2Cribs.RentalSave
 					id: "parking_type"
 					name: "Parking"
 					field: "parking_type"
-					editor: A2Cribs.Editors.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"]),
-					formatter: A2Cribs.Formatters.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"]),
+					editor: A2Cribs.Editors.Dropdown(dropdown_content["parking"]),
+					formatter: A2Cribs.Formatters.Dropdown(dropdown_content["parking"]),
 				}
 				{
 					id: "parking_spots"
@@ -489,15 +488,15 @@ class A2Cribs.RentalSave
 					id: "furnished_type"
 					name: "Furnished"
 					field: "furnished_type"
-					editor: A2Cribs.Editors.Dropdown(["Unfurnished", "Fully", "Partially"])
-					formatter: A2Cribs.Formatters.Dropdown(["Unfurnished", "Fully", "Partially"])
+					editor: A2Cribs.Editors.Dropdown(dropdown_content["furnished"])
+					formatter: A2Cribs.Formatters.Dropdown(dropdown_content["furnished"])
 				}
 				{
 					id: "pets_type"
 					name: "Pets"
 					field: "pets_type"
-					editor: A2Cribs.Editors.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"])
-					formatter: A2Cribs.Formatters.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"])
+					editor: A2Cribs.Editors.Dropdown(dropdown_content["pets"])
+					formatter: A2Cribs.Formatters.Dropdown(dropdown_content["pets"])
 				}
 				{
 					id: "smoking"
@@ -547,8 +546,8 @@ class A2Cribs.RentalSave
 					id: "washer_dryer"
 					name: "Washer/Dryer"
 					field: "washer_dryer"
-					editor: A2Cribs.Editors.Dropdown(["None", "In-Unit", "On-Site", "Off-Site"])
-					formatter: A2Cribs.Formatters.Dropdown(["None", "In-Unit", "On-Site", "Off-Site"])
+					editor: A2Cribs.Editors.Dropdown(dropdown_content["washer_dryer"])
+					formatter: A2Cribs.Formatters.Dropdown(dropdown_content["washer_dryer"])
 				}
 				{
 					id: "fridge"

@@ -47,14 +47,34 @@
 		</a>
 	</li> -->
 </ul>
-<div class="row-fluid">
+<div class="row-fluid dropdowns_container">
 	<ul class="nav nav-list hide list-dropdown span12" id = "messages_list">
-		<li class="nav-header">MESSAGES</li>
+		<li class="row-fluid">
+			<div class="span12 nav-label">
+				MESSAGES
+			</div>
+		</li>
+		<li class="row-fluid">
+			<div class="span12">
+				<input class="dropdown-search span9" type="text" data-filter-list="#messages_list_content"><i class="icon-search icon-large"></i>
+			</div>
+		</li>
+		<ul id = "messages_list_content" class="list_content">
+		</ul>
 	</ul>
-</div>
-<div class="row-fluid">
 	<ul class="nav nav-list hide list-dropdown span12" id = "rentals_list">
-		<li class="nav-header">RENTALS</li>
+		<li class="row-fluid">
+			<div class="span12 nav-label">
+				RENTALS
+			</div>
+		</li>
+		<li class="row-fluid">
+			<div class="span12">
+				<input class="dropdown-search span9" type="text" data-filter-list="#rentals_list_content"><i class="icon-search icon-large"></i>
+			</div>
+		</li>
+		<ul id = "rentals_list_content" class="list_content">
+		</ul>
 	</ul>
 </div>
 	<!--

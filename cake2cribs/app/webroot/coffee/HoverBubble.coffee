@@ -31,6 +31,8 @@ class A2Cribs.HoverBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (marker) ->
+		@Close()
+		A2Cribs.ClickBubble?.Close()
 		if marker
 			@SetContent marker
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker

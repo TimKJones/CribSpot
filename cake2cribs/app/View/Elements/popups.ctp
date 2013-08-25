@@ -12,4 +12,5 @@
 	echo $this->element('contact');
 	echo $this->element('help');
 	echo $this->element("report_bug");
+	echo $this->element('claim_listing');
 ?>

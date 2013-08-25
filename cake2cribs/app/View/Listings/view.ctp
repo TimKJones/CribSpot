@@ -80,16 +80,21 @@
 				<div class="span12">
 					<i class="icon-calendar"></i>&nbsp;
 					<?php
+					if (array_key_exists('start_date', $listing['Rental']) && $listing['Rental']['start_date'] != null)
+					{
 						$months = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 						list($year, $month, $day, $time) = split('[ /.-]', $listing["Rental"]["start_date"]);
 						echo $months[intval($month) - 1] . " " . intval($day) . ", " . $year;
+					}
+					else
+						echo "Unknown Start Date";
 
-						if (array_key_exists('lease_length', $listing['Rental']) && $listing['Rental']['lease_length'] != null)
-						{
-							echo " | " . $listing['Rental']['lease_length'] . "month";
-							if (intval($listing['Rental']['lease_length']) > 1)
-								echo "s";
-						}
+					if (array_key_exists('lease_length', $listing['Rental']) && $listing['Rental']['lease_length'] != null)
+					{
+						echo " | " . $listing['Rental']['lease_length'] . "month";
+						if (intval($listing['Rental']['lease_length']) > 1)
+							echo "s";
+					}
 					?>
 				</div>
 			</div>
@@ -111,8 +116,17 @@
 					<img src="/img/full_page/icon/electric<?= (intval($listing["Rental"]["electric"]) > 0) ? "" : "_not_included" ; ?>.png">
 					<img src="/img/full_page/icon/gas<?= (!$listing['Rental']['gas']) ? "_not_included" : "" ; ?>.png">
 					<img src="/img/full_page/icon/water<?= (!$listing['Rental']['water']) ? "_not_included" : "" ; ?>.png">
-					<img src="/img/full_page/icon/parking<?= (intval($listing["Rental"]["parking_type"]) > 0) ? "" : "_not_included"  ?>.png">
-					<img src="/img/full_page/icon/furnished<?= (intval($listing["Rental"]["furnished_type"]) > 0) ? "" : "_not_included"  ?>.png">
+					<?php
+					if (strcmp($listing["Rental"]["parking_type"], "No") == 0 || strcmp($listing["Rental"]["parking_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/parking_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/parking.png">';
+
+					if (strcmp($listing["Rental"]["furnished_type"], "No") == 0 || strcmp($listing["Rental"]["furnished_type"], "-") == 0)
+						echo '<img src="/img/full_page/icon/furnished_not_included.png">';
+					else 
+						echo '<img src="/img/full_page/icon/furnished.png">';
+					?>
 				</div>
 			</div>
 
@@ -183,7 +197,7 @@
 			<div id="photo_content" class="tab-pane active">
 				<div class="large_image_container">
 					<?php
-					$primary_url = '';
+					$primary_url = 'img/full_page/no_photo.jpg';
 					if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing)) {
 						$primary_url = $listing["Image"][$listing["primary_image"]]["image_path"];
 					}
