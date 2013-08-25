@@ -196,7 +196,7 @@ class A2Cribs.Messages
 		# Gather the data to send to the server
 		message_text = $('#message_text textarea').val()	
 		if message_text.length == 0
-			alertify.error("Message can not be empty", 1500)
+			A2Cribs.UIManager.Error "Message can not be empty"
 			return false
 		# Disable the submit button
 		$('#send_reply').attr 'disabled','disabled'
@@ -214,7 +214,7 @@ class A2Cribs.Messages
 			$('#message_text textarea').val('') # Clear the reply text field
 			response = JSON.parse(data);
 			if data?.success == false
-				alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
+				A2Cribs.UIManager.Error "Something went wrong while sending a reply, please refresh the page and try again"
 		.always ()=>
 			$('#send_reply').removeAttr 'disabled'
 		false
@@ -229,17 +229,17 @@ class A2Cribs.Messages
 			try
 				data = JSON.parse response
 			catch e
-				alertify.error 'Failed to delete the conversation', 1500
+				A2Cribs.UIManager.Error 'Failed to delete the conversation'
 				return
 
 			if data.success == 1
-				alertify.success 'Conversation deleted', 1500
+				alertify.success 'Conversation deleted', 3000
 				@CurrentConversation = -1
 				@CurrentParticipantID = -1
 				A2Cribs.Dashboard.HideContent('messages')
 				@refresh()
 			else
-				alertify.error 'Failed to delete the conversation', 1500
+				A2Cribs.UIManager.Error 'Failed to delete the conversation'
 
 	@Direct: (directive)->
 		
