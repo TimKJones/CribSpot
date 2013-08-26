@@ -114,10 +114,11 @@
             A2Cribs.FavoritesManager.setFavoriteButton(listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds);
           }
         }
-        return $(".fl-sb-item").hover(function(event) {
+        return $(".fl-sb-item").click(function(event) {
           var marker, markerPosition, marker_id;
           marker_id = parseInt($(event.currentTarget).attr('marker_id'));
           marker = A2Cribs.UserCache.Get('marker', marker_id);
+          A2Cribs.Map.GMap.setZoom(16);
           A2Cribs.HoverBubble.Open(marker);
           markerPosition = marker.GMarker.getPosition();
           return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());

@@ -91,10 +91,10 @@ class A2Cribs.FeaturedListings
             for listing in listings
                 if listing.Listing?
                     A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
-            $(".fl-sb-item").hover (event) =>
-                #listing_id = parseInt($(event.currentTarget).attr('listing_id'))
+            $(".fl-sb-item").click (event) =>
                 marker_id = parseInt($(event.currentTarget).attr('marker_id'))
                 marker = A2Cribs.UserCache.Get('marker', marker_id)
+                A2Cribs.Map.GMap.setZoom 16
                 A2Cribs.HoverBubble.Open marker
                 markerPosition = marker.GMarker.getPosition()
                 A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
