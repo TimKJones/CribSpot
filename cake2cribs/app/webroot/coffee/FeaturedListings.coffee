@@ -87,7 +87,10 @@ class A2Cribs.FeaturedListings
 
         $.when(@GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then (listings)=>
             if listings is null then return
-            sidebar.addListings listings, 'ran'             
+            sidebar.addListings listings, 'ran'
+            for listing in listings
+                if listing.Listing?
+                    A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
     
 
     
@@ -118,27 +121,45 @@ class A2Cribs.FeaturedListings
         getListHtml:(listings)->
             list = ""
             for listing in listings
-                start_date = new Date(listing.Rental.start_date)
-                end_date = new Date(new Date(start_date).setMonth(start_date.getMonth()+listing.Rental.lease_length))
+                rent = name = beds = lease_length = start_date = null
+
+                if listing.Rental.rent? 
+                    rent = parseFloat(listing.Rental.rent).toFixed(0)
+                else
+                    rent = ' --'
 
                 if listing.Marker.alternate_name? 
                     name = listing.Marker.alternate_name
                 else
                     name = listing.Marker.street_address
+
+                if listing.Rental.lease_length? 
+                    lease_length = listing.Rental.lease_length
+                else
+                    lease_length = '-- '
                 
                 if listing.Rental.beds > 1
                     beds = "#{listing.Rental.beds} beds"
                 else
                     beds = "#{listing.Rental.beds} bed"
 
+                if listing.Rental.start_date? 
+                    start_date = @getDateString(new Date(listing.Rental.start_date))
+                else
+                    start_date = 'Start Date --'
+
+                if start_date == 'Dec 1969'
+                    alert('stop')
+
                 data = {
-                    rent: parseFloat(listing.Rental.rent).toFixed(2)
+                    rent: rent
                     beds: beds
                     building_type: listing.Marker.building_type_id
-                    start_date: @getDateString(start_date)
-                    end_date: @getDateString(end_date)
+                    start_date: start_date
+                    lease_length: lease_length
                     name: name
                     img: "http://lorempixel.com/96/64/city/"
+                    listing_id: listing.Listing.listing_id
 
                 }
 
@@ -162,13 +183,13 @@ class A2Cribs.FeaturedListings
                 <span class = 'rent price-text'><%= "$" + rent %></span>
                 <span class = 'divider'>|</span>
                 <span class = 'beds'><%= beds %> </span>
-                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon'></i></span>    
+                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>
                 <span class = 'building-type'><%= building_type %></span>
                 <span class = 'divider'>|</span>
-                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease-end'><%= end_date %></span>
+                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

@@ -128,6 +128,23 @@ class A2Cribs.FavoritesManager
 		return $("#FavoritesHeaderIcon").hasClass("pressed")
 
 	###
+	Initialize a heart icon for adding favorites
+	###
+	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
+		div_string = ".#{div_name}"
+		if listing_id == null
+			#Featured listing list item - need to identify each icon
+			listing_id = parseInt(div_name)
+			div_string = "#" + "#{div_name}.favorite_listing"
+
+		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1
+			$(div_string).attr "onclick", "A2Cribs.FavoritesManager.AddFavorite("+listing_id+", this)"
+			$(div_string).removeClass "active"
+		else
+			$(div_string).attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite("+listing_id+", this)"
+			$(div_string).addClass "active"
+
+	###
 	Inserts the recent favorite into the favorites tab
 	###
 	@_insertIntoFavoriteDiv: (listing_id) ->

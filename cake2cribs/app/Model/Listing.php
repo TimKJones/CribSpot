@@ -549,7 +549,9 @@ class Listing extends AppModel {
 		$options['fields'] = array(
 			'Rental.rent',
 			'Rental.listing_id',
-			'Rental.beds', 
+			'Rental.beds',
+			'Rental.start_date',
+			'Rental.lease_length',
 			'Listing.marker_id',
 			'Listing.listing_id',
 			'Marker.marker_id',
@@ -565,9 +567,10 @@ class Listing extends AppModel {
 		$options['conditions'] = array('Listing.visible' => 1);
 		$basicData = $this->find('all', $options);
 		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
-		foreach ($locationFilteredBasicData as $listing) {
+		foreach ($locationFilteredBasicData as &$listing) {
 			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
 		}
+
 		return $locationFilteredBasicData;
 	}
 

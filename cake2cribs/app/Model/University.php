@@ -27,7 +27,6 @@ class University extends AppModel {
 			'conditions' => array('University.id' => $school_id),
 			'fields' => 	array('latitude', 'longitude', 'city', 'state'
 		)));
-		CakeLog::write("School", print_r($lat_long, true));
 		if (!array_key_exists('University', $lat_long))
 			throw new NotFoundException();
 

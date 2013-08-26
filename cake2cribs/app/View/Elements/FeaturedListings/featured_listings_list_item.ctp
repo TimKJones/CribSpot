@@ -30,7 +30,7 @@
             <span class = 'listing-type'><i class = 'icon-home'></i> House</span>
             <span class = 'num-occupants'><i class = 'icon-group'></i>  <?php echo $occup; ?></span>
             <span class = 'lease-type'><i class = 'icon-calendar'></i> <?php echo $listing['start_month']."/".$listing['end_month'];?></span>
-            <span class = 'lease-duration'><i class = 'icon-time'></i> <?php echo $listing['num_months']." mo";?></span>
+            <span class = 'lease-duration'><i class = 'icon-time'></i> <?php echo $listing['lease_length']." mo";?></span>
         </div>
 
     </div>

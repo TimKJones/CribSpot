@@ -122,6 +122,7 @@ Only return */
 
         $target_lat_long = $this->University->getTargetLatLong($university_id);
         $data = $this->Listing->GetBasicData($listing_type, $target_lat_long);
+        CakeLog::write('basicdata', print_r($data, true));
         $response = json_encode($data);
         $this->set("response", $response);
     }
