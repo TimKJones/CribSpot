@@ -91,8 +91,8 @@ class FeaturedListing extends AppModel {
         return $this->find('count', array('conditions'=>array("FeaturedListing.date"=>$date)));
     }
     // Returns true or false based on whether the following listing is featured on the provided date
-    public function featuredOnDate($listing_id, $date){
-        $conditions = array('FeaturedListing.listing_id'=>$listing_id, "FeaturedListing.date"=>$date);
+    public function featuredOnDate($listing_id, $university_id, $date){
+        $conditions = array('FeaturedListing.listing_id'=>$listing_id, "FeaturedListing.university_id"=>$university_id, "FeaturedListing.date"=>$date);
         return $this->hasAny($conditions);
     }
 

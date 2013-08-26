@@ -22,7 +22,7 @@ class A2Cribs.FLDash
 
         @initTemplates()
         @setupEventHandlers()
-        $.when A2Cribs.Dashboard.GetListings() .then (Cache)=>
+        $.when A2Cribs.Dashboard.GetListings() .then ()=>
             @loadListings()
 
         # Hide the pricing details because they get that shit for free
@@ -213,18 +213,25 @@ class A2Cribs.FLDash
 
 
 
-    removeOrderItem:(listing_id)->
+    removeOrderItem:(listing_id=null)->
 
-        # Remove the corresponding orderitem from the list and any validation
-        # errors that may be associated with it.
-
-        @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").remove()
-        @removeErrors(listing_id)
-
-        delete @OrderStates[listing_id]
-        if(parseInt(@FL_Order?.listing_id,10) == listing_id)
+        if listing_id == null
+            @uiOrderItemsList.find(".orderItem").remove()
+            @OrderStates = {}
             @FL_Order.reset()
             @FL_Order = null
+
+        else
+            # Remove the corresponding orderitem from the list and any validation
+            # errors that may be associated with it.
+
+            @uiOrderItemsList.find(".orderItem[data-id=#{listing_id}]").remove()
+            @removeErrors(listing_id)
+
+            delete @OrderStates[listing_id]
+            if(parseInt(@FL_Order?.listing_id,10) == listing_id)
+                @FL_Order.reset()
+                @FL_Order = null
 
 
         # If there are no more  orderitems left hide the right content
@@ -334,6 +341,10 @@ class A2Cribs.FLDash
             A2Cribs.Order.BuyItems order, 0, (errors)=>
                 @showErrors(errors)
 
+            ,()=>
+                #Success
+                @removeOrderItem()
+
     
     toggleOrderDetailsUI:(show)->
         if show
@@ -343,30 +354,6 @@ class A2Cribs.FLDash
             @uiWidget.find(".orderingInfo").slideUp()
             $("#noListingSelected").fadeIn('fast')
                 
-
-
-
-
-
-    featureListing:()->
-
-        if not @FL?
-            return
-
-        url = myBaseUrl + "order/suFeatureListing"
-        post_data = {'orderItem': JSON.stringify(@FL.getOrderItem())}
-        $.post url, post_data, (data)=>
-            response = JSON.parse(data)
-            if not response?
-                alertify.error("Something went horribly wrong")
-            else if response.success
-                alertify.success(response.msg)
-                @uiWidget.find(".fl_form").fadeOut("fast")
-            else
-                alertify.error(response.msg)
-
-    
-
 
 
 

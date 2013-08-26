@@ -16,7 +16,7 @@
       this.uiErrorsList = this.uiWidget.find("#validation-error-list");
       this.initTemplates();
       this.setupEventHandlers();
-      $.when(A2Cribs.Dashboard.GetListings().then(function(Cache) {
+      $.when(A2Cribs.Dashboard.GetListings().then(function() {
         return _this.loadListings();
       }));
     }
@@ -178,12 +178,22 @@
 
     FLDash.prototype.removeOrderItem = function(listing_id) {
       var different_id, _ref;
-      this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").remove();
-      this.removeErrors(listing_id);
-      delete this.OrderStates[listing_id];
-      if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
+      if (listing_id == null) {
+        listing_id = null;
+      }
+      if (listing_id === null) {
+        this.uiOrderItemsList.find(".orderItem").remove();
+        this.OrderStates = {};
         this.FL_Order.reset();
         this.FL_Order = null;
+      } else {
+        this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "]").remove();
+        this.removeErrors(listing_id);
+        delete this.OrderStates[listing_id];
+        if (parseInt((_ref = this.FL_Order) != null ? _ref.listing_id : void 0, 10) === listing_id) {
+          this.FL_Order.reset();
+          this.FL_Order = null;
+        }
       }
       if (this.uiOrderItemsList.find(".orderItem").length === 0) {
         return this.toggleOrderDetailsUI(false);
@@ -269,6 +279,8 @@
         }
         return A2Cribs.Order.BuyItems(order, 0, function(errors) {
           return _this.showErrors(errors);
+        }, function() {
+          return _this.removeOrderItem();
         });
       });
     };
@@ -281,30 +293,6 @@
         this.uiWidget.find(".orderingInfo").slideUp();
         return $("#noListingSelected").fadeIn('fast');
       }
-    };
-
-    FLDash.prototype.featureListing = function() {
-      var post_data, url,
-        _this = this;
-      if (!(this.FL != null)) {
-        return;
-      }
-      url = myBaseUrl + "order/suFeatureListing";
-      post_data = {
-        'orderItem': JSON.stringify(this.FL.getOrderItem())
-      };
-      return $.post(url, post_data, function(data) {
-        var response;
-        response = JSON.parse(data);
-        if (!(response != null)) {
-          return alertify.error("Something went horribly wrong");
-        } else if (response.success) {
-          alertify.success(response.msg);
-          return _this.uiWidget.find(".fl_form").fadeOut("fast");
-        } else {
-          return alertify.error(response.msg);
-        }
-      });
     };
 
     return FLDash;

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 22, 2013 at 05:14 AM
+-- Generation Time: Aug 26, 2013 at 01:21 AM
 -- Server version: 5.5.25
 -- PHP Version: 5.4.4
 
@@ -21,8 +21,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `featured_listings` (
-  `int` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `listing_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `university_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `created` datetime NOT NULL,

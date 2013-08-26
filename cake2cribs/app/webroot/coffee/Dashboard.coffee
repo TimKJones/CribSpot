@@ -81,6 +81,7 @@ class A2Cribs.Dashboard
 				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
 				marker_set[listing.listing_type][listing.marker_id] = true
 
+			@DeferedListings.resolve()
 
 			# Counts listings and adds them to the dropdown list
 			listings_count = [0, 0, 0]

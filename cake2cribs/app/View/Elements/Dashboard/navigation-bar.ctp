@@ -43,6 +43,17 @@
 			<div id="rentals_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
+	<?php }
+	$user_type = intval($AuthUser['user_type']);
+	if ($user_type == 1 || $user_type == 3)
+	{
+	?>
+	<li>
+		<a id='featured-listing-content-header' href="#" class = 'content-header list-header' classname = 'featuredlisting'>
+			<i class="icon-star icon-large"></i>
+			Feature Listing
+		</a>
+	</li>
 	<?php } ?>
 <!--	<li>
 		<a href="#">

@@ -96,6 +96,17 @@ class Marker extends AppModel {
 
 		$this->contain();
 
+		// First we do a lat long bound box search to filter out 
+		// as many markers as possible with a general query
+
+		$lat1 = $latitude - $radius/69;
+		$lat2 = $latitude + $radius/69;
+		
+		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
+
+		
 
 		$this->virtualFields = array(
     		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
@@ -103,7 +114,13 @@ class Marker extends AppModel {
 
 		
 		if(array_key_exists("conditions", $options)){
-			array_push($options['conditions'], array('distance <' => $radius));
+			// array_push($options['conditions'], array('distance <' => $radius));
+			array_push($options['conditions'], array('Marker.latitude >' => $lat1));
+			array_push($options['conditions'], array('Marker.latitude <=' => $lat2));
+			array_push($options['conditions'], array('Marker.longitude >' => $lon1));
+			array_push($options['conditions'], array('Marker.longitude ' => $lon1));
+
+
 		}else{
 			$options['conditions'] = array('distance <' => $radius);
 		}

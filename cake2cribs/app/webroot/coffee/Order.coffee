@@ -10,13 +10,18 @@ class A2Cribs.Order
             response = JSON.parse(response_raw)
             if !response.success
                 errorHandler(response.errors)
+                return
+            if response.jwt?
                 # console.log response.message
-            google.payments.inapp.buy({
-                parameters:{},
-                jwt: response.jwt,
-                success: ()->alert("success")
-                failture: ()->alert("fail")
-            })
+                google.payments.inapp.buy({
+                    parameters:{},
+                    jwt: response.jwt,
+                    success: ()->alert("success")
+                    failture: ()->alert("fail")
+                })
+            else
+                A2Cribs.UIManager.Alert(response.msg)
+                successHandler();
 
 
 

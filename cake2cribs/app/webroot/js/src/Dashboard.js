@@ -96,6 +96,7 @@
           }
           marker_set[listing.listing_type][listing.marker_id] = true;
         }
+        _this.DeferedListings.resolve();
         listings_count = [0, 0, 0];
         listing_types = ["rentals", "sublet", "parking"];
         for (listing_type in marker_set) {

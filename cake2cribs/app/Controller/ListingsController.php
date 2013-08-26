@@ -147,7 +147,10 @@ class ListingsController extends AppController {
 			$newspaper_admin = $this->NewspaperAdmin->getByUserId($this->_getUserId());
 			
 			if($newspaper_admin != null){
-				$university = $this->University->getByUniversityId($newspaper_admin['NewspaperAdmin']['university_id']);
+				$tll = $this->University->getTargetLatLong($newspaper_admin['NewspaperAdmin']['university_id']);
+				$options['fields'] = array("Listing.listing_id, Listing.marker_id, Marker.marker_id, Marker.street_address, Marker.alternate_name, Listing.user_id, Listing.listing_type, Rental.unit_style_type, Rental.unit_style_description" );
+				$this->Listing->contain("Marker", "Rental");
+				$listings = $this->Listing->GetListingsNear($tll['latitude'], $tll['longitude'], $this->Listing->RADIUS, $options);
 			}else{
 				/* Return all listings owned by this user. */
 				$listings = $this->_getListingsByLoggedInUser();

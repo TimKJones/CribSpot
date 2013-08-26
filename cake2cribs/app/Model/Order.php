@@ -207,7 +207,7 @@ class Order extends AppModel {
             //Only want unique dates, incase extras got in we remove them
             $orderItem->dates = array_unique($orderItem->dates); 
             $listing_id = $orderItem->listing_id;
-            
+            $university_id = $orderItem->university_id;
             // Depending on if the order is being carried out by a super
             // user do different checks
             if(!$SU){
@@ -232,6 +232,7 @@ class Order extends AppModel {
             foreach($orderItem->dates as $date){
                 if(!array_key_exists($date, $dates)){
                     $dates[$date]['id'] = array();
+                    $dates[$date]['university_id'] = $orderItem->university_id;
                     $dates[$date]['count'] = $FeaturedListing->countListingsOnDate($date);
                 }
                 array_push($dates[$date]['id'], $listing_id);
@@ -251,7 +252,7 @@ class Order extends AppModel {
         foreach($dates as $date=>$info){
             
             // Convert the date string to a more readable format for the user
-            $date = date("m/d/Y", strtotime($date));
+            $date_read = date("m/d/Y", strtotime($date));
 
             // Note 8/2/2013 We aren't checking for the limit per day as Jason
             // Says there is no limit. This check also complicates our validation flow
@@ -268,7 +269,7 @@ class Order extends AppModel {
 
             //See if the date trying to be featured on is before the minimum start date
             if(strtotime($date) < $min_start){
-                $msg = "Date selected ($date) is before the minimum start date ($min_start_date)";
+                $msg = "Date selected ($date_read) is before the minimum start date ($min_start_date)";
                 foreach($info['id'] as $id){
                     array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
                 }   
@@ -276,10 +277,10 @@ class Order extends AppModel {
 
             // See if the listing is already featured on the given day.
             // If it is we want to tell the user, let them go through with it
-            // but not 
+            $university_id = $info['university_id'];
             foreach($info['id'] as $id){
-                if($FeaturedListing->featuredOnDate($id, $date)){
-                    $msg = "Listing already featured on date ($date)";
+                if($FeaturedListing->featuredOnDate($id, $university_id, $date)){
+                    $msg = "Listing already featured on date ($date_read)";
                     array_push($validationErrors, array("id"=>$id, "reason"=>$msg));
                 }
             }
