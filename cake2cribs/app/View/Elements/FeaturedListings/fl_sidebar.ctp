@@ -18,7 +18,7 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
-        <div class = 'cycle-listings-bar'>
+        <!--div class = 'cycle-listings-bar'>
             <div>
                 <i class = 'icon-caret-down dir' data-dir = "down"></i>
                     <span>Click to Cycle Through Listings</span>
@@ -27,9 +27,9 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
         </div>
         <div class = 'marketplace-bar'>
             <a class = 'blue-button' href = '#Marketplace'>Marketplace</a>
-        </div>
+        </div-->
         <div class = 'legal-bar'>
-            <span>Cribspot, LLC. | <a href = '#showToS'>Terms and Conditions</a></span>
+            <span>Cribspot, LLC. | <a href = '/TermsOfUse'>Terms and Conditions</a></span>
         </div>
     </div>
 </div>
