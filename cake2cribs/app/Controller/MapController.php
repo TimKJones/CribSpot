@@ -24,14 +24,16 @@ class MapController extends AppController {
 
     public function index()
     {
-        if(!$this->Auth->user())
+        if(!$this->Auth->user() && !$this->Session->read('preferredUniversity'))
             return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+        
         $school_id = $this->User->GetPreferredUniversity($this->Auth->user('id'));
         if ($school_id === null){
             $school_id = $this->Session->read('preferredUniversity');
             if ($school_id === null)
                 return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
         }
+
         $school_name = $this->University->getNameFromId($school_id);
         $school_name = str_replace(" ", "_", $school_name);
         return $this->redirect(array('action' => 'rental', $school_name));
@@ -51,12 +53,7 @@ class MapController extends AppController {
         $this->set('active_listing_type', 'rental');
 
         if ($school_name != null)
-        {
-            if (is_numeric($school_name)){
-                /* why are you going to sublets here? */
-                $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
-            }
-             
+        {             
             $this->Session->write("currentUniversity", $school_name);
             $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
@@ -67,8 +64,8 @@ class MapController extends AppController {
             if ($this->Auth->User('id') != null)
                 $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
             else{
-                CakeLog::write("user", print_r($this->Auth->User, true));
                 $this->Session->write('preferredUniversity', $id); 
+                CakeLog::write('writing session', $id);
             } 
             
             $this->set('school_id', $id);
