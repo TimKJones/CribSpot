@@ -105,19 +105,23 @@
         });
       });
       return $.when(this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then(function(listings) {
-        var listing, _i, _len, _results;
+        var listing, _i, _len;
         if (listings === null) return;
         sidebar.addListings(listings, 'ran');
-        _results = [];
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
           if (listing.Listing != null) {
-            _results.push(A2Cribs.FavoritesManager.setFavoriteButton(listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds));
-          } else {
-            _results.push(void 0);
+            A2Cribs.FavoritesManager.setFavoriteButton(listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds);
           }
         }
-        return _results;
+        return $(".fl-sb-item").hover(function(event) {
+          var marker, markerPosition, marker_id;
+          marker_id = parseInt($(event.currentTarget).attr('marker_id'));
+          marker = A2Cribs.UserCache.Get('marker', marker_id);
+          A2Cribs.HoverBubble.Open(marker);
+          markerPosition = marker.GMarker.getPosition();
+          return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
+        });
       });
     };
 
@@ -190,7 +194,8 @@
             lease_length: lease_length,
             name: name,
             img: "http://lorempixel.com/96/64/city/",
-            listing_id: listing.Listing.listing_id
+            listing_id: listing.Listing.listing_id,
+            marker_id: listing.Marker.marker_id
           };
           list += this.ListItemTemplate(data);
         }
@@ -201,7 +206,7 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div class = 'fl-sb-item'>\n    <span class = 'img-wrapper'>\n        <img src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.ListItemHTML = "<div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 

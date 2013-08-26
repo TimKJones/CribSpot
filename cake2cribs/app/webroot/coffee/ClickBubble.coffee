@@ -6,6 +6,7 @@ class A2Cribs.ClickBubble
 	@OFFSET = 
 		TOP: -190
 		LEFT: 140
+	@IsOpen = false
 	###
 	Private function that relocates the bubble near the marker
 	###
@@ -31,6 +32,7 @@ class A2Cribs.ClickBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (listing_id) ->
+		@IsOpen = true
 		if listing_id?
 			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 			A2Cribs.MixPanel.Click listing, "large popup"
@@ -53,6 +55,7 @@ class A2Cribs.ClickBubble
 						@Show listing_id
 
 	@Show: (listing_id) ->
+		@IsOpen = true
 		move_near_marker listing_id
 		@div.show 'fade'
 
@@ -66,6 +69,7 @@ class A2Cribs.ClickBubble
 	Closes the tooltip, no animation
 	###
 	@Close: ->
+		@IsOpen = false
 		@div.hide 'fade'
 
 

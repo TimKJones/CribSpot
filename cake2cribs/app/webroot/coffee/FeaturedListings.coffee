@@ -91,7 +91,13 @@ class A2Cribs.FeaturedListings
             for listing in listings
                 if listing.Listing?
                     A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
-    
+            $(".fl-sb-item").hover (event) =>
+                #listing_id = parseInt($(event.currentTarget).attr('listing_id'))
+                marker_id = parseInt($(event.currentTarget).attr('marker_id'))
+                marker = A2Cribs.UserCache.Get('marker', marker_id)
+                A2Cribs.HoverBubble.Open marker
+                markerPosition = marker.GMarker.getPosition()
+                A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
 
     
 
@@ -106,6 +112,7 @@ class A2Cribs.FeaturedListings
                 @SidebarUI.find("##{list}-listings").html list_html
             else
                 @SidebarUI.find("##{list}-listings").append list_html
+
 
         getDateString:(date)->
             
@@ -160,7 +167,7 @@ class A2Cribs.FeaturedListings
                     name: name
                     img: "http://lorempixel.com/96/64/city/"
                     listing_id: listing.Listing.listing_id
-
+                    marker_id: listing.Marker.marker_id
                 }
 
                 list += @ListItemTemplate(data)
@@ -173,7 +180,7 @@ class A2Cribs.FeaturedListings
 
 
     @ListItemHTML: """
-    <div class = 'fl-sb-item'>
+    <div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
         <span class = 'img-wrapper'>
             <img src = '<%=img%>'></img>
         </span>
