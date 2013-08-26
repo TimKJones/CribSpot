@@ -9,7 +9,7 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
         </div>
         <div id = 'uni-name'>
             <span id ='name'><?php echo $school_name; ?></span>
-            <span id = 'like-us'class = 'pull-right'><a href = '#'>Like</a> on Facebook</span>
+            <span id = 'like-us'class = 'pull-right'><a href = "http://www.facebook.com/Cribspot">Like</a> on Facebook</span>
         </div>
         <div id = 'list-info'>
             <span>Listings: </span>
