@@ -6,7 +6,7 @@
 	/* Datepicker and slider javascript */
 	// echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
-	echo $this->Html->script('src/Login');
+	echo $this->Html->script('src/Login', array('inline' => false));
 	echo $this->element('popups');
 	echo $this->Html->script('src/PageHeader');
 ?>
