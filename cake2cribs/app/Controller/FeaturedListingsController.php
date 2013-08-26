@@ -13,12 +13,13 @@ class FeaturedListingsController extends AppController {
   const ELIGIBLE_UNI_RADIUS_MILES = 20;
   
   public function cycleIds($university_id, $limit){
+    $this->layout = 'ajax';
     $listings_data = $this->cycleFeaturedListings($limit, $university_id);
     $listing_ids = array();
     foreach ($listings_data as $listing) {
       array_push($listing_ids, $listing['Listing']['listing_id']);
     }
-    $this->layout = 'ajax';
+
     $this->set('response', json_encode($listing_ids));
 
   }
@@ -83,42 +84,33 @@ class FeaturedListingsController extends AppController {
   each time this function is invoked
   */
   private function cycleFeaturedListings($limit, $university_id){
-    // $day = time();
-    // //TODO get date relative to users time zone
+    $day = time();
+    $date = date("Y-m-d", $day);
 
-    // $date = date("Y-m-d", $day);
-
-    // // Get the session data so we we know what data to get
-
-    // $seed = $this->Session->read('FeaturedListing.SideBarSeed');
+    $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
     
-    // if($seed == null){
-    //   //generate a psuedo random seed.
-    //   $seed = rand(0, self::ARBITRARY_SEED_CAP_VALUE);
-    // }
-    // //increment the seed
-    // $seed = ($seed+1)%self::ARBITRARY_SEED_CAP_VALUE;
-    // $this->Session->write('FeaturedListing.SideBarSeed', $seed);
-    // $page = ($seed % ($limit+1)) + 1;
-    // $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
-    // // Paginate is not available in the model so it has to be in the controller
-    // $this->paginate = array(
-    //             'conditions' => $conditions,
-    //             'page' => $page,
-    //             'limit' => $limit,
-    //             'order' => array('FeaturedListing.id' => 'desc'),
-    //         );
-    
-    // $listings_data = $this->paginate('FeaturedListing');
-    // if(count($listings_data) == 0){
-    //   return $this->cycleFeaturedListings($limit, $university_id);
-    // }
+    /* Get all featured listings for today */
+    $listings_data = $this->FeaturedListing->find('all', array(
+      'conditions' => $conditions,
+      'fields' => 'Listing.listing_id'
+    ));
 
-    return $this->FeaturedListing->find('all', array('limit'=>$limit));
+    /* increment the seed */
+    $seed = Cache::read('featured_listings_seed');
+    if ($seed === null)
+      $seed = 0;
 
+    $seed = ($seed+1)%count($listings_data);
+    Cache::write('featured_listings_seed', $seed);
 
-    // return $listings_data;
-
+    /* Re-order featured listings based on seed value */
+    $firstPartOrderedListings = array_slice($listings_data, $seed);
+    $secondPartOrderedListings = array_slice($listings_data, 0, $seed);
+    $orderedListings = array_merge($firstPartOrderedListings, $secondPartOrderedListings);
+    CakeLog::write('orderedlistings', 'firstpart: ' . print_r($firstPartOrderedListings, true));
+    CakeLog::write('orderedlistings', 'secondpart: ' . print_r($secondPartOrderedListings, true));
+    CakeLog::write('orderedlistings', 'entire list: ' . print_r($orderedListings, true));
+    return $orderedListings;
   }
 
   public function getListingsForNPA(){
