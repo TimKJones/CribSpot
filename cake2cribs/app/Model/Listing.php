@@ -18,6 +18,10 @@ class Listing extends AppModel {
 		'Image' => array(
 			'className' => 'Image',
 			'dependent' => true
+		),
+		'Favorite' => array(
+			'className' => 'Favorite',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
@@ -40,11 +44,13 @@ class Listing extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'visible' => 'boolean' /* visible is set to false when listing is deleted */
 	);
+
+	public $RADIUS = 12; // radius from center (km) encompassing area to pull properties from
 
 	/* ---------- unit_style_options ---------- */
 	const LISTING_TYPE_RENTAL = 0;
@@ -82,6 +88,10 @@ class Listing extends AppModel {
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
 
+		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
+		if (!array_key_exists('alternate_start_date', $listing['Rental']))
+			$listing['Rental']['alternate_start_date'] = '';
+	
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
 			return array('listing_id' => $this->id);
@@ -93,7 +103,9 @@ class Listing extends AppModel {
 		$error['validationErrors'] = $this->validationErrors;
 		$this->LogError($user_id, 6, $error);
 		return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 6'));
+			'message' => 'Looks like we had some problems saving your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 6.'));
 	}
 
 	/* returns listing with id = $listing_id */
@@ -127,7 +139,9 @@ class Listing extends AppModel {
 				$error['validation'] = $this->validationErrors;
 				$this->LogError($user_id, 2, $error);
 				return array("error" => array('validation' => $this->validationErrors,
-				'message' => 'Failed to save listing. Contact help@cribspot.com if the error persists. Reference error code 2'));
+			'message' => 'Looks like we had some problems deleting your listing! We want to help! If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 2.'));
 			}
 		}
 
@@ -157,6 +171,7 @@ class Listing extends AppModel {
 	public function GetListing($listing_id)
 	{
 		$listing = $this->find('all', array(
+			'contain' => array('Image', 'Rental', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.listing_id' => $listing_id,
 				'Listing.visible' => 1)
@@ -164,31 +179,50 @@ class Listing extends AppModel {
 
 		/* Remove sensitive user data */
 		/* Convert type fields to their appropriate string values */
+		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
 		for ($i = 0; $i < count($listing); $i++){
 			if (array_key_exists('User', $listing[$i]))
 				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
-				$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
+			if (array_key_exists('Rental', $listing[$i])){
+				foreach ($amenities as $field){
+					if (empty($listing[$i]['Rental'][$field]))
+						$listing[$i]['Rental'][$field] = '-';
+				}
+			}
+			$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
 		}
 
 		return $listing;
 	}
 
+	/*
+	Converts all integer 'type' fields to their string values
+	*/
 	private function _convertTypesToStrings($listing)
 	{
-		/*
-baths, air, parking_type, furnished_type, pets_type, washer_dryer, laundry,
-water, gas, heat, sewage, trash, cable, internet, 
-		*/
-		if ($listing['Marker']['building_type_id'] != null)
-			$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
-		if ($listing['Rental']['parking_type'] != null)
-			$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
-		if ($listing['Rental']['furnished_type'] != null)
-			$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
-		if ($listing['Rental']['pets_type'] != null)
-			$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
-		if ($listing['Rental']['washer_dryer'] != null)
-			$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
+		if (array_key_exists('Marker', $listing)) {
+			if (array_key_exists('building_type_id', $listing['Marker']) &&
+				$listing['Marker']['building_type_id'] !== '-')
+					$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
+		}
+
+		if (array_key_exists('Rental', $listing)) {
+			if (array_key_exists('parking_type', $listing['Rental']) &&
+				$listing['Rental']['parking_type'] !== '-')
+					$listing['Rental']['parking_type'] = Rental::parking($listing['Rental']['parking_type']);
+			if (array_key_exists('furnished_type', $listing['Rental']) &&
+				$listing['Rental']['furnished_type'] !== '-')
+					$listing['Rental']['furnished_type'] = Rental::furnished($listing['Rental']['furnished_type']);
+
+			if (array_key_exists('pets_type', $listing['Rental']) &&
+				$listing['Rental']['pets_type'] !== '-')
+					$listing['Rental']['pets_type'] = Rental::pets($listing['Rental']['pets_type']);
+
+			if (array_key_exists('washer_dryer', $listing['Rental']) &&
+				$listing['Rental']['washer_dryer'] !== '-')
+					$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
+		}
+	
 		return $listing;
 	}
 
@@ -210,6 +244,7 @@ water, gas, heat, sewage, trash, cable, internet,
 	public function GetListingsByUserId($user_id)
 	{
 		$listings = $this->find('all', array(
+			'contain' => array('Image', 'Rental', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1)
@@ -328,10 +363,10 @@ water, gas, heat, sewage, trash, cable, internet,
 		return $this->loadParkingHoverData();
 	}
 
-	public function GetBasicData($listing_type)
+	public function GetBasicData($listing_type, $target_lat_long)
 	{
 		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
-			return $this->_getRentalBasicData();
+			return $this->_getRentalBasicData($target_lat_long);
 		/* Coming soon! 
 		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
 			return $this->_loadSubletHoverData();
@@ -354,6 +389,63 @@ water, gas, heat, sewage, trash, cable, internet,
 		));
 
 		return $listings != null;
+	}
+
+	/*
+	Pulls marker_ids for listings in the logged-in users favorites
+	*/
+	public function GetFavoritesMarkerIds($listingIds)
+	{
+		$this->contain();	
+		$marker_ids = $this->find('all', array(
+			'conditions' => array('Listing.listing_id' => $listingIds),
+			'fields' => array('Listing.marker_id')));
+
+		$ids = array();
+		foreach ($marker_ids as $markerId){
+			array_push($ids, $markerId['Listing']['marker_id']);
+		}
+
+		return $ids;
+	}
+
+	/*
+	Returns street_address for given $listing_id
+	*/
+	public function GetStreetAddressFromListingId($listing_id)
+	{
+		$listing = $this->find('first', array(
+			'fields' => 'Marker.street_address',
+			'contains' => array('Marker'),
+			'conditions' => array('Listing.listing_id' => $listing_id)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing['Marker']['street_address'];
+	}
+
+	public function GetListingIdFromAddress($address)
+	{
+		if (!array_key_exists('street_address', $address) ||
+			!array_key_exists('city', $address) ||
+			!array_key_exists('state', $address))
+			return null;
+
+		$listing = $this->find('first', array(
+			'fields' => array('Listing.marker_id', 'Listing.user_id'),
+			'conditions' => array(
+				'Marker.street_address' => $address['street_address'],
+				'Marker.city' => $address['city'],
+				'Marker.state' => $address['state']
+			)
+		));
+
+		if ($listing === null)
+			return null;
+
+		return $listing;
 	}
 
 	/*
@@ -399,18 +491,70 @@ water, gas, heat, sewage, trash, cable, internet,
 		$hover_data = $this->find('all', $options);
 	}
 
-	private function _getRentalBasicData()
+	/*
+	Returns basic data for all listings within $RADIUS of $target_lat_long
+	*/
+	private function _getRentalBasicData($target_lat_long)
 	{
-		$this->contain('Rental');
+		$this->contain('Rental', 'Marker');
 		$options = array();
 		$options['fields'] = array(
 			'Rental.rent',
 			'Rental.listing_id',
 			'Rental.beds', 
 			'Listing.marker_id',
-			'Listing.listing_id');
+			'Listing.listing_id',
+			'Marker.marker_id',
+			'Marker.latitude',
+			'Marker.longitude',
+			'Marker.street_address',
+			'Marker.building_type_id',
+			'Marker.alternate_name',
+			'Marker.city',
+			'Marker.state',
+			'Marker.zip'
+			);
 		$options['conditions'] = array('Listing.visible' => 1);
-		return $this->find('all', $options);
+		$basicData = $this->find('all', $options);
+		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		foreach ($locationFilteredBasicData as $listing) {
+			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
+		}
+		return $locationFilteredBasicData;
+	}
+
+	function distance($lat1,$lon1,$lat2,$lon2) {
+	  $R = 6371; // Radius of the earth in km
+	  $dLat = deg2rad($lat2-$lat1);  // deg2rad below
+	  $dLon = deg2rad($lon2-$lon1); 
+	  $a = 
+	    sin($dLat/2) * sin($dLat/2) +
+	    cos($this->deg2rad($lat1)) * cos($this->deg2rad($lat2)) * 
+	    sin($dLon/2) * sin($dLon/2); 
+	  $c = 2 * atan2(sqrt($a), sqrt(1-$a)); 
+	  $d = $R * $c; // Distance in km
+	  return $d;
+	}
+
+	function deg2rad($deg) {
+	  return $deg * (pi()/180);
+	}
+
+	private function _filterBasicDataByLocation($target_lat_long, $basicData)
+	{
+		$filteredBasicData = array();
+		for ($i = 0; $i < count($basicData); $i++)
+		{
+			$lat = $basicData[$i]['Marker']['latitude'];
+			$long = $basicData[$i]['Marker']['longitude'];
+			$distance = $this->distance($lat, $long, $target_lat_long['latitude'], $target_lat_long['longitude']);
+			if ($distance < $this->RADIUS)
+			{
+				array_push($filteredBasicData, $basicData[$i]);
+			}				
+		}
+
+		return $filteredBasicData;
 	}
 
 

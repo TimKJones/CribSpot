@@ -17,8 +17,8 @@
 		<div class = 'span12'>
 			<?php 
 			
-			if($user['User']['facebook_userid']){
-				echo "<img src='https://graph.facebook.com/".$user['User']['facebook_userid']."/picture?width=80&height=80'></img>";
+			if($user['User']['facebook_id']){
+				echo "<img src='https://graph.facebook.com/".$user['User']['facebook_id']."/picture?width=80&height=80'></img>";
 			}else{
 				echo "<img src = '/img/head_medium.jpg'></img>";
 			}

@@ -37,7 +37,7 @@ class Order extends AppModel {
                 $request = $this->generateFLRequest($orderItems);
                 break;
             default:
-                $this->LogError($user_id, 36, array('orderItems'=>$orderItems, 'orderType'=>$order_type));
+                $this->LogError($user_id, 48, array('orderItems'=>$orderItems, 'orderType'=>$order_type));
                 throw new Exception("Order Type was not valid");
         }
 
@@ -131,7 +131,7 @@ class Order extends AppModel {
         $pendingOrder = $PendingOrder->find('first', array('conditions'=>$conditions));
 
         if($pendingOrder == null){
-            $this->LogError($user_id, 37, array("wallet_order_id"=>$wallet_order_id, "request"=>$request));
+            $this->LogError($user_id, 49, array("wallet_order_id"=>$wallet_order_id, "request"=>$request));
             throw new Exception("No pending order found for user");
         }
 
@@ -188,7 +188,7 @@ class Order extends AppModel {
             $PendingOrder->delete($pendingOrder_id);
         }
         else{
-            $this->logError($user_id, 38, $orderItems);
+            $this->logError($user_id, 50, $orderItems);
             throw new Exception("Order did not go through");
         }
 
@@ -299,7 +299,7 @@ class Order extends AppModel {
                 }
                 array_push($groupedErrors[$id], $error['reason']);
             }
-            $this->logError($user_id, 39, array("orderItems"=>$orderItems, "errors"=>$groupedErrors));
+            $this->logError($user_id, 51, array("orderItems"=>$orderItems, "errors"=>$groupedErrors));
             return $groupedErrors;
         }else{
             return null;

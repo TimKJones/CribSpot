@@ -32,18 +32,24 @@ App::uses('Model', 'Model');
  */
 class AppModel extends Model {
 
+	const GET_ALL_OF_THIS_TYPE = -1;
+
 	/**
 	 * static enums
 	 * @access static
 	 */
 	public static function enum($value, $options, $default = '') {
-	    if ($value !== null) {
+		if ($value !== null) {
 	        if (array_key_exists($value, $options)) {
 	            return $options[$value];
 	        }
+	        else if ($value === AppModel::GET_ALL_OF_THIS_TYPE)
+	        	return $options;
+	        
 	        return $default;
 	    }
-	    return $options;
+
+	    return $default;
 	}
 
 	/*
@@ -88,7 +94,7 @@ class AppModel extends Model {
 	{
 		foreach ($rental as $key => $value)
 		{
-			if ($rental[$key] == null || $rental[$key] == "")
+			if ($rental[$key] === null || $rental[$key] === "")
 				unset($rental[$key]);
 		}
 

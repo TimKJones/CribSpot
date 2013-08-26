@@ -11,6 +11,7 @@
 	
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
+	echo $this->Html->script('src/MiniMap', array('inline' => false));
 
 	//echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
 	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
@@ -33,12 +34,17 @@
 
 <!-- Rental Preview -->
 <div id="rentals_preview" class="row-fluid">
-	<img src="" alt="Nice" class="img-polaroid pull-left" style="width:80px; height:70px;">
+	<div id="correctLocationMap" class="pull-left">
+	</div>
 	<address class="pull-left">
 		<div id="rentals_address"></div>
 		<button class="btn btn-small edit_marker">EDIT ADDRESS &amp; TYPE</button>
+		<a href="#" id="add_new_unit" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
 	</address>
-	<div class="btn-group pull-right">
+</div>
+
+<div class="row-fluid">
+	<div class="btn-group pull-left edit_buttons">
 		<button class="btn btn-small" id="rentals_edit">Edit</button>
 		<!--<button class="btn">Copy</button>-->
 		<button class="btn btn-small" id="rentals_delete">Delete</button>
@@ -63,7 +69,7 @@
 			</li>
 			<li>
 				<a href="#amenities_grid" class="rentals_tab" data-toggle="tab">
-					AMENITIES
+					UNIT AMENITIES
 				</a>
 			</li>
 			<li>
@@ -129,12 +135,8 @@
 	</div>
 </div>
 
-<div class="row-fluid" id="add_new_unit">
-	<a href="#" onclick="A2Cribs.RentalSave.AddNewUnit()"><i class="icon-plus-sign icon-large"></i> Add another unit or floorplan style for this address</a>
-</div>
-
 <?php 
 	$this->Js->buffer('
-		A2Cribs.RentalSave = new A2Cribs.RentalSave();
+		A2Cribs.RentalSave = new A2Cribs.RentalSave(' . $dropdowns . ');
 	');
 ?>

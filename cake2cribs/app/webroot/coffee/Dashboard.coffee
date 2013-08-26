@@ -13,6 +13,8 @@ class A2Cribs.Dashboard
 			
 			$(element).click (event)=>
 				$(".list-dropdown").slideUp()
+				$('.content-header.active').removeClass "active"
+				$(event.delegateTarget).addClass "active"
 				if content_header.hasClass "list-dropdown-header"
 					#Toggle Drop down
 					$("##{class_name}_list").slideDown()
@@ -26,6 +28,23 @@ class A2Cribs.Dashboard
 		$("#create-listing").find("a").click (event) =>
 			A2Cribs.MarkerModal.NewMarker()
 			A2Cribs.MarkerModal.Open()
+
+		$("body").on 'click', '.messages_list_item', (event) =>
+			@ShowContent $('.messages-content')
+
+		list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 68
+		$(".list_content").css "height", list_content_height + "px"
+
+		###
+		Search listener
+		###
+		$('.dropdown-search').keyup (event) ->
+			list = $(event.delegateTarget).attr "data-filter-list"
+			$("#{list} li").show().filter () ->
+				if $(this).text().toLowerCase().indexOf($(event.delegateTarget).val().toLowerCase()) is -1
+					return true
+				return false
+			.hide()
 
 		@GetListings()
 
@@ -71,23 +90,26 @@ class A2Cribs.Dashboard
 				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
 				marker_set[listing.listing_type][listing.marker_id] = true
 
+
+			# Counts listings and adds them to the dropdown list
+			listings_count = [0, 0, 0]
+			listing_types = ["rentals", "sublet", "parking"]
+
 			for listing_type, marker_id_array of marker_set
 				for marker_id of marker_id_array
 					marker = A2Cribs.UserCache.Get "marker", marker_id
-					name = if marker.alternate_name? and marker.alternate_name.length then marker.alternate_name else marker.street_address
-					type = null
-					if parseInt(listing_type, 10) is 0 then type = "rentals"
-					if parseInt(listing_type, 10) is 1 then type = "sublet"
-					if parseInt(listing_type, 10) is 2 then type = "parking"
+					name = marker.GetName()
+					type = listing_types[parseInt(listing_type, 10)]
+					listings_count[parseInt(listing_type, 10)]++
 					list_item = $ "<li />", {
 						text: name
 						class: "#{type}_list_item"
 						id: marker.marker_id
 					}
-					$("##{type}_list").append list_item
-
+					$("##{type}_list_content").append list_item
 			
-			
+			for type, i in listing_types
+				$("##{type}_count").text listings_count[i]			
 
 		return @DeferedListings.promise()
 

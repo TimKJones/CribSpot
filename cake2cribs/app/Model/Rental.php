@@ -17,7 +17,7 @@ class Rental extends RentalPrototype {
 		'unit_style_options' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'unit_style_type' => array(
@@ -39,7 +39,7 @@ class Rental extends RentalPrototype {
 		'beds' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'min_occupancy' => array(
@@ -51,13 +51,13 @@ class Rental extends RentalPrototype {
 		'max_occupancy' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		), 
 		'rent_negotiable' => array(
@@ -75,19 +75,14 @@ class Rental extends RentalPrototype {
 		'start_date' => array(
 			'date' => array(
 				'rule' => 'date',
-				'required' => true
-			)
-		),
-		'alternate_start_date' => array(
-			'date' => array(
-				'rule' => 'date',
 				'required' => false
 			)
 		),
+		'alternate_start_date',
 		'lease_length' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'required' => true
+				'required' => false
 			)
 		),
 		'dates_negotiable' => array(
@@ -99,7 +94,7 @@ class Rental extends RentalPrototype {
 		'available' => array(
 			'boolean' => array(
 				'rule' => 'boolean',
-				'required' => true
+				'required' => false
 			)
 		), 
 		'baths' => 'numeric',
@@ -132,7 +127,7 @@ class Rental extends RentalPrototype {
 		'yard_space' => 'boolean',
 		'elevator' => 'boolean',
 		/* ------------ end new fields --------------- */
-		'electric' => 'numeric', 
+		'electric' => 'boolean', 
 		'water' => 'boolean',
 		'gas' => 'boolean',
 		'heat' => 'boolean',
@@ -290,7 +285,9 @@ class Rental extends RentalPrototype {
 			'rule' => array('phone', null, 'us')
 		),
 		'website' => 'url',
-		'is_complete' => 'boolean'
+		'is_complete' => 'boolean',
+		'created',
+		'modified'
 	);
 
 	private $MAX_BEDS = 10;
@@ -317,8 +314,10 @@ class Rental extends RentalPrototype {
 			$error = null;
 			$error['rental'] = $rental;
 			$this->LogError($user_id, 12, $error);
-			return array('error' => 
-					'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 12');
+			return array('error' =>
+	  				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 12.');
 		}
 
 		// Remove fields with null values so cake doesn't complain (they will be saved to null as default)
@@ -333,7 +332,9 @@ class Rental extends RentalPrototype {
 			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 13, $error);
 			return array('error' => array('message' => 
-				'Failed to save rental. Contact help@cribspot.com if the error persists. Reference error code 13',
+				'Looks like we had some issues saving your rental...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 13.',
 				'validation' => $this->validationErrors));
 		}
 	}
@@ -392,8 +393,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
 
-		/*$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -478,9 +479,7 @@ class Rental extends RentalPrototype {
 		$conditions = array();
 		$possibleValues = json_decode($params[$safe_field_name]);
 
-		$conditions['OR'] = array(
-			array($table_name . '.' . $field_name => $possibleValues),
-			array($table_name . '.' . $field_name => NULL));
+		$conditions['OR'] = array(array($table_name . '.' . $field_name => $possibleValues));
 
 		if (in_array($other_value, $possibleValues))
 			array_push($conditions['OR'], array(

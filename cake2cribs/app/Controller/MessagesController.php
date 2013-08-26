@@ -2,16 +2,12 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Sublet');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
         parent::beforeFilter();
-        if(!$this->Auth->user()){
-            //$this->flash("You may not access this page until you login.", array('controller' => 'users', 'action' => 'login'));
-            $this->Session->setFlash(__('Please login to view messages.'));
-            $this->redirect(array('controller'=>'users', 'action'=>'login'));
-        }
+        $this->Auth->allow('contact');
     }
 
     //Shows the base messages page
@@ -54,6 +50,13 @@
         $this->redirect('/dashboard');
     }
 
+    public function contact($listing_id)
+    {
+        $directive['contact_owner'] = true;
+        $this->Cookie->write('fullpage-directive', json_encode($directive));
+        $this->redirect(array('controller' => 'listings', 'action' => 'view', $listing_id));
+    }
+
     // //Create a new conversation and the first message thats in the conversation
     // public function newConversation(){
     //  if(!$this->request->isPost()){
@@ -84,7 +87,7 @@
         if ($participant == null) {
             $json = json_encode(array('success'=>false));
         }else{
-            $this->emailUserAboutMessage($participant['email'], $user, $conversation);
+            $this->emailUserAboutMessage($participant, $user, $conversation);
             $json = json_encode(array('success'=>$msg_id > 0)); 
         }
         
@@ -106,7 +109,8 @@
         $conversations = $this->Conversation->getConversations($user['id'], ($only_unread==1));
         
         $this->layout = 'ajax';
-        $this->set(array('conversations'=> $conversations));    
+        $json = json_encode($conversations);
+        $this->set('response', $json);
     }
 
     // Ajax function to get a json response with the number of unread messages and conversations a user has
@@ -160,7 +164,7 @@
         $count = ($page-1) * $limit;
 
         $this->layout = 'ajax';
-        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));    
+        $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));
     }
 
     public function getParticipantInfo($conv_id){
@@ -241,10 +245,10 @@
             throw new NotFoundException();
         }  
 
-        $sublet_id = $this->request->data['sublet_id'];
+        $listing_id = $this->request->data['listing_id'];
         $message_body = $this->request->data['message_body'];
 
-        if(!($sublet_id && $message_body)){
+        if(!($listing_id && $message_body)){
             $json = json_encode(array(
                 'success' => false,
                 'message' => "Not all parameters received in request",
@@ -256,11 +260,11 @@
 
         $user = $this->User->get($this->Auth->User('id'));
 
-        $sublet = $this->Sublet->find('first', array('conditions'=>'Sublet.id='.$sublet_id));
-        if($sublet == null){
+        $listing = $this->Listing->find('first', array('conditions'=>'Listing.listing_id='.$listing_id));
+        if($listing_id == null){
             $json = json_encode(array(
                 'success' => false,
-                'message' => "sublet with id $sublet_id does not exist",
+                'message' => "listing with id $listing_id does not exist",
             ));
             $this->layout = 'ajax';
             $this->set('response', $json);
@@ -268,11 +272,10 @@
         }
 
 
-
         $options['conditions'] = array(
-            'Conversation.sublet_id'=>$sublet['Sublet']['id'],
+            'Conversation.listing_id'=>$listing['Listing']['listing_id'],
             'Conversation.participant1_id'=>$user['User']['id'],
-            'Conversation.participant2_id'=>$sublet['User']['id']
+            'Conversation.participant2_id'=>$listing['User']['id']
             );
         $conversation = $this->Conversation->find('first', $options);
         if($conversation){
@@ -287,12 +290,12 @@
             
             
             $data = array();
-            $data['sublet_id'] = $sublet_id;
+            $data['listing_id'] = $listing_id;
             $data['participant1_id'] = $user['User']['id'];
-            $data['participant2_id'] = $sublet['Sublet']['user_id'];
+            $data['participant2_id'] = $listing['User']['id'];
             // We need to get the street address of the marker the sublet
             // Corresponds to since that will be the title of the conversation
-            $data['title'] = $sublet['Marker']['street_address'];
+            $data['title'] = $listing['Marker']['street_address'];
 
             $this->Conversation->createConversation($data);
             $conversation = $this->Conversation->read();
@@ -304,7 +307,7 @@
 
         }   
 
-        $this->emailUserAboutMessage($sublet['User']['email'], $user['User'], $conversation);
+        $this->emailUserAboutMessage($listing['User'], $user['User'], $conversation); 
         $json = json_encode(array(
                 'success' => true,
         ));
@@ -315,7 +318,7 @@
     }
 
 
-    private function emailUserAboutMessage($email_addr, $from_user, $conversation){
+    private function emailUserAboutMessage($recipient, $from_user, $conversation){
             //send unread message email
         $this->Email->smtpOptions = array(
           'port'=>'587',
@@ -324,14 +327,13 @@
           'username'=>'cribsadmin',
           'password'=>'lancPA*travMInj',
           'client' => 'a2cribs.com'
-        );
-
+        );  
 
         $this->Email->delivery = 'smtp';
         $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
-        $this->Email->to = $email_addr;
+        $this->Email->to = $recipient['email'];
         
-        $this->Email->subject = 'New message received from ' . $from_user['first_name'];
+        $this->Email->subject = "You've received a new message from " . $from_user['first_name'] . " on Cribspot!";
         $this->Email->template = 'unread_message';
         $this->Email->sendAs = 'html';
         $this->set(array(
@@ -340,8 +342,27 @@
             'host_name' => $_SERVER['HTTP_HOST'],
             )
         );
-        
+        /* Get the data we need to fill in fields in the email */
+        $is_property_manager = (intval($recipient['user_type']) === 1);
+        $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
+        if ($street_address !== null)
+            $this->Email->subject = "You've received a message from ".$from_user['first_name']." about ".$street_address;
 
+        $email_verified = $recipient['verified'];
+        $reset_password_url = null;
+        if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
+            !empty($recipient['id']) && !empty($recipient['password_reset_token']))
+                $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
+                "&reset_token=".$recipient['password_reset_token'];
+        $this->set('is_property_manager', $is_property_manager);
+        $this->set('street_address', $street_address);
+        $this->set('email_verified', $email_verified);
+        $this->set('reset_password_url', $reset_password_url);
+CakeLog::write('unread_message_variables', print_r($recipient, true));
+CakeLog::write('unread_message_variables', 'is_property_manager: ' . $is_property_manager);
+CakeLog::write('unread_message_variables', 'street_address: ' . $street_address);
+CakeLog::write('unread_message_variables', 'email_verified: ' . $email_verified);
+CakeLog::write('unread_message_variables', 'reset_password_url: ' . $reset_password_url);
         $this->Email->send();
 
     }

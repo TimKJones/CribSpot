@@ -384,7 +384,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
             <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
 
             <td class="w580" width="360" valign="top" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:2px;color:#888888;margin-top:0px;margin-bottom:15px;" >&nbsp;</p>
-              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="http://cribspot.com/sublet/University_of_Michigan-Ann_Arbor" lang="en" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Post a Listing</a> | <a href="mailto:help@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a> | <a href="mailto:info@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Contact</a></p>
+              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="mailto:help@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a> | <a href="mailto:info@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Contact</a></p>
 
             </td>
 

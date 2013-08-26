@@ -63,7 +63,7 @@ class A2Cribs.Messages
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
 			response_data = JSON.parse data
-			$('#unread_conversations_count span').html response_data.unread_conversations 
+			$('#message_count').html response_data.unread_conversations 
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
@@ -71,15 +71,15 @@ class A2Cribs.Messages
 			url+='?only_unread=1'
 
 		$.get url, (data) =>
-			$('.conversation_list').html data
-			$('#conversation_count').html $('.conversation_list_item').length
-			# add a handler to each of the conversation list items
-			# so when the user clicks then the conversation is loaded
-			
-			# Update the classes for the selected conversation
-			SelectedConversationDiv = $('#cli_' + @CurrentConversation)
-			SelectedConversationDiv.addClass 'selected_conversation'
-			SelectedConversationDiv.removeClass 'unread_conversation' #Just in case it was unread
+			conversations = JSON.parse data
+			for convo in conversations
+				list_item = $ "<li />", {
+					text: convo.Conversation.title
+					class: "messages_list_item"
+					id: convo.Conversation.conversation_id
+					"data-participant": convo.Participant.id
+				}
+				$("#messages_list").append list_item
 
 			@attachConversationListItemHandler() 
 
@@ -111,7 +111,6 @@ class A2Cribs.Messages
 		$(".from_participant")
 			.html(participant['first_name'])
 			.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
-		$(".participant-university").html participant['University']['name']
 		
 		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
 			veripanel = $('#verification-panel')
@@ -119,29 +118,9 @@ class A2Cribs.Messages
 			if verification_info.verified_email
 				veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
 
-			if verification_info.verified_edu
-				veripanel.find('#veri-edu  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-			else
-				$('.participant-university').html("No Associated University")
-
-			if verification_info.verified_fb
-				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
-				console.log(url)
-				$('#p_pic').attr 'src', url
-				veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-				if verification_info.mut_friends? and not isNaN(verification_info.mut_friends)
-					veripanel.find('#participant-friends').html("- #{verification_info.mut_friends} mutual")
-				else if verification_info.tot_friends? and not isNaN(verification_info.tot_friends)
-					veripanel.find('#participant-friends').html("- #{verification_info.tot_friends} friends")
-
-			if verification_info.verified_tw
-				veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')  
-				if verification_info.tot_followers? and not isNaN(verification_info.tot_followers)
-					veripanel.find("#participant-followers").html("- #{verification_info.tot_followers} followers")
-
 
 	@loadConversation:(event)->
-
+		###
 		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
 		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
 
@@ -149,9 +128,10 @@ class A2Cribs.Messages
 			.addClass('selected_conversation')
 			.removeClass('unread_conversation')
 
-		@CurrentConversation = parseInt $(event.currentTarget).attr('convid')
-		@CurrentParticipantID = $('#cli_' + @CurrentConversation).find('meta')
-												.attr('participantid')
+		###
+
+		@CurrentConversation = parseInt $(event.delegateTarget).attr('id')
+		@CurrentParticipantID = $(event.delegateTarget).attr('data-participant')
 
 		$('#message_reply').show()
 		$('#participant_info_short').show()
@@ -203,8 +183,8 @@ class A2Cribs.Messages
 		# We use a one time event so the user can't stack a backlog 
 		# of loadConversation Events
 		# After a conversation is loaded events will be put in again.
-		$('.conversation_list_item').one 'click', (event)=>
-				@loadConversation(event)
+		$('.messages_list_item').one 'click', (event)=>
+			@loadConversation(event)
 
 	@refreshMessages:(event)->
 		@NumMessagePages = 1
@@ -216,7 +196,7 @@ class A2Cribs.Messages
 		# Gather the data to send to the server
 		message_text = $('#message_text textarea').val()	
 		if message_text.length == 0
-			alertify.error("Message can not be empty", 1500)
+			A2Cribs.UIManager.Error "Message can not be empty"
 			return false
 		# Disable the submit button
 		$('#send_reply').attr 'disabled','disabled'
@@ -234,7 +214,7 @@ class A2Cribs.Messages
 			$('#message_text textarea').val('') # Clear the reply text field
 			response = JSON.parse(data);
 			if data?.success == false
-				alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
+				A2Cribs.UIManager.Error "Something went wrong while sending a reply, please refresh the page and try again"
 		.always ()=>
 			$('#send_reply').removeAttr 'disabled'
 		false
@@ -249,17 +229,17 @@ class A2Cribs.Messages
 			try
 				data = JSON.parse response
 			catch e
-				alertify.error 'Failed to delete the conversation', 1500
+				A2Cribs.UIManager.Error 'Failed to delete the conversation'
 				return
 
 			if data.success == 1
-				alertify.success 'Conversation deleted', 1500
+				alertify.success 'Conversation deleted', 3000
 				@CurrentConversation = -1
 				@CurrentParticipantID = -1
 				A2Cribs.Dashboard.HideContent('messages')
 				@refresh()
 			else
-				alertify.error 'Failed to delete the conversation', 1500
+				A2Cribs.UIManager.Error 'Failed to delete the conversation'
 
 	@Direct: (directive)->
 		

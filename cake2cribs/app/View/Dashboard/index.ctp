@@ -16,7 +16,7 @@
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
-
+<?php $this->set('title_for_layout', 'Dashboard'); ?>
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
@@ -44,6 +44,15 @@
 					<?php echo $this->element('Account/user_info') ?>
 				</div>
 
+			</div>
+
+			<div class = 'row-fluid messages-content hidden'>
+				<div class = 'span9 message-display'>
+					<?php echo $this->element('Messages/message_window') ?>
+				</div>
+				<div class = 'span3'>
+					<?php echo $this->element('Messages/participant_info') ?>
+				</div>
 			</div>
 
 			<div class = 'rentals-content hidden'>

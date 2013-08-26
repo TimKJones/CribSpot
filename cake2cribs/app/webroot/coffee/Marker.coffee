@@ -7,7 +7,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 		if @alternate_name? and @alternate_name.length then @alternate_name else @street_address
 
 	GetBuildingType: ->
-		return A2Cribs.Marker.BuildingType[parseInt(@building_type_id, 10)]
+		return @building_type_id
 
 	Init: ->
 		@GMarker = new google.maps.Marker
@@ -18,7 +18,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 
 	GetObject: ->
 		return_val = super()
-		delete return_val.GMarker
+		return_val.GMarker = null
 		return return_val
 
 	MarkerClicked: (event) =>

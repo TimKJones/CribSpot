@@ -1,22 +1,5 @@
 class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	@FilterData = {}
-	###
-		'Beds' : [2,5,10]
-		'Rent' : 
-			'min' : 100
-			'max' : 3500
-		'Dates': 
-			'months': [3, 5]
-			'year' : 13
-		'LeaseRange' : 
-			'min' : 3
-			'max' : 7
-		'UnitTypes' : [0,1, 3] #'other' is the value 3
-		'PetsAllowed' : 1
-		'ParkingAvailable' : -1
-		'Air' : -1
-		'UtilitiesIncluded' : -1
-	###
 
 	###
 	Private method for loading the contents of the filter preview into the header filter
@@ -26,6 +9,11 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			$(title).find(".filter_preview").html text
 
 	@CreateListeners: ->
+		$("#filter_search_content").keyup (event) =>
+			if event.keyCode is 13
+				A2Cribs.FilterManager.SearchForAddress event.delegateTarget
+				$(event.delegateTarget).select()
+
 		###
 		On Change listeners for applying changed fields
 		###
@@ -144,6 +132,13 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	###
 	@SetupUI: ->
 		@div = $("#map_filter")
+
+		$("#filter_search_btn").click =>
+			if $("#filter_search_content").is(":visible")
+				$("#filter_search_content").hide 'slide', {direction: 'left'}, 300
+			else
+				$("#filter_search_content").show 'slide', {direction: 'left'}, 300
+				$("#filter_search_content").focus()
 
 		# Init Sliders from bootstrap-slider.js
 		@div.find(".lease_slider").slider

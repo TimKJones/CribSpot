@@ -37,7 +37,7 @@ class PagesController extends AppController {
  * @var string
  */
 	public $name = 'Pages';
-	public $components = array('Facebook.Connect');
+	//public $components = array('Facebook.Connect');
 
 /**
  * This controller does not use a model
@@ -55,8 +55,14 @@ class PagesController extends AppController {
 	public function beforeFilter(){
 	parent::beforeFilter();
      $this->Auth->allow('display');
+     $this->Auth->allow('TermsOfService');
   	}
   	
+  	public function TermsOfUse()
+  	{
+
+  	}
+
   	public function login()
   	{
 

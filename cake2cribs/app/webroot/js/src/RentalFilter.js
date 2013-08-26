@@ -15,6 +15,7 @@
     RentalFilter.FilterData = {};
 
     /*
+<<<<<<< HEAD
     		'Beds' : [2,5,10]
     		'Rent' : 
     			'min' : 100
@@ -34,6 +35,8 @@
 
 
     /*
+=======
+>>>>>>> development
     	Private method for loading the contents of the filter preview into the header filter
     */
 
@@ -45,11 +48,17 @@
     };
 
     RentalFilter.CreateListeners = function() {
+      var _this = this;
+      $("#filter_search_content").keyup(function(event) {
+        if (event.keyCode === 13) {
+          A2Cribs.FilterManager.SearchForAddress(event.delegateTarget);
+          return $(event.delegateTarget).select();
+        }
+      });
       /*
       		On Change listeners for applying changed fields
       */
 
-      var _this = this;
       this.div.find(".lease_slider").on("slideStop", function(event) {
         return _this.ApplyFilter("LeaseRange", {
           min: parseInt(event.value[0], 10),
@@ -178,6 +187,18 @@
     RentalFilter.SetupUI = function() {
       var _this = this;
       this.div = $("#map_filter");
+      $("#filter_search_btn").click(function() {
+        if ($("#filter_search_content").is(":visible")) {
+          return $("#filter_search_content").hide('slide', {
+            direction: 'left'
+          }, 300);
+        } else {
+          $("#filter_search_content").show('slide', {
+            direction: 'left'
+          }, 300);
+          return $("#filter_search_content").focus();
+        }
+      });
       this.div.find(".lease_slider").slider({
         min: 0,
         max: 12,

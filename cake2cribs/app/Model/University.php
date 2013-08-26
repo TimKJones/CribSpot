@@ -52,6 +52,17 @@ class University extends AppModel {
 		return $id['University']['id'];
 	}
 
+	public function getNameFromId($id)
+	{
+		$id = $this->find('first', array(
+			'conditions' => array('University.id' => $id),
+			'fields' => 	array('name')));
+		if ($id == null)
+			return null;
+		
+		return $id['University']['name'];
+	}
+
 	public function getUniversityFromEmail($email)
 	{
 		$domain = substr($email, strrpos($email, '@') + 1);

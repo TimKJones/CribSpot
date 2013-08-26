@@ -59,7 +59,7 @@
       return $.get(url, function(data) {
         var response_data;
         response_data = JSON.parse(data);
-        return $('#unread_conversations_count span').html(response_data.unread_conversations);
+        return $('#message_count').html(response_data.unread_conversations);
       });
     };
 
@@ -71,12 +71,18 @@
         url += '?only_unread=1';
       }
       return $.get(url, function(data) {
-        var SelectedConversationDiv;
-        $('.conversation_list').html(data);
-        $('#conversation_count').html($('.conversation_list_item').length);
-        SelectedConversationDiv = $('#cli_' + _this.CurrentConversation);
-        SelectedConversationDiv.addClass('selected_conversation');
-        SelectedConversationDiv.removeClass('unread_conversation');
+        var conversations, convo, list_item, _i, _len;
+        conversations = JSON.parse(data);
+        for (_i = 0, _len = conversations.length; _i < _len; _i++) {
+          convo = conversations[_i];
+          list_item = $("<li />", {
+            text: convo.Conversation.title,
+            "class": "messages_list_item",
+            id: convo.Conversation.conversation_id,
+            "data-participant": convo.Participant.id
+          });
+          $("#messages_list").append(list_item);
+        }
         return _this.attachConversationListItemHandler();
       });
     };
@@ -105,45 +111,27 @@
 
     Messages.setParticipantInfoUI = function(participant) {
       $(".from_participant").html(participant['first_name']).attr('href', myBaseUrl + 'users/view/' + participant['id']);
-      $(".participant-university").html(participant['University']['name']);
       return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
-        var url, veripanel;
+        var veripanel;
         veripanel = $('#verification-panel');
         if (verification_info.verified_email) {
-          veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-        }
-        if (verification_info.verified_edu) {
-          veripanel.find('#veri-edu  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-        } else {
-          $('.participant-university').html("No Associated University");
-        }
-        if (verification_info.verified_fb) {
-          url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
-          console.log(url);
-          $('#p_pic').attr('src', url);
-          veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-          if ((verification_info.mut_friends != null) && !isNaN(verification_info.mut_friends)) {
-            veripanel.find('#participant-friends').html("- " + verification_info.mut_friends + " mutual");
-          } else if ((verification_info.tot_friends != null) && !isNaN(verification_info.tot_friends)) {
-            veripanel.find('#participant-friends').html("- " + verification_info.tot_friends + " friends");
-          }
-        }
-        if (verification_info.verified_tw) {
-          veripanel.find('#veri-tw  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-          if ((verification_info.tot_followers != null) && !isNaN(verification_info.tot_followers)) {
-            return veripanel.find("#participant-followers").html("- " + verification_info.tot_followers + " followers");
-          }
+          return veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
         }
       });
     };
 
     Messages.loadConversation = function(event) {
+      /*
+      		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
+      		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
+      
+      		$(event.currentTarget)
+      			.addClass('selected_conversation')
+      			.removeClass('unread_conversation')
+      */
       var sublet_url, title;
-      $('#cli_' + this.CurrentConversation).removeClass('selected_conversation');
-      $('#cli_' + this.CurrentConversation).addClass('read_conversation');
-      $(event.currentTarget).addClass('selected_conversation').removeClass('unread_conversation');
-      this.CurrentConversation = parseInt($(event.currentTarget).attr('convid'));
-      this.CurrentParticipantID = $('#cli_' + this.CurrentConversation).find('meta').attr('participantid');
+      this.CurrentConversation = parseInt($(event.delegateTarget).attr('id'));
+      this.CurrentParticipantID = $(event.delegateTarget).attr('data-participant');
       $('#message_reply').show();
       $('#participant_info_short').show();
       title = $('#cli_' + this.CurrentConversation).find('.conversation_title').text();
@@ -186,7 +174,7 @@
 
     Messages.attachConversationListItemHandler = function() {
       var _this = this;
-      return $('.conversation_list_item').one('click', function(event) {
+      return $('.messages_list_item').one('click', function(event) {
         return _this.loadConversation(event);
       });
     };
@@ -204,7 +192,7 @@
         _this = this;
       message_text = $('#message_text textarea').val();
       if (message_text.length === 0) {
-        alertify.error("Message can not be empty", 1500);
+        A2Cribs.UIManager.Error("Message can not be empty");
         return false;
       }
       $('#send_reply').attr('disabled', 'disabled');
@@ -221,7 +209,7 @@
         $('#message_text textarea').val('');
         response = JSON.parse(data);
         if ((data != null ? data.success : void 0) === false) {
-          return alertify.error("Something went wrong while sending a reply, please refresh the page and try again", 2000);
+          return A2Cribs.UIManager.Error("Something went wrong while sending a reply, please refresh the page and try again");
         }
       }).always(function() {
         return $('#send_reply').removeAttr('disabled');
@@ -241,17 +229,17 @@
         try {
           data = JSON.parse(response);
         } catch (e) {
-          alertify.error('Failed to delete the conversation', 1500);
+          A2Cribs.UIManager.Error('Failed to delete the conversation');
           return;
         }
         if (data.success === 1) {
-          alertify.success('Conversation deleted', 1500);
+          alertify.success('Conversation deleted', 3000);
           _this.CurrentConversation = -1;
           _this.CurrentParticipantID = -1;
           A2Cribs.Dashboard.HideContent('messages');
           return _this.refresh();
         } else {
-          return alertify.error('Failed to delete the conversation', 1500);
+          return A2Cribs.UIManager.Error('Failed to delete the conversation');
         }
       });
     };

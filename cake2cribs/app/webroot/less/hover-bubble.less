@@ -10,10 +10,37 @@
 {
 	padding: 0;
 	width: 122px;
+	max-height: 155px;
 	background-color: white;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 
 	font-weight: 300;
+
+	::-webkit-scrollbar
+	{
+		width: 3px;
+		height: 3px;
+	}
+	::-webkit-scrollbar-button:start:decrement,
+	::-webkit-scrollbar-button:end:increment 
+	{
+		height: 3px;
+		display: block;
+		background-color: transparent;
+	}
+
+	::-webkit-scrollbar-track-piece
+	{
+		//background-color: #3b3b3b;
+		//-webkit-border-radius: 6px;
+	}
+
+	::-webkit-scrollbar-thumb:vertical
+	{
+		height: 50px;
+		background-color: hsla(0, 0%, 31%, 0.5);
+		-webkit-border-radius: 2px;
+	}
 
 	div
 	{
@@ -22,6 +49,7 @@
 	.unit_div
 	{
 		width: 100%;
+		max-height: 124px;
 		font-size: 13px;
 		overflow: auto;
 	}

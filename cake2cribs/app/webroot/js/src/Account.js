@@ -76,14 +76,14 @@
           console.log(data);
           json_response = JSON.parse(response);
           if (json_response.success === 1) {
-            alertify.success('Please check your email for a verification link.', 1500);
+            A2Cribs.UIManager.Error('Please check your email for a verification link.');
           } else {
-            alertify.error('Verification not successful: ' + json_response.message, 1500);
+            A2Cribs.UIManager.Error('Verification not successful: ' + json_response.message);
           }
           return $('#VerifyUniversityButton').removeAttr('disabled');
         });
       } else {
-        return alertify.error('Please enter a university email.', 1500);
+        return A2Cribs.UIManager.Error('Please enter a university email.');
       }
     };
 
@@ -101,10 +101,12 @@
       change_password_button.attr('disabled', 'disabled');
       data = {
         'new_password': new_password,
-        'confirm_password': confirm_password,
-        'id': id,
-        'reset_token': reset_token
+        'confirm_password': confirm_password
       };
+      if (id !== null && reset_token !== null) {
+        data['id'] = id;
+        data['reset_token'] = reset_token;
+      }
       if (new_password !== confirm_password) {
         A2Cribs.UIManager.Alert("Passwords do not match.");
         return;
@@ -113,10 +115,15 @@
         response = JSON.parse(response);
         if (response.error === void 0) {
           if (id === null && reset_token === null) {
+<<<<<<< HEAD
             alertify.success('Password Changed', 1500);
             if (redirect !== null) {
               window.location.href = redirect;
             }
+=======
+            alertify.success('Password Changed', 3000);
+            if (redirect !== null) window.location.href = redirect;
+>>>>>>> development
           } else {
             window.location.href = '/dashboard';
           }
@@ -136,13 +143,13 @@
         'first_name': first_name,
         'last_name': last_name
       };
-      return $.post(myBaseUrl + 'users/ajaxEditUser', data, function(response) {
+      return $.post(myBaseUrl + 'users/AjaxEditUser', data, function(response) {
         var json_response;
         json_response = JSON.parse(response);
-        if (json_response.success === 1) {
-          alertify.success('Account Saved', 1500);
+        if (json_response.error === void 0) {
+          alertify.success('Account Saved', 3000);
         } else {
-          alertify.error('Account Failed to Save: ' + json_response.message, 1500);
+          A2Cribs.UIManager.Error('Account Failed to Save: ' + json_response.error.message);
         }
         return $('#save_btn').removeAttr('disabled');
       });
@@ -172,11 +179,11 @@
       data = 'email=' + $("#UserEmail").val();
       return $.post('/users/AjaxResetPassword', data, function(response) {
         data = JSON.parse(response);
-        if (data.success === 1) {
-          document.location.href = '/users/login?password_reset_redirect=true';
+        if (data.success != null) {
+          A2Cribs.UIManager.Alert("Email sent to reset password!");
           return false;
         } else {
-          A2Cribs.UIManager.Alert(data.error);
+          A2Cribs.UIManager.Error(data.error);
           return false;
         }
       });

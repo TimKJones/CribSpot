@@ -10,6 +10,7 @@ class A2Cribs.MiniMap
 			panControl: false
 			zoomControl: false
 			streetViewControl: false
+			draggable: enabled
 		@Map = new google.maps.Map mapDiv, MapOptions
 		@Marker = new google.maps.Marker
 			draggable: enabled
@@ -17,8 +18,7 @@ class A2Cribs.MiniMap
 			map: @Map
 			visible: marker_visible
 
-		if not enabled
-			@Disable()
+		#@SetEnabled enabled
 
 		@Resize()
 

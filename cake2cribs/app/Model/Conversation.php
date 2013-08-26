@@ -2,7 +2,7 @@
 
 class Conversation extends AppModel {
 	public $name = 'Conversation';	
-	public $uses = array('Conversation', 'Sublet', 'User', 'Message');
+	public $uses = array('Conversation', 'Listing', 'User', 'Message');
 	public $primaryKey = 'conversation_id';
 	public $actsAs = array('Containable');
 	public $belongsTo = array(
@@ -14,9 +14,9 @@ class Conversation extends AppModel {
             'className' => 'User',
             'foreignKey' => 'participant2_id'
         ),
-        'Sublet' => array(
-        	'className' => 'Sublet',
-        	'foreignKey' => 'sublet_id',
+        'Listing' => array(
+        	'className' => 'Listing',
+        	'foreignKey' => 'listing_id',
         ),
         'Last_Message' => array(
         	'className' => 'Message',
@@ -119,14 +119,14 @@ class Conversation extends AppModel {
 	public function createConversation($data){
 		$conversation_data = array(
 			'Conversation' => array(
-				'sublet_id' => $data['sublet_id'],
+				'listing_id' => $data['listing_id'],
 				'participant1_id' => $data['participant1_id'],
 				'participant2_id' => $data['participant2_id'],
 				'title' => $data['title'],
 				)
 			);
 		if(!$this->save($conversation_data)){
-			$this->logError($data['participant1_id'], 41, array('data'=>$data, 'valError'=>$this->validationErrors));
+			$this->logError($data['participant1_id'], 53, array('data'=>$data, 'valError'=>$this->validationErrors));
 			die(debug($this->validationErrors));
 		}
 		return $this->id;
@@ -187,13 +187,13 @@ class Conversation extends AppModel {
 		}else if($conversation['Participant2']['id'] == $user['id']){
 			$conversation['Conversation']['visible2'] = 0;
 		}else{
-			$this->logError($user['id'], 42, $conversation);
+			$this->logError($user['id'], 54, $conversation);
 			CakeLog::write("Conversation.php", "Conversation ".$conversation['Conversation']['conversation_id']. " was attempted to be hidden by user: ". $user['id']);	
 		}
 		
 
 		if(!$this->save($conversation)){
-			$this->logError($user['id'], 43, $conversation);
+			$this->logError($user['id'], 55, $conversation);
 			 CakeLog::write("Conversation.php", "Hiding Conversation Failed: " . $this->validationErrors);
 		}
 	}

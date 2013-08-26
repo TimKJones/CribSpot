@@ -25,7 +25,7 @@
       var location;
       location = $("#search-text").val();
       if (__indexOf.call(this.schoolList, location) < 0) {
-        alert(location + " is not a valid location.");
+        A2Cribs.UIManager.Error(location + " is not a valid location.");
         return false;
       }
       return window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');

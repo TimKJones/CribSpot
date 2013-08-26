@@ -1,7 +1,7 @@
 <?php
 	class DashboardController extends AppController {
 		public $helpers = array('Html');
-		public $uses = array('User', 'Sublet');
+		public $uses = array('User', 'Sublet', 'Rental');
 		public $components= array('Session','Auth', 'Cookie');
 
 		function beforeFilter(){
@@ -37,6 +37,7 @@
 
 
 	 	public function index(){
+	 		CakeLog::write('loggedin', print_r($this->Auth->User(), true));
 	 		$directive = $this->Cookie->read('dashboard-directive');
 	 		$this->Cookie->delete('dashboard-directive');
 	 		if($directive == null){
@@ -56,11 +57,14 @@
 	 		$this->set(array('directive'=> json_encode($directive), 'user' => $user, 'user_json'=>$json_user));
 	 		//$this->set('sublets', $sublets);
 
-	 		$mapUrl = '/';
-	 		if ($this->Session->read("currentUniversity") != null)
-	 			$mapUrl = '/map/sublet/' . $this->Session->read("currentUniversity");
+	 		$dropdowns = array('unit_style_options', 'building_type', 'parking', 'furnished', 'pets', 'washer_dryer');
+	 		$dropdown_values = "";
 
-	 		$this->set('mapUrl', $mapUrl);
+	 		foreach ($dropdowns as $option) {
+	 			$dropdown_values[$option] = $this->Rental->$option(-1);
+	 		}
+
+	 		$this->set('dropdowns', json_encode($dropdown_values));
 	 		CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
 
 	 	}

@@ -24,8 +24,14 @@
     FilterManager.Geocoder = null;
 
     FilterManager.UpdateListings = function(visibleListingIds) {
-      var all_listings, all_markers, listing, listing_id, marker, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2;
+      var all_listings, all_markers, listing, listing_id, marker, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       visible_listings = JSON.parse(visibleListingIds);
+      if ((_ref = A2Cribs.HoverBubble) != null) {
+        _ref.Close();
+      }
+      if ((_ref1 = A2Cribs.ClickBubble) != null) {
+        _ref1.Close();
+      }
       all_listings = A2Cribs.UserCache.Get("listing");
       for (_i = 0, _len = all_listings.length; _i < _len; _i++) {
         listing = all_listings[_i];
@@ -177,30 +183,13 @@
       return A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder();
     };
 
-    FilterManager.AddressSearchCallback = function(response, status) {
-      var formattedAddress;
-      if (status === google.maps.GeocoderStatus.OK && response[0].types[0] !== "postal_code") {
-        $("#addressSearchBar").effect("highlight", {
-          color: "#5858FA"
-        }, 2000);
-        A2Cribs.Map.GMap.panTo(response[0].geometry.location);
-        A2Cribs.Map.GMap.setZoom(18);
-        if (response[0].address_components.length >= 2) {
-          formattedAddress = response[0].address_components[0].short_name + " " + response[0].address_components[1].short_name;
-          if (A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]) {
-            return alert(A2Cribs.Map.AddressToMarkerIdMap[formattedAddress]);
-          }
-        }
-      } else {
-        return $("#addressSearchBar").effect("highlight", {
-          color: "#FF0000"
-        }, 2000);
+    FilterManager.SearchForAddress = function(div) {
+      var address, request,
+        _this = this;
+      if (!(A2Cribs.FilterManager.Geocoder != null)) {
+        A2Cribs.FilterManager.Geocoder = new google.maps.Geocoder();
       }
-    };
-
-    FilterManager.SearchForAddress = function() {
-      var address, request;
-      address = $("#AddressSearchText").val();
+      address = $(div).val();
       request = {
         location: A2Cribs.Map.GMap.getCenter(),
         radius: 8100,
@@ -210,7 +199,19 @@
       };
       return A2Cribs.FilterManager.Geocoder.geocode({
         'address': address + " " + A2Cribs.FilterManager.CurrentCity + ", " + A2Cribs.FilterManager.CurrentState
-      }, A2Cribs.FilterManager.AddressSearchCallback);
+      }, function(response, status) {
+        if (status === google.maps.GeocoderStatus.OK && response[0].types[0] !== "postal_code") {
+          $(div).effect("highlight", {
+            color: "#5858FA"
+          }, 2000);
+          A2Cribs.Map.GMap.panTo(response[0].geometry.location);
+          return A2Cribs.Map.GMap.setZoom(18);
+        } else {
+          return $(div).effect("highlight", {
+            color: "#FF0000"
+          }, 2000);
+        }
+      });
     };
 
     return FilterManager;

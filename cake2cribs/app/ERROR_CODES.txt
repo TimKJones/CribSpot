@@ -72,36 +72,56 @@
 34
 - Marker->FindMarkerId
 35
-- Marker->FindMarkerId
+- Marker->FindMarkerId36
 36
+- User->RegisterUser
+37
+- User->RegisterUser
+38
+- UsersController->AjaxLogin
+39
+- User/SaveFacebookUser
+40
+- Image->SaveImage
+41
+- Favorite->AddFavorite
+42
+- Favorite->DeleteFavorite
+43
+- Favorite->AddFavorite
+44
+- Users/ResendConfirmationEmail
+45
+- Users/AjaxChangePassword_LoggedIn
+46
+- Users/AjaxChangePassword
+47
+- User->edit
+48
 - Order->generateJWT
 - Order type was not valid
-37
+49
 - Order->logOrder
 - No Pending Order found while logging order
-38
+50
 - Order->logOrder
 - Creating an order instance failed
-39
+51
 - Order->validateFLOrder
 - there were validation errors with the orderItems
-40
+52
 - PendingOrder->add
-41
+53
 - Conversation->createConversation
-42
+54
 - Conversation->hideConversation
-43
+55
 - Conversation->hideConversation
-44
+56
 - Message->createMessage
-
-45
+57
 - User->RegisterUser
-46
+58
 - User->RegisterUser
-47
-- UsersController->AjaxLogin
-48
+59
 - User/SaveFacebookUser
-

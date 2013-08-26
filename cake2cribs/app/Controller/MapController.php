@@ -1,7 +1,13 @@
 <?php
 class MapController extends AppController {
   public $helpers = array('Html', 'GoogleMap', 'Js');
-  public $components = array('RequestHandler');
+  public $components = array('RequestHandler', 'Session','Auth' => array(
+        'authenticate' => array(
+            'Form' => array(
+                'fields' => array('username' => 'email')
+                )
+            )
+        ));
   public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
 
   public function beforeFilter() {
@@ -16,60 +22,21 @@ class MapController extends AppController {
     $this->Auth->allow('GetBasicData');
   }
 
-    /*
-    Action for main sublet map page
-    */
-    public function sublet($school_name = null, $address = null, $sublet_id = null)
+    public function index()
     {
-        if ($school_name == null)
-            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
-
-        /* -1 Code means do not open the tooltip */
-        if (($address == null && $sublet_id != null) || 
-            ($address != null && $sublet_id == null))
-            throw new NotFoundException();
+        if(!$this->Auth->user() && !$this->Session->read('preferredUniversity'))
+            return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
         
-        $marker_id_to_open = -1;
-        $subletData = -1;
-
-        if ($school_name != null)
-        {
-            if (is_numeric($school_name))
-                $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
-            $this->Session->write("currentUniversity", $school_name);
-            $school_name = str_replace("_", " ", $school_name);
-            $id = $this->University->getIdfromName($school_name);
-            if ($id == null)
-                throw new NotFoundException();  
-            $this->set('school_id', $id);
-            $lat_long = $this->University->getTargetLatLong($id);
-            if ($lat_long == null)
-                throw new NotFoundException();
-            $this->set('school_lat', $lat_long['latitude']);
-            $this->set('school_lng', $lat_long['longitude']);
-            $this->set('school_city', $lat_long['city']);
-            $this->set('school_state', $lat_long['state']);
-            $this->set('school_name', $school_name);
+        $school_id = $this->User->GetPreferredUniversity($this->Auth->user('id'));
+        if ($school_id === null){
+            $school_id = $this->Session->read('preferredUniversity');
+            if ($school_id === null)
+                return $this->redirect(array('controller' => 'landing', 'action' => 'index'));
         }
 
-        if ($sublet_id != null)
-        {
-            $this->set("listing_id_to_open", $sublet_id);
-            $subletData = $this->Sublet->getSubletData($sublet_id);
-            if (array_key_exists("Sublet", $subletData) && array_key_exists("marker_id", $subletData['Sublet']))
-                $marker_id_to_open = $subletData['Sublet']['marker_id'];
-            if ($subletData == null)
-                $marker_id_to_open = -2;
-        }
-
-        $this->set("marker_id_to_open", $marker_id_to_open);
-        $this->set("sublet_data_for_tooltip", $subletData);
-        $user = null;
-        if($this->Auth->User()){
-            $user = $this->User->getSafe($this->Auth->User('id'));
-        }
-        $this->set('user', json_encode($user));
-        $this->InitFilterValues();
+        $school_name = $this->University->getNameFromId($school_id);
+        $school_name = str_replace(" ", "_", $school_name);
+        return $this->redirect(array('action' => 'rental', $school_name));
     }
 
     /*
@@ -86,14 +53,21 @@ class MapController extends AppController {
         $this->set('active_listing_type', 'rental');
 
         if ($school_name != null)
-        {
-            if (is_numeric($school_name))
-                $this->redirect(array('controller' => 'sublets', 'action' => 'show', $school_name));
+        {             
             $this->Session->write("currentUniversity", $school_name);
             $school_name = str_replace("_", " ", $school_name);
             $id = $this->University->getIdfromName($school_name);
             if ($id == null)
-                throw new NotFoundException();  
+                throw new NotFoundException();
+
+            /* store university id to enable 'back to map' button */
+            if ($this->Auth->User('id') != null)
+                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
+            else{
+                $this->Session->write('preferredUniversity', $id); 
+                CakeLog::write('writing session', $id);
+            } 
+            
             $this->set('school_id', $id);
             $lat_long = $this->University->getTargetLatLong($id);
             if ($lat_long == null)
@@ -111,6 +85,8 @@ class MapController extends AppController {
         }
         $this->set('user', json_encode($user));
         $this->InitFilterValues();
+
+        
     }
 
     public function ViewListing($listing_id = null)
@@ -125,6 +101,9 @@ class MapController extends AppController {
     public function LoadMarkers($school_id, $listing_type) {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
+/* 
+change names for building_type_id to string
+Only return */
 
         $target_lat_long = $this->University->getTargetLatLong($school_id);
         $markers = $this->Marker->getAllMarkers($target_lat_long);
@@ -136,12 +115,13 @@ class MapController extends AppController {
     /*
     Loads the listing data necessary for the first marker click popup
     */
-    public function GetBasicData($listing_type)
+    public function GetBasicData($listing_type, $university_id)
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
-        $data = $this->Listing->GetBasicData($listing_type);
+        $target_lat_long = $this->University->getTargetLatLong($university_id);
+        $data = $this->Listing->GetBasicData($listing_type, $target_lat_long);
         $response = json_encode($data);
         $this->set("response", $response);
     }

@@ -2,6 +2,9 @@
 <?php echo $this->Html->script('src/FilterManager', array('inline' => false)); ?>
 <?php echo $this->Html->script('src/RentalFilter', array('inline' => false)); ?>
 
+<?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->script('bootstrap-slider', array('inline' => false)); ?>
+
 <div id="map_filter">
 	<div id="filter_label_group">
 		<div class="btn-group filter_div">
@@ -59,7 +62,10 @@
 				<?php
 					$currentYear = intval(date("Y"));
 					for ($i=0; $i < 3; $i++) { 
-						echo "<option value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";
+						if ($i == 1)
+							echo "<option selected='selected' value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";
+						else
+							echo "<option value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";
 					}
 				?>
 			</select>
@@ -91,6 +97,11 @@
 		</div>
 
 	</div>
+</div>
+
+<div id="filter_search_container">
+	<div id="filter_search_btn"><i class="icon-search icon-large"></i></div>
+	<input id="filter_search_content" type="text" placeholder="Search By Address">
 </div>
 <?php 
 	$this->Js->buffer('

@@ -7,11 +7,14 @@ class User extends AppModel {
 			'foreignKey' => 'user_id'
 		)
 	);
-	public $belongsTo = 'University'; 	
+	public $belongsTo = array('University');
+	public $actsAs = array('Containable');
 	public $primaryKey = 'id';
+	public $helpers = array('Html');
 
 	public $validate = array (
 		'id' => 'numeric',
+		'facebook_id' => 'numeric',
 		'user_type' => 'numeric',
 		'password' => array(
 			'required' => array(
@@ -52,6 +55,13 @@ class User extends AppModel {
 				'message' => 'Names must only contain letters and numbers.'
 				)
 		),
+		'company_name' => array(
+			'between' => array(
+				'rule' => array('between',0,50),
+				'message' => 'Must be between 0 and 50 characters'
+				),
+			'rule' => array('custom', "/^[a-z0-9 \.&\'\/\_\-]*+/i")
+		),
 		'street_address' => array(
 			'between' => array(
 				'rule' => array('between', 0, 255)
@@ -76,7 +86,7 @@ class User extends AppModel {
 			'email' => array(
         		'rule'    => array('email', true),
         		'message' => 'Please supply a valid email address.'
-    			),
+    			)/*,
 			'required' => array(
 				'rule' => 'notEmpty',
 				'message' => 'An email is required.'
@@ -84,13 +94,13 @@ class User extends AppModel {
 			'unique' => array(
 				'rule' => 'isUnique',
 				'message' => 'Someone already registered with that email.'
-				)
+				)*/
 			),
 		'phone' => array(
 			'phone' => array(
         		'rule' => array('phone', null, 'us'),
         		'message' => 'Please enter a valid phone number'
-   				),
+   				)/*,
    			'required' => array(
 				'rule' => 'notEmpty',
 				'message' => 'A phone number is required.'
@@ -98,7 +108,7 @@ class User extends AppModel {
    			'unique' => array(
 				'rule' => 'isUnique',
 				'message' => 'Someone already registered with that phone number. Try again.'
-				)
+				)*/
 			),
 		'group_id' => 'alphaNumeric', 
 		'university_id' => array(
@@ -113,11 +123,13 @@ class User extends AppModel {
 
 		),
 		'verified' => 'boolean',
+		'number_email_confirmations_sent' => 'numeric',
 		'university_verified' => 'boolean',
 		'vericode' => 'alphaNumeric',
-		'facebook_userid' => 'alphaNumeric', /* userids are null if not verified */
 		'twitter_userid' => 'alphaNumeric',
 		'linkedin_verified' => 'alphaNumeric',
+		'last_login' => 'datetime',
+		'preferred_university' => 'numeric',
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -126,10 +138,8 @@ class User extends AppModel {
 
 	/* ---------- unit_style_options ---------- */
 	const USER_TYPE_SUBLETTER = 0;
-	const USER_TYPE_PROPERTY_MANAGER = 1;
+	const USER_TYPE_PROPERTY_MANAGER = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
 	const USER_TYPE_NEWSPAPER_ADMIN = 2;
-	
-
 
 	public static function user_type($value = null) {
 		$options = array(
@@ -209,12 +219,24 @@ class User extends AppModel {
 		return $twitter_data;
 	}
 
-	public function edit($data){
-		if (!$this->save($data))
-			CakeLog::write("saveUser", print_r($this->validationErrors, true));
-		else
-			CakeLog::write("saveUser", print_r($data, true));
-		return $this->read();
+	public function edit($user){
+		CakeLog::write('savinguser', print_r($user, true));
+		if ($user['User']['id'] === 0 || !$this->save($user)){
+			$error = null;
+			$error['User'] = $user;
+			$error['validationErrors'] = $this->validationErrors;
+			$user_id = null;
+			if (array_key_exists('User', $user) && array_key_exists('id', $user['User']))
+				$user_id = $user['User']['id'];
+
+			$this->LogError($user_id, 47, $error);
+			return array("error" => array('validation' => $this->validationErrors,
+				'message' => 'Looks like we had an issue editing your account. If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 47.'));
+		}
+
+		return array('success' => '');
 	}
 
 	public function get($user_id){
@@ -226,7 +248,7 @@ class User extends AppModel {
 	public function getSafe($user_id){
 		$options = array();
 		$options['conditions'] = array('User.id'=>$user_id);
-		$options['fields'] = array ('User.first_name', 'User.facebook_userid', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id');
+		$options['fields'] = array ('User.first_name', 'User.facebook_id', 'User.twitter_userid', 'User.university_verified', 'User.verified', 'User.university_id', 'User.user_type', 'User.company_name');
 		$options['recursive'] = -1;
 		return $this->find('first', $options);
 	}
@@ -265,7 +287,9 @@ class User extends AppModel {
 			$error['validation'] = $this->validationErrors;
 			$this->LogError($user_id, 26, $error);
 			return array('error' => 
-					'Failed to verify user email. Contact help@cribspot.com if the error persists. Reference error code 26');
+					'Looks like we had some issues verifying your email address...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 26.');
 		}
 
 		return array('success' => '');
@@ -309,14 +333,17 @@ class User extends AppModel {
 		$user = array();
 		$user['id'] = $user_id;
 		$user['password'] = $password;
-		$user['User'] = $user;
-		if (!$this->save($user)){
+		$user['verified'] = 1; /* Verify the user's email */
+		$new_user = array('User' => $user);
+		if (!$this->save($new_user)){
 			$error = null;
-			$error['User'] = $user;
+			$error['User'] = $new_user;
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 32, $error);
 			return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to change password. Contact help@cribspot.com if the error persists. Reference error code 32'));
+			'message' => 'Looks like we had some issues changing your password...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 32.'));
 		}
 
 		return array('success'=>'');
@@ -329,7 +356,8 @@ class User extends AppModel {
 	public function GetUserFromEmail($email)
 	{
 		$user = $this->find('first', array(
-			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode'),
+			'fields' => array('User.id', 'User.email', 'User.first_name', 'User.verified', 'User.vericode',
+				'User.number_email_confirmations_sent'),
 			'conditions' => array('User.email' => $email)
 		));
 
@@ -337,6 +365,17 @@ class User extends AppModel {
 			return $user['User'];
 
 		return null;
+	}
+
+	/*
+	Increment number_email_confirmations_sent by one after sending email confirmation email
+	*/
+	public function IncrementNumberEmailConfirmationsSent($user_id)
+	{
+		$this->id = $user_id;
+		$this->updateAll(array(
+			'User.number_email_confirmations_sent' => 'User.number_email_confirmations_sent+1'
+		));
 	}
 
 	/*
@@ -371,7 +410,9 @@ class User extends AppModel {
 			$error['validationErrors'] = $this->validationErrors;
 			$this->LogError($id, 29, $error);
 			return array("error" => array('validation' => $this->validationErrors,
-			'message' => 'Failed to reset password. Contact help@cribspot.com if the error persists. Reference error code 29'));
+			'message' => 'Looks like we had some issues resetting your password...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 29.'));
 			return false;
 		}
 
@@ -396,13 +437,16 @@ class User extends AppModel {
 	*/
 	public function RegisterUser($user)
 	{
+		CakeLog::write('savinguser', print_r($user, true));
 		$error = null;
 		if (!$this->_validateUserRegister($user)){
 			$error = null;
 			$error['user'] = $user;
-			$this->LogError(null, 45, $error);
+			$this->LogError(null, 57, $error);
 			return array('error' => 
-					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 36');
+					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 57.');
 		}
 
 		if (!$this->save(array('User'=>$user))) {
@@ -410,9 +454,11 @@ class User extends AppModel {
 			$error['user'] = $user;
 			$error['validationErrors'] = $this->validationErrors;
 			CakeLog::write('validation', print_r($this->validationErrors, true));
-			$this->LogError(null, 46, $error);
+			$this->LogError(null, 58, $error);
 			return array('error' => 	
-					'Failed to register user. Contact help@cribspot.com if the error persists. Reference error code 37');
+					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 57.');
 		}
 
 		return array('success'=>'');
@@ -445,9 +491,9 @@ class User extends AppModel {
 			return null;
 
 		$local_user = $this->find('first', array(
-			'conditions' => array('facebook_userid' => $fb_id)
+			'conditions' => array('facebook_id' => $fb_id)
         ));
-CakeLog::write("localuser", print_r($local_user, true));
+
 		return $local_user;
 	}
 
@@ -456,17 +502,94 @@ CakeLog::write("localuser", print_r($local_user, true));
 	*/
 	public function SaveFacebookUser($user)
 	{
-		CakeLog::write('savinguser', print_r($user, true));
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;
 			$error['validation'] = $this->validationErrors;
-			$this->LogError(null, 48, $error);
+			$this->LogError(null, 59, $error);
 			return array('error' => 
-					'Failed to login with Facebook. Contact help@cribspot.com if the error persists. Reference error code 39');
+					'Looks like we had some issues logging you in with Facebook...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 59.');
 		}
 
-		return array('success'=>'');
+		/* return the user object we just saved */
+		$user = $this->find('first', array(
+			'conditions' => array('User.id' => $this->id)
+		));
+		return array('user' => $user);
+	}
+
+	public function UpdateLastLogin($user_id)
+	{
+		date_default_timezone_set('America/New_York');
+		$db = ConnectionManager::getDataSource('default');
+		$now = $db->expression('NOW()');
+		$this->id = $user_id;
+		$this->saveField('last_login', $now);
+	}
+
+	public function SavePreferredUniversity($user_id, $university_id)
+	{
+		$this->id = $user_id;
+		$this->saveField('preferred_university', $university_id);
+	}
+
+	public function GetPreferredUniversity($user_id)
+	{
+		$this->id = $user_id;
+		$university_id = $this->find('first', array(
+			'fields' => array('User.preferred_university'),
+			'conditions' => array('User.id' => $user_id)
+		));
+
+		if ($university_id != null)
+			return $university_id['User']['preferred_university'];
+		return null;
+	}
+
+	/* 
+	Used during user importing
+	Returns a user with the given company name
+	*/
+	public function GetUserByCompanyName($company_name)
+	{
+		if (empty($company_name))
+			return null;
+
+		$user = $this->find('first', array(
+			'conditions' => array('User.company_name' => $company_name)
+		));
+
+		if ($user != null){
+			/* Unset fields that shouldn't be modified */
+			unset($user['User']['password']);
+		}
+
+		return $user;
+	}
+
+	/*
+	Initialize password_reset_tokens for all property managers
+	*/
+	public function InitializePMPasswordResetTokens()
+	{
+		$users = $this->find('all', array(
+			'contains' => array('User'),
+			'fields' => array('User.id'),
+			'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
+		));
+		foreach ($users as &$user){
+			$user['User']['password_reset_token'] = uniqid();
+		}
+
+		foreach ($users as $user){
+			$just_user = array('User' => $user['User']);
+
+			if (!$this->save($just_user))
+				CakeLog::write('failed', print_r($this->validationErrors, true));
+		}
+		
 	}
 
 	/*
@@ -481,13 +604,12 @@ CakeLog::write("localuser", print_r($local_user, true));
 		$required_fields = null;
 		$user_type = intval($user['user_type']);
 		if ($user_type === User::USER_TYPE_PROPERTY_MANAGER)
-			$required_fields = array('company_name', 'website', 'phone', 'street_address', 'city', 'state');
+			$required_fields = array('company_name', 'phone', 'street_address', 'city', 'state');
 		else if ($user_type === User::USER_TYPE_SUBLETTER)
 			$required_fields = array('first_name', 'last_name');
 
 		foreach ($required_fields as $value) {
 			if (!array_key_exists($value, $user)){
-				CakeLog::write("validate", $value . "; user=" . print_r($user, true));
 				return false;
 			}
 				

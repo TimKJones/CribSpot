@@ -1,8 +1,4 @@
-<script src="https://d3f5pyioow99x0.cloudfront.net/0.6.6/hull.js"></script> 
-<script>
-Hull.init({
-  appId: "52059a5d4ce72fb684000024",
-  orgUrl: "https://4d7f3c95.hullapp.io"
-});
-</script>
-<div data-hull-component="identity@hull"></div>
+<button onclick='A2Cribs.FacebookManager.FacebookLogin()'>Login with facebook</button>
+<h4>Email:</h4> <h4 id="emailVal"><?php echo $email; ?></h4>
+<h4>First Name:</h4> <h4 id="emailVal"><?php echo $firstName; ?></h4>
+<h4>Last Name:</h4> <h4 id="emailVal"><?php echo $lastName; ?></h4>

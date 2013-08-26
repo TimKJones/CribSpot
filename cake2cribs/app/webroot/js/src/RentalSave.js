@@ -4,39 +4,39 @@
 
   A2Cribs.RentalSave = (function() {
 
-    function RentalSave(modal) {
+    function RentalSave(dropdown_content) {
       this.SaveImages = __bind(this.SaveImages, this);
       this.div = $('.rentals-content');
       this.EditableRows = [];
       this.Editable = false;
       this.VisibleGrid = 'overview_grid';
-      this.SetupUI();
+      this.SetupUI(dropdown_content);
       this.NextListing;
     }
 
-    RentalSave.prototype.SetupUI = function() {
+    RentalSave.prototype.SetupUI = function(dropdown_content) {
       if (!(A2Cribs.Geocoder != null)) {
         A2Cribs.Geocoder = new google.maps.Geocoder();
       }
       $('#middle_content').height();
       this.div.find("grid-pane").height;
       this.CreateCallbacks();
-      return this.CreateGrids();
+      return this.CreateGrids(dropdown_content);
     };
 
     RentalSave.prototype.CreateCallbacks = function() {
       var _this = this;
       $('body').on("Rental_marker_added", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list").find("#" + marker_id).length === 0) {
+        if ($("#rentals_list_content").find("#" + marker_id).length === 0) {
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item = $("<li />", {
             text: name,
             "class": "rentals_list_item",
             id: marker_id
           });
-          $("#rentals_list").append(list_item);
-          $("#rentals_list").slideDown();
+          $("#rentals_list_content").append(list_item);
+          $("#rentals_list_content").slideDown();
         }
         A2Cribs.Dashboard.Direct({
           classname: 'rentals',
@@ -47,8 +47,8 @@
       });
       $('body').on("Rental_marker_updated", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list").find("#" + marker_id).length === 1) {
-          list_item = $("#rentals_list").find("#" + marker_id);
+        if ($("#rentals_list_content").find("#" + marker_id).length === 1) {
+          list_item = $("#rentals_list_content").find("#" + marker_id);
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item.text(name);
           return _this.CreateListingPreview(marker_id);
@@ -100,9 +100,12 @@
         return $(event.target).removeClass("highlight-tab");
       });
       return $(".rentals-content").on("shown", function(event) {
-        var grid, height, width, _results;
+        var grid, height, width, _ref, _results;
         width = $("#" + _this.VisibleGrid).width();
         height = $('#add_new_unit').position().top - $("#" + _this.VisibleGrid).position().top;
+        if ((_ref = _this.Map) != null) {
+          _ref.Resize();
+        }
         _results = [];
         for (grid in _this.GridMap) {
           $("#" + grid).css("width", "" + width + "px");
@@ -158,7 +161,11 @@
       var marker_object, name;
       marker_object = A2Cribs.UserCache.Get("marker", marker_id);
       name = marker_object.GetName();
-      return $("#rentals_address").html("<strong>" + name + "</strong><br>");
+      $("#rentals_address").html("<strong>" + name + "</strong><br>");
+      if (!(this.Map != null)) {
+        this.Map = new A2Cribs.MiniMap($("#rentals_preview"));
+      }
+      return this.Map.SetMarkerPosition(new google.maps.LatLng(marker_object.latitude, marker_object.longitude));
     };
 
     RentalSave.prototype.Validate = function(row) {
@@ -425,7 +432,7 @@
       return _results;
     };
 
-    RentalSave.prototype.CreateGrids = function() {
+    RentalSave.prototype.CreateGrids = function(dropdown_content) {
       var checkboxSelector, columnpicker, columns, container, containers, data, options, _i, _len, _results,
         _this = this;
       containers = ["overview_grid", "features_grid", "amenities_grid", "utilities_grid", "buildingamenities_grid", "fees_grid", "description_grid", "picture_grid", "contact_grid"];
@@ -444,7 +451,7 @@
       _results = [];
       for (_i = 0, _len = containers.length; _i < _len; _i++) {
         container = containers[_i];
-        columns = this.GetColumns(container);
+        columns = this.GetColumns(container, dropdown_content);
         checkboxSelector = new Slick.CheckboxSelectColumn({
           cssClass: "grid_checkbox"
         });
@@ -461,14 +468,18 @@
           }
           return false;
         });
-        _results.push(this.GridMap[container].onCellChange.subscribe(function(e, args) {
+        this.GridMap[container].onCellChange.subscribe(function(e, args) {
           return _this.Save(args.row);
+        });
+        _results.push(this.GridMap[container].onValidationError.subscribe(function(e, args) {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Error(args.validationResults.msg);
         }));
       }
       return _results;
     };
 
-    RentalSave.prototype.GetColumns = function(container) {
+    RentalSave.prototype.GetColumns = function(container, dropdown_content) {
       var AmenitiesColumns, BuildingAmenitiesColumns, ContactColumns, DescriptionColumns, FeaturesColumns, FeesColumns, OverviewColumns, PictureColumns, UtilitiesColumns;
       OverviewColumns = function() {
         var columns;
@@ -480,7 +491,6 @@
             editor: A2Cribs.Editors.Unit,
             formatter: A2Cribs.Formatters.Unit,
             minWidth: 185,
-            toolTip: "Blah Blah Blah",
             headerCssClass: "slickgrid_header"
           }, {
             id: "beds",
@@ -512,19 +522,19 @@
             name: "Start Date",
             field: "start_date",
             editor: Slick.Editors.Date,
-            formatter: A2Cribs.Formatters.RequiredText
+            formatter: A2Cribs.Formatters.Date(true)
           }, {
             id: "alternate_start_date",
             name: "Alt. Start Date",
             field: "alternate_start_date",
             editor: Slick.Editors.Date,
-            formatter: A2Cribs.Formatters.Text
+            formatter: A2Cribs.Formatters.Date()
           }, {
             id: "lease_length",
             name: "Lease Length",
             field: "lease_length",
-            editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
-            formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
+            editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"]),
+            formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"], true)
           }, {
             id: "available",
             name: "Availability",
@@ -560,8 +570,8 @@
             id: "parking_type",
             name: "Parking",
             field: "parking_type",
-            editor: A2Cribs.Editors.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"]),
-            formatter: A2Cribs.Formatters.Dropdown(["None", "Lot", "Driveway", "Garage", "Off-Site"])
+            editor: A2Cribs.Editors.Dropdown(dropdown_content["parking"]),
+            formatter: A2Cribs.Formatters.Dropdown(dropdown_content["parking"])
           }, {
             id: "parking_spots",
             name: "Spots",
@@ -579,14 +589,14 @@
             id: "furnished_type",
             name: "Furnished",
             field: "furnished_type",
-            editor: A2Cribs.Editors.Dropdown(["Unfurnished", "Fully", "Partially"]),
-            formatter: A2Cribs.Formatters.Dropdown(["Unfurnished", "Fully", "Partially"])
+            editor: A2Cribs.Editors.Dropdown(dropdown_content["furnished"]),
+            formatter: A2Cribs.Formatters.Dropdown(dropdown_content["furnished"])
           }, {
             id: "pets_type",
             name: "Pets",
             field: "pets_type",
-            editor: A2Cribs.Editors.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"]),
-            formatter: A2Cribs.Formatters.Dropdown(["Prohibited", "Cats Only", "Dogs Only", "Cats & Dogs", "All Animals"])
+            editor: A2Cribs.Editors.Dropdown(dropdown_content["pets"]),
+            formatter: A2Cribs.Formatters.Dropdown(dropdown_content["pets"])
           }, {
             id: "smoking",
             name: "Smoking",
@@ -603,7 +613,7 @@
             id: "year_built",
             name: "Year Built",
             field: "year_built",
-            editor: Slick.Editors.Integer,
+            editor: A2Cribs.Editors.Year,
             formatter: A2Cribs.Formatters.Text
           }
         ];
@@ -627,11 +637,10 @@
             formatter: A2Cribs.Formatters.Check
           }, {
             id: "washer_dryer",
-            cssClass: "grid_checkbox",
             name: "Washer/Dryer",
             field: "washer_dryer",
-            editor: Slick.Editors.Checkbox,
-            formatter: A2Cribs.Formatters.Check
+            editor: A2Cribs.Editors.Dropdown(dropdown_content["washer_dryer"]),
+            formatter: A2Cribs.Formatters.Dropdown(dropdown_content["washer_dryer"])
           }, {
             id: "fridge",
             cssClass: "grid_checkbox",
@@ -767,66 +776,48 @@
             id: "electric",
             name: "Electricity",
             field: "electric",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "water",
             name: "Water",
             field: "water",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "gas",
             name: "Gas",
             field: "gas",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "heat",
             name: "Heat",
             field: "heat",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
-          }, {
-            id: "sewage",
-            name: "Sewage",
-            field: "sewage",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "trash",
             name: "Trash",
             field: "trash",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "cable",
             name: "Cable",
             field: "cable",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "internet",
             name: "Internet",
             field: "internet",
-            editor: A2Cribs.Editors.Dropdown(["No", "Yes", "Flat Rate"]),
-            formatter: A2Cribs.Formatters.Dropdown(["No", "Yes", "Flat Rate"])
+            editor: A2Cribs.Editors.Dropdown(["Not Included", "Included"]),
+            formatter: A2Cribs.Formatters.Dropdown(["Not Included", "Included"])
           }, {
             id: "utility_total_flat_rate",
             name: "Total Flat Rate",
             field: "utility_total_flat_rate",
-            editor: A2Cribs.Editors.Integer,
-            formatter: A2Cribs.Formatters.Money
-          }, {
-            id: "utility_estimate_winter",
-            name: "Est. Winter Utility Cost",
-            field: "utility_estimate_winter",
-            editor: A2Cribs.Editors.Integer,
-            formatter: A2Cribs.Formatters.Money
-          }, {
-            id: "utility_estimate_summer",
-            name: "Est. Summer Utility Cost",
-            field: "utility_estimate_summer",
             editor: A2Cribs.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }
@@ -908,7 +899,7 @@
             name: "Highlights",
             field: "highlights",
             editor: Slick.Editors.LongText,
-            formatter: A2Cribs.Formatters.RequiredText
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "description",
             name: "Description",
@@ -956,7 +947,7 @@
             name: "Waitlist Open Date",
             field: "waitlist_open_date",
             editor: Slick.Editors.Date,
-            formatter: A2Cribs.Formatters.Text
+            formatter: A2Cribs.Formatters.Date()
           }, {
             id: "lease_office_address",
             name: "Leasing Office Address",
@@ -967,13 +958,13 @@
             id: "contact_email",
             name: "Contact Email",
             field: "contact_email",
-            editor: Slick.Editors.Text,
-            formatter: A2Cribs.Formatters.RequiredText
+            editor: A2Cribs.Editors.Email,
+            formatter: A2Cribs.Formatters.Text
           }, {
             id: "contact_phone",
             name: "Contact Phone",
             field: "contact_phone",
-            editor: Slick.Editors.Text,
+            editor: A2Cribs.Editors.Phone,
             formatter: A2Cribs.Formatters.RequiredText
           }, {
             id: "website",

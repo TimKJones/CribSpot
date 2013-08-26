@@ -56,12 +56,11 @@ class A2Cribs.Map
 		zoom = 15
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
-		style = []
 		@MapOptions =
   			zoom: zoom
   			center: A2Cribs.Map.MapCenter
   			mapTypeId: google.maps.MapTypeId.ROADMAP
-  			styles: style
+  			styles: @style
   			panControl: false
   			streetViewControl: false
   			mapTypeControl: false
@@ -100,7 +99,7 @@ class A2Cribs.Map
 	@LoadBasicData: ->
 		deferred = new $.Deferred
 		$.ajax 
-			url: myBaseUrl + "Map/GetBasicData/" + 0
+			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
 			type: "POST"
 			success: (responses) ->
 				deferred.resolve(responses)
@@ -109,7 +108,7 @@ class A2Cribs.Map
 
 		return deferred.promise()
 
-	@LoadBasicDataCallback: (response) ->
+	@LoadBasicDataCallback: (response) =>
 		if response == null || response == undefined
 			return
 		listings = JSON.parse response
@@ -117,6 +116,12 @@ class A2Cribs.Map
 		for listing in listings
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
+
+		# Initialize all markers and add tehm to the map
+		all_markers = A2Cribs.UserCache.Get "marker"
+		for marker in all_markers
+			marker.Init()
+			@GMarkerClusterer.addMarker marker.GMarker		
 
 		# Set all listings to visible
 		all_listings = A2Cribs.UserCache.Get "listings"
@@ -143,7 +148,253 @@ class A2Cribs.Map
 	Use JQuery Deferred object to load all data asynchronously
 	###
 	@LoadAllMapData: () ->
-		markersPromise = @LoadMarkers()
 		basicData = @LoadBasicData()
-		$.when(markersPromise).then(@InitializeMarkers)
 		$.when(basicData).then(@LoadBasicDataCallback)
+
+	@style = [
+		{
+			"featureType": "road.highway"
+			"elementType": "geometry.fill"
+			"stylers": [
+				{ "visibility": "on" }
+				{ "color": "#ffffff" }
+			]
+		}
+		{
+			"featureType": "road.arterial"
+			"elementType": "geometry.fill"
+			"stylers": [
+				{ "color": "#ffffff" }
+			]
+		}
+		{
+			"elementType": "labels.text.fill"
+			"stylers": [
+				{ "color": "#3b393a" }
+			]
+		}
+		{
+			"featureType": "poi.sports_complex"
+			"elementType": "geometry"
+			"stylers": [
+				{ "color": "#e9ddbc" }
+			]
+		}
+		{
+			"featureType": "road"
+			"elementType": "labels.text.stroke"
+			"stylers": [
+				{ "color": "#ffffff" }
+			]
+		}
+		{
+			"featureType": "road.highway"
+			"elementType": "geometry.stroke"
+			"stylers": [
+				{ "color": "#868080" }
+				{ "lightness": 55 }
+			]
+		}
+		{
+			"featureType": "road.local"
+			"elementType": "geometry.stroke"
+			"stylers": [
+				{ "color": "#808080" }
+				{ "lightness": 53 }
+			]
+		}
+		{
+			"featureType": "poi.place_of_worship"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.attraction"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "road.highway"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "road"
+		}
+		{
+			"featureType": "transit.station.airport"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.government"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.business"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.government"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.medical"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.park"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.park"
+			"elementType": "labels.text.fill"
+			"stylers": [
+				{ "lightness": 23 }
+				{ "color": "#83b243" }
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.park"
+			"elementType": "labels.text.stroke"
+			"stylers": [
+				{ "color": "#f4f6f1" }
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.school"
+			"elementType": "labels.text"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "water"
+			"elementType": "labels"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "road.highway"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "poi.medical"
+			"stylers": [
+				{ "color": "#ce979e" }
+				{ "lightness": 26 }
+			]
+		}
+		{
+			"featureType": "road.arterial"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "transit.station.rail"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "lightness": 39 }
+			]
+		}
+		{
+			"featureType": "poi.park"
+			"elementType": "geometry.fill"
+			"stylers": [
+				{ "color": "#d6e0c6" }
+			]
+		}
+		{
+			"featureType": "water"
+			"stylers": [
+				{ "color": "#c2d6ec" }
+			]
+		}
+		{
+			"featureType": "landscape.man_made"
+			"stylers": [
+				{ "color": "#efece2" }
+			]
+		}
+		{
+			"featureType": "poi.medical"
+			"stylers": [
+				{ "color": "#edcece" }
+			]
+		}
+		{
+			"featureType": "road.arterial"
+			"elementType": "labels.icon"
+			"stylers": [
+				{ "visibility": "off" }
+			]
+		}
+		{
+			"featureType": "road.local"
+			"elementType": "labels.text.fill"
+			"stylers": [
+				{ "lightness": 16 }
+			]
+		}
+		{
+			"featureType": "road.arterial"
+			"stylers": [
+				{ "lightness": 15 }
+			]
+		}
+		{
+			"featureType": "landscape.man_made"
+			"elementType": "geometry.stroke"
+			"stylers": [
+				{ "visibility": "on" }
+				{ "lightness": 78 }
+				{ "color": "#b8b7b8" }
+			]
+		}
+		{
+			"featureType": "poi.business"
+			"elementType": "geometry.fill"
+			"stylers": [
+				{ "visibility": "on" }
+				{ "lightness": 25 }
+				{ "saturation": -17 }
+			]
+		}
+	]

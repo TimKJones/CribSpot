@@ -3,8 +3,8 @@
 	echo $this->Html->script('src/Rental');
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', 'Cribspot Sublet');
-	echo $this->element('header', array('show_filter' => false, 'show_user' => true));
+	$this->set('title_for_layout', 'Cribspot Off-Campus Housing');
+	echo $this->element('header', array('show_filter' => false, 'show_user' => true, 'show_personal' => true));
 	echo $this->element('map');
 	//echo $this->element('login');
 	//echo $this->element('register');

@@ -4,93 +4,73 @@ Call functions using FavoritesManager.FunctionName()
 ###
 
 class A2Cribs.FavoritesManager
-	@FavoritesCache = {
-		size : 0
-	}; #list of Listing IDs the current user has favorited
+	@FavoritesListingIds = []
+	@FavoritesVisible = false
 
 	###
 	Add a favorite
 	###
-	@AddFavorite: (sublet_id, button) ->
-		A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
-		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
-		A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
+	@AddFavorite: (listing_id, button) ->
 		$.ajax
-			url: myBaseUrl + "Favorites/AddFavorite/" + sublet_id
+			url: myBaseUrl + "Favorites/AddFavorite/" + listing_id
 			type:"POST"
 			context: this
 			success: (response) ->
-				#@_insertFavoriteCache sublet_id
-				#@_insertIntoFavoriteDiv sublet_id
-				A2Cribs.FavoritesManager.AddFavoriteCallback(response, sublet_id, button)
+				A2Cribs.FavoritesManager.AddFavoriteCallback(response, listing_id, button)
 
-	@AddFavoriteCallback: (response, sublet_id, button) ->
+	@AddFavoriteCallback: (response, listing_id, button) ->
 		response = JSON.parse response
-		if response.SUCCESS == undefined
-			message = "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
-			if response.ERROR == "USER_NOT_LOGGED_IN"
-				message = "You must log in to add favorites."
-			A2Cribs.UIManager.Alert message
-			sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf sublet_id
-			marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
-			markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
-			A2Cribs.Cache.FavoritesSubletIdsList.splice sublet_index, 1
-			A2Cribs.Cache.FavoritesMarkerIdsList.splice markerid_index, 1
+		if response.success == undefined
+			if response.error.message != undefined
+				A2Cribs.UIManager.Alert response.error.message
+			else
+				A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
 		else
+			@FavoritesListingIds.push listing_id
 			if button?
-				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + sublet_id + ', this);'
+				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Delete from Favorites'
 				$(button).addClass 'active'
+				@_setFavoriteCount()
 
 	###
 	Delete a favorite
 	###
-	@DeleteFavorite: (sublet_id, button) ->
-		sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf sublet_id
-		marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
-		markerid_index = A2Cribs.Cache.FavoritesMarkerIdsList.indexOf marker_id
-		A2Cribs.Cache.FavoritesSubletIdsList.splice sublet_index, 1
-		A2Cribs.Cache.FavoritesMarkerIdsList.splice markerid_index, 1
+	@DeleteFavorite: (listing_id, button) ->
 		$.ajax
-			url: myBaseUrl + "Favorites/DeleteFavorite/" + sublet_id
+			url: myBaseUrl + "Favorites/DeleteFavorite/" + listing_id
 			type:"POST"
 			context: this
 			success: (response) ->
-				#@_removeFavoriteCache sublet_id
-				#@_removeFromFavoriteDiv sublet_id
-				A2Cribs.FavoritesManager.DeleteFavoriteCallback(response, sublet_id, button)
+				A2Cribs.FavoritesManager.DeleteFavoriteCallback(response, listing_id, button)
 
-	@DeleteFavoriteCallback: (response, sublet_id, button) ->
+	@DeleteFavoriteCallback: (response, listing_id, button) ->
 		response = JSON.parse response
-		if response.SUCCESS == undefined
-			A2Cribs.UIManager.Alert "There was an error deleting your favorite. Contact help@cribspot.com if the error persists."
-			A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
-			A2Cribs.Cache.FavoritesSubletIdsList.push sublet_id
-			marker_id = A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId
-			A2Cribs.Cache.FavoritesMarkerIdsList.push marker_id
+		if response.error != undefined
+			A2Cribs.UIManager.Alert response.error.message
 		else
+			# remove listing_id from list of favorites
+			index = A2Cribs.FavoritesManager.FavoritesListingIds.indexOf listing_id
+			if index != -1
+				A2Cribs.FavoritesManager.FavoritesListingIds.splice index
 			if button?
-				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + sublet_id + ', this);'
+				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Add to Favorites'
 				$(button).removeClass 'active'
+				@_setFavoriteCount()
 
+	###
+	response contains a list of listing_ids that have been favorited by the logged-in user
+	###
 	@InitializeFavorites: (response) ->
-		response = JSON.parse response
-		if response == null or response == undefined or response[0] == undefined or response[1] == undefined
+		if response == null or response == undefined
 			return
 
-		sublet_ids = response[0]
-		marker_ids = response[1]
-		#A2Cribs.Map.CacheSublets favorites 
-		for sublet_id in sublet_ids
-			A2Cribs.Cache.FavoritesSubletIdsList.push parseInt sublet_id.Favorite.sublet_id
+		listing_ids = JSON.parse response
+		for listing_id in listing_ids
+			A2Cribs.FavoritesManager.FavoritesListingIds.push parseInt(listing_id)
 
-		for marker_id in marker_ids
-			A2Cribs.Cache.FavoritesMarkerIdsList.push parseInt marker_id.Sublet.marker_id
-			#@_insertFavoriteCache favorite.Listing.listing_id
-			#@_insertIntoFavoriteDiv favorite.Listing.listing_id
-		
-
+		@_setFavoriteCount()
 
 	###
 	Loads all favorites for current user.
@@ -100,27 +80,49 @@ class A2Cribs.FavoritesManager
 			url: myBaseUrl + "Favorites/LoadFavorites"
 			type:"GET"	
 			context: this
-			success: @.InitializeFavorites
+			success: A2Cribs.FavoritesManager.InitializeFavorites
 
+	###
+	Called when user clicks the heart icon in the header.
+	Toggles visibility of markers where user has favorited a listing.
+	###
 	@ToggleFavoritesVisibility: (button) ->
 		$(button).toggleClass 'active'
-		A2Cribs.Map.ClickBubble.Close()
-		if !A2Cribs.FavoritesManager.FavoritesVisibilityIsOn()
+		A2Cribs.HoverBubble?.Close()
+		A2Cribs.ClickBubble?.Close()
+
+		all_markers = A2Cribs.UserCache.Get 'marker'
+		all_listings = A2Cribs.UserCache.Get 'listing'
+
+		if !A2Cribs.FavoritesManager.FavoritesVisible
+			# make only markers that are in user's favorites visible
 			$("#FavoritesHeaderIcon").addClass("pressed")
-			for marker, markerid in A2Cribs.Cache.IdToMarkerMap
-				if markerid in A2Cribs.Cache.FavoritesMarkerIdsList
-					if (marker)
-						marker.GMarker.setVisible true
-				else
-					if (marker)
-						marker.GMarker.setVisible false
+
+			# Set visibility of ALL markers to false
+			for marker in all_markers
+				marker.GMarker?.setVisible false
+
+			for listing in all_listings
+				listing.visible = false
+
+			# Set visibility of all markers with listings in user's favorites to true
+			for listing_id in A2Cribs.FavoritesManager.FavoritesListingIds
+				listing = A2Cribs.UserCache.Get 'listing', listing_id
+				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
+				marker.GMarker?.setVisible true
+				listing.visible = true
 		else
-			for marker, marker_id in A2Cribs.Cache.IdToMarkerMap
-				if (marker)
-						marker.GMarker.setVisible true
+			# make all markers visible
+			for marker in all_markers
+				marker?.GMarker?.setVisible true
+
+			for listing in all_listings
+				listing.visible = true
+
 			$("#FavoritesHeaderIcon").removeClass("pressed")
 
 		A2Cribs.Map.GMarkerClusterer.repaint()
+		A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible
 
 	@FavoritesVisibilityIsOn: () ->
 		return $("#FavoritesHeaderIcon").hasClass("pressed")
@@ -128,17 +130,17 @@ class A2Cribs.FavoritesManager
 	###
 	Inserts the recent favorite into the favorites tab
 	###
-	@_insertIntoFavoriteDiv: (sublet_id) ->
+	@_insertIntoFavoriteDiv: (listing_id) ->
 		if @FavoritesCache.size is 1
 			$('#noFavorites').hide()
 
-		sublet = A2Cribs.Map.IdToSubletMap[sublet_id]
+		sublet = A2Cribs.Map.IdToSubletMap[listing_id]
 		marker = A2Cribs.Map.IdToMarkerMap[sublet.MarkerId]
 		title = if marker.Title then marker.Title else marker.Address
 		template = $ '#favoriteTemplate'
-		template.find('.favoriteDiv').attr id: "favoriteDiv" + sublet_id
+		template.find('.favoriteDiv').attr id: "favoriteDiv" + listing_id
 		template.find('.favoritesAddress').html title
-		template.find('.removeButton').attr onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + sublet_id + ")"
+		template.find('.removeButton').attr onclick: "A2Cribs.FavoritesManager.DeleteFavorite(" + listing_id + ")"
 		template.find('a').attr href: listing.Url
 		template.find('#price').html if listing.Rent then '$' + listing.Rent else "???"
 		template.find('#beds').html listing.Beds + if listing.Beds > 1 then " Beds" else " Bed"
@@ -155,6 +157,12 @@ class A2Cribs.FavoritesManager
 		content = $('#favoriteTemplate').html()
 		$('#personalFavoritesList').append content
 
+
+	@_setFavoriteCount: () ->
+		if @FavoritesListingIds.length is 0
+			$(".favorite_count").hide()
+		else
+			$(".favorite_count").show().text @FavoritesListingIds.length
 
 	###
 	Removes the recent favorite into the favorites tab

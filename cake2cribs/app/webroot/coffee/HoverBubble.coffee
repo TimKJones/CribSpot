@@ -31,6 +31,8 @@ class A2Cribs.HoverBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (marker) ->
+		@Close()
+		A2Cribs.ClickBubble?.Close()
 		if marker
 			@SetContent marker
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
@@ -52,27 +54,54 @@ f	Closes the tooltip, no animation
 	###
 	@SetContent: (marker) ->
 		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
-		@template.find(".building_type").text A2Cribs.Marker.BuildingType[+marker.building_type_id]
+		@template.find(".building_type").text marker.GetBuildingType()
 		@template.find(".unit_div").empty()
-		for listing in listings
-			if listing.visible
+		sortedListings = listings.sort (a, b) ->
+			listing_a = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, a.GetId()
+			listing_b = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, b.GetId()
+			if not listing_a.rent? and not listing_b.rent?
+				return 0
+			else if listing_a.rent? and not listing_b.rent?
+				return 1
+			else if not listing_a.rent? and listing_b.rent?
+				return -1
+			return parseInt(listing_a.rent, 10) - parseInt(listing_b.rent, 10);
+
+		for listing in sortedListings
+			if not listing.visible? or listing.visible
 				listing_info = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId()
-				unit_template = @template.find('.templates:first').children().clone()
+
+				codes = (k for k of listings)
+				sortedCodes = codes.sort (a, b) -> listings[b] - listings[a]
+
+				if not listing_info["beds"]?
+					listing_info["beds"] = "??"
+					listing_info["bed_desc"] = "Beds"
+				else if parseInt(listing_info["beds"], 10) is 0
+					listing_info["beds"] = "Studio"
+					listing_info["bed_desc"] = ""
+				else if parseInt(listing_info["beds"], 10) is 1
+					listing_info["bed_desc"] = "Bed"
+				else
+					listing_info["bed_desc"] = "Beds"
+
+				unit_template = $ "<div />",
+					class: "unit"
 				unit_template.attr "onclick", "A2Cribs.ClickBubble.Open(#{listing.GetId()})"
-				for key,value of listing_info
-					if key is "rent"
-						unit_template.find(".#{key}").text "$#{value}"
-					else if key is "beds"
-						num_beds = parseInt value, 10
-						if num_beds is 0
-							unit_template.find(".#{key}").text "Studio"
-							unit_template.find(".bed_desc").text ""
-						else
-							unit_template.find(".#{key}").text num_beds
-							unit_template.find(".bed_desc").text if num_beds is 1 then "Bed" else "Beds"
+				$ "<div />",
+					class: "beds"
+					text: listing_info["beds"]
+				.appendTo unit_template
+				$ "<div />",
+					class: "bed_desc"
+					text: listing_info["bed_desc"]
+				.appendTo unit_template
+				$ "<div />",
+					class: "rent"
+					text: if listing_info["rent"]? then "$#{listing_info["rent"]}" else "??"
+				.appendTo unit_template
+
 				@template.find(".unit_div").append unit_template
-
-
 
 		@InfoBubble.setContent @template.html()
 

@@ -22,7 +22,8 @@
         "RequiredText" : RequiredTextFormatter,
         "RequiredMoney" : RequiredMoneyFormatter,
         "Check" : CheckmarkFormatter,
-        "Dropdown" : makeDropdown
+        "Dropdown" : makeDropdown,
+        "Date" : DateFormatter
       }
     }
   });
@@ -66,7 +67,7 @@
     value = (typeof(value) != "undefined") ? value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value=$" + value + " type='text' />";
-    return value;
+    return "$" + value;
   }
   function RequiredMoneyFormatter (row, cell, value, columnDef, dataContext) {
     var text_class;
@@ -117,6 +118,27 @@
     return value;
   }
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
-    return value ? '<img src="/img/dashboard/yes.png" alt="Yes">' : '<img src="/img/dashboard/no.png" alt="No">' ;
+    return value ? '<img src="/img/full_page/amenities_check.png" alt="Yes">' : '<img src="/img/full_page/amenities_no_check.png" alt="No">' ;
+  }
+  function DateFormatter (isRequired)
+  {
+    if (isRequired == null)
+      isRequired = false;
+
+    return function (row, cell, value, columnDef, dataContext) {
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var text = "", text_class = "";
+      if (value != null)
+      {
+        var date = value.split("-");
+        var text = months[parseInt(date[1], 10) - 1] + " " + parseInt(date[2], 10) + ", " + date[0];
+      }
+
+      if (isRequired && text.length === 0)
+        text_class = "required";
+      if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
+        return "<input value='" + text + "' type='text' class='" + text_class + "' >";
+      return "<strong>" + text + "</strong>";
+    }
   }
 })(jQuery);

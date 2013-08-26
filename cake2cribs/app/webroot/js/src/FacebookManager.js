@@ -11,6 +11,15 @@ Manager class for all social networking functionality
 
     function FacebookManager() {}
 
+    FacebookManager.FacebookLogin = function() {
+      var url;
+      url = 'https://www.facebook.com/dialog/oauth?';
+      url += 'client_id=488039367944782';
+      url += '&redirect_uri=http://' + window.location.hostname + '/login';
+      url += '&scope=email';
+      return window.location.href = url;
+    };
+
     FacebookManager.Logout = function() {
       alert('logging out');
       return $.ajax({
