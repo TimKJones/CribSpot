@@ -35,11 +35,11 @@
 
 @font-face {
     font-family: 'ReklameScriptMedium';
-    src: url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.eot');
-    src: url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.woff') format('woff'),
-         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.ttf') format('truetype'),
-         url('/font/reklamescript_medium_macromanReklameScript-Medium-webfont.svg#ReklameScriptMediumRegular') format('svg');
+    src: url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.eot');
+    src: url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.woff') format('woff'),
+         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.ttf') format('truetype'),
+         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.svg#ReklameScriptMediumRegular') format('svg');
     font-weight: normal;
     font-style: normal;
 
