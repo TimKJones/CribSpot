@@ -392,6 +392,54 @@ class Listing extends AppModel {
 	}
 
 	/*
+		returns an array of Listings, you can provide an optional options
+		parameter if you want to further refine the search.
+	*/
+	public function GetListingsNear($latitude, $longitude, $radius, $options=null){
+		
+		if($options==null){
+			$options = array();
+		}
+
+		// Fetch all the nearby markers, they are the source of finding
+		// listings nearby
+		$Marker = ClassRegistry::init('Marker');
+		$options2['fields'] = array("Marker.marker_id");
+		$markers = $Marker->getNear($latitude, $longitude, $radius, $options2);
+
+		//Create a list of marker_ids to then find which listings link to them
+		$markerIds = array();
+		foreach ($markers as $marker) {
+			array_push($markerIds, $marker['Marker']['marker_id']);
+		}
+
+		return $this->GetListingsFromMarkerIds($markerIds, $options);
+	}
+
+	
+	/*
+	Return
+
+	*/
+	public function GetListingsFromMarkerIds($markers, $options){
+		if($options==null){
+			$options = array();
+		}
+
+		// $this->contain();
+
+		if(array_key_exists("conditions", $options)){
+			array_push($options['conditions'], array('Listing.marker_id =' => $markers));
+		}else{
+			$options['conditions'] = array('Listing.marker_id =' => $markers);
+		}
+
+		return $this->find('all', $options);
+
+
+	}
+
+	/*
 	Pulls marker_ids for listings in the logged-in users favorites
 	*/
 	public function GetFavoritesMarkerIds($listingIds)

@@ -181,150 +181,270 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
 /* Featured Listing Map CSS */
 
-.featured-listing-map-sidebar{
-    @SidebarWidth: 350px;
-    width: @SidebarWidth;
+.featured-listings-wrapper{
+    position: absolute;
+    top: 55px;
+    width: 340px;
+    right: 0px;
+    bottom: 10px;
 
-    .map-listing-item{
+    border-left: 2px solid #c2c2c2;
+    // box-shadow: -1px 0 0 2px rgba(0,0,0,0.2);
+
+    #fl-side-bar{
+        top: 0;
+        bottom: 0;
+        width: 340px
         position: relative;
-        border-top: 1px solid #c1c1c1;
-        height: 70px;
+    }
+
+    #uni-banner{
+        height: 80px;
+        width: 100%;
+        background: #a2bfe3;
+    }
+
+    #uni-name{
+        height: 32px;
+        width: 100%;
+        line-height: 32px;
+        background: #FFF;
+        border-bottom: 1px solid rgb(206, 206, 206);
+        #name{
+            font-size: 18px;
+            padding-left: 10px;
+            color: #3f3f3f;
+            font-family: ReklameScriptRegular, ReklameScriptMedium,Serif;
+
+        }
         
-        background: #f5f5f5;
+        #like-us{
 
-        .property-picture{
-            position:absolute;
-            left: 10px;
-            top: 7px;
+            a{
+                color:#4683e4;
+                font-weight: bold;
+                font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+                // font-weight: 300;
+                &:hover{
+                    text-decoration: none;
+                }
 
-            height: 55px;
-            width: 60px;
-
-            img{
-                border-radius: 2px;
             }
-        }
-
-        .listing-info{
-            @BorderColor: #d5d5d5;
-
-            position: absolute;
-            height: 100%;
-            left: 85px;
-            right: 0;
-
-            .top-section{
-                position:relative;
-                height: 30px;
-                margin-top: 5px;
-                line-height: 35px;
-                
-                .left{
-                    position: absolute;
-                    left:0;
-                    right: 75px;
-
-                    border-right: 2px solid @BorderColor;
-                    border-bottom: 2px solid @BorderColor;
-
-                    .favorite-listing{
-                        
-                        float: right;
-                        padding-top: 4px;
-                        padding-right: 10px;
-                        // font-size: 13px;
-                        color: #bbbbbb;
-                     
-                        i.icon-heart{ //little fix to center the heart within the circle
-                            padding-top: 1px;
-                            // padding-left: 1px;
-                        }                         
-                        &:hover{
-                            cursor: pointer;
-                            color: #d89090;
-                        }
-                    }
-                        
-                }
-
-                .right{
-                    
-                    position: absolute;
-                    right: 0;
-                    width: 75px;
-                    text-align: center;
-                    .price{
-                        font-size: 16px;
-                        color: #6bac74;
-                    }
-
-                    .bottom-border{
-                        position:absolute;
-                        bottom: -2px; // hacky to get the two borders to line up
-                        right:30px;
-                        width:45px;
-                        border-bottom: 2px solid @BorderColor;
-                    }
-
-                }
-                
-            }
-
-
-            .bottom-section{
-                position:relative;
-                color: #80838a;
-                padding-top: 10px;
-                font-size: 12px;
-                // overflow: auto;
-                span.listing-type{
-                    width:30%;
-                }
-                span.num-occupants{
-                    width:18%;
-                }
-                span.lease-type{
-                    width: 25%;
-                }
-                span.lease-duration{
-                    width: 20%;
-                }
-
-                span{
-                //     // padding-left: 4px;
-                //     // padding-right: 4px;
-                //     width: 23%; 
-                    display:inline-block;
-                //     // margin: auto;
-                }
-            }
-
+            font-size: 12px;
+            color: #797979;
+            padding-right: 10px; 
         }
 
 
     }
 
+    #list-info{
 
-}
+        height: 24px;
+        width: 100%;
+        background: #f9f4de;
+        border-bottom: 3px solid rgb(206, 206, 206);
+        line-height: 24px;
+        font-size: 12px;
+        color: #797979;
+        span{
+            padding-left: 10px;
+        }
+    }
 
 
 
+    #listings-list{
+        position: absolute;
+        top: 139px;
+        left: 0px;
+        right: 0px;
+        // width: 100%;
+        bottom: 107px;
+        overflow: scroll;
+        // /bottom: 0;
+        // width: 100%;
+        background: #ecedee;
+        #featured-listings{
+            padding-bottom: 5px;
+            border-bottom: 2px solid #d7d7d7;
+        }
+    }
+
+    .spacer{
+        width: 320px;
+        height: 2px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background: black;
+    }
 
 
+    
+    .cycle-listings-bar{
+        position: absolute;
+        bottom: 82px;
+        height: 25px;
+        width: 100%;
+        background: #fafafa;
+        border-top: 2px solid #c6c6c7;
+        border-bottom: 2px solid #c6c6c7;
+        line-height: 25px;
+        font-size: 12px;
+        color: #797979;
+        div{
+            text-align: center;
+            span{
+                padding-left: 3px;
+                padding-right: 3px;
+            }
+            .dir{
+                
+                padding-left: 2px;
+                padding-right: 2px;
+                font-size: 20px;
+                &:hover{
+                    padding-left: 2px;
+                    padding-right: 2px;
+                    cursor: pointer;
+                    color: #4b4b4b;
+                }
+            }
+        }
 
 
+    }
 
+    .marketplace-bar{
+        position: absolute;
+        bottom: 25px;
+        height: 55px;
+        width: 100%;
+        background: #fafafa;
+        
+        
+        a.blue-button{
+            background-color: #3a5179;    
+            color: white;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 7px;
+            padding-right: 7px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border-radius: 2px;
 
+            &:hover{
+                background-color: #4e6fa5;
+                text-decoration: none;
+            }
+        }
 
-@widget_width: 350px;
-.fl_sidebar{    
-    width: @widget_width;
-    #listings_list{
-        overflow: auto;
+        > a{
+            margin-left: 10px;
+            line-height: 55px;
+        }
+    }
+
+    .legal-bar{
+        position: absolute;
+        bottom: 0;
+        height: 25px;
+        left:0;
+        right:0;
+        background: #272727;
+        color: #797979;
+        font-size: 10px;
+        line-height: 25px;
+        span{
+            padding-left: 10px;
+            a{  
+                color: #797979;
+                &:hover{
+                    text-decoration: none;
+                    color: #a4a4a4;
+                }
+            }
+        }
     }
 }
-.test-controls{
-    padding-top: 20px;
+
+.fl-sb-item{
+
+    width: 327px;
+    height: 77px;
+
+    color: #797979;
+    font-size: 13px; 
+    
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    background: #FFFFFF;       
+
+    border: 2px solid #cacaca;
+    border-radius: 3px;
+
+    position: relative;
+    .img-wrapper{
+        position: absolute;
+        left: 5px;
+        top:6px;
+        width: 96px;
+        height: 64px;
+    }
+    .vert-line{
+        position: absolute;
+        left: 106px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #d5d5d5
+    }
+
+    .row-div{
+        width: 100%;
+        height: 1px;
+        background: #d7d7d7;
+    }
+
+    .price-text{
+        color: #5f5f5f;
+        font-weight: bold;
+
+    }
+    .info-wrapper{
+        position: absolute;
+        left: 106px;
+        top: 8px;
+        bottom: 5px;
+        right: 0px;
+
+    }
+
+    .info-row{
+        padding-left: 10px;
+    }
+
+    .divider{
+        color: #d3d3d3;
+    }
+    span.name{
+        padding-left: 5px;
+    }
+    .fav-icon{
+        padding-right: 5px;
+        font-size: 14px;
+        color: #bfbfbf;
+        &:hover{
+            cursor: pointer;
+            color: #dc4444;
+        }
+    }
+    
 }
-
-

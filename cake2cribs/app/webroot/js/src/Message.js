@@ -129,6 +129,7 @@
       			.addClass('selected_conversation')
       			.removeClass('unread_conversation')
       */
+
       var sublet_url, title;
       this.CurrentConversation = parseInt($(event.delegateTarget).attr('id'));
       this.CurrentParticipantID = $(event.delegateTarget).attr('data-participant');

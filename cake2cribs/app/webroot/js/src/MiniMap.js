@@ -37,11 +37,14 @@
         visible: marker_visible
       });
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (!enabled) {
         this.Disable();
       }
 =======
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       this.Resize();
     }
 

@@ -38,6 +38,7 @@ class A2Cribs.HoverBubble
 			@SetContent marker
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
 
+
 	###
 	Refreshes the tooltip with the new content, no animation
 	###
@@ -45,7 +46,7 @@ class A2Cribs.HoverBubble
 		@InfoBubble.open()
 
 	###
-f	Closes the tooltip, no animation
+	Closes the tooltip, no animation
 	###
 	@Close: ->
 		@InfoBubble.close()

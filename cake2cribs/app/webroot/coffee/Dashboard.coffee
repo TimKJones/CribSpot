@@ -81,8 +81,6 @@ class A2Cribs.Dashboard
 			# Waiting on the data to be loaded now knows the listings 
 			# are in the cache.
 
-			#Get count of sublets/parking/rentals (TODO)
-
 			#Create lists for everything
 			listings = A2Cribs.UserCache.Get "listing"
 			marker_set = {}
@@ -90,6 +88,7 @@ class A2Cribs.Dashboard
 				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
 				marker_set[listing.listing_type][listing.marker_id] = true
 
+			@DeferedListings.resolve()
 
 			# Counts listings and adds them to the dropdown list
 			listings_count = [0, 0, 0]
@@ -112,7 +111,6 @@ class A2Cribs.Dashboard
 				$("##{type}_count").text listings_count[i]			
 
 		return @DeferedListings.promise()
-
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window

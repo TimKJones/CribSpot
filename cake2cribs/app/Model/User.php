@@ -140,7 +140,6 @@ class User extends AppModel {
 	const USER_TYPE_SUBLETTER = 0;
 	const USER_TYPE_PROPERTY_MANAGER = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
 	const USER_TYPE_NEWSPAPER_ADMIN = 2;
-
 	public static function user_type($value = null) {
 		$options = array(
 		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
@@ -442,23 +441,22 @@ class User extends AppModel {
 		if (!$this->_validateUserRegister($user)){
 			$error = null;
 			$error['user'] = $user;
-			$this->LogError(null, 57, $error);
+			$this->LogError(null, 36, $error);
 			return array('error' => 
 					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 57.');
+					'at help@cribspot.com. Reference error code 36.');
 		}
 
 		if (!$this->save(array('User'=>$user))) {
 			$error = null;
 			$error['user'] = $user;
 			$error['validationErrors'] = $this->validationErrors;
-			CakeLog::write('validation', print_r($this->validationErrors, true));
-			$this->LogError(null, 58, $error);
+			$this->LogError(null, 37, $error);
 			return array('error' => 	
 					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 57.');
+					'at help@cribspot.com. Reference error code 37.');
 		}
 
 		return array('success'=>'');

@@ -35,7 +35,6 @@
 	<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
 		<li class="nav-header">MESSAGES</li>
 	</ul>
-	<?php
 	if (intval($AuthUser['user_type']) == 1)
 	{
 	?>
@@ -50,46 +49,19 @@
 	<ul class="nav nav-list hide list-dropdown" id = "rentals_list">
 		<li class="nav-header">RENTALS</li>
 	</ul>
-
+	<?php }
+	$user_type = intval($AuthUser['user_type']);
+	if ($user_type == 1 || $user_type == 3)
+	{
+	?>
 	<li>
-		<a href="#" class = 'featured-listing-content-header content-header' classname = 'featuredlisting'>
-			<i class = "icon-star icon-large"></i>
-			Featured Listings
+		<a id='featured-listing-content-header' href="#" class = 'content-header list-header' classname = 'featuredlisting'>
+			<i class="icon-star icon-large"></i>
+			Feature Listing
 		</a>
 	</li>
-<!-- 	<ul class="nav nav-list hide list-dropdown" id = "featuredlisting_list">
-		<li class="">Buy Featured Listing</li>
-		<li class="">My Featured Listing</li>
-	</ul> -->
-
-
-=======
 	<?php } ?>
->>>>>>> development
-<!--	<li>
-		<a href="#">
-			<i></i>
-			Sublets
-		</a>
-	</li>
-	<li>
-		<a href="#">
-			<i></i>
-			Parking
-		</a>
-	</li> -->
-</ul>
-<<<<<<< HEAD
 
-
-
-<!--<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
-	<li class="nav-header">SUBLETS</li>
-</ul>
-<ul class="nav nav-list hide list-dropdown" id = "parking_list">
-	<li class="nav-header">PARKING</li>
-</ul>-->
-=======
 <div class="row-fluid dropdowns_container">
 	<ul class="nav nav-list hide list-dropdown span12" id = "messages_list">
 		<li class="row-fluid">
@@ -120,16 +92,3 @@
 		</ul>
 	</ul>
 </div>
-	<!--
-	<div class="row-fluid">
-	<ul class="nav nav-list hide list-dropdown" id = "sublet_list">
-		<li class="nav-header">SUBLETS</li>
-	</ul>
-	</div>
-	<div class="row-fluid">
-	<ul class="nav nav-list hide list-dropdown" id = "parking_list">
-		<li class="nav-header">PARKING</li>
-	</ul>
-	</div>
-	-->
->>>>>>> development

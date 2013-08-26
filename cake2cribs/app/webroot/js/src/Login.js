@@ -114,7 +114,10 @@
         A2Cribs.UIManager.Error("Please fill in all of the fields!");
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       if (user_type === 1) {
         phone_number = Login.div.find("#" + type_prefix + "phone").val().split("-").join("");
         if (phone_number.length !== 10 || isNaN(phone_number)) {
@@ -126,7 +129,10 @@
         isValid = false;
         A2Cribs.UIManager.Error("Please enter a password of 6 or more characters");
       }
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       return isValid;
     };
 

@@ -32,10 +32,11 @@
 
 
     Map.LoadMarkers = function() {
-      var deferred;
-      deferred = new $.Deferred;
+      if (!this.MarkerDeferred) {
+        this.MarkerDeferred = new $.Deferred();
+      }
       if (A2Cribs.Map.CurentSchoolId === void 0) {
-        deferred.resolve(null);
+        this.MarkerDeferred.resolve(null);
         return;
       }
       $.ajax({
@@ -43,13 +44,13 @@
         type: "GET",
         context: this,
         success: function(response) {
-          return deferred.resolve(response, this);
+          return this.MarkerDeferred.resolve(response, this);
         },
         error: function() {
-          return deferred.resolve(null);
+          return this.MarkerDeferred.resolve(null);
         }
       });
-      return deferred.promise();
+      return this.MarkerDeferred.promise();
     };
 
     /*
@@ -126,23 +127,26 @@
       this.LoadAllMapData();
       A2Cribs.MarkerTooltip.Init();
       A2Cribs.FavoritesManager.LoadFavorites();
-      return A2Cribs.FilterManager.InitAddressSearch();
+      A2Cribs.FilterManager.InitAddressSearch();
+      return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE);
     };
 
     Map.LoadBasicData = function() {
-      var deferred;
-      deferred = new $.Deferred;
+      var _this = this;
+      if (!(this.BasicDataDeferred != null)) {
+        this.BasicDataDeferred = new $.Deferred();
+      }
       $.ajax({
         url: myBaseUrl + ("Map/GetBasicData/" + this.ACTIVE_LISTING_TYPE + "/" + this.CurentSchoolId),
         type: "POST",
         success: function(responses) {
-          return deferred.resolve(responses);
+          return _this.BasicDataDeferred.resolve(responses);
         },
         error: function() {
-          return deferred.resolve(null);
+          return _this.BasicDataDeferred.resolve(null);
         }
       });
-      return deferred.promise();
+      return this.BasicDataDeferred.promise();
     };
 
     Map.LoadBasicDataCallback = function(response) {
@@ -201,6 +205,13 @@
       var basicData;
       basicData = this.LoadBasicData();
       return $.when(basicData).then(this.LoadBasicDataCallback);
+    };
+
+    Map.CenterMap = function(latitude, longitude) {
+      if (!(this.GMap != null)) {
+        return;
+      }
+      return this.GMap.setCenter(new google.maps.LatLng(latitude, longitude));
     };
 
     Map.style = [

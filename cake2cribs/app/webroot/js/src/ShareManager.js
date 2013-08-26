@@ -11,6 +11,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     ShareManager.GetShareUrl = function(university_encoded, address_encoded, sublet_id) {
       var url;
       if (university_encoded == null) {
@@ -25,11 +26,16 @@
       if (university_encoded === null || address_encoded === null || sublet_id === null) {
         return;
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
     ShareManager.GetShareUrl = function(listing_id, street_address, city, state, zip) {
       var url;
       if (listing_id === null || street_address === null || city === null || state === null || zip === null) {
         return null;
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       }
       street_address = street_address.split(' ').join('-');
       city = city.split(' ').join('-');
@@ -37,6 +43,7 @@
       return url;
     };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     ShareManager.ShareListingOnFacebook = function(university_encoded, address_encoded, sublet_id, description) {
       var address, fbObj, url;
@@ -65,6 +72,8 @@
         address = A2Cribs.Cache.IdToMarkerMap[A2Cribs.Cache.IdToSubletMap[sublet_id].MarkerId].Address;
         description = A2Cribs.Cache.IdToSubletMap[sublet_id].Description;
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
     /*
     	Brings up a dialog box for user to add a message and then post to their facebook timeline
     */
@@ -82,7 +91,10 @@
       caption = 'Check out this listing on Cribspot!';
       if (building_name === null) {
         building_name = street_address;
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       } else {
         caption = street_address;
       }
@@ -102,6 +114,7 @@
     ShareManager.CopyListingUrl = function(listing_id, street_address, city, state, zip) {
       var url;
 <<<<<<< HEAD
+<<<<<<< HEAD
       if (university_encoded == null) {
         university_encoded = null;
       }
@@ -114,6 +127,8 @@
       if (university_encoded === null || address_encoded === null || sublet_id === null) {
         return "";
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       url = this.GetShareUrl(listing_id, street_address, city, state, zip);
       return window.prompt("Copy to clipboard: Ctrl+C, Enter", url);
     };
@@ -130,7 +145,10 @@
       var url;
       if (listing_id === null || street_address === null || city === null || state === null || zip === null) {
         return null;
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       }
       url = this.GetShareUrl(listing_id, street_address, city, state, zip);
       return 'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot';
@@ -138,6 +156,7 @@
 
     ShareManager.InitTweetButton = function(listing_id, street_address, city, state, zip) {
       var tweetBtn, url;
+<<<<<<< HEAD
 <<<<<<< HEAD
       if (university_encoded == null) {
         university_encoded = null;
@@ -154,6 +173,10 @@
       if (listing_id === null || street_address === null || city === null || state === null || zip === null) {
         return null;
 >>>>>>> development
+=======
+      if (listing_id === null || street_address === null || city === null || state === null || zip === null) {
+        return null;
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       }
       url = this.GetShareUrl(listing_id, street_address, city, state, zip);
       $('#twitterDiv iframe').remove();

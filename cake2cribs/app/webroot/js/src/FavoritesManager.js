@@ -8,9 +8,12 @@ Call functions using FavoritesManager.FunctionName()
 
 (function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 =======
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
 
   A2Cribs.FavoritesManager = (function() {
 
@@ -26,6 +29,7 @@ Call functions using FavoritesManager.FunctionName()
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     FavoritesManager.AddFavorite = function(sublet_id, button) {
       var marker_id;
       A2Cribs.Cache.FavoritesSubletIdsList.push(sublet_id);
@@ -34,6 +38,9 @@ Call functions using FavoritesManager.FunctionName()
 =======
     FavoritesManager.AddFavorite = function(listing_id, button) {
 >>>>>>> development
+=======
+    FavoritesManager.AddFavorite = function(listing_id, button) {
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       return $.ajax({
         url: myBaseUrl + "Favorites/AddFavorite/" + listing_id,
         type: "POST",
@@ -69,6 +76,7 @@ Call functions using FavoritesManager.FunctionName()
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     FavoritesManager.DeleteFavorite = function(sublet_id, button) {
       var marker_id, markerid_index, sublet_index;
       sublet_index = A2Cribs.Cache.FavoritesSubletIdsList.indexOf(sublet_id);
@@ -79,6 +87,9 @@ Call functions using FavoritesManager.FunctionName()
 =======
     FavoritesManager.DeleteFavorite = function(listing_id, button) {
 >>>>>>> development
+=======
+    FavoritesManager.DeleteFavorite = function(listing_id, button) {
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       return $.ajax({
         url: myBaseUrl + "Favorites/DeleteFavorite/" + listing_id,
         type: "POST",
@@ -115,6 +126,7 @@ Call functions using FavoritesManager.FunctionName()
 
     FavoritesManager.InitializeFavorites = function(response) {
 <<<<<<< HEAD
+<<<<<<< HEAD
       var marker_id, marker_ids, sublet_id, sublet_ids, _i, _j, _len, _len1, _results;
       response = JSON.parse(response);
       if (response === null || response === void 0 || response[0] === void 0 || response[1] === void 0) {
@@ -131,6 +143,8 @@ Call functions using FavoritesManager.FunctionName()
         marker_id = marker_ids[_j];
         _results.push(A2Cribs.Cache.FavoritesMarkerIdsList.push(parseInt(marker_id.Sublet.marker_id)));
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       var listing_id, listing_ids, _i, _len;
       if (response === null || response === void 0) {
         return;
@@ -139,7 +153,10 @@ Call functions using FavoritesManager.FunctionName()
       for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
         listing_id = listing_ids[_i];
         A2Cribs.FavoritesManager.FavoritesListingIds.push(parseInt(listing_id));
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       }
       return this._setFavoriteCount();
     };
@@ -166,10 +183,14 @@ Call functions using FavoritesManager.FunctionName()
 
     FavoritesManager.ToggleFavoritesVisibility = function(button) {
 <<<<<<< HEAD
+<<<<<<< HEAD
       var marker, marker_id, markerid, _i, _j, _len, _len1, _ref, _ref1;
 =======
       var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
 >>>>>>> development
+=======
+      var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       $(button).toggleClass('active');
       if ((_ref = A2Cribs.HoverBubble) != null) {
         _ref.Close();
@@ -181,6 +202,7 @@ Call functions using FavoritesManager.FunctionName()
       all_listings = A2Cribs.UserCache.Get('listing');
       if (!A2Cribs.FavoritesManager.FavoritesVisible) {
         $("#FavoritesHeaderIcon").addClass("pressed");
+<<<<<<< HEAD
 <<<<<<< HEAD
         _ref = A2Cribs.Cache.IdToMarkerMap;
         for (markerid = _i = 0, _len = _ref.length; _i < _len; markerid = ++_i) {
@@ -194,6 +216,8 @@ Call functions using FavoritesManager.FunctionName()
               marker.GMarker.setVisible(false);
             }
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
         for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
           marker = all_markers[_i];
           if ((_ref2 = marker.GMarker) != null) {
@@ -211,11 +235,15 @@ Call functions using FavoritesManager.FunctionName()
           marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
           if ((_ref4 = marker.GMarker) != null) {
             _ref4.setVisible(true);
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
           }
           listing.visible = true;
         }
       } else {
+<<<<<<< HEAD
 <<<<<<< HEAD
         _ref1 = A2Cribs.Cache.IdToMarkerMap;
         for (marker_id = _j = 0, _len1 = _ref1.length; _j < _len1; marker_id = ++_j) {
@@ -224,6 +252,8 @@ Call functions using FavoritesManager.FunctionName()
             marker.GMarker.setVisible(true);
           }
 =======
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
         for (_l = 0, _len3 = all_markers.length; _l < _len3; _l++) {
           marker = all_markers[_l];
           if (marker != null) {
@@ -235,7 +265,10 @@ Call functions using FavoritesManager.FunctionName()
         for (_m = 0, _len4 = all_listings.length; _m < _len4; _m++) {
           listing = all_listings[_m];
           listing.visible = true;
+<<<<<<< HEAD
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
         }
         $("#FavoritesHeaderIcon").removeClass("pressed");
       }
@@ -253,19 +286,27 @@ Call functions using FavoritesManager.FunctionName()
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     FavoritesManager._insertIntoFavoriteDiv = function(sublet_id) {
 =======
     FavoritesManager._insertIntoFavoriteDiv = function(listing_id) {
 >>>>>>> development
+=======
+    FavoritesManager._insertIntoFavoriteDiv = function(listing_id) {
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       var content, marker, sublet, template, title;
       if (this.FavoritesCache.size === 1) {
         $('#noFavorites').hide();
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
       sublet = A2Cribs.Map.IdToSubletMap[sublet_id];
 =======
       sublet = A2Cribs.Map.IdToSubletMap[listing_id];
 >>>>>>> development
+=======
+      sublet = A2Cribs.Map.IdToSubletMap[listing_id];
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
       marker = A2Cribs.Map.IdToMarkerMap[sublet.MarkerId];
       title = marker.Title ? marker.Title : marker.Address;
       template = $('#favoriteTemplate');

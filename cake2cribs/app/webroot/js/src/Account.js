@@ -116,6 +116,7 @@
         if (response.error === void 0) {
           if (id === null && reset_token === null) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             alertify.success('Password Changed', 1500);
             if (redirect !== null) {
               window.location.href = redirect;
@@ -124,6 +125,12 @@
             alertify.success('Password Changed', 3000);
             if (redirect !== null) window.location.href = redirect;
 >>>>>>> development
+=======
+            alertify.success('Password Changed', 3000);
+            if (redirect !== null) {
+              window.location.href = redirect;
+            }
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
           } else {
             window.location.href = '/dashboard';
           }

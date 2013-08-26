@@ -16,6 +16,7 @@
 
     /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     		'Beds' : [2,5,10]
     		'Rent' : 
     			'min' : 100
@@ -37,6 +38,8 @@
     /*
 =======
 >>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
     	Private method for loading the contents of the filter preview into the header filter
     */
 

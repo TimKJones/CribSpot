@@ -69,7 +69,7 @@ class FeaturedListing extends AppModel {
 
     // A seed value is used along with the page size to pull out a select few
     // featured listings. 
-    public function getSideBarConditions($date, $region_id=null){
+    public function getSideBarConditions($date, $university_id){
 
         $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
 
@@ -77,6 +77,7 @@ class FeaturedListing extends AppModel {
             'and' => array(
                         array(
                             'FeaturedListing.date = ' => $date,
+                            'FeaturedListing.university_id = ' => $university_id
                             ),
                     )
             );
@@ -90,8 +91,8 @@ class FeaturedListing extends AppModel {
         return $this->find('count', array('conditions'=>array("FeaturedListing.date"=>$date)));
     }
     // Returns true or false based on whether the following listing is featured on the provided date
-    public function featuredOnDate($listing_id, $date){
-        $conditions = array('FeaturedListing.listing_id'=>$listing_id, "FeaturedListing.date"=>$date);
+    public function featuredOnDate($listing_id, $university_id, $date){
+        $conditions = array('FeaturedListing.listing_id'=>$listing_id, "FeaturedListing.university_id"=>$university_id, "FeaturedListing.date"=>$date);
         return $this->hasAny($conditions);
     }
 

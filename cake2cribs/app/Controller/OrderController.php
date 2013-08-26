@@ -2,7 +2,7 @@
 class OrderController extends AppController {
   public $helpers = array('Html');
   public $components = array('Auth');
-  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder', 'ShoppingCart');
+  public $uses = array('Listing', 'User', 'FeaturedListing', 'Order', 'PendingOrder', 'NewspaperAdmin');
   public $TAG = "OrdersController";
 
     
@@ -107,9 +107,11 @@ class OrderController extends AppController {
 
         $orderItems = json_decode($orderItems_json);
         $user_id =$this->_getUserId();
+        $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
+        $SU = $newspaper_admin != null;
         switch($order_type){
             case Order::ORDER_TYPE_FEATURED_LISTING:
-                $validationErrors = $this->Order->validateFLOrder($orderItems, $user_id);
+                $validationErrors = $this->Order->validateFLOrder($orderItems, $user_id, $SU);
                 break;
 
             // case Order::ORDER_TYPE_PARKING:
@@ -126,14 +128,28 @@ class OrderController extends AppController {
                 'errors'=>$validationErrors
                 );
         }else{
-            $jwt_clear = $this->Order->generateJWT($orderItems, $user_id, $order_type);
-            App::uses('JWT', 'JWT');
-            $response = array(
-            'success'=>true,
-            'jwt_clear'=>$jwt_clear,
-            'jwt'=>JWT::encode($jwt_clear, Order::WalletSecretKey)
-            );
-    
+            //Auto fulfill order for SU's
+            if($SU){
+                $university_id = $newspaper_admin['NewspaperAdmin']['university_id'];
+                foreach ($orderItems as $orderItem) {
+                    $listing_id = $orderItem->listing_id;
+                    foreach ($orderItem->dates as $key => $date) {
+                        $this->FeaturedListing->add($listing_id, $university_id, $date, $user_id);    
+                    }
+
+                    $num_dates = count($orderItem->dates);
+                    $response['msg'] = "Successfully featured for $num_dates days.";
+                    $response['success'] = true;
+                }
+            }else{
+                $jwt_clear = $this->Order->generateJWT($orderItems, $user_id, $order_type);
+                App::uses('JWT', 'JWT');
+                $response = array(
+                'success'=>true,
+                'jwt_clear'=>$jwt_clear,
+                'jwt'=>JWT::encode($jwt_clear, Order::WalletSecretKey)
+                );    
+            }
         }
         $this->layout = 'ajax';
         $this->set('response', json_encode($response)); 

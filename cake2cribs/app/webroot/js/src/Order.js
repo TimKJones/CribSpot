@@ -24,17 +24,23 @@
         response = JSON.parse(response_raw);
         if (!response.success) {
           errorHandler(response.errors);
+          return;
         }
-        return google.payments.inapp.buy({
-          parameters: {},
-          jwt: response.jwt,
-          success: function() {
-            return alert("success");
-          },
-          failture: function() {
-            return alert("fail");
-          }
-        });
+        if (response.jwt != null) {
+          return google.payments.inapp.buy({
+            parameters: {},
+            jwt: response.jwt,
+            success: function() {
+              return alert("success");
+            },
+            failture: function() {
+              return alert("fail");
+            }
+          });
+        } else {
+          A2Cribs.UIManager.Alert(response.msg);
+          return successHandler();
+        }
       });
     };
 
