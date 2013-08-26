@@ -61,6 +61,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('infobubble.js');
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Object');
+		echo $this->Html->script('src/MixPanel');
 		echo $this->Html->script('src/User');
 		echo $this->Html->script('src/MarkerTooltip');
 		echo $this->Html->script('src/Favorite');

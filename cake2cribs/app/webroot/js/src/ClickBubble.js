@@ -59,6 +59,7 @@ ClickBubble class
         _this = this;
       if (listing_id != null) {
         listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
+        A2Cribs.MixPanel.Click(listing, "large popup");
         if (listing.rental_id != null) {
           this.SetContent(listing.GetObject());
           return this.Show(listing_id);
@@ -216,15 +217,25 @@ ClickBubble class
     };
 
     ClickBubble.setFullPage = function(div_name, listing_id) {
-      var link;
-      link = "/listings/view/" + listing_id;
-      return $("." + div_name).attr("href", link);
+      $("." + div_name).unbind("click");
+      return $("." + div_name).click(function() {
+        var link, win;
+        A2Cribs.MixPanel(A2Cribs.UserCache.Get("listing", listing_id), "full page");
+        link = "/listings/view/" + listing_id;
+        win = window.open(link, '_blank');
+        return win.focus();
+      });
     };
 
     ClickBubble.setFullPageContact = function(div_name, listing_id) {
-      var link;
-      link = "/messages/contact/" + listing_id;
-      return $("." + div_name).attr("href", link);
+      $("." + div_name).unbind("click");
+      return $("." + div_name).click(function() {
+        var link, win;
+        A2Cribs.MixPanel(A2Cribs.UserCache.Get("listing", listing_id), "full page contact user");
+        link = "/messages/contact/" + listing_id;
+        win = window.open(link, '_blank');
+        return win.focus();
+      });
     };
 
     ClickBubble.setFavoriteButton = function(div_name, listing_id, favorites_list) {

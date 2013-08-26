@@ -1,6 +1,34 @@
 class A2Cribs.UserCache
 	@Cache = {}
 
+	_get = (object_type, id, callback) ->
+		if object_type is "listing" or  object_type is "rental"
+				url = myBaseUrl + "Listings/GetListing/" + id
+		$.ajax 
+			url: url
+			type:"GET"
+			success: (data) =>
+				callback?.success JSON.parse data
+			error: =>
+				callback?.error()
+
+	@GetDiferred: (object_type, id) ->
+		deferred = new $.Deferred()
+		item = @Get object_type, id
+		if not item? or not item.IsComplete()
+			_get object_type, id,
+				success: (data) =>
+					for listing_object in data
+						for key, value of listing_object
+							if A2Cribs[key]?
+								@Set new A2Cribs[key] value
+					item = @Get object_type, id
+				error: =>
+					deferred.resolve null
+			return deferred.promise()
+		else
+			return deferred.resolve item
+
 	@Set: (object) ->
 		class_name = object.class_name
 		if not @Cache[object.class_name]?

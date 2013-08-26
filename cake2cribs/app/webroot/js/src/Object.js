@@ -33,6 +33,10 @@
       return return_object;
     };
 
+    Object.prototype.IsComplete = function() {
+      return true;
+    };
+
     return Object;
 
   })();

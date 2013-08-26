@@ -42,6 +42,7 @@ class A2Cribs.RentalSave
 			@Open event.target.id
 
 		@div.find(".edit_marker").click () =>
+			A2Cribs.MixPanel.PostListing "Started", {}
 			A2Cribs.MarkerModal.Open()
 			A2Cribs.MarkerModal.LoadMarker @CurrentMarker
 
@@ -68,6 +69,8 @@ class A2Cribs.RentalSave
 			@CommitSlickgridChanges()
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
 			@VisibleGrid = $(event.target).attr("href").substring(1)
+			A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
+				"marker id": @CurrentMarker
 			@GridMap[@VisibleGrid].setSelectedRows selected
 			for row in @EditableRows
 				@Validate row
@@ -167,6 +170,10 @@ class A2Cribs.RentalSave
 	Save: (row) ->
 		if @Validate row
 			rental_object = @GetObjectByRow row
+			A2Cribs.MixPanel.PostListing "Listing Save",
+				"save type": if rental_object.listing_id? then "edit" else "save"
+				"marker id": @CurrentMarker
+				"listing id": rental_object.listing_id
 			$.ajax
 				url: myBaseUrl + "listings/Save/"
 				type: "POST"
@@ -174,6 +181,9 @@ class A2Cribs.RentalSave
 				success: (response) =>
 					response = JSON.parse response
 					if response.listing_id?
+						A2Cribs.MixPanel.PostListing "Listing Save Completed",
+							"listing id": response.listing_id
+							"marker id": @CurrentMarker
 						A2Cribs.UIManager.Success "Save successful!"
 						rental_object.Listing.listing_id = response.listing_id
 						rental_object.Rental.listing_id = response.listing_id
@@ -254,6 +264,9 @@ class A2Cribs.RentalSave
 	LoadImages: (row) ->
 		data = @GridMap[@VisibleGrid].getDataItem row
 		images = if data.listing_id? then A2Cribs.UserCache.Get "image", data.listing_id else data.Image
+		A2Cribs.MixPanel.PostListing "Start Photo Editing",
+			"marker id": @CurrentMarker
+			"number of images": images.length
 		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
 
 
@@ -278,6 +291,8 @@ class A2Cribs.RentalSave
 	###
 	AddNewUnit: ->
 		# Create newline on grid
+		A2Cribs.MixPanel.PostListing "Add New Unit",
+			"marker id": @CurrentMarker
 		@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
 
 		data = @GridMap[@VisibleGrid].getData()

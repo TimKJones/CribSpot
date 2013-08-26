@@ -46,6 +46,7 @@ Wrapper for google infobubble
 
     HoverBubble.Open = function(marker) {
       var _ref;
+      A2Cribs.MixPanel.Click(marker, 'small popup');
       this.Close();
       if ((_ref = A2Cribs.ClickBubble) != null) {
         _ref.Close();

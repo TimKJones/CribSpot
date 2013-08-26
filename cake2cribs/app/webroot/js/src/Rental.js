@@ -25,6 +25,14 @@
       return parseInt(this["listing_id"], 10);
     };
 
+    Rental.prototype.IsComplete = function() {
+      if (this.rental_id != null) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
     /*
     	@Template =
     		data =
