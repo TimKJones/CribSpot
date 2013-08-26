@@ -51,6 +51,17 @@ class A2Cribs.MarkerModal
 				latitude: latLng['latitude']
 				longitude: latLng['longitude']
 			}
+			A2Cribs.MixPanel.PostListing "Marker Save",
+				"marker id": marker_id
+				"alternate name": @modal.find('#Marker_alternate_name').val()
+				"building type id": @modal.find('#Marker_building_type_id').val()
+				"street address": @modal.find('#Marker_street_address').val()
+				"city": @modal.find('#Marker_city').val()
+				"state": @modal.find('#Marker_state').val()
+				"zip": @modal.find('#Marker_zip').val()
+				"latitude": latLng['latitude']
+				"longitude": latLng['longitude']
+
 			if marker_id?.length isnt 0
 				marker_object.marker_id = marker_id
 			$.ajax
@@ -63,6 +74,8 @@ class A2Cribs.MarkerModal
 					else
 						@modal.modal "hide"
 						marker_object.marker_id = response
+						A2Cribs.MixPanel.PostListing "Marker Save Complete",
+							"marker id": marker_object.marker_id
 						A2Cribs.UserCache.Set new A2Cribs.Marker marker_object
 						trigger marker_object.marker_id
 
@@ -74,6 +87,9 @@ class A2Cribs.MarkerModal
 			$(this).parent().removeClass "error"
 
 		@modal.find("#place_map_button").click () =>
+			A2Cribs.MixPanel.PostListing "Marker Selected", 
+					"new marker": false
+					"marker_id": marker_selected
 			@FindAddress @modal
 
 		@modal.find("#marker_select").change () =>
@@ -92,9 +108,19 @@ class A2Cribs.MarkerModal
 		@modal.find("#continue-button").click () =>
 			marker_selected = @modal.find("#marker_select").val()
 			if marker_selected is "new_marker"
+				A2Cribs.MixPanel.PostListing "Marker Selected", 
+					"new marker": true
 				@Save()
 
 			else if marker_selected isnt "0"
+				marker = A2Cribs.UserCache.Get "marker", marker_selected
+				A2Cribs.MixPanel.PostListing "Marker Selected", 
+					"new marker": false
+					"marker id": marker_selected
+					"marker name": marker?.GetName()
+					"marker address": marker?.street_address
+					"marker city": marker?.city
+					"marker state": marker?.state
 				@modal.modal "hide"
 				@TriggerMarkerAdded marker_selected
 

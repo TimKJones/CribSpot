@@ -33,6 +33,7 @@ class A2Cribs.ClickBubble
 	@Open: (listing_id) ->
 		if listing_id?
 			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+			A2Cribs.MixPanel.Click listing, "large popup"
 			if listing.rental_id? # if the rental is cached
 				@SetContent listing.GetObject()
 				@Show listing_id
@@ -151,12 +152,20 @@ class A2Cribs.ClickBubble
 			$(".#{div_name}").css "background-image", "url(/img/tooltip/no_photo.jpg)"
 
 	@setFullPage: (div_name, listing_id) ->
-		link = "/listings/view/#{listing_id}"
-		$(".#{div_name}").attr "href", link
+		$(".#{div_name}").unbind "click"
+		$(".#{div_name}").click () ->
+			A2Cribs.MixPanel A2Cribs.UserCache.Get("listing", listing_id), "full page"
+			link = "/listings/view/#{listing_id}"
+			win = window.open link, '_blank'
+			win.focus()
 
 	@setFullPageContact: (div_name, listing_id) ->
-		link = "/messages/contact/#{listing_id}"
-		$(".#{div_name}").attr "href", link
+		$(".#{div_name}").unbind "click"
+		$(".#{div_name}").click () ->
+			A2Cribs.MixPanel A2Cribs.UserCache.Get("listing", listing_id), "full page contact user"
+			link = "/messages/contact/#{listing_id}"
+			win = window.open link, '_blank'
+			win.focus()
 
 	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
 		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1

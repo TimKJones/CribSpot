@@ -58,6 +58,7 @@
         return _this.Open(event.target.id);
       });
       this.div.find(".edit_marker").click(function() {
+        A2Cribs.MixPanel.PostListing("Started", {});
         A2Cribs.MarkerModal.Open();
         return A2Cribs.MarkerModal.LoadMarker(_this.CurrentMarker);
       });
@@ -91,6 +92,9 @@
         _this.CommitSlickgridChanges();
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
         _this.VisibleGrid = $(event.target).attr("href").substring(1);
+        A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
+          "marker id": _this.CurrentMarker
+        });
         _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
         _ref = _this.EditableRows;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -219,6 +223,11 @@
         _this = this;
       if (this.Validate(row)) {
         rental_object = this.GetObjectByRow(row);
+        A2Cribs.MixPanel.PostListing("Listing Save", {
+          "save type": rental_object.listing_id != null ? "edit" : "save",
+          "marker id": this.CurrentMarker,
+          "listing id": rental_object.listing_id
+        });
         return $.ajax({
           url: myBaseUrl + "listings/Save/",
           type: "POST",
@@ -227,6 +236,10 @@
             var key, value;
             response = JSON.parse(response);
             if (response.listing_id != null) {
+              A2Cribs.MixPanel.PostListing("Listing Save Completed", {
+                "listing id": response.listing_id,
+                "marker id": _this.CurrentMarker
+              });
               A2Cribs.UIManager.Success("Save successful!");
               rental_object.Listing.listing_id = response.listing_id;
               rental_object.Rental.listing_id = response.listing_id;
@@ -338,6 +351,10 @@
       var data, images;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
       images = data.listing_id != null ? A2Cribs.UserCache.Get("image", data.listing_id) : data.Image;
+      A2Cribs.MixPanel.PostListing("Start Photo Editing", {
+        "marker id": this.CurrentMarker,
+        "number of images": images.length
+      });
       return A2Cribs.PhotoManager.LoadImages(images, row, this.SaveImages);
     };
 
@@ -370,6 +387,9 @@
 
     RentalSave.prototype.AddNewUnit = function() {
       var container, data, grid, row, row_number, _i, _len, _ref, _ref1, _results;
+      A2Cribs.MixPanel.PostListing("Add New Unit", {
+        "marker id": this.CurrentMarker
+      });
       this.GridMap[this.VisibleGrid].getEditorLock().commitCurrentEdit();
       data = this.GridMap[this.VisibleGrid].getData();
       _ref = this.EditableRows;
