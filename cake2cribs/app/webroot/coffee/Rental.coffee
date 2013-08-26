@@ -10,6 +10,9 @@ class A2Cribs.Rental extends A2Cribs.Object
 	GetId: (id) ->
 		return parseInt this["listing_id"], 10
 
+	IsComplete: ->
+		return if @rental_id? then true else false
+
 	###
 	@Template =
 		data =

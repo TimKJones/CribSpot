@@ -2,10 +2,59 @@
 (function() {
 
   A2Cribs.UserCache = (function() {
+    var _get;
 
     function UserCache() {}
 
     UserCache.Cache = {};
+
+    _get = function(object_type, id, callback) {
+      var url,
+        _this = this;
+      if (object_type === "listing" || object_type === "rental") {
+        url = myBaseUrl + "Listings/GetListing/" + id;
+      }
+      return $.ajax({
+        url: url,
+        type: "GET",
+        success: function(data) {
+          return callback != null ? callback.success(JSON.parse(data)) : void 0;
+        },
+        error: function() {
+          return callback != null ? callback.error() : void 0;
+        }
+      });
+    };
+
+    UserCache.GetDiferred = function(object_type, id) {
+      var deferred, item,
+        _this = this;
+      deferred = new $.Deferred();
+      item = this.Get(object_type, id);
+      if (!(item != null) || !item.IsComplete()) {
+        _get(object_type, id, {
+          success: function(data) {
+            var key, listing_object, value, _i, _len;
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              listing_object = data[_i];
+              for (key in listing_object) {
+                value = listing_object[key];
+                if (A2Cribs[key] != null) {
+                  _this.Set(new A2Cribs[key](value));
+                }
+              }
+            }
+            return item = _this.Get(object_type, id);
+          },
+          error: function() {
+            return deferred.resolve(null);
+          }
+        });
+        return deferred.promise();
+      } else {
+        return deferred.resolve(item);
+      }
+    };
 
     UserCache.Set = function(object) {
       var class_name;

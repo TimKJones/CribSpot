@@ -16,3 +16,6 @@ class A2Cribs.Object
 				return_object[key] = value
 		return return_object
 
+	IsComplete: ->
+		return true
+
