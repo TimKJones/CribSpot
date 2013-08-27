@@ -64,10 +64,10 @@
     return text;
   }
   function MoneyFormatter (row, cell, value, columnDef, dataContext) {
-    value = (typeof(value) != "undefined") ? value : "";
+    value = (typeof(value) != "undefined" || value != null) ? "$" + value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value=$" + value + " type='text' />";
-    return "$" + value;
+      return "<input value='" + value + "' type='text' />";
+    return value;
   }
   function RequiredMoneyFormatter (row, cell, value, columnDef, dataContext) {
     var text_class;

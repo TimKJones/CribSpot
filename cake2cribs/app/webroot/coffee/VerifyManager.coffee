@@ -50,11 +50,11 @@ class A2Cribs.VerifyManager
 			).done (tot_friends, mut_friends, followers_count)->
 				verification_info = {
 					'user_id': user.id,
-					'fb_id': user.facebook_userid,
+					'fb_id': user.facebook_id,
 					'verified_email': user.verified==true,
 					'verified_edu': user.university_verified == true,
 					'tw_id': user.twitter_userid,
-					'verified_fb': tot_friends?, # if tot_friends is defined the user is verified
+					'verified_fb': tot_friends, # if tot_friends is defined the user is verified
 					'mut_friends': mut_friends,
 					'tot_friends': tot_friends,
 					'verified_tw': followers_count?,
@@ -68,8 +68,8 @@ class A2Cribs.VerifyManager
 
 	@getMutalFriends: (user)->
 		defered = new $.Deferred();
-		if @me?.facebook_userid? and user.facebook_userid?
-			query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + @me.facebook_userid + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_userid + ')'
+		if @me?.facebook_id? and user.facebook_id?
+			query = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + @me.facebook_id + ') AND uid IN (SELECT uid2 FROM friend WHERE uid1 = ' + user.facebook_id + ')'
 			FB.api {method:'fql.query', query: query}, (mut_friends_res)->
 				if mut_friends_res.error_code?
 					console.log "Error during verification fb error: #{mut_friends_res.error_code}."
@@ -82,8 +82,8 @@ class A2Cribs.VerifyManager
 
 	@getTotalFriends: (user)->
 		defered = new $.Deferred()
-		if user.facebook_userid?
-			query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_userid
+		if user.facebook_id?
+			query = 'SELECT friend_count FROM user WHERE uid = ' + user.facebook_id
 			FB.api { method:'fql.query', query: query}, (tot_friends_res)->
 				if tot_friends_res.error_code?
 					console.log "Error during verification fb error: #{tot_friends_res.error_code}."
@@ -114,11 +114,11 @@ class A2Cribs.VerifyManager
 	@getMyVerification: ()->
 		my_verif_info = {
 			'user_id': parseInt(@me.id),
-			'fb_id': parseInt(@me.facebook_userid),
+			'fb_id': parseInt(@me.facebook_id),
 			'tw_id': @me.twitter_userid,
 			'verified_email': @me.verified==true
 			'verified_edu': @me.university_verified == true
-			'verified_fb': @me.facebook_userid?,
+			'verified_fb': @me.facebook_id?,
 			'verified_tw': @me.twitter_userid?,
 		}
 

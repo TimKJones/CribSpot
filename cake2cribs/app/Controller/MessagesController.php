@@ -173,18 +173,10 @@
         CakeLog::write("messagesDebug" , print_r($conversation, true));
         $participant = $this->Conversation->getOtherParticipant($conversation, $this->Auth->User());
         CakeLog::write("messagesDebug" , print_r($participant, true));
-            
-        $options['conditions'] = array('University.id'=>$participant['university_id']);
-        // $options['fields'] = array('University.name');
-        // $options['contain'] = true;
-        $this->University->recursive = -1;
-        CakeLog::write("messagesDebug" , print_r($participant, true));
-        $university = $this->University->find('first', $options);
-        if($university == null){
-            $participant['University'] = array();
-        }else{
-            $participant['University'] = $university['University'];    
-        }
+
+
+        if (intval($participant['user_type']) == 1)
+            $participant['first_name'] = $participant['company_name'];
         
         unset($participant['password']);
         unset($participant['phone']);

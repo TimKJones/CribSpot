@@ -71,8 +71,10 @@ class Conversation extends AppModel {
 				"DISTINCT Conversation.*",
 				"Conversation.unread_message_count",
 				"Participant1.first_name",
+				"Participant1.company_name",
 				"Participant1.id",
 				"Participant2.first_name",
+				"Participant2.company_name",
 				"Participant2.id",
 
 				"Last_Message.body",

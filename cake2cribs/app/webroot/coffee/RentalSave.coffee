@@ -51,6 +51,10 @@ class A2Cribs.RentalSave
 			if @Editable
 				@FinishEditing()
 			else
+				if selected?.length is 0
+					A2Cribs.UIManager.CloseLogs()
+					A2Cribs.UIManager.Error "Please select the row you wish to edit!"
+					return
 				@Edit selected
 
 			@GridMap[@VisibleGrid].setSelectedRows selected
@@ -137,8 +141,10 @@ class A2Cribs.RentalSave
 				isValid = no
 				highlighted_tabs[tab] = yes
 
+		$(".rentals_tab").removeClass "highlight-tab"
 		for tab, value of highlighted_tabs
 			$("a[href='##{tab}']").addClass "highlight-tab"
+		$("a[href='##{@VisibleGrid}']").removeClass "highlight-tab"
 
 		return isValid
 
@@ -266,7 +272,7 @@ class A2Cribs.RentalSave
 		images = if data.listing_id? then A2Cribs.UserCache.Get "image", data.listing_id else data.Image
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
-			"number of images": images.length
+			"number of images": images?.length
 		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
 
 
@@ -446,7 +452,7 @@ class A2Cribs.RentalSave
 					name: "Availability"
 					field: "available"
 					editor: A2Cribs.Editors.Dropdown(["Leased", "Available"])
-					formatter: A2Cribs.Formatters.Dropdown(["Leased", "Available"])
+					formatter: A2Cribs.Formatters.Dropdown(["Leased", "Available"], true)
 				}
 				{
 					id: "unit_count"
@@ -767,7 +773,7 @@ class A2Cribs.RentalSave
 					id: "utility_total_flat_rate"
 					name: "Total Flat Rate"
 					field: "utility_total_flat_rate"
-					editor: A2Cribs.Editors.Integer
+					editor: Slick.Editors.Integer
 					formatter: A2Cribs.Formatters.Money
 				}
 			]
@@ -931,7 +937,7 @@ class A2Cribs.RentalSave
 					name: "Contact Email"
 					field: "contact_email"
 					editor: A2Cribs.Editors.Email
-					formatter: A2Cribs.Formatters.Text
+					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
 					id: "contact_phone"
@@ -945,7 +951,7 @@ class A2Cribs.RentalSave
 					name: "Website"
 					field: "website"
 					editor: Slick.Editors.Text
-					formatter: A2Cribs.Formatters.RequiredText
+					formatter: A2Cribs.Formatters.Text
 				}
 			]
 

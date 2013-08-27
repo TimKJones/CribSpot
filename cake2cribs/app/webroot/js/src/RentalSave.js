@@ -68,6 +68,11 @@
         if (_this.Editable) {
           _this.FinishEditing();
         } else {
+          if ((selected != null ? selected.length : void 0) === 0) {
+            A2Cribs.UIManager.CloseLogs();
+            A2Cribs.UIManager.Error("Please select the row you wish to edit!");
+            return;
+          }
           _this.Edit(selected);
         }
         return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
@@ -185,10 +190,12 @@
           highlighted_tabs[tab] = true;
         }
       }
+      $(".rentals_tab").removeClass("highlight-tab");
       for (tab in highlighted_tabs) {
         value = highlighted_tabs[tab];
         $("a[href='#" + tab + "']").addClass("highlight-tab");
       }
+      $("a[href='#" + this.VisibleGrid + "']").removeClass("highlight-tab");
       return isValid;
     };
 
@@ -353,7 +360,7 @@
       images = data.listing_id != null ? A2Cribs.UserCache.Get("image", data.listing_id) : data.Image;
       A2Cribs.MixPanel.PostListing("Start Photo Editing", {
         "marker id": this.CurrentMarker,
-        "number of images": images.length
+        "number of images": images != null ? images.length : void 0
       });
       return A2Cribs.PhotoManager.LoadImages(images, row, this.SaveImages);
     };
@@ -560,7 +567,7 @@
             name: "Availability",
             field: "available",
             editor: A2Cribs.Editors.Dropdown(["Leased", "Available"]),
-            formatter: A2Cribs.Formatters.Dropdown(["Leased", "Available"])
+            formatter: A2Cribs.Formatters.Dropdown(["Leased", "Available"], true)
           }, {
             id: "unit_count",
             name: "Unit Count",
@@ -838,7 +845,7 @@
             id: "utility_total_flat_rate",
             name: "Total Flat Rate",
             field: "utility_total_flat_rate",
-            editor: A2Cribs.Editors.Integer,
+            editor: Slick.Editors.Integer,
             formatter: A2Cribs.Formatters.Money
           }
         ];
@@ -979,7 +986,7 @@
             name: "Contact Email",
             field: "contact_email",
             editor: A2Cribs.Editors.Email,
-            formatter: A2Cribs.Formatters.Text
+            formatter: A2Cribs.Formatters.RequiredText
           }, {
             id: "contact_phone",
             name: "Contact Phone",
@@ -991,7 +998,7 @@
             name: "Website",
             field: "website",
             editor: Slick.Editors.Text,
-            formatter: A2Cribs.Formatters.RequiredText
+            formatter: A2Cribs.Formatters.Text
           }
         ];
       };

@@ -103,7 +103,7 @@
     var right_count = 0;
 
     this.init = function () {
-      $unit_style_options = $("<select style='width:70px;'/>");
+      $unit_style_options = $("<select style='width:122px;'/>");
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
       $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
       $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
@@ -188,7 +188,7 @@ function makeDropdown(selectable_options)
       var scope = this;
 
       this.init = function () {
-        $select = $("<select id='selectId' name='selectName' style='width:95px;' />");
+        $select = $("<select id='selectId' name='selectName' style='width:100%;' />");
         for (var i = 0; i < selectable_options.length; i++) {
           selectable_options[i]
           $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
@@ -410,14 +410,12 @@ function makeDropdown(selectable_options)
     };
 
     this.handleKeyDown = function (e) {
-      if (e.keyCode == $.ui.keyCode.LEFT)
-        right_count--;
+      if ($last_numbers.is(":focus") && (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB))
+        return;
 
-      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
-        right_count++;
-
-      if (right_count >= 0 && right_count < 3)
+      if (e.keyCode == $.ui.keyCode.LEFT || e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB) {
         e.stopImmediatePropagation();
+      }
     };
 
     this.destroy = function () {

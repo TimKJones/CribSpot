@@ -25,7 +25,7 @@
 		<div>
 				<span class = 'bubble-top-row'>
 					<a href = '/users/view/<?php echo $message['User']['id'];?>'>
-						<strong><?php echo $message['User']['first_name'];?>:</strong>
+						<strong><?= (intval($message['User']['user_type']) == 0) ? $message['User']['first_name'] : $message['User']['company_name'] ;?>:</strong>
 					</a>
 					<span class = 'time-ago'>
 						<?php echo $this->Time->timeAgoInWords($message['Message']['created'], array('accuracy' => array('year'=>'year', 'month'=>'month', 'week'=>'week','day' => 'day', 'hour'=>'hour')));?>

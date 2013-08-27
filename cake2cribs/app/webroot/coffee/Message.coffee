@@ -79,7 +79,7 @@ class A2Cribs.Messages
 					id: convo.Conversation.conversation_id
 					"data-participant": convo.Participant.id
 				}
-				$("#messages_list").append list_item
+				$("#messages_list_content").append list_item
 
 			@attachConversationListItemHandler() 
 
@@ -109,14 +109,19 @@ class A2Cribs.Messages
 	# Using the data provided in the participant object
 	@setParticipantInfoUI:(participant)->
 		$(".from_participant")
-			.html(participant['first_name'])
-			.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
+			.html "#{participant.first_name} #{participant.last_name}"
+			#.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
 		
 		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
 			veripanel = $('#verification-panel')
 
 			if verification_info.verified_email
 				veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+
+			if verification_info.verified_fb
+				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
+				console.log(url)
+				$('#p_pic').attr 'src', url
 
 
 	@loadConversation:(event)->
