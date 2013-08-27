@@ -100,7 +100,10 @@ class FeaturedListingsController extends AppController {
     if ($seed === null)
       $seed = 0;
 
-    $seed = ($seed+1)%count($listings_data);
+    if (count($listings_data) !== 0)
+      $seed = ($seed+1)%count($listings_data);
+    else
+      $seed = 0;
     Cache::write('featured_listings_seed', $seed);
 
     /* Re-order featured listings based on seed value */
