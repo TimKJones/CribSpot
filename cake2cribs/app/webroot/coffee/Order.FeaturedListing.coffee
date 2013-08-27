@@ -276,7 +276,12 @@ class A2Cribs.Order.FeaturedListing
                     dates.push unavailDate
                     d = new Date(unavailDate)
                     # dif a weekend
-                    if d.getDay() == 0 or d.getDay() == 6
+                    day = d.getDay()
+                    if !day?
+                        continue
+                    # BUG-d is always one day less than that the actual date
+                    day = (day + 1)%7
+                    if day == 0 or day == 6
                         priceDif += uni.weekend_price
                     else
                         priceDif += uni.weekday_price
