@@ -322,7 +322,7 @@
         );  
 
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<team@cribspot.com>';
+        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $recipient['email'];
         
         $this->Email->subject = "You've received a new message from " . $from_user['first_name'] . " on Cribspot!";

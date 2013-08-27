@@ -595,7 +595,7 @@ class UsersController extends AppController {
     */
     private function _sendVerificationEmail($user)
     {
-        $from = 'The Cribspot Team<team@cribspot.com>';
+        $from = 'The Cribspot Team<info@cribspot.com>';
         $to = $user['email'];
         $subject = 'Please verify your Cribspot account';
         $template = 'registration';
@@ -605,7 +605,7 @@ class UsersController extends AppController {
 
     private function _sendPasswordResetEmail($email)
     {
-        $from = 'The Cribspot Team<team@cribspot.com>';
+        $from = 'The Cribspot Team<info@cribspot.com>';
         $to = $email;
         $subject = 'Please reset your password';
         $template = 'forgotpassword';
