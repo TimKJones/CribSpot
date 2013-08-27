@@ -41,12 +41,15 @@ Wrapper for google infobubble
     */
 
     HoverBubble.Open = function(marker) {
-      var _ref;
+      var marker_pixel_position, pixels_to_pan, _ref;
       A2Cribs.MixPanel.Click(marker, 'small popup');
       this.Close();
       if ((_ref = A2Cribs.ClickBubble) != null) _ref.Close();
       if (marker) {
         this.SetContent(marker);
+        marker_pixel_position = A2Cribs.ClickBubble.ConvertLatLongToPixels(marker.GMarker.getPosition());
+        pixels_to_pan = A2Cribs.ClickBubble.GetAdjustedClickBubblePosition(marker_pixel_position.x, marker_pixel_position.y);
+        A2Cribs.Map.GMap.panBy(pixels_to_pan.x, pixels_to_pan.y);
         return this.InfoBubble.open(A2Cribs.Map.GMap, marker.GMarker);
       }
     };

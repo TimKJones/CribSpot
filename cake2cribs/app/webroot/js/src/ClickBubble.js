@@ -16,6 +16,8 @@ ClickBubble class
       LEFT: 140
     };
 
+    ClickBubble.PADDING = 50;
+
     ClickBubble.IsOpen = false;
 
     /*
@@ -23,15 +25,24 @@ ClickBubble class
     */
 
     move_near_marker = function(listing_id) {
-      var listing, marker, nw, scale, worldCoordinate, worldCoordinateNW;
+      var listing, marker, marker_pixel_position;
       listing = A2Cribs.UserCache.Get("listing", listing_id);
       marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker;
-      scale = Math.pow(2, ClickBubble.map.getZoom());
-      nw = new google.maps.LatLng(ClickBubble.map.getBounds().getNorthEast().lat(), ClickBubble.map.getBounds().getSouthWest().lng());
-      worldCoordinateNW = ClickBubble.map.getProjection().fromLatLngToPoint(nw);
-      worldCoordinate = ClickBubble.map.getProjection().fromLatLngToPoint(marker.getPosition());
-      ClickBubble.div.css("left", Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale) + ClickBubble.OFFSET.LEFT);
-      return ClickBubble.div.css("top", Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale) + ClickBubble.OFFSET.TOP);
+      marker_pixel_position = ClickBubble.ConvertLatLongToPixels(marker.getPosition());
+      ClickBubble.div.css("left", marker_pixel_position.x + ClickBubble.OFFSET.LEFT);
+      return ClickBubble.div.css("top", marker_pixel_position.y + ClickBubble.OFFSET.TOP);
+    };
+
+    ClickBubble.ConvertLatLongToPixels = function(latLng) {
+      var nw, position, scale, worldCoordinate, worldCoordinateNW;
+      scale = Math.pow(2, this.map.getZoom());
+      nw = new google.maps.LatLng(this.map.getBounds().getNorthEast().lat(), this.map.getBounds().getSouthWest().lng());
+      worldCoordinateNW = this.map.getProjection().fromLatLngToPoint(nw);
+      worldCoordinate = this.map.getProjection().fromLatLngToPoint(latLng);
+      position = {};
+      position.x = Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale);
+      position.y = Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale);
+      return position;
     };
 
     /*
@@ -231,6 +242,33 @@ ClickBubble class
         win = window.open(link, '_blank');
         return win.focus();
       });
+    };
+
+    /*
+    	takes as arguments the x and y position of the clicked marker
+    	returns the x and y amounts to pan the map so that the click bubble fits on the screen
+    */
+
+    ClickBubble.GetAdjustedClickBubblePosition = function(marker_x, marker_y) {
+      var BOTTOM, RIGHT, TOP, filter_offset, offset, x_max, y_high, y_low;
+      y_high = marker_y + this.OFFSET['TOP'];
+      y_low = marker_y + this.OFFSET['TOP'] + $(".click-bubble").height();
+      x_max = marker_x + this.OFFSET['LEFT'] + $(".click-bubble").width();
+      offset = {};
+      offset.x = 0;
+      offset.y = 0;
+      RIGHT = $("#map_region").width();
+      BOTTOM = $(window).height() - 5;
+      filter_offset = $("#map_filter").offset();
+      TOP = filter_offset.top;
+      if (y_high < (TOP + this.PADDING)) offset.y = y_high - (TOP + this.PADDING);
+      if (y_low > (BOTTOM - this.PADDING)) {
+        offset.y = y_low - (BOTTOM - this.PADDING);
+      }
+      if (x_max > (RIGHT - this.PADDING)) {
+        offset.x = x_max - (RIGHT - this.PADDING);
+      }
+      return offset;
     };
 
     return ClickBubble;
