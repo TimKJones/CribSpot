@@ -378,7 +378,7 @@ function makeDropdown(selectable_options)
 
     this.init = function () {
       $(args.container).append("(");
-      $areacode = $("<INPUT type=text style='width:25px' />")
+      $areacode = $("<INPUT type='text' style='width:25px' maxlength='3' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown)
           .bind("change", function () {
@@ -388,7 +388,7 @@ function makeDropdown(selectable_options)
 
       $(args.container).append(")&nbsp;-&nbsp;");
 
-      $first_numbers = $("<INPUT type=text style='width:25px' />")
+      $first_numbers = $("<INPUT type='text' style='width:25px' maxlength='3' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown)
           .bind("change", function () {
@@ -398,7 +398,7 @@ function makeDropdown(selectable_options)
       
       $(args.container).append("&nbsp;-&nbsp;");
 
-      $last_numbers = $("<INPUT type=text style='width:35px' />")
+      $last_numbers = $("<INPUT type='text' style='width:35px' maxlength='4' />")
           .appendTo(args.container)
           .bind("keydown", scope.handleKeyDown)
           .bind("change", function () {
@@ -438,9 +438,12 @@ function makeDropdown(selectable_options)
     };
 
     this.loadValue = function (item) {
-      $areacode.val(item.contact_phone.substr(0, 3));
-      $first_numbers.val(item.contact_phone.substr(3, 3));
-      $last_numbers.val(item.contact_phone.substr(6, 4));
+      if (item.contact_phone != null && item.contact_phone.length > 0)
+      {
+        $areacode.val(item.contact_phone.substr(0, 3));
+        $first_numbers.val(item.contact_phone.substr(3, 3));
+        $last_numbers.val(item.contact_phone.substr(6, 4));        
+      }
     };
 
     this.isValueChanged = function () {
