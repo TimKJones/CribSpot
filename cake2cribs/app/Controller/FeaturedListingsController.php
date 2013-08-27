@@ -217,7 +217,7 @@ class FeaturedListingsController extends AppController {
         $wd_price = $we_price = 0;
       }else{
         $wd_price = 15;
-        $we_rice = 5;
+        $we_price = 5;
       }
 
 
