@@ -35,6 +35,7 @@
 	<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
 		<li class="nav-header">MESSAGES</li>
 	</ul>
+
 	<?php if (intval($AuthUser['user_type']) == 1)
 	{
 	?>
@@ -45,10 +46,7 @@
 			<div id="rentals_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
-	
-	<ul class="nav nav-list hide list-dropdown" id = "rentals_list">
-		<li class="nav-header">RENTALS</li>
-	</ul>
+
 	<?php } ?>
 	<?php $user_type = intval($AuthUser['user_type']);
 	if ($user_type == 1 || $user_type == 3)
