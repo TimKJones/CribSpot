@@ -36,6 +36,7 @@ class Listing extends AppModel {
             'dependent'    => true
         )
 	);
+	
 	public $validate = array(
 		'listing_id' => 'numeric',
 		'listing_type' => 'numeric',
@@ -110,7 +111,7 @@ class Listing extends AppModel {
 	/* returns listing with id = $listing_id */
 	public function Get($listing_id)
 	{
-		$listing = $this->find('all', array(
+		$listing = $this->find('first', array(
         	'conditions' => array('Listing.listing_id' => $listing_id)
     	));
 
@@ -119,6 +120,8 @@ class Listing extends AppModel {
 
     	return $listing;
 	}
+
+
 
 	/*
 	Mark all listings in $listing_ids as invisible
@@ -224,6 +227,18 @@ class Listing extends AppModel {
 	}
 
 	/*
+	Listing type is a string representation of type (Rental, Sublet...)
+	Returns an array of listings that match the given type
+	*/
+	public function GetListingsByType($listing_type){	
+		$listings = $this->find('all', array(
+			"conditions" => array('Listing.listing_type' => $listing_type)
+		));
+
+		return $listings;
+	}
+
+	/*
 	Returns an array of listings owned by the given user_id
 	*/
 	public function GetListingsByUserId($user_id)
@@ -252,6 +267,32 @@ class Listing extends AppModel {
 	}	
 
 		return $listings;
+	}
+	/*
+	Returns an array of listing ids owned by the user
+	*/
+	public function GetListingIdsByUserId($user_id){
+		$listing_ids = $this->find('list', array(
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1),
+			'fields' => array(
+				'Listing.listing_id'
+			)
+		));
+		return array_values($listing_ids);
+	}
+
+	public function GetListingIdsByMarkerId($marker_id){
+		$listing_ids = $this->find('list', array(
+			'conditions' => array(
+				'Listing.marker_id' => $marker_id,
+				'Listing.visible' => 1),
+			'fields' => array(
+				'Listing.listing_id'
+			)
+		));
+		return array_values($listing_ids);
 	}
 
 	/*
@@ -303,6 +344,11 @@ class Listing extends AppModel {
 		return $listings != null;
 	}
 
+
+	public function ListingExists($listing_id){
+		$this->id = $listing_id;
+		return $this->exists();
+	}
 	/*
 	Retrieve all data needed for the onHover menu
 	Only retrieve for listing type specified in $listing_type
@@ -343,6 +389,54 @@ class Listing extends AppModel {
 		));
 
 		return $listings != null;
+	}
+
+	/*
+		returns an array of Listings, you can provide an optional options
+		parameter if you want to further refine the search.
+	*/
+	public function GetListingsNear($latitude, $longitude, $radius, $options=null){
+		
+		if($options==null){
+			$options = array();
+		}
+
+		// Fetch all the nearby markers, they are the source of finding
+		// listings nearby
+		$Marker = ClassRegistry::init('Marker');
+		$options2['fields'] = array("Marker.marker_id");
+		$markers = $Marker->getNear($latitude, $longitude, $radius, $options2);
+
+		//Create a list of marker_ids to then find which listings link to them
+		$markerIds = array();
+		foreach ($markers as $marker) {
+			array_push($markerIds, $marker['Marker']['marker_id']);
+		}
+
+		return $this->GetListingsFromMarkerIds($markerIds, $options);
+	}
+
+	
+	/*
+	Return
+
+	*/
+	public function GetListingsFromMarkerIds($markers, $options){
+		if($options==null){
+			$options = array();
+		}
+
+		// $this->contain();
+
+		if(array_key_exists("conditions", $options)){
+			array_push($options['conditions'], array('Listing.marker_id =' => $markers));
+		}else{
+			$options['conditions'] = array('Listing.marker_id =' => $markers);
+		}
+
+		return $this->find('all', $options);
+
+
 	}
 
 	/*
@@ -455,7 +549,9 @@ class Listing extends AppModel {
 		$options['fields'] = array(
 			'Rental.rent',
 			'Rental.listing_id',
-			'Rental.beds', 
+			'Rental.beds',
+			'Rental.start_date',
+			'Rental.lease_length',
 			'Listing.marker_id',
 			'Listing.listing_id',
 			'Marker.marker_id',
@@ -471,9 +567,10 @@ class Listing extends AppModel {
 		$options['conditions'] = array('Listing.visible' => 1);
 		$basicData = $this->find('all', $options);
 		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
-		foreach ($locationFilteredBasicData as $listing) {
+		foreach ($locationFilteredBasicData as &$listing) {
 			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
 		}
+
 		return $locationFilteredBasicData;
 	}
 
@@ -510,6 +607,9 @@ class Listing extends AppModel {
 
 		return $filteredBasicData;
 	}
+
+
+
 }	
 
 ?>

@@ -97,3 +97,31 @@
 - Users/AjaxChangePassword
 47
 - User->edit
+48
+- Order->generateJWT
+- Order type was not valid
+49
+- Order->logOrder
+- No Pending Order found while logging order
+50
+- Order->logOrder
+- Creating an order instance failed
+51
+- Order->validateFLOrder
+- there were validation errors with the orderItems
+52
+- PendingOrder->add
+53
+- Conversation->createConversation
+54
+- Conversation->hideConversation
+55
+- Conversation->hideConversation
+56
+- Message->createMessage
+57
+- User->RegisterUser
+58
+- User->RegisterUser
+59
+- User/SaveFacebookUser

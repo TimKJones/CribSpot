@@ -19,6 +19,8 @@ class A2Cribs.MixPanel
 	display_type = small popup, large popup, full page
 	###
 	@Click: (object, display_type) ->
+		if object == undefined or object == null
+			return
 		if object.class_name is "listing"
 			listing = object
 			marker = A2Cribs.UserCache.Get "marker", listing.marker_id

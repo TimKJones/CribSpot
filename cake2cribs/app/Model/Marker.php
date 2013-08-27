@@ -81,7 +81,56 @@ class Marker extends AppModel {
 		'latitude' => 'decimal',
 		'longitude' => 'decimal'
 	);
+	
 
+	/*
+	Retrieves the markers near a certain point. Options can be any
+	options you'd add to a find all statement. I safely add a condition
+	to filter by distance, none of your conditions will be affects
+	*/
+
+	public function getNear($latitude, $longitude, $radius, $options=null){
+		if($options==null){
+			$options = array();
+		}
+
+		$this->contain();
+
+		// First we do a lat long bound box search to filter out 
+		// as many markers as possible with a general query
+
+		$lat1 = $latitude - $radius/69;
+		$lat2 = $latitude + $radius/69;
+		
+		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
+
+		
+
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+		);
+
+		
+		if(array_key_exists("conditions", $options)){
+			// array_push($options['conditions'], array('distance <' => $radius));
+			array_push($options['conditions'], array('Marker.latitude >' => $lat1));
+			array_push($options['conditions'], array('Marker.latitude <=' => $lat2));
+			array_push($options['conditions'], array('Marker.longitude >' => $lon1));
+			array_push($options['conditions'], array('Marker.longitude ' => $lon1));
+
+
+		}else{
+			$options['conditions'] = array('distance <' => $radius);
+		}
+
+		$data = $this->find('all', $options);
+		return $data;
+	}
+
+
+	
 	public function getAllMarkers($target_lat_long)
 	{
 		if (($markers = Cache::read('markers')) === false)
@@ -218,6 +267,7 @@ class Marker extends AppModel {
 		
 		return $marker;
 	}
+
 
 	public function hide($marker){
 		$marker['visible'] = 0;

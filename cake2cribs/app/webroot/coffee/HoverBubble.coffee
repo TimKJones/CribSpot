@@ -36,7 +36,13 @@ class A2Cribs.HoverBubble
 		A2Cribs.ClickBubble?.Close()
 		if marker
 			@SetContent marker
+			# Pan map to leave enough room for click bubble
+			marker_pixel_position = A2Cribs.ClickBubble.ConvertLatLongToPixels marker.GMarker.getPosition()
+			pixels_to_pan = A2Cribs.ClickBubble.GetAdjustedClickBubblePosition marker_pixel_position.x, marker_pixel_position.y
+			A2Cribs.Map.GMap.panBy pixels_to_pan.x, pixels_to_pan.y
+
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
+
 
 	###
 	Refreshes the tooltip with the new content, no animation
@@ -45,7 +51,7 @@ class A2Cribs.HoverBubble
 		@InfoBubble.open()
 
 	###
-f	Closes the tooltip, no animation
+	Closes the tooltip, no animation
 	###
 	@Close: ->
 		@InfoBubble.close()

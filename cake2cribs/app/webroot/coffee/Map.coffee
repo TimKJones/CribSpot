@@ -16,21 +16,23 @@ class A2Cribs.Map
 	Load all markers from Markers table
 	###
 	@LoadMarkers: ->
-		deferred = new $.Deferred
+		if not @MarkerDeferred
+			@MarkerDeferred = new $.Deferred()
+
 		if A2Cribs.Map.CurentSchoolId == undefined
-			deferred.resolve(null)
+			@MarkerDeferred.resolve(null)
 			return
-			
+
 		$.ajax 
 			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0
 			type:"GET"
 			context: this
 			success: (response) ->
-				deferred.resolve(response, this)
+				@MarkerDeferred.resolve(response, this)
 			error: () ->
-				deferred.resolve(null)
+				@MarkerDeferred.resolve(null)
 
-		return deferred.promise()
+		return @MarkerDeferred.promise()
 
 	###
 	Used to only show markers that are within a certain bounds based on the user's current viewport.
@@ -96,17 +98,23 @@ class A2Cribs.Map
 		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FilterManager.InitAddressSearch()
 
+		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE)
+
 	@LoadBasicData: ->
-		deferred = new $.Deferred
+		
+		if not @BasicDataDeferred?
+			@BasicDataDeferred = new $.Deferred()
+		
 		$.ajax 
 			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
-			type: "POST"
-			success: (responses) ->
-				deferred.resolve(responses)
-			error: () ->
-				deferred.resolve(null)
 
-		return deferred.promise()
+			type: "POST"
+			success: (responses) =>
+				@BasicDataDeferred.resolve(responses)
+			error: () =>
+				@BasicDataDeferred.resolve(null)
+
+		return @BasicDataDeferred.promise()
 
 	@LoadBasicDataCallback: (response) =>
 		if response == null || response == undefined
@@ -150,6 +158,11 @@ class A2Cribs.Map
 	@LoadAllMapData: () ->
 		basicData = @LoadBasicData()
 		$.when(basicData).then(@LoadBasicDataCallback)
+
+	@CenterMap:(latitude, longitude)->
+		if not @GMap? then return
+		@GMap.setCenter new google.maps.LatLng(latitude, longitude);
+
 
 	@style = [
 		{

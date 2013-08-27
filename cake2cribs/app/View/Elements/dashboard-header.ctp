@@ -12,7 +12,11 @@
 	echo $this->Html->css('datepicker');
 
 	/* Datepicker and slider javascript */
-	echo $this->Html->script('bootstrap-datepicker');
+	
+	// 7/17/13 (Mike) took out the bootstrap-datepicker because it causes naming
+	// conflicts with my multidatepicker that I'm using (jquery ui)
+
+	// echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
 	echo $this->Html->script('src/PageHeader');
 

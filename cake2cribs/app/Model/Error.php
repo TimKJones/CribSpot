@@ -24,5 +24,4 @@ class Error extends AppModel {
 			CakeLog::write("ErrorFailed", print_r($this->validationErrors, true));
 	}
 }
-
 ?>

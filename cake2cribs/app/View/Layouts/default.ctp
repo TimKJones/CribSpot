@@ -9,7 +9,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View.Layouts
  * @since         CakePHP(tm) v 0.10.0.1076
@@ -91,6 +90,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('src/SubletInProgress');
 		echo $this->Html->script('knockout.js');
 		echo $this->Html->script('alertify.min.js');
+		echo $this->Html->script('underscore');
 		
 
 		/* CSS Data */

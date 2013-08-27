@@ -15,6 +15,31 @@
     RentalFilter.FilterData = {};
 
     /*
+<<<<<<< HEAD
+<<<<<<< HEAD
+    		'Beds' : [2,5,10]
+    		'Rent' : 
+    			'min' : 100
+    			'max' : 3500
+    		'Dates': 
+    			'months': [3, 5]
+    			'year' : 13
+    		'LeaseRange' : 
+    			'min' : 3
+    			'max' : 7
+    		'UnitTypes' : [0,1, 3] #'other' is the value 3
+    		'PetsAllowed' : 1
+    		'ParkingAvailable' : -1
+    		'Air' : -1
+    		'UtilitiesIncluded' : -1
+    */
+
+
+    /*
+=======
+>>>>>>> development
+=======
+>>>>>>> 76858fc9d001ae56604a5f437b652ee092beb623
     	Private method for loading the contents of the filter preview into the header filter
     */
 

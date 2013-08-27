@@ -17,6 +17,7 @@
  */
 
 App::uses('Shell', 'Console');
+App::uses('CakeEmail', 'Network/Email');
 
 /**
  * Application Shell
@@ -27,5 +28,15 @@ App::uses('Shell', 'Console');
  * @package       app.Console.Command
  */
 class AppShell extends Shell {
+    
+    public function _emailUser($toAddress, $subject, $template, $template_data){
+        $Email = new CakeEmail("smtp");
+        $Email->template($template)
+            ->emailFormat('html')
+            ->to('mikenike192@gmail.com')
+            ->subject($subject)
+            ->viewVars($template_data)
+            ->send();
+    }
 
 }

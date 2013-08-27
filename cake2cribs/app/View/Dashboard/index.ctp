@@ -23,6 +23,18 @@
 		<div id = 'left_content' class = 'span2'>
 			<?php echo $this->element('Dashboard/navigation-bar'); ?>			
 		</div>
+<!-- <<<<<<< HEAD
+		<div class = 'span6' id = 'middle_content'>
+			
+			<div class = 'account-content hidden'>
+				<?php //echo $this->element('Account/edit_account_window', $user) ?>
+			</div>
+			<div class = 'messages-content hidden'>
+			 	<?php //echo $this->element('Messages/message_window', $user) ?>
+			</div>
+			<div class="sublet-content hide">
+				<?php //echo $this->element('Sublet/edit_sublet_window', $user); ?>
+======= -->
 		<div id = 'middle_content' class = 'span10'>
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>
@@ -31,6 +43,7 @@
 				<div class = 'span3'>
 					<?php echo $this->element('Account/user_info') ?>
 				</div>
+
 			</div>
 
 			<div class = 'row-fluid messages-content hidden'>
@@ -44,6 +57,10 @@
 
 			<div class = 'rentals-content hidden'>
 				<?php echo $this->element('Dashboard/rentals_window') ?>
+			</div>
+
+			<div class = 'row-fluid featuredlisting-content hidden'>
+				<?php echo $this->element('FeaturedListings/dashview') ?>
 			</div>
 
 		</div>

@@ -138,10 +138,8 @@ class User extends AppModel {
 
 	/* ---------- unit_style_options ---------- */
 	const USER_TYPE_SUBLETTER = 0;
-	const USER_TYPE_PROPERTY_MANAGER = 1; 
-	/* NOTE: messagesController->emailUserAboutMessage
-	   uses a hard-coded '1' for this */
-
+	const USER_TYPE_PROPERTY_MANAGER = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
+	const USER_TYPE_NEWSPAPER_ADMIN = 2;
 	public static function user_type($value = null) {
 		$options = array(
 		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
@@ -506,11 +504,11 @@ class User extends AppModel {
 			$error = null;
 			$error['user'] = $user;
 			$error['validation'] = $this->validationErrors;
-			$this->LogError(null, 39, $error);
+			$this->LogError(null, 59, $error);
 			return array('error' => 
 					'Looks like we had some issues logging you in with Facebook...but we want to help! If the problem continues, ' .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 39.');
+					'at help@cribspot.com. Reference error code 59.');
 		}
 
 		/* return the user object we just saved */

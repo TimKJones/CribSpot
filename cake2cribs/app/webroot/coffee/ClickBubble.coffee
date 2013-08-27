@@ -6,18 +6,29 @@ class A2Cribs.ClickBubble
 	@OFFSET = 
 		TOP: -190
 		LEFT: 140
+	@PADDING = 50 #padding on sides of click bubble after panning to make click bubble fit on map
+	@IsOpen = false
 	###
 	Private function that relocates the bubble near the marker
 	###
 	move_near_marker = (listing_id) =>
 		listing = A2Cribs.UserCache.Get "listing", listing_id
 		marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker
+
+		#calculate marker position with respect to latLng boundaries
+		marker_pixel_position = @ConvertLatLongToPixels marker.getPosition()
+		@div.css "left", marker_pixel_position.x + @OFFSET.LEFT
+		@div.css "top", marker_pixel_position.y + @OFFSET.TOP
+
+	@ConvertLatLongToPixels: (latLng) ->
 		scale = Math.pow 2, @map.getZoom()
 		nw = new google.maps.LatLng @map.getBounds().getNorthEast().lat(), @map.getBounds().getSouthWest().lng()
 		worldCoordinateNW = @map.getProjection().fromLatLngToPoint nw
-		worldCoordinate = @map.getProjection().fromLatLngToPoint marker.getPosition()
-		@div.css "left", Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale) + @OFFSET.LEFT
-		@div.css "top", Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale) + @OFFSET.TOP
+		worldCoordinate = @map.getProjection().fromLatLngToPoint latLng
+		position = {}
+		position.x = Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale)
+		position.y = Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+		return position
 
 	###
 	Constructor
@@ -31,6 +42,7 @@ class A2Cribs.ClickBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (listing_id) ->
+		@IsOpen = true
 		if listing_id?
 			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 			A2Cribs.MixPanel.Click listing, "large popup"
@@ -53,6 +65,7 @@ class A2Cribs.ClickBubble
 						@Show listing_id
 
 	@Show: (listing_id) ->
+		@IsOpen = true
 		move_near_marker listing_id
 		@div.show 'fade'
 
@@ -66,6 +79,7 @@ class A2Cribs.ClickBubble
 	Closes the tooltip, no animation
 	###
 	@Close: ->
+		@IsOpen = false
 		@div.hide 'fade'
 
 
@@ -99,7 +113,7 @@ class A2Cribs.ClickBubble
 		@div.find(".twitter_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
 				marker.street_address, marker.city, marker.state, marker.zip)
-		@setFavoriteButton "favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
+		A2Cribs.FavoritesManager.setFavoriteButton "favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
 
 	@resolveDateRange: (startDate) ->
 		range = "Unknown Start Date"
@@ -167,11 +181,32 @@ class A2Cribs.ClickBubble
 			win = window.open link, '_blank'
 			win.focus()
 
-	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
-		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1
-			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.AddFavorite(#{listing_id}, this)"
-			$(".#{div_name}").removeClass "active"
-		else
-			$(".#{div_name}").attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite(#{listing_id}, this)"
-			$(".#{div_name}").addClass "active"
+	###
+	takes as arguments the x and y position of the clicked marker
+	returns the x and y amounts to pan the map so that the click bubble fits on the screen
+	###
+	@GetAdjustedClickBubblePosition: (marker_x, marker_y) ->
+		# for y, high and low refer to high and low on the page, not numerically, since it is opposite.
+		y_high = marker_y + @OFFSET['TOP']
+		y_low = marker_y + @OFFSET['TOP'] + $(".click-bubble").height()
+		x_max = marker_x + @OFFSET['LEFT'] + $(".click-bubble").width()
 
+		# compare to map boundaries dimensions
+		offset = {}
+		offset.x = 0
+		offset.y = 0
+
+		RIGHT = $("#map_region").width()
+		BOTTOM =$(window).height() - 5
+		filter_offset = $("#map_filter").offset()
+		TOP = filter_offset.top
+		if y_high < (TOP + @PADDING)
+			offset.y = y_high - (TOP + @PADDING)
+
+		if y_low > (BOTTOM - @PADDING)
+			offset.y = y_low - (BOTTOM - @PADDING)
+
+		if x_max > (RIGHT - @PADDING)
+			offset.x = x_max - (RIGHT - @PADDING)
+
+		return offset

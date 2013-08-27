@@ -27,7 +27,6 @@ class University extends AppModel {
 			'conditions' => array('University.id' => $school_id),
 			'fields' => 	array('latitude', 'longitude', 'city', 'state'
 		)));
-		CakeLog::write("School", print_r($lat_long, true));
 		if (!array_key_exists('University', $lat_long))
 			throw new NotFoundException();
 
@@ -101,6 +100,21 @@ class University extends AppModel {
 			return $university['University']['id'];
 		
 		return null;
+	}
+
+	public function UniExists($university_id){
+		$this->id = $university_id;
+		return $this->exists();
+	}
+
+	public function getUniversitiesAround($lat, $lon, $radius){
+		$this->contain();
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($lat) ) * cos( radians( University.latitude ) ) * cos( radians( University.longitude ) - radians($lon) ) + sin( radians($lat) ) * sin( radians( University.latitude ) ) ) )"
+		);
+		$data = $this->find('all', array('fields' => array('distance', 'name', 'id'), 'conditions' => array('distance <' => $radius)));
+		return $data;
+
 	}
 }
 ?>

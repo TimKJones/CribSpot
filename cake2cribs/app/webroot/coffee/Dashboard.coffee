@@ -1,5 +1,5 @@
 class A2Cribs.Dashboard
-
+	
 	@SetupUI:()->
 		$(window).resize =>
 			@SizeContent()
@@ -48,10 +48,24 @@ class A2Cribs.Dashboard
 
 		@GetListings()
 
+
+	
+	
+
 	###
 	Retrieves all listings for logged-in user and adds them to the cache.
+
+	Returns a promise that will return the cache when complete.
+	This can be used by other module who want to know when the dashboard
+	has the listinngs loaded. 
 	###
+
 	@GetListings: ->
+		if not @DeferedListings?
+			@DeferedListings = new $.Deferred()
+		else
+			return @DeferedListings.promise()
+
 		url = myBaseUrl + "listings/GetListing"
 		$.get url, (data) =>
 			response_data = JSON.parse data
@@ -59,6 +73,13 @@ class A2Cribs.Dashboard
 				for key, value of item
 					if A2Cribs[key]?
 						A2Cribs.UserCache.Set new A2Cribs[key] value
+					else if A2Cribs[key]? and value.length? # Is an array
+						for i in value
+							A2Cribs.UserCache.Set new A2Cribs[key] i
+
+			@DeferedListings.resolve() # Resolve the deffered so anyone
+			# Waiting on the data to be loaded now knows the listings 
+			# are in the cache.
 
 			#Create lists for everything
 			listings = A2Cribs.UserCache.Get "listing"
@@ -67,6 +88,7 @@ class A2Cribs.Dashboard
 				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
 				marker_set[listing.listing_type][listing.marker_id] = true
 
+			@DeferedListings.resolve()
 
 			# Counts listings and adds them to the dropdown list
 			listings_count = [0, 0, 0]
@@ -84,10 +106,11 @@ class A2Cribs.Dashboard
 						id: marker.marker_id
 					}
 					$("##{type}_list_content").append list_item
-
+			
 			for type, i in listing_types
-				$("##{type}_count").text listings_count[i]
+				$("##{type}_count").text listings_count[i]			
 
+		return @DeferedListings.promise()
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window

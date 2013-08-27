@@ -1,0 +1,260 @@
+@widget_width : 600px;
+@widget_height : 450px;
+
+
+@font-face {
+    font-family: ReklameScript;
+    src: local(ReklameScript), url('/font/ReklameScript-Regular_DEMO.otf') format('opentype');
+}
+    
+.order-window{
+
+    width: @widget_width;
+    height: @widget_height;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 10px;
+    border: solid 2px #aeaeae;
+    position: relative;
+    background: #f7f7f7;
+    
+
+
+    .total{
+        // line-height: 45px;
+        font-size: 18px;
+    }
+
+    .buy{
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+    }   
+    .left-sec{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        width: 350px; 
+        padding: 10px;
+    }
+
+    .right-sec{
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 250px;        
+        background: #f2f3f3;
+        padding: 10px;
+        border-left: solid 2px #aeaeae;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+
+        .title{
+            font-family:ReklameScript;
+            font-size:26px;
+            text-align: center;
+            display: block;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        p{
+            color: #7a7a7a;
+        }
+        .rates{
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .rates-box{
+            position: relative;
+            height: 72px;
+            width: 240px;
+            color: #424242;
+            
+            span > div{
+                text-align: center;
+            }
+
+            .weekdays-price{
+                padding-top: 10px;
+                
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 120px;
+
+                border: 2px solid #e6e4d2;
+                background: #fdfbea;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
+
+            
+            .weekends-price{
+                padding-top: 10px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 120px;
+                
+                border: 2px solid #e6e4d2;
+                background: #f9f4cb;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+
+            }
+
+            .big-price{
+                color: #f55d73;
+                font-size: 24px;
+                font-weight: bold;
+            }
+        }
+        
+
+
+    }
+
+    i.close-checkout{
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: #bbbbbb;
+        font-size: 25px;
+    }
+    i.close-checkout:hover{
+        cursor: pointer;
+    }
+
+
+}
+
+.mdp{
+    // width: 400px;
+}
+
+.featured-listing-order-item{
+    padding: 10px;
+    .address{
+        font-size: 18px;
+        // padding-bottom:5px;
+    }
+    
+    .mdp{
+        margin-top:5px;
+        // margin:20px;
+    }
+    .rst{
+        label {
+           display: block;
+            padding-left: 15px;
+            text-indent: -15px;
+        }
+        input {
+            width: 13px;
+            height: 13px;
+            padding: 0;
+            margin:0;
+            vertical-align: bottom;
+            position: relative;
+            top: -1px;
+            *overflow: hidden;
+        }
+
+        .clear-selected-dates{
+            
+        }
+    }
+
+    .total-tally{
+            // width: 150px;
+            padding-left: 15px;
+            // span{
+            //     color: #7a7a7a;
+            // }
+            .price{
+                color: #4ae05c;
+                font-weight: bold;
+            }
+    }
+    .DateConflicts{
+        width: 100%;
+        margin: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        li{
+            list-style-type: none;
+        }
+    }
+    .instruc-step{
+        font-size: 16px;
+    }
+
+    .uniPriceTable{
+        width: 100%;
+        td.rates{
+            text-align: center;   
+        }
+
+    }
+}
+
+
+table.orderItems{
+    display: none;
+    padding-right: 40px;
+    width: 50%;
+    tr {
+        padding: 5px;
+        // border-bottom: 2px solid #ddd;
+        height:auto;
+        // width: 100%;
+        
+        .actions > a{
+            font-size: 15px;
+            // padding: 2px;
+            color: #333;
+            text-decoration: none;
+            
+            :hover{
+                color: #666;
+            };
+        }
+        
+    }
+
+    tr:first-of-type{
+        // border-top: 2px solid #ddd;
+    }
+
+    
+    
+    tr.fl-cart-item{
+        .address{
+            font-size: 15px;
+        }
+    }
+
+    tr.editing{
+        background: #ffffff;
+    }
+
+
+}
+
+.edit-form{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: @widget_width/2;
+
+
+}

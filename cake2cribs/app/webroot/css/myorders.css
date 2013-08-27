@@ -1,0 +1,38 @@
+.orcontainer{
+    width: 420px;
+}
+
+.myOrders{
+    border: 1px solid #444;
+}
+
+.order-item{
+    position: relative;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+}
+
+.order-details{
+    padding-top: 10px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+    padding-left: 10px;    
+}
+
+
+.toggle-details i{
+    font-size: 10px;
+    line-height: 18px;
+}
+.toggle-details:hover{
+    text-decoration: none;
+}
+
+
+
+.total{
+    position: absolute;
+    top: 25px;
+    right: 5px;
+}

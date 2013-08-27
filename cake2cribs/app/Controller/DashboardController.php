@@ -66,5 +66,6 @@
 
 	 		$this->set('dropdowns', json_encode($dropdown_values));
 	 		CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
+
 	 	}
 	}

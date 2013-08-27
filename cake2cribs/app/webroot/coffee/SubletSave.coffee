@@ -28,7 +28,7 @@ class A2Cribs.SubletSave
 		@PhotoManager = new A2Cribs.PhotoManager div
 
 
-		A2Cribs.Map.LoadTypeTables()
+		# A2Cribs.Map.LoadTypeTables()
 
 
 

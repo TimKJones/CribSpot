@@ -4,15 +4,20 @@
 	$this->set('title_for_layout', 'Cribspot Sublet');
 	echo '<div id="container">';
 		echo $this->element('header');
+		echo $this->element('FeaturedListings/fl_sidebar');	
 		echo $this->element('map');
 		echo $this->element('login');
 		echo $this->element('register');
 		echo $this->element('post-sublet');
+
+		
 		//echo $this->element('favorites');
 
 		/* Hidden Elements */
 		echo $this->element('tooltips');
 		echo $this->element('popups');
+
+
 		if ($school_name == "University of Michigan-Ann Arbor")
 			echo '<a href="http://www.michigandaily.com/classifieds"><div id="DailyLogo"></div></a>';
 	echo '</div>';
