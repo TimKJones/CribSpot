@@ -428,7 +428,8 @@ class Rental extends RentalPrototype {
 						$next_conditions = $this->_getBooleanFilterConditions($filterParams[0], $filterParams[1], $filterParams[2]);
 					}
 
-					array_push($conditions, $next_conditions);
+					if ($next_conditions !== null)
+						array_push($conditions, $next_conditions);
 				}
 			}
 		}
@@ -478,6 +479,8 @@ class Rental extends RentalPrototype {
 		$safe_field_name = $this->_getSafeFieldName($field_name);
 		$conditions = array();
 		$possibleValues = json_decode($params[$safe_field_name]);
+		if (count($possibleValues) === 0)
+			return null;
 
 		$conditions['OR'] = array(array($table_name . '.' . $field_name => $possibleValues));
 
