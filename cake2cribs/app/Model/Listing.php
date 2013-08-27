@@ -470,7 +470,7 @@ class Listing extends AppModel {
 
 		if ($listing === null)
 			return null;
-
+CakeLog::write('what', print_r($listing, true));
 		return $listing['Marker']['street_address'];
 	}
 

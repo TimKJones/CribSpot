@@ -224,8 +224,8 @@ class FeaturedListingsController extends AppController {
       array_push($response, array(
           'name' => $uni['University']['name'],
           'university_id' => $uni_id,
-          'weekend_price' => $wd_price,
-          'weekday_price' => $we_price,
+          'weekend_price' => $we_price,
+          'weekday_price' => $wd_price,
           'unavailable_dates' => $this->FeaturedListing->getDates($listing_id, $uni_id),
         ));
     }

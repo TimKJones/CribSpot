@@ -321,11 +321,16 @@
           'client' => 'a2cribs.com'
         );  
 
+        $from_name = $from_user['first_name'];
+        if ($is_property_manager)
+            $from_name = $from_user['company_name'];
+CakeLog::write('from_name', print_r($from_user, true));
+
         $this->Email->delivery = 'smtp';
         $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
         $this->Email->to = $recipient['email'];
         
-        $this->Email->subject = "You've received a new message from " . $from_user['first_name'] . " on Cribspot!";
+        $this->Email->subject = "You've received a new message from " . $from_name . " on Cribspot!";
         $this->Email->template = 'unread_message';
         $this->Email->sendAs = 'html';
         $this->set(array(
@@ -337,10 +342,6 @@
         /* Get the data we need to fill in fields in the email */
         $is_property_manager = (intval($recipient['user_type']) === 1);
         $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
-
-        $from_name = $from_user['first_name'];
-        if ($is_property_manager)
-            $from_name = $from_user['company_name'];
 
         if ($street_address !== null)
             $this->Email->subject = "You've received a message from ".$from_name." about ".$street_address;

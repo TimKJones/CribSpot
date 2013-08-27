@@ -97,7 +97,8 @@ class A2Cribs.RentalSave
 		$("#rentals_edit").text "Finish Editing"
 		for row in rows
 			data = @GridMap[@VisibleGrid].getDataItem row
-			data.editable = yes
+			if data?
+				data.editable = yes
 		@Editable = true
 
 	FinishEditing: () ->

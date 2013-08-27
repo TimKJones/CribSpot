@@ -122,9 +122,24 @@ class A2Cribs.FLDash
                     when 1 then icon = 'icon-lemon' #WTF should sublet icon be??
                     when 2 then icon = 'icon-truck' #Font awesome doesn't have a car icon
 
+                rental = A2Cribs.UserCache.GetAllAssociatedObjects 'rental', 'listing', listing.listing_id
+                unit_style_options = ""
+                unit_style_description = ""
+                if rental? and rental[0] != undefined
+                    formattedRental = rental[0]
+                description = 'No Description'
+                if formattedRental? and formattedRental.unit_style_options != undefined and formattedRental.unit_style_description != undefined
+                    if parseInt(formattedRental.unit_style_options) == 0 then unit_style_options = "Unit"
+                    if parseInt(formattedRental.unit_style_options) == 1 then unit_style_options = "Layout"
+                    if parseInt(formattedRental.unit_style_options) == 2 then unit_style_options = "Entire House"
+                    description = unit_style_options
+                    if description != "Entire House"
+                        description = unit_style_options + " - " + formattedRental.unit_style_description
+
                 data = {
                     icon:icon
                     address: address
+                    description: description
                     listing_id: listing_id 
                 }
 
@@ -250,7 +265,7 @@ class A2Cribs.FLDash
     initTemplates:()->
         ListingHTML = """
                 <li class = 'listing-item' data-id='<%= listing_id %>'>
-                    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= address %></strong>
+                    <i class = 'icon-large <%= icon %> listing-icon'></i><strong><%= description %></strong>
                     <i class = 'pull-right feature-star icon-star-empty'></i>
                 </li>
                     """
