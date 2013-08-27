@@ -8,7 +8,7 @@ class A2Cribs.ShareManager
 			return null
 		street_address = street_address.split(' ').join('-')
 		city = city.split(' ').join('-')
-		url = 'http://cribspot.com/listing/' + listing_id + '/' + street_address + '-' + city + '-' + state + '-' + zip
+		url = 'http://cribspot.com/listing/' + listing_id
 		return url
 
 	###
