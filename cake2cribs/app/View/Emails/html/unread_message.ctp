@@ -351,30 +351,29 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                         <p style="margin-bottom:15px;" >
 
 
-You've received a new message on Cribspot 
-
+You've received a new message on Cribspot
 <?php if ($is_property_manager && $street_address !== null){ ?>
     about your property at <?php echo $street_address;?>
-<?php } ?>! <br/>
+<?php } ?>!<br/><br/>
 
 <?php if ($is_property_manager && !$email_verified){ ?>
-In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/>
+In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/><br/>
 
-In order to view this message and communicate with this prospective tenant, you'll first need to finish registration.  Click <a href='<?php echo $reset_password_url; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your password or copy and paste this url into your browser:<br/>
+In order to view this message and communicate with this prospective tenant, you'll first need to finish registration.  Click <a href='<?php echo $reset_password_url; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your password or copy and paste this url into your browser:<br/><br/>
 
-<?php echo $reset_password_url; ?><br/>
+<?php echo $reset_password_url; ?><br/><br/>
 
-After logging in with your new password, you'll be directed to the dashboard where you can view this message and respond. 
+After logging in with your new password, you'll be directed to the dashboard where you can view this message and respond.<br/><br/> 
 
 <?php } else { ?>
 
-Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/>
+Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/><br/>
 
-<?php echo $view_msg; ?>
+<?php echo $view_msg; ?><br/><br/>
 
 <?php } ?>
 
-If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.
+If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.<br/><br/>
 
 Tim, Jason, Evan, and Alex
 <i>The Cribspot Team</i>

@@ -345,8 +345,13 @@
         /* Get the data we need to fill in fields in the email */
         $is_property_manager = (intval($recipient['user_type']) === 1);
         $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
+
+        $from_name = $from_user['first_name'];
+        if ($is_property_manager)
+            $from_name = $from_user['company_name'];
+
         if ($street_address !== null)
-            $this->Email->subject = "You've received a message from ".$from_user['first_name']." about ".$street_address;
+            $this->Email->subject = "You've received a message from ".$from_name." about ".$street_address;
 
         $email_verified = $recipient['verified'];
         $reset_password_url = null;
@@ -358,11 +363,6 @@
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
-CakeLog::write('unread_message_variables', print_r($recipient, true));
-CakeLog::write('unread_message_variables', 'is_property_manager: ' . $is_property_manager);
-CakeLog::write('unread_message_variables', 'street_address: ' . $street_address);
-CakeLog::write('unread_message_variables', 'email_verified: ' . $email_verified);
-CakeLog::write('unread_message_variables', 'reset_password_url: ' . $reset_password_url);
         $this->Email->send();
 
     }
