@@ -113,6 +113,8 @@
         return $(this).parent().removeClass("error");
       });
       this.modal.find("#place_map_button").click(function() {
+        var marker_selected;
+        marker_selected = _this.modal.find("#marker_select").val();
         A2Cribs.MixPanel.PostListing("Marker Selected", {
           "new marker": false,
           "marker_id": marker_selected

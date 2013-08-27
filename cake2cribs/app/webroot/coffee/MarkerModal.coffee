@@ -87,6 +87,7 @@ class A2Cribs.MarkerModal
 			$(this).parent().removeClass "error"
 
 		@modal.find("#place_map_button").click () =>
+			marker_selected = @modal.find("#marker_select").val()
 			A2Cribs.MixPanel.PostListing "Marker Selected", 
 					"new marker": false
 					"marker_id": marker_selected
