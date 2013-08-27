@@ -217,6 +217,7 @@ class UsersController extends AppController {
     */
     public function Login($signup=false)
     {
+        CakeLog::write('hostname', gethostname());
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
@@ -232,7 +233,11 @@ class UsersController extends AppController {
         We'll use these to get their access token, which we'll use to query for their basic information.
         */
         if (array_key_exists('code', $_GET)){
-            $redirect_uri = urlencode('http://ec2-54-244-203-91.us-west-2.compute.amazonaws.com/login');
+            $redirect_uri = 'http://www.cribspot.com/login';
+            if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_LOCAL')
+                $redirect_uri = urlencode('http://localhost/login');
+            else if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_DEVELOPMENT')
+                $redirect_uri = urlencode('http://ec2-54-244-203-91.us-west-2.compute.amazonaws.com/login');
             $client_id = Configure::read('FB_APP_ID');
             $client_secret = Configure::read('FB_APP_SECRET');
             $code = urlencode($_GET['code']);
