@@ -19,6 +19,7 @@
                     <div class="row-fluid">
                         <div class="span12 fb_login_container">
                             <a href="#" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
+                            <p>** Facebook login is available for students only!</p>
                         </div>
                     </div>
                 </div>
@@ -76,6 +77,7 @@
             <div class="row-fluid info_box fb_box">
                 <div class="span12 fb_login_container">
                     <a href="" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
+                    <p>** Facebook login is available for students only!</p>
                 </div>
             </div>
             <div class="row-fluid info_box student_signup">

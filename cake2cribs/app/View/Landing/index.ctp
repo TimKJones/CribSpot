@@ -1,6 +1,7 @@
 <?php
 	echo $this->Html->css('/less/landing.less?','stylesheet/less', array('inline' => false));
 	echo $this->Html->script('src/Landing', array('inline' => false));
+	echo $this->Html->script('src/Login', array('inline' => false));
 	$this->set('title_for_layout', 'Cribspot - Simple and Secure Subletting.');
 ?>
 
@@ -45,6 +46,7 @@
 						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
 							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
 								<a href="#" class="fb_login" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
+								<p>** Facebook login is available for students only!</p>
 								<input type="email" id="inputEmail" name="email" placeholder="Email">
 								<input type="password" id="inputPassword" name="password" placeholder="Password">
 								<button type="submit" id="submitButton" class="btn">Sign in</button>
