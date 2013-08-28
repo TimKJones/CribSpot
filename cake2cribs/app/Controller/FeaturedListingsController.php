@@ -7,6 +7,7 @@ class FeaturedListingsController extends AppController {
   {
     parent::beforeFilter();
     $this->Auth->allow('cycleIds');
+    $this->Auth->allow('newspaper');
   }
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
@@ -248,12 +249,14 @@ class FeaturedListingsController extends AppController {
 
   public function newspaper(){
     if(!$this->request->isPost()){
+      CakeLog::write('API', 'NOT_POST');
       throw new NotFoundException();
     }
 
     $secret_token = $this->request->data('secret_token');
 
     if($secret_token == null){
+      CakeLog::write('API', 'Secret token null');
       throw new NotFoundException();
     }
 
@@ -261,10 +264,12 @@ class FeaturedListingsController extends AppController {
     $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
 
     if($newspaper_admin == null){
+      CakeLog::write('API', 'newspaper admin null');
       throw new NotFoundException();
     }
 
     if($secret_token != $newspaper_admin['NewspaperAdmin']['secret_token']){
+      CakeLog::write('API', 'secret token is incorrect');
       throw new NotFoundException();
     }
 
