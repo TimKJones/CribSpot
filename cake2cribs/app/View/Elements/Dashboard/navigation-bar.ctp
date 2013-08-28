@@ -66,6 +66,10 @@
 	<?php } ?>
 
 <div class="row-fluid dropdowns_container">
+	<?php $user_type = intval($AuthUser['user_type']);
+	if ($user_type < 2)
+	{
+	?>
 	<ul class="nav nav-list hide list-dropdown span12" id = "messages_list">
 		<li class="row-fluid">
 			<div class="span12 nav-label">
@@ -80,6 +84,7 @@
 		<ul id = "messages_list_content" class="list_content">
 		</ul>
 	</ul>
+	<?php } ?>
 	<ul class="nav nav-list hide list-dropdown span12" id = "rentals_list">
 		<li class="row-fluid">
 			<div class="span12 nav-label">
