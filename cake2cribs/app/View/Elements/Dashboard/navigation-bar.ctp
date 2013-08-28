@@ -42,7 +42,6 @@
 	</ul>
 <?php } ?>
 	<?php 
-CakeLog::write('authuser', print_r($AuthUser, true));
 	if (intval($AuthUser['user_type']) === 1)
 	{
 	?>
