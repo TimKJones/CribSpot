@@ -253,7 +253,7 @@ class FeaturedListingsController extends AppController {
       throw new NotFoundException();
     }
 
-    $secret_token = $this->request->data('secret_token');
+    $secret_token = $this->request->query['secret_token'];
 
     if($secret_token == null){
       CakeLog::write('API', 'Secret token null');
@@ -273,8 +273,10 @@ class FeaturedListingsController extends AppController {
       throw new NotFoundException();
     }
 
-    $listings = $this->FeaturedListing->getForNewspaper($newspaper_admin['NewspaperAdmin']['university_id']);
+    $date = date('Y-m-d');
+    $listings = $this->FeaturedListing->getForNewspaper($date);
     $this->layout = 'ajax';
+    CakeLog::write('api_example', print_r($listings, true));
     $this->set("response", json_encode($listings));
     
   }

@@ -58,6 +58,11 @@ class PagesController extends AppController {
      $this->Auth->allow('TermsOfService');
   	}
   	
+  	public function NewspaperTest()
+  	{
+  		
+  	}
+
   	public function TermsOfUse()
   	{
 

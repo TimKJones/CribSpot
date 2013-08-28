@@ -1,0 +1,1 @@
+<?php echo $this->Html->script('src/NewspaperTest'); ?>
