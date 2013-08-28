@@ -55,9 +55,44 @@
       $('#changePasswordButton').click(function() {
         return _this.ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val());
       });
-      return $('#VerifyUniversityButton').click(function() {
+      $('#VerifyUniversityButton').click(function() {
         return _this.VerifyUniversity();
       });
+      $('#changePhoneBtn').click(function() {
+        return _this.SavePhone();
+      });
+      return $('#changeAddressBtn').click(function() {
+        return _this.SaveAddress();
+      });
+    };
+
+    Account.SavePhone = function() {
+      var pair, phone;
+      phone = $("#phone_input").val();
+      if (this.ValidatePhone(phone)) {
+        pair = {
+          'phone': phone
+        };
+        return this.SaveAccount(pair);
+      } else {
+        return A2Cribs.UIManager.Error("Invalid phone number");
+      }
+    };
+
+    Account.ValidatePhone = function(phone) {
+      phone = phone.replace(/[^0-9]/g, '');
+      return phone.length === 10;
+    };
+
+    Account.SaveAddress = function() {
+      var city, pair, street_address;
+      street_address = $("#street_address_input").val();
+      city = $("#city_address_input").val();
+      pair = {
+        'street_address': street_address,
+        'city': city
+      };
+      return this.SaveAccount(pair);
     };
 
     Account.Direct = function(directive) {};
@@ -120,16 +155,17 @@
       });
     };
 
-    Account.SaveAccount = function() {
-      var data, first_name, last_name;
-      $('#save_btn').attr('disabled', 'disabled');
-      first_name = $('#first_name_input').val();
-      last_name = $('#last_name_input').val();
-      data = {
-        'first_name': first_name,
-        'last_name': last_name
-      };
-      return $.post(myBaseUrl + 'users/AjaxEditUser', data, function(response) {
+    Account.SaveAccount = function(keyValuePairs) {
+      if (keyValuePairs == null) keyValuePairs = null;
+      /*$('#save_btn').attr 'disabled','disabled'
+      		first_name = $('#first_name_input').val()
+      		last_name = $('#last_name_input').val()
+      		data = {
+      			'first_name': first_name,
+      			'last_name': last_name,
+      		}
+      */
+      return $.post(myBaseUrl + 'users/AjaxEditUser', keyValuePairs, function(response) {
         var json_response;
         json_response = JSON.parse(response);
         if (json_response.error === void 0) {

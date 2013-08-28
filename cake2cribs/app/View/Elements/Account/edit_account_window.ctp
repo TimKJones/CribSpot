@@ -18,7 +18,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'save_btn' type="button" class="btn">Save changes</button>
+	  			<button id = 'changeCompanyNameBtn' type="button" class="btn">Save changes</button>
 	  		</div>
 	  </div>
 	</form>
@@ -55,7 +55,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'save_btn' type="button" class="btn">Save changes</button>
+	  			<button id = 'changeCompanyNameBtn' type="button" class="btn">Save Company Name</button>
 	  		</div>
 	  </div>
 	</form>
@@ -77,7 +77,20 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'save_btn' type="button" class="btn">Save changes</button>
+	  			<button id = 'changeAddressBtn' type="button" class="btn">Save Address</button>
+	  		</div>
+	  </div>
+	</form>
+	<form id="pm_passwordForm" class="form-horizontal">
+	  <div class="control-group">
+	    <label class="control-label" for="phone">Phone Number:</label>
+	    <div class="controls">
+	      <input type="text" id="phone_input" placeholder="Phone" value = '<?php echo $user['User']['phone'];?>'>
+	    </div>
+	  </div>
+	  <div class="control-group">
+	  	    <div class="controls">
+	  			<button id="changePhoneBtn" type="button" class="btn">Save Phone</button>
 	  		</div>
 	  </div>
 	</form>

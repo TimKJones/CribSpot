@@ -45,6 +45,32 @@ class A2Cribs.Account
 			@ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val())
 		$('#VerifyUniversityButton').click =>
 			@VerifyUniversity()
+		$('#changePhoneBtn').click =>
+			@SavePhone()
+		$('#changeAddressBtn').click =>
+			@SaveAddress()
+
+	@SavePhone: () ->
+		phone = $("#phone_input").val()
+		if @ValidatePhone phone
+			pair = 
+				'phone':phone
+			@SaveAccount pair
+		else
+			A2Cribs.UIManager.Error "Invalid phone number"
+
+	@ValidatePhone: (phone) ->
+		phone = phone.replace(/[^0-9]/g, '')
+		return phone.length == 10
+
+
+	@SaveAddress: () ->
+		street_address = $("#street_address_input").val()
+		city = $("#city_address_input").val()
+		pair = 
+			'street_address':street_address
+			'city':city
+		@SaveAccount pair
 
 	@Direct: (directive)->
 
@@ -101,16 +127,17 @@ class A2Cribs.Account
 
 			change_password_button.removeAttr 'disabled'
 
-	@SaveAccount:()->
-		$('#save_btn').attr 'disabled','disabled'
+	@SaveAccount:(keyValuePairs = null)->
+		###$('#save_btn').attr 'disabled','disabled'
 		first_name = $('#first_name_input').val()
 		last_name = $('#last_name_input').val()
 		data = {
 			'first_name': first_name,
 			'last_name': last_name,
 		}
+		###
 
-		$.post myBaseUrl + 'users/AjaxEditUser', data, (response)->
+		$.post myBaseUrl + 'users/AjaxEditUser', keyValuePairs, (response)->
 			# console.log response
 			json_response = JSON.parse(response)
 			if json_response.error == undefined
