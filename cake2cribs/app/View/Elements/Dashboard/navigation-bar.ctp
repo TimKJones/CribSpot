@@ -19,12 +19,17 @@
 			Return to Map
 		</a>
 	</li>
+	<?php
+	if (intval($AuthUser['user_type']) < 2)
+	{
+	?>
 	<li>
 		<a id = 'account-content-header' href="#" class = 'content-header' classname = 'account'>
 			<i class="icon-user icon-large"></i>
 			Account
 		</a>
 	</li>
+	<?php } ?>
 
 <?php $user_type = intval($AuthUser['user_type']);
 	if ($user_type < 2)
