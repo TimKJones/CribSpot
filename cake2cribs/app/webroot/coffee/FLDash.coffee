@@ -88,7 +88,12 @@ class A2Cribs.FLDash
                 total += Number($(element).html())
             @uiOrderItemsList.siblings('tfoot').find('.total').html "#{total.toFixed(2)}"
 
-
+        $('#fl-search-icon').click ()=>
+            $("#listings_list div").show().filter () ->
+                if $(this).text().toLowerCase().indexOf($("#fl-list-input").val().toLowerCase()) is -1
+                    return true
+                return false
+            .hide()
     
     loadListings:()->
         
@@ -143,7 +148,9 @@ class A2Cribs.FLDash
                     listing_id: listing_id 
                 }
 
-                listing_list += @ListingTemplate(data)
+                list_item = @ListingTemplate(data)
+                listing_list += list_item
+                
             
             data = {
                 marker: marker
@@ -152,6 +159,7 @@ class A2Cribs.FLDash
             }
             marker_item = @MarkerTemplate(data)
             list += marker_item
+            $("#listings_list_content").append marker_item
         
         @uiListingsList.html list          
 

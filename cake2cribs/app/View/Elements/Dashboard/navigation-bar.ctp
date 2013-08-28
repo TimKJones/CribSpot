@@ -25,6 +25,11 @@
 			Account
 		</a>
 	</li>
+
+<?php $user_type = intval($AuthUser['user_type']);
+	if ($user_type < 2)
+	{
+	?>
 	<li>
 		<a id='messages-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'messages'>
 			<i class="icon-envelope icon-large"></i>
@@ -35,7 +40,7 @@
 	<ul class="nav nav-list hide list-dropdown" id = "Rental_list">
 		<li class="nav-header">MESSAGES</li>
 	</ul>
-
+<?php } ?>
 	<?php if (intval($AuthUser['user_type']) == 1)
 	{
 	?>
@@ -49,7 +54,7 @@
 
 	<?php } ?>
 	<?php $user_type = intval($AuthUser['user_type']);
-	if ($user_type == 1 || $user_type == 3)
+	if ($user_type == 1 || $user_type == 2)
 	{
 	?>
 	<li>

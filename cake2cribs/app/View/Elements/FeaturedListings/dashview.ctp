@@ -13,7 +13,13 @@
     <div class = 'span4 left-content'>
         <div class='listing-wrapper'>
             <h4 class = 'header'>Listings</h4>
-            <div id = 'listings_list'></div>
+        </div>
+        <li class="row-fluid" id="listing-search">
+            <div class="span12">
+                <input id='fl-list-input' class="span9" type="text" data-filter-list="#listings_list"><i id="fl-search-icon" class="icon-search icon-large"></i>
+            </div>
+        </li>
+        <div id = "listings_list" class="list_content">
         </div>
     </div>
     <div class = 'span4 middle-content'>

@@ -62,7 +62,7 @@
       this.uiWidget.find(".feature-listing").click(function() {
         return _this.featureListing();
       });
-      return this.uiFL_Form.on('orderItemChanged', function(event, FL) {
+      this.uiFL_Form.on('orderItemChanged', function(event, FL) {
         var listing_id, total;
         listing_id = FL.listing_id;
         _this.uiOrderItemsList.find(".orderItem[data-id=" + listing_id + "] .price").html("" + (FL.getPrice().toFixed(2)));
@@ -72,10 +72,18 @@
         });
         return _this.uiOrderItemsList.siblings('tfoot').find('.total').html("" + (total.toFixed(2)));
       });
+      return $('#fl-search-icon').click(function() {
+        return $("#listings_list div").show().filter(function() {
+          if ($(this).text().toLowerCase().indexOf($("#fl-list-input").val().toLowerCase()) === -1) {
+            return true;
+          }
+          return false;
+        }).hide();
+      });
     };
 
     FLDash.prototype.loadListings = function() {
-      var address, alt_name, data, description, formattedRental, icon, list, listing, listing_id, listing_ids, listing_list, marker, marker_data, marker_id, marker_item, rental, unit_style_description, unit_style_options, _i, _j, _len, _len2, _ref;
+      var address, alt_name, data, description, formattedRental, icon, list, list_item, listing, listing_id, listing_ids, listing_list, marker, marker_data, marker_id, marker_item, rental, unit_style_description, unit_style_options, _i, _j, _len, _len2, _ref;
       list = "";
       marker_data = {};
       _ref = A2Cribs.UserCache.Get('listing');
@@ -135,7 +143,8 @@
             description: description,
             listing_id: listing_id
           };
-          listing_list += this.ListingTemplate(data);
+          list_item = this.ListingTemplate(data);
+          listing_list += list_item;
         }
         data = {
           marker: marker,
@@ -144,6 +153,7 @@
         };
         marker_item = this.MarkerTemplate(data);
         list += marker_item;
+        $("#listings_list_content").append(marker_item);
       }
       return this.uiListingsList.html(list);
     };
