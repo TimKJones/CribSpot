@@ -91,7 +91,7 @@ class Image extends AppModel {
 	Moves file with path $image_path to $new_directory
 	Then adds record to images table.
 	*/
-	public function SaveImageFromImport($image_path, $user_id, $listing_id, $new_directory = 'img/listings/')
+	public function SaveImageFromImport($image_path, $user_id, $listing_id, $is_primary, $new_directory = 'img/listings/')
 	{
 		$fileType = substr($image_path, strrpos($image_path, '.') + 1);
 		$newPath = $new_directory . uniqid() . '.' . $fileType;
@@ -102,7 +102,7 @@ class Image extends AppModel {
 		}
 
 		/* Create image entry for this image */
-		$response = $this->AddImageEntry($newPath, $user_id, $listing_id);
+		$response = $this->AddImageEntry($newPath, $user_id, $listing_id, $is_primary);
 		if (array_key_exists('error', $response))
 		{
 			CakeLog::write('failed_to_save_image_entry', $newPath . '; ' . $user_id . '; ' . $listing_id);
@@ -172,12 +172,12 @@ class Image extends AppModel {
 	/*
 	Add a record to the images table for the given file path.
 	*/
-	private function AddImageEntry($filePath, $user_id, $listing_id = null)
+	private function AddImageEntry($filePath, $user_id, $listing_id = null, $is_primary=0)
 	{
 		$newImage = array(
 			'image_path' => $filePath,
 			'user_id' => $user_id,
-			'is_primary' => 0
+			'is_primary' => $is_primary
 		);
 
 		if ($listing_id != null)

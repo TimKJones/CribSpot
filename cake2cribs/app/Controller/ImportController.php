@@ -327,6 +327,7 @@ return null on failure
 	{
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
+		$image_paths_processed = array();
 		foreach (scandir($path_to_directory) as $file) {
 		    if ('.' === $file) continue;
 		    if ('..' === $file) continue;
@@ -348,15 +349,20 @@ return null on failure
 
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
 		    $listing = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		    $street_address = $geocoded_address['street_address'];
+		    array_push($image_paths_processed, $street_address);
 		    if ($listing === null || !(array_key_exists('Listing', $listing))){
 		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
 		    	continue;
 		    }
-CakeLog::write('wtf', print_r($listing, true));
+
 		    $listing_id = $listing['Listing']['listing_id'];
 		    $user_id = $listing['Listing']['user_id'];
 		    $path = $directory . $file;
-			$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id);
+		    $is_primary = 0;
+		    if (!in_array($street_address, $image_paths_processed))
+		    	$is_primary = 1;
+			$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id, $is_primary);
 			if (array_key_exists('error', $response) || $response === null){
 				CakeLog::write('FailedImageSave', print_r($path, true));
 			}
