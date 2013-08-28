@@ -41,7 +41,9 @@
 		<li class="nav-header">MESSAGES</li>
 	</ul>
 <?php } ?>
-	<?php if (intval($AuthUser['user_type']) == 1)
+	<?php 
+CakeLog::write('authuser', print_r($AuthUser, true));
+	if (intval($AuthUser['user_type']) === 1)
 	{
 	?>
 	<li>
@@ -54,7 +56,7 @@
 
 	<?php } ?>
 	<?php $user_type = intval($AuthUser['user_type']);
-	if ($user_type == 1 || $user_type == 2)
+	if ($user_type === 1 || $user_type === 2)
 	{
 	?>
 	<li>
