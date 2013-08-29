@@ -481,7 +481,7 @@ CakeLog::write('what', print_r($listing, true));
 			!array_key_exists('state', $address))
 			return null;
 
-		$listing = $this->find('first', array(
+		$listing = $this->find('all', array(
 			'fields' => array('Listing.marker_id', 'Listing.user_id'),
 			'conditions' => array(
 				'Marker.street_address' => $address['street_address'],

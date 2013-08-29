@@ -93,8 +93,10 @@ class Image extends AppModel {
 	*/
 	public function SaveImageFromImport($image_path, $user_id, $listing_id, $is_primary, $new_directory = 'img/listings/')
 	{
+	CakeLog::write('arguments', $image_path . ' . ' . $user_id . ' . ' . $is_primary . ' . ' . $new_directory);
 		$fileType = substr($image_path, strrpos($image_path, '.') + 1);
 		$newPath = $new_directory . uniqid() . '.' . $fileType;
+	CakeLog::write('new_path', $newPath);
 		/* Move file to $new_path */
 		if (!copy($image_path, WWW_ROOT.$newPath)){
 			CakeLog::write('failed_to_move_image', $image_path . '; user_id = ' . $user_id . '; listing_id: ' . $listing_id);
@@ -102,7 +104,9 @@ class Image extends AppModel {
 		}
 
 		/* Create image entry for this image */
+		$this->create(); // call this to reset $this->id from previous save
 		$response = $this->AddImageEntry($newPath, $user_id, $listing_id, $is_primary);
+	CakeLog::write('AddImageEntry_response', print_r($response, true));
 		if (array_key_exists('error', $response))
 		{
 			CakeLog::write('failed_to_save_image_entry', $newPath . '; ' . $user_id . '; ' . $listing_id);
@@ -179,8 +183,8 @@ class Image extends AppModel {
 			'user_id' => $user_id,
 			'is_primary' => $is_primary
 		);
-
-		if ($listing_id != null)
+CakeLog::write('saving_image', print_r($newImage, true));
+		if ($listing_id !== null)
 			$newImage['listing_id'] = $listing_id;
 
 		if ($this->save($newImage))

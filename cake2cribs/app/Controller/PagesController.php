@@ -56,6 +56,7 @@ class PagesController extends AppController {
 	parent::beforeFilter();
      $this->Auth->allow('display');
      $this->Auth->allow('TermsOfService');
+     $this->Auth->allow('NewspaperTest');
   	}
   	
   	public function NewspaperTest()

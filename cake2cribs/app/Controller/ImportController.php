@@ -327,8 +327,8 @@ return null on failure
 	{
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
-		$image_paths_processed = array();
-		foreach (scandir($path_to_directory) as $file) {
+		$listing_ids_processed = array();
+		foreach (scandir($path_to_directory) as $file) { 
 		    if ('.' === $file) continue;
 		    if ('..' === $file) continue;
 		    if ($counter > 3) break;
@@ -346,26 +346,38 @@ return null on failure
 		    	'city' => 'Ann Arbor',
 		    	'state' => 'MI'
 		    );
-
+		CakeLog::write('full_address', print_r($full_address, true));
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
-		    $listing = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		CakeLog::write('geocoded_address', print_r($geocoded_address, true));
+		    $listings = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		CakeLog::write('listings', print_r($listings, true));
 		    $street_address = $geocoded_address['street_address'];
-		    array_push($image_paths_processed, $street_address);
-		    if ($listing === null || !(array_key_exists('Listing', $listing))){
+		    if ($listings === null) {
 		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
 		    	continue;
 		    }
 
-		    $listing_id = $listing['Listing']['listing_id'];
-		    $user_id = $listing['Listing']['user_id'];
-		    $path = $directory . $file;
-		    $is_primary = 0;
-		    if (!in_array($street_address, $image_paths_processed))
-		    	$is_primary = 1;
-			$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id, $is_primary);
-			if (array_key_exists('error', $response) || $response === null){
-				CakeLog::write('FailedImageSave', print_r($path, true));
-			}
+		    foreach ($listings as $listing){
+		    	$listing_id = intval($listing['Listing']['listing_id']);
+			    $user_id = $listing['Listing']['user_id'];
+			    $path = $directory . $file;
+			    $is_primary = 0;
+			    if (!in_array($listing_id, $listing_ids_processed)){
+			    	$is_primary = 1;
+			    	array_push($listing_ids_processed, $listing_id);
+			    }
+			    	
+			CakeLog::write('beforeSaving', 'listing_id: ' . $listing_id);
+			CakeLog::write('beforeSaving', 'user_id: ' . $user_id);
+			CakeLog::write('beforeSaving', 'path: ' . $path);
+			CakeLog::write('beforeSaving', 'is_primary: ' . $is_primary); /* BUG */
+			CakeLog::write('listing_ids_processed', print_r($listing_ids_processed, true));
+				$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id, $is_primary);
+			CakeLog::write('response', print_r($response, true));
+				if (array_key_exists('error', $response) || $response === null){
+					CakeLog::write('FailedImageSave', print_r($path, true));
+				}
+		    }	
 		}
 	}
 

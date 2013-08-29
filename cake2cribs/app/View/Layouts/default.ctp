@@ -162,9 +162,6 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 		echo $this->Session->flash();
 		echo $this->fetch('content');
 	echo '</div>';
-
-	/*<center><h3>------------------------------------------------------- Debug Info ------------------------------------------------------------</h3></center>
-	<?php echo $this->element('sql_dump'); ?> */
 ?>
 <script>
   window.fbAsyncInit = function() {
