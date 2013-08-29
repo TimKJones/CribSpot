@@ -322,9 +322,8 @@
         );  
 
         $from_name = $from_user['first_name'];
-        if ($is_property_manager)
+        if (intval($from_user['user_type']) === 1)
             $from_name = $from_user['company_name'];
-CakeLog::write('from_name', print_r($from_user, true));
 
         $this->Email->delivery = 'smtp';
         $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
@@ -340,14 +339,27 @@ CakeLog::write('from_name', print_r($from_user, true));
             )
         );
         /* Get the data we need to fill in fields in the email */
-        $is_property_manager = (intval($recipient['user_type']) === 1);
         $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
 
         if ($street_address !== null)
             $this->Email->subject = "You've received a message from ".$from_name." about ".$street_address;
 
+        $is_property_manager = (intval($recipient['user_type']) === 1);
         $email_verified = $recipient['verified'];
         $reset_password_url = null;
+//You've received a new message on Cribspot about your property at address!
+//You've received a new message on Cribspot about address!
+        $intro_greeting = "You've received a new message on Cribspot";
+        if ($street_address){
+            if ($is_property_manager)
+                $intro_greeting .= " about your property at ";
+            else
+                $intro_greeting .= " about ";
+            $intro_greeting .= $street_address;
+        }
+
+        $intro_greeting .= "!";
+
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
                 $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
@@ -356,6 +368,7 @@ CakeLog::write('from_name', print_r($from_user, true));
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
+        $this->set('intro_greeting', $intro_greeting);
         $this->Email->send();
 
     }

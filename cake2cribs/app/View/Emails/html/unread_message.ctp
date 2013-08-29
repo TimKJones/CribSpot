@@ -350,11 +350,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         <p style="margin-bottom:15px;" >
 
-
-You've received a new message on Cribspot
-<?php if ($is_property_manager && $street_address !== null){ ?>
-    about your property at <?php echo $street_address;?>
-<?php } ?>!<br/><br/>
+<?php echo $intro_greeting; ?><br/><br/>
 
 <?php if ($is_property_manager && !$email_verified){ ?>
 In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/><br/>
