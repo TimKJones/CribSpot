@@ -245,8 +245,9 @@ class FeaturedListingsController extends AppController {
   */
 
   public function newspaper(){
+    $this->layout = 'ajax';
     if(!$this->request->is('get')){
-      CakeLog::write('API', 'NOT_GET');
+      //CakeLog::write('API', 'NOT_GET');
       throw new NotFoundException();
     }
 
@@ -257,22 +258,15 @@ class FeaturedListingsController extends AppController {
       throw new NotFoundException();
     }
 
-    $user_id = $this->_getUserId();
-    $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
+    $newspaper_admin = $this->NewspaperAdmin->getBySecretToken($secret_token);
 
     if($newspaper_admin == null){
       CakeLog::write('API', 'newspaper admin null');
       throw new NotFoundException();
     }
 
-    if($secret_token != $newspaper_admin['NewspaperAdmin']['secret_token']){
-      CakeLog::write('API', 'secret token is incorrect');
-      throw new NotFoundException();
-    }
-
     $date = date('Y-m-d');
     $listings = $this->FeaturedListing->getForNewspaper($date);
-    $this->layout = 'ajax';
     CakeLog::write('api_example', print_r($listings, true));
     $this->set("response", json_encode($listings));
     

@@ -171,6 +171,7 @@ class FeaturedListing extends AppModel {
             // Go through and add the relevant data as a new array to the listings array
 
             foreach ($featuredListings as $key => $fl) {
+                CakeLog::write('fl', print_r($fl, true));
                 $fldata = array(
                     'address' => $fl['Listing']['Marker']['street_address'],
                     'city' => $fl['Listing']['Marker']['city'],
@@ -183,6 +184,7 @@ class FeaturedListing extends AppModel {
                     'description'=>$fl['Listing']['Rental']['description'],
                     'contact_email'=>$fl['Listing']['Rental']['contact_email'],
                     'contact_phone'=>$fl['Listing']['Rental']['contact_phone'],
+                    'url' => 'www.cribspot.com/listing/' . $fl['Listing']['listing_id']
                     );
                 array_push($listings[$date],$fldata);
             }
