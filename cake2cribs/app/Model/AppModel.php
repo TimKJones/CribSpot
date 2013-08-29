@@ -111,7 +111,7 @@ class AppModel extends Model {
 	{
 		unset($user['user_type']);
 		unset($user['password']);
-		unset($user['email']);
+		//unset($user['email']);
 		unset($user['phone']);
 		unset($user['vericode']);
 		unset($user['created']);

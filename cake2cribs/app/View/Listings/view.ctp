@@ -159,6 +159,7 @@
 							Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
 						</div>
 					<?php } ?>
+					<?php if ($email_exists){ ?>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
 					</div>
@@ -166,10 +167,11 @@
 						<button id="message_cancel" class="btn span5">Cancel</button>
 						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
 					</div>
+					<?php } ?>
 				</div>
 				<div class="row-fluid">
 					<div class="span12">
-						<button class="btn" id="contact_owner">CONTACT RENTAL OWNER</button>
+						<button class="btn" id="contact_owner" emailExists='<?php echo $email_exists; ?>'>CONTACT RENTAL OWNER</button>
 					</div>
 				</div>
 			</div>

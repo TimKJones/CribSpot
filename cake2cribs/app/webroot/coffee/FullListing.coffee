@@ -25,6 +25,12 @@ class A2Cribs.FullListing
 				@div.find("#main_photo").css "background-image", next_photo.css "background-image"
 
 		@div.find("#contact_owner").click () =>
+			# Only bring down dropdown if email exists 
+			if parseInt($("#contact_owner").attr('emailexists')) == 0
+				@div.find('#contact_message').show()
+				@div.find("#contact_owner").hide()
+				return
+
 			@div.find("#contact_owner").hide()
 			@div.find("#contact_message").slideDown()
 

@@ -181,8 +181,9 @@ class Listing extends AppModel {
 		/* Convert type fields to their appropriate string values */
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
 		for ($i = 0; $i < count($listing); $i++){
-			if (array_key_exists('User', $listing[$i]))
+			if (array_key_exists('User', $listing[$i])){
 				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
+			}
 			if (array_key_exists('Rental', $listing[$i])){
 				foreach ($amenities as $field){
 					if (empty($listing[$i]['Rental'][$field]))
