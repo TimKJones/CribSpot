@@ -11,6 +11,8 @@ class A2Cribs.Landing
 			});
 		)
 
+		$(".typeahead").val("University of Michigan-Ann Arbor")
+
 	@Submit: () ->
 		location = $("#search-text").val()
 		if location not in @schoolList 
