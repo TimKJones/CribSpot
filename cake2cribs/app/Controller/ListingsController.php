@@ -67,6 +67,9 @@ class ListingsController extends AppController {
 		/* use email_exists to determine whether or not to enable contacting the user */
 		$email_exists = !empty($listing['User']['email']);
 		$phone_exists = !empty($listing['Rental']['contact_phone']);
+		if (empty($listing['Rental']['contact_phone']) && !empty($listing['User']['phone']))
+			$listing['Rental']['contact_phone'] = $listing['User']['phone'];
+		
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', $email_exists || $phone_exists);
 	}
