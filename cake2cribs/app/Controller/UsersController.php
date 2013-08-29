@@ -246,6 +246,7 @@ class UsersController extends AppController {
             $url .= '&client_id=' . urlencode($client_id);
             $url .= '&client_secret=' . urlencode($client_secret);
             $url .= '&code=' . $code;
+            CakeLog::write('url', $url);
             $fb_user = urldecode(file_get_contents($url));
             parse_str($fb_user); /* Sets access token value in $access_token */
             /* 

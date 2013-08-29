@@ -151,14 +151,15 @@
 						<?= ($listing["User"]["verified"]) ? '<div class="verified">VERIFIED</div>' : '' ; ?>
 					</div>
 				</div>
-				<div class="row-fluid hide" id="contact_message">
+				<div class="row-fluid hide" id="contact_message">	
 					<?php
-					if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null)
+					if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null
+						&& $messaging_enabled)
 					{ ?>
 						<div class="row-fluid phone">
 							Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
 						</div>
-					<?php } else {?>
+					<?php } else if ($messaging_enabled){?>
 						<div class="row-fluid phone">
 							Phone Number: Not Available
 						</div>
@@ -171,6 +172,11 @@
 						<button id="message_cancel" class="btn span5">Cancel</button>
 						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
 					</div>
+					<?php } else if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null) {?>
+						<b>This rental owner can only be contacted by phone.</b>
+					<?php } ?>
+					<?php if (!$messaging_enabled) { ?>
+						<b>No contact information is available for this property.</b>
 					<?php } ?>
 				</div>
 				<div class="row-fluid">
