@@ -234,10 +234,7 @@ class FeaturedListingsController extends AppController {
     
 
     $this->layout = 'ajax';
-    $this->set('response', json_encode($response));    
-
-
-
+    $this->set('response', json_encode($response));
   }
 
 

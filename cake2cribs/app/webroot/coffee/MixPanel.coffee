@@ -21,13 +21,21 @@ class A2Cribs.MixPanel
 	@Click: (object, display_type) ->
 		if object == undefined or object == null
 			return
+		is_featured = 0
 		if object.class_name is "listing"
 			listing = object
+			is_featured = parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
 			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
 		else if object.class_name is "marker"
 			marker = object
+			listings = A2Cribs.UserCache.GetAllAssociatedObjects 'listing', 'marker', marker.marker_id
+			for listing in listings
+				if parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
+					is_featured = 1
+					break
 		else if object.class_name is "rental"
 			listing = A2Cribs.UserCache.Get "listing", object.listing_id
+			is_featured = parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
 		else
 			return false
 

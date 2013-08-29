@@ -31,7 +31,6 @@ class A2Cribs.HoverBubble
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (marker) ->
-		A2Cribs.MixPanel.Click marker, 'small popup'
 		@Close()
 		A2Cribs.ClickBubble?.Close()
 		if marker

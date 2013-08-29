@@ -22,6 +22,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 		return return_val
 
 	MarkerClicked: (event) =>
+		A2Cribs.MixPanel.Click this, 'marker'
 		A2Cribs.HoverBubble.Open this
 
 

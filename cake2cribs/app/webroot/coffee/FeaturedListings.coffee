@@ -73,6 +73,8 @@ class A2Cribs.FeaturedListings
         alt = active_listing_type
         if not @SidebarListingCache?
             @SidebarListingCache = {}
+        if not @FLListingIds?
+            @FLListingIds = []
 
         NUM_RANDOM_LISTINGS = 35
         
@@ -82,6 +84,8 @@ class A2Cribs.FeaturedListings
     
         @GetFlIds(university_id).done (ids)=>
             if ids is null then return
+            for id in ids
+                @FLListingIds.push parseInt id
             @FetchListingsByIds(ids, alt).done (listings)=>
                 sidebar.addListings listings, 'featured'
 
@@ -93,9 +97,12 @@ class A2Cribs.FeaturedListings
                     A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
             $(".fl-sb-item").click (event) =>
                 marker_id = parseInt($(event.currentTarget).attr('marker_id'))
+                listing_id = parseInt($(event.currentTarget).attr('listing_id'))
                 marker = A2Cribs.UserCache.Get('marker', marker_id)
+                listing = A2Cribs.UserCache.Get('listing', listing_id)  
                 A2Cribs.Map.GMap.setZoom 16
                 A2Cribs.HoverBubble.Open marker
+                A2Cribs.MixPanel.Click listing, 'sidebar listing'
                 markerPosition = marker.GMarker.getPosition()
                 A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
 
