@@ -91,15 +91,20 @@
     };
 
     FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
-      var NUM_RANDOM_LISTINGS, alt, getFLIds, sidebar,
+      var NUM_RANDOM_LISTINGS, alt, sidebar,
         _this = this;
       alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) this.SidebarListingCache = {};
+      if (!(this.FLListingIds != null)) this.FLListingIds = [];
       NUM_RANDOM_LISTINGS = 35;
-      getFLIds = this.GetFlIds(university_id);
       sidebar = new Sidebar($('#fl-side-bar'));
       this.GetFlIds(university_id).done(function(ids) {
+        var id, _i, _len;
         if (ids === null) return;
+        for (_i = 0, _len = ids.length; _i < _len; _i++) {
+          id = ids[_i];
+          _this.FLListingIds.push(parseInt(id));
+        }
         return _this.FetchListingsByIds(ids, alt).done(function(listings) {
           return sidebar.addListings(listings, 'featured');
         });
@@ -115,11 +120,14 @@
           }
         }
         return $(".fl-sb-item").click(function(event) {
-          var marker, markerPosition, marker_id;
+          var listing_id, marker, markerPosition, marker_id;
           marker_id = parseInt($(event.currentTarget).attr('marker_id'));
+          listing_id = parseInt($(event.currentTarget).attr('listing_id'));
           marker = A2Cribs.UserCache.Get('marker', marker_id);
+          listing = A2Cribs.UserCache.Get('listing', listing_id);
           A2Cribs.Map.GMap.setZoom(16);
           A2Cribs.HoverBubble.Open(marker);
+          A2Cribs.MixPanel.Click(listing, 'sidebar listing');
           markerPosition = marker.GMarker.getPosition();
           return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
         });
@@ -156,7 +164,7 @@
       };
 
       Sidebar.prototype.getListHtml = function(listings) {
-        var beds, data, lease_length, list, listing, name, rent, start_date, _i, _len;
+        var beds, data, image, lease_length, list, listing, name, primary_image_path, rent, start_date, _i, _j, _len, _len2, _ref;
         list = "";
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
@@ -187,6 +195,14 @@
             start_date = 'Start Date --';
           }
           if (start_date === 'Dec 1969') alert('stop');
+          primary_image_path = '/img/tooltip/no_photo.jpg';
+          if (listing.Image != null) {
+            _ref = listing.Image;
+            for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+              image = _ref[_j];
+              if (image.is_primary) primary_image_path = '/' + image.image_path;
+            }
+          }
           data = {
             rent: rent,
             beds: beds,
@@ -194,7 +210,7 @@
             start_date: start_date,
             lease_length: lease_length,
             name: name,
-            img: "http://lorempixel.com/96/64/city/",
+            img: primary_image_path,
             listing_id: listing.Listing.listing_id,
             marker_id: listing.Marker.marker_id
           };

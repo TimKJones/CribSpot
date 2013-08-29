@@ -111,9 +111,6 @@ class FeaturedListingsController extends AppController {
     $firstPartOrderedListings = array_slice($listings_data, $seed);
     $secondPartOrderedListings = array_slice($listings_data, 0, $seed);
     $orderedListings = array_merge($firstPartOrderedListings, $secondPartOrderedListings);
-    CakeLog::write('orderedlistings', 'firstpart: ' . print_r($firstPartOrderedListings, true));
-    CakeLog::write('orderedlistings', 'secondpart: ' . print_r($secondPartOrderedListings, true));
-    CakeLog::write('orderedlistings', 'entire list: ' . print_r($orderedListings, true));
     return $orderedListings;
   }
 

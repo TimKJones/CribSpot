@@ -78,8 +78,6 @@ class A2Cribs.FeaturedListings
 
         NUM_RANDOM_LISTINGS = 35
         
-        getFLIds = @GetFlIds(university_id)
-        
         sidebar = new Sidebar($('#fl-side-bar'))
     
         @GetFlIds(university_id).done (ids)=>
@@ -165,6 +163,14 @@ class A2Cribs.FeaturedListings
                 if start_date == 'Dec 1969'
                     alert('stop')
 
+                #Process images
+                primary_image_path = '/img/tooltip/no_photo.jpg'
+                if listing.Image?
+                    for image in listing.Image
+                        if image.is_primary
+                            primary_image_path = '/' + image.image_path
+
+
                 data = {
                     rent: rent
                     beds: beds
@@ -172,7 +178,7 @@ class A2Cribs.FeaturedListings
                     start_date: start_date
                     lease_length: lease_length
                     name: name
-                    img: "http://lorempixel.com/96/64/city/"
+                    img: primary_image_path
                     listing_id: listing.Listing.listing_id
                     marker_id: listing.Marker.marker_id
                 }

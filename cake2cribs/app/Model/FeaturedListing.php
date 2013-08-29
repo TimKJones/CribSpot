@@ -71,7 +71,7 @@ class FeaturedListing extends AppModel {
     // featured listings. 
     public function getSideBarConditions($date, $university_id){
 
-        $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
+        $this->contain('Listing');
 
         $conditions = array(
             'and' => array(
@@ -83,7 +83,6 @@ class FeaturedListing extends AppModel {
             );
 
         return $conditions;
-
     }
 
     // Given a mysql formatted date string y-m-d count the num listings on that day.
