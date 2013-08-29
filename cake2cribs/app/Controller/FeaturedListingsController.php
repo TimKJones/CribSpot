@@ -247,7 +247,7 @@ class FeaturedListingsController extends AppController {
   public function newspaper(){
     $this->layout = 'ajax';
     if(!$this->request->is('get')){
-      //CakeLog::write('API', 'NOT_GET');
+      CakeLog::write('API', 'NOT_GET');
       throw new NotFoundException();
     }
 
