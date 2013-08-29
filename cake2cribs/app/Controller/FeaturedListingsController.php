@@ -243,13 +243,13 @@ class FeaturedListingsController extends AppController {
 
   /*
   For a newspaper admin to fetch the featured listings
-  they need to post at this url providing their secret token
+  they need to GET at this url providing their secret token
 
   */
 
   public function newspaper(){
-    if(!$this->request->isPost()){
-      CakeLog::write('API', 'NOT_POST');
+    if(!$this->request->is('get')){
+      CakeLog::write('API', 'NOT_GET');
       throw new NotFoundException();
     }
 
