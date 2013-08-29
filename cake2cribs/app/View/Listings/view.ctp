@@ -158,7 +158,11 @@
 						<div class="row-fluid phone">
 							Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
 						</div>
-					<?php } ?>
+					<?php } else {?>
+						<div class="row-fluid phone">
+							Phone Number: Not Available
+						</div>
+					<? } ?>
 					<?php if ($email_exists){ ?>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
