@@ -1,12 +1,8 @@
 <?php
 
-class HelloShell extends AppShell 
+class DBBackupShell extends AppShell 
 {
 	public $uses = array('Listing');
-
-    public function main() {
-        $this->out('Hello world.');
-    }
 
     public function db_backup1() {
         shell_exec("mysqldump cribspot -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql");
