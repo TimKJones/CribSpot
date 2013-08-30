@@ -190,7 +190,8 @@
             beds = "" + listing.Rental.beds + " bed";
           }
           if (listing.Rental.start_date != null) {
-            start_date = this.getDateString(new Date(listing.Rental.start_date));
+            start_date = listing.Rental.start_date.toString().replace(' ', 'T');
+            start_date = this.getDateString(new Date(start_date));
           } else {
             start_date = 'Start Date --';
           }

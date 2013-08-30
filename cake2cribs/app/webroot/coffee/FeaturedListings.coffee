@@ -155,8 +155,10 @@ class A2Cribs.FeaturedListings
                 else
                     beds = "#{listing.Rental.beds} bed"
 
-                if listing.Rental.start_date? 
-                    start_date = @getDateString(new Date(listing.Rental.start_date))
+                if listing.Rental.start_date?
+                    # Fix date bug in firefox
+                    start_date = listing.Rental.start_date.toString().replace(' ', 'T')
+                    start_date = @getDateString(new Date(start_date))
                 else
                     start_date = 'Start Date --'
 
