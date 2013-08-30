@@ -483,6 +483,25 @@ CakeLog::write('saving_image', print_r($newImage, true));
 		return "SUCCESS";
 	}
 
+	public function GetPrimaryImagesByListingIds($listing_ids)
+	{
+		/* Data is corrupt somehow....must parse into new array */
+		$uncorruptedListingIds = array();
+		foreach ($listing_ids as $id)
+			array_push($uncorruptedListingIds, $id);
+
+		$images = $this->find('all', array(
+			'conditions' => array(
+				'Image.listing_id' => $uncorruptedListingIds,
+				'Image.is_primary' => 1
+			),
+			'contains' => array(),
+			'fields' => array('Image.image_id', 'Image.image_path', 'Image.listing_id', 'Image.is_primary')
+		));
+
+		return $images;
+	}
+
 	/*
 	Returns the file name given the full path to the file
 	*/

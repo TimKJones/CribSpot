@@ -52,24 +52,13 @@ class A2Cribs.FeaturedListings
 
             return deferred.promise()
 
-    @GetRandomListingsFromMap:(num_)->
-        if not @RanListingsDeferred?
-            @RanListingsDeferred = new $.Deferred()
-        
-        num = num_
-
-        $.when(A2Cribs.Map.LoadBasicData()).then (data)=>
-            basic_data = JSON.parse(data)
-            shuf = _.shuffle(basic_data)
-            sliced = shuf.slice 0, num
-            @RanListingsDeferred.resolve(sliced)
-
-        return @RanListingsDeferred.promise()
-
-            
+    @GetRandomListingsFromMap:(num, all_listing_ids)->
+        shuf = _.shuffle(all_listing_ids)
+        sliced = shuf.slice 0, num
+        return sliced       
 
 
-    @InitializeSidebar:(university_id, active_listing_type)->
+    @InitializeSidebar:(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred)->
         alt = active_listing_type
         if not @SidebarListingCache?
             @SidebarListingCache = {}
@@ -80,16 +69,66 @@ class A2Cribs.FeaturedListings
         
         sidebar = new Sidebar($('#fl-side-bar'))
     
-        @GetFlIds(university_id).done (ids)=>
-            if ids is null then return
-            for id in ids
-                @FLListingIds.push parseInt id
-            @FetchListingsByIds(ids, alt).done (listings)=>
-                sidebar.addListings listings, 'featured'
+        # get listing_ids for featured listings for today
+        getFlIdsDeferred = @GetFlIds(university_id)
 
-        $.when(@GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then (listings)=>
-            if listings is null then return
+        # resolved after image paths have been loaded
+        @GetSidebarImagePathsDeferred = new $.Deferred()
+
+        # We have the featured listing listing ids for the sidebar
+        # Now get random listing ids from the basic data (already loaded) to fill out the sidebar
+        $.when(getFlIdsDeferred, basicDataCachedDeferred).then (flIds) =>
+            listings = A2Cribs.UserCache.Get('listing')
+            # get list of all listing_ids loaded...then get random set for sidebar
+            all_listing_ids = []
+            for listing in listings
+                if listing? and listing.listing_id
+                    all_listing_ids.push parseInt listing.listing_id
+            randomIds = null
+            if all_listing_ids.length > 0
+                randomIds = @GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids)
+
+            if not flIds? and not randomIds?
+                return
+
+            # combine featured listings and random listings to get list of all sidebar listing ids
+            sidebar_listing_ids = []
+            for id in flIds
+                id = parseInt id
+                @FLListingIds.push id
+                sidebar_listing_ids.push id
+            if randomIds?
+                for id in randomIds
+                    sidebar_listing_ids.push id
+
+            listings = []
+
+            #fetch listing data for these listing_ids from the cache
+            for id in sidebar_listing_ids
+                listingObject = {}
+                listing = A2Cribs.UserCache.Get('listing', id)
+                marker = rental = null
+                if listing? 
+                    marker = A2Cribs.UserCache.Get('marker', listing.marker_id)
+                    rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id)
+                    if rental[0]?
+                        rental = rental[0]
+                if listing? and marker? and rental?
+                    listingObject.Listing = listing
+                    listingObject.Marker = marker
+                    listingObject.Rental = rental
+                    listings.push listingObject
+                else
+                    console.log listing
+                    console.log marker
+                    console.log rental
+
             sidebar.addListings listings, 'ran'
+
+            # Fetch primary image paths for all listings in sidebar
+            @GetSidebarImagePaths(sidebar_listing_ids)
+
+            # Set favorite add/delete event handlers for sidebar
             for listing in listings
                 if listing.Listing?
                     A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
@@ -103,8 +142,23 @@ class A2Cribs.FeaturedListings
                 A2Cribs.MixPanel.Click listing, 'sidebar listing'
                 markerPosition = marker.GMarker.getPosition()
                 A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
+            
+        $.when(@GetSidebarImagePathsDeferred).then (images) =>
+            images = JSON.parse images
+            for image in images
+                if image? and image.Image?
+                    img_element = $("#sb-img" + image.Image.listing_id)
+                    #img_element.attr('src', '/' + image.Image.image_path)
 
-    
+    # Fetch the primary images for listings in listing_ids
+    @GetSidebarImagePaths: (listing_ids) =>
+        $.ajax 
+            url: myBaseUrl + "Images/GetPrimaryImages/" + JSON.stringify listing_ids
+            type:"GET"
+            success: (data) =>
+                @GetSidebarImagePathsDeferred.resolve(data)
+            error: ()=>
+                @GetSidebarImagePathsDeferred.resolve(null)
 
     class Sidebar
         constructor:(@SidebarUI)->
@@ -152,8 +206,10 @@ class A2Cribs.FeaturedListings
                 
                 if listing.Rental.beds > 1
                     beds = "#{listing.Rental.beds} beds"
-                else
+                else if listing.Rental.beds?
                     beds = "#{listing.Rental.beds} bed"
+                else
+                    beds = "-- beds"
 
                 if listing.Rental.start_date?
                     # Fix date bug in firefox
@@ -161,9 +217,6 @@ class A2Cribs.FeaturedListings
                     start_date = @getDateString(new Date(start_date))
                 else
                     start_date = 'Start Date --'
-
-                if start_date == 'Dec 1969'
-                    alert('stop')
 
                 #Process images
                 primary_image_path = '/img/sidebar/no_photo_small.jpg'
@@ -197,7 +250,7 @@ class A2Cribs.FeaturedListings
     @ListItemHTML: """
     <div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
         <span class = 'img-wrapper'>
-            <img src = '<%=img%>'></img>
+            <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>
         </span>
         <span class = 'vert-line'></span>
         <span class = 'info-wrapper'>

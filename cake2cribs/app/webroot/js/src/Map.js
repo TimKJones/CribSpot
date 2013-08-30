@@ -119,9 +119,7 @@
       A2Cribs.Map.InitBoundaries();
       this.LoadAllMapData();
       A2Cribs.MarkerTooltip.Init();
-      A2Cribs.FavoritesManager.LoadFavorites();
-      A2Cribs.FilterManager.InitAddressSearch();
-      return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE);
+      return A2Cribs.FilterManager.InitAddressSearch();
     };
 
     Map.LoadBasicData = function() {
@@ -136,7 +134,8 @@
           return _this.BasicDataDeferred.resolve(responses);
         },
         error: function() {
-          return _this.BasicDataDeferred.resolve(null);
+          _this.BasicDataDeferred.resolve(null);
+          return _this.BasicDataCached.resolve();
         }
       });
       return this.BasicDataDeferred.promise();
@@ -153,6 +152,7 @@
           A2Cribs.UserCache.Set(new A2Cribs[key](value));
         }
       }
+      Map.BasicDataCached.resolve();
       all_markers = A2Cribs.UserCache.Get("marker");
       for (_j = 0, _len2 = all_markers.length; _j < _len2; _j++) {
         marker = all_markers[_j];
@@ -191,7 +191,10 @@
     Map.LoadAllMapData = function() {
       var basicData;
       basicData = this.LoadBasicData();
-      return $.when(basicData).then(this.LoadBasicDataCallback);
+      this.BasicDataCached = new $.Deferred();
+      A2Cribs.FavoritesManager.LoadFavorites();
+      $.when(basicData).then(this.LoadBasicDataCallback);
+      return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE, basicData, this.BasicDataCached);
     };
 
     Map.CenterMap = function(latitude, longitude) {

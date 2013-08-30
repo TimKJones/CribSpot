@@ -95,10 +95,7 @@ class A2Cribs.Map
 		A2Cribs.Map.InitBoundaries();
 		@LoadAllMapData()
 		A2Cribs.MarkerTooltip.Init()
-		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FilterManager.InitAddressSearch()
-
-		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE)
 
 	@LoadBasicData: ->
 		
@@ -113,6 +110,7 @@ class A2Cribs.Map
 				@BasicDataDeferred.resolve(responses)
 			error: () =>
 				@BasicDataDeferred.resolve(null)
+				@BasicDataCached.resolve()
 
 		return @BasicDataDeferred.promise()
 
@@ -124,6 +122,9 @@ class A2Cribs.Map
 		for listing in listings
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
+
+		#everything has been cached...signal other functions waiting on this to start
+		@BasicDataCached.resolve()
 
 		# Initialize all markers and add tehm to the map
 		all_markers = A2Cribs.UserCache.Get "marker"
@@ -157,7 +158,10 @@ class A2Cribs.Map
 	###
 	@LoadAllMapData: () ->
 		basicData = @LoadBasicData()
+		@BasicDataCached = new $.Deferred() # resolved after basic data has been added to cache
+		A2Cribs.FavoritesManager.LoadFavorites()
 		$.when(basicData).then(@LoadBasicDataCallback)
+		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE, basicData, @BasicDataCached)
 
 	@CenterMap:(latitude, longitude)->
 		if not @GMap? then return

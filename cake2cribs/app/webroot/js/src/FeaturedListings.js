@@ -73,54 +73,83 @@
       return deferred.promise();
     };
 
-    FeaturedListings.GetRandomListingsFromMap = function(num_) {
-      var num,
-        _this = this;
-      if (!(this.RanListingsDeferred != null)) {
-        this.RanListingsDeferred = new $.Deferred();
-      }
-      num = num_;
-      $.when(A2Cribs.Map.LoadBasicData()).then(function(data) {
-        var basic_data, shuf, sliced;
-        basic_data = JSON.parse(data);
-        shuf = _.shuffle(basic_data);
-        sliced = shuf.slice(0, num);
-        return _this.RanListingsDeferred.resolve(sliced);
-      });
-      return this.RanListingsDeferred.promise();
+    FeaturedListings.GetRandomListingsFromMap = function(num, all_listing_ids) {
+      var shuf, sliced;
+      shuf = _.shuffle(all_listing_ids);
+      sliced = shuf.slice(0, num);
+      return sliced;
     };
 
-    FeaturedListings.InitializeSidebar = function(university_id, active_listing_type) {
-      var NUM_RANDOM_LISTINGS, alt, sidebar,
+    FeaturedListings.InitializeSidebar = function(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred) {
+      var NUM_RANDOM_LISTINGS, alt, getFlIdsDeferred, sidebar,
         _this = this;
       alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) this.SidebarListingCache = {};
       if (!(this.FLListingIds != null)) this.FLListingIds = [];
       NUM_RANDOM_LISTINGS = 35;
       sidebar = new Sidebar($('#fl-side-bar'));
-      this.GetFlIds(university_id).done(function(ids) {
-        var id, _i, _len;
-        if (ids === null) return;
-        for (_i = 0, _len = ids.length; _i < _len; _i++) {
-          id = ids[_i];
-          _this.FLListingIds.push(parseInt(id));
-        }
-        return _this.FetchListingsByIds(ids, alt).done(function(listings) {
-          return sidebar.addListings(listings, 'featured');
-        });
-      });
-      return $.when(this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS)).then(function(listings) {
-        var listing, _i, _len;
-        if (listings === null) return;
-        sidebar.addListings(listings, 'ran');
+      getFlIdsDeferred = this.GetFlIds(university_id);
+      this.GetSidebarImagePathsDeferred = new $.Deferred();
+      $.when(getFlIdsDeferred, basicDataCachedDeferred).then(function(flIds) {
+        var all_listing_ids, id, listing, listingObject, listings, marker, randomIds, rental, sidebar_listing_ids, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _m;
+        listings = A2Cribs.UserCache.Get('listing');
+        all_listing_ids = [];
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
+          if ((listing != null) && listing.listing_id) {
+            all_listing_ids.push(parseInt(listing.listing_id));
+          }
+        }
+        randomIds = null;
+        if (all_listing_ids.length > 0) {
+          randomIds = _this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids);
+        }
+        if (!(flIds != null) && !(randomIds != null)) return;
+        sidebar_listing_ids = [];
+        for (_j = 0, _len2 = flIds.length; _j < _len2; _j++) {
+          id = flIds[_j];
+          id = parseInt(id);
+          _this.FLListingIds.push(id);
+          sidebar_listing_ids.push(id);
+        }
+        if (randomIds != null) {
+          for (_k = 0, _len3 = randomIds.length; _k < _len3; _k++) {
+            id = randomIds[_k];
+            sidebar_listing_ids.push(id);
+          }
+        }
+        listings = [];
+        for (_l = 0, _len4 = sidebar_listing_ids.length; _l < _len4; _l++) {
+          id = sidebar_listing_ids[_l];
+          listingObject = {};
+          listing = A2Cribs.UserCache.Get('listing', id);
+          marker = rental = null;
+          if (listing != null) {
+            marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
+            rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id);
+            if (rental[0] != null) rental = rental[0];
+          }
+          if ((listing != null) && (marker != null) && (rental != null)) {
+            listingObject.Listing = listing;
+            listingObject.Marker = marker;
+            listingObject.Rental = rental;
+            listings.push(listingObject);
+          } else {
+            console.log(listing);
+            console.log(marker);
+            console.log(rental);
+          }
+        }
+        sidebar.addListings(listings, 'ran');
+        _this.GetSidebarImagePaths(sidebar_listing_ids);
+        for (_m = 0, _len5 = listings.length; _m < _len5; _m++) {
+          listing = listings[_m];
           if (listing.Listing != null) {
             A2Cribs.FavoritesManager.setFavoriteButton(listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds);
           }
         }
         return $(".fl-sb-item").click(function(event) {
-          var listing_id, marker, markerPosition, marker_id;
+          var listing_id, markerPosition, marker_id;
           marker_id = parseInt($(event.currentTarget).attr('marker_id'));
           listing_id = parseInt($(event.currentTarget).attr('listing_id'));
           marker = A2Cribs.UserCache.Get('marker', marker_id);
@@ -131,6 +160,33 @@
           markerPosition = marker.GMarker.getPosition();
           return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
         });
+      });
+      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+        var image, img_element, _i, _len, _results;
+        images = JSON.parse(images);
+        _results = [];
+        for (_i = 0, _len = images.length; _i < _len; _i++) {
+          image = images[_i];
+          if ((image != null) && (image.Image != null)) {
+            _results.push(img_element = $("#sb-img" + image.Image.listing_id));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
+    };
+
+    FeaturedListings.GetSidebarImagePaths = function(listing_ids) {
+      return $.ajax({
+        url: myBaseUrl + "Images/GetPrimaryImages/" + JSON.stringify(listing_ids),
+        type: "GET",
+        success: function(data) {
+          return FeaturedListings.GetSidebarImagePathsDeferred.resolve(data);
+        },
+        error: function() {
+          return FeaturedListings.GetSidebarImagePathsDeferred.resolve(null);
+        }
       });
     };
 
@@ -186,8 +242,10 @@
           }
           if (listing.Rental.beds > 1) {
             beds = "" + listing.Rental.beds + " beds";
-          } else {
+          } else if (listing.Rental.beds != null) {
             beds = "" + listing.Rental.beds + " bed";
+          } else {
+            beds = "-- beds";
           }
           if (listing.Rental.start_date != null) {
             start_date = listing.Rental.start_date.toString().replace(' ', 'T');
@@ -195,7 +253,6 @@
           } else {
             start_date = 'Start Date --';
           }
-          if (start_date === 'Dec 1969') alert('stop');
           primary_image_path = '/img/sidebar/no_photo_small.jpg';
           if (listing.Image != null) {
             _ref = listing.Image;
@@ -224,10 +281,10 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.ListItemHTML = "<div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 
-  })();
+  }).call(this);
 
 }).call(this);

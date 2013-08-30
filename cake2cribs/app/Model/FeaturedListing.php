@@ -114,14 +114,24 @@ class FeaturedListing extends AppModel {
         Returns an array  of all the featured listings for a given date
     */
     public function getByDate($date){
-        $this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
+        /*$this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
         $options = array(
             'conditions'=>array(
                     'FeaturedListing.date' => $date,
                 )
             );
-
-        return $this->find('all', $options);
+        */
+        $listings = $this->find('all', array(
+            'conditions' => array('FeaturedListing.date' => $date),
+            'contains' => array()
+        ));
+        //CakeLog::write('listings', print_r($listings, true));
+        /*$log = $this->getDataSource()->getLog(false, false); 
+        CakeLog::write("lastQuery", print_r($log, true));*/
+        $listing_ids = array();
+        foreach ($listings as $listing)
+            array_push($listing_ids, $listing['FeaturedListing']['listing_id']);
+        return $listing_ids;
     }
 
     /*

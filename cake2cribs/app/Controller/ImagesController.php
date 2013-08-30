@@ -17,6 +17,7 @@ class ImagesController extends AppController {
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
 		$this->Auth->allow('SubmitCaption');
+		$this->Auth->allow('GetPrimaryImages');
 
 		$this->Auth->allow('add_test');
 	}
@@ -163,5 +164,19 @@ class ImagesController extends AppController {
 	{
 		$path = $this->Session->read('image' . $image_slot);
 		$this->Image->MakePrimary($this->listing_id, $path);
+	}
+
+	/*
+	returns the primary images for the specified listing ids
+	*/
+	public function GetPrimaryImages($listing_ids)
+	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		$this->layout = 'ajax';
+		$listing_ids = json_decode($listing_ids);
+		$images = $this->Image->GetPrimaryImagesByListingIds($listing_ids);
+		$this->set('response', json_encode($images));
 	}
 }
