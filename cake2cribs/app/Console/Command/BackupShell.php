@@ -1,6 +1,6 @@
 <?php
 
-class DBBackupShell extends AppShell 
+class BackupShell extends AppShell 
 {
 	public $uses = array('Listing');
 
