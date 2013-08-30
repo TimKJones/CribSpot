@@ -36,16 +36,6 @@
       } else {
         $('#veri-fb').append("<a href = '#'>Verify?</a>").click(this.FacebookConnect);
       }
-      if (my_verification_info.verified_tw) {
-        veripanel.find('#veri-tw i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-      } else {
-        url = myBaseUrl + 'account/getTwitterVerificationUrl';
-        $.get(url, function(response) {
-          var twitter_verification_url;
-          twitter_verification_url = JSON.parse(response).twitter_url;
-          return $('#veri-tw').append("<a href = '" + twitter_verification_url + "'>Verify?</a>");
-        });
-      }
       $('.veridd').each(function(index, element) {
         return $(element).tooltip({
           'title': 'Verify?',
