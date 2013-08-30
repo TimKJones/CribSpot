@@ -164,7 +164,7 @@ class A2Cribs.FeaturedListings
                     alert('stop')
 
                 #Process images
-                primary_image_path = '/img/tooltip/no_photo.jpg'
+                primary_image_path = '/img/sidebar/no_photo_small.jpg'
                 if listing.Image?
                     for image in listing.Image
                         if image.is_primary

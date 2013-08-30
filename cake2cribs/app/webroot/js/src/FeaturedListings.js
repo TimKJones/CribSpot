@@ -195,7 +195,7 @@
             start_date = 'Start Date --';
           }
           if (start_date === 'Dec 1969') alert('stop');
-          primary_image_path = '/img/tooltip/no_photo.jpg';
+          primary_image_path = '/img/sidebar/no_photo_small.jpg';
           if (listing.Image != null) {
             _ref = listing.Image;
             for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
