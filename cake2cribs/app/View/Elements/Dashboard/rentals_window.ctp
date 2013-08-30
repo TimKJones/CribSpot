@@ -43,13 +43,15 @@
 	</address>
 </div>
 
+<button class="btn btn-small" id="feature-btn">Feature This Listing</button>
+
 <div class="row-fluid">
 	<div class="btn-group pull-left edit_buttons">
 		<button class="btn btn-small" id="rentals_edit">Edit</button>
 		<!--<button class="btn">Copy</button>-->
 		<button class="btn btn-small" id="rentals_delete">Delete</button>
 	</div>
-	<div class="pull-right info_text">Don't have time to post? Send them to info@cribspot.com and we will post for you!</div>
+	<div class="pull-right info_text">Don't have time to post? Send them in any format to info@cribspot.com and we'll post for you...for FREE!</div>
 </div>
 
 <!-- Rental Tabs and Buttons -->
