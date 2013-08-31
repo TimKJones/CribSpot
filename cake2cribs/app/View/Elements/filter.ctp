@@ -8,7 +8,7 @@
 <div id="map_filter">
 	<div id="filter_label_group">
 		<div class="btn-group filter_div">
-			<a class="btn listing_type" href="#">Rentals</a>
+			<a class="btn listing_type" id='rentals-filter-label' href="#">Rentals</a>
 			<a class="btn disabled filter_label" href="#">Searching for:</a>
 			<?php
 				$filters = array('Bedrooms', 'Budget', 'Starts In', 'Length', 'Type', 'More');

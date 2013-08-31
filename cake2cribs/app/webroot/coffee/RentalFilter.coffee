@@ -183,20 +183,32 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 
 			# Last tab selected will remove the label and show the preview for the filter
 			lastTab = @div.find(".filter_link.active")
+
 			@div.find(".filter_link").removeClass "active"
 			if lastTab.length and lastTab.find(".filter_preview").html().length
 				lastTab.find(".filter_title").hide()
 				lastTab.find(".filter_preview").show()
 
 			# Current tab display the title of the filter rather than the preview
-			$(event.delegateTarget).addClass "active"
-			$(event.delegateTarget).find(".filter_preview").hide()
-			$(event.delegateTarget).find(".filter_title").show()			
+			if $(lastTab).attr('id') != $(event.delegateTarget).attr('id')
+				$(event.delegateTarget).addClass "active"
+				$(event.delegateTarget).find(".filter_preview").hide()
+				$(event.delegateTarget).find(".filter_title").show()			
 
 			@div.find("#filter_dropdown").slideUp "fast", () =>
 				@div.find(".filter_content").hide()
-				@div.find(content).show()
-				@div.find("#filter_dropdown").slideDown()
+				# If last tab and current tab are the same, then hide dropdown and return 
+				if $(lastTab).attr('id') != $(event.delegateTarget).attr('id')
+					@div.find(content).show()
+					@div.find("#filter_dropdown").slideDown()
+
+		@div.find('#rentals-filter-label').click (event) =>
+			lastTab = @div.find(".filter_link.active")
+			@div.find("#filter_dropdown").slideUp "fast"
+			lastTab.find(".filter_title").hide()
+			lastTab.find(".filter_content").hide()
+			lastTab.find(".filter_preview").show()
+			@div.find(".filter_link").removeClass "active"
 
 		@CreateListeners()
 
