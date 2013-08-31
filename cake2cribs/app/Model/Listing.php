@@ -459,6 +459,62 @@ class Listing extends AppModel {
 
 	}
 
+	/* 
+	Pulls all data in listing_ids for a newspaper_admin
+	*/
+	public function getForNewspaper($date)
+	{
+		// Set timezone
+        date_default_timezone_set('UTC');
+        // Start date
+        $date = date('Y-m-d');
+        // End date
+        $num_days = 3;
+        $listings = array();
+        $FeaturedListing = ClassRegistry::init('FeaturedListing');
+
+	    for($i = 0; $i < $num_days; ++$i){
+            $listings[$date] = array();
+            $listing_ids = $FeaturedListing->getByDate($date);
+            $featuredListings = $this->find('all', array(
+                'conditions' => array(
+                    'Listing.listing_id' => $listing_ids
+                )
+            ));
+            // Go through and add the relevant data as a new array to the listings array
+            foreach ($featuredListings as $key => $fl) {
+                $fldata = array(
+                    'listing_id' => $fl['Listing']['listing_id'],
+                    'address' => $fl['Marker']['street_address'],
+                    'beds'=>$fl['Rental']['beds'],
+                    'baths'=>$fl['Rental']['baths'],
+                    'rent'=>$fl['Rental']['rent'],
+                    'highlights'=>$fl['Rental']['highlights'],
+                    'description'=>$fl['Rental']['description'],
+                    'contact_email'=>$fl['Rental']['contact_email'],
+                    'contact_phone'=>$fl['Rental']['contact_phone'],
+                    'listing_url'=>'www.cribspot.com/listing/' . $fl['Listing']['listing_id']   
+                    );
+                $fldata['primary_image_url'] = '';
+                if (array_key_exists('Image', $fl)){
+                    foreach ($fl['Image'] as $image){
+                        if (array_key_exists('is_primary', $image) && intval($image['is_primary']) === 1)
+                            $fldata['primary_image_url'] = 'www.cribspot.com/' . $image['image_path'];
+                    }
+                }
+
+                if (!empty($fl['Marker']['alternate_name']))
+                    $fldata['address'] = $fl['Marker']['alternate_name'];
+
+                array_push($listings[$date],$fldata);
+            }
+
+            $date = date ("Y-m-d", strtotime("+1 day", strtotime($date)));
+        }
+
+        return $listings; 
+	}
+
 	/*
 	Pulls marker_ids for listings in the logged-in users favorites
 	*/

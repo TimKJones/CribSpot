@@ -263,7 +263,8 @@ class FeaturedListingsController extends AppController {
     }
 
     $date = date('Y-m-d');
-    $listings = $this->FeaturedListing->getForNewspaper($date);
+    $listing_ids = $this->FeaturedListing->getByDate($date);
+    $listings = $this->Listing->getForNewspaper($date);
     CakeLog::write('api_example', print_r($listings, true));
     $this->set("response", json_encode($listings));
     
