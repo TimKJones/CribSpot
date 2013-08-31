@@ -51,9 +51,20 @@
       $('#changePhoneBtn').click(function() {
         return _this.SavePhone();
       });
-      return $('#changeAddressBtn').click(function() {
+      $('#changeAddressBtn').click(function() {
         return _this.SaveAddress();
       });
+      return $('#changeCompanyNameBtn').click(function() {
+        return _this.SaveCompanyName();
+      });
+    };
+
+    Account.SaveCompanyName = function() {
+      var pair;
+      pair = {
+        'company_name': $("#company_name_input").val()
+      };
+      return this.SaveAccount(pair);
     };
 
     Account.SavePhone = function() {

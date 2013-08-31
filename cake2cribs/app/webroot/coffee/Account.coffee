@@ -38,6 +38,13 @@ class A2Cribs.Account
 			@SavePhone()
 		$('#changeAddressBtn').click =>
 			@SaveAddress()
+		$('#changeCompanyNameBtn').click =>
+			@SaveCompanyName()
+
+	@SaveCompanyName: () ->
+			pair = 
+				'company_name':$("#company_name_input").val()
+			@SaveAccount pair
 
 	@SavePhone: () ->
 		phone = $("#phone_input").val()

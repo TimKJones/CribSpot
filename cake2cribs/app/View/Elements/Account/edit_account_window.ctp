@@ -18,7 +18,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'changeCompanyNameBtn' type="button" class="btn">Save changes</button>
+	  			<button id = 'changeCompanyNameBtn' type="button" class="btn" maxlength="200">Save changes</button>
 	  		</div>
 	  </div>
 	</form>
@@ -50,7 +50,7 @@
 	  <div class="control-group">
 	    <label class="control-label" for="first_name">Company Name:</label>
 	    <div class="controls">
-	      <input type="text" id="first_name_input" placeholder="Company Name" value = '<?php echo $user['User']['company_name'];?>'>
+	      <input type="text" id="company_name_input" placeholder="Company Name" value = "<?php echo $user['User']['company_name'];?>">
 	    </div>
 	  </div>
 	  <div class="control-group">
