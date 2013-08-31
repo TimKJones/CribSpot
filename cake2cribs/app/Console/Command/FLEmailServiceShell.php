@@ -31,6 +31,7 @@ class FLEmailServiceShell extends AppShell{
             // Go through and add the relevant data as a new array to the listings array
             foreach ($featuredListings as $key => $fl) {
                 $fldata = array(
+                    'listing_id' => $fl['Listing']['listing_id'],
                     'address' => $fl['Marker']['street_address'],
                     'beds'=>$fl['Rental']['beds'],
                     'baths'=>$fl['Rental']['baths'],

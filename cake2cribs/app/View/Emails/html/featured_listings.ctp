@@ -12,6 +12,7 @@
             echo "<h3>Featured Listings for $day</h3>"?>
             <table>
                 <tr>
+                    <th>Listing ID</th>
                     <th>Address</th>
                     <th>Beds</th>
                     <th>Baths</th>
@@ -20,11 +21,10 @@
                     <th>Contact Email</th>
                     <th>Contact Phone</th>
                     <th>Listing URL</th>
-                    <th>Image URL</th>
                 </tr>
 <?php
-$fields = array('address', 'beds', 'baths', 'rent', 'highlights', 'contact_email', 'contact_phone',
-    'listing_url', 'primary_image_url');
+$fields = array('listing_id', 'address', 'beds', 'baths', 'rent', 'highlights', 'contact_email', 'contact_phone',
+    'listing_url');
 
 ?>
             <?php foreach ($listingsofday as $listing) {
