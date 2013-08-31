@@ -93,10 +93,10 @@ class Image extends AppModel {
 	*/
 	public function SaveImageFromImport($image_path, $user_id, $listing_id, $is_primary, $new_directory = 'img/listings/')
 	{
-	CakeLog::write('arguments', $image_path . ' . ' . $user_id . ' . ' . $is_primary . ' . ' . $new_directory);
+	//CakeLog::write('arguments', $image_path . ' . ' . $user_id . ' . ' . $is_primary . ' . ' . $new_directory);
 		$fileType = substr($image_path, strrpos($image_path, '.') + 1);
 		$newPath = $new_directory . uniqid() . '.' . $fileType;
-	CakeLog::write('new_path', $newPath);
+	//CakeLog::write('new_path', $newPath);
 		/* Move file to $new_path */
 		if (!copy($image_path, WWW_ROOT.$newPath)){
 			CakeLog::write('failed_to_move_image', $image_path . '; user_id = ' . $user_id . '; listing_id: ' . $listing_id);

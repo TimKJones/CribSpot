@@ -331,8 +331,8 @@ return null on failure
 		foreach (scandir($path_to_directory) as $file) { 
 		    if ('.' === $file) continue;
 		    if ('..' === $file) continue;
-		    if ($counter > 3) break;
-		    $counter ++;
+		    //if ($counter > 3) break;
+		    //$counter ++;
 
 		    $dashPos = strrpos($file, '-');
 		    $dotPos = strrpos($file, '.');
@@ -346,11 +346,11 @@ return null on failure
 		    	'city' => 'Ann Arbor',
 		    	'state' => 'MI'
 		    );
-		CakeLog::write('full_address', print_r($full_address, true));
+		//CakeLog::write('full_address', print_r($full_address, true));
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
-		CakeLog::write('geocoded_address', print_r($geocoded_address, true));
+		//CakeLog::write('geocoded_address', print_r($geocoded_address, true));
 		    $listings = $this->Listing->GetListingIdFromAddress($geocoded_address);
-		CakeLog::write('listings', print_r($listings, true));
+		//CakeLog::write('listings', print_r($listings, true));
 		    $street_address = $geocoded_address['street_address'];
 		    if ($listings === null) {
 		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
@@ -372,6 +372,12 @@ return null on failure
 			CakeLog::write('beforeSaving', 'path: ' . $path);
 			CakeLog::write('beforeSaving', 'is_primary: ' . $is_primary); /* BUG */
 			CakeLog::write('listing_ids_processed', print_r($listing_ids_processed, true));
+
+				if ($listing_id === null || $path === null){
+					CakeLog::write('FAILED_IMPORT', '1: ' . $listing_id);
+					continue;
+				}
+					
 				$response = $this->Image->SaveImageFromImport($path, $user_id, $listing_id, $is_primary);
 			CakeLog::write('response', print_r($response, true));
 				if (array_key_exists('error', $response) || $response === null){
