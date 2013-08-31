@@ -148,7 +148,7 @@ class A2Cribs.ClickBubble
 
 	@linkWebsite: (div_name, link) ->
 		if link?
-			if link.indexOf "http" is -1
+			if link.indexOf("http") is -1
 				link = "http://" + link
 			@div.find(div_name).attr "href", link
 			@div.find(div_name).attr "onclick", ""

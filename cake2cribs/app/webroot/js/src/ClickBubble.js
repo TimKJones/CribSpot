@@ -197,7 +197,7 @@ ClickBubble class
 
     ClickBubble.linkWebsite = function(div_name, link) {
       if (link != null) {
-        if (link.indexOf("http" === -1)) link = "http://" + link;
+        if (link.indexOf("http") === -1) link = "http://" + link;
         this.div.find(div_name).attr("href", link);
         return this.div.find(div_name).attr("onclick", "");
       } else {
