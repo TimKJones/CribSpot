@@ -59,7 +59,7 @@ class A2Cribs.Dashboard
 	###
 	@GetUserMarkerData: () ->
 		url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser"
-		$.get url, (data) =>
+		$.ajax url, (data) =>
 			markers = JSON.parse data
 			###
 			for item in response_data

@@ -69,7 +69,7 @@
       var url,
         _this = this;
       url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser";
-      return $.get(url, function(data) {
+      return $.ajax(url, function(data) {
         var list_item, listing_types, listings_count, marker, marker_ids_processed, markers, name, _i, _len, _ref, _results;
         markers = JSON.parse(data);
         /*
