@@ -112,6 +112,70 @@
       });
     };
 
+    /*
+    	Retrieves all listings for logged-in user and adds them to the cache.
+    
+    	Returns a promise that will return the cache when complete.
+    	This can be used by other module who want to know when the dashboard
+    	has the listinngs loaded.
+    */
+
+    Dashboard.GetListings = function() {
+      var url,
+        _this = this;
+      if (!(this.DeferedListings != null)) {
+        this.DeferedListings = new $.Deferred();
+      } else {
+        return this.DeferedListings.promise();
+      }
+      url = myBaseUrl + "listings/GetListing";
+      return $.get(url, function(data) {
+        var i, item, key, list_item, listing, listing_type, listing_types, listings, listings_count, marker, marker_id, marker_id_array, marker_set, name, response_data, type, value, _i, _j, _len, _len2, _len3;
+        response_data = JSON.parse(data);
+        for (_i = 0, _len = response_data.length; _i < _len; _i++) {
+          item = response_data[_i];
+          for (key in item) {
+            value = item[key];
+            if (A2Cribs[key] != null) {
+              A2Cribs.UserCache.Set(new A2Cribs[key](value));
+            }
+          }
+        }
+        listings = A2Cribs.UserCache.Get("listing");
+        marker_set = {};
+        for (_j = 0, _len2 = listings.length; _j < _len2; _j++) {
+          listing = listings[_j];
+          if (!(marker_set[listing.listing_type] != null)) {
+            marker_set[listing.listing_type] = {};
+          }
+          marker_set[listing.listing_type][listing.marker_id] = true;
+        }
+        _this.DeferedListings.resolve();
+        listings_count = [0, 0, 0];
+        listing_types = ["rentals", "sublet", "parking"];
+        for (listing_type in marker_set) {
+          marker_id_array = marker_set[listing_type];
+          for (marker_id in marker_id_array) {
+            marker = A2Cribs.UserCache.Get("marker", marker_id);
+            name = marker.GetName();
+            type = listing_types[parseInt(listing_type, 10)];
+            listings_count[parseInt(listing_type, 10)]++;
+            list_item = $("<li />", {
+              text: name,
+              "class": "" + type + "_list_item",
+              id: marker.marker_id
+            });
+            $("#" + type + "_list_content").append(list_item);
+          }
+        }
+        for (i = 0, _len3 = listing_types.length; i < _len3; i++) {
+          type = listing_types[i];
+          $("#" + type + "_count").text(listings_count[i]);
+        }
+        return _this.DeferedListings.promise();
+      });
+    };
+
     Dashboard.SizeContent = function() {};
 
     Dashboard.SlideDropDown = function(content_header, show_content) {

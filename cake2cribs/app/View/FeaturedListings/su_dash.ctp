@@ -45,10 +45,15 @@
     
 
 </div>
-
+<?php
+    if (intval($AuthUser['user_type']) === 2)
+    {
+    ?>
 <script>
     var FLDash;
     $(function(){
         FLDash = new A2Cribs.FLDash($(".FLDash").first(), <?php echo $unavaildates;?>)
     });
 </script>
+
+<?php } ?>
