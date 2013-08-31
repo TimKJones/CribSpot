@@ -66,50 +66,46 @@
     */
 
     Dashboard.GetUserMarkerData = function() {
-      var url,
-        _this = this;
+      var url;
       url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser";
-      return $.ajax(url, function(data) {
-        var list_item, listing_types, listings_count, marker, marker_ids_processed, markers, name, _i, _len, _ref, _results;
-        markers = JSON.parse(data);
-        /*
-        			for item in response_data
-        				for key, value of item
-        					if A2Cribs[key]?
-        						A2Cribs.UserCache.Set new A2Cribs[key] value
-        					else if A2Cribs[key]? and value.length? # Is an array
-        						for i in value
-        							A2Cribs.UserCache.Set new A2Cribs[key] i
-        */
-        listings_count = [0, 0, 0];
-        listing_types = ["rentals", "sublet", "parking"];
-        $("#rentals_count").text(markers.length);
-        marker_ids_processed = [];
-        _results = [];
-        for (_i = 0, _len = markers.length; _i < _len; _i++) {
-          marker = markers[_i];
-          if (marker.Marker != null) {
-            marker = marker.Marker;
-          } else {
-            continue;
-          }
-          if ((marker.marker_id != null) && (_ref = marker.marker_id, __indexOf.call(marker_ids_processed, _ref) >= 0)) {
-            continue;
-          }
-          name = marker.alternate_name;
-          if (!marker.alternate_name || !marker.alternate_name.length) {
-            name = marker.street_address;
-          }
-          list_item = $("<li />", {
-            text: name,
-            "class": "rentals_list_item",
-            id: marker.marker_id
-          });
-          $("#rentals_list_content").append(list_item);
-          _results.push(marker_ids_processed.push(marker.marker_id));
-        }
-        return _results;
+      return $.ajax({
+        url: url,
+        type: "GET",
+        success: this.GetUserMarkerDataCallback
       });
+    };
+
+    Dashboard.GetUserMarkerDataCallback = function(data) {
+      var list_item, listing_types, listings_count, marker, marker_ids_processed, markers, name, _i, _len, _ref, _results;
+      markers = JSON.parse(data);
+      listings_count = [0, 0, 0];
+      listing_types = ["rentals", "sublet", "parking"];
+      $("#rentals_count").text(markers.length);
+      marker_ids_processed = [];
+      _results = [];
+      for (_i = 0, _len = markers.length; _i < _len; _i++) {
+        marker = markers[_i];
+        if (marker.Marker != null) {
+          marker = marker.Marker;
+        } else {
+          continue;
+        }
+        if ((marker.marker_id != null) && (_ref = marker.marker_id, __indexOf.call(marker_ids_processed, _ref) >= 0)) {
+          continue;
+        }
+        name = marker.alternate_name;
+        if (!marker.alternate_name || !marker.alternate_name.length) {
+          name = marker.street_address;
+        }
+        list_item = $("<li />", {
+          text: name,
+          "class": "rentals_list_item",
+          id: marker.marker_id
+        });
+        $("#rentals_list_content").append(list_item);
+        _results.push(marker_ids_processed.push(marker.marker_id));
+      }
+      return _results;
     };
 
     /*
@@ -121,40 +117,49 @@
     */
 
     Dashboard.GetListings = function() {
-      var url,
-        _this = this;
+      var url;
       if (!(this.DeferedListings != null)) {
         this.DeferedListings = new $.Deferred();
       } else {
         return this.DeferedListings.promise();
       }
       url = myBaseUrl + "listings/GetListing";
-      return $.ajax(url, function(data) {
-        var i, item, key, list_item, listing, listing_type, listing_types, listings, listings_count, marker, marker_id, marker_id_array, marker_set, name, response_data, type, value, _i, _j, _len, _len2, _len3;
-        response_data = JSON.parse(data);
-        for (_i = 0, _len = response_data.length; _i < _len; _i++) {
-          item = response_data[_i];
-          for (key in item) {
-            value = item[key];
-            if (A2Cribs[key] != null) {
-              A2Cribs.UserCache.Set(new A2Cribs[key](value));
-            }
-          }
+      $.ajax({
+        url: url,
+        type: "GET",
+        success: this.GetListingsCallback
+      });
+      return this.DeferedListings.promise();
+    };
+
+    Dashboard.GetListingsCallback = function(data) {
+      var item, key, list_item, listing, listing_type, listing_types, listings, listings_count, marker, marker_id, marker_id_array, marker_set, name, response_data, type, value, _i, _j, _len, _len2, _results;
+      response_data = JSON.parse(data);
+      for (_i = 0, _len = response_data.length; _i < _len; _i++) {
+        item = response_data[_i];
+        for (key in item) {
+          value = item[key];
+          if (A2Cribs[key] != null) A2Cribs.UserCache.Set(new A2Cribs[key](value));
         }
-        listings = A2Cribs.UserCache.Get("listing");
-        marker_set = {};
-        for (_j = 0, _len2 = listings.length; _j < _len2; _j++) {
-          listing = listings[_j];
-          if (!(marker_set[listing.listing_type] != null)) {
-            marker_set[listing.listing_type] = {};
-          }
-          marker_set[listing.listing_type][listing.marker_id] = true;
+      }
+      listings = A2Cribs.UserCache.Get("listing");
+      marker_set = {};
+      for (_j = 0, _len2 = listings.length; _j < _len2; _j++) {
+        listing = listings[_j];
+        if (!(marker_set[listing.listing_type] != null)) {
+          marker_set[listing.listing_type] = {};
         }
-        _this.DeferedListings.resolve();
-        listings_count = [0, 0, 0];
-        listing_types = ["rentals", "sublet", "parking"];
-        for (listing_type in marker_set) {
-          marker_id_array = marker_set[listing_type];
+        marker_set[listing.listing_type][listing.marker_id] = true;
+      }
+      Dashboard.DeferedListings.resolve();
+      listings_count = [0, 0, 0];
+      listing_types = ["rentals", "sublet", "parking"];
+      _results = [];
+      for (listing_type in marker_set) {
+        marker_id_array = marker_set[listing_type];
+        _results.push((function() {
+          var _results2;
+          _results2 = [];
           for (marker_id in marker_id_array) {
             marker = A2Cribs.UserCache.Get("marker", marker_id);
             name = marker.GetName();
@@ -165,15 +170,12 @@
               "class": "" + type + "_list_item",
               id: marker.marker_id
             });
-            $("#" + type + "_list_content").append(list_item);
+            _results2.push($("#" + type + "_list_content").append(list_item));
           }
-        }
-        for (i = 0, _len3 = listing_types.length; i < _len3; i++) {
-          type = listing_types[i];
-          $("#" + type + "_count").text(listings_count[i]);
-        }
-        return _this.DeferedListings.promise();
-      });
+          return _results2;
+        })());
+      }
+      return _results;
     };
 
     Dashboard.SizeContent = function() {};
@@ -213,6 +215,6 @@
 
     return Dashboard;
 
-  })();
+  }).call(this);
 
 }).call(this);

@@ -9,11 +9,11 @@
 <?php echo $this->Html->css('multi-date-picker'); ?>
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
-<div id = 'FLDash'>
-    <?php
+<?php
     if (intval($AuthUser['user_type']) == 2)
     {
     ?>
+<div id = 'FLDash'>
     <div class = 'span4 left-content'>
         <div class='listing-wrapper'>
             <h4 class = 'header'>Listings</h4>
@@ -72,15 +72,13 @@
         </div>
     </div>
     </div>
-<?php } ?>
-
-    
+  
 
 </div>
-
+<?php } ?>
 <script>
     var FLDash;
     $(function(){
-        FLDash = new A2Cribs.FLDash($("#FLDash"))
+        FLDash = new A2Cribs.FLDash($("#FLDash"));
     });
 </script>
