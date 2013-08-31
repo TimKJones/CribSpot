@@ -100,7 +100,7 @@ class Image extends AppModel {
 		/* Move file to $new_path */
 		if (!copy($image_path, WWW_ROOT.$newPath)){
 			CakeLog::write('failed_to_move_image', $image_path . '; user_id = ' . $user_id . '; listing_id: ' . $listing_id);
-			return null;
+			return array('error' => '');
 		}
 
 		/* Create image entry for this image */
@@ -110,7 +110,7 @@ class Image extends AppModel {
 		if (array_key_exists('error', $response))
 		{
 			CakeLog::write('failed_to_save_image_entry', $newPath . '; ' . $user_id . '; ' . $listing_id);
-			return null;
+			return array('error' => '');
 		}
 
 		return $response;

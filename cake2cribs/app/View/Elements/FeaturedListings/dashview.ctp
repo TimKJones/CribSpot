@@ -10,7 +10,7 @@
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 <div id = 'FLDash'>
-    <div class = 'span4 left-content'>
+    <!--div class = 'span4 left-content'>
         <div class='listing-wrapper'>
             <h4 class = 'header'>Listings</h4>
         </div>
@@ -65,11 +65,9 @@
                 the order click the buy button to procede with
                 the checkout process.
             </p>
-
-            <a href = '#'>View My Featured Listings</a>
         </div>
     </div>
-    </div>
+    </div-->
 
 
     

@@ -129,7 +129,8 @@ class A2Cribs.RentalSave
 		$("#rentals_address").html "<strong>#{name}</strong><br>"
 		if not @Map?
 			@Map = new A2Cribs.MiniMap $("#rentals_preview")
-		@Map.SetMarkerPosition new google.maps.LatLng marker_object.latitude, marker_object.longitude
+		if marker_object.latitude? and marker_object.longitude?
+			@Map.SetMarkerPosition new google.maps.LatLng marker_object.latitude, marker_object.longitude
 
 	Validate: (row) ->
 		required = A2Cribs.Rental.Required_Fields

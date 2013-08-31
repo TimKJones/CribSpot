@@ -30,6 +30,11 @@
           return _this.ShowContent(content);
         }) : void 0;
       });
+      $("#feature-btn").click(function(event) {
+        return _this.Direct({
+          'classname': 'featured-listing'
+        });
+      });
       $("#create-listing").find("a").click(function(event) {
         A2Cribs.MarkerModal.NewMarker();
         return A2Cribs.MarkerModal.Open();

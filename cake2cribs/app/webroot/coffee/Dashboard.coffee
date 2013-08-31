@@ -25,6 +25,9 @@ class A2Cribs.Dashboard
 				.find('.drop-down-list').click =>
 					@ShowContent content
 
+		$("#feature-btn").click (event)=>
+			@Direct({'classname' : 'featured-listing'})
+
 		$("#create-listing").find("a").click (event) =>
 			A2Cribs.MarkerModal.NewMarker()
 			A2Cribs.MarkerModal.Open()

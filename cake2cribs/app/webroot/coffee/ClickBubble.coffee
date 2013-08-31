@@ -13,10 +13,17 @@ class A2Cribs.ClickBubble
 	###
 	move_near_marker = (listing_id) =>
 		listing = A2Cribs.UserCache.Get "listing", listing_id
-		marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker
+		marker = A2Cribs.UserCache.Get("marker", listing.marker_id)
+		position = null
+		if marker? and marker.GMarker?
+			position = marker.GMarker.getPosition()
+		else if marker?
+			postition = new google.maps.LatLng(marker.latitude, marker.longitude)
 
+		if position == null
+			return
 		#calculate marker position with respect to latLng boundaries
-		marker_pixel_position = @ConvertLatLongToPixels marker.getPosition()
+		marker_pixel_position = @ConvertLatLongToPixels position
 		@div.css "left", marker_pixel_position.x + @OFFSET.LEFT
 		@div.css "top", marker_pixel_position.y + @OFFSET.TOP
 
@@ -97,6 +104,11 @@ class A2Cribs.ClickBubble
 		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
+		unit_style_description = ''
+		if listing_object.unit_style_options? and listing_object.unit_style_description?
+			unit_style_description = listing_object.unit_style_options + '-' + listing_object.unit_style_description
+		@div.find('.unit_style_description').text unit_style_description
+		@div.find('unit_style_description').text 
 		@linkWebsite ".website_link", listing_object.website
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id

@@ -170,7 +170,9 @@
       if (!(this.Map != null)) {
         this.Map = new A2Cribs.MiniMap($("#rentals_preview"));
       }
-      return this.Map.SetMarkerPosition(new google.maps.LatLng(marker_object.latitude, marker_object.longitude));
+      if ((marker_object.latitude != null) && (marker_object.longitude != null)) {
+        return this.Map.SetMarkerPosition(new google.maps.LatLng(marker_object.latitude, marker_object.longitude));
+      }
     };
 
     RentalSave.prototype.Validate = function(row) {

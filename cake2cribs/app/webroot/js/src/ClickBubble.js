@@ -25,10 +25,17 @@ ClickBubble class
     */
 
     move_near_marker = function(listing_id) {
-      var listing, marker, marker_pixel_position;
+      var listing, marker, marker_pixel_position, position, postition;
       listing = A2Cribs.UserCache.Get("listing", listing_id);
-      marker = A2Cribs.UserCache.Get("marker", listing.marker_id).GMarker;
-      marker_pixel_position = ClickBubble.ConvertLatLongToPixels(marker.getPosition());
+      marker = A2Cribs.UserCache.Get("marker", listing.marker_id);
+      position = null;
+      if ((marker != null) && (marker.GMarker != null)) {
+        position = marker.GMarker.getPosition();
+      } else if (marker != null) {
+        postition = new google.maps.LatLng(marker.latitude, marker.longitude);
+      }
+      if (position === null) return;
+      marker_pixel_position = ClickBubble.ConvertLatLongToPixels(position);
       ClickBubble.div.css("left", marker_pixel_position.x + ClickBubble.OFFSET.LEFT);
       return ClickBubble.div.css("top", marker_pixel_position.y + ClickBubble.OFFSET.TOP);
     };
@@ -129,7 +136,7 @@ ClickBubble class
     */
 
     ClickBubble.SetContent = function(listing_object) {
-      var key, marker, value;
+      var key, marker, unit_style_description, value;
       this.Clear();
       for (key in listing_object) {
         value = listing_object[key];
@@ -139,6 +146,12 @@ ClickBubble class
       marker = A2Cribs.UserCache.Get("marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id);
       this.div.find(".building_name").text(marker.GetName());
       this.div.find(".unit_type").text(marker.GetBuildingType());
+      unit_style_description = '';
+      if ((listing_object.unit_style_options != null) && (listing_object.unit_style_description != null)) {
+        unit_style_description = listing_object.unit_style_options + '-' + listing_object.unit_style_description;
+      }
+      this.div.find('.unit_style_description').text(unit_style_description);
+      this.div.find('unit_style_description').text;
       this.linkWebsite(".website_link", listing_object.website);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
