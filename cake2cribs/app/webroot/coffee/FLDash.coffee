@@ -365,8 +365,15 @@ class A2Cribs.FLDash
                     oi = A2Cribs.Order.FeaturedListing.GenerateOrderItem(orderState, uni)
                     order.push oi
 
+            if order.length == 0
+                A2Cribs.UIManager.Alert "You haven't select any dates to feature listings"
+                return
             A2Cribs.Order.BuyItems order, 0, (errors)=>
-                @showErrors(errors)
+                if errors.error_type? and errors.error_type == 'NO_LISTINGS_SELECTED'
+                    A2Cribs.UIManager.Alert "You haven't selected any dates to feature your listings."
+                    return
+                else
+                    @showErrors(errors) 
 
             ,()=>
                 #Success

@@ -128,6 +128,11 @@ Then saves the array of listing objects.
 		$this->set('response', '');
 	}
 
+	public function ResizeAllImages()
+	{
+		
+	}
+
 	private function _removeNullEntries($rental)
 	{
 		foreach ($rental as $key => $value)

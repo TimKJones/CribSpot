@@ -27,7 +27,6 @@ class FLEmailServiceShell extends AppShell{
                     'Listing.listing_id' => $listing_ids
                 )
             ));
-            CakeLog::write('fls', print_r($featuredListings, true));
             // Go through and add the relevant data as a new array to the listings array
             foreach ($featuredListings as $key => $fl) {
                 $fldata = array(

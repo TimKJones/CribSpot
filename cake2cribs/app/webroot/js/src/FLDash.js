@@ -303,8 +303,16 @@
             order.push(oi);
           }
         }
+        if (order.length === 0) {
+          A2Cribs.UIManager.Alert("You haven't select any dates to feature listings");
+          return;
+        }
         return A2Cribs.Order.BuyItems(order, 0, function(errors) {
-          return _this.showErrors(errors);
+          if ((errors.error_type != null) && errors.error_type === 'NO_LISTINGS_SELECTED') {
+            A2Cribs.UIManager.Alert("You haven't selected any dates to feature your listings.");
+          } else {
+            return _this.showErrors(errors);
+          }
         }, function() {
           return _this.removeOrderItem();
         });

@@ -196,7 +196,8 @@ class FeaturedListing extends AppModel {
                     'description'=>$fl['Listing']['Rental']['description'],
                     'contact_email'=>$fl['Listing']['Rental']['contact_email'],
                     'contact_phone'=>$fl['Listing']['Rental']['contact_phone'],
-                    'url' => 'www.cribspot.com/listing/' . $fl['Listing']['listing_id']
+                    'url' => 'www.cribspot.com/listing/' . $fl['Listing']['listing_id'],
+                    'image_url' => ''
                     );
                 array_push($listings[$date],$fldata);
             }

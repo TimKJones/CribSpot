@@ -122,6 +122,11 @@ class OrderController extends AppController {
                 throw new Exception("Order Type was not valid");
         }
         
+        /* Default response if doesn't get set anywhere */
+        $response = array(
+            'success' => false
+        );
+
         if($validationErrors){
             $response = array(
                 'success'=>false,
