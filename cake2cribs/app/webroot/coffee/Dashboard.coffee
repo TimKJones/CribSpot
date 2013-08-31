@@ -112,7 +112,7 @@ class A2Cribs.Dashboard
 			return @DeferedListings.promise()
 
 		url = myBaseUrl + "listings/GetListing"
-		$.get url, (data) =>
+		$.ajax url, (data) =>
 			response_data = JSON.parse data
 			for item in response_data
 				for key, value of item

@@ -129,7 +129,7 @@
         return this.DeferedListings.promise();
       }
       url = myBaseUrl + "listings/GetListing";
-      return $.get(url, function(data) {
+      return $.ajax(url, function(data) {
         var i, item, key, list_item, listing, listing_type, listing_types, listings, listings_count, marker, marker_id, marker_id_array, marker_set, name, response_data, type, value, _i, _j, _len, _len2, _len3;
         response_data = JSON.parse(data);
         for (_i = 0, _len = response_data.length; _i < _len; _i++) {
