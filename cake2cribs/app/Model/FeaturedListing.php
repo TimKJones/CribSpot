@@ -120,17 +120,20 @@ class FeaturedListing extends AppModel {
                     'FeaturedListing.date' => $date,
                 )
             );
-        */
+
+        return $this->find('all', $options);*/
+
+        $this->contain();
         $listings = $this->find('all', array(
-            'conditions' => array('FeaturedListing.date' => $date),
-            'contains' => array()
+            'conditions'=>array(
+                    'FeaturedListing.date' => $date,
+                ),
+            'fields' => array('FeaturedListing.listing_id')
         ));
-        //CakeLog::write('listings', print_r($listings, true));
-        /*$log = $this->getDataSource()->getLog(false, false); 
-        CakeLog::write("lastQuery", print_r($log, true));*/
         $listing_ids = array();
         foreach ($listings as $listing)
-            array_push($listing_ids, $listing['FeaturedListing']['listing_id']);
+            array_push($listing_ids, intval($listing['FeaturedListing']['listing_id']));
+
         return $listing_ids;
     }
 

@@ -1,7 +1,7 @@
 <?php 
 
 class FLEmailServiceShell extends AppShell{
-    public $uses = array('User', 'FeaturedListing');
+    public $uses = array('User', 'FeaturedListing', 'Listing');
 
     public function main(){
         $this->out('Hello World.');
@@ -21,23 +21,37 @@ class FLEmailServiceShell extends AppShell{
         $listings = array();
         for($i = 0; $i < $num_days; ++$i){
             $listings[$date] = array();
-            $featuredListings = $this->FeaturedListing->getByDate($date);
+            $listing_ids = $this->FeaturedListing->getByDate($date);
+            $featuredListings = $this->Listing->find('all', array(
+                'conditions' => array(
+                    'Listing.listing_id' => $listing_ids
+                )
+            ));
+            CakeLog::write('fls', print_r($featuredListings, true));
             // Go through and add the relevant data as a new array to the listings array
-
             foreach ($featuredListings as $key => $fl) {
                 $fldata = array(
-                    'address' => $fl['Listing']['Marker']['street_address'],
-                    'city' => $fl['Listing']['Marker']['city'],
-                    'state'=> $fl['Listing']['Marker']['state'],
-                    'zip'=> $fl['Listing']['Marker']['zip'],
-                    'beds'=>$fl['Listing']['Rental']['beds'],
-                    'baths'=>$fl['Listing']['Rental']['baths'],
-                    'rent'=>$fl['Listing']['Rental']['rent'],
-                    'highlights'=>$fl['Listing']['Rental']['highlights'],
-                    'description'=>$fl['Listing']['Rental']['description'],
-                    'contact_email'=>$fl['Listing']['Rental']['contact_email'],
-                    'contact_phone'=>$fl['Listing']['Rental']['contact_phone'],
+                    'address' => $fl['Marker']['street_address'],
+                    'beds'=>$fl['Rental']['beds'],
+                    'baths'=>$fl['Rental']['baths'],
+                    'rent'=>$fl['Rental']['rent'],
+                    'highlights'=>$fl['Rental']['highlights'],
+                    'description'=>$fl['Rental']['description'],
+                    'contact_email'=>$fl['Rental']['contact_email'],
+                    'contact_phone'=>$fl['Rental']['contact_phone'],
+                    'listing_url'=>'www.cribspot.com/listing/' . $fl['Listing']['listing_id']   
                     );
+                $fldata['primary_image_url'] = '';
+                if (array_key_exists('Image', $fl)){
+                    foreach ($fl['Image'] as $image){
+                        if (array_key_exists('is_primary', $image) && intval($image['is_primary']) === 1)
+                            $fldata['primary_image_url'] = 'www.cribspot.com/' . $image['image_path'];
+                    }
+                }
+
+                if (!empty($fl['Marker']['alternate_name']))
+                    $fldata['address'] = $fl['Marker']['alternate_name'];
+
                 array_push($listings[$date],$fldata);
             }
 
@@ -50,8 +64,6 @@ class FLEmailServiceShell extends AppShell{
         $this->_emailUser("tjones4413@gmail.com", $subject, "featured_listings", $template_data);
 
     }
-
-
 }
 
 ?>

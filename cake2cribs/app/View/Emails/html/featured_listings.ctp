@@ -13,31 +13,28 @@
             <table>
                 <tr>
                     <th>Address</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Zip</th>
                     <th>Beds</th>
                     <th>Baths</th>
                     <th>Rent</th>
                     <th>Highlights</th>
-                    <th>Description</th>
                     <th>Contact Email</th>
                     <th>Contact Phone</th>
+                    <th>Listing URL</th>
+                    <th>Image URL</th>
                 </tr>
+<?php
+$fields = array('address', 'beds', 'baths', 'rent', 'highlights', 'contact_email', 'contact_phone',
+    'listing_url', 'primary_image_url');
 
+?>
             <?php foreach ($listingsofday as $listing) {
                 echo "<tr>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[address]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[city]</td style = 'padding: 5px; text-align:center;'>";    
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[state]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[zip]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[beds]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[baths]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$$listing[rent]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[highlights]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[description]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[contact_email]</td style = 'padding: 5px; text-align:center;'>";
-                echo "<td style = 'padding: 5px; text-align:center;'>$listing[contact_phone]</td style = 'padding: 5px; text-align:center;'>";
+                foreach ($fields as $field){
+                    echo "<td style = 'padding: 5px; text-align:center;'>";
+                    if (!empty($listing[$field]))
+                        echo $listing[$field];
+                    echo "</td style = 'padding: 5px; text-align:center;'>";
+                }
 
                 echo "</tr>";   
             }

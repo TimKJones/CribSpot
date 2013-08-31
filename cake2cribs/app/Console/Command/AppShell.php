@@ -27,13 +27,22 @@ App::uses('CakeEmail', 'Network/Email');
  *
  * @package       app.Console.Command
  */
+
+/**
+ * Application Shell
+ *
+ * Add your application-wide methods in the class below, your shells
+ * will inherit them.
+ *
+ * @package       app.Console.Command
+ */
 class AppShell extends Shell {
     
     public function _emailUser($toAddress, $subject, $template, $template_data){
         $Email = new CakeEmail("smtp");
         $Email->template($template)
             ->emailFormat('html')
-            ->to('mikenike192@gmail.com')
+            ->to('tjones4413@gmail.com')
             ->subject($subject)
             ->viewVars($template_data)
             ->send();
