@@ -184,7 +184,7 @@ class A2Cribs.FLDash
                 url: url
                 type: 'GET'
                 success: (data) =>
-                    d.resolve(data)
+                    d.resolve(JSON.parse data)
                 
 
             @ListingUniPricing[listing_id] = d.promise()

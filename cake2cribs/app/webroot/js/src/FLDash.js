@@ -121,7 +121,7 @@
           if ((rental != null) && rental[0] !== void 0) {
             formattedRental = rental[0];
           }
-          description = 'Listing ' + listing_id + ": ";
+          description = 'Listing ' + listing_id;
           if ((formattedRental != null) && formattedRental.unit_style_options !== void 0 && formattedRental.unit_style_description !== void 0) {
             if (parseInt(formattedRental.unit_style_options) === 0) {
               unit_style_options = "Unit";
@@ -169,7 +169,7 @@
           url: url,
           type: 'GET',
           success: function(data) {
-            return d.resolve(data);
+            return d.resolve(JSON.parse(data));
           }
         });
         this.ListingUniPricing[listing_id] = d.promise();
