@@ -406,6 +406,7 @@ class Rental extends RentalPrototype {
 		$conditions = array();
 		/* Get a separate piece of the conditions array for each field */
 		foreach ($this->FILTER_FIELDS as $field => $filterOptions){
+
 			if (array_key_exists($field, $params)){
 				$next_conditions = null;
 				foreach ($filterOptions as $filterType => $filterParams){
@@ -425,7 +426,8 @@ class Rental extends RentalPrototype {
 						$next_conditions = $this->_getMultipleOptionFilterConditions($params, $filterParams[0], $filterParams[1], $filterParams[2]);
 					}
 					else if ($filterType === 'Boolean'){
-						$next_conditions = $this->_getBooleanFilterConditions($filterParams[0], $filterParams[1], $filterParams[2]);
+						if (intval($params[$field]) === 1)
+							$next_conditions = $this->_getBooleanFilterConditions($filterParams[0], $filterParams[1], $filterParams[2]);
 					}
 
 					if ($next_conditions !== null)
@@ -460,9 +462,9 @@ class Rental extends RentalPrototype {
 	*/
 	private function _getBooleanFilterConditions($field_name, $min_value, $table_name='Rental')
 	{
+
 		$conditions = array('OR' => array(
-			array($table_name . '.' . $field_name . ' >' => $min_value),
-			array($table_name . '.' . $field_name => NULL))
+			array($table_name . '.' . $field_name . ' >' => $min_value))
 		);
 
 		return $conditions;
