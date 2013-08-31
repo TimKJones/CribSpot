@@ -125,3 +125,7 @@
 - User->RegisterUser
 59
 - User/SaveFacebookUser
+60
+- Listing/GetOwnedListingsByMarkerId
+61
+- Listings/GetMarkerDataByLoggedInUser

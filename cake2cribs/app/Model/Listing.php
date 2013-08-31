@@ -284,11 +284,30 @@ class Listing extends AppModel {
 		return array_values($listing_ids);
 	}
 
-	public function GetListingIdsByMarkerId($marker_id){
-		$listing_ids = $this->find('list', array(
-			'conditions' => array(
+	/*
+	Returns all listing data for the given marker_id and user_id combo
+	*/
+	public function GetListingsByMarkerId($marker_id, $user_id){
+		$conditions = array(
 				'Listing.marker_id' => $marker_id,
-				'Listing.visible' => 1),
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1);
+
+		$listings = $this->find('all', array(
+			'conditions' => $conditions,
+			'contain' => array('Marker', 'Image', 'Rental')
+		));
+
+		return array_values($listings);
+	}
+
+	public function GetListingIdsByMarkerId($marker_id){
+		$conditions = array(
+				'Listing.marker_id' => $marker_id,
+				'Listing.visible' => 1);
+
+		$listing_ids = $this->find('list', array(
+			'conditions' => $conditions,
 			'fields' => array(
 				'Listing.listing_id'
 			)
@@ -471,7 +490,7 @@ class Listing extends AppModel {
 
 		if ($listing === null)
 			return null;
-CakeLog::write('what', print_r($listing, true));
+
 		return $listing['Marker']['street_address'];
 	}
 
@@ -495,6 +514,20 @@ CakeLog::write('what', print_r($listing, true));
 			return null;
 
 		return $listing;
+	}
+
+	public function GetBasicMarkerDataByUser($user_id)
+	{
+		$this->contain('Marker');
+		$markers = $this->find('all', array(
+			'conditions' => array(
+				'Listing.user_id' => $user_id,
+				'Listing.visible' => 1
+			),
+			'contains' => array('Marker')
+		));
+
+		return $markers;
 	}
 
 	/*

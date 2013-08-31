@@ -49,29 +49,19 @@ class A2Cribs.Dashboard
 				return false
 			.hide()
 
-		@GetListings()
+		#@GetListings()
+		@GetUserMarkerData()
 
 
 	
-	
-
 	###
-	Retrieves all listings for logged-in user and adds them to the cache.
-
-	Returns a promise that will return the cache when complete.
-	This can be used by other module who want to know when the dashboard
-	has the listinngs loaded. 
+	Retrieves all basic marker_data for the logged in user and updates nav bar in dashboard
 	###
-
-	@GetListings: ->
-		if not @DeferedListings?
-			@DeferedListings = new $.Deferred()
-		else
-			return @DeferedListings.promise()
-
-		url = myBaseUrl + "listings/GetListing"
+	@GetUserMarkerData: () ->
+		url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser"
 		$.get url, (data) =>
-			response_data = JSON.parse data
+			markers = JSON.parse data
+			###
 			for item in response_data
 				for key, value of item
 					if A2Cribs[key]?
@@ -79,41 +69,33 @@ class A2Cribs.Dashboard
 					else if A2Cribs[key]? and value.length? # Is an array
 						for i in value
 							A2Cribs.UserCache.Set new A2Cribs[key] i
-
-			@DeferedListings.resolve() # Resolve the deffered so anyone
-			# Waiting on the data to be loaded now knows the listings 
-			# are in the cache.
-
-			#Create lists for everything
-			listings = A2Cribs.UserCache.Get "listing"
-			marker_set = {}
-			for listing in listings
-				if not marker_set[listing.listing_type]? then marker_set[listing.listing_type] = {}
-				marker_set[listing.listing_type][listing.marker_id] = true
-
-			@DeferedListings.resolve()
+			###
 
 			# Counts listings and adds them to the dropdown list
 			listings_count = [0, 0, 0]
 			listing_types = ["rentals", "sublet", "parking"]
+			$("#rentals_count").text markers.length
+			marker_ids_processed = []
 
-			for listing_type, marker_id_array of marker_set
-				for marker_id of marker_id_array
-					marker = A2Cribs.UserCache.Get "marker", marker_id
-					name = marker.GetName()
-					type = listing_types[parseInt(listing_type, 10)]
-					listings_count[parseInt(listing_type, 10)]++
-					list_item = $ "<li />", {
-						text: name
-						class: "#{type}_list_item"
-						id: marker.marker_id
-					}
-					$("##{type}_list_content").append list_item
-			
-			for type, i in listing_types
-				$("##{type}_count").text listings_count[i]			
+			for marker in markers
+				if marker.Marker?
+					marker = marker.Marker
+				else
+					continue
 
-		return @DeferedListings.promise()
+				if marker.marker_id? and marker.marker_id in marker_ids_processed
+					continue
+
+				name = marker.alternate_name
+				if !marker.alternate_name || !marker.alternate_name.length
+					name = marker.street_address
+				list_item = $ "<li />", {
+					text: name
+					class: "rentals_list_item"
+					id: marker.marker_id
+				}
+				$("#rentals_list_content").append list_item
+				marker_ids_processed.push marker.marker_id
 
 	@SizeContent:()->
 		# Strech the widget to the bottom of the window

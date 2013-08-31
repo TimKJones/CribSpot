@@ -112,16 +112,30 @@ class A2Cribs.RentalSave
 		@EditableRows = []
 		@Editable = false
 
-	Open: (marker_id) ->
+	Open: (marker_id) ->	
 		# Gets rental info and saves to JS object
-		@ClearGrids()
+		# First, retrieve all data for this marker
+		$.ajax
+			url: myBaseUrl + "listings/GetOwnedListingsByMarkerId/" + marker_id
+			type: "GET"
+			success: (response) =>
+				response = JSON.parse response
+				for item in response
+					for key, value of item
+						if A2Cribs[key]?
+							A2Cribs.UserCache.Set new A2Cribs[key] value
+						else if A2Cribs[key]? and value.length? # Is an array
+							for i in value
+								A2Cribs.UserCache.Set new A2Cribs[key] i
 
-		@CurrentMarker = marker_id
-		@CreateListingPreview marker_id
-		
-		A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+				@ClearGrids()
 
-		@PopulateGrid marker_id
+				@CurrentMarker = marker_id
+				@CreateListingPreview marker_id
+				
+				A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+
+				@PopulateGrid marker_id
 
 	CreateListingPreview: (marker_id) ->
 		marker_object = A2Cribs.UserCache.Get "marker", marker_id

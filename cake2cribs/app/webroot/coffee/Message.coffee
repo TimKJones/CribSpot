@@ -67,9 +67,6 @@ class A2Cribs.Messages
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
-		if @ViewOnlyUnread
-			url+='?only_unread=1'
-
 		$.get url, (data) =>
 			conversations = JSON.parse data
 			for convo in conversations
@@ -215,7 +212,7 @@ class A2Cribs.Messages
 
 		$.post url, message_data, (data)=>			
 			@refreshMessages()
-			@refreshConversations()			
+			#@refreshConversations()			
 			$('#message_text textarea').val('') # Clear the reply text field
 			response = JSON.parse(data);
 			if data?.success == false

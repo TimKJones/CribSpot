@@ -155,11 +155,34 @@
     };
 
     RentalSave.prototype.Open = function(marker_id) {
-      this.ClearGrids();
-      this.CurrentMarker = marker_id;
-      this.CreateListingPreview(marker_id);
-      A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
-      return this.PopulateGrid(marker_id);
+      var _this = this;
+      return $.ajax({
+        url: myBaseUrl + "listings/GetOwnedListingsByMarkerId/" + marker_id,
+        type: "GET",
+        success: function(response) {
+          var i, item, key, value, _i, _j, _len, _len2;
+          response = JSON.parse(response);
+          for (_i = 0, _len = response.length; _i < _len; _i++) {
+            item = response[_i];
+            for (key in item) {
+              value = item[key];
+              if (A2Cribs[key] != null) {
+                A2Cribs.UserCache.Set(new A2Cribs[key](value));
+              } else if ((A2Cribs[key] != null) && (value.length != null)) {
+                for (_j = 0, _len2 = value.length; _j < _len2; _j++) {
+                  i = value[_j];
+                  A2Cribs.UserCache.Set(new A2Cribs[key](i));
+                }
+              }
+            }
+          }
+          _this.ClearGrids();
+          _this.CurrentMarker = marker_id;
+          _this.CreateListingPreview(marker_id);
+          A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
+          return _this.PopulateGrid(marker_id);
+        }
+      });
     };
 
     RentalSave.prototype.CreateListingPreview = function(marker_id) {

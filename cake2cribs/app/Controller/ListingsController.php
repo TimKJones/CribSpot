@@ -137,6 +137,54 @@ class ListingsController extends AppController {
 	}
 
 	/*
+	Returns all marker data by the logged in user
+	*/
+	public function GetMarkerDataByLoggedInUser()
+	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+		
+		$this->layout = 'ajax';
+		$user_id = $this->Auth->User('id');
+		if ($user_id === null){
+			$error = "USER_NOT_LOGGED_IN";
+			$this->Listing->LogError($user_id, 61, $error);
+			$this->set('response', json_encode(array('error' => 'USER_NOT_LOGGED_IN')));
+			return; 
+		}
+
+		$markers = $this->Listing->GetBasicMarkerDataByUser($user_id);
+		$this->set('response', json_encode($markers));
+	}
+
+	/*
+	Returns all data for the given marker_id.
+	Only returns this data if owned by the logged-in user.
+	*/
+	public function GetOwnedListingsByMarkerId($marker_id)
+	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		$this->layout = 'ajax';
+		$user_id = $this->Auth->User('id');
+		if ($user_id === 0 || !$this->Listing->UserOwnsAListingAtMarkerId($user_id, $marker_id)){
+			$error = null;
+			$error['marker_id'] = $marker_id;
+			$this->Listing->LogError($user_id, 60, $error);
+			$this->set('response', json_encode(array('error' => 
+				'We had some problems loading your listing. Chat with us using the tab along the bottom of the screen ' .
+				'or contact help@cribspot.com if the error persists. Reference error code 60')));
+			return; 
+		}
+
+		/* Fetch all listing data for this marker_id, user_id combo */
+		$listings = $this->Listing->GetListingsByMarkerId($marker_id, $user_id);
+		$this->set('response', json_encode($listings));
+		return;
+	}
+
+	/*
 	Returns json-encoded listing
 	NOTE: only returns PUBLIC user data
 	If $listing_id is null, returns all listings owned by logged-in user
