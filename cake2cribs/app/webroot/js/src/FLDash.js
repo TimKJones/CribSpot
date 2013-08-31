@@ -121,7 +121,7 @@
           if ((rental != null) && rental[0] !== void 0) {
             formattedRental = rental[0];
           }
-          description = 'No Description';
+          description = 'Listing ' + listing_id + ": ";
           if ((formattedRental != null) && formattedRental.unit_style_options !== void 0 && formattedRental.unit_style_description !== void 0) {
             if (parseInt(formattedRental.unit_style_options) === 0) {
               unit_style_options = "Unit";
@@ -132,9 +132,9 @@
             if (parseInt(formattedRental.unit_style_options) === 2) {
               unit_style_options = "Entire House";
             }
-            description = unit_style_options;
-            if (description !== "Entire House") {
-              description = unit_style_options + " - " + formattedRental.unit_style_description;
+            description += unit_style_options;
+            if (unit_style_options !== "Entire House") {
+              description += " - " + formattedRental.unit_style_description;
             }
           }
           data = {
@@ -165,8 +165,12 @@
       if (!(this.ListingUniPricing[listing_id] != null)) {
         d = new $.Deferred();
         url = "/featuredListings/getUniDataForListing/" + listing_id;
-        this.ListingUniPricing[listing_id] = $.getJSON(url, function(data) {
-          return d.resolve(data);
+        $.ajax({
+          url: url,
+          type: 'GET',
+          success: function(data) {
+            return d.resolve(data);
+          }
         });
         this.ListingUniPricing[listing_id] = d.promise();
       }

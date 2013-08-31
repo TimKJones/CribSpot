@@ -132,14 +132,14 @@ class A2Cribs.FLDash
                 unit_style_description = ""
                 if rental? and rental[0] != undefined
                     formattedRental = rental[0]
-                description = 'No Description'
+                description = 'Listing ' + listing_id
                 if formattedRental? and formattedRental.unit_style_options != undefined and formattedRental.unit_style_description != undefined
                     if parseInt(formattedRental.unit_style_options) == 0 then unit_style_options = "Unit"
                     if parseInt(formattedRental.unit_style_options) == 1 then unit_style_options = "Layout"
                     if parseInt(formattedRental.unit_style_options) == 2 then unit_style_options = "Entire House"
-                    description = unit_style_options
-                    if description != "Entire House"
-                        description = unit_style_options + " - " + formattedRental.unit_style_description
+                    description += unit_style_options
+                    if unit_style_options != "Entire House"
+                        description += " - " + formattedRental.unit_style_description
 
                 data = {
                     icon:icon
@@ -180,8 +180,12 @@ class A2Cribs.FLDash
         if not @ListingUniPricing[listing_id]?
             d = new $.Deferred()
             url = "/featuredListings/getUniDataForListing/#{listing_id}"
-            @ListingUniPricing[listing_id] = $.getJSON url, (data)=>
-                d.resolve(data)
+            $.ajax
+                url: url
+                type: 'GET'
+                success: (data) =>
+                    d.resolve(data)
+                
 
             @ListingUniPricing[listing_id] = d.promise()
 
