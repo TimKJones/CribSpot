@@ -86,7 +86,7 @@
       alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) this.SidebarListingCache = {};
       if (!(this.FLListingIds != null)) this.FLListingIds = [];
-      NUM_RANDOM_LISTINGS = 35;
+      NUM_RANDOM_LISTINGS = 30;
       sidebar = new Sidebar($('#fl-side-bar'));
       getFlIdsDeferred = this.GetFlIds(university_id);
       this.GetSidebarImagePathsDeferred = new $.Deferred();
@@ -168,7 +168,8 @@
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            _results.push(img_element = $("#sb-img" + image.Image.listing_id));
+            img_element = $("#sb-img" + image.Image.listing_id);
+            _results.push(img_element.attr('src', '/' + image.Image.image_path));
           } else {
             _results.push(void 0);
           }

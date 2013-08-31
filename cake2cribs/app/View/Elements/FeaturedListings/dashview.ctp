@@ -10,7 +10,11 @@
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 <div id = 'FLDash'>
-    <!--div class = 'span4 left-content'>
+    <?php
+    if (intval($AuthUser['user_type']) == 2)
+    {
+    ?>
+    <div class = 'span4 left-content'>
         <div class='listing-wrapper'>
             <h4 class = 'header'>Listings</h4>
         </div>
@@ -67,8 +71,8 @@
             </p>
         </div>
     </div>
-    </div-->
-
+    </div>
+<?php } ?>
 
     
 

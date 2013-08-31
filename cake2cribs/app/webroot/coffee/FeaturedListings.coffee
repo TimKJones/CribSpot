@@ -65,7 +65,7 @@ class A2Cribs.FeaturedListings
         if not @FLListingIds?
             @FLListingIds = []
 
-        NUM_RANDOM_LISTINGS = 35
+        NUM_RANDOM_LISTINGS = 30
         
         sidebar = new Sidebar($('#fl-side-bar'))
     
@@ -148,7 +148,7 @@ class A2Cribs.FeaturedListings
             for image in images
                 if image? and image.Image?
                     img_element = $("#sb-img" + image.Image.listing_id)
-                    #img_element.attr('src', '/' + image.Image.image_path)
+                    img_element.attr('src', '/' + image.Image.image_path)
 
     # Fetch the primary images for listings in listing_ids
     @GetSidebarImagePaths: (listing_ids) =>
