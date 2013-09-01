@@ -67,20 +67,33 @@ ClickBubble class
 
     /*
     	Opens the tooltip given a marker, with popping animation
+    	Returns deferred object that gets resolved after clickbubble is loaded.
+    	After it is loaded and visible, load its image.
     */
 
     ClickBubble.Open = function(listing_id) {
-      var listing,
+      var deferred,
+        _this = this;
+      deferred = this.OpenBubbleWithoutPhoto(listing_id);
+      return $.when(deferred).then()(function() {
+        return _this.setPrimaryImage("property_image", listing_id);
+      });
+    };
+
+    ClickBubble.OpenBubbleWithoutPhoto = function(listing_id) {
+      var listing, openDeferred,
         _this = this;
       this.IsOpen = true;
+      openDeferred = new $.Deferred;
       if (listing_id != null) {
         listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
         A2Cribs.MixPanel.Click(listing, "large popup");
         if (listing.rental_id != null) {
           this.SetContent(listing.GetObject());
-          return this.Show(listing_id);
+          this.Show(listing_id);
+          openDeferred.resolve(listing_id);
         } else {
-          return $.ajax({
+          $.ajax({
             url: myBaseUrl + "Listings/GetListing/" + listing_id,
             type: "GET",
             success: function(data) {
@@ -97,11 +110,13 @@ ClickBubble class
               }
               listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
               _this.SetContent(listing.GetObject());
-              return _this.Show(listing_id);
+              _this.Show(listing_id);
+              return openDeferred.resolve(listing_id);
             }
           });
         }
       }
+      return openDeferred.promise();
     };
 
     ClickBubble.Show = function(listing_id) {
@@ -155,7 +170,6 @@ ClickBubble class
       this.linkWebsite(".website_link", listing_object.website);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
-      this.setPrimaryImage("property_image", listing_object.listing_id);
       this.setFullPage("full_page_link", listing_object.listing_id);
       this.setFullPageContact("full_page_contact", listing_object.listing_id);
       this.div.find(".share_btn").unbind("click");
@@ -227,10 +241,10 @@ ClickBubble class
       var image_url;
       if (A2Cribs.UserCache.Get("image", listing_id) != null) {
         image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary();
-        if (image_url != null) {
+        if ((image_url != null) && (div_name != null)) {
           return $("." + div_name).css("background-image", "url(/" + image_url + ")");
         }
-      } else {
+      } else if (div_name != null) {
         return $("." + div_name).css("background-image", "url(/img/tooltip/no_photo.jpg)");
       }
     };

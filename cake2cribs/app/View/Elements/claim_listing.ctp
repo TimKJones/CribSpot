@@ -4,6 +4,6 @@
 		<h3>Claim Listing</h3>
 	</div>
 	<div class="modal-body">
-		<p>Is one of these listings yours? Let us know at claim@cribspot.com and we'll get it set up for you. It's free! Just send us an email.</p>
+		<p>Is one of these listings yours? Send us a message at claim@cribspot.com and we'll get it set up for you. It's free! Just send us an email.</p>
 	</div>
 </div>

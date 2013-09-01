@@ -65,7 +65,7 @@ class A2Cribs.FeaturedListings
         if not @FLListingIds?
             @FLListingIds = []
 
-        NUM_RANDOM_LISTINGS = 30
+        NUM_RANDOM_LISTINGS = 25
         
         sidebar = new Sidebar($('#fl-side-bar'))
     

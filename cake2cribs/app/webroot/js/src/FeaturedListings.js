@@ -86,7 +86,7 @@
       alt = active_listing_type;
       if (!(this.SidebarListingCache != null)) this.SidebarListingCache = {};
       if (!(this.FLListingIds != null)) this.FLListingIds = [];
-      NUM_RANDOM_LISTINGS = 30;
+      NUM_RANDOM_LISTINGS = 25;
       sidebar = new Sidebar($('#fl-side-bar'));
       getFlIdsDeferred = this.GetFlIds(university_id);
       this.GetSidebarImagePathsDeferred = new $.Deferred();

@@ -47,9 +47,8 @@
       this.refreshConversations();
       if (this.CurrentConversation !== -1) {
         this.refreshParticipantInfo();
-        this.refreshMessages();
+        return this.refreshMessages();
       }
-      return alert('loaded');
     };
 
     Messages.refreshUnreadCount = function() {

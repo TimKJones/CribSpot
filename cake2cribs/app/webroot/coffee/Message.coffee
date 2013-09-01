@@ -58,7 +58,6 @@ class A2Cribs.Messages
 		if @CurrentConversation != -1
 			@refreshParticipantInfo()
 			@refreshMessages()
-		alert('loaded')
 
 	@refreshUnreadCount:()->
 		url = myBaseUrl + "messages/getUnreadCount"

@@ -47,15 +47,24 @@ class A2Cribs.ClickBubble
 
 	###
 	Opens the tooltip given a marker, with popping animation
+	Returns deferred object that gets resolved after clickbubble is loaded.
+	After it is loaded and visible, load its image.
 	###
 	@Open: (listing_id) ->
+		deferred = @OpenBubbleWithoutPhoto listing_id
+		$.when(deferred).then() =>
+			@setPrimaryImage "property_image", listing_id
+
+	@OpenBubbleWithoutPhoto: (listing_id) ->
 		@IsOpen = true
+		openDeferred = new $.Deferred
 		if listing_id?
 			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 			A2Cribs.MixPanel.Click listing, "large popup"
 			if listing.rental_id? # if the rental is cached
 				@SetContent listing.GetObject()
 				@Show listing_id
+				openDeferred.resolve listing_id
 			else
 				$.ajax 
 					url: myBaseUrl + "Listings/GetListing/" + listing_id
@@ -70,6 +79,8 @@ class A2Cribs.ClickBubble
 						listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 						@SetContent listing.GetObject()
 						@Show listing_id
+						openDeferred.resolve listing_id
+		return openDeferred.promise()
 
 	@Show: (listing_id) ->
 		@IsOpen = true
@@ -112,7 +123,7 @@ class A2Cribs.ClickBubble
 		@linkWebsite ".website_link", listing_object.website
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
-		@setPrimaryImage "property_image", listing_object.listing_id
+		#@setPrimaryImage "property_image", listing_object.listing_id
 		@setFullPage "full_page_link", listing_object.listing_id
 		@setFullPageContact "full_page_contact", listing_object.listing_id
 		@div.find(".share_btn").unbind "click"
@@ -172,9 +183,9 @@ class A2Cribs.ClickBubble
 	@setPrimaryImage: (div_name, listing_id) ->
 		if A2Cribs.UserCache.Get("image", listing_id)?
 			image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary()
-			if image_url?
+			if image_url? and div_name?
 				$(".#{div_name}").css "background-image", "url(/#{image_url})"
-		else
+		else if div_name?
 			$(".#{div_name}").css "background-image", "url(/img/tooltip/no_photo.jpg)"
 
 	@setFullPage: (div_name, listing_id) ->

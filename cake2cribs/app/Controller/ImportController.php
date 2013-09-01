@@ -128,9 +128,16 @@ Then saves the array of listing objects.
 		$this->set('response', '');
 	}
 
-	public function ResizeAllImages()
+	public function ResizeAllImages($dir='img/listings')
 	{
-		
+		foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') 
+	        	continue;
+
+	        $image = imagecreatefromjpeg($dir.'/'.$item);
+	        $new_path = WWW_ROOT.'img/listings/' . $item;
+	        imagejpeg($image, $new_path, 45);
+	    }
 	}
 
 	private function _removeNullEntries($rental)
