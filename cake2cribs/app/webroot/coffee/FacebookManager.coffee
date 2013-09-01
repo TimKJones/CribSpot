@@ -8,6 +8,8 @@ class A2Cribs.FacebookManager
 		url += 'client_id=488039367944782'
 		url += '&redirect_uri=http://' + window.location.hostname + '/login'
 		url += '&scope=email'
+		A2Cribs.MixPanel.AuthEvent 'login',
+			'source':'facebook'
 		window.location.href = url 
 
 	@Logout: ->

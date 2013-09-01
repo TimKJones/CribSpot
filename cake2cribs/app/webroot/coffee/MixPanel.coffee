@@ -24,7 +24,7 @@ class A2Cribs.MixPanel
 		is_featured = 0
 		if object.class_name is "listing"
 			listing = object
-			is_featured = parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
+			is_featured = 1*(parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds)
 			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
 		else if object.class_name is "marker"
 			marker = object
@@ -35,14 +35,14 @@ class A2Cribs.MixPanel
 					break
 		else if object.class_name is "rental"
 			listing = A2Cribs.UserCache.Get "listing", object.listing_id
-			is_featured = parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
+			is_featured = 1*(parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds)
 		else
 			return false
 
 		mixpanel_object =
 			'listing type': marker?.GetBuildingType()
 			'display type': display_type
-			'is featured': false # needs to be figured out
+			'is featured': is_featured # needs to be figured out
 			'listing_id': listing?.GetId()
 			'marker_id': marker?.GetId()
 			'university_id': A2Cribs.Map?.CurentSchoolId
@@ -85,6 +85,10 @@ class A2Cribs.MixPanel
 	@PostListing: (action, data) ->
 		mixpanel.track "Post Listing - #{action}". data
 
-
+	###
+	For either sign up or login
+	###
+	@AuthEvent: (action, data) ->
+		mixpanel.track action, data
 
 

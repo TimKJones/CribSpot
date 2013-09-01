@@ -73,6 +73,8 @@ class A2Cribs.Login
 						A2Cribs.UIManager.Alert data.error
 					###
 				else
+					A2Cribs.MixPanel.AuthEvent 'login',
+						'source':'cribspot'
 					window.location.reload()
 
 		return false
@@ -134,6 +136,22 @@ class A2Cribs.Login
 						A2Cribs.UIManager.CloseLogs()
 						A2Cribs.UIManager.Error data.error
 					else
+						email = null
+						if user_type == 0
+							email = $("#student_email").val()
+						else
+							email = $("#pm_email").val()
+						A2Cribs.MixPanel.AuthEvent 'signup',
+							'user_id':response.success
+							'user_type': user_type
+							'email':email
+							'source':'cribspot'
+							'user_data':request_data
+						mixpanel.people.set
+							'user_id':response.success
+							'user_type': user_type
+							'email':email
+							'user_data':request_data
 						@div.find(".show_login").click()
 						A2Cribs.UIManager.Alert "Check your email to validate your credentials!"
 						

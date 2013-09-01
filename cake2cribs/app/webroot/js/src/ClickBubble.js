@@ -78,7 +78,7 @@ ClickBubble class
       openDeferred = new $.Deferred;
       if (listing_id != null) {
         listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
-        A2Cribs.MixPanel.Click(listing, "large popup");
+        A2Cribs.MixPanel.Click(listing, "small popup");
         if (listing.rental_id != null) {
           this.SetContent(listing.GetObject());
           this.Show(listing_id);
@@ -245,7 +245,7 @@ ClickBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel(A2Cribs.UserCache.Get("listing", listing_id), "full page");
+        A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "full page");
         link = "/listings/view/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();
@@ -256,7 +256,7 @@ ClickBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel(A2Cribs.UserCache.Get("listing", listing_id), "full page contact user");
+        A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "full page contact user");
         link = "/messages/contact/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();

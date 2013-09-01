@@ -34,8 +34,9 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='michigan.csv')
+	public function GetListings($fileName='michigan_test.csv')
 	{
+		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
 		$listings = array();
 		if ($fileName != null){
@@ -78,12 +79,23 @@ Then saves the array of listing objects.
 		//foreach ($listings as &$listing){
 			CakeLog::write("nextlisting", print_r($listing, true));
 			/* Convert address to what gets returned from google geocoder */
-			$address = array(
-				'street_address' => $listing['Marker']['street_address'],
-				'city' => $listing['Marker']['city'],
-				'state' => $listing['Marker']['state'],
+			if (!array_key_exists('Marker', $listing) ||
+				!array_key_exists('street_address', $listing['Marker']) ||
+				!array_key_exists('city', $listing['Marker']) || 
+				!array_key_exists('state', $listing['Marker'])){
+				$this->set('response', '');
+				return;
+			}
+
+			$formatted_address = array(
+				'street_address' => trim($listing['Marker']['street_address']),
+				'city' => trim($listing['Marker']['city']),
+				'state' => trim($listing['Marker']['state']),
+				'zip' => trim($listing['Marker']['zip']),
+				'latitude' => $listing['Marker']['latitude'],
+				'longitude' => $listing['Marker']['longitude']
 			);
-			$formatted_address = $this->_geocoderProcessAddress($address);
+			//$formatted_address = $this->_geocoderProcessAddress($address);
 			CakeLog::write("formatted_address", print_r($formatted_address, true));
 			$listing['Marker']['street_address'] = $formatted_address['street_address'];
 			$listing['Marker']['city'] = $formatted_address['city'];
@@ -210,15 +222,15 @@ CakeLog::write("listingWithDates", print_r($listing, true));
 		foreach ($this->utilities as $utility){
 			if (!array_key_exists($utility, $listing['Rental']) || 
 				$listing['Rental'][$utility] === '?' || 
-				empty($listing['Rental'][$utility]) ||
-				$listing['Rental'][$utility] === '')
-					unset($listing['Rental'][$utility]);
+				empty($listing['Rental'][$utility])) {
+				unset($listing['Rental'][$utility]);
+			}	
 			else if ($listing['Rental'][$utility] === 'Flat Rate' ||
 				$listing['Rental'][$utility] === 'Yes' || 
 				$listing['Rental'][$utility] === 'Y')
 					$listing['Rental'][$utility] = true;
 			else
-				$listing['Rental'][$utility] = false;
+				$listing['Rental'][$utility] = 0;
 		}
 
 		/* square_feet */
@@ -269,6 +281,10 @@ CakeLog::write("listingWithDates", print_r($listing, true));
 				unset($listing['Rental']['furnished_type']);
 		}
 
+		/* unit_style_options */
+		if (array_key_exists('unit_style_options', $listing['Rental']))
+			$listing['Rental']['unit_style_options'] = Rental::unit_style_options_reverse($listing['Rental']['unit_style_options']);
+
 		/* building_type_id */
 
 		if (array_key_exists('building_type_id', $listing['Marker']))
@@ -283,7 +299,7 @@ CakeLog::write("listingWithDates", print_r($listing, true));
 					unset($listing['Rental'][$amenity]);
 			else if ($listing['Rental'][$amenity] === 'N' ||
 				$listing['Rental'][$amenity] === 'No')
-					$listing['Rental'][$amenity] = false;
+					$listing['Rental'][$amenity] = 0;
 			else
 				$listing['Rental'][$amenity] = true;
 		}
@@ -308,6 +324,8 @@ return null on failure
 */
 	private function _processFileToJSON($handle)
 	{
+
+		ini_set("auto_detect_line_endings", true);
 		if ($handle) {
 			$listings = array();
 			$counter = 1; 

@@ -186,7 +186,7 @@ class A2Cribs.ClickBubble
 	@setFullPage: (div_name, listing_id) ->
 		$(".#{div_name}").unbind "click"
 		$(".#{div_name}").click () ->
-			A2Cribs.MixPanel A2Cribs.UserCache.Get("listing", listing_id), "full page"
+			A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "full page"
 			link = "/listings/view/#{listing_id}"
 			win = window.open link, '_blank'
 			win.focus()
@@ -194,7 +194,7 @@ class A2Cribs.ClickBubble
 	@setFullPageContact: (div_name, listing_id) ->
 		$(".#{div_name}").unbind "click"
 		$(".#{div_name}").click () ->
-			A2Cribs.MixPanel A2Cribs.UserCache.Get("listing", listing_id), "full page contact user"
+			A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "full page contact user"
 			link = "/messages/contact/#{listing_id}"
 			win = window.open link, '_blank'
 			win.focus()

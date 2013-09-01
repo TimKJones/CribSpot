@@ -436,7 +436,6 @@ class User extends AppModel {
 	*/
 	public function RegisterUser($user)
 	{
-		CakeLog::write('savinguser', print_r($user, true));
 		$error = null;
 		if (!$this->_validateUserRegister($user)){
 			$error = null;
@@ -459,7 +458,7 @@ class User extends AppModel {
 					'at help@cribspot.com. Reference error code 37.');
 		}
 
-		return array('success'=>'');
+		return array('success'=>$this->id);
 	}
 
 	/*

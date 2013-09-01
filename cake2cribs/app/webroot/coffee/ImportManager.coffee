@@ -3,66 +3,69 @@ class A2Cribs.ImportManager
 		marker_street_address: 0
 		city:1
 		state:2
-		unit_style_options: 3
-		unit_description: 4
-		min_rent:5
-		max_rent:6
-		beds :7
-		baths :8
-		start_date:9
-		end_date:10
-		alternate_start_date: 11
-		electric:13
-		water:14
-		gas:15
-		trash:16
-		cable:17
-		internet:18
-		utility_total_flat_rate: 19
-		square_feet: 20
-		air:21
-		pets:22
-		street_parking:23
-		private_parking:24
-		parking_type:25
-		parking_cost:26
-		furnished_type:27
-		building_type_id:28
-		alternate_name:29
-		company_name:30
-		phone:31
-		email:32
-		website:33
-		tv:34
-		balcony:35
-		fridge:36
-		storage:37
-		pool:38
-		hot_tub:39
-		fitness_center:40
-		game_room:41
-		front_desk:42
-		security_system:43
-		tanning_beds:44
-		study_lounge:45
-		patio_deck:46
-		yard_space:47
-		elevator:48
-		deposit:49
-		admin_amount:50
-		furniture_amount:52
-		pets_amount:53
-		amenity_amount:54
-		upper_floor_amount:55
-		extra_occupant_amount:56
-		year_built:58
-		min_occupancy:59
-		max_occupancy:59
-		unit_count:60
-		smoking:61
-		laundry:62
-		user_street_address:63
-		description: 64
+		zip: 3
+		latitude: 4
+		longitude: 5
+		unit_style_options: 6
+		unit_style_description: 7
+		min_rent:8
+		max_rent:9
+		beds :10
+		baths :11
+		start_date:12
+		end_date:13
+		alternate_start_date: 14
+		electric:16
+		water:17
+		gas:18
+		trash:19
+		cable:20
+		internet:21
+		utility_total_flat_rate: 22
+		square_feet: 23
+		air:24
+		pets:25
+		street_parking:26
+		private_parking:27
+		parking_type:28
+		parking_cost:29
+		furnished_type:30
+		building_type_id:31
+		alternate_name:32
+		company_name:33
+		phone:34
+		email:35
+		website:36
+		tv:37
+		balcony:38
+		fridge:39
+		storage:40
+		pool:41
+		hot_tub:42
+		fitness_center:43
+		game_room:44
+		front_desk:45
+		security_system:46
+		tanning_beds:47
+		study_lounge:48
+		patio_deck:49
+		yard_space:50
+		elevator:51
+		deposit:52
+		admin_amount:53
+		furniture_amount:55
+		pets_amount:56
+		amenity_amount:57
+		upper_floor_amount:58
+		extra_occupant_amount:59
+		year_built:61
+		min_occupancy:62
+		max_occupancy:62
+		unit_count:63
+		smoking:64
+		laundry:65
+		user_street_address:66
+		description: 67
 	}
 
 
@@ -101,7 +104,11 @@ class A2Cribs.ImportManager
 			listing['Marker']['street_address'] = l[@Indices['marker_street_address']]
 			listing['Marker']['city'] = l[@Indices['city']]
 			listing['Marker']['state'] = l[@Indices['state']]
-			listing['Rental']['unit_description'] = l[@Indices['unit_description']]
+			listing['Marker']['zip'] = l[@Indices['zip']]
+			listing['Marker']['latitude'] = l[@Indices['latitude']]
+			listing['Marker']['longitude'] = l[@Indices['longitude']]
+			listing['Rental']['unit_style_options'] = l[@Indices['unit_style_options']]
+			listing['Rental']['unit_style_description'] = l[@Indices['unit_style_description']]
 			listing['Rental']['rent'] = @GetRent l[@Indices['min_rent']], l[@Indices['max_rent']]
 			listing['Rental']['beds'] = l[@Indices['beds']]
 			listing['Rental']['baths'] = l[@Indices['baths']]
