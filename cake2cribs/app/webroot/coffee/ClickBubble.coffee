@@ -51,11 +51,6 @@ class A2Cribs.ClickBubble
 	After it is loaded and visible, load its image.
 	###
 	@Open: (listing_id) ->
-		deferred = @OpenBubbleWithoutPhoto listing_id
-		$.when(deferred).then() =>
-			@setPrimaryImage "property_image", listing_id
-
-	@OpenBubbleWithoutPhoto: (listing_id) ->
 		@IsOpen = true
 		openDeferred = new $.Deferred
 		if listing_id?
@@ -123,7 +118,7 @@ class A2Cribs.ClickBubble
 		@linkWebsite ".website_link", listing_object.website
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
-		#@setPrimaryImage "property_image", listing_object.listing_id
+		@setPrimaryImage "property_image", listing_object.listing_id
 		@setFullPage "full_page_link", listing_object.listing_id
 		@setFullPageContact "full_page_contact", listing_object.listing_id
 		@div.find(".share_btn").unbind "click"

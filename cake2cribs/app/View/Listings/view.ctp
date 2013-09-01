@@ -244,8 +244,8 @@
 					<div class="span12">
 						<ul class="large_included_list">
 							<?php
-								$included = array('electric', 'air', 'gas', 'water', 'cable', 'internet', 'trash');
-								$descriptions = array('Electricity', 'A/C', 'Gas', 'Water', 'Cable', 'Internet', 'Trash');
+								$included = array('electric', 'gas', 'water', 'cable', 'internet', 'trash');
+								$descriptions = array('Electricity', 'Gas', 'Water', 'Cable', 'Internet', 'Trash');
 
 								$length = count($included);
 

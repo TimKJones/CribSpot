@@ -72,15 +72,6 @@ ClickBubble class
     */
 
     ClickBubble.Open = function(listing_id) {
-      var deferred,
-        _this = this;
-      deferred = this.OpenBubbleWithoutPhoto(listing_id);
-      return $.when(deferred).then()(function() {
-        return _this.setPrimaryImage("property_image", listing_id);
-      });
-    };
-
-    ClickBubble.OpenBubbleWithoutPhoto = function(listing_id) {
       var listing, openDeferred,
         _this = this;
       this.IsOpen = true;
@@ -170,6 +161,7 @@ ClickBubble class
       this.linkWebsite(".website_link", listing_object.website);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
+      this.setPrimaryImage("property_image", listing_object.listing_id);
       this.setFullPage("full_page_link", listing_object.listing_id);
       this.setFullPageContact("full_page_contact", listing_object.listing_id);
       this.div.find(".share_btn").unbind("click");
