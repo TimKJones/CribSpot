@@ -243,6 +243,7 @@ class FeaturedListingsController extends AppController {
 
   public function newspaper(){
     $this->layout = 'ajax';
+     header('Access-Control-Allow-Origin: *');
     if(!$this->request->is('get')){
       CakeLog::write('API', 'NOT_GET');
       throw new NotFoundException();
