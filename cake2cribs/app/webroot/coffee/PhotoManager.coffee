@@ -84,7 +84,7 @@ class A2Cribs.PhotoManager
 			if indexOfDot == -1
 				return false
 
-			fileType = fileName.substring(indexOfDot + 1)
+			fileType = fileName.substring(indexOfDot + 1).toLowerCase()
 			if fileType == "jpg" || fileType == "jpeg" || fileType == "png"
 				return true
 

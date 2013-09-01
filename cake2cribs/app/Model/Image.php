@@ -17,7 +17,7 @@ class Image extends AppModel {
 		'user_id' => 'numeric',
 		'listing_id' => 'numeric', // listing to which this image belongs
 		'image_path'    => array(
-			'rule' => array('extension', array('jpeg', 'png', 'jpg')),     // path to image, starting /app/webroot
+			'rule' => array('extension', array('jpeg', 'png', 'jpg', 'JPG', 'JPEG', 'PNG')),     // path to image, starting /app/webroot
 			'message' => 'Please supply a valid image, either jpeg, jpg, or png'
 		),
 		'is_primary' => 'boolean',
@@ -127,7 +127,7 @@ class Image extends AppModel {
 			$error = null;
 			$error['file'] = $file;
 			$this->LogError($user_id, 21, $error);
-			return array('error' => 'Your file is a little too big.  We don\'t accept images over 5 MB. If you\'re having issues, ' .
+			return array('error' => "Your file is a little too big.  We don't accept images over 5 MB. If you're having issues, " .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
 					'at help@cribspot.com. Reference error code 21.');
 		}
@@ -136,7 +136,7 @@ class Image extends AppModel {
 			$error = null;
 			$error['file'] = $file;
 			$this->LogError($user_id, 22, $error);
-			return array('error' => 'Sorry, we only accept jpeg, jpg, or png images.  If you\'re having issues, ' .
+			return array('error' => "Sorry, we only accept jpeg, jpg, or png images.  If you're having issues, " .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
 					'at help@cribspot.com. Reference error code 22.');
 		}
@@ -146,7 +146,7 @@ class Image extends AppModel {
 			$error['file'] = $file;
 			$error['path'] = $newPath;
 			$this->LogError($user_id, 18, $error);
-			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
+			return array('error' => "Looks like we had some problems saving your image! We want to help! If the issue continues, " .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
 					'at help@cribspot.com. Reference error code 18.');
 		}
@@ -541,6 +541,7 @@ CakeLog::write('saving_image', print_r($newImage, true));
 			return false;
 
 		$fileType = $this->_getFileType($file);
+		$fileType = strtolower($fileType);
 		if ($fileType != "jpg" && $fileType != "jpeg" && $fileType != "png")
 			return false;
 		
