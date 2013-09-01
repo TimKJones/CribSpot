@@ -58,6 +58,7 @@ class A2Cribs.Messages
 		if @CurrentConversation != -1
 			@refreshParticipantInfo()
 			@refreshMessages()
+		alert('loaded')
 
 	@refreshUnreadCount:()->
 		url = myBaseUrl + "messages/getUnreadCount"
@@ -95,12 +96,14 @@ class A2Cribs.Messages
 			return
 
 		# Not in cache so fetch save and display
-		url = url = myBaseUrl + "messages/getParticipantInfo/" + conversation_id +  "/" 
-		$.get url, (data)=>
-			user_data = JSON.parse data
-			@ParticipantInfoCache[user_data['id']] = user_data
-			@setParticipantInfoUI @ParticipantInfoCache[participantid]
-
+		url = url = myBaseUrl + "messages/getParticipantInfo/" + conversation_id +  "/"
+		$.ajax
+			url: url
+			type: "GET"
+			success: (data) =>
+				user_data = JSON.parse data
+				@ParticipantInfoCache[user_data['id']] = user_data
+				@setParticipantInfoUI @ParticipantInfoCache[participantid]
 
 	# Sets all the UI elements that pertain to the current conversation's participant
 	# Using the data provided in the participant object
@@ -176,7 +179,7 @@ class A2Cribs.Messages
 			$('#current_conversation').trigger 'scroll'
 
 			@attachConversationListItemHandler()
-			
+
 		.fail =>
 			@NumMessagePages = 0;
 		

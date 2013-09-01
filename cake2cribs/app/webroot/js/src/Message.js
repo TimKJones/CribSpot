@@ -47,8 +47,9 @@
       this.refreshConversations();
       if (this.CurrentConversation !== -1) {
         this.refreshParticipantInfo();
-        return this.refreshMessages();
+        this.refreshMessages();
       }
+      return alert('loaded');
     };
 
     Messages.refreshUnreadCount = function() {
@@ -66,7 +67,6 @@
       var url,
         _this = this;
       url = myBaseUrl + "messages/getConversations";
-      if (this.ViewOnlyUnread) url += '?only_unread=1';
       return $.get(url, function(data) {
         var conversations, convo, list_item, _i, _len;
         conversations = JSON.parse(data);
@@ -98,11 +98,15 @@
         return;
       }
       url = url = myBaseUrl + "messages/getParticipantInfo/" + conversation_id + "/";
-      return $.get(url, function(data) {
-        var user_data;
-        user_data = JSON.parse(data);
-        Messages.ParticipantInfoCache[user_data['id']] = user_data;
-        return Messages.setParticipantInfoUI(Messages.ParticipantInfoCache[participantid]);
+      return $.ajax({
+        url: url,
+        type: "GET",
+        success: function(data) {
+          var user_data;
+          user_data = JSON.parse(data);
+          Messages.ParticipantInfoCache[user_data['id']] = user_data;
+          return Messages.setParticipantInfoUI(Messages.ParticipantInfoCache[participantid]);
+        }
       });
     };
 

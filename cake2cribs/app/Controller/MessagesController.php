@@ -8,6 +8,7 @@
     function beforeFilter(){
         parent::beforeFilter();
         $this->Auth->allow('contact');
+        $this->Auth->allow('messageSublet');
     }
 
     //Shows the base messages page
@@ -233,9 +234,21 @@
     }
 
     public function messageSublet(){
+        $this->layout = 'ajax';
+
         if(!$this->request->isPost()){
             throw new NotFoundException();
         }  
+
+        if (!$this->Auth->User()){
+            /* User not logged in */
+            $error = array(
+                'success' => false,
+                'message' => 'You must login to contact this property manager.'
+            );
+            $this->set('response', json_encode($error));
+            return;
+        }
 
         $listing_id = $this->request->data['listing_id'];
         $message_body = $this->request->data['message_body'];
@@ -296,17 +309,14 @@
                 $user['User']);
 
             $message = $this->Message->read();
-
         }   
 
         $this->emailUserAboutMessage($listing['User'], $user['User'], $conversation); 
         $json = json_encode(array(
                 'success' => true,
         ));
-        $this->layout = 'ajax';
         $this->set('response', $json);
         return;
-
     }
 
 

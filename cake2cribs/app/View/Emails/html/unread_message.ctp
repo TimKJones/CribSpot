@@ -371,7 +371,7 @@ Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;te
 
 If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.<br/><br/>
 
-Tim, Jason, Evan, and Alex
+Tim, Jason, Evan, and Alex<br/>
 <i>The Cribspot Team</i>
 
                                     </div>

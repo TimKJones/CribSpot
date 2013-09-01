@@ -62,7 +62,11 @@
               $("#message_area").val("");
               A2Cribs.UIManager.Success("Message Sent!");
             } else {
-              A2Cribs.UIManager.Error("Message Failed! Please Try Again.");
+              if (data.message != null) {
+                A2Cribs.UIManager.Error(data.message);
+              } else {
+                A2Cribs.UIManager.Error("Message Failed! Please Try Again.");
+              }
             }
             return $("#message_send").button("reset");
           }

@@ -23,6 +23,12 @@ class ListingsController extends AppController {
 	{
 		if ($listing_id == null)
 			throw new NotFoundException('There is no listing provided!');
+
+		$AuthUser = null;
+		if ($this->Auth->User())
+			$AuthUser = $this->Auth->User('id');
+
+		$this->set('AuthUser', $AuthUser);
 		
 		$listing = $this->Listing->GetListing($listing_id);
 		
