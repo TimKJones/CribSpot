@@ -89,7 +89,7 @@
 </div>
 
 <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
-<a id="tweet_to_school" href="https://twitter.com/intent/tweet?text=This%20%40TheCribspot%20is%20%23idealideal...Please%20bring%20it%20to%20my%20campus%20%23makeithappen">Tweet to bring to your school!</a>
+<a id="tweet_to_school" href="https://twitter.com/intent/tweet?text=The%20%40TheCribspot%20is%20%23idealideal...Bring%20it%20to%20my%20campus%21">Tweet to bring to your school!</a>
 <a href="https://mixpanel.com/f/partner" id="mixpanel_link"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
 <div class="fb-like-box" data-href="https://www.facebook.com/Cribspot" data-width="292" data-colorscheme="dark" data-show-faces="true" data-header="false" data-stream="false" data-show-border="false"></div>
 <?php 
