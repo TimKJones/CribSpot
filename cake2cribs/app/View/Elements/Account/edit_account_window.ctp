@@ -18,7 +18,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'changeCompanyNameBtn' type="button" class="btn" maxlength="200">Save changes</button>
+	  			<button id = 'changeFirstLastNameButton' type="button" class="btn" maxlength="200">Save changes</button>
 	  		</div>
 	  </div>
 	</form>

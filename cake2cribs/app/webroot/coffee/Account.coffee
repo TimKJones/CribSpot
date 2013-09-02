@@ -40,6 +40,14 @@ class A2Cribs.Account
 			@SaveAddress()
 		$('#changeCompanyNameBtn').click =>
 			@SaveCompanyName()
+		$('#changeFirstLastNameButton').click =>
+			@SaveFirstLastName()
+
+	@SaveFirstLastName: () ->
+			pair = 
+				'first_name':$("#first_name_input").val()
+				'last_name':$("#last_name_input").val()
+			@SaveAccount pair
 
 	@SaveCompanyName: () ->
 			pair = 

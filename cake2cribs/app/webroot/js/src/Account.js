@@ -54,9 +54,21 @@
       $('#changeAddressBtn').click(function() {
         return _this.SaveAddress();
       });
-      return $('#changeCompanyNameBtn').click(function() {
+      $('#changeCompanyNameBtn').click(function() {
         return _this.SaveCompanyName();
       });
+      return $('#changeFirstLastNameButton').click(function() {
+        return _this.SaveFirstLastName();
+      });
+    };
+
+    Account.SaveFirstLastName = function() {
+      var pair;
+      pair = {
+        'first_name': $("#first_name_input").val(),
+        'last_name': $("#last_name_input").val()
+      };
+      return this.SaveAccount(pair);
     };
 
     Account.SaveCompanyName = function() {
