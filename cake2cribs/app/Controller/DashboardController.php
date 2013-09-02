@@ -37,7 +37,6 @@
 
 
 	 	public function index(){
-	 		CakeLog::write('loggedin', print_r($this->Auth->User(), true));
 	 		$directive = $this->Cookie->read('dashboard-directive');
 	 		$this->Cookie->delete('dashboard-directive');
 	 		if($directive == null){
@@ -65,7 +64,5 @@
 	 		}
 
 	 		$this->set('dropdowns', json_encode($dropdown_values));
-	 		CakeLog::write("currentUniversity", $this->Session->read("currentUniversity"));
-
 	 	}
 	}

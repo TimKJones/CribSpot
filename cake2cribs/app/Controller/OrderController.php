@@ -48,7 +48,11 @@ class OrderController extends AppController {
         }
     */
     public function suFeatureListing(){
-        
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+
         $orderItem = json_decode($this->request->data('orderItem'));
         if($orderItem == null){
             throw new NotFoundException();
@@ -80,7 +84,6 @@ class OrderController extends AppController {
             $response['msg'] = $e->getMessage();
         }
 
-        $this->layout = 'ajax';
         $this->set('response', json_encode($response)); 
 
     }
@@ -93,6 +96,10 @@ class OrderController extends AppController {
     */
 
     public function buy(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
         ClassRegistry::init('Order'); //For some reason I can't access the static properties of the
                                       // of the order class
 

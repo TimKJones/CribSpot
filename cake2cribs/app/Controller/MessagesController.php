@@ -169,6 +169,10 @@
     }
 
     public function getParticipantInfo($conv_id){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
         $options['conditions'] = array('Conversation.conversation_id'=>$conv_id);
         $conversation = $this->Conversation->find('first', $options);
         CakeLog::write("messagesDebug" , print_r($conversation, true));
@@ -190,9 +194,7 @@
         unset($participant['created']);
         unset($participant['modified']);
 
-        $this->layout = 'ajax';
         $this->set('response', json_encode($participant));
-
     }
 
     // Ajax function that will "Delete the conversation" basically just hides it from the user
@@ -234,6 +236,8 @@
     }
 
     public function messageSublet(){
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
         $this->layout = 'ajax';
 
         if(!$this->request->isPost()){

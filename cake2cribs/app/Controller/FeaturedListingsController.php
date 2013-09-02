@@ -14,6 +14,9 @@ class FeaturedListingsController extends AppController {
   const ELIGIBLE_UNI_RADIUS_MILES = 20;
   
   public function cycleIds($university_id, $limit){
+    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+      return;
+
     $this->layout = 'ajax';
     $listings_data = $this->cycleFeaturedListings($limit, $university_id);
     $listing_ids = array();
@@ -130,7 +133,10 @@ class FeaturedListingsController extends AppController {
   // Returns an array of date strings representing the dates
   // that are unavailable to feature a listing
   public function getUnavailableDates(){
-    
+    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+      return;
+
+    $this->layout = 'ajax';
     $user_id = $this->_getUserId();
     $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
     if($newspaper_admin != null){
@@ -166,7 +172,7 @@ class FeaturedListingsController extends AppController {
       'full_dates' => $full_dates,
       'listing_dates' => $listing_dates,
       );
-    $this->layout = 'ajax';
+    
     $this->set('response', json_encode($response));
   } 
 
@@ -179,9 +185,10 @@ class FeaturedListingsController extends AppController {
   */
 
   public function getUniDataForListing($listing_id){
-    
+    if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+      return;
 
-
+    $this->layout = 'ajax';
     $user_id = $this->_getUserId();
     $newspaper_admin = $this->NewspaperAdmin->getByUserId($user_id);
 
@@ -228,9 +235,6 @@ class FeaturedListingsController extends AppController {
         ));
     }
 
-    
-
-    $this->layout = 'ajax';
     $this->set('response', json_encode($response));
   }
 

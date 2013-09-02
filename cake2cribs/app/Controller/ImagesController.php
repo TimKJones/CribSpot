@@ -33,6 +33,9 @@ class ImagesController extends AppController {
 	*/
 	function AddImage()
 	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+      		return;
+
 		$this->layout = 'ajax';
 		if (!array_key_exists('form', $this->request->params) || 
 			!array_key_exists('files', $this->request->params['form'])){
@@ -54,6 +57,7 @@ class ImagesController extends AppController {
 	{
 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
 			return;
+		
 		$this->set('errors', null);
 		$from_add_page = false;
 		if (!$data)
