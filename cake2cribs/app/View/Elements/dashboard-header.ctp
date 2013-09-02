@@ -18,8 +18,10 @@
 
 	// echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
-	echo $this->Html->script('src/PageHeader');
 
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/PageHeader');
+}
 ?>
 
 

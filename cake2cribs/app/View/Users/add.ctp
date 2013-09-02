@@ -1,5 +1,10 @@
 <?php echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('users'); ?>
+
+<?php
+echo $this->Html->script('jquery.noisy.min');
+?>
+
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
 
@@ -22,7 +27,6 @@
 <?= $this->element('register'); ?>
 </div>
 
-<?php echo $this->Html->script('jquery.noisy.min'); ?>
 <?php 
     $this->Js->buffer('
             $("#myModal").removeClass("hide fade");

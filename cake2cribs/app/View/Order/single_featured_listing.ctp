@@ -1,4 +1,4 @@
-<?php echo $this->Html->script('less.js'); ?>
+<?php  ?>
 
 <?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('multi-date-picker'); ?>
@@ -8,6 +8,11 @@
 
 <?php echo $this->Html->script('src/Order'); ?>
 <?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
+
+<?php
+echo $this->Html->script('jquery-ui.multidatespicker');
+?>
+
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 

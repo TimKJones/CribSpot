@@ -5,32 +5,35 @@
 	echo $this->Html->css('/js/slickgrid/controls/slick.columnpicker.css', null, array('inline' => false));
 	echo $this->Html->css('/less/Dashboard/rentals_window.less?','stylesheet/less', array('inline' => false));
 
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/UILayer/UILayer.js', array('inline' => false));
 	echo $this->Html->script('src/UILayer/Rentals.js', array('inline' => false));
 	echo $this->Html->script('src/UILayer/Fees.js', array('inline' => false));
-	
 	echo $this->Html->script('src/Rental.js', array('inline' => false));
 	echo $this->Html->script('src/RentalSave.js', array('inline' => false));
 	echo $this->Html->script('src/MiniMap', array('inline' => false));
+}
 
-	//echo $this->Html->script('slickgrid/lib/jquery-ui-1.8.16.custom.min.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
+echo $this->Html->script('slickgrid/lib/jquery.event.drag-2.2.js', array('inline' => false));
+echo $this->Html->script('slickgrid/slick.core.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.checkboxselectcolumn.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.autotooltips.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.cellrangedecorator.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.cellrangeselector.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.cellcopymanager.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.cellselectionmodel.js', array('inline' => false));
+echo $this->Html->script('slickgrid/plugins/slick.rowselectionmodel.js', array('inline' => false));
+echo $this->Html->script('slickgrid/controls/slick.columnpicker.js', array('inline' => false));
+echo $this->Html->script('slickgrid/slick.formatters.js', array('inline' => false));
+echo $this->Html->script('slickgrid/custom.formatters.js', array('inline' => false));
+echo $this->Html->script('slickgrid/slick.editors.js', array('inline' => false));
+echo $this->Html->script('slickgrid/custom.editors.js', array('inline' => false));
+echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
 
-	echo $this->Html->script('slickgrid/slick.core.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.checkboxselectcolumn.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.autotooltips.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.cellrangedecorator.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.cellrangeselector.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.cellcopymanager.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.cellselectionmodel.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/plugins/slick.rowselectionmodel.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/controls/slick.columnpicker.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/slick.formatters.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/custom.formatters.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/slick.editors.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/custom.editors.js', array('inline' => false));
-	echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
+
 ?>
+
+
 
 <!-- Rental Preview -->
 <div id="rentals_preview" class="row-fluid">

@@ -1,5 +1,9 @@
 <?php echo $this->Html->css('/less/Listing/full_page.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/FullListing.js', array('inline' => false)); ?>
+<?php 
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/FullListing.js', array('inline' => false));
+}
+?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <script type="text/javascript">
   var lolz = <?php echo $listing_json; ?>;

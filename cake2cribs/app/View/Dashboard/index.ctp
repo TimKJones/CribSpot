@@ -2,20 +2,24 @@
 <?php echo $this->element('popups'); ?>
 <?php echo $this->element('Dashboard/marker-modal');?>
 <?php echo $this->element('Dashboard/picture-modal');?>
-
-<?php echo $this->Html->script('src/Dashboard'); ?>
-<?php echo $this->Html->script('src/Account'); ?>
-<?php echo $this->Html->script('src/Message'); ?>
-<?php echo $this->Html->script('src/PropertyManagement'); ?>
-<?php echo $this->Html->script('src/VerifyManager'); ?>
-<?php echo $this->Html->script('src/SubletSave'); ?>
-
-<?php echo $this->Html->script('src/UserCache', array('inline' => false)); ?>
-
-<?php echo $this->Html->script('underscore'); ?>
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
+
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/Dashboard');
+	echo $this->Html->script('src/Account');
+	echo $this->Html->script('src/Message');
+	echo $this->Html->script('src/PropertyManagement');
+	echo $this->Html->script('src/VerifyManager');
+	echo $this->Html->script('src/SubletSave');
+	echo $this->Html->script('src/UserCache', array('inline' => false));
+}
+
+echo $this->Html->script('underscore');
+?>
+
 <?php $this->set('title_for_layout', 'Dashboard'); ?>
 
 <div class='container-fluid' id = 'main_content'>

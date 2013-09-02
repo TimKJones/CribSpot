@@ -6,9 +6,11 @@
 	/* Datepicker and slider javascript */
 	// echo $this->Html->script('bootstrap-datepicker');
 	echo $this->Html->script('bootstrap-slider');
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Login', array('inline' => false));
-	echo $this->element('popups');
 	echo $this->Html->script('src/PageHeader');
+}
+	echo $this->element('popups');
 ?>
 <style> 
 @font-face {

@@ -1,7 +1,9 @@
 <?php
 	//echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Account');
 	echo $this->Html->script('src/Login');
+}
 ?>
 
 <!-- Modal -->

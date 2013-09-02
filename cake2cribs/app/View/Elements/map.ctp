@@ -1,4 +1,8 @@
-<?= $this->Html->script('src/Map', array('inline' => false)); ?>
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo  $this->Html->script('src/Map', array('inline' => false));
+}
+?>
 
 <style type="text/css">
 	#map_region

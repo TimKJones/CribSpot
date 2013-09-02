@@ -1,5 +1,14 @@
 <?php echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('users'); ?>
+
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script("src/Account");
+}
+
+echo $this->Html->script('jquery.noisy.min');
+?>
+
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Session->flash(); ?>
 

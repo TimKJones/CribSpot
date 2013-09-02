@@ -1,6 +1,10 @@
 <?= $this->Html->css('/less/Dashboard/marker-modal.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/MiniMap.js', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/MarkerModal.js', array('inline' => false)); ?>
+<?php 
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/MiniMap.js', array('inline' => false));
+	echo $this->Html->script('src/MarkerModal.js', array('inline' => false));
+}
+?>
 
 <div id ="marker-modal" class="modal hide fade">
 	<div class="modal-header">

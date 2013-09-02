@@ -1,6 +1,10 @@
 <?php echo $this->Html->css('posting-sublet-progress'); ?>
-<?php echo $this->Html->script('src/PostSubletProgress'); ?>
-<?php echo $this->Html->script('src/SubletSave'); ?>
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/PostSubletProgress');
+    echo $this->Html->script('src/SubletSave');
+}
+?>
 <div class = 'post-sublet-progress'>
     
     <div class="prog-step" id = '1'>

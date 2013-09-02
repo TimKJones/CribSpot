@@ -1,11 +1,16 @@
 <?= $this->Html->css('/less/post-sublet.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('listing-popup-verifications', null, array('inline' => false)); ?>
-<?php echo $this->Html->script('src/SubletSave'); ?>
-
 <?= $this->Html->css('datepicker', null, array('inline' => false)); ?>
-<?= $this->Html->script('bootstrap-datepicker'); ?>
-<?= $this->Html->script('src/PostSublet'); ?>
-<?= $this->Html->script('src/MiniMap'); ?>
+
+<?php 
+echo $this->Html->script('bootstrap-datepicker');
+
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/SubletSave');
+	echo $this->Html->script('src/PostSublet');
+	echo $this->Html->script('src/MiniMap');
+}
+?>
 
 <div id ="post-sublet-modal" class="post-popup modal hide fade container-fluid">
 	<div id="sublet-id" class="hide"></div>

@@ -1,5 +1,10 @@
 <?= $this->Html->css('/less/edit_sublet.less?','stylesheet/less', array('inline' => false)); ?>
-<?= $this->Html->script('src/EditSublet'); ?>
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/EditSublet');
+}
+?>
+
 <div id="edit_sublet_window">
 	<div class="row-fluid" style="text-align:center;">
 		<div class="btn-group">

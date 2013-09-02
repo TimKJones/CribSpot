@@ -1,6 +1,8 @@
 <?php
 	echo $this->Html->css('/less/login.less?','stylesheet/less', array('inline' => false));
-	echo $this->Html->script('src/Register');
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/Register');
+}
 ?>
 
 <!-- Modal -->

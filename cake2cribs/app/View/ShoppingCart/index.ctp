@@ -1,15 +1,19 @@
-<?php echo $this->Html->script('less.js'); ?>
 <?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('underscore'); ?>
-<?php echo $this->Html->script('src/Order'); ?>
-<?php echo $this->Html->script('src/ShoppingCart'); ?>
-<?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
 <?php echo $this->Html->css('multi-date-picker'); ?>
 
-<?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
+<?php
+echo $this->Html->script('underscore');
+
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/Order');
+    echo $this->Html->script('src/ShoppingCart');
+    echo $this->Html->script('src/Order.FeaturedListing');
+}  
+
+echo $this->Html->script('jquery-ui.multidatespicker'); 
+?>
 
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
-
 
 <div class = 'ShoppingCart order-window'>
     <h3 class = 'title'>Shopping Cart</h2>

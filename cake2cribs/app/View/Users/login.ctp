@@ -1,6 +1,12 @@
 <?php echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('/less/User/login.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/Login.js', array('inline' => false)); ?>
+
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/Login.js', array('inline' => false));
+}
+?>
+
 <?php echo $this->element('popups'); ?>
 <?php $this->set('title_for_layout', 'Cribspot Login'); ?>
 

@@ -1,5 +1,8 @@
 <!DOCTYPE HTML>
 <?php echo $this->Html->css('UploadImage3'); ?>
+<?php
+  
+?>
 <?php echo $this->Html->script('jquery.fileupload'); ?>
 <?php echo $this->Html->script('jquery.iframe-transport'); ?>
 <html>

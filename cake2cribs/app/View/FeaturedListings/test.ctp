@@ -1,8 +1,12 @@
-
-<?php echo $this->Html->script('src/FeaturedListings'); ?>
-<?php echo $this->Html->script('less.js'); ?>
-
 <?php $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false)); ?>
+
+<?php 
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/FeaturedListings');
+    echo $this->Html->script('less.js');
+}
+?>
+
 <html>
 
 <div class = 'container'>

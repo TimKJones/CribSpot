@@ -1,12 +1,17 @@
-<?php echo $this->Html->script('src/Order'); ?>
-<?php echo $this->Html->script('src/Order.FeaturedListing'); ?>
-<?php echo $this->Html->script('less.js'); ?>
-
-<?php echo $this->Html->script('src/FLDash'); ?>
 <?php $this->Html->css('/less/order.less?','stylesheet/less', array('inline' => false)); ?>
 <?php $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('jquery-ui.multidatespicker'); ?>
 <?php echo $this->Html->css('multi-date-picker'); ?>
+
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+    echo $this->Html->script('src/Order');
+    echo $this->Html->script('src/Order.FeaturedListing');
+    echo $this->Html->script('src/FLDash');
+}
+
+echo $this->Html->script('jquery-ui.multidatespicker'); 
+?>
+
 <script src="https://sandbox.google.com/checkout/inapp/lib/buy.js"></script>
 
 <?php

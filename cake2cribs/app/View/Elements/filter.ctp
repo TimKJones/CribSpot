@@ -1,8 +1,13 @@
 <?php echo $this->Html->css('/less/Filter/filter.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/FilterManager', array('inline' => false)); ?>
-<?php echo $this->Html->script('src/RentalFilter', array('inline' => false)); ?>
-
 <?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
+
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	echo $this->Html->script('src/FilterManager', array('inline' => false));
+	echo $this->Html->script('src/RentalFilter', array('inline' => false));
+}
+?>
+
 <?php echo $this->Html->script('bootstrap-slider', array('inline' => false)); ?>
 
 <div id="map_filter">
