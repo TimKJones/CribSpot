@@ -5,7 +5,7 @@ class A2Cribs.FacebookManager
 
 	@FacebookLogin: () ->
 		url = 'https://www.facebook.com/dialog/oauth?'
-		url += 'client_id=488039367944782'
+		url += 'client_id=450938858319396'
 		url += '&redirect_uri=http://' + window.location.hostname + '/login'
 		url += '&scope=email'
 		A2Cribs.MixPanel.AuthEvent 'login',
