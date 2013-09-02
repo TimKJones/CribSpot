@@ -72,7 +72,7 @@ class OrderController extends AppController {
 
             $addr = $orderItem->item->street_address;
             $num_dates = count($orderItem->item->dates);
-            $response['msg'] = "$addr successfully featured for $num_dates days.";
+            $response['msg'] = "$addr successfully featured!"; /* for $num_dates days."; */
             $response['success'] = true;
 
         } catch (Exception $e) {
