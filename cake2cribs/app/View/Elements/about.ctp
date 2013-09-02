@@ -4,6 +4,8 @@
 		<h3>Our Mission</h3>
 	</div>
 	<div class="modal-body">
-		<p>	We’ve all been at that point where we need to find off-campus housing. As students ourselves, we’ve faced those same questions of who to live with, where to look, and how much to pay. It may be one of the most stressful times during college as most rentals are signed by the end of September. Those that are not already leased can only be found by searching across forty plus realtor sites. We realized that there had to be a better solution and began building this site last summer. Our initial goal was to, if nothing else, create a cool site that makes the housing search a little less painful. However, we ultimately see Cribspot as the place to make a student’s housing search as simple, quick, and transparent as possible. Thanks for checking out the site. We hope you find it helpful.</p>
+		<p>	We’ve all been at that point where we need to find off-campus housing. As recent college graduates, we’ve faced those same questions of who to live with, where to look, and how much to pay. It may be one of the most stressful times during college as most rentals are leased just a few short months into the school year. Those that are not already leased can only be found by searching across dozens of realtor sites.  At Cribspot, we pride ourselves in offering more listings than anyone else. We're empowering students and removing the stress from the housing search.</p>
+		<p>Have any ideas, feedback, or advice? We'd love to hear from you! We're always looking to talk with students so that we can continue to learn how to make their lives easier.</p>
+		<p><i>Tim, Jason, Evan, and Alex</i></p>
 	</div>
 </div>
