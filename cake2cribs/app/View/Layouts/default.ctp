@@ -23,7 +23,7 @@
 <!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
 typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);
 b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
-mixpanel.init("39dd2c3405e671347759a57146ac7a1e");</script>
+mixpanel.init("<?php echo Configure::read('MIXPANEL_TOKEN'); ?>");</script>
 
 <?php 
 if ($this->Session->read('Auth.User.id') != 0) {
@@ -43,15 +43,14 @@ if ($this->Session->read('Auth.User.id') != 0) {
 <?php
 		echo $this->Html->charset();
 		echo $this->Html->script('http://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
+
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js');
 		echo $this->Html->script('jquery.controls');
 	
 		echo $this->Html->script('jquery.dialog2');
 		echo $this->Html->script('jquery.dialog2.helpers');
-
 		echo $this->Html->script('restrict_browsers');
-
 		echo $this->Html->script('jquery.form');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('custom-bootstrap');
@@ -59,6 +58,8 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('google_plus1');
 		echo $this->Html->script('google_analytics');
 		echo $this->Html->script('infobubble.js');
+
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/MixPanel');
@@ -79,7 +80,6 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('src/Cache');
 		echo $this->Html->script('src/Sublet');
 		echo $this->Html->script('src/Housemate');
-		echo $this->Html->script('src/University');
 		echo $this->Html->script('src/HoverData');
 		echo $this->Html->script('src/SubletOwner');
 		echo $this->Html->script('src/ListingPopup');
@@ -88,10 +88,10 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('src/SubletAdd');
 		echo $this->Html->script('src/SubletEdit');
 		echo $this->Html->script('src/SubletInProgress');
-		echo $this->Html->script('knockout.js');
-		echo $this->Html->script('alertify.min.js');
-		echo $this->Html->script('underscore');
-		
+}
+	echo $this->Html->script('knockout.js');
+	echo $this->Html->script('alertify.min.js');
+	echo $this->Html->script('underscore');
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
@@ -118,8 +118,12 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		/* Fetch data */
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
-		echo $this->fetch('script');
 
+if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
+	echo $this->Html->script('src/program');
+}
+
+		echo $this->fetch('script');
 		echo $this->Html->script('less');
 
 		echo $this->Html->scriptBlock('var jsVars = '.$this->Js->object($jsVars).';');
