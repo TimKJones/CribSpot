@@ -98,10 +98,14 @@ class Image extends AppModel {
 		$newPath = $new_directory . uniqid() . '.' . $fileType;
 	//CakeLog::write('new_path', $newPath);
 		/* Move file to $new_path */
-		if (!copy($image_path, WWW_ROOT.$newPath)){
+
+		$image = imagecreatefromjpeg($image_path);
+        imagejpeg($image, $newPath, 45);
+
+		/*if (!copy($image_path, WWW_ROOT.$newPath)){
 			CakeLog::write('failed_to_move_image', $image_path . '; user_id = ' . $user_id . '; listing_id: ' . $listing_id);
 			return array('error' => '');
-		}
+		}*/
 
 		/* Create image entry for this image */
 		$this->create(); // call this to reset $this->id from previous save

@@ -150,7 +150,7 @@ class OrderController extends AppController {
                     }
 
                     $num_dates = count($orderItem->dates);
-                    $response['msg'] = "Successfully featured for $num_dates days.";
+                    $response['msg'] = "Successfully featured!";
                     $response['success'] = true;
                 }
             }else{
