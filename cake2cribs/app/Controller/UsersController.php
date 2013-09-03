@@ -236,8 +236,8 @@ class UsersController extends AppController {
             $redirect_uri = 'http://www.cribspot.com/login';
             if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_LOCAL')
                 $redirect_uri = urlencode('http://localhost/login');
-            else if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_DEVELOPMENT')
-                $redirect_uri = urlencode('http://ec2-54-214-177-171.us-west-2.compute.amazonaws.com/login');
+            /*else if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_DEVELOPMENT')
+                $redirect_uri = urlencode('http://ec2-54-214-177-171.us-west-2.compute.amazonaws.com/login');*/
             $client_id = Configure::read('FB_APP_ID');
             $client_secret = Configure::read('FB_APP_SECRET');
             $code = urlencode($_GET['code']);
