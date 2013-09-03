@@ -18,9 +18,9 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
-        <div class="sidebar-bottom-bar">
+        <a href='http://michigandaily.com'<div class="sidebar-bottom-bar">
 
-        </div>
+        </div></a>
         <!--div class = 'cycle-listings-bar'>
             <div>
                 <i class = 'icon-caret-down dir' data-dir = "down"></i>
