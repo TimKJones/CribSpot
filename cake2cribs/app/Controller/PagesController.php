@@ -56,6 +56,8 @@ class PagesController extends AppController {
 	parent::beforeFilter();
      $this->Auth->allow('display');
      $this->Auth->allow('TermsOfUse');
+     $this->Auth->allow('PrivacyPolicy');
+     $this->Auth->allow('Disclaimer');
      $this->Auth->allow('NewspaperTest');
   	}
   	
@@ -65,6 +67,16 @@ class PagesController extends AppController {
   	}
 
   	public function TermsOfUse()
+  	{
+
+  	}
+
+  	public function PrivacyPolicy()
+  	{
+
+  	}
+
+  	public function Disclaimer()
   	{
 
   	}
