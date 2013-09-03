@@ -222,6 +222,10 @@ class Listing extends AppModel {
 			if (array_key_exists('washer_dryer', $listing['Rental']) &&
 				$listing['Rental']['washer_dryer'] !== '-')
 					$listing['Rental']['washer_dryer'] = Rental::washer_dryer($listing['Rental']['washer_dryer']);
+
+			if (array_key_exists('unit_style_options', $listing['Rental']) &&
+				$listing['Rental']['unit_style_options'] !== null)
+					$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
 		}
 	
 		return $listing;
