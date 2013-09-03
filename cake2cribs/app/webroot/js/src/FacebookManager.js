@@ -13,7 +13,7 @@ Manager class for all social networking functionality
       var url;
       url = 'https://www.facebook.com/dialog/oauth?';
       url += 'client_id=450938858319396';
-      url += '&redirect_uri=http://' + window.location.hostname + '/login';
+      url += '&redirect_uri=http://cribspot.com/login';
       url += '&scope=email';
       A2Cribs.MixPanel.AuthEvent('login', {
         'source': 'facebook'
