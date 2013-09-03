@@ -17,25 +17,26 @@ class ImportController extends AppController {
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('GetListings');
+		/*$this->Auth->allow('GetListings');
 		$this->Auth->allow('SaveListings');
 		$this->Auth->allow('TestGeocoderFunctionality');
 		$this->Auth->allow('Index');
-		$this->Auth->allow('ImportImages');
+		$this->Auth->allow('ImportImages');*/
   	}
 
   	public function index()
   	{
-  		
+  		throw new NotFoundException();
   	}
 
-/*
+/*t
 Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='michigan_test.csv')
+	public function GetListings($fileName='michigan_9_1.csv')
 	{
+		throw new NotFoundException();
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
 		$listings = array();
@@ -71,6 +72,7 @@ Then saves the array of listing objects.
 */
 	public function SaveListings()
 	{
+		throw new NotFoundException();
 		App::Import('model', 'User');
 
 		$this->layout = 'ajax';
@@ -114,6 +116,8 @@ Then saves the array of listing objects.
 			if ($marker != null)
 				$listing['Marker'] = $marker['Marker'];
 
+			if (!array_key_exists('User', $listing))
+				return;
 			/* Get existing user object if this company name has already been used */
 			$user = $this->User->GetUserByCompanyName($listing['User']['company_name']);
 			if ($user != null)
@@ -142,6 +146,7 @@ Then saves the array of listing objects.
 
 	public function ResizeAllImages($dir='img/listings')
 	{
+		throw new NotFoundException();
 		foreach (scandir($dir) as $item) {
 	        if ($item == '.' || $item == '..') 
 	        	continue;
@@ -154,6 +159,7 @@ Then saves the array of listing objects.
 
 	private function _removeNullEntries($rental)
 	{
+		throw new NotFoundException();
 		foreach ($rental as $key => $value)
 		{
 			if ($rental[$key] === null || trim($rental[$key]) === "")
@@ -165,6 +171,7 @@ Then saves the array of listing objects.
 
 	private function _convertTypeStringsToIntegers(&$listing)
 	{
+		throw new NotFoundException();
 		App::Import('model', 'Rental');
 
 		if (array_key_exists('start_date', $listing['Rental']) && !empty($listing['Rental']['start_date']))
@@ -234,10 +241,12 @@ CakeLog::write("listingWithDates", print_r($listing, true));
 		}
 
 		/* square_feet */
-		$listing['Rental']['square_feet'] = intval($listing['Rental']['square_feet']);
-		if (!array_key_exists('square_feet', $listing['Rental']) ||
-			$listing['Rental']['square_feet'] === 0)
+		if (array_key_exists('square_feet', $listing['Rental'])){
+			if ($listing['Rental']['square_feet'] === 0)
 				unset($listing['Rental']['square_feet']);
+			else
+				$listing['Rental']['square_feet'] = intval($listing['Rental']['square_feet']);
+		}
 
 		/* pets_type */
 		if (array_key_exists('pets', $listing['Rental'])){
@@ -324,7 +333,7 @@ return null on failure
 */
 	private function _processFileToJSON($handle)
 	{
-
+		throw new NotFoundException();
 		ini_set("auto_detect_line_endings", true);
 		if ($handle) {
 			$listings = array();
@@ -347,6 +356,7 @@ return null on failure
 		    }
 
 		    fclose($handle);
+		    CakeLog::write('listings', print_r($listings, true));
 		    return $listings;
 		}
 
@@ -355,13 +365,15 @@ return null on failure
 
 	public function ImportImages($directory='img/temp/michigan/')
 	{
+		throw new NotFoundException();
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
 		$listing_ids_processed = array();
+		$consecutive_errors = 0;
 		foreach (scandir($path_to_directory) as $file) { 
 		    if ('.' === $file) continue;
 		    if ('..' === $file) continue;
-		    //if ($counter > 3) break;
+		    //if ($counter > 2) return;
 		    //$counter ++;
 
 		    $dashPos = strrpos($file, '-');
@@ -378,9 +390,23 @@ return null on failure
 		    );
 		//CakeLog::write('full_address', print_r($full_address, true));
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
+		    /*
+		    $geocoded_address = null;
+		    if (!array_key_exists($address, $filename_address_to_geocoded_address)) {
+		    	$geocoded_address = $this->_geocoderProcessAddress($full_address);
+		    	$filename_address_to_geocoded_address[$address] = $geocoded_address;
+		    }
+		    else
+		    	$geocoded_address = $filename_address_to_geocoded_address[$address];
+		    	*/
 		//CakeLog::write('geocoded_address', print_r($geocoded_address, true));
 		    $listings = $this->Listing->GetListingIdFromAddress($geocoded_address);
 		//CakeLog::write('listings', print_r($listings, true));
+		    if (!array_key_exists('street_address', $geocoded_address))
+		    {
+		    	CakeLog::write("IMAGE_UPLOAD_FAILED", print_r($geocoded_address, true));
+		    	return;
+		    }
 		    $street_address = $geocoded_address['street_address'];
 		    if ($listings === null) {
 		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
@@ -412,6 +438,11 @@ return null on failure
 			CakeLog::write('response', print_r($response, true));
 				if (array_key_exists('error', $response) || $response === null){
 					CakeLog::write('FailedImageSave', print_r($path, true));
+					$consecutive_errors ++;
+					if ($consecutive_errors === 5)
+						return;
+				} else {
+					$consecutive_errors = 0;
 				}
 		    }	
 		}
@@ -422,6 +453,7 @@ Unit test for _convertAddressToGeocoderFormat and _convertAddressToLatLong
 */
 	public function TestGeocoderFunctionality()
 	{
+		throw new NotFoundException();
 		$addresses = array(
 			array(
 				'street_address' => '330 N Carroll St',
