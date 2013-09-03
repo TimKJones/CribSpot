@@ -38,5 +38,5 @@ $fields = array('listing_id', 'address', 'beds', 'baths', 'rent', 'highlights', 
 
                 echo "</tr>";   
             }
-            echo "</table><br>";
+            echo "</table><br/>";
         }

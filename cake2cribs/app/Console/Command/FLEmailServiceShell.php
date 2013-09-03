@@ -59,8 +59,10 @@ class FLEmailServiceShell extends AppShell{
         }      
 
         $template_data = array("listings"=>$listings);
-        
-        $subject = "Featured Listings For The Next $num_days Days";
+        $month = date('F');
+        $day = date('d');
+        $year = date('Y');
+        $subject = "Featured Listings Report for " . $month.' '.$day.', '.$year;
         $this->_emailUser("tjones4413@gmail.com", $subject, "featured_listings", $template_data);
 
     }
