@@ -29,7 +29,7 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <a class = 'blue-button' href = '#Marketplace'>Marketplace</a>
         </div-->
         <div class = 'legal-bar'>
-            <span>Cribspot, LLC. | <a href = '/TermsOfUse'>Terms and Conditions</a></span>
+            <span>Cribspot, LLC. | <a href = '/TermsOfUse'>Terms</a> | <a href = '/PrivacyPolicy'>Privacy</a> | <a href = '/Disclaimer'>Disclaimer</a></span>
         </div>
     </div>
 </div>
