@@ -120,7 +120,12 @@ Only return */
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
-        $target_lat_long = $this->University->getTargetLatLong($university_id);
+        $target_lat_long = Cache::read('University-getTargetLatLong-'.$university_id, 'MapData');
+        if ($target_lat_long === false){
+            $target_lat_long = $this->University->getTargetLatLong($university_id);
+            Cache::write('University-getTargetLatLong-'.$university_id, $target_lat_long, 'MapData');
+        }
+        
         $data = $this->Listing->GetBasicData($listing_type, $target_lat_long);
         $response = json_encode($data);
         $this->set("response", $response);
