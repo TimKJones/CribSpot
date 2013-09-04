@@ -60,11 +60,11 @@ class FLEmailServiceShell extends AppShell{
 
         $template_data = array("listings"=>$listings);
         $month = date('F');
-        $day = date('d');
+        $day = date('j') - 1;
         $year = date('Y');
         $subject = "Featured Listings Report for " . $month.' '.$day.', '.$year;
-        $this->_emailUser("tjones4413@gmail.com", $subject, "featured_listings", $template_data);
-
+        $recipient = Configure::read('FEATURED_LISTINGS_REPORT_RECIPIENT');
+        $this->_emailUser($recipient, $subject, "featured_listings", $template_data);
     }
 }
 
