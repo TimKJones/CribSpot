@@ -8,7 +8,7 @@ class FeaturedListingsController extends AppController {
     parent::beforeFilter();
     $this->Auth->allow('cycleIds');
     $this->Auth->allow('newspaper');
-    $this->Auth->allow('GetCribspotFeaturedListings');
+    //$this->Auth->allow('GetCribspotFeaturedListings');
     $this->Auth->allow('index');
   }
   
@@ -130,6 +130,7 @@ class FeaturedListingsController extends AppController {
     else
       $seed = 0;
     Cache::write('featured_listings_seed', $seed);
+
 
     /* Re-order featured listings based on seed value */
     $firstPartOrderedListings = array_slice($listings_data, $seed);
