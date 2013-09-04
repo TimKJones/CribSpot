@@ -8,6 +8,7 @@ class FeaturedListingsController extends AppController {
     parent::beforeFilter();
     $this->Auth->allow('cycleIds');
     $this->Auth->allow('newspaper');
+    $this->Auth->allow('GetCribspotFeaturedListings');
   }
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
@@ -26,6 +27,17 @@ class FeaturedListingsController extends AppController {
 
     $this->set('response', json_encode($listing_ids));
 
+  }
+
+  /*
+  Test function to demonstrate API
+  */
+  public function GetCribspotFeaturedListings()
+  {
+    $token = urlencode(Configure::read('MY_API_TOKEN'));
+    $url = "http://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
+    $featuredListings = file_get_contents($url);
+    $this->set('featuredListings', $featuredListings);
   }
 
   //Returns a list view of featured listing items

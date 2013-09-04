@@ -58,13 +58,25 @@ class PagesController extends AppController {
      $this->Auth->allow('TermsOfUse');
      $this->Auth->allow('PrivacyPolicy');
      $this->Auth->allow('Disclaimer');
-     $this->Auth->allow('NewspaperTest');
+     $this->Auth->allow('NewspaperTest');	
+     $this->Auth->allow('GetCribspotFeaturedListings');
   	}
   	
   	public function NewspaperTest()
   	{
   		
   	}
+
+  	/*public function GetCribspotFeaturedListings()
+  	{
+  		CakeLog::write('featuredListings', '1');
+  		$token = Configure::read('MY_API_TOKEN');
+        $token = urlencode($token);
+        $url = "http://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
+        $featuredListings = file_get_contents($url);
+        CakeLog::write('featuredListings', '2');
+      	$this->set('featuredListings', $featuredListings);
+  	}*/
 
   	public function TermsOfUse()
   	{
