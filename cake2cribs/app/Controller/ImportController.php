@@ -17,6 +17,8 @@ class ImportController extends AppController {
 
 	public function beforeFilter(){
 		parent::beforeFilter();
+		
+		$this->Auth->allow('SaveMultipleImageCopies');
 		/*$this->Auth->allow('GetListings');
 		$this->Auth->allow('SaveListings');
 		$this->Auth->allow('TestGeocoderFunctionality');
@@ -142,6 +144,30 @@ Then saves the array of listing objects.
 			CakeLog::write("failure", print_r($this->Listing->validationErrors, true));
 
 		$this->set('response', '');
+	}
+
+	/*
+	Re-save current images as 3 copies:
+	1) lrg_filename - image big enough for full-page listing.
+	2) med_filename - image big enough for listing popup
+	3) sml_filename - image big enough for sidebar thumbnail
+	*/	
+	public function SaveMultipleImageCopies($dir='img/listings')
+	{
+		foreach (scandir($dir) as $item) {
+	        if ($item == '.' || $item == '..') 
+	        	continue;
+	        $image = WideImage::load($dir . '/' . $item);
+	        /* Large image for full-page listing */
+	        $old = WWW_ROOT.$dir.'/'.$item;
+	        $new = WWW_ROOT.$dir.'/lrg_'.$item;
+	        copy($old, $new);
+	        unlink($old);
+	        /* Medium image for listing popup */
+	        $image->resize(260, null)->saveToFile(WWW_ROOT.$dir.'/med_'.$item);
+	        /* Small image for sidebar */
+	        $image->resize(98, null)->saveToFile(WWW_ROOT.$dir.'/sml_'.$item);
+	    }
 	}
 
 	public function ResizeAllImages($dir='img/listings')

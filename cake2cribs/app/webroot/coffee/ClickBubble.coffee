@@ -179,9 +179,18 @@ class A2Cribs.ClickBubble
 		if A2Cribs.UserCache.Get("image", listing_id)?
 			image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary()
 			if image_url? and div_name?
+				image_url = @_processImagePath image_url
 				$(".#{div_name}").css "background-image", "url(/#{image_url})"
 		else if div_name?
 			$(".#{div_name}").css "background-image", "url(/img/tooltip/no_photo.jpg)"
+
+	###
+	Prepends 'med_' to the filename and returns result
+	###
+	@_processImagePath: (path) ->
+		directory = path.substr(0, path.lastIndexOf '/')
+		filename = 'med_' + path.substr(path.lastIndexOf('/') + 1)
+		return directory + '/' + filename
 
 	@setFullPage: (div_name, listing_id) ->
 		$(".#{div_name}").unbind "click"

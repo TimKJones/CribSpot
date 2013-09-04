@@ -52,47 +52,13 @@ class AppController extends Controller {
 	public function beforeFilter()
 	{
 		$this->Auth->authError = "You need to login to do that.";
-		//$this->Auth->allow('pages', 'display');
 		$this->Auth->allow('beforeRender','__initLogin');
-		$this->Auth->allow('InitFilterValues');
-		//$this->Auth->allow('map','index');
-		//$this->Auth->allow('map','ViewListing');
-		//$this->Auth->allow('user','confirmUser');
-		//$this->Auth->allow('user','logout');
-		//$this->Auth->allow('map','LoadMarkers');
-		//$this->Auth->allow('listing','LoadMarkerData');
-		//$this->Auth->allow('listing','ApplyFilter');
-		//$this->Auth->allow('FindSubletPosition','index');
-		//$this->Auth->allow('Images','index');
-		//$this->Auth->allow('Images','add');
-		//$this->Auth->allow('Images','add2');
-		//$this->Auth->allow('Images','add3');
-		$this->Auth->allow('Images','edit');
-		$this->Auth->allow('Images','edit2');
-		//$this->Auth->allow('Images','LoadImages');
-		//$this->Auth->allow('Images','DeleteImage');
-		//$this->Auth->allow('Marker', 'UpdateCache');
-		//$this->Auth->allow('Landing', 'index');
-		//$this->Auth->allow('Landing', 'index2');
-		//$this->Auth->allow('Landing', 'index3');
-		//$this->Auth->allow('Landing', 'index4');
-		$this->Auth->allow('verify', 'index');
-		$this->Auth->allow('verify', 'TwitterVerify');
-		//$this->Auth->allow('verify', 'Callback');
-		//$this->Auth->allow('user','resetpassword');
-		//$this->Auth->allow('sublet', 'ajax_add');
-		$this->Auth->allow('verify','map');
+		App::import('WideImage', 'WideImage');
 		/*App::import('Lib', 'Facebook.FB');   
     	$this->facebook = new Facebook(array(
       		'appId'  => Configure::read("FB_APP_ID"),
       		'secret' => Configure::read("FB_APP_SECRET"),
     	));*/
-		App::import('Vendor', 'Hull/Client');
-		$this->hull = new Hull_Client(array( 'hull' => array(
-		  'host' => 'https://4d7f3c95.hullapp.io',
-		  'appId' => '52059a5d4ce72fb684000024',
-		  'appSecret' => '332be32bbe05f58d5095a2d0b1043fb9'
-		)));
 	}
 
 	public function beforeRender()
@@ -102,7 +68,7 @@ class AppController extends Controller {
 
 		$flash_message = $this->Cookie->read('flash-message');
 	 	$this->Cookie->delete('flash-message');
-        $this->set("flash_message", json_encode($flash_message));
+        $this->set('flash_message', json_encode($flash_message));
 
 		if($this->Auth->User()){
 			$Users = ClassRegistry::init('User');
@@ -111,7 +77,7 @@ class AppController extends Controller {
 		}
 
 		/* Set default meta content */
-		$title = 'Cribspot - College House Made Simple';
+		$title = 'Cribspot - College Housing Made Simple';
 		$description = "Cribspot takes the pain out of finding college housing. We've gathered thousands of listings so " .
 		"you can stop stressing about housing and get back to making the most of your college experience.";
 		$this->set('meta', array(
