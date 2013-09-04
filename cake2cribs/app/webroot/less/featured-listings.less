@@ -19,7 +19,24 @@
         }
     .left-content{
         min-width: 250px;
-        
+
+        #listing-search
+        {
+            position: relative;
+            #fl-list-input
+            {
+                margin: 10px 0;
+            }
+            #fl-search-icon
+            {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                margin: 15px 5px;
+                color: #dbdbdb;
+            }
+        }        
         .marker-item{
             position: relative;
             border-top: 2px solid #dbdbdb;
@@ -505,10 +522,4 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
 #listing-search{
     list-style-type: none;
-}
-
-#fl-search-icon{
-    &:hover{
-        cursor:pointer;
-    } 
 }
