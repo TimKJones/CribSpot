@@ -1,5 +1,4 @@
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
-<?php echo $this->element('popups'); ?>
 <?php echo $this->element('Dashboard/marker-modal');?>
 <?php echo $this->element('Dashboard/picture-modal');?>
 <?php echo $this->Html->css('messages'); ?>
@@ -27,18 +26,7 @@ echo $this->Html->script('underscore');
 		<div id = 'left_content' class = 'span2'>
 			<?php echo $this->element('Dashboard/navigation-bar'); ?>			
 		</div>
-<!-- <<<<<<< HEAD
-		<div class = 'span6' id = 'middle_content'>
-			
-			<div class = 'account-content hidden'>
-				<?php //echo $this->element('Account/edit_account_window', $user) ?>
-			</div>
-			<div class = 'messages-content hidden'>
-			 	<?php //echo $this->element('Messages/message_window', $user) ?>
-			</div>
-			<div class="sublet-content hide">
-				<?php //echo $this->element('Sublet/edit_sublet_window', $user); ?>
-======= -->
+
 		<div id = 'middle_content' class = 'span10'>
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>

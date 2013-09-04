@@ -88,9 +88,9 @@ class A2Cribs.FLDash
                 total += Number($(element).html())
             @uiOrderItemsList.siblings('tfoot').find('.total').html "#{total.toFixed(2)}"
 
-        $('#fl-search-icon').click ()=>
-            $("#listings_list div").show().filter () ->
-                if $(this).text().toLowerCase().indexOf($("#fl-list-input").val().toLowerCase()) is -1
+        $('#fl-list-input').keyup (event) =>
+            $("#listings_list .marker-item").show().filter () ->
+                if $(this).find(".marker-info").text().toLowerCase().indexOf($("#fl-list-input").val().toLowerCase()) is -1
                     return true
                 return false
             .hide()

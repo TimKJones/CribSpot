@@ -9,10 +9,19 @@ class FeaturedListingsController extends AppController {
     $this->Auth->allow('cycleIds');
     $this->Auth->allow('newspaper');
     $this->Auth->allow('GetCribspotFeaturedListings');
+    $this->Auth->allow('index');
   }
   
   const ARBITRARY_SEED_CAP_VALUE = 100;
   const ELIGIBLE_UNI_RADIUS_MILES = 20;
+
+  public function index()
+  {
+    $directive['classname'] = 'featured-listing';
+    $json = json_encode($directive);
+    $this->Cookie->write('dashboard-directive', $json);
+    $this->redirect('/dashboard');
+  }
   
   public function cycleIds($university_id, $limit){
     if( !$this->request->is('ajax') && !Configure::read('debug') > 0)

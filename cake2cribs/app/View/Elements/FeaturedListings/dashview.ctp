@@ -23,11 +23,10 @@ echo $this->Html->script('jquery-ui.multidatespicker');
         <div class='listing-wrapper'>
             <h4 class = 'header'>Listings</h4>
         </div>
-        <li class="row-fluid" id="listing-search">
-            <div class="span12">
-                <input id='fl-list-input' class="span9" type="text" data-filter-list="#listings_list"><i id="fl-search-icon" class="icon-search icon-large"></i>
-            </div>
-        </li>
+        <div class="row-fluid" id="listing-search">
+            <input id='fl-list-input' class="span12" type="text" data-filter-list="#listings_list" placeholder="Search your listings">
+            <i id="fl-search-icon" class="icon-search icon-large"></i>
+       </div>
         <div id = "listings_list" class="list_content">
         </div>
     </div>
