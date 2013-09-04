@@ -97,8 +97,7 @@ class ListingsController extends AppController {
 		$listing['Listing'] = $listing;
 		$images = null;
 		if (array_key_exists('Image', $listing)){
-			$images = $listingObject['Image'];
-			$images['Image'] = $images;
+			$images = array('Image' => $listingObject['Image']);
 		}
 
 		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
@@ -195,8 +194,8 @@ class ListingsController extends AppController {
 	NOTE: only returns PUBLIC user data
 	If $listing_id is null, returns all listings owned by logged-in user
 	unless the user is a newspaper admin in which case they are returned
-	all the listings near their university.
-	*/
+	all the listings near their university
+.	*/
 	function GetListing($listing_id = null)
 	{
 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)

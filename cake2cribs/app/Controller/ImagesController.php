@@ -10,9 +10,6 @@ class ImagesController extends AppController {
 		$this->Auth->allow('index');
 		$this->Auth->allow('add');
 		$this->Auth->allow('AddImage');
-		$this->Auth->allow('add2');
-		$this->Auth->allow('add3');
-		$this->Auth->allow('edit');
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
@@ -50,6 +47,7 @@ class ImagesController extends AppController {
 			$listing_id = $this->data['listing_id'];
 
 		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
+		CakeLog::write('imagesuccess', print_r($imageResponse, true));
 		$this->set('response', json_encode($imageResponse));
 	}
 
