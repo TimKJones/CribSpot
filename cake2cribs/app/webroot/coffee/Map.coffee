@@ -94,9 +94,8 @@ class A2Cribs.Map
 		A2Cribs.ClickBubble.Init @GMap
 		A2Cribs.HoverBubble.Init @GMap
 		
-		A2Cribs.Map.InitBoundaries();
+		A2Cribs.Map.InitBoundaries()
 		@LoadAllMapData()
-		A2Cribs.MarkerTooltip.Init()
 		A2Cribs.FilterManager.InitAddressSearch()
 
 	@LoadBasicData: ->
