@@ -129,3 +129,7 @@
 - Listing/GetOwnedListingsByMarkerId
 61
 - Listings/GetMarkerDataByLoggedInUser
+62
+- Image/MoveFileToFolder
+63
+- Image/MoveFileToFolder

@@ -28,6 +28,24 @@ class Image extends AppModel {
 		)
 	);
 
+	/*
+	array of image prefix to (width, height)
+	*/
+	private $file_prefixes = array(
+		'sml_'=>array(
+			'width' => 98,
+			'height' => null
+		), 
+		'med_'=>array(
+			'width' => 260,
+			'height' => null
+		), 
+		'lrg_'=>array(
+			'width' => null,
+			'height' => null
+		)
+	);
+
 	public function beforeValidate($options = array()) {
 		if (empty($this->data[$this->alias]['sublet_id'])) {
 			unset($this->validate['sublet_id']);
@@ -59,15 +77,20 @@ class Image extends AppModel {
 
 		$random = uniqid();
 		$newPath = $currentPath . $random;
-		$fileType = $this->_getFileType($file);
-		if (!is_file(WWW_ROOT . $newPath . '.' . $fileType)){
-			/* File doesn't exist yet. This is the path where the image will be saved. */
-			$newPath = $newPath . '.' . $fileType;
-			$response = $this->MoveFileToFolder($file, WWW_ROOT . $newPath, $user_id);
-			if (array_key_exists('error', $response))
-				return $response;
+		/* To test for this file's existence, we need only check one of its sizes */
+		$testPath = $currentPath . 'lrg_' . $random;
 
-			return $this->AddImageEntry($newPath, $user_id, $listing_id);
+		$fileType = $this->_getFileType($file);
+		if (!is_file(WWW_ROOT . $testPath . '.' . $fileType)){
+			/* File doesn't exist yet. This is the path where the image will be saved. */
+			foreach ($this->file_prefixes as $prefix=> $dimensions){
+				$prependedPath = $currentPath . $prefix . $random . '.' . $fileType;
+				$response = $this->MoveFileToFolder($file, $prefix, WWW_ROOT . $prependedPath, $user_id);
+				if (array_key_exists('error', $response))
+					return $response;
+			}
+
+			return $this->AddImageEntry($newPath.'.'.$fileType, $user_id, $listing_id);
 		}
 
 		/* File name already exists. Create new folder if $newPath doesn't already exist */
@@ -125,7 +148,7 @@ class Image extends AppModel {
 	Returns true on success; false on failure
 	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
 	*/
-	public function MoveFileToFolder($file, $newPath, $user_id)
+	public function MoveFileToFolder($file, $prefix, $newPath, $user_id)
 	{
 		if (!$this->_isValidFileSize($file)) {
 			$error = null;
@@ -164,15 +187,36 @@ class Image extends AppModel {
 					'at help@cribspot.com. Reference error code 19.');
 		}
 
-		if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
-			$error = null;
-			$error['path'] = $newPath;
-			$error['file'] = $file;
-			$this->LogError($user_id, 20, $error);
-			return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 20.');
+		/* Process image differently depending on its type */
+		App::import('WideImage', 'WideImage');
+		$response = array();
+		$error = array();
+
+		if ($prefix === 'sml_' || $prefix === 'med_'){
+			$image = WideImage::load($file['tmp_name'][0]);
+			if ($image === null){
+				$error['path'] = $newPath;
+				$error['file'] = $file;
+				$this->LogError($user_id, 63, $error);
+				return array('error' => 'Looks like we had some problems saving your image! We want to help! If the issue continues, ' .
+					'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+						'at help@cribspot.com. Reference error code 63.');
+			}
+
+			$image->resize($this->file_prefixes[$prefix]['width'], $this->file_prefixes[$prefix]['height'])->saveToFile($newPath);
+			
 		}
+		else {
+			if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
+				$error = null;
+				$error['path'] = $newPath;
+				$error['file'] = $file;
+				$this->LogError($user_id, 62, $error);
+				return array('error' => 'Looks like we had some problems saving your image... but we want to help! If the issue continues, ' .
+					'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+						'at help@cribspot.com. Reference error code 62.');
+			}
+		} 
 
 		return array('success' => 'file moved successfully'); 
 	}
@@ -187,7 +231,7 @@ class Image extends AppModel {
 			'user_id' => $user_id,
 			'is_primary' => $is_primary
 		);
-CakeLog::write('saving_image', print_r($newImage, true));
+
 		if ($listing_id !== null)
 			$newImage['listing_id'] = $listing_id;
 
@@ -311,7 +355,6 @@ CakeLog::write('saving_image', print_r($newImage, true));
 
 	public function UpdateImageEntry($user_id, $sublet_id, $image)
 	{
-		CakeLog::write('imageDebug', "Image to be updated: " . print_r($image, true));
 		$owner = $this->find('first', array(
 			'fields' => array('user_id'), 
 			'conditions' => array('Image.image_id' => $image['image_id'])
@@ -338,7 +381,6 @@ CakeLog::write('saving_image', print_r($newImage, true));
 			'fields' => 	array('image_path', 'is_primary', 'caption')));
 		$primary_image_index = 0;
 
-		CakeLog::write("loadingImages", print_r($primary_image_query, true));
 		for ($i = 0; $i < count($primary_image_query); $i++)
 		{
 			array_push($files, $primary_image_query[$i]['Image']['image_path']);
@@ -427,8 +469,6 @@ CakeLog::write('saving_image', print_r($newImage, true));
 	// set the image with image_path = $path as the primary image for the sublet with sublet_id=$listing_id
 	function MakePrimary($listing_id, $path)
 	{
-		CakeLog::write("makePrimary", "listing_id: " . $listing_id . " | path: " . $path);
-
 		// set is_primary to false for previous primary.
 		$this->UnsetPrimaryImage($listing_id);
 
@@ -442,7 +482,6 @@ CakeLog::write('saving_image', print_r($newImage, true));
 		{
 			$image_id = $image_id_query['Image']['image_id']; 
 			$this->id = $image_id;
-			CakeLog::write("makePrimary", "image_id: " . $image_id);
 
 			if (!$this->saveField('is_primary', true))
 				CakeLog::write("makePrimary", "FAILED: " . $listing_id . " | " . $path);
@@ -475,7 +514,6 @@ CakeLog::write('saving_image', print_r($newImage, true));
 			'conditions' => array('Image.image_path' => $path,
 								  'Image.user_id' => $user_id),
 			'fields' => 	array('image_id')));
-		CakeLog::write("addCaption", print_r($image_id_query, true));
 		$image_id = $image_id_query['Image']['image_id'];
 		$this->id = $image_id;
 		if (!$this->saveField('caption', $caption))

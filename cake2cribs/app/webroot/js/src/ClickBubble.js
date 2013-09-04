@@ -78,7 +78,7 @@ ClickBubble class
       openDeferred = new $.Deferred;
       if (listing_id != null) {
         listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
-        A2Cribs.MixPanel.Click(listing, "small popup");
+        A2Cribs.MixPanel.Click(listing, "large popup");
         if (listing.rental_id != null) {
           this.SetContent(listing.GetObject());
           this.Show(listing_id);
@@ -234,11 +234,23 @@ ClickBubble class
       if (A2Cribs.UserCache.Get("image", listing_id) != null) {
         image_url = A2Cribs.UserCache.Get("image", listing_id).GetPrimary();
         if ((image_url != null) && (div_name != null)) {
+          image_url = this._processImagePath(image_url);
           return $("." + div_name).css("background-image", "url(/" + image_url + ")");
         }
       } else if (div_name != null) {
         return $("." + div_name).css("background-image", "url(/img/tooltip/no_photo.jpg)");
       }
+    };
+
+    /*
+    	Prepends 'med_' to the filename and returns result
+    */
+
+    ClickBubble._processImagePath = function(path) {
+      var directory, filename;
+      directory = path.substr(0, path.lastIndexOf('/'));
+      filename = 'med_' + path.substr(path.lastIndexOf('/') + 1);
+      return directory + '/' + filename;
     };
 
     ClickBubble.setFullPage = function(div_name, listing_id) {

@@ -64,8 +64,9 @@ class ListingsController extends AppController {
 		$this->_refactorOwnerFields($listing);
 		$this->_setPrimaryImage($listing);
 		$this->_refactorBooleanAmenities($listing['Rental']);
-		//$this->_refactorAmenities($listing['Rental']);
-		CakeLog::write("boolean", print_r($listing, true));
+		if (array_key_exists('Image', $listing)){
+			$this->_setImagePathsForFullPageView($listing['Image']);
+		}
 
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
@@ -91,14 +92,12 @@ class ListingsController extends AppController {
 			return;
 
 		$this->layout = 'ajax';
-		CakeLog::write("fuckthis", print_r($this->request, true));
 		$listingObject = $this->params['data'];
 		$listing = $listingObject['Listing'];
 		$listing['Listing'] = $listing;
 		$images = null;
 		if (array_key_exists('Image', $listing)){
-			$images = $listingObject['Image'];
-			$images['Image'] = $images;
+			$images = array('Image' => $listingObject['Image']);
 		}
 
 		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
@@ -195,8 +194,8 @@ class ListingsController extends AppController {
 	NOTE: only returns PUBLIC user data
 	If $listing_id is null, returns all listings owned by logged-in user
 	unless the user is a newspaper admin in which case they are returned
-	all the listings near their university.
-	*/
+	all the listings near their university
+.	*/
 	function GetListing($listing_id = null)
 	{
 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
@@ -244,6 +243,33 @@ class ListingsController extends AppController {
 		$this->set('response', json_encode($listings));
 	}
 
+	private function _setImagePathsForFullPageView(&$images)
+	{
+		foreach ($images as &$image){
+			if (array_key_exists('image_path', $image)){
+				$fileName = 'lrg_'.$this->_getFileNameFromPath($image['image_path']);
+				$directory = $this->_getDeepestDirectoryFromPath($image['image_path']);
+				$image['image_path'] = $directory.'/'.$fileName;
+			}
+		}
+	}
+
+	/*
+	Returns the file name given the full path to the file
+	*/
+	private function _getFileNameFromPath($image_path)
+	{
+		return substr($image_path, strrpos($image_path, '/') + 1);
+	}
+
+	/*
+	Returns the deepest directory from a given path.
+	*/
+	private function _getDeepestDirectoryFromPath($path)
+	{
+		return substr($path, 0, strrpos($path, '/'));
+	}
+
 	/*
 	Returns all listing_data for given user_id.
 	NOTE: only returns PUBLIC user data
@@ -267,7 +293,6 @@ class ListingsController extends AppController {
 	*/
 	private function _refactorAmenities(&$listing)
 	{
-		CakeLog::write('viewAmenities', print_r($listing, true));
 		$this->_refactorBooleanAmenities($listing);
 
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
@@ -284,8 +309,6 @@ class ListingsController extends AppController {
 
 		if ($listing['parking_type'] !== '-')
 			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
-
-		CakeLog::write('hmmm', print_r($listing, true));
 	}
 
 	private function _refactorBooleanAmenities(&$rental)

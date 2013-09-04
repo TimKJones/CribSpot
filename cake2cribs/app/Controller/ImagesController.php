@@ -10,9 +10,6 @@ class ImagesController extends AppController {
 		$this->Auth->allow('index');
 		$this->Auth->allow('add');
 		$this->Auth->allow('AddImage');
-		$this->Auth->allow('add2');
-		$this->Auth->allow('add3');
-		$this->Auth->allow('edit');
 		$this->Auth->allow('LoadImages');
 		$this->Auth->allow('DeleteImage');
 		$this->Auth->allow('MakePrimary');
@@ -50,6 +47,7 @@ class ImagesController extends AppController {
 			$listing_id = $this->data['listing_id'];
 
 		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
+		CakeLog::write('imagesuccess', print_r($imageResponse, true));
 		$this->set('response', json_encode($imageResponse));
 	}
 
@@ -181,6 +179,38 @@ class ImagesController extends AppController {
 		$this->layout = 'ajax';
 		$listing_ids = json_decode($listing_ids);
 		$images = $this->Image->GetPrimaryImagesByListingIds($listing_ids);
+		$this->_setImagePathsForView($images, 'sml_');
 		$this->set('response', json_encode($images));
+	}
+
+	/*
+	Takes in an array of Image objects.
+	Updates their image_paths by pre-pending prefix to their filenames.
+	*/
+	private function _setImagePathsForView(&$images, $prefix='lrg_')
+	{
+		foreach ($images as &$image){
+			if (array_key_exists('Image', $image) && array_key_exists('image_path', $image['Image'])) {
+				$fileName = $prefix.$this->_getFileNameFromPath($image['Image']['image_path']);
+				$directory = $this->_getDeepestDirectoryFromPath($image['Image']['image_path']);
+				$image['Image']['image_path'] = $directory.'/'.$fileName;
+			}
+		}
+	}
+
+	/*
+	Returns the file name given the full path to the file
+	*/
+	private function _getFileNameFromPath($image_path)
+	{
+		return substr($image_path, strrpos($image_path, '/') + 1);
+	}
+
+	/*
+	Returns the deepest directory from a given path.
+	*/
+	private function _getDeepestDirectoryFromPath($path)
+	{
+		return substr($path, 0, strrpos($path, '/'));
 	}
 }
