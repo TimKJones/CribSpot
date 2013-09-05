@@ -155,6 +155,8 @@ ClickBubble class
       unit_style_description = '';
       if ((listing_object.unit_style_options != null) && (listing_object.unit_style_description != null)) {
         unit_style_description = listing_object.unit_style_options + '-' + listing_object.unit_style_description;
+      } else if (listing_object.unit_style_options === 'Entire House') {
+        unit_style_description = 'Entire House';
       }
       this.div.find('.unit_style_description').text(unit_style_description);
       this.div.find('unit_style_description').text;

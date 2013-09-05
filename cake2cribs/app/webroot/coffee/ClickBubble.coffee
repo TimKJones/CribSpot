@@ -111,8 +111,10 @@ class A2Cribs.ClickBubble
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
 		unit_style_description = ''
-		if listing_object.unit_style_options? and listing_object.unit_style_description?
+		if (listing_object.unit_style_options? and listing_object.unit_style_description?)
 			unit_style_description = listing_object.unit_style_options + '-' + listing_object.unit_style_description
+		else if listing_object.unit_style_options == 'Entire House'
+			unit_style_description = 'Entire House'
 		@div.find('.unit_style_description').text unit_style_description
 		@div.find('unit_style_description').text 
 		@linkWebsite ".website_link", listing_object.website
