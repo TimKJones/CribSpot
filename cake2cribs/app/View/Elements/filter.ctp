@@ -77,8 +77,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		</div>
 		<div id="more_filter_content" class="filter_content hide" data-link="#more_filter_link"> <!-- More Info -->
 			<?php
-				$building_types = array('Pets Allowed', 'Parking Available', 'A/C In-Unit', 'Utilities Included');
-				$building_filters = array('PetsAllowed', 'ParkingAvailable', 'Air', 'UtilitiesIncluded');
+				$building_types = array('Pets Allowed', 'Parking Available', 'A/C In-Unit');
+				$building_filters = array('PetsAllowed', 'ParkingAvailable', 'Air');
 				$length = count($building_types);
 				for ($i=0; $i < $length; $i++) {
 					echo '

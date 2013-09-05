@@ -205,9 +205,9 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		@div.find('#rentals-filter-label').click (event) =>
 			lastTab = @div.find(".filter_link.active")
 			@div.find("#filter_dropdown").slideUp "fast"
-			lastTab.find(".filter_title").hide()
-			lastTab.find(".filter_content").hide()
-			lastTab.find(".filter_preview").show()
+			if lastTab.length and lastTab.find(".filter_preview").html().length
+				lastTab.find(".filter_title").hide()
+				lastTab.find(".filter_preview").show()
 			@div.find(".filter_link").removeClass "active"
 
 		@CreateListeners()
