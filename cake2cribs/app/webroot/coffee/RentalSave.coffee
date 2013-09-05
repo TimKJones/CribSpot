@@ -28,8 +28,8 @@ class A2Cribs.RentalSave
 				$("#rentals_list_content").append list_item
 				$("#rentals_list_content").slideDown()
 			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
-			@Open marker_id
-			@AddNewUnit()
+			$.when(@Open(marker_id))
+			.then () => @AddNewUnit()
 
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
 			if $("#rentals_list_content").find("##{marker_id}").length is 1
@@ -115,6 +115,7 @@ class A2Cribs.RentalSave
 	Open: (marker_id) ->	
 		# Gets rental info and saves to JS object
 		# First, retrieve all data for this marker
+		deferred = new $.Deferred()
 		$.ajax
 			url: myBaseUrl + "listings/GetOwnedListingsByMarkerId/" + marker_id
 			type: "GET"
@@ -136,6 +137,9 @@ class A2Cribs.RentalSave
 				A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
 
 				@PopulateGrid marker_id
+				deferred.resolve()
+
+		return deferred.promise()
 
 	CreateListingPreview: (marker_id) ->
 		marker_object = A2Cribs.UserCache.Get "marker", marker_id
