@@ -266,6 +266,14 @@ class User extends AppModel {
 	public function VerifyUserEmail($user_id, $university_id)
 	{
 		$user = array();
+		if ($user_id === null){
+			$error = null;
+			$this->LogError($user_id, 64, $error);
+			return array('error' => 
+					'Looks like we had some issues verifying your email address...but we want to help! If the problem continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 64.');
+		}
 		$user['id'] = $user_id;
 		$user['verified'] = true;
 		if ($university_id != null){
@@ -441,6 +449,13 @@ class User extends AppModel {
 					'at help@cribspot.com. Reference error code 36.');
 		}
 
+		$fields_to_strip = array('first_name', 'last_name', 'email', 'company_name', 'website', 'phone', 'street_address',
+			'city');
+		foreach ($fields_to_strip as $field){
+			if (array_key_exists($field, $user))
+				$user[$field] = rtrim($user[$field]);
+		}
+		
 		if (!$this->save(array('User'=>$user))) {
 			$error = null;
 			$error['user'] = $user;
