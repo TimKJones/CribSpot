@@ -64,5 +64,12 @@
 	 		}
 
 	 		$this->set('dropdowns', json_encode($dropdown_values));
+
+	 		if (array_key_exists('User', $user) && array_key_exists('user_type', $user['User']) 
+	 			&& !empty($user['User']['user_type']) && $user['User']['user_type'] == 2){
+		 			$directive['classname'] = 'featured-listing';
+				    $json = json_encode($directive);
+				    $this->Cookie->write('dashboard-directive', $json);
+	 		}
 	 	}
 	}

@@ -455,7 +455,7 @@ class User extends AppModel {
 			if (array_key_exists($field, $user))
 				$user[$field] = rtrim($user[$field]);
 		}
-		
+
 		if (!$this->save(array('User'=>$user))) {
 			$error = null;
 			$error['user'] = $user;
@@ -528,6 +528,8 @@ class User extends AppModel {
 
 	public function UpdateLastLogin($user_id)
 	{
+		if ($user_id === null)
+			return;
 		date_default_timezone_set('America/New_York');
 		$db = ConnectionManager::getDataSource('default');
 		$now = $db->expression('NOW()');
@@ -537,6 +539,8 @@ class User extends AppModel {
 
 	public function SavePreferredUniversity($user_id, $university_id)
 	{
+		if ($user_id === null)
+			return;
 		$this->id = $user_id;
 		$this->saveField('preferred_university', $university_id);
 	}
