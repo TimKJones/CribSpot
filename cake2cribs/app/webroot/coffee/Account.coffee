@@ -57,7 +57,7 @@ class A2Cribs.Account
 		if @ValidatePhone phone
 			pair = 
 				'phone':phone
-			@SaveAccount pair, $("#changePhoneBtn"))
+			@SaveAccount pair, $("#changePhoneBtn")
 		else
 			A2Cribs.UIManager.Error "Invalid phone number"
 

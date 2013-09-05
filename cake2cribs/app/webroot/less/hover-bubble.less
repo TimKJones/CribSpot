@@ -58,9 +58,15 @@
 	{
 		padding: 5px 0;
 		color: #4e4e4e;
-		border-bottom: solid 1px #e1e1e1;
+		border: none;
+		border-top: solid 1px #e1e1e1;
 		overflow: auto;
 		text-align: left;
+
+		&:first-child
+		{
+			border-top: none;
+		}
 
 		&:hover
 		{
@@ -98,7 +104,6 @@
 		width: 100%;
 		color: #d65157;
 		border-bottom: solid 1px #e1e1e1;
-		font-weight: bold;
 		font-size: 13px;
 		padding: 5px 0;
 		position: relative;
@@ -106,6 +111,7 @@
 	.building_type
 	{
 		margin: 0 10px;
+		font-weight: bold;
 	}
 	.close_button
 	{
