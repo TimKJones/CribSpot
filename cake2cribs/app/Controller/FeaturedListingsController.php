@@ -115,10 +115,20 @@ class FeaturedListingsController extends AppController {
     $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
     
     /* Get all featured listings for today */
-    $listings_data = $this->FeaturedListing->find('all', array(
-      'conditions' => $conditions,
-      'fields' => 'Listing.listing_id'
-    ));
+    $target_lat_long = Cache::read('University-getTargetLatLong-'.$university_id, 'MapData');
+        if ($target_lat_long === false){
+            $target_lat_long = $this->University->getTargetLatLong($university_id);
+            Cache::write('University-getTargetLatLong-'.$university_id, $target_lat_long, 'MapData');
+        }
+
+    $listings_data = Cache::read('featuredListingIds-'.$university_id, 'Daily');
+    if ($listings_data === false){
+      $listings_data = $this->FeaturedListing->find('all', array(
+        'conditions' => $conditions,
+        'fields' => 'Listing.listing_id'
+      ));
+      Cache::write('featuredListingIds-'.$university_id, $listings_data, 'Daily');
+    }    
 
     /* increment the seed */
     $seed = Cache::read('featured_listings_seed');
