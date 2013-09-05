@@ -5,14 +5,18 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 ?>
 
 <style type="text/css">
+	#layoutsContainer
+	{
+		background-color: #dedfdf;
+	}
 	#map_region
 	{
 		position: absolute;
-		top: 55px;
-		right: 360px;
-		left: 10px;
-		bottom: 10px;
-		box-shadow: 0 0 5px black;
+		top: 57px;
+		right: 362px;
+		left: 12px;
+		bottom: 12px;
+		box-shadow: 0 0 5px gray;
 	}
 	#map_canvas
 	{
