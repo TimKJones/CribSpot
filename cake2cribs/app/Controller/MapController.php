@@ -132,7 +132,7 @@ Only return */
             Cache::write('mapBasicData-'.$university_id, $basicData, 'MapData');
         }
         
-        $response = json_encode($data);
+        $response = json_encode($basicData);
         $this->set("response", $response);
     }
 }
