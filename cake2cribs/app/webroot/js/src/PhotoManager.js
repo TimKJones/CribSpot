@@ -16,11 +16,13 @@
       }
 
       Photo.prototype.LoadPhoto = function(_imageId, _path, _caption, isPrimary) {
+        var path;
         this._imageId = _imageId;
         this._path = _path;
         this._caption = _caption;
         this._isEmpty = false;
-        this._preview = "<img src='" + this._path + "'></img>";
+        path = Photo.ProcessImagePath(this._path);
+        this._preview = "<img src='" + path + "'></img>";
         this._div.find(".imageContent").html(this._preview);
         return this.SetPrimary(isPrimary);
       };
@@ -103,6 +105,17 @@
           image_path: this._path,
           listing_id: this._listing_id
         };
+      };
+
+      /*
+      		Prepends 'med_' to the filename and returns result
+      */
+
+      Photo.ProcessImagePath = function(path) {
+        var directory, filename;
+        directory = path.substr(0, path.lastIndexOf('/'));
+        filename = 'med_' + path.substr(path.lastIndexOf('/') + 1);
+        return directory + '/' + filename;
       };
 
       Photo.IsAcceptableFileType = function(fileName) {
