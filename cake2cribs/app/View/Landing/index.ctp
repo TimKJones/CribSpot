@@ -5,7 +5,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Landing', array('inline' => false));
 	echo $this->Html->script('src/Login', array('inline' => false));
 }
-	$this->set('title_for_layout', 'Cribspot - Every College Rental...All In One Place');
+	$this->set('title_for_layout', 'Cribspot - Every College Rental...All In One Spot');
 ?>
 
 
@@ -73,7 +73,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	<img src="/img/landing/logo.png" height="200px" width="400px">
 	<div id="slogan" class="text-center">
 		<i class="small_font">EVERY </i><i class="large_font blue_font"> COLLEGE RENTAL</i><br/>
-		<i class="large_font">ALL</i><i class="small_font"><i class="small_font"> IN</i><i class="large_font blue_font"> ONE PLACE</i>
+		<i class="large_font">ALL</i><i class="small_font"><i class="small_font"> IN</i><i class="large_font blue_font"> ONE SPOT</i>
 	</div>
 	<div>
 		<form id="school-form">
