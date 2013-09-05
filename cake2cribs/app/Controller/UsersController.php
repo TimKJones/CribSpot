@@ -225,6 +225,10 @@ class UsersController extends AppController {
             $flash_message['message'] = "You are now logged in!";
             $json = json_encode($flash_message);
             $this->Cookie->write('flash-message', $json);
+            $user = $this->Auth->User();
+            if (array_key_exists('user_type', $user) && !empty($user['user_type']) && $user['user_type'] == 2)
+                $this->redirect('/FeaturedListings');
+
             $this->redirect(array('controller' => 'dashboard', 'action' => 'index'));
         }
 
