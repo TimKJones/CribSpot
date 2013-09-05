@@ -8,6 +8,7 @@ class FeaturedListingsController extends AppController {
     parent::beforeFilter();
     $this->Auth->allow('cycleIds');
     $this->Auth->allow('newspaper');
+    //$this->Auth->allow('GetCribspotFeaturedListings');
     $this->Auth->allow('index');
   }
   
@@ -35,6 +36,17 @@ class FeaturedListingsController extends AppController {
 
     $this->set('response', json_encode($listing_ids));
 
+  }
+
+  /*
+  Test function to demonstrate API
+  */
+  public function GetCribspotFeaturedListings()
+  {
+    $token = urlencode(Configure::read('MY_API_TOKEN'));
+    $url = "http://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
+    $featuredListings = file_get_contents($url);
+    $this->set('featuredListings', $featuredListings);
   }
 
   //Returns a list view of featured listing items
@@ -103,10 +115,20 @@ class FeaturedListingsController extends AppController {
     $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
     
     /* Get all featured listings for today */
-    $listings_data = $this->FeaturedListing->find('all', array(
-      'conditions' => $conditions,
-      'fields' => 'Listing.listing_id'
-    ));
+    $target_lat_long = Cache::read('University-getTargetLatLong-'.$university_id, 'MapData');
+        if ($target_lat_long === false){
+            $target_lat_long = $this->University->getTargetLatLong($university_id);
+            Cache::write('University-getTargetLatLong-'.$university_id, $target_lat_long, 'MapData');
+        }
+
+    $listings_data = Cache::read('featuredListingIds-'.$university_id, 'Daily');
+    if ($listings_data === false){
+      $listings_data = $this->FeaturedListing->find('all', array(
+        'conditions' => $conditions,
+        'fields' => 'Listing.listing_id'
+      ));
+      Cache::write('featuredListingIds-'.$university_id, $listings_data, 'Daily');
+    }    
 
     /* increment the seed */
     $seed = Cache::read('featured_listings_seed');
@@ -118,6 +140,7 @@ class FeaturedListingsController extends AppController {
     else
       $seed = 0;
     Cache::write('featured_listings_seed', $seed);
+
 
     /* Re-order featured listings based on seed value */
     $firstPartOrderedListings = array_slice($listings_data, $seed);

@@ -10,11 +10,11 @@
     <?php foreach ($listings as $listing):?> 
     <url> 
         <loc><?php echo Router::url('/'.$listing['url'],true); ?></loc>
-        <image:image>
             <?php foreach ($listing['Image'] as $image): ?>
-                <image:loc><?php echo Router::url('/'.$image['image_path'],true); ?></image:loc>
+                <image:image>
+                    <image:loc><?php echo Router::url('/'.$image['image_path'],true); ?></image:loc>
+                </image:image>
             <?php endforeach ?>
-        </image:image>
         <priority>0.8</priority> 
     </url>
     <?php endforeach; ?>

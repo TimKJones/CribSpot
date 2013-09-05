@@ -497,7 +497,7 @@ class Listing extends AppModel {
                     'description'=>$fl['Rental']['description'],
                     'contact_email'=>$fl['Rental']['contact_email'],
                     'contact_phone'=>$fl['Rental']['contact_phone'],
-                    'listing_url'=>'www.cribspot.com/listing/' . $fl['Listing']['listing_id']   
+                    'url'=>'www.cribspot.com/listing/' . $fl['Listing']['listing_id']   
                     );
                 $fldata['primary_image_url'] = '';
                 if (array_key_exists('Image', $fl)){
