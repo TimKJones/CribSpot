@@ -11,8 +11,6 @@ class A2Cribs.Account
 				@UniversityID[key] = value['University']['id']
 
 			$('#university').typeahead {source: @UniversityNames}
-			$('#save_btn').click =>
-				@SaveAccount()
 
 		my_verification_info = A2Cribs.VerifyManager.getMyVerification()
 		veripanel = $('#my-verification-panel')
@@ -47,19 +45,19 @@ class A2Cribs.Account
 			pair = 
 				'first_name':$("#first_name_input").val()
 				'last_name':$("#last_name_input").val()
-			@SaveAccount pair
+			@SaveAccount pair, $("#changeFirstLastNameButton")
 
 	@SaveCompanyName: () ->
 			pair = 
 				'company_name':$("#company_name_input").val()
-			@SaveAccount pair
+			@SaveAccount pair, $("#changeCompanyNameButton")
 
 	@SavePhone: () ->
 		phone = $("#phone_input").val()
 		if @ValidatePhone phone
 			pair = 
 				'phone':phone
-			@SaveAccount pair
+			@SaveAccount pair, $("#changePhoneBtn"))
 		else
 			A2Cribs.UIManager.Error "Invalid phone number"
 
@@ -74,7 +72,7 @@ class A2Cribs.Account
 		pair = 
 			'street_address':street_address
 			'city':city
-		@SaveAccount pair
+		@SaveAccount pair, $("#changeAddressBtn")
 
 	@Direct: (directive)->
 
@@ -131,16 +129,7 @@ class A2Cribs.Account
 
 			change_password_button.removeAttr 'disabled'
 
-	@SaveAccount:(keyValuePairs = null)->
-		###$('#save_btn').attr 'disabled','disabled'
-		first_name = $('#first_name_input').val()
-		last_name = $('#last_name_input').val()
-		data = {
-			'first_name': first_name,
-			'last_name': last_name,
-		}
-		###
-
+	@SaveAccount:(keyValuePairs = null, button=null)->
 		$.post myBaseUrl + 'users/AjaxEditUser', keyValuePairs, (response)->
 			# console.log response
 			json_response = JSON.parse(response)
@@ -150,8 +139,8 @@ class A2Cribs.Account
 			else
 				A2Cribs.UIManager.Error 'Account Failed to Save: ' + json_response.error.message
 
-
-			$('#save_btn').removeAttr 'disabled'
+			if button?
+				button.removeAttr 'disabled'
 
 
 	@FacebookConnect:()->

@@ -36,10 +36,7 @@ class User extends AppModel {
 				'rule' => array('between',1,50),
 				'message' => 'Must be between 1 and 50 characters'
 				),
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric',
-				'message' => 'Names must only contain letters and numbers.'
-				)
+			'rule' => array('custom', '/^[a-z\- ]*$/i') 
 			),
 		'last_name' => array(
 			'required' => array(
@@ -50,10 +47,7 @@ class User extends AppModel {
 				'rule' => array('between',1,50),
 				'message' => 'Must be between 1 and 50 characters'
 				),
-			'alphaNumeric' => array(
-				'rule' => 'alphaNumeric',
-				'message' => 'Names must only contain letters and numbers.'
-				)
+			'rule' => array('custom', '/^[a-z\- ]*$/i') 
 		),
 		'company_name' => array(
 			'between' => array(
