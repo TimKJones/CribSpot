@@ -448,7 +448,7 @@ class UsersController extends AppController {
     public function AjaxEditUser(){
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-
+CakeLog::write('userdata', print_r($this->request->data, true));
         $this->layout = 'ajax';
 
         $editable_fields = array('first_name', 'last_name', 'company_name', 'street_address',

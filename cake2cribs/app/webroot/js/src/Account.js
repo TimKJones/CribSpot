@@ -170,14 +170,6 @@
 
     Account.SaveAccount = function(keyValuePairs) {
       if (keyValuePairs == null) keyValuePairs = null;
-      /*$('#save_btn').attr 'disabled','disabled'
-      		first_name = $('#first_name_input').val()
-      		last_name = $('#last_name_input').val()
-      		data = {
-      			'first_name': first_name,
-      			'last_name': last_name,
-      		}
-      */
       return $.post(myBaseUrl + 'users/AjaxEditUser', keyValuePairs, function(response) {
         var json_response;
         json_response = JSON.parse(response);
@@ -186,7 +178,7 @@
         } else {
           A2Cribs.UIManager.Error('Account Failed to Save: ' + json_response.error.message);
         }
-        return $('#save_btn').removeAttr('disabled');
+        return $('.save_btn').removeAttr('disabled');
       });
     };
 

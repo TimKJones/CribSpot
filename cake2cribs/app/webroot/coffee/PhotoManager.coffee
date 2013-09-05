@@ -10,7 +10,8 @@ class A2Cribs.PhotoManager
 
 		LoadPhoto: (@_imageId, @_path, @_caption, isPrimary) ->
 			@_isEmpty = false
-			@_preview = "<img src='#{@_path}'></img>"
+			path = Photo.ProcessImagePath @_path
+			@_preview = "<img src='#{path}'></img>"
 			@_div.find(".imageContent").html @_preview
 			@SetPrimary isPrimary
 
@@ -78,6 +79,14 @@ class A2Cribs.PhotoManager
 				is_primary: +@_isPrimary
 				image_path: @_path
 				listing_id: @_listing_id
+
+		###
+		Prepends 'med_' to the filename and returns result
+		###
+		@ProcessImagePath: (path) ->
+			directory = path.substr(0, path.lastIndexOf '/')
+			filename = 'med_' + path.substr(path.lastIndexOf('/') + 1)
+			return directory + '/' + filename
 
 		@IsAcceptableFileType: (fileName) ->
 			indexOfDot = fileName.indexOf ".", fileName.length - 4
@@ -248,3 +257,5 @@ class A2Cribs.PhotoManager
 			success: (response) =>
 				response = JSON.parse response
 				console.log response
+
+	
