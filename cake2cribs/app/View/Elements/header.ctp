@@ -12,45 +12,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 }
 	echo $this->element('popups');
 ?>
-<style> 
-@font-face {
-    font-family: 'ReklameScriptRegularDEMORg';
-    src: url('/font/ReklameScript-Regular_DEMO-webfont.eot');
-    src: url('/font/ReklameScript-Regular_DEMO-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/font/ReklameScript-Regular_DEMO-webfont.woff') format('woff'),
-         url('/font/ReklameScript-Regular_DEMO-webfont.ttf') format('truetype'),
-         url('/font/ReklameScript-Regular_DEMO-webfont.svg#ReklameScriptRegularDEMORg') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
 
-@font-face {
-    font-family: 'ReklameScriptRegular';
-    src: url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.eot');
-    src: url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.woff') format('woff'),
-         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.ttf') format('truetype'),
-         url('/font/reklamescript_regular_macroman/ReklameScript-Regular-webfont.svg#ReklameScriptRegularRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-
-@font-face {
-    font-family: 'ReklameScriptMedium';
-    src: url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.eot');
-    src: url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.woff') format('woff'),
-         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.ttf') format('truetype'),
-         url('/font/reklamescript_medium_macroman/ReklameScript-Medium-webfont.svg#ReklameScriptMediumRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
-
-</style>
 <div id="header" class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">
@@ -79,8 +41,25 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						</a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
 							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<?php
+							if (intval($AuthUser["user_type"]) == 1)
+							{ ?>
+								<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<?php
+							}
+							if (intval($AuthUser["user_type"]) == 2)
+							{ 
+							?>
+							<li role="presentation"><?php echo $this->Html->link('Featured Listings', array('controller' => 'FeaturedListings', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<?php
+							}
+							if (intval($AuthUser["user_type"]) != 2)
+							{ 
+							?>
 							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<?php
+							}
+							?>
 							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 						</ul>
 					</li>
