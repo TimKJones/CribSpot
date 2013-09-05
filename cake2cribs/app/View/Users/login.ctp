@@ -7,7 +7,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 }
 ?>
 
-<?php echo $this->element('popups'); ?>
 <?php $this->set('title_for_layout', 'Cribspot Login'); ?>
 
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => false)); ?>
