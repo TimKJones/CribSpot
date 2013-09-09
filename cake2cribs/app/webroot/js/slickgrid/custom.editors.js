@@ -178,6 +178,8 @@
     };
 
     this.validate = function () {
+      if ($unit_style_description.val() == null || $unit_style_description.val().length == 0)
+        return {valid: false, msg: "Please describe the unit or layout"};
       return {valid: true, msg: null};
     };
 
