@@ -603,6 +603,15 @@ class User extends AppModel {
 	}
 
 	/*
+	Invalidate the previous password reset token
+	Called after a user has successfully reset their password from an email link
+	*/	
+	public function ResetPasswordToken($user_id)
+	{
+		$this->saveField('password_reset_token', uniqid());
+	}
+
+	/*
 	Returns true if all fields are present (based on user type).
 	Returns false otherwise.
 	*/
