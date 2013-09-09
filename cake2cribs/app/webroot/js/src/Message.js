@@ -160,6 +160,8 @@
       url = myBaseUrl + "messages/getMessages/" + this.CurrentConversation + "/" + page + "/";
       return $.get(url, function(data, textStatus) {
         var diff, initial_height, message_list;
+        data = JSON.parse(data);
+        if (data.error !== void 0) return;
         message_list = $('#message_list');
         initial_height = message_list.innerHeight();
         $(data).hide().prependTo('#message_list').fadeIn();

@@ -129,14 +129,12 @@
         $this->set('response', $json);
     }
 
- //     public $paginate = array(
- //        'limit' => 5,
-    // );
-
     // Ajax function to get all the messages in a conversation
     public function getMessages($conv_id, $page=1){
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
+
+        $this->layout = 'ajax';
         $user = $this->Auth->User();
         $messages = null;
         $limit = 15;
@@ -151,7 +149,9 @@
             $messages = $this->paginate('Message');
             // die(debug($messages));
             if(empty($messages)){
-                throw new NotFoundException();
+                $response = array('error' => 'NO_MESSAGES_FOUND');
+                $this->set('messages', $response);
+                return;
             }
             if($page == 1){
                 // Clear the unread messages since the user just fetched the most recent 
@@ -159,12 +159,9 @@
                 $unreadmessages = ClassRegistry::init('UnreadMessage');
                 $unreadmessages->clearUnread($conv_id, $user);  
             }
-            
         }
 
         $count = ($page-1) * $limit;
-
-        $this->layout = 'ajax';
         $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));
     }
 

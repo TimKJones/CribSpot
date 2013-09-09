@@ -160,6 +160,10 @@ class A2Cribs.Messages
 		
 		# We want to put a hold on loading
 		$.get url, (data, textStatus) =>
+			data = JSON.parse data
+			if data.error != undefined
+				return
+
 			message_list = $('#message_list')
 			initial_height = message_list.innerHeight()
 
