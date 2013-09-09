@@ -92,6 +92,10 @@
         return {valid: false, msg: "Invalid Range. Min cannot be larger than max!"};
       }
 
+      if (parseInt($min_occupancy.val(), 10) < 0 || parseInt($max_occupancy.val(), 10) < 0) {
+        return {valid: false, msg: "Occupancy cannot be less than 0!"};
+      }
+
       return {valid: true, msg: null};
     };
 
@@ -119,11 +123,11 @@
       $unit_style_options.change(function() {
         var value = $unit_style_options.val() ;
         if (value === "0")
-          $unit_style_description.show().attr("placeholder", "Style F")
+          $unit_style_description.show().attr("placeholder", "Style F").val("")
         else if (value === "1")
-          $unit_style_description.show().attr("placeholder", "A7")
+          $unit_style_description.show().attr("placeholder", "A7").val("")
         else if (value === "2")
-          $unit_style_description.hide()
+          $unit_style_description.hide().val("NA")
       });
 
       scope.focus();
