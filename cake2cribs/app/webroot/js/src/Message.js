@@ -110,7 +110,13 @@
     };
 
     Messages.setParticipantInfoUI = function(participant) {
-      $(".from_participant").html("" + participant.first_name + " " + participant.last_name);
+      var nameString;
+      nameString = "";
+      if (participant.first_name != null) {
+        nameString += participant.first_name;
+        if (participant.last_name != null) nameString += participant.last_name;
+      }
+      $(".from_participant").html(nameString);
       return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
         var url, veripanel;
         veripanel = $('#verification-panel');
