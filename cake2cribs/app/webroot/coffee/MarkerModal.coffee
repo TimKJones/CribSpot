@@ -29,7 +29,7 @@ class A2Cribs.MarkerModal
 			@modal.find('#Marker_building_type_id').parent().addClass "error"
 			isValid = no
 		if @modal.find('#Marker_alternate_name').val().length >= 249
-			A2Cribs.UIManager.Error "Your alternate name is too long."
+			A2Cribs.UIManager.Error "Your building name is too long."
 			@modal.find('#Marker_alternate_name').parent().addClass "error"
 			isValid = no
 		return isValid
@@ -176,7 +176,8 @@ class A2Cribs.MarkerModal
 		@modal.find("#continue-button").unbind 'click'
 		@modal.find("#continue-button").click () =>
 			@Save @TriggerMarkerUpdated
-		@FindAddress @modal
+		latLng = new google.maps.LatLng @modal.find("#Marker_latitude").val(), @modal.find("#Marker_longitude").val()
+		@MiniMap.SetMarkerPosition latLng
 
 	TriggerMarkerAdded: (marker_id) =>
 		$('body').trigger "#{@ListingType}_marker_added", [marker_id]
@@ -186,10 +187,6 @@ class A2Cribs.MarkerModal
 
 	FindAddress: (div) ->
 		if @MarkerValidate()
-			if div.find("#Marker_latitude").val() and div.find("#Marker_longitude").val()
-				latLng = new google.maps.LatLng div.find("#Marker_latitude").val(), div.find("#Marker_longitude").val()
-				@MiniMap.SetMarkerPosition latLng
-				return
 			addressObj = 
 				address: div.find("#Marker_street_address").val() + " " + 
 					div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()
