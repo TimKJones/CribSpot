@@ -464,8 +464,8 @@ class A2Cribs.RentalSave
 					id: "lease_length"
 					name: "Lease Length"
 					field: "lease_length"
-					editor: A2Cribs.Editors.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"])
-					formatter: A2Cribs.Formatters.Dropdown(["0 months", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "13 months"], true)
+					editor: A2Cribs.Editors.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"])
+					formatter: A2Cribs.Formatters.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
 				}
 				{
 					id: "available"
