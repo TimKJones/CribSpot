@@ -42,7 +42,7 @@
         isValid = false;
       }
       if (this.modal.find('#Marker_alternate_name').val().length >= 249) {
-        A2Cribs.UIManager.Error("Your alternate name is too long.");
+        A2Cribs.UIManager.Error("Your building name is too long.");
         this.modal.find('#Marker_alternate_name').parent().addClass("error");
         isValid = false;
       }
@@ -203,7 +203,7 @@
     };
 
     MarkerModal.prototype.LoadMarker = function(marker_id) {
-      var key, marker, value,
+      var key, latLng, marker, value,
         _this = this;
       this.Clear();
       this.modal.find('#marker_add').show();
@@ -221,7 +221,8 @@
       this.modal.find("#continue-button").click(function() {
         return _this.Save(_this.TriggerMarkerUpdated);
       });
-      return this.FindAddress(this.modal);
+      latLng = new google.maps.LatLng(this.modal.find("#Marker_latitude").val(), this.modal.find("#Marker_longitude").val());
+      return this.MiniMap.SetMarkerPosition(latLng);
     };
 
     MarkerModal.prototype.TriggerMarkerAdded = function(marker_id) {
@@ -233,14 +234,9 @@
     };
 
     MarkerModal.prototype.FindAddress = function(div) {
-      var addressObj, latLng,
+      var addressObj,
         _this = this;
       if (this.MarkerValidate()) {
-        if (div.find("#Marker_latitude").val() && div.find("#Marker_longitude").val()) {
-          latLng = new google.maps.LatLng(div.find("#Marker_latitude").val(), div.find("#Marker_longitude").val());
-          this.MiniMap.SetMarkerPosition(latLng);
-          return;
-        }
         addressObj = {
           address: div.find("#Marker_street_address").val() + " " + div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()
         };

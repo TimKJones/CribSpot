@@ -79,10 +79,13 @@ echo $this->Html->script('jquery-ui.multidatespicker');
   
 
 </div>
-<?php } ?>
-<script>
-    var FLDash;
-    $(function(){
-        FLDash = new A2Cribs.FLDash($("#FLDash"));
-    });
-</script>
+
+<?php 
+    $this->Js->buffer('
+        $(function(){
+            FLDash = new A2Cribs.FLDash($("#FLDash"));
+        });
+    ');
+
+}
+?>

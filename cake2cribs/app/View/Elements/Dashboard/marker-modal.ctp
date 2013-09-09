@@ -29,7 +29,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<div class="span7">
 						<div class="row-fluid control-group">
 							<label class="span5"><strong>Building Name:</strong></label>
-							<input id="Marker_alternate_name" type="text" class="span7">
+							<input id="Marker_alternate_name" type="text" class="span7" placeholder="(Optional)">
 						</div>
 						<div class="row-fluid control-group">
 							<label class="span3"><strong>Type:</strong></label>
