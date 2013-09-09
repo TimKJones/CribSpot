@@ -362,9 +362,12 @@ class UsersController extends AppController {
         /* Save new password */
         $response = $this->User->SavePassword($user_id, $new_password);
         $user = $this->User->get($user_id);
-        if ($user != null)
+        if ($user != null && !array_key_exists('error', $response)) {
+            /* Change the reset_token to something random so the old link is no longer valid */
+            $this->User->ResetPasswordToken($this->Auth->User('id'));
             $this->Auth->login($user['User']);
-            
+        }
+
         $this->set('response', json_encode($response));
         return;
     }

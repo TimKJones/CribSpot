@@ -107,8 +107,13 @@ class A2Cribs.Messages
 	# Sets all the UI elements that pertain to the current conversation's participant
 	# Using the data provided in the participant object
 	@setParticipantInfoUI:(participant)->
+		nameString = ""
+		if participant.first_name?
+			nameString += participant.first_name
+			if participant.last_name?
+				nameString += participant.last_name
 		$(".from_participant")
-			.html "#{participant.first_name} #{participant.last_name}"
+			.html nameString
 			#.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
 		
 		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
