@@ -1,10 +1,9 @@
 <?php echo $this->Html->css('users'); ?>
 <?php echo $this->Html->css('resetpassword'); ?>
-
+<?php echo $this->Html->script('jquery.noisy.min'); ?>
 <?php
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
     echo $this->Html->script("src/Account");
-    echo $this->Html->script('jquery.noisy.min');
 }
 ?>
 
