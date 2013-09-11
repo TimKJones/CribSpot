@@ -51,6 +51,7 @@ class EmailsController extends AppController {
 
         foreach ($people as $person){
             $this->_sendWelcomePropertyManagersEmail($person['User']);
+            CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
         }
     }
 
@@ -166,7 +167,7 @@ class EmailsController extends AppController {
     
     public function _sendWelcomePropertyManagersEmail($person)
     {
-        $from = 'The Cribspot Team<info@cribspot.com>';
+        $from = 'Cribspot Founder<jason@cribspot.com>';
         $to = $person['email'];
         $subject = "Welcome to Cribspot at the University of Michigan!";
         $template = 'WelcomePropertyManagers';
