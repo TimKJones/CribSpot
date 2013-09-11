@@ -293,19 +293,6 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                 <tr style="border-collapse:collapse;" >
 
                 <td id="header" class="w640" width="640" align="center" bgcolor="#ffffff" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-    
-
-    <div align="left" style="text-align:left;" >
-
-        
-
-        <img id="customHeaderImage" label="Header Image" width="306" src="https://i2.createsend1.com/ti/t/51/7B6/9E8/124100/images/email_logo_black.194444.png" class="w640" border="0" align="top" style="display:inline;outline-style:none;text-decoration:none;" />
-
-        
-
-    </div>
-
     
 
     
@@ -339,22 +326,26 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
+
 Hello,</p>
 
-Today we're excited to announce the re-launch of Cribspot at the University of Michigan! Partnered with the Michigan Daily newspaper and officially endorsed by the University of Michigan Central Student Government, Cribspot is about to revolutionize the way you find and communicate with prospective tenants. We've already compiled thousands of listings across Ann Arbor, displaying them on a beautiful map interface. Best of all - it's <b>free</b>. That's right...<b>free</b> to post, <b>free</b> to receive leads</b>, and <b>free</b> to respond to interested students directly on the site. Unlike other services out there, we'll never charge you to upload your listings or photos. <br/><br/>
+Today I am excited to announce the re-launch of Cribspot at the University of Michigan! Partnered with the Michigan Daily newspaper and officially endorsed by the University of Michigan Central Student Government, Cribspot is about to revolutionize the way you find and communicate with prospective tenants. We've already compiled thousands of listings across Ann Arbor, displaying them on a beautiful map interface. Best of all - it's <b>free</b>. That's right...<b>free</b> to post, <b>free</b> to receive leads</b>, and <b>free</b> to respond to interested students directly on the site. Unlike other services out there, we'll never charge you to upload your listings or photos. In addition, we've already seen thousands of students (click <a href="https://www.dropbox.com/sh/0zp9h9me0ihlcio/eC6PGyN8nk">here</a> to see the breakdown) use our site since we launched for students last Thursday.<br/><br/>
 
-We've already uploaded some of your listings.  Click <a href='<?php echo $reset_password_url?>'>here</a> to set a password and get started! Alternatively, copy and paste the following link into your browser:<br/><br/>
+We've already uploaded some of your listings. Click <a href='<?php echo $reset_password_url?>'>here</a> to set a password and get started! Alternatively, copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $reset_password_url; ?><br/><br/>
 
-We want to make this process as easy as possible. We'll even upload the rest of your listings for you, or update the ones we already have if you have more up-to-date information. If you have any questions or concerns, don't hesitate to contact us. Send us an email at info@cribspot.com or contact us directly through the tab along the bottom of every page.
+We want to make this process as easy as possible. We'll even upload the rest of your listings for you, or update the ones we already have if you have more up-to-date information. If you have any questions or concerns, don't hesitate to contact me. Send me an email at jason@cribspot.com or contact us directly through the tab along the bottom of every page.
 <br/><br/>
-Let's summarize - Cribspot is free to post (we'll even upload listings for you!), free to receive high quality leads, and free to message interested students...all on a site being pushed to each and every student by the Michigan Daily, Central Student Government, and, in the near future, dozens of other student groups on campus.
+To summarize - Cribspot is free to post (we'll even upload listings for you!), free to receive high quality leads, and free to message interested students...all on a site being pushed to each and every student by the Michigan Daily, Central Student Government, and dozens of other student groups on campus. 
 <br/><br/>
-We're right here in Ann Arbor and would love to hear from you about how Cribspot can continue to make your life easier.<br/><br/><br/>
-
- Tim, Jason, Evan, and Alex<br/>
- <i>The Cribspot Team</i>
+We're right here in Ann Arbor and would love to hear from you about how Cribspot can continue to make your life easier. Give me a call at 707-602-7768 or email me at jason@cribspot.com anytime. Also, let me know if you would like to chat over coffee, lunch, or a beer in the next few weeks and months.<br/><br/><br/>
+ 
+Best,<br/>
+Jason and The Cribspot Team<br/><br/>
+<strong>Jason Okrasinski</strong><br/>
+Cribspot Founder and CEO <br/>
+jason@cribspot.com | 908.752.8187
 
                                     </div>
 
