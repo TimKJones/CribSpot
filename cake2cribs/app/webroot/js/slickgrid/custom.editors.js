@@ -127,15 +127,12 @@
       $unit_style_options.change(function() {
         var value = $unit_style_options.val() ;
         if (value === "0")
-          $unit_style_description.show().attr("placeholder", "Style F").val("")
+          $unit_style_description.show().attr("placeholder", "Style F")
         else if (value === "1")
-          $unit_style_description.show().attr("placeholder", "A7").val("")
+          $unit_style_description.show().attr("placeholder", "A7")
         else if (value === "2")
-          $unit_style_description.hide().val("NA")
+          $unit_style_description.hide()
       });
-
-      /* Set to entire house by default so hide by default */
-      $unit_style_description.hide().val("NA");
 
       scope.focus();
     };
@@ -175,10 +172,11 @@
 
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
+      $unit_style_description.val(item.unit_style_description);
       if (+item.unit_style_options < 2)
-        $unit_style_description.show().val(item.unit_style_description);
+        $unit_style_description.show()
       else
-        $unit_style_description.hide().val("NA")
+        $unit_style_description.hide()
     };
 
     this.isValueChanged = function () {

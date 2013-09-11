@@ -61,13 +61,20 @@ class A2Cribs.RentalSave
 
 		$("#rentals_delete").click () =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
-			@FinishEditing()
 			if selected.length
+				if @GridMap[@VisibleGrid].getEditorLock().isActive()
+					active_row = @GridMap[@VisibleGrid].getActiveCell().row
+				if selected.indexOf(active_row) isnt -1
+					return @GridMap[@VisibleGrid].getEditorLock().cancelCurrentEdit()
 				listings = []
 				for row in selected
 					if @GridMap[@VisibleGrid].getDataItem(row).listing_id?
 						listings.push @GridMap[@VisibleGrid].getDataItem(row).listing_id
+					if (index = @EditableRows.indexOf(row)) isnt -1
+						@EditableRows.splice index, 1
 				@Delete selected, listings
+				if @EditableRows.length is 0
+					@FinishEditing()
 
 		$(".rentals_tab").click (event) =>
 			if @CommitSlickgridChanges()
@@ -103,15 +110,22 @@ class A2Cribs.RentalSave
 		@Editable = true
 
 	FinishEditing: () ->
-		@CommitSlickgridChanges()
-		$("#rentals_edit").text "Edit"
-		$(".rentals_tab").removeClass "highlight-tab"
-		for row in @EditableRows
-			data = @GridMap[@VisibleGrid].getDataItem row
-			data.editable = no
-		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
-		@EditableRows = []
-		@Editable = false
+		if @CommitSlickgridChanges()
+			isValid = yes
+			for row in @EditableRows
+				isValid = isValid and @Validate row 
+			if isValid
+				$("#rentals_edit").text "Edit"
+				$(".rentals_tab").removeClass "highlight-tab"
+				for row in @EditableRows
+					data = @GridMap[@VisibleGrid].getDataItem row
+					data.editable = no
+				@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+				@EditableRows = []
+				@Editable = false
+			else
+				A2Cribs.UIManager.CloseLogs()
+				A2Cribs.UIManager.Error "Please complete all required fields to finish editing!"
 
 	Open: (marker_id) ->	
 		# Gets rental info and saves to JS object
@@ -326,22 +340,20 @@ class A2Cribs.RentalSave
 		# Create newline on grid
 		A2Cribs.MixPanel.PostListing "Add New Unit",
 			"marker id": @CurrentMarker
-		@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
 
 		data = @GridMap[@VisibleGrid].getData()
 
-		for row in @EditableRows
-			data[row].editable = no
-
 		row_number = data.length
-		@EditableRows = [row_number]
+		@EditableRows.push row_number
 		data.push { 
 			editable: true 
 			contact_email: @user_email
 			contact_phone: @user_phone
+			unit_style_description: row_number + 1
 		}
 		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
 		$("#rentals_edit").text "Finish Editing"
+		@Editable = true
 
 		@Validate row_number
 

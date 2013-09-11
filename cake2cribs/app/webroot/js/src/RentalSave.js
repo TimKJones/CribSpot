@@ -82,18 +82,29 @@
         return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
       });
       $("#rentals_delete").click(function() {
-        var listings, row, selected, _i, _len;
+        var active_row, index, listings, row, selected, _i, _len;
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-        _this.FinishEditing();
         if (selected.length) {
+          if (_this.GridMap[_this.VisibleGrid].getEditorLock().isActive()) {
+            active_row = _this.GridMap[_this.VisibleGrid].getActiveCell().row;
+          }
+          if (selected.indexOf(active_row) !== -1) {
+            return _this.GridMap[_this.VisibleGrid].getEditorLock().cancelCurrentEdit();
+          }
           listings = [];
           for (_i = 0, _len = selected.length; _i < _len; _i++) {
             row = selected[_i];
             if (_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id != null) {
               listings.push(_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id);
             }
+            if ((index = _this.EditableRows.indexOf(row)) !== -1) {
+              _this.EditableRows.splice(index, 1);
+            }
           }
-          return _this.Delete(selected, listings);
+          _this.Delete(selected, listings);
+          if (_this.EditableRows.length === 0) {
+            return _this.FinishEditing();
+          }
         }
       });
       $(".rentals_tab").click(function(event) {
@@ -151,19 +162,31 @@
     };
 
     RentalSave.prototype.FinishEditing = function() {
-      var data, row, _i, _len, _ref;
-      this.CommitSlickgridChanges();
-      $("#rentals_edit").text("Edit");
-      $(".rentals_tab").removeClass("highlight-tab");
-      _ref = this.EditableRows;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
-        data = this.GridMap[this.VisibleGrid].getDataItem(row);
-        data.editable = false;
+      var data, isValid, row, _i, _j, _len, _len1, _ref, _ref1;
+      if (this.CommitSlickgridChanges()) {
+        isValid = true;
+        _ref = this.EditableRows;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          row = _ref[_i];
+          isValid = isValid && this.Validate(row);
+        }
+        if (isValid) {
+          $("#rentals_edit").text("Edit");
+          $(".rentals_tab").removeClass("highlight-tab");
+          _ref1 = this.EditableRows;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            row = _ref1[_j];
+            data = this.GridMap[this.VisibleGrid].getDataItem(row);
+            data.editable = false;
+          }
+          this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
+          this.EditableRows = [];
+          return this.Editable = false;
+        } else {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Error("Please complete all required fields to finish editing!");
+        }
       }
-      this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
-      this.EditableRows = [];
-      return this.Editable = false;
     };
 
     RentalSave.prototype.Open = function(marker_id) {
@@ -439,31 +462,27 @@
 
 
     RentalSave.prototype.AddNewUnit = function() {
-      var container, data, grid, row, row_number, _i, _len, _ref, _ref1, _results;
+      var container, data, grid, row_number, _ref, _results;
       A2Cribs.MixPanel.PostListing("Add New Unit", {
         "marker id": this.CurrentMarker
       });
-      this.GridMap[this.VisibleGrid].getEditorLock().commitCurrentEdit();
       data = this.GridMap[this.VisibleGrid].getData();
-      _ref = this.EditableRows;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
-        data[row].editable = false;
-      }
       row_number = data.length;
-      this.EditableRows = [row_number];
+      this.EditableRows.push(row_number);
       data.push({
         editable: true,
         contact_email: this.user_email,
-        contact_phone: this.user_phone
+        contact_phone: this.user_phone,
+        unit_style_description: row_number + 1
       });
       this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
       $("#rentals_edit").text("Finish Editing");
+      this.Editable = true;
       this.Validate(row_number);
-      _ref1 = this.GridMap;
+      _ref = this.GridMap;
       _results = [];
-      for (container in _ref1) {
-        grid = _ref1[container];
+      for (container in _ref) {
+        grid = _ref[container];
         grid.updateRowCount();
         _results.push(grid.render());
       }
