@@ -59,6 +59,8 @@
     };
 
     this.serializeValue = function () {
+      if ($min_occupancy.val().length === 0 && $min_occupancy.val().length === 0)
+        return {min_occupancy: null, max_occupancy: null};
       return {min_occupancy: parseInt($min_occupancy.val(), 10), max_occupancy: parseInt($max_occupancy.val(), 10)};
     };
 
@@ -78,6 +80,8 @@
 
     this.validate = function () {
       var min = $min_occupancy.val(), max = $max_occupancy.val()
+      if (min.length === 0 && max.length === 0)
+        return {valid: true, msg: null};
       // Copy fields if only one filled in
       if (min.length === 0 && max.length > 0)
         $min_occupancy.val(max);
@@ -108,9 +112,9 @@
 
     this.init = function () {
       $unit_style_options = $("<select style='width:122px;'/>");
+      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
       $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
-      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
@@ -130,18 +134,22 @@
           $unit_style_description.hide().val("NA")
       });
 
+      /* Set to entire house by default so hide by default */
+      $unit_style_description.hide().val("NA");
+
       scope.focus();
     };
 
     this.handleKeyDown = function (e) {
-      if (e.keyCode == $.ui.keyCode.LEFT)
-        right_count--;
+      if ($unit_style_description.is(":focus") && (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB))
+        return;
 
-      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
-        right_count++;
+      if ($unit_style_options.val() === "2" && (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB))
+        return;
 
-      if (right_count >= 0 && right_count < 2)
+      if (e.keyCode == $.ui.keyCode.LEFT || e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB) {
         e.stopImmediatePropagation();
+      }
     };
 
     this.destroy = function () {
@@ -167,10 +175,10 @@
 
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
-      if (+item.unit_style_options === 2)
-        $unit_style_description.hide()
-      else
+      if (+item.unit_style_options < 2)
         $unit_style_description.show().val(item.unit_style_description);
+      else
+        $unit_style_description.hide().val("NA")
     };
 
     this.isValueChanged = function () {

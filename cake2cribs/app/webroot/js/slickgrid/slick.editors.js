@@ -178,7 +178,6 @@
           }
       });
       $input.datepicker("show");
-      $input.width($input.width() - 18);
     };
 
     this.destroy = function () {

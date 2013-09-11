@@ -36,7 +36,7 @@
     return function (row, cell, value, columnDef, dataContext)
     {
       var text, text_class;
-      if (typeof(value) == "undefined")
+      if (typeof(value) == "undefined" || value == null)
         text = "";
       else
       {
@@ -64,21 +64,21 @@
     return text;
   }
   function MoneyFormatter (row, cell, value, columnDef, dataContext) {
-    value = (typeof(value) != "undefined" || value != null) ? "$" + value : "";
+    value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + value + "' type='text' />";
     return value;
   }
   function RequiredMoneyFormatter (row, cell, value, columnDef, dataContext) {
     var text_class;
-    value = (typeof(value) != "undefined") ? "$" + value : "";
+    value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     text_class = (value.length) ? "" : "required";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + value + "' type='text' class='" + text_class + "' />";
     return value;
   }
   function MonthsFormatter (row, cell, value, columnDef, dataContext) {
-    value = (typeof(value) != "undefined") ? value + " months" : "";
+    value = (typeof(value) != "undefined" && value != null)  ? value + " months" : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + value + "' type='text' />";
     return value;
