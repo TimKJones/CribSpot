@@ -65,16 +65,23 @@ class EmailsController extends AppController {
         /* Initialize password_reset_tokens */
         if (!$this->User->InitializePMPasswordResetTokens())
             return;
-        
+
         $people = $this->User->find('all', array(
             'fields' => array('User.password_reset_token', 'User.email'),
             'contains' => array(),
             'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
         ));
 
+        if ($people === null)
+            return;
+
         foreach ($people as $person){
-            $this->_sendWelcomePropertyManagersEmail($person['User']);
-            CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
+            if (array_key_exists('email', $person['User']) && 
+                array_key_exists('id', $person['User']) && 
+                array_key_exists('password_reset_token', $person['User'])){
+                    $this->_sendWelcomePropertyManagersEmail($person['User']);
+                    CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
+            }
         }
     }
 
