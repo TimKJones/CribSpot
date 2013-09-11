@@ -63,7 +63,9 @@ class EmailsController extends AppController {
     public function WelcomePropertyManagers()
     {
         /* Initialize password_reset_tokens */
-        $this->User->InitializePMPasswordResetTokens();
+        if (!$this->User->InitializePMPasswordResetTokens())
+            return;
+        
         $people = $this->User->find('all', array(
             'fields' => array('User.password_reset_token', 'User.email'),
             'contains' => array(),
