@@ -10,6 +10,7 @@ class EmailsController extends AppController {
     public function beforeFilter(){
      $this->Auth->allow('WelcomeExistingUsers');
      $this->Auth->allow('WelcomePropertyManagers');
+     $this->Auth->allow('WelcomePropertyManagersTest');
     }
 
     public function WelcomeExistingUsers()
