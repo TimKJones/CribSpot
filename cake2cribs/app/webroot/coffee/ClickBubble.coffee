@@ -126,7 +126,8 @@ class A2Cribs.ClickBubble
 		@div.find(".share_btn").unbind "click"
 		@div.find(".facebook_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id,
-				marker.street_address, marker.city, marker.state, marker.zip)
+				marker.street_address, marker.city, marker.state, marker.zip, listing_object.description, 
+				listing_object.building_type_id)
 		@div.find(".link_share").click ()->
 			A2Cribs.ShareManager.CopyListingUrl(listing_object.listing_id,
 				marker.street_address, marker.city, marker.state, marker.zip)
