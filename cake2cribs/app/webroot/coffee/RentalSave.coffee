@@ -1,5 +1,5 @@
 class A2Cribs.RentalSave
-	constructor: (dropdown_content) ->
+	constructor: (dropdown_content, @user_email, @user_phone) ->
 		@div = $('.rentals-content')
 		@EditableRows = []
 		@Editable = false
@@ -213,6 +213,8 @@ class A2Cribs.RentalSave
 						A2Cribs.UIManager.Success "Save successful!"
 						rental_object.Listing.listing_id = response.listing_id
 						rental_object.Rental.listing_id = response.listing_id
+						for image in rental_object.Image
+							image.listing_id = response.listing_id
 						for key, value of rental_object
 							if A2Cribs[key]?
 								A2Cribs.UserCache.Set new A2Cribs[key] value
@@ -289,11 +291,15 @@ class A2Cribs.RentalSave
 	###
 	LoadImages: (row) ->
 		data = @GridMap[@VisibleGrid].getDataItem row
-		images = if data.listing_id? then A2Cribs.UserCache.Get "image", data.listing_id else data.Image
+		if data.listing_id?
+			image_array = A2Cribs.UserCache.Get("image", data.listing_id)?.GetImages()
+		else
+			image_array = data.Image
+
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
-			"number of images": images?.length
-		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
+			"number of images": image_array?.length
+		A2Cribs.PhotoManager.LoadImages image_array, row, @SaveImages
 
 
 	###
@@ -328,7 +334,11 @@ class A2Cribs.RentalSave
 
 		row_number = data.length
 		@EditableRows = [row_number]
-		data.push { editable: true }
+		data.push { 
+			editable: true 
+			contact_email: @user_email
+			contact_phone: @user_phone
+		}
 		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
 		$("#rentals_edit").text "Finish Editing"
 
@@ -390,10 +400,12 @@ class A2Cribs.RentalSave
 			@GridMap[container].registerPlugin checkboxSelector
 			columnpicker = new Slick.Controls.ColumnPicker columns, @GridMap[container], options
 
+			###
 			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
 				if @EditableRows.indexOf(args.row) isnt -1
 					return true
 				return false
+			###
 
 			@GridMap[container].onCellChange.subscribe (e, args) =>
 				@Save args.row

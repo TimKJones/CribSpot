@@ -143,6 +143,6 @@ echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
 
 <?php 
 	$this->Js->buffer('
-		A2Cribs.RentalSave = new A2Cribs.RentalSave(' . $dropdowns . ');
+		A2Cribs.RentalSave = new A2Cribs.RentalSave(' . $dropdowns . ', "' . $user["User"]["email"] . '", "' . $user["User"]["phone"] . '");
 	');
 ?>

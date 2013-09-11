@@ -4,8 +4,11 @@
 
   A2Cribs.RentalSave = (function() {
 
-    function RentalSave(dropdown_content) {
+    function RentalSave(dropdown_content, user_email, user_phone) {
+      this.user_email = user_email;
+      this.user_phone = user_phone;
       this.SaveImages = __bind(this.SaveImages, this);
+
       this.div = $('.rentals-content');
       this.EditableRows = [];
       this.Editable = false;
@@ -272,7 +275,7 @@
           type: "POST",
           data: rental_object,
           success: function(response) {
-            var key, value;
+            var image, key, value, _i, _len, _ref;
             response = JSON.parse(response);
             if (response.listing_id != null) {
               A2Cribs.MixPanel.PostListing("Listing Save Completed", {
@@ -282,6 +285,11 @@
               A2Cribs.UIManager.Success("Save successful!");
               rental_object.Listing.listing_id = response.listing_id;
               rental_object.Rental.listing_id = response.listing_id;
+              _ref = rental_object.Image;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                image = _ref[_i];
+                image.listing_id = response.listing_id;
+              }
               for (key in rental_object) {
                 value = rental_object[key];
                 if (A2Cribs[key] != null) {
@@ -387,14 +395,18 @@
 
 
     RentalSave.prototype.LoadImages = function(row) {
-      var data, images;
+      var data, image_array, _ref;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
-      images = data.listing_id != null ? A2Cribs.UserCache.Get("image", data.listing_id) : data.Image;
+      if (data.listing_id != null) {
+        image_array = (_ref = A2Cribs.UserCache.Get("image", data.listing_id)) != null ? _ref.GetImages() : void 0;
+      } else {
+        image_array = data.Image;
+      }
       A2Cribs.MixPanel.PostListing("Start Photo Editing", {
         "marker id": this.CurrentMarker,
-        "number of images": images != null ? images.length : void 0
+        "number of images": image_array != null ? image_array.length : void 0
       });
-      return A2Cribs.PhotoManager.LoadImages(images, row, this.SaveImages);
+      return A2Cribs.PhotoManager.LoadImages(image_array, row, this.SaveImages);
     };
 
     /*
@@ -439,7 +451,9 @@
       row_number = data.length;
       this.EditableRows = [row_number];
       data.push({
-        editable: true
+        editable: true,
+        contact_email: this.user_email,
+        contact_phone: this.user_phone
       });
       this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
       $("#rentals_edit").text("Finish Editing");
@@ -521,12 +535,13 @@
         }));
         this.GridMap[container].registerPlugin(checkboxSelector);
         columnpicker = new Slick.Controls.ColumnPicker(columns, this.GridMap[container], options);
-        this.GridMap[container].onBeforeEditCell.subscribe(function(e, args) {
-          if (_this.EditableRows.indexOf(args.row) !== -1) {
-            return true;
-          }
-          return false;
-        });
+        /*
+        			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
+        				if @EditableRows.indexOf(args.row) isnt -1
+        					return true
+        				return false
+        */
+
         this.GridMap[container].onCellChange.subscribe(function(e, args) {
           return _this.Save(args.row);
         });
