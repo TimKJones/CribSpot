@@ -59,6 +59,10 @@
         }
       });
       $("body").on('click', '.rentals_list_item', function(event) {
+        if (_this.Editable) {
+          A2Cribs.UIManager.Alert("Please finish editing before leaving this address!");
+          return;
+        }
         return _this.Open(event.target.id);
       });
       this.div.find(".edit_marker").click(function() {
@@ -111,7 +115,7 @@
         var row, selected, _i, _len, _ref;
         if (_this.CommitSlickgridChanges()) {
           selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-          _this.VisibleGrid = $(event.target).attr("href").substring(1);
+          _this.VisibleGrid = $(event.target).attr("data-target").substring(1);
           A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
             "marker id": _this.CurrentMarker
           });
@@ -253,9 +257,9 @@
       $(".rentals_tab").removeClass("highlight-tab");
       for (tab in highlighted_tabs) {
         value = highlighted_tabs[tab];
-        $("a[href='#" + tab + "']").addClass("highlight-tab");
+        $("a[data-target='#" + tab + "']").addClass("highlight-tab");
       }
-      $("a[href='#" + this.VisibleGrid + "']").removeClass("highlight-tab");
+      $("a[data-target='#" + this.VisibleGrid + "']").removeClass("highlight-tab");
       return isValid;
     };
 
