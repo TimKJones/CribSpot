@@ -202,8 +202,8 @@ function makeDropdown(selectable_options)
       this.init = function () {
         $select = $("<select id='selectId' name='selectName' style='width:100%;' />");
         for (var i = 0; i < selectable_options.length; i++) {
-          selectable_options[i]
-          $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
+          if (selectable_options[i] != null)
+            $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
         };
 
         $select.appendTo(args.container);
