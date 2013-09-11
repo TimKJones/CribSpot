@@ -98,19 +98,21 @@
       });
       $(".rentals_tab").click(function(event) {
         var row, selected, _i, _len, _ref;
-        _this.CommitSlickgridChanges();
-        selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-        _this.VisibleGrid = $(event.target).attr("href").substring(1);
-        A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
-          "marker id": _this.CurrentMarker
-        });
-        _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
-        _ref = _this.EditableRows;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          row = _ref[_i];
-          _this.Validate(row);
+        if (_this.CommitSlickgridChanges()) {
+          selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
+          _this.VisibleGrid = $(event.target).attr("href").substring(1);
+          A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
+            "marker id": _this.CurrentMarker
+          });
+          _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+          _ref = _this.EditableRows;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            row = _ref[_i];
+            _this.Validate(row);
+          }
+          $(event.target).removeClass("highlight-tab");
+          return $(event.delegateTarget).tab('show');
         }
-        return $(event.target).removeClass("highlight-tab");
       });
       return $(".rentals-content").on("shown", function(event) {
         var grid, height, width, _ref, _results;

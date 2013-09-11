@@ -64,47 +64,47 @@ echo $this->Html->script('slickgrid/slick.grid.js', array('inline' => false));
 	<div class="span12 tabbable"> <!-- Only required for left/right tabs -->
 		<ul class="nav nav-tabs grid-tabs">
 			<li class="active">
-				<a href="#overview_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#overview_grid" class="rentals_tab">
 					OVERVIEW
 				</a>
 			</li>
 			<li>
-				<a href="#features_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#features_grid" class="rentals_tab">
 					FEATURES
 				</a>
 			</li>
 			<li>
-				<a href="#amenities_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#amenities_grid" class="rentals_tab">
 					UNIT AMENITIES
 				</a>
 			</li>
 			<li>
-				<a href="#buildingamenities_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#buildingamenities_grid" class="rentals_tab">
 					BUILDING AMENITIES
 				</a>
 			</li>
 			<li>
-				<a href="#utilities_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#utilities_grid" class="rentals_tab">
 					UTILITIES
 				</a>
 			</li>
 			<li>
-				<a href="#fees_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#fees_grid" class="rentals_tab">
 					FEES
 				</a>
 			</li>
 			<li>
-				<a href="#description_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#description_grid" class="rentals_tab">
 					DESCRIPTION
 				</a>
 			</li>
 			<li>
-				<a href="#picture_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#picture_grid" class="rentals_tab">
 					PICTURES
 				</a>
 			</li>
 			<li>
-				<a href="#contact_grid" class="rentals_tab" data-toggle="tab">
+				<a href="#contact_grid" class="rentals_tab">
 					CONTACT
 				</a>
 			</li>

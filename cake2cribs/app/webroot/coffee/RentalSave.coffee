@@ -70,15 +70,16 @@ class A2Cribs.RentalSave
 				@Delete selected, listings
 
 		$(".rentals_tab").click (event) =>
-			@CommitSlickgridChanges()
-			selected = @GridMap[@VisibleGrid].getSelectedRows()
-			@VisibleGrid = $(event.target).attr("href").substring(1)
-			A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
-				"marker id": @CurrentMarker
-			@GridMap[@VisibleGrid].setSelectedRows selected
-			for row in @EditableRows
-				@Validate row
-			$(event.target).removeClass "highlight-tab"
+			if @CommitSlickgridChanges()
+				selected = @GridMap[@VisibleGrid].getSelectedRows()
+				@VisibleGrid = $(event.target).attr("href").substring(1)
+				A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
+					"marker id": @CurrentMarker
+				@GridMap[@VisibleGrid].setSelectedRows selected
+				for row in @EditableRows
+					@Validate row
+				$(event.target).removeClass "highlight-tab"
+				$(event.delegateTarget).tab 'show'
 
 		$(".rentals-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
@@ -90,7 +91,7 @@ class A2Cribs.RentalSave
 				@GridMap[grid].init()
 
 	CommitSlickgridChanges: ->
-		@GridMap[@VisibleGrid].getEditorLock()?.commitCurrentEdit()
+		return @GridMap[@VisibleGrid].getEditorLock()?.commitCurrentEdit()
 
 	Edit: (rows) ->
 		@EditableRows = rows
