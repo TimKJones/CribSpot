@@ -401,12 +401,10 @@ class A2Cribs.RentalSave
 			@GridMap[container].registerPlugin checkboxSelector
 			columnpicker = new Slick.Controls.ColumnPicker columns, @GridMap[container], options
 
-			###
 			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
 				if @EditableRows.indexOf(args.row) isnt -1
 					return true
 				return false
-			###
 
 			@GridMap[container].onCellChange.subscribe (e, args) =>
 				@Save args.row

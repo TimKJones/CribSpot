@@ -537,13 +537,12 @@
         }));
         this.GridMap[container].registerPlugin(checkboxSelector);
         columnpicker = new Slick.Controls.ColumnPicker(columns, this.GridMap[container], options);
-        /*
-        			@GridMap[container].onBeforeEditCell.subscribe (e, args) =>
-        				if @EditableRows.indexOf(args.row) isnt -1
-        					return true
-        				return false
-        */
-
+        this.GridMap[container].onBeforeEditCell.subscribe(function(e, args) {
+          if (_this.EditableRows.indexOf(args.row) !== -1) {
+            return true;
+          }
+          return false;
+        });
         this.GridMap[container].onCellChange.subscribe(function(e, args) {
           return _this.Save(args.row);
         });
