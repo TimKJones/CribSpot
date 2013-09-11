@@ -76,7 +76,7 @@ class EmailsController extends AppController {
             return;
 
         foreach ($people as $person){
-            if (array_key_exists('email', $person['User']) && 
+            if (array_key_exists('email', $person['User']) && !empty($person['User']['email']) &&
                 array_key_exists('id', $person['User']) && 
                 array_key_exists('password_reset_token', $person['User'])){
                     $this->_sendWelcomePropertyManagersEmail($person['User']);
