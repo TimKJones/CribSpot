@@ -83,7 +83,7 @@ class A2Cribs.MixPanel
 	Add Unit, Overview started, Features started, Description started, Images started, Saved
 	###
 	@PostListing: (action, data) ->
-		mixpanel.track "Post Listing - #{action}". data
+		mixpanel.track "Post Listing - #{action}", data
 
 	###
 	For either sign up or login

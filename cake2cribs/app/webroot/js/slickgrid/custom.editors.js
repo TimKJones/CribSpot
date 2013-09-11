@@ -15,7 +15,8 @@
         "Dropdown" : makeDropdown,
         "Year": YearEditor,
         "Email": EmailEditor,
-        "Phone": PhoneEditor
+        "Phone": PhoneEditor,
+        "LongText": makeLongTextEditor
       }
     }
   });
@@ -173,6 +174,8 @@
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
       $unit_style_description.val(item.unit_style_description);
+      if (item.unit_style_description == null)
+        item.unit_style_description = "NA"
       if (+item.unit_style_options < 2)
         $unit_style_description.show()
       else
@@ -479,5 +482,108 @@ function makeDropdown(selectable_options)
     };
 
     this.init();
+  }
+  function makeLongTextEditor (text_length, field_name) {
+    return function (args) {
+      var $input, $wrapper;
+      var defaultValue;
+      var scope = this;
+
+      this.init = function () {
+        var $container = $("body");
+
+        $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+            .appendTo($container);
+
+        $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:250px;height:80px;border:0;outline:0'>")
+            .appendTo($wrapper);
+
+        $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+            .appendTo($wrapper);
+
+        $wrapper.find("button:first").bind("click", this.save);
+        $wrapper.find("button:last").bind("click", this.cancel);
+        $input.bind("keydown", this.handleKeyDown);
+
+        scope.position(args.position);
+        $input.focus().select();
+      };
+
+      this.handleKeyDown = function (e) {
+        if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+          scope.save();
+        } else if (e.which == $.ui.keyCode.ESCAPE) {
+          e.preventDefault();
+          scope.cancel();
+        } else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+          e.preventDefault();
+          args.grid.navigatePrev();
+        } else if (e.which == $.ui.keyCode.TAB) {
+          e.preventDefault();
+          args.grid.navigateNext();
+        } else if ($input.val() > text_length)
+            $input.val($input.val().substr(0, text_length));
+      };
+
+      this.save = function () {
+        args.commitChanges();
+        scope.cancel();
+      };
+
+      this.cancel = function () {
+        $input.val(defaultValue);
+        args.cancelChanges();
+      };
+
+      this.hide = function () {
+        $wrapper.hide();
+      };
+
+      this.show = function () {
+        $wrapper.show();
+      };
+
+      this.position = function (position) {
+        $wrapper
+            .css("top", position.top - 5)
+            .css("left", position.left - 5)
+      };
+
+      this.destroy = function () {
+        $wrapper.remove();
+      };
+
+      this.focus = function () {
+        $input.focus();
+      };
+
+      this.loadValue = function (item) {
+        $input.val(defaultValue = item[args.column.field]);
+        $input.select();
+      };
+
+      this.serializeValue = function () {
+        return $input.val();
+      };
+
+      this.applyValue = function (item, state) {
+        item[args.column.field] = state;
+      };
+
+      this.isValueChanged = function () {
+        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+      };
+
+      this.validate = function () {
+        if ($input.val().length > text_length)
+          return { valid: false, msg: field_name + " is too long! " + field_name + " can only be " + text_length + " characters." };
+        return {
+          valid: true,
+          msg: null
+        };
+      };
+
+      this.init();
+    }
   }
 })(jQuery);

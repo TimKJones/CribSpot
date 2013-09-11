@@ -992,13 +992,13 @@
             id: "highlights",
             name: "Highlights",
             field: "highlights",
-            editor: Slick.Editors.LongText,
+            editor: A2Cribs.Editors.LongText(160, "Highlights"),
             formatter: A2Cribs.Formatters.Text
           }, {
             id: "description",
             name: "Description",
             field: "description",
-            editor: Slick.Editors.LongText,
+            editor: A2Cribs.Editors.LongText(1000, "Description"),
             formatter: A2Cribs.Formatters.Text
           }
         ];
