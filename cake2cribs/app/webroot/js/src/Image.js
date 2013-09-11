@@ -41,6 +41,10 @@
       }
     };
 
+    Image.prototype.GetImages = function() {
+      return this.image_array;
+    };
+
     Image.prototype.GetObject = function() {
       var image, img_copy, key, return_array, value, _i, _len, _ref;
       return_array = [];

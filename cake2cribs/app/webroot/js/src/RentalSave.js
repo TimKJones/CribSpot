@@ -4,8 +4,11 @@
 
   A2Cribs.RentalSave = (function() {
 
-    function RentalSave(dropdown_content) {
+    function RentalSave(dropdown_content, user_email, user_phone) {
+      this.user_email = user_email;
+      this.user_phone = user_phone;
       this.SaveImages = __bind(this.SaveImages, this);
+
       this.div = $('.rentals-content');
       this.EditableRows = [];
       this.Editable = false;
@@ -79,35 +82,48 @@
         return _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
       });
       $("#rentals_delete").click(function() {
-        var listings, row, selected, _i, _len;
+        var active_row, index, listings, row, selected, _i, _len;
         selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-        _this.FinishEditing();
         if (selected.length) {
+          if (_this.GridMap[_this.VisibleGrid].getEditorLock().isActive()) {
+            active_row = _this.GridMap[_this.VisibleGrid].getActiveCell().row;
+          }
+          if (selected.indexOf(active_row) !== -1) {
+            return _this.GridMap[_this.VisibleGrid].getEditorLock().cancelCurrentEdit();
+          }
           listings = [];
           for (_i = 0, _len = selected.length; _i < _len; _i++) {
             row = selected[_i];
             if (_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id != null) {
               listings.push(_this.GridMap[_this.VisibleGrid].getDataItem(row).listing_id);
             }
+            if ((index = _this.EditableRows.indexOf(row)) !== -1) {
+              _this.EditableRows.splice(index, 1);
+            }
           }
-          return _this.Delete(selected, listings);
+          _this.Delete(selected, listings);
+          if (_this.EditableRows.length === 0) {
+            return _this.FinishEditing();
+          }
         }
       });
       $(".rentals_tab").click(function(event) {
         var row, selected, _i, _len, _ref;
-        _this.CommitSlickgridChanges();
-        selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
-        _this.VisibleGrid = $(event.target).attr("href").substring(1);
-        A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
-          "marker id": _this.CurrentMarker
-        });
-        _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
-        _ref = _this.EditableRows;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          row = _ref[_i];
-          _this.Validate(row);
+        if (_this.CommitSlickgridChanges()) {
+          selected = _this.GridMap[_this.VisibleGrid].getSelectedRows();
+          _this.VisibleGrid = $(event.target).attr("href").substring(1);
+          A2Cribs.MixPanel.PostListing("" + _this.VisibleGrid + " selected", {
+            "marker id": _this.CurrentMarker
+          });
+          _this.GridMap[_this.VisibleGrid].setSelectedRows(selected);
+          _ref = _this.EditableRows;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            row = _ref[_i];
+            _this.Validate(row);
+          }
+          $(event.target).removeClass("highlight-tab");
+          return $(event.delegateTarget).tab('show');
         }
-        return $(event.target).removeClass("highlight-tab");
       });
       return $(".rentals-content").on("shown", function(event) {
         var grid, height, width, _ref, _results;
@@ -146,19 +162,31 @@
     };
 
     RentalSave.prototype.FinishEditing = function() {
-      var data, row, _i, _len, _ref;
-      this.CommitSlickgridChanges();
-      $("#rentals_edit").text("Edit");
-      $(".rentals_tab").removeClass("highlight-tab");
-      _ref = this.EditableRows;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
-        data = this.GridMap[this.VisibleGrid].getDataItem(row);
-        data.editable = false;
+      var data, isValid, row, _i, _j, _len, _len1, _ref, _ref1;
+      if (this.CommitSlickgridChanges()) {
+        isValid = true;
+        _ref = this.EditableRows;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          row = _ref[_i];
+          isValid = isValid && this.Validate(row);
+        }
+        if (isValid) {
+          $("#rentals_edit").text("Edit");
+          $(".rentals_tab").removeClass("highlight-tab");
+          _ref1 = this.EditableRows;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            row = _ref1[_j];
+            data = this.GridMap[this.VisibleGrid].getDataItem(row);
+            data.editable = false;
+          }
+          this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
+          this.EditableRows = [];
+          return this.Editable = false;
+        } else {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Error("Please complete all required fields to finish editing!");
+        }
       }
-      this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
-      this.EditableRows = [];
-      return this.Editable = false;
     };
 
     RentalSave.prototype.Open = function(marker_id) {
@@ -272,7 +300,7 @@
           type: "POST",
           data: rental_object,
           success: function(response) {
-            var key, value;
+            var image, key, value, _i, _len, _ref;
             response = JSON.parse(response);
             if (response.listing_id != null) {
               A2Cribs.MixPanel.PostListing("Listing Save Completed", {
@@ -282,6 +310,11 @@
               A2Cribs.UIManager.Success("Save successful!");
               rental_object.Listing.listing_id = response.listing_id;
               rental_object.Rental.listing_id = response.listing_id;
+              _ref = rental_object.Image;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                image = _ref[_i];
+                image.listing_id = response.listing_id;
+              }
               for (key in rental_object) {
                 value = rental_object[key];
                 if (A2Cribs[key] != null) {
@@ -387,14 +420,18 @@
 
 
     RentalSave.prototype.LoadImages = function(row) {
-      var data, images;
+      var data, image_array, _ref;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
-      images = data.listing_id != null ? A2Cribs.UserCache.Get("image", data.listing_id) : data.Image;
+      if (data.listing_id != null) {
+        image_array = (_ref = A2Cribs.UserCache.Get("image", data.listing_id)) != null ? _ref.GetImages() : void 0;
+      } else {
+        image_array = data.Image;
+      }
       A2Cribs.MixPanel.PostListing("Start Photo Editing", {
         "marker id": this.CurrentMarker,
-        "number of images": images != null ? images.length : void 0
+        "number of images": image_array != null ? image_array.length : void 0
       });
-      return A2Cribs.PhotoManager.LoadImages(images, row, this.SaveImages);
+      return A2Cribs.PhotoManager.LoadImages(image_array, row, this.SaveImages);
     };
 
     /*
@@ -425,29 +462,27 @@
 
 
     RentalSave.prototype.AddNewUnit = function() {
-      var container, data, grid, row, row_number, _i, _len, _ref, _ref1, _results;
+      var container, data, grid, row_number, _ref, _results;
       A2Cribs.MixPanel.PostListing("Add New Unit", {
         "marker id": this.CurrentMarker
       });
-      this.GridMap[this.VisibleGrid].getEditorLock().commitCurrentEdit();
       data = this.GridMap[this.VisibleGrid].getData();
-      _ref = this.EditableRows;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        row = _ref[_i];
-        data[row].editable = false;
-      }
       row_number = data.length;
-      this.EditableRows = [row_number];
+      this.EditableRows.push(row_number);
       data.push({
-        editable: true
+        editable: true,
+        contact_email: this.user_email,
+        contact_phone: this.user_phone,
+        unit_style_description: row_number + 1
       });
       this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
       $("#rentals_edit").text("Finish Editing");
+      this.Editable = true;
       this.Validate(row_number);
-      _ref1 = this.GridMap;
+      _ref = this.GridMap;
       _results = [];
-      for (container in _ref1) {
-        grid = _ref1[container];
+      for (container in _ref) {
+        grid = _ref[container];
         grid.updateRowCount();
         _results.push(grid.render());
       }
@@ -592,8 +627,8 @@
             id: "lease_length",
             name: "Lease Length",
             field: "lease_length",
-            editor: A2Cribs.Editors.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
-            formatter: A2Cribs.Formatters.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
+            editor: A2Cribs.Editors.Dropdown([null, "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"]),
+            formatter: A2Cribs.Formatters.Dropdown(["", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
           }, {
             id: "available",
             name: "Availability",

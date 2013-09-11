@@ -1,5 +1,5 @@
 class A2Cribs.RentalSave
-	constructor: (dropdown_content) ->
+	constructor: (dropdown_content, @user_email, @user_phone) ->
 		@div = $('.rentals-content')
 		@EditableRows = []
 		@Editable = false
@@ -61,24 +61,32 @@ class A2Cribs.RentalSave
 
 		$("#rentals_delete").click () =>
 			selected = @GridMap[@VisibleGrid].getSelectedRows()
-			@FinishEditing()
 			if selected.length
+				if @GridMap[@VisibleGrid].getEditorLock().isActive()
+					active_row = @GridMap[@VisibleGrid].getActiveCell().row
+				if selected.indexOf(active_row) isnt -1
+					return @GridMap[@VisibleGrid].getEditorLock().cancelCurrentEdit()
 				listings = []
 				for row in selected
 					if @GridMap[@VisibleGrid].getDataItem(row).listing_id?
 						listings.push @GridMap[@VisibleGrid].getDataItem(row).listing_id
+					if (index = @EditableRows.indexOf(row)) isnt -1
+						@EditableRows.splice index, 1
 				@Delete selected, listings
+				if @EditableRows.length is 0
+					@FinishEditing()
 
 		$(".rentals_tab").click (event) =>
-			@CommitSlickgridChanges()
-			selected = @GridMap[@VisibleGrid].getSelectedRows()
-			@VisibleGrid = $(event.target).attr("href").substring(1)
-			A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
-				"marker id": @CurrentMarker
-			@GridMap[@VisibleGrid].setSelectedRows selected
-			for row in @EditableRows
-				@Validate row
-			$(event.target).removeClass "highlight-tab"
+			if @CommitSlickgridChanges()
+				selected = @GridMap[@VisibleGrid].getSelectedRows()
+				@VisibleGrid = $(event.target).attr("href").substring(1)
+				A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
+					"marker id": @CurrentMarker
+				@GridMap[@VisibleGrid].setSelectedRows selected
+				for row in @EditableRows
+					@Validate row
+				$(event.target).removeClass "highlight-tab"
+				$(event.delegateTarget).tab 'show'
 
 		$(".rentals-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
@@ -90,7 +98,7 @@ class A2Cribs.RentalSave
 				@GridMap[grid].init()
 
 	CommitSlickgridChanges: ->
-		@GridMap[@VisibleGrid].getEditorLock()?.commitCurrentEdit()
+		return @GridMap[@VisibleGrid].getEditorLock()?.commitCurrentEdit()
 
 	Edit: (rows) ->
 		@EditableRows = rows
@@ -102,15 +110,22 @@ class A2Cribs.RentalSave
 		@Editable = true
 
 	FinishEditing: () ->
-		@CommitSlickgridChanges()
-		$("#rentals_edit").text "Edit"
-		$(".rentals_tab").removeClass "highlight-tab"
-		for row in @EditableRows
-			data = @GridMap[@VisibleGrid].getDataItem row
-			data.editable = no
-		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
-		@EditableRows = []
-		@Editable = false
+		if @CommitSlickgridChanges()
+			isValid = yes
+			for row in @EditableRows
+				isValid = isValid and @Validate row 
+			if isValid
+				$("#rentals_edit").text "Edit"
+				$(".rentals_tab").removeClass "highlight-tab"
+				for row in @EditableRows
+					data = @GridMap[@VisibleGrid].getDataItem row
+					data.editable = no
+				@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+				@EditableRows = []
+				@Editable = false
+			else
+				A2Cribs.UIManager.CloseLogs()
+				A2Cribs.UIManager.Error "Please complete all required fields to finish editing!"
 
 	Open: (marker_id) ->	
 		# Gets rental info and saves to JS object
@@ -213,6 +228,8 @@ class A2Cribs.RentalSave
 						A2Cribs.UIManager.Success "Save successful!"
 						rental_object.Listing.listing_id = response.listing_id
 						rental_object.Rental.listing_id = response.listing_id
+						for image in rental_object.Image
+							image.listing_id = response.listing_id
 						for key, value of rental_object
 							if A2Cribs[key]?
 								A2Cribs.UserCache.Set new A2Cribs[key] value
@@ -289,11 +306,15 @@ class A2Cribs.RentalSave
 	###
 	LoadImages: (row) ->
 		data = @GridMap[@VisibleGrid].getDataItem row
-		images = if data.listing_id? then A2Cribs.UserCache.Get "image", data.listing_id else data.Image
+		if data.listing_id?
+			image_array = A2Cribs.UserCache.Get("image", data.listing_id)?.GetImages()
+		else
+			image_array = data.Image
+
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
-			"number of images": images?.length
-		A2Cribs.PhotoManager.LoadImages images, row, @SaveImages
+			"number of images": image_array?.length
+		A2Cribs.PhotoManager.LoadImages image_array, row, @SaveImages
 
 
 	###
@@ -319,18 +340,20 @@ class A2Cribs.RentalSave
 		# Create newline on grid
 		A2Cribs.MixPanel.PostListing "Add New Unit",
 			"marker id": @CurrentMarker
-		@GridMap[@VisibleGrid].getEditorLock().commitCurrentEdit()
 
 		data = @GridMap[@VisibleGrid].getData()
 
-		for row in @EditableRows
-			data[row].editable = no
-
 		row_number = data.length
-		@EditableRows = [row_number]
-		data.push { editable: true }
+		@EditableRows.push row_number
+		data.push { 
+			editable: true 
+			contact_email: @user_email
+			contact_phone: @user_phone
+			unit_style_description: row_number + 1
+		}
 		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
 		$("#rentals_edit").text "Finish Editing"
+		@Editable = true
 
 		@Validate row_number
 
@@ -464,8 +487,8 @@ class A2Cribs.RentalSave
 					id: "lease_length"
 					name: "Lease Length"
 					field: "lease_length"
-					editor: A2Cribs.Editors.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"])
-					formatter: A2Cribs.Formatters.Dropdown(["1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
+					editor: A2Cribs.Editors.Dropdown([null, "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"])
+					formatter: A2Cribs.Formatters.Dropdown(["", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months"], true)
 				}
 				{
 					id: "available"

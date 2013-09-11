@@ -189,10 +189,10 @@ class A2Cribs.PhotoManager
 			@div.find("#upload_image").button 'reset'
 			@Photos[@CurrentImageLoading].Reset()
 
-	LoadImages: (image_object, row, imageCallback) ->
+	LoadImages: (image_array, row, imageCallback) ->
 		@Reset()
-		if image_object?.image_array?
-			for image in image_object.image_array
+		if image_array?.length?
+			for image in image_array
 				@Photos[@NextAvailablePhoto()].LoadPhoto image.image_id, image.image_path, image.caption ,image.is_primary
 
 		@div.find("#finish_photo").unbind 'click'

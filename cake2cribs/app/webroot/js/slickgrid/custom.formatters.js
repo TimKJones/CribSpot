@@ -36,7 +36,7 @@
     return function (row, cell, value, columnDef, dataContext)
     {
       var text, text_class;
-      if (typeof(value) == "undefined")
+      if (typeof(value) == "undefined" || value == null)
         text = "";
       else
       {
@@ -47,7 +47,7 @@
       if (isRequired && text.length === 0)
         text_class = "required";
       if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-        return "<input value='" + text + "' type='text' class='" + text_class + "' >";
+        return "<input value='" + text + "' type='text' class='" + text_class + "' disabled>";
       return "<strong>" + text + "</strong>";
     }
   }
@@ -60,25 +60,25 @@
       text = ""
     text_class = (text.length) ? "" : "required"
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + text + "' class='" + text_class + "' type='text' required/>";
+      return "<input value='" + text + "' class='" + text_class + "' type='text' disabled required/>";
     return text;
   }
   function MoneyFormatter (row, cell, value, columnDef, dataContext) {
-    value = (typeof(value) != "undefined" || value != null) ? "$" + value : "";
+    value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' />";
+      return "<input value='" + value + "' type='text' disabled>";
     return value;
   }
   function RequiredMoneyFormatter (row, cell, value, columnDef, dataContext) {
     var text_class;
-    value = (typeof(value) != "undefined") ? "$" + value : "";
+    value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     text_class = (value.length) ? "" : "required";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' class='" + text_class + "' />";
+      return "<input value='" + value + "' type='text' class='" + text_class + "' disabled>";
     return value;
   }
   function MonthsFormatter (row, cell, value, columnDef, dataContext) {
-    value = (typeof(value) != "undefined") ? value + " months" : "";
+    value = (typeof(value) != "undefined" && value != null)  ? value + " months" : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
       return "<input value='" + value + "' type='text' />";
     return value;
@@ -96,7 +96,7 @@
         text = "Entire House";
     text_class = (text.length) ? "" : "required"
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + text + "' class='" + text_class +"' type='text' required>";
+      return "<input value='" + text + "' class='" + text_class +"' type='text' disabled required>";
     return text;
   }
   function ButtonFormatter (row, cell, value, columnDef, dataContext) {
@@ -106,7 +106,7 @@
   function TextFormatter (row, cell, value, columnDef, dataContext) {
     value = (typeof(value) != "undefined") ? value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' />";
+      return "<input value='" + value + "' type='text' disabled>";
     return value;
   }
   function RequiredTextFormatter (row, cell, value, columnDef, dataContext) {
@@ -114,7 +114,7 @@
     value = (typeof(value) != "undefined") ? value : "";
     text_class = (value.toString().length) ? "" : "required";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' class='" + text_class + "' required>";
+      return "<input value='" + value + "' type='text' class='" + text_class + "' disabled required>";
     return value;
   }
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
@@ -137,7 +137,7 @@
       if (isRequired && text.length === 0)
         text_class = "required";
       if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-        return "<input value='" + text + "' type='text' class='" + text_class + "' >";
+        return "<input value='" + text + "' type='text' class='" + text_class + "' disabled>";
       return "<strong>" + text + "</strong>";
     }
   }

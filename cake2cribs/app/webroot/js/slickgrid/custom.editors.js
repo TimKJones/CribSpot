@@ -59,6 +59,8 @@
     };
 
     this.serializeValue = function () {
+      if ($min_occupancy.val().length === 0 && $min_occupancy.val().length === 0)
+        return {min_occupancy: null, max_occupancy: null};
       return {min_occupancy: parseInt($min_occupancy.val(), 10), max_occupancy: parseInt($max_occupancy.val(), 10)};
     };
 
@@ -78,6 +80,8 @@
 
     this.validate = function () {
       var min = $min_occupancy.val(), max = $max_occupancy.val()
+      if (min.length === 0 && max.length === 0)
+        return {valid: true, msg: null};
       // Copy fields if only one filled in
       if (min.length === 0 && max.length > 0)
         $min_occupancy.val(max);
@@ -108,9 +112,9 @@
 
     this.init = function () {
       $unit_style_options = $("<select style='width:122px;'/>");
+      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
       $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
-      $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
       $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
@@ -123,25 +127,26 @@
       $unit_style_options.change(function() {
         var value = $unit_style_options.val() ;
         if (value === "0")
-          $unit_style_description.show().attr("placeholder", "Style F").val("")
+          $unit_style_description.show().attr("placeholder", "Style F")
         else if (value === "1")
-          $unit_style_description.show().attr("placeholder", "A7").val("")
+          $unit_style_description.show().attr("placeholder", "A7")
         else if (value === "2")
-          $unit_style_description.hide().val("NA")
+          $unit_style_description.hide()
       });
 
       scope.focus();
     };
 
     this.handleKeyDown = function (e) {
-      if (e.keyCode == $.ui.keyCode.LEFT)
-        right_count--;
+      if ($unit_style_description.is(":focus") && (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB))
+        return;
 
-      if (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB)
-        right_count++;
+      if ($unit_style_options.val() === "2" && (e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB))
+        return;
 
-      if (right_count >= 0 && right_count < 2)
+      if (e.keyCode == $.ui.keyCode.LEFT || e.keyCode == $.ui.keyCode.RIGHT || e.keyCode == $.ui.keyCode.TAB) {
         e.stopImmediatePropagation();
+      }
     };
 
     this.destroy = function () {
@@ -167,10 +172,11 @@
 
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
-      if (+item.unit_style_options === 2)
-        $unit_style_description.hide()
+      $unit_style_description.val(item.unit_style_description);
+      if (+item.unit_style_options < 2)
+        $unit_style_description.show()
       else
-        $unit_style_description.show().val(item.unit_style_description);
+        $unit_style_description.hide()
     };
 
     this.isValueChanged = function () {
@@ -196,8 +202,8 @@ function makeDropdown(selectable_options)
       this.init = function () {
         $select = $("<select id='selectId' name='selectName' style='width:100%;' />");
         for (var i = 0; i < selectable_options.length; i++) {
-          selectable_options[i]
-          $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
+          if (selectable_options[i] != null)
+            $("<option />", {value: i, text: selectable_options[i]}).appendTo($select);
         };
 
         $select.appendTo(args.container);
