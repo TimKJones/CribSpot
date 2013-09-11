@@ -596,10 +596,13 @@ class User extends AppModel {
 		foreach ($users as $user){
 			$just_user = array('User' => $user['User']);
 
-			if (!$this->save($just_user))
+			if (!$this->save($just_user)){
 				CakeLog::write('failed', print_r($this->validationErrors, true));
+				return false;
+			}
 		}
-		
+
+		return true;		
 	}
 
 	/*
