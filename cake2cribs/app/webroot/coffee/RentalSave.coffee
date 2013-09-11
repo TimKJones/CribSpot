@@ -39,6 +39,9 @@ class A2Cribs.RentalSave
 				@CreateListingPreview marker_id
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
+			if @Editable
+				A2Cribs.UIManager.Alert "Please finish editing before leaving this address!"
+				return
 			@Open event.target.id
 
 		@div.find(".edit_marker").click () =>
@@ -79,7 +82,7 @@ class A2Cribs.RentalSave
 		$(".rentals_tab").click (event) =>
 			if @CommitSlickgridChanges()
 				selected = @GridMap[@VisibleGrid].getSelectedRows()
-				@VisibleGrid = $(event.target).attr("href").substring(1)
+				@VisibleGrid = $(event.target).attr("data-target").substring(1)
 				A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
 					"marker id": @CurrentMarker
 				@GridMap[@VisibleGrid].setSelectedRows selected
@@ -178,8 +181,8 @@ class A2Cribs.RentalSave
 
 		$(".rentals_tab").removeClass "highlight-tab"
 		for tab, value of highlighted_tabs
-			$("a[href='##{tab}']").addClass "highlight-tab"
-		$("a[href='##{@VisibleGrid}']").removeClass "highlight-tab"
+			$("a[data-target='##{tab}']").addClass "highlight-tab"
+		$("a[data-target='##{@VisibleGrid}']").removeClass "highlight-tab"
 
 		return isValid
 
