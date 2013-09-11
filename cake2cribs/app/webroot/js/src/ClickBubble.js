@@ -168,7 +168,7 @@ ClickBubble class
       this.setFullPageContact("full_page_contact", listing_object.listing_id);
       this.div.find(".share_btn").unbind("click");
       this.div.find(".facebook_share").click(function() {
-        return A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
+        return A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip, listing_object.description, listing_object.building_type_id);
       });
       this.div.find(".link_share").click(function() {
         return A2Cribs.ShareManager.CopyListingUrl(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);

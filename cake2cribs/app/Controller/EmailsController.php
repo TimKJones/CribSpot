@@ -10,6 +10,7 @@ class EmailsController extends AppController {
     public function beforeFilter(){
      $this->Auth->allow('WelcomeExistingUsers');
      $this->Auth->allow('WelcomePropertyManagers');
+     $this->Auth->allow('WelcomePropertyManagersTest');
     }
 
     public function WelcomeExistingUsers()
@@ -39,10 +40,32 @@ class EmailsController extends AppController {
 
     }
 
+    public function WelcomePropertyManagersTest()
+    {
+        $people = array(
+            array( 'User' => array(
+                'first_name' => 'Tim',
+                'email' => 'tim@cribspot.com',
+                'password_reset_token' => '5jgjtbj'
+            )),
+            array('User' => array(
+                'first_name' => 'Jason',
+                'email' => 'jason@cribspot.com',
+                'password_reset_token' => 'fdga5yh'
+            ))
+        );
+        foreach ($people as $person){
+            $this->_sendWelcomePropertyManagersEmail($person['User']);
+            CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
+        }
+    }
+
     public function WelcomePropertyManagers()
     {
         /* Initialize password_reset_tokens */
-        $this->User->InitializePMPasswordResetTokens();
+        if (!$this->User->InitializePMPasswordResetTokens())
+            return;
+        
         $people = $this->User->find('all', array(
             'fields' => array('User.password_reset_token', 'User.email'),
             'contains' => array(),
@@ -51,6 +74,7 @@ class EmailsController extends AppController {
 
         foreach ($people as $person){
             $this->_sendWelcomePropertyManagersEmail($person['User']);
+            CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
         }
     }
 
@@ -166,7 +190,7 @@ class EmailsController extends AppController {
     
     public function _sendWelcomePropertyManagersEmail($person)
     {
-        $from = 'The Cribspot Team<info@cribspot.com>';
+        $from = 'Cribspot Founder<jason@cribspot.com>';
         $to = $person['email'];
         $subject = "Welcome to Cribspot at the University of Michigan!";
         $template = 'WelcomePropertyManagers';
