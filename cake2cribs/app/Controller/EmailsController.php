@@ -39,6 +39,26 @@ class EmailsController extends AppController {
 
     }
 
+    public function WelcomePropertyManagersTest()
+    {
+        $people = array(
+            array( 'User' => array(
+                'first_name' => 'Tim',
+                'email' => 'tim@cribspot.com',
+                'password_reset_token' => '5jgjtbj'
+            )),
+            array('User' => array(
+                'first_name' => 'Jason',
+                'email' => 'jason@cribspot.com',
+                'password_reset_token' => 'fdga5yh'
+            ))
+        );
+        foreach ($people as $person){
+            $this->_sendWelcomePropertyManagersEmail($person['User']);
+            CakeLog::write('WelcomePropertyManagersCompleted', print_r($person['User'], true));
+        }
+    }
+
     public function WelcomePropertyManagers()
     {
         /* Initialize password_reset_tokens */
