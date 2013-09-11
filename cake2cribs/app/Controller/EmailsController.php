@@ -8,9 +8,7 @@ class EmailsController extends AppController {
 	public $components= array('Email', 'RequestHandler');   
 
     public function beforeFilter(){
-     $this->Auth->allow('WelcomeExistingUsers');
-     $this->Auth->allow('WelcomePropertyManagers');
-     $this->Auth->allow('WelcomePropertyManagersTest');
+        throw new NotFoundException();
     }
 
     public function WelcomeExistingUsers()
