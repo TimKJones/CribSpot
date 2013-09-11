@@ -19,6 +19,9 @@ class A2Cribs.Image extends A2Cribs.Object
 		if @primary?
 			return @image_array[@primary][field]
 
+	GetImages: ->
+		return @image_array
+
 	GetObject: ->
 		return_array = []
 		for image in @image_array
