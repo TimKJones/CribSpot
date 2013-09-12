@@ -12,14 +12,17 @@ class A2Cribs.Dashboard
 			content = $('.' + class_name + '-content')
 			
 			$(element).click (event)=>
-				$(".list-dropdown").slideUp()
-				$('.content-header.active').removeClass "active"
-				$(event.delegateTarget).addClass "active"
-				if content_header.hasClass "list-dropdown-header"
-					#Toggle Drop down
-					$("##{class_name}_list").slideDown()
+				if A2Cribs.RentalSave?.Editable
+					A2Cribs.UIManager.ConfirmBox "By leaving this page, all unsaved changes will be lost.",
+						{
+							"ok": "Abort Changes & Continue"
+							"cancel": "Return to Editor"
+						}, (success) =>
+							if success
+								A2Cribs.RentalSave.CancelEditing()
+								@ContentHeaderClick event
 				else
-					@ShowContent content, true
+					@ContentHeaderClick event
 
 			content_header.next?('.drop-down')
 				.find('.drop-down-list').click =>
@@ -52,6 +55,22 @@ class A2Cribs.Dashboard
 		#@GetListings()
 		@GetUserMarkerData()
 
+
+	###
+
+	###
+	@ContentHeaderClick: (event) ->
+		content_header = $(event.delegateTarget)
+		class_name = content_header.attr 'classname'
+		content = $('.' + class_name + '-content')
+		$(".list-dropdown").slideUp()
+		$('.content-header.active').removeClass "active"
+		$(event.delegateTarget).addClass "active"
+		if content_header.hasClass "list-dropdown-header"
+			#Toggle Drop down
+			$("##{class_name}_list").slideDown()
+		else
+			@ShowContent content, true
 
 	
 	###
