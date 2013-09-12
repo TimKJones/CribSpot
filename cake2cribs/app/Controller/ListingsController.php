@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin');
 	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
@@ -143,6 +143,7 @@ class ListingsController extends AppController {
 
 	/*
 	Returns all marker data by the logged in user
+	If this user is a university admin, returns all listings close to tha tuniversity
 	*/
 	public function GetMarkerDataByLoggedInUser()
 	{
@@ -158,7 +159,25 @@ class ListingsController extends AppController {
 			return; 
 		}
 
-		$markers = $this->Listing->GetBasicMarkerDataByUser($user_id);
+		$markers = null;
+		/* If this user is a university admin, return all listings for their university */
+		App::Import('model', 'User');	
+		if ($this->Auth->User('user_type') == User::USER_TYPE_UNIVERSITY_ADMIN){
+			$admin = $this->UniversityAdmin->GetByUserId($user_id);
+			if (!array_key_exists('UniversityAdmin', $admin) || !array_key_exists('university_id', $admin['UniversityAdmin'])) {
+				$error = array();
+				$error['UniversityAdmin'] = $admin;
+				$this->Listing->LogError($user_id, 65, $error);
+				$this->set('response', json_encode(array('error' => "There was an error retrieving your university's listings")));
+				return; 
+			}
+
+			$lat_long = $this->University->getTargetLatLong($admin['UniversityAdmin']['university_id']);
+			$markers = $this->Listing->GetBasicDataNear($lat_long['latitude'], $lat_long['longitude'], $this->Listing->RADIUS);
+		} else {
+			$markers = $this->Listing->GetBasicMarkerDataByUser($user_id);
+		}
+
 		$this->set('response', json_encode($markers));
 	}
 
@@ -173,17 +192,21 @@ class ListingsController extends AppController {
 
 		$this->layout = 'ajax';
 		$user_id = $this->Auth->User('id');
-		if ($user_id === 0 || !$this->Listing->UserOwnsAListingAtMarkerId($user_id, $marker_id)){
-			$error = null;
-			$error['marker_id'] = $marker_id;
-			$this->Listing->LogError($user_id, 60, $error);
-			$this->set('response', json_encode(array('error' => 
-				'We had some problems loading your listing. Chat with us using the tab along the bottom of the screen ' .
-				'or contact help@cribspot.com if the error persists. Reference error code 60')));
-			return; 
+		App::Import('model', 'User');
+		$is_university_admin = ($this->Auth->User('user_type') == User::USER_TYPE_UNIVERSITY_ADMIN);
+		if ($user_id === 0 || (!$this->Listing->UserOwnsAListingAtMarkerId($user_id, $marker_id)) && !$is_university_admin) {
+				$error = null;
+				$error['marker_id'] = $marker_id;
+				$this->Listing->LogError($user_id, 60, $error);
+				$this->set('response', json_encode(array('error' => 
+					'We had some problems loading your listing. Chat with us using the tab along the bottom of the screen ' .
+					'or contact help@cribspot.com if the error persists. Reference error code 60')));
+				return; 
 		}
 
 		/* Fetch all listing data for this marker_id, user_id combo */
+		if ($is_university_admin)
+			$user_id = null;
 		$listings = $this->Listing->GetListingsByMarkerId($marker_id, $user_id);
 		$this->set('response', json_encode($listings));
 		return;

@@ -40,7 +40,7 @@ class A2Cribs.RentalSave
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
 			if @Editable
-				A2Cribs.UIManager.Alert "Please finish editing before leaving this address!"
+				A2Cribs.UIManager.Alert "By selecting a new address, all unsaved changes will be lost. Please click the 'Finish Editing' button before editing a new address."
 				return
 			@Open event.target.id
 
