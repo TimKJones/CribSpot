@@ -177,6 +177,8 @@ class ListingsController extends AppController {
 		} else {
 			$markers = $this->Listing->GetBasicMarkerDataByUser($user_id);
 		}
+		CakeLog::write('uni_admin', $this->Auth->User('user_type'));
+		CakeLog::write('uni_admin', User::USER_TYPE_UNIVERSITY_ADMIN);
 
 		$this->set('response', json_encode($markers));
 	}
