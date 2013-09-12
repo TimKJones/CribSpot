@@ -526,7 +526,7 @@ class A2Cribs.RentalSave
 					id: "baths"
 					name: "Baths"
 					field: "baths"
-					editor: Slick.Editors.Integer
+					editor: A2Cribs.Editors.Float
 					formatter: A2Cribs.Formatters.RequiredText
 				}
 				{
