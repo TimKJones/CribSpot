@@ -60,10 +60,18 @@
       });
       $("body").on('click', '.rentals_list_item', function(event) {
         if (_this.Editable) {
-          A2Cribs.UIManager.Alert("By selecting a new address, all unsaved changes will be lost. Please click the 'Finish Editing' button before editing a new address.");
-          return;
+          return A2Cribs.UIManager.ConfirmBox("By selecting a new address, all unsaved changes will be lost.", {
+            "ok": "Abort Changes",
+            "cancel": "Return to Editor"
+          }, function(success) {
+            if (success) {
+              _this.CancelEditing();
+              return _this.Open(event.target.id);
+            }
+          });
+        } else {
+          return _this.Open(event.target.id);
         }
-        return _this.Open(event.target.id);
       });
       this.div.find(".edit_marker").click(function() {
         A2Cribs.MixPanel.PostListing("Started", {});
@@ -163,6 +171,29 @@
         }
       }
       return this.Editable = true;
+    };
+
+    RentalSave.prototype.CancelEditing = function() {
+      var data, row, _i, _len, _ref, _ref1;
+      if ((_ref = this.GridMap[this.VisibleGrid].getEditorLock()) != null) {
+        _ref.cancelCurrentEdit();
+      }
+      _ref1 = this.EditableRows;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        row = _ref1[_i];
+        data = this.GridMap[this.VisibleGrid].getDataItem(row);
+        data.editable = false;
+        if (!((data != null ? data.listing_id : void 0) != null)) {
+          this.GridMap[this.VisibleGrid].getData().splice(row, 1);
+        }
+      }
+      this.GridMap[this.VisibleGrid].updateRowCount();
+      this.GridMap[this.VisibleGrid].render();
+      this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
+      this.EditableRows = [];
+      this.Editable = false;
+      $("#rentals_edit").text("Edit");
+      return $(".rentals_tab").removeClass("highlight-tab");
     };
 
     RentalSave.prototype.FinishEditing = function() {

@@ -40,9 +40,16 @@ class A2Cribs.RentalSave
 
 		$("body").on 'click', '.rentals_list_item', (event) =>
 			if @Editable
-				A2Cribs.UIManager.Alert "By selecting a new address, all unsaved changes will be lost. Please click the 'Finish Editing' button before editing a new address."
-				return
-			@Open event.target.id
+				A2Cribs.UIManager.ConfirmBox "By selecting a new address, all unsaved changes will be lost.",
+					{
+						"ok": "Abort Changes"
+						"cancel": "Return to Editor"
+					}, (success) =>
+						if success
+							@CancelEditing()
+							@Open event.target.id
+			else
+				@Open event.target.id
 
 		@div.find(".edit_marker").click () =>
 			A2Cribs.MixPanel.PostListing "Started", {}
@@ -111,6 +118,24 @@ class A2Cribs.RentalSave
 			if data?
 				data.editable = yes
 		@Editable = true
+
+	CancelEditing: ->
+		# Cancel current editor
+		@GridMap[@VisibleGrid].getEditorLock()?.cancelCurrentEdit()
+
+		# Delete the unsaved rows
+		for row in @EditableRows
+			data = @GridMap[@VisibleGrid].getDataItem row
+			data.editable = no
+			if not data?.listing_id?
+				@GridMap[@VisibleGrid].getData().splice row, 1
+		@GridMap[@VisibleGrid].updateRowCount()
+		@GridMap[@VisibleGrid].render()
+		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+		@EditableRows = []
+		@Editable = false
+		$("#rentals_edit").text "Edit"
+		$(".rentals_tab").removeClass "highlight-tab"
 
 	FinishEditing: () ->
 		if @CommitSlickgridChanges()

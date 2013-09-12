@@ -35,6 +35,14 @@
       return alertify.confirm(message, callback);
     };
 
+    UIManager.ConfirmBox = function(message, labels, callback) {
+      alertify.set({
+        labels: labels,
+        buttonFocus: "cancel"
+      });
+      return alertify.confirm(message, callback);
+    };
+
     return UIManager;
 
   })();
