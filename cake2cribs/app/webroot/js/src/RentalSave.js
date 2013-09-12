@@ -189,7 +189,7 @@
       }
       this.GridMap[this.VisibleGrid].updateRowCount();
       this.GridMap[this.VisibleGrid].render();
-      this.GridMap[this.VisibleGrid].setSelectedRows(this.EditableRows);
+      this.GridMap[this.VisibleGrid].getSelectionModel().setSelectedRanges([]);
       this.EditableRows = [];
       this.Editable = false;
       $("#rentals_edit").text("Edit");
@@ -526,6 +526,7 @@
 
     RentalSave.prototype.PopulateGrid = function(marker_id) {
       var data, grid, key, listing, rental, rentals, _i, _len, _ref, _results;
+      this.GridMap[this.VisibleGrid].getSelectionModel().setSelectedRanges([]);
       rentals = A2Cribs.UserCache.Get("rental");
       data = [];
       if (rentals.length) {

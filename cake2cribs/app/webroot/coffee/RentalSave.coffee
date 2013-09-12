@@ -131,7 +131,7 @@ class A2Cribs.RentalSave
 				@GridMap[@VisibleGrid].getData().splice row, 1
 		@GridMap[@VisibleGrid].updateRowCount()
 		@GridMap[@VisibleGrid].render()
-		@GridMap[@VisibleGrid].setSelectedRows @EditableRows
+		@GridMap[@VisibleGrid].getSelectionModel().setSelectedRanges([])
 		@EditableRows = []
 		@Editable = false
 		$("#rentals_edit").text "Edit"
@@ -391,6 +391,7 @@ class A2Cribs.RentalSave
 
 	PopulateGrid: (marker_id) ->
 		# Pre-populate grid based on selected marker
+		@GridMap[@VisibleGrid].getSelectionModel().setSelectedRanges([])
 		rentals = A2Cribs.UserCache.Get "rental"
 		data = []
 		if rentals.length
