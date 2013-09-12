@@ -173,13 +173,13 @@
 
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
-      $unit_style_description.val(item.unit_style_description);
       if (item.unit_style_description == null)
         item.unit_style_description = "NA"
       if (+item.unit_style_options < 2)
         $unit_style_description.show()
       else
         $unit_style_description.hide()
+      $unit_style_description.val(item.unit_style_description);
     };
 
     this.isValueChanged = function () {
