@@ -291,11 +291,12 @@ class Listing extends AppModel {
 	/*
 	Returns all listing data for the given marker_id and user_id combo
 	*/
-	public function GetListingsByMarkerId($marker_id, $user_id){
+	public function GetListingsByMarkerId($marker_id, $user_id=null){
 		$conditions = array(
 				'Listing.marker_id' => $marker_id,
-				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1);
+		if ($user_id !== null)
+			$conditions['Listing.user_id'] = $user_id;
 
 		$listings = $this->find('all', array(
 			'conditions' => $conditions,
@@ -463,6 +464,29 @@ class Listing extends AppModel {
 
 	}
 
+	/*
+	Returns all basic data for listings with marker_ids in $markers
+	*/
+	public function GetBasicDataFromMarkerIds($markers, $options){
+		$options['fields'] = array("Listing.listing_id, Listing.marker_id, Marker.marker_id, Marker.street_address, Marker.alternate_name, Listing.user_id, Listing.listing_type, Rental.unit_style_type, Rental.unit_style_description" );
+
+		if(array_key_exists("conditions", $options)){
+			array_push($options['conditions'], array('Listing.marker_id =' => $markers));
+		}else{
+			$options['conditions'] = array('Listing.marker_id =' => $markers);
+		}
+
+		return $this->find('all', array(
+			'conditions' => array('Listing.marker_id' => $markers),
+			'fields' => array(
+				"Listing.listing_id, Listing.marker_id, Marker.marker_id, Marker.street_address, 
+				Marker.alternate_name, Listing.user_id, Listing.listing_type, Rental.unit_style_type, 
+				Rental.unit_style_description"
+			),
+			'contain' => array('Marker', 'Rental')
+		));
+	}
+
 	/* 
 	Pulls all data in listing_ids for a newspaper_admin
 	*/
@@ -576,6 +600,30 @@ class Listing extends AppModel {
 		return $listing;
 	}
 
+	/*
+	Returns all basicdata within a $radius of latitude, longitude
+	*/
+	public function GetBasicDataNear($latitude, $longitude, $radius){
+		$this->contain("Marker", "Rental");
+		//$options['fields'] = array("Listing.listing_id, Listing.marker_id, Marker.marker_id, Marker.street_address, Marker.alternate_name, Listing.user_id, Listing.listing_type, Rental.unit_style_type, Rental.unit_style_description" );
+		
+		/* First, get all marker ids that fall within the the desired location bounds */
+		$Marker = ClassRegistry::init('Marker');
+		$options['fields'] = array("Marker.marker_id");
+		$markers = $Marker->getNear($latitude, $longitude, $radius, $options);
+
+		//Create a list of marker_ids to then find which listings link to them
+		$markerIds = array();
+		foreach ($markers as $marker) {
+			array_push($markerIds, $marker['Marker']['marker_id']);
+		}
+
+		return $this->GetBasicDataFromMarkerIds($markerIds, $options);
+	}
+
+	/*
+	Returns all basic data for properties owned by the given user_id.
+	*/
 	public function GetBasicMarkerDataByUser($user_id)
 	{
 		$this->contain('Marker');
