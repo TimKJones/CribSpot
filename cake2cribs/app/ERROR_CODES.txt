@@ -135,3 +135,5 @@
 - Image/MoveFileToFolder
 64
 - User->VerifyUserEmail
+65
+- Listings/GetMarkerDataByLoggedInUser
