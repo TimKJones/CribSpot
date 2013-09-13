@@ -531,7 +531,7 @@ class A2Cribs.RentalSave
 					name: "Unit Count"
 					field: "unit_count"
 					editor: Slick.Editors.Integer
-					formatter: A2Cribs.Formatters.RequiredText
+					formatter: A2Cribs.Formatters.Text
 				}
 			]
 
