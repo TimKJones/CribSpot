@@ -123,7 +123,6 @@
       min_occupancy: "overview_grid",
       max_occupancy: "overview_grid",
       rent: "overview_grid",
-      unit_count: "overview_grid",
       start_date: "overview_grid",
       lease_length: "overview_grid",
       available: "overview_grid",

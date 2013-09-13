@@ -16,7 +16,8 @@
         "Year": YearEditor,
         "Email": EmailEditor,
         "Phone": PhoneEditor,
-        "LongText": makeLongTextEditor
+        "LongText": makeLongTextEditor,
+        "Float": FloatEditor
       }
     }
   });
@@ -173,13 +174,13 @@
 
     this.loadValue = function (item) {
       $unit_style_options.val(item.unit_style_options);
-      $unit_style_description.val(item.unit_style_description);
       if (item.unit_style_description == null)
         item.unit_style_description = "NA"
       if (+item.unit_style_options < 2)
         $unit_style_description.show()
       else
         $unit_style_description.hide()
+      $unit_style_description.val(item.unit_style_description);
     };
 
     this.isValueChanged = function () {
@@ -585,5 +586,66 @@ function makeDropdown(selectable_options)
 
       this.init();
     }
+  }
+  function FloatEditor(args) {
+    var $input;
+    var defaultValue;
+    var scope = this;
+
+    this.init = function () {
+      $input = $("<INPUT type=text class='editor-text' />");
+
+      $input.bind("keydown.nav", function (e) {
+        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+          e.stopImmediatePropagation();
+        }
+      });
+
+      $input.appendTo(args.container);
+      $input.focus().select();
+    };
+
+    this.destroy = function () {
+      $input.remove();
+    };
+
+    this.focus = function () {
+      $input.focus();
+    };
+
+    this.loadValue = function (item) {
+      defaultValue = item[args.column.field];
+      $input.val(defaultValue);
+      $input[0].defaultValue = defaultValue;
+      $input.select();
+    };
+
+    this.serializeValue = function () {
+      return $input.val();
+    };
+
+    this.applyValue = function (item, state) {
+      item[args.column.field] = state;
+    };
+
+    this.isValueChanged = function () {
+      return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+    };
+
+    this.validate = function () {
+      if (isNaN($input.val())) {
+        return {
+          valid: false,
+          msg: "Please enter a valid integer"
+        };
+      }
+
+      return {
+        valid: true,
+        msg: null
+      };
+    };
+
+    this.init();
   }
 })(jQuery);

@@ -21,5 +21,11 @@ class A2Cribs.UIManager
 			buttonFocus: "cancel"
 		alertify.confirm message, callback
 
+	@ConfirmBox: (message, labels, callback) ->
+		alertify.set
+			labels: labels
+			buttonFocus: "cancel"
+		alertify.confirm message, callback
+
 $(document).ready () =>
 	setTimeout (() => A2Cribs.UIManager.FlashMessage()), 2000
