@@ -22,6 +22,10 @@ class Listing extends AppModel {
 		'Favorite' => array(
 			'className' => 'Favorite',
 			'dependent' => true
+		),
+		'ContactEvent' => array(
+			'className' => 'Event',
+			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
@@ -388,10 +392,10 @@ class Listing extends AppModel {
 		return $this->loadParkingHoverData();
 	}
 
-	public function GetBasicData($listing_type, $target_lat_long)
+	public function GetBasicData($listing_type, $target_lat_long, $radius)
 	{
 		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
-			return $this->_getRentalBasicData($target_lat_long);
+			return $this->_getRentalBasicData($target_lat_long, $radius);
 		/* Coming soon! 
 		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
 			return $this->_loadSubletHoverData();
@@ -684,8 +688,19 @@ class Listing extends AppModel {
 	/*
 	Returns basic data for all listings within $RADIUS of $target_lat_long
 	*/
-	private function _getRentalBasicData($target_lat_long)
+	private function _getRentalBasicData($target_lat_long, $radius)
 	{
+		if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
+			return null;
+
+		$latitude = $target_lat_long['latitude'];
+		$longitude = $target_lat_long['longitude'];
+		$lat1 = $latitude - $radius/69;
+		$lat2 = $latitude + $radius/69;
+		
+		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
 		$this->contain('Rental', 'Marker');
 		$options = array();
 		$options['fields'] = array(
@@ -706,7 +721,19 @@ class Listing extends AppModel {
 			'Marker.state',
 			'Marker.zip'
 			);
-		$options['conditions'] = array('Listing.visible' => 1);
+
+		$options['conditions'] = array(
+			'Listing.visible' => 1,
+			'Marker.latitude >' => $lat1,
+			'Marker.latitude <=' => $lat2,
+			'Marker.longitude >' => $lon1,
+			'Marker.longitude <=' => $lon2
+		);
+	
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+		);
+
 		$basicData = $this->find('all', $options);
 		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
 		foreach ($locationFilteredBasicData as &$listing) {

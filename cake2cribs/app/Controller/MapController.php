@@ -128,7 +128,7 @@ Only return */
 
         $basicData = Cache::read('mapBasicData-'.$university_id, 'MapData');
         if ($basicData === false){
-            $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long);
+            $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
             Cache::write('mapBasicData-'.$university_id, $basicData, 'MapData');
         }
         
