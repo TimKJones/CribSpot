@@ -735,12 +735,12 @@ class Listing extends AppModel {
 		);
 
 		$basicData = $this->find('all', $options);
-		$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
-		foreach ($locationFilteredBasicData as &$listing) {
+		//$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		foreach ($basicData as &$listing) {
 			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
 		}
 
-		return $locationFilteredBasicData;
+		return $basicData;
 	}
 
 	function distance($lat1,$lon1,$lat2,$lon2) {
