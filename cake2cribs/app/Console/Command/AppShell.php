@@ -42,7 +42,7 @@ class AppShell extends Shell {
         $Email = new CakeEmail("smtp");
         $Email->template($template)
             ->emailFormat('html')
-            ->to('tjones4413@gmail.com')
+            ->to($toAddress)
             ->subject($subject)
             ->viewVars($template_data)
             ->send();
