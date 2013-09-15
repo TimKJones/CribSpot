@@ -115,8 +115,8 @@
     this.init = function () {
       $unit_style_options = $("<select style='width:122px;'/>");
       $("<option />", {value: 2, text: "Entire House"}).appendTo($unit_style_options);
-      $("<option />", {value: 1, text: "Unit"}).appendTo($unit_style_options);
-      $("<option />", {value: 0, text: "Layout"}).appendTo($unit_style_options);
+      $("<option />", {value: 0, text: "Unit"}).appendTo($unit_style_options);
+      $("<option />", {value: 1, text: "Layout"}).appendTo($unit_style_options);
       $unit_style_options.bind("keydown", scope.handleKeyDown);
 
       $unit_style_options.appendTo(args.container);
