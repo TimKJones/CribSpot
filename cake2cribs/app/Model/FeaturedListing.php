@@ -113,7 +113,7 @@ class FeaturedListing extends AppModel {
     /*
         Returns an array  of all the featured listings for a given date
     */
-    public function getByDate($date){
+    public function getByDate($date, $university_id){
         /*$this->contain('Listing', 'Listing.Marker', 'Listing.Rental', 'User');
         $options = array(
             'conditions'=>array(
@@ -127,6 +127,7 @@ class FeaturedListing extends AppModel {
         $listings = $this->find('all', array(
             'conditions'=>array(
                     'FeaturedListing.date' => $date,
+                    'FeaturedListing.university_id' => $university_id
                 ),
             'fields' => array('FeaturedListing.listing_id')
         ));

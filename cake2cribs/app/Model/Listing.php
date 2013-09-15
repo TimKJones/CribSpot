@@ -494,7 +494,7 @@ class Listing extends AppModel {
 	/* 
 	Pulls all data in listing_ids for a newspaper_admin
 	*/
-	public function getForNewspaper($date)
+	public function getForNewspaper($date, $university_id)
 	{
 		// Set timezone
         date_default_timezone_set('UTC');
@@ -507,7 +507,7 @@ class Listing extends AppModel {
 
 	    for($i = 0; $i < $num_days; ++$i){
             $listings[$date] = array();
-            $listing_ids = $FeaturedListing->getByDate($date);
+            $listing_ids = $FeaturedListing->getByDate($date, $university_id);
             $featuredListings = $this->find('all', array(
                 'conditions' => array(
                     'Listing.listing_id' => $listing_ids

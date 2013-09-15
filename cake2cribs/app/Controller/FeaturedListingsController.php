@@ -294,14 +294,15 @@ class FeaturedListingsController extends AppController {
 
     $newspaper_admin = $this->NewspaperAdmin->getBySecretToken($secret_token);
 
-    if($newspaper_admin == null){
+    if($newspaper_admin === null || !array_key_exists('NewspaperAdmin', $newspaper_admin) || 
+      !array_key_exists('university_id', $newspaper_admin['NewspaperAdmin'])) {
       CakeLog::write('API', 'newspaper admin null');
       throw new NotFoundException();
     }
 
     $date = date('Y-m-d');
-    $listing_ids = $this->FeaturedListing->getByDate($date);
-    $listings = $this->Listing->getForNewspaper($date);
+    $listing_ids = $this->FeaturedListing->getByDate($date, $newspaper_admin['NewspaperAdmin']['university_id']);
+    $listings = $this->Listing->getForNewspaper($date, $newspaper_admin['NewspaperAdmin']['university_id']);
     CakeLog::write('api_example', print_r($listings, true));
     $this->set("response", json_encode($listings));
     

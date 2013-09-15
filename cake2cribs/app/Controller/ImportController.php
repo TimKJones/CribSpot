@@ -91,6 +91,13 @@ Then saves the array of listing objects.
 				return;
 			}
 
+			if (!array_key_exists('Marker', $listing) || !array_key_exists('User', $listing) ||
+				!array_key_exists('Rental', $listing) || !array_key_exists('Listing', $listing)){
+				CakeLog::write("ImportFailed", 'MISSING KEY:'.print_r($listing, true));
+				$this->set('response', '');
+				return;
+			}
+
 			$formatted_address = array(
 				'street_address' => trim($listing['Marker']['street_address']),
 				'city' => trim($listing['Marker']['city']),
@@ -137,6 +144,14 @@ Then saves the array of listing objects.
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
 			$listing['Marker'] = $this->_removeNullEntries($listing['Marker']);
 			$listing['Listing'] = $this->_removeNullEntries($listing['Listing']);
+
+			/* Copy contact info from user object to the rental object */
+			$this->_copyUserInfoToRental($listing);
+
+			/* unit_count should default to 1 if its null */
+			if (!array_key_exists('unit_count', $listing['Rental'])){
+				$listing['Rental']['unit_count'] = 1;
+			}
 		//}
 
 		CakeLog::write('imported_listings', print_r($listing, true));
@@ -181,6 +196,56 @@ Then saves the array of listing objects.
 	        $new_path = WWW_ROOT.'img/listings/' . $item;
 	        imagejpeg($image, $new_path, 45);
 	    }
+	}
+
+	/*
+	Copies the following fields (if they exist) from user to rental
+	phone, email, street_address, city, state, zip
+	*/
+	private function _copyUserInfoToRental(&$listing)
+	{
+		/*
+		Users table
+		- street_address
+		- city
+		- state
+		- zipcode
+		- website
+		- email
+		- phone
+
+		Rentals table
+		- contact_email
+		- contact_phone (format this correctly)
+		- lease_office_street_address
+		- lease_office_city
+		- lease_office_state
+		- lease_office_zipcode
+		*/
+
+		if (!array_key_exists('User', $listing) || !array_key_exists('Rental', $listing)) {
+			return;
+		}
+
+		$fieldsMap = array(
+			'street_address' => 'lease_office_street_address',
+			'city' => 'lease_office_city',
+			'state' => 'lease_office_state',
+			'zipcode' => 'lease_office_zipcode',
+			'website' => 'website',
+			'email' => 'contact_email',
+			'phone' => 'contact_phone'
+		);
+
+		foreach ($fieldsMap as $userField => $rentalField){
+			if (!array_key_exists($rentalField, $listing['Rental']) ||
+				array_key_exists($rentalField, $listing['Rental']) && empty($listing['Rental'][$rentalField])){
+					/* only overwrite rental fields if they don't already exist and if they aren't null in users table. */
+					if (array_key_exists($userField, $listing['User']) && !empty($listing['User'][$userField])) {
+						$listing['Rental'][$rentalField] = $listing['User'][$userField];
+					}
+			}
+		}
 	}
 
 	private function _removeNullEntries($rental)
