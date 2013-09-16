@@ -1,6 +1,6 @@
 class A2Cribs.FullListing
 
-	@SetupUI: ->
+	@SetupUI: (@listing_id) ->
 		@div = $(".full_page")
 
 		@div.find(".image_preview").click (event) =>
@@ -44,7 +44,7 @@ class A2Cribs.FullListing
 				url: myBaseUrl + "Messages/messageSublet"
 				type: "POST"
 				data:
-					listing_id: 1
+					listing_id: @listing_id
 					message_body: $("#message_area").val()
 
 				success: (response) =>
