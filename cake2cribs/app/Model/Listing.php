@@ -22,10 +22,6 @@ class Listing extends AppModel {
 		'Favorite' => array(
 			'className' => 'Favorite',
 			'dependent' => true
-		),
-		'ContactEvent' => array(
-			'className' => 'Event',
-			'dependent' => true
 		)
 	);
 	public $belongsTo = array(
