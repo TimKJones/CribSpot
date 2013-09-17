@@ -72,7 +72,8 @@ class Listing extends AppModel {
 	*/
 	public function SaveListing($listing, $user_id=null)
 	{
-		$listing['Listing']['user_id'] = $user_id;
+		if ($user_id != null)
+			$listing['Listing']['user_id'] = $user_id;
 
 		if (array_key_exists('Rental', $listing))
 		{

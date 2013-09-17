@@ -269,6 +269,26 @@ class UsersController extends AppController {
                 'last_name' => $userData->last_name,
                 'facebook_id' => $userData->id
             );
+
+            /* Check for null email returned from facebook */
+            if (empty($user['email'])) {
+                /* Null email was returned from facebook...we need email addresses, so don't log them in. */
+                $error = null;
+                $error['user'] = $user;
+                $this->User->LogError(null, 66, $error);
+                $flash_message['method'] = "Error";
+                $flash_message['message'] = "Looks like we had trouble getting your email address from Facebook..." .
+                "but don't worry! You can still create an account right here. It'll take less than 30 seconds.";
+                $json = json_encode($flash_message);
+                $this->Cookie->write('flash-message', $json);
+                $this->set('show_signup', $signup);
+                return;
+            }   
+
+            /* Check for strange characters in first and last names of users */
+            
+            
+
             $this->_facebookLogin($user);
         }
 
@@ -571,7 +591,6 @@ CakeLog::write('userdata', print_r($this->request->data, true));
             /* User doesn't exist, so create a new user. */
             else {
                 $new_user = array('User' => $fb_user); 
-                $new_user['User'] = $fb_user;
                 $new_user['User']['verified'] = 1;
                 $new_user['User']['user_type'] = User::USER_TYPE_SUBLETTER;
                 $new_user['User']['password'] = uniqid();

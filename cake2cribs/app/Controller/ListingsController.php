@@ -100,7 +100,12 @@ class ListingsController extends AppController {
 			$images = array('Image' => $listingObject['Image']);
 		}
 
-		$response = $this->Listing->SaveListing($listingObject, $this->_getUserId());
+		$user_id = $this->Auth->User('id');
+		/* if this is a university_admin, don't save their user_id */
+		if ($this->UniversityAdmin->GetByUserId($user_id) != null)
+			$user_id = null;
+
+		$response = $this->Listing->SaveListing($listingObject, $user_id);
 		if (!array_key_exists('error', $response) && 
 			array_key_exists('listing_id', $response) && 
 			$images != null) {
