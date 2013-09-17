@@ -75,10 +75,11 @@ class A2Cribs.Messages
 					class: "messages_list_item"
 					id: convo.Conversation.conversation_id
 					"data-participant": convo.Participant.id
+					"data-listing": convo.Conversation.listing_id
 				}
 				$("#messages_list_content").append list_item
 
-			@attachConversationListItemHandler() 
+				@attachConversationListItemHandler list_item
 
 	@toggleUnreadConversations:()->
 		@ViewOnlyUnread = $('#view_unread_cb').is ':checked' 
@@ -147,15 +148,15 @@ class A2Cribs.Messages
 
 		# Get the title of the conversation being selected and make the title of ther
 		# center messaging window have that title as well.
-		title = $('#cli_' + @CurrentConversation).find('.conversation_title').text()
-		sublet_url = $('#cli_' + @CurrentConversation + ' a').attr 'href'
-		$('#listing_title').text(title).attr('href', sublet_url)
+		title = $(event.delegateTarget).text()
+		listing = $(event.delegateTarget).attr "data-listing"
+		$('#listing_title').text(title).attr('href', "/listings/view/#{listing}")
 
 		@refreshParticipantInfo()
 		@refreshUnreadCount()
-		@refreshMessages()
+		@refreshMessages event
 
-	@loadMessages:(page, align_bottom=false)->
+	@loadMessages:(page, align_bottom=false, event=null)->
 		url = myBaseUrl + "messages/getMessages/" + @CurrentConversation +  "/" + page + "/" 
 		
 		# We want to put a hold on loading
@@ -186,24 +187,25 @@ class A2Cribs.Messages
 			# See if there is more room to load content
 			$('#current_conversation').trigger 'scroll'
 
-			@attachConversationListItemHandler()
+			if event?
+				@attachConversationListItemHandler event.delegateTarget
 
 		.fail =>
 			@NumMessagePages = 0;
 		
 
-	@attachConversationListItemHandler:()->
+	@attachConversationListItemHandler: (container)->
 		# We use a one time event so the user can't stack a backlog 
 		# of loadConversation Events
 		# After a conversation is loaded events will be put in again.
-		$('.messages_list_item').one 'click', (event)=>
+		$(container).one 'click', (event)=>
 			@loadConversation(event)
 
 	@refreshMessages:(event)->
 		@NumMessagePages = 1
 		message_list = $('#message_list')
 		message_list.html ''
-		@loadMessages(@NumMessagePages, true)
+		@loadMessages(@NumMessagePages, true, event)
 	
 	@sendReply:(event)->
 		# Gather the data to send to the server

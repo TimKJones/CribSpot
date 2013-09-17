@@ -463,7 +463,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 <?php 
 	$this->Js->buffer('
-		A2Cribs.FullListing.SetupUI();
+		A2Cribs.FullListing.SetupUI(' . $listing["Listing"]["listing_id"] . ');
 		A2Cribs.FullListing.Directive(' . $directive . ');
 	');
 ?>

@@ -3,7 +3,7 @@
 
 	<div class = 'row-fluid' id = 'participant_info_short'>
 		<div class ='span8'>
-			<a href = '#' id = 'listing_title'></a><i class = 'icon-map-marker icon-large'></i>
+			<i class = 'icon-map-marker icon-large'> </i><a href = '#' id = 'listing_title'></a>
 			<span id = 'conversation_toolbar'>
 				<i  id = 'refresh_content' class = 'icon-refresh'></i><i id = 'delete_conversation' class = 'icon-trash'></i>
 			</span>
