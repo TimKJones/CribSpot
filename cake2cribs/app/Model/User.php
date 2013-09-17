@@ -47,7 +47,7 @@ class User extends AppModel {
 				'rule' => array('between',1,50),
 				'message' => 'Must be between 1 and 50 characters'
 				),
-			'rule' => array('custom', '/^[a-z\- ]*$/i') 
+			'rule' => array('custom', "/^[a-z\-\ \']*$/i") 
 		),
 		'company_name' => array(
 			'between' => array(
