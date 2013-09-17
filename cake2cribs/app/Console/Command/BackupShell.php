@@ -26,6 +26,18 @@ class BackupShell extends AppShell
 	        unlink($old);
 	    }
     }
+
+    /*
+    Stores a copy of the current database as a snapshot to save for later analysis
+    */
+    public function save_db_snapshot()
+    {
+        $month = date('n');
+        $day = date('j') - 1;
+        $year = date('Y');
+        $filename = $month.'_'.$day.'_'.$year.'_snapshot.sql';
+        shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/".$filename);
+    }
 }
 
 ?>
