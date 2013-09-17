@@ -1,5 +1,5 @@
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
-<?php echo $this->element('Dashboard/marker-modal');?>
+<?php echo $this->element('Dashboard/marker-modal', $dropdowns);?>
 <?php echo $this->element('Dashboard/picture-modal');?>
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account'); ?>

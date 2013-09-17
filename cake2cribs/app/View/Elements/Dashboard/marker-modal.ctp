@@ -35,9 +35,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 							<label class="span3"><strong>Type:</strong></label>
 							<select id="Marker_building_type_id" class="span9 required" required>
 								<option></option>
-								<option value="1">House</option>
-								<option value="2">Apartment</option>
-								<option value="3">Duplex</option>
+								<?php
+								$length = count($dropdowns['building_type']);
+								for ($i=0; $i < $length; $i++) { 
+									echo "<option value='" . $i . "'>" . $dropdowns['building_type'][$i] . "</option>";
+								}
+								?>
 							</select>
 						</div>
 						<div class="row-fluid control-group">
