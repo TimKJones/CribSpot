@@ -47,7 +47,7 @@
       if (isRequired && text.length === 0)
         text_class = "required";
       if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-        return "<input value='" + text + "' type='text' class='" + text_class + "' disabled>";
+        return "<input value='" + text + "' type='text' class='" + text_class + "' readonly='readonly'>";
       return "<strong>" + text + "</strong>";
     }
   }
@@ -60,13 +60,13 @@
       text = ""
     text_class = (text.length) ? "" : "required"
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + text + "' class='" + text_class + "' type='text' disabled required/>";
+      return "<input value='" + text + "' class='" + text_class + "' type='text' readonly='readonly'/>";
     return text;
   }
   function MoneyFormatter (row, cell, value, columnDef, dataContext) {
     value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' disabled>";
+      return "<input value='" + value + "' type='text' readonly='readonly'>";
     return value;
   }
   function RequiredMoneyFormatter (row, cell, value, columnDef, dataContext) {
@@ -74,7 +74,7 @@
     value = (typeof(value) != "undefined" && value != null) ? "$" + value : "";
     text_class = (value.length) ? "" : "required";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' class='" + text_class + "' disabled>";
+      return "<input value='" + value + "' type='text' class='" + text_class + "' readonly='readonly'>";
     return value;
   }
   function MonthsFormatter (row, cell, value, columnDef, dataContext) {
@@ -96,7 +96,7 @@
         text = "Entire House";
     text_class = (text.length) ? "" : "required"
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + text + "' class='" + text_class +"' type='text' disabled required>";
+      return "<input value='" + text + "' class='" + text_class +"' type='text' readonly='readonly' required>";
     return text;
   }
   function ButtonFormatter (row, cell, value, columnDef, dataContext) {
@@ -106,7 +106,7 @@
   function TextFormatter (row, cell, value, columnDef, dataContext) {
     value = (typeof(value) != "undefined") ? value : "";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' disabled>";
+      return "<input value='" + value + "' type='text' readonly='readonly'>";
     return value;
   }
   function RequiredTextFormatter (row, cell, value, columnDef, dataContext) {
@@ -114,7 +114,7 @@
     value = (typeof(value) != "undefined") ? value : "";
     text_class = (value.toString().length) ? "" : "required";
     if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-      return "<input value='" + value + "' type='text' class='" + text_class + "' disabled required>";
+      return "<input value='" + value + "' type='text' class='" + text_class + "' readonly='readonly' required>";
     return value;
   }
   function CheckmarkFormatter(row, cell, value, columnDef, dataContext) {
@@ -137,7 +137,7 @@
       if (isRequired && text.length === 0)
         text_class = "required";
       if (typeof(dataContext.editable) != "undefined" && dataContext.editable)
-        return "<input value='" + text + "' type='text' class='" + text_class + "' disabled>";
+        return "<input value='" + text + "' type='text' class='" + text_class + "' readonly='readonly'>";
       return "<strong>" + text + "</strong>";
     }
   }
