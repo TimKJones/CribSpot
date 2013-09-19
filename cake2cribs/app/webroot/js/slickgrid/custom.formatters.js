@@ -89,9 +89,9 @@
       text = "";
     else
       if (+dataContext.unit_style_options === 0)
-        text = "Layout" + " - " + dataContext.unit_style_description;
-      else if (+dataContext.unit_style_options === 1)
         text = "Unit" + " - " + dataContext.unit_style_description;
+      else if (+dataContext.unit_style_options === 1)
+        text = "Layout" + " - " + dataContext.unit_style_description;
       else if (+dataContext.unit_style_options === 2)
         text = "Entire House";
     text_class = (text.length) ? "" : "required"
