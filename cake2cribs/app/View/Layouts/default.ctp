@@ -108,11 +108,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo '<title>' . $title_for_layout . '</title>';
 
 		/* Meta Data */
-		echo $this->Html->meta('keywords',
+/*		echo $this->Html->meta('keywords',
 			'ann arbor housing, ann arbor apartments, student housing, university of michigan housing, umich housing, ann arbor rentals, ann arbor subleases, UM housing, cribspot, a2cribs, off-campus housing'
 		);
-		echo $this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college " .
-			"campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.");
+*/
+
 		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=2', array('type' => 'icon'));
 
 		/* Fetch data */

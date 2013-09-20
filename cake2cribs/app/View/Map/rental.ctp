@@ -4,7 +4,15 @@
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', 'Cribspot Off-Campus Housing');
+	$this->set('title_for_layout', $school_name . ' Off-Campus Housing');
+
+	$this->Html->meta('keywords', 
+		$school_name . " off campus housing, " . $school_name . " student housing, " . $school_city . " campus apartments, " . $school_city . " college apartments, " . $school_city . " college housing, " . $school_state . " college housing", array('inline' => false)
+	);
+
+	$this->Html->meta('description', "Welcome to Cribspot for " . $school_name  . "! Looking for off campus housing in " . $school_city . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
+	
+
 	echo $this->element('header', array('show_filter' => false, 'show_user' => true, 'show_personal' => true));
 	echo $this->element('map');
 	echo $this->element('FeaturedListings/fl_sidebar', $school_name);

@@ -3,6 +3,18 @@
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/FullListing.js', array('inline' => false));
 }
+	$name = "";
+	if (strlen($listing["Marker"]["alternate_name"]) != 0)
+		$name = $listing["Marker"]["alternate_name"] . " - ";
+
+	$this->set('title_for_layout', $name . $listing["Marker"]["street_address"] . ", " . $listing["Marker"]["city"] . ", " .$listing["Marker"]["state"] . " " . $listing["Marker"]["zip"] . " - Cribspot");
+
+	$this->Html->meta('keywords', 
+			$listing["Marker"]["alternate_name"] . ", " . $listing["Marker"]["street_address"] . ", off campus housing, student housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
+		);
+
+	$this->Html->meta('description', $listing["Rental"]["description"], array('inline' => false));
+
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <script type="text/javascript">

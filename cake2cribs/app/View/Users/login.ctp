@@ -7,7 +7,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 }
 ?>
 
-<?php $this->set('title_for_layout', 'Cribspot Login'); ?>
+<?php $this->set('title_for_layout', 'Login | Register - Cribspot');
+        
+    $this->Html->meta('keywords', 
+        "cribspot login, cribspot signup, cribspot add user, cribspot new account, cribspot log in, cribspot register, off campus housing, student housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
+    );
+
+    $this->Html->meta('description', "Hello for the first time or welcome back to Cribspot! We are excited to have you join the community with thousands of listings all at your fingertips. College life is difficult...Cribspot makes it easier. Sign up or log in and find your ideal housing today!", array('inline' => false));
+?>
 
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => false)); ?>
 
