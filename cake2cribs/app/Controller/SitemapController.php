@@ -37,12 +37,11 @@ class SitemapController extends AppController{
 
         foreach ($universities as &$university){
             $school_name = str_replace(" ", "_", $university['University']['name']);
-            $university['url'] = urlencode('rental/' . $school_name);
+            $university['url'] = 'rental/' . $school_name;
         }
 
     	$this->set('listings', $listings);
         $this->set('universities', $universities);
-        CakeLog::write('universities_sitemap', print_r($universities, true));
 
     	$this->RequestHandler->respondAs('xml');
     } 
