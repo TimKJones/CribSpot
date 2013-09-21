@@ -85,7 +85,7 @@ class Image extends AppModel {
 			/* File doesn't exist yet. This is the path where the image will be saved. */
 			foreach ($this->file_prefixes as $prefix=> $dimensions){
 				$prependedPath = $currentPath . $prefix . $random . '.' . $fileType;
-				$response = $this->MoveFileToFolder($file, $prefix, WWW_ROOT . $prependedPath, $user_id);
+				$response = $this->MoveFileToFolder($file, $prefix, $prependedPath, $user_id);
 				if (array_key_exists('error', $response))
 					return $response;
 			}
@@ -148,8 +148,9 @@ class Image extends AppModel {
 	Returns true on success; false on failure
 	REQUIRES: $file contains the array keys ['name'][0] to extract the file name.
 	*/
-	public function MoveFileToFolder($file, $prefix, $newPath, $user_id)
+	public function MoveFileToFolder($file, $prefix, $relativePath, $user_id)
 	{
+		$newPath = WWW_ROOT . $relativePath;
 		if (!$this->_isValidFileSize($file)) {
 			$error = null;
 			$error['file'] = $file;
@@ -204,7 +205,6 @@ class Image extends AppModel {
 			}
 
 			$image->resize($this->file_prefixes[$prefix]['width'], $this->file_prefixes[$prefix]['height'])->saveToFile($newPath);
-			
 		}
 		else {
 			if (!move_uploaded_file($file['tmp_name'][0], $newPath)){
@@ -216,9 +216,42 @@ class Image extends AppModel {
 					'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
 						'at help@cribspot.com. Reference error code 62.');
 			}
-		} 
+		}
+
+		/*
+		At this point, the uploaded image has been resized and saved to $newPath.
+		We will now upload this image to our S3 bucket, and then, following a successful upload, delete the local copy.
+		*/
+		$response = $this->_uploadTempImageToS3($relativePath, $newPath);
+		unlink ($newPath);
+
+		if (array_key_exists('error', $response))
+			return $response;
 
 		return array('success' => 'file moved successfully'); 
+	}
+
+	/*
+	Uploads the file located at $absolutePath to the s3 bucket specified in a config variable
+	*/
+	private function _uploadTempImageToS3($relativePath, $absolutePath)
+	{
+		App::import('Vendor', 'AmazonS3/S3');
+		$accessKey = Configure::read('S3_ACCESS_KEY');
+		$secretKey = Configure::read('S3_SECRET_KEY');
+		$listingImgBucket = Configure::read('S3_IMG_BUCKET');
+		$s3 = new S3($accessKey, $secretKey);
+		if (!$s3->putObjectFile($absolutePath, $listingImgBucket, $relativePath, S3::ACL_PUBLIC_READ)) {
+			$error = null;
+			$error['absolutePath'] = $absolutePath;
+			$error['relativePath'] = $relativePath;
+			$this->LogError($user_id, 67, $error);
+			return array('error' => 'Looks like we had some problems saving your image... but we want to help! If the issue continues, ' .
+					'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+						'at help@cribspot.com. Reference error code 67.');
+		}
+
+		return array('success' => '');
 	}
 
 	/*

@@ -139,3 +139,5 @@
 - Listings/GetMarkerDataByLoggedInUser
 66
 - Users/Login
+67
+- Image->_uploadTempImageToS3
