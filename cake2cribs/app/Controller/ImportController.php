@@ -98,15 +98,15 @@ Then saves the array of listing objects.
 				return;
 			}
 
-			$formatted_address = array(
-				'street_address' => trim($listing['Marker']['street_address']),
-				'city' => trim($listing['Marker']['city']),
-				'state' => trim($listing['Marker']['state']),
-				'zip' => trim($listing['Marker']['zip']),
-				'latitude' => $listing['Marker']['latitude'],
-				'longitude' => $listing['Marker']['longitude']
-			);
-			//$formatted_address = $this->_geocoderProcessAddress($address);
+			$formatted_address = $this->_geocoderProcessAddress($address);
+			if (!array_key_exists('latitude', $formatted_address) || 
+				!array_key_exists('longitude', $formatted_address) || 
+				!array_key_exists('city', $formatted_address) ||
+				!array_key_exists('state', $formatted_address)) {
+					CakeLog::write('FAILED_IMPORT', 'GEOCODER: '.print_r($listing, true));
+					return;
+			}
+
 			CakeLog::write("formatted_address", print_r($formatted_address, true));
 			$listing['Marker']['street_address'] = $formatted_address['street_address'];
 			$listing['Marker']['city'] = $formatted_address['city'];

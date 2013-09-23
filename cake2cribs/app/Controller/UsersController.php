@@ -237,7 +237,7 @@ class UsersController extends AppController {
         We'll use these to get their access token, which we'll use to query for their basic information.
         */
         if (array_key_exists('code', $_GET)){
-            $redirect_uri = 'http://www.cribspot.com/login';
+            $redirect_uri = Configure::read('HTTP_TYPE').'://www.cribspot.com/login';
             if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_LOCAL')
                 $redirect_uri = urlencode('http://localhost/login');
             /*else if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_DEVELOPMENT')

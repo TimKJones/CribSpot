@@ -44,7 +44,7 @@ class FeaturedListingsController extends AppController {
   public function GetCribspotFeaturedListings()
   {
     $token = urlencode(Configure::read('MY_API_TOKEN'));
-    $url = "http://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
+    $url = Configure::read('HTTP_TYPE')."://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
     $featuredListings = file_get_contents($url);
     $this->set('featuredListings', $featuredListings);
   }

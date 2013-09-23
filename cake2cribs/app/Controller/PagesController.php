@@ -72,7 +72,7 @@ class PagesController extends AppController {
   		CakeLog::write('featuredListings', '1');
   		$token = Configure::read('MY_API_TOKEN');
         $token = urlencode($token);
-        $url = "http://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
+        $url = Configure::read('HTTP_TYPE')."://www.cribspot.com/FeaturedListings/newspaper?secret_token=" . $token;
         $featuredListings = file_get_contents($url);
         CakeLog::write('featuredListings', '2');
       	$this->set('featuredListings', $featuredListings);
