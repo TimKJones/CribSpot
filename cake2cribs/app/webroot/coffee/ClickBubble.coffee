@@ -117,7 +117,7 @@ class A2Cribs.ClickBubble
 			unit_style_description = 'Entire House'
 		@div.find('.unit_style_description').text unit_style_description
 		@div.find('unit_style_description').text 
-		@linkWebsite ".website_link", listing_object.website
+		@linkWebsite ".website_link", listing_object.website, listing_object.listing_id
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
 		@setPrimaryImage "property_image", listing_object.listing_id
@@ -155,14 +155,15 @@ class A2Cribs.ClickBubble
 			$(".#{div_name}").show().text "Leased"
 			$(".#{div_name}").addClass "leased"
 
-	@linkWebsite: (div_name, link) ->
+	@linkWebsite: (div_name, link, listing_id) ->
 		if link?
 			if link.indexOf("http") is -1
 				link = "http://" + link
-			@div.find(div_name).attr "href", link
-			@div.find(div_name).attr "onclick", ""
+			@div.find(div_name).unbind("click").click () =>
+				A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "go to realtor's website"
+				window.open link, '_blank'
 		else
-			@div.find(div_name).attr "onclick", "A2Cribs.UIManager.Error('This owner does not have a website for this listing')"
+			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
 
 	@setOwnerName: (div_name, listing_id) ->
 		listing = A2Cribs.UserCache.Get "listing", listing_id
