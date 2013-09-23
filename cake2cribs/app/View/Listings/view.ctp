@@ -59,8 +59,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				<div class="span4 detail_table_cell">
 					<?php
 					echo "<div class='available ";
-					if (!array_key_exists("available", $listing["Rental"]) || $listing["Rental"]["available"] == null)
-						echo "leased'>Maybe Avail</div>";
+					if (!array_key_exists("available", $listing["Rental"]) || $listing["Rental"]["available"] === null)
+						echo "unknown'>Available?</div>";
 					else if ($listing["Rental"]["available"])
 						echo "'>Available</div>";
 					else
