@@ -363,7 +363,7 @@ After logging in with your new password, you'll be directed to the dashboard whe
 
 <?php } else { ?>
 
-Click <a href'<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/><br/>
+Click <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $view_msg; ?><br/><br/>
 
