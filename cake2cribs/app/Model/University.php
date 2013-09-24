@@ -116,5 +116,16 @@ class University extends AppModel {
 		return $data;
 
 	}
+
+	public function findById($school_id)
+	{
+		$university = $this->find('first', array(
+			'conditions' => array('University.id' => $school_id)
+		));
+		if (!array_key_exists('University', $university))
+			throw new NotFoundException();
+
+		return $university['University']; 
+	}
 }
 ?>

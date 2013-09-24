@@ -69,14 +69,10 @@ class MapController extends AppController {
             } 
             
             $this->set('school_id', $id);
-            $lat_long = $this->University->getTargetLatLong($id);
-            if ($lat_long == null)
+            $university = $this->University->findById($id);
+            if ($university == null)
                 throw new NotFoundException();
-            $this->set('school_lat', $lat_long['latitude']);
-            $this->set('school_lng', $lat_long['longitude']);
-            $this->set('school_city', $lat_long['city']);
-            $this->set('school_state', $lat_long['state']);
-            $this->set('school_name', $school_name);
+            $this->set('university', $university);
         }
         
         $user = null;
