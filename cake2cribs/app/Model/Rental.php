@@ -102,6 +102,7 @@ class Rental extends RentalPrototype {
 		'parking_type' => 'numeric',
 		'parking_spots' => 'numeric',
 		'street_parking' => 'boolean',
+		'private_parking' => 'boolean',
 		'furnished_type' => 'numeric',
 		'pets_type' => 'numeric',
 		'washer_dryer' => 'numeric', 
@@ -298,8 +299,8 @@ class Rental extends RentalPrototype {
 		'UnitTypes' => array('MultipleOption' => array('building_type_id', Rental::BUILDING_TYPE_CONDO, 'Marker')),
 		'Beds' => array('MultipleOption'=>array('beds', 10, 'Rental')), /* 10 is MAX_BEDS */
 		'Rent' => array('Range' => array('rent', 5000, 'Rental')), /* 5000 is MAX_RENT */
-		'PetsAllowed'  => array('Boolean' => array('pets_type', Rental::PETS_NOT_ALLOWED, 'Rental')),
-		'ParkingAvailable' => array('Boolean' => array('parking_type', Rental::PARKING_NO_PARKING, 'Rental')), 
+		'PetsAllowed'  => array('Boolean' => array('pets_type', Rental::PETS_NOT_ALLOWED, 'Rental')),/*
+		'ParkingAvailable' => array('Boolean' => array('parking_type', Rental::PARKING_NO_PARKING, 'Rental')),*/
 		'Air' => array('Boolean' => array('air', Rental::AIR_NO_AIR, 'Rental'))
 	);
 
@@ -393,8 +394,8 @@ class Rental extends RentalPrototype {
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
 
-		/*$log = $this->getDataSource()->getLog(false, false); 
-	  	CakeLog::write("lastQuery", print_r($log, true));*/
+		$log = $this->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		return json_encode($formattedIdList);
 	}
 
@@ -436,7 +437,23 @@ class Rental extends RentalPrototype {
 			}
 		}
 
+		/* Handle parking separately...there are a couple checks that are factored into it */
+		if (array_key_exists('ParkingAvailable', $params) && $params['ParkingAvailable'] == 1)
+			array_push($conditions, $this->_getParkingConditions($params));
+
 		return $conditions;
+	}
+
+	/*
+	Returns the piece of the filter conditions array for 'Parking Available'
+	*/
+	private function _getParkingConditions($params)
+	{
+		return array('OR' => array(
+			'Rental.parking_type >' => 0,
+			'Rental.private_parking' => 1,
+			'Rental.street_parking' => 1
+		));
 	}
 
 	/*
