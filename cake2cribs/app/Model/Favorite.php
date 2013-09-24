@@ -8,7 +8,8 @@ class Favorite extends AppModel {
 	public $validate = array(
 		'favorite_id' => 'alphaNumeric',
 		'listing_id' => 'alphaNumeric',
-		'user_id' => 'alphaNumeric'
+		'user_id' => 'alphaNumeric',
+		'created' => 'datetime'
 	);	
 
 	public function GetFavoritesListingIds($user_id)
