@@ -1,3 +1,5 @@
+###
+Not longer used!
 class A2Cribs.Landing
 	@Init: (locations) ->
 		@schoolList = Array()
@@ -20,5 +22,7 @@ class A2Cribs.Landing
 			return false
 
 		window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');
+
+###
 
 
