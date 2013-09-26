@@ -67,14 +67,17 @@
 	}
 	.nav-btn
 	{
-		font-family: 'ReklameScriptMediumRegular';
+		font-family: 'Helvetica';
+		letter-spacing: -1px;
+		font-weight: lighter;
 		font-size: 25px;
-		color: #9FC6E0;
+		color: white;
 		text-shadow: 1px 1px 2px black;
 	}
 	.nav-text
 	{
 		margin-top: 10px;
+		color: #5d8dc4;
 		font-family: 'ReklameScriptMediumRegular';
 		font-size: 20px;
 		text-shadow: 1px 1px 2px black;
@@ -114,6 +117,43 @@
 				margin-bottom: 10px;
 			}
 		}
+	}
+}
+
+#logo_zone
+{
+	position: relative;
+	#where_to_school
+	{
+		position: absolute;
+		top: 90px;
+		left: -100px;
+		width: 140px;
+		line-height: 25px;
+		font-size: 25px;
+		font-family: 'ReklameScriptMediumRegular';
+		color: white;
+		text-shadow: 0px 0px 5px black;
+	}
+	.university_icon
+	{
+		height: 213px;
+		width: 225px;
+		background-size: 100%;
+		display: inline-block;
+		background-position: 0 0;
+		&:hover
+		{
+			background-position: 0 213px;
+		}
+	}
+	#indiana_logo
+	{
+		background-image: url(/img/landing/indiana_logo.png);
+	}
+	#michigan_logo
+	{
+		background-image: url(/img/landing/michigan_logo.png);
 	}
 }
 
@@ -167,26 +207,28 @@
 {
 	width: 550px;
 	line-height: 32px;
-	text-shadow: 1px 1px 3px black;
+	text-shadow: 0px 0px 5px black;
 	margin-bottom: 20px;
 	margin-left: -40px;
 }
 
 .small_font, .large_font
 {
-	font-family: 'Fava Black';
+	font-family: 'Helvetica';
 	color: white;
 	font-style: normal;
-	text-transform: uppercase;
+	letter-spacing: -2px;
 }
 
 .small_font
 {
+	font-weight: lighter;
 	font-size: 30px;
 }
 
 .large_font
 {
+	font-weight: bold;
 	font-size: 50px;
 }
 

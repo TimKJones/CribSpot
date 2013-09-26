@@ -4,18 +4,18 @@
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', $school_name . ' Off-Campus Housing');
+	$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');
 
 	$this->Html->meta('keywords', 
-		$school_name . " off campus housing, " . $school_name . " student housing, " . $school_city . " campus apartments, " . $school_city . " college apartments, " . $school_city . " college housing, " . $school_state . " college housing", array('inline' => false)
+		$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
 	);
 
-	$this->Html->meta('description', "Welcome to Cribspot for " . $school_name  . "! Looking for off campus housing in " . $school_city . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
+	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for off campus housing in " . $university["city"] . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
 	
 
 	echo $this->element('header', array('show_filter' => false, 'show_user' => true, 'show_personal' => true));
 	echo $this->element('map');
-	echo $this->element('FeaturedListings/fl_sidebar', $school_name);
+	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	//echo $this->element('login');
 	//echo $this->element('register');
 	/*
@@ -26,7 +26,7 @@
 	$this->Js->buffer(	
 		'A2Cribs.FBInitialized = false;' . 
 		'A2Cribs.VerifyManager.init('.$user.');' . 
-		'A2Cribs.Map.Init(' . $school_id . ',' . $school_lat . ',' . $school_lng . ',"' . $school_city . '","' . $school_state . '","' . $school_name . '","' . $active_listing_type . '");	
+		'A2Cribs.Map.Init(' . $university["id"] . ',' . $university["latitude"] . ',' . $university["longitude"] . ',"' . $university["city"] . '","' . $university["state"] . '","' . $university["name"] . '","' . $active_listing_type . '");	
 	'
 
 	);

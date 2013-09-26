@@ -15,8 +15,9 @@ class University extends AppModel {
 
 	public function getSchools()
 	{
-		return $this->find('all', 
-			array('fields' => array('name'))
+		return $this->find('all', array(
+			'contain' => false,
+			'fields' => array('University.name'))
 			);
 
 	}
@@ -115,6 +116,17 @@ class University extends AppModel {
 		$data = $this->find('all', array('fields' => array('distance', 'name', 'id'), 'conditions' => array('distance <' => $radius)));
 		return $data;
 
+	}
+
+	public function findById($school_id)
+	{
+		$university = $this->find('first', array(
+			'conditions' => array('University.id' => $school_id)
+		));
+		if (!array_key_exists('University', $university))
+			throw new NotFoundException();
+
+		return $university['University']; 
 	}
 }
 ?>
