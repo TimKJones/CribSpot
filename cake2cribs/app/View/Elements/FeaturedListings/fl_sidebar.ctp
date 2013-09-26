@@ -5,11 +5,11 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
 <div class = 'featured-listings-wrapper'>
     <div id = 'fl-side-bar'>
         <div id = 'uni-banner'>
-            <img id="sidebar_top_image" src ='<?= $university["sidebar_img_path"] ?>'></img>
+            <img id="sidebar_top_image" src ='<?= (array_key_exists("sidebar_img_path", $university) &&  $university["sidebar_img_path"] != null) ?  $university["sidebar_img_path"] : "/img/sidebar/default_university.png" ; ?>'></img>
         </div>
         <div id = 'uni-name'>
             <span id ='name'><?php echo $university["name"]; ?></span>
-            <span id = 'like-us'class = 'pull-right'><a href = "<?= $university["facebook_url"] ?>">Like</a> on Facebook</span>
+            <span id = 'like-us'class = 'pull-right'><a href = "<?= (array_key_exists("facebook_url", $university) &&  $university["facebook_url"] != null) ?  $university["facebook_url"] : "https://facebook.com/Cribspot" ; ?>">Like</a> on Facebook</span>
         </div>
         <div id = 'list-info'>
             <span>Listings: </span>
