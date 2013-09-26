@@ -241,7 +241,9 @@ class Image extends AppModel {
 		$secretKey = Configure::read('S3_SECRET_KEY');
 		$listingImgBucket = Configure::read('S3_IMG_BUCKET');
 		$s3 = new S3($accessKey, $secretKey);
-		if (!$s3->putObjectFile($absolutePath, $listingImgBucket, $relativePath, S3::ACL_PUBLIC_READ)) {
+		$s3_relative_path = 'listings/' . basename($relativePath);
+		CakeLog::write('relativepath', $s3_relative_path);
+		if (!$s3->putObjectFile($absolutePath, $listingImgBucket, $s3_relative_path, S3::ACL_PUBLIC_READ)) {
 			$error = null;
 			$error['absolutePath'] = $absolutePath;
 			$error['relativePath'] = $relativePath;
