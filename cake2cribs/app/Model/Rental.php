@@ -97,7 +97,7 @@ class Rental extends RentalPrototype {
 				'required' => false
 			)
 		), 
-		'baths' => 'numeric',
+		'baths' => 'decimal',
 		'air' => 'boolean',
 		'parking_type' => 'numeric',
 		'parking_spots' => 'numeric',
