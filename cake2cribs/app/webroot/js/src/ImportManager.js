@@ -146,6 +146,7 @@
         parking_cost = l[this.Indices['parking_cost']];
         listing['Rental']['parking_type'] = l[this.Indices['parking_type']];
         listing['Rental']['street_parking'] = l[this.Indices['street_parking']];
+        listing['Rental']['private_parking'] = l[this.Indices['private_parking']];
         listing['Rental']['utility_total_flat_rate'] = l[this.Indices['utility_total_flat_rate']];
         listing['Rental']['parking_description'] = l[this.Indices['parking_description']];
         listing['Rental']['parking_amount'] = l[this.Indices['parking_amount']];

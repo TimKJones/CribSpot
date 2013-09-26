@@ -134,6 +134,7 @@ class A2Cribs.ImportManager
 			parking_cost = l[@Indices['parking_cost']]
 			listing['Rental']['parking_type'] = l[@Indices['parking_type']]
 			listing['Rental']['street_parking'] = l[@Indices['street_parking']]
+			listing['Rental']['private_parking'] = l[@Indices['private_parking']]
 			listing['Rental']['utility_total_flat_rate'] = l[@Indices['utility_total_flat_rate']]
 			listing['Rental']['parking_description'] = l[@Indices['parking_description']]
 			listing['Rental']['parking_amount'] = l[@Indices['parking_amount']]
