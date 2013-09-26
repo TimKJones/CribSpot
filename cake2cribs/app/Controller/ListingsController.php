@@ -101,6 +101,8 @@ class ListingsController extends AppController {
 			$images = array('Image' => $listingObject['Image']);
 		}
 
+		$user = $this->Auth->User();
+		CakeLog::write('UserSavingListing', print_r($user, true));
 		$user_id = $this->Auth->User('id');
 		/* if this is a university_admin, don't save their user_id */
 		if ($this->UniversityAdmin->GetByUserId($user_id) != null)
