@@ -121,7 +121,8 @@ class University extends AppModel {
 	public function findById($school_id)
 	{
 		$university = $this->find('first', array(
-			'conditions' => array('University.id' => $school_id)
+			'conditions' => array('University.id' => $school_id),
+			'contain' => false
 		));
 		if (!array_key_exists('University', $university))
 			throw new NotFoundException();
