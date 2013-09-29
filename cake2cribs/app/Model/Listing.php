@@ -632,12 +632,66 @@ class Listing extends AppModel {
 			'conditions' => array(
 				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1
-			),
-			'contains' => array('Marker')
+			)
 		));
 
 		return $markers;
 	}
+
+	public function GetUserIdToOwnedListingIdsMap()
+	{
+		$listings = $this->find('all', array(
+			'conditions' => array(
+				'Listing.visible' => 1,
+				'User.user_type' => 1
+			),
+			'contain' => array('User', 'Rental')
+		));
+
+		CakeLog::write('huh', print_r($listings, true));
+
+		$userIdToListingIdsMap = array();
+		foreach ($listings as $listing)
+		{
+			if (!array_key_exists('listing_id', $listing['Listing']) || !array_key_exists('user_id', $listing['Listing']))
+				continue;
+
+			$user_id = $listing['Listing']['user_id'];
+			$listing_id = $listing['Listing']['listing_id'];
+			if (!array_key_exists($user_id, $userIdToListingIdsMap))
+				$userIdToListingIdsMap[$user_id] = array();
+
+			array_push($userIdToListingIdsMap[$user_id], $listing_id);
+		}
+
+		return $userIdToListingIdsMap;
+	}
+
+	/* returns map of listing_id to unit title */
+	public function GetListingIdToTitleMap($listing_ids)
+	{
+		$listings = $this->find('all', array(
+			'conditions' => array(
+				'Listing.listing_id' => $listing_ids
+			)
+		));
+
+		$map = array();
+		foreach ($listings as $listing){
+			$title = "";
+			if (!empty($listing['Marker']['alternate_name']))
+				$title = $listing['Marker']['alternate_name'];
+			else
+				$title = $listing['Marker']['street_address'];
+
+			if (!empty($listing['Listing']['unit_style_options']) && !empty($listing['Listing']['unit_style_description']))
+				$title .= ' - ' . $listing['Listing']['unit_style_options'].' - '.$listing['Listing']['unit_style_options'];
+
+			$map[$listing['Listing']['listing_id']] = $title;
+		}
+
+		return $map;
+	}	
 
 	/*
 	return all data needed for a rental hover menu (for all markers)

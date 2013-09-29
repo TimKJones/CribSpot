@@ -63,6 +63,41 @@ class Message extends AppModel {
 	public function getMessages($conv_id){
 		return $this->find('all', array(
 		    'conditions' => array('Message.conversation_id' => $conv_id),
-		));	}
+		));	
+	}
+
+	/*
+	Returns a map of user_id to # of messages they've received
+	*/
+	public function GetUserIdToReceivedMessagesMap()
+	{
+		$messages = $this->find('all', array(
+			'contain' => array('Conversation')
+		));
+		$userIdToDailyMessageCountMap = array();
+		$userIdToTotalMessageCountMap = array();
+		foreach ($messages as $message)
+		{
+			$user_id = $message['Conversation']['participant2_id'];
+			$listing_id = $message['Conversation']['listing_id'];
+			if (!array_key_exists($user_id, $userIdToTotalMessageCountMap)) {
+				$userIdToTotalMessageCountMap[$user_id] = 0;
+				$userIdToDailyMessageCountMap[$user_id] = 0;
+			}
+		
+
+			$userIdToTotalMessageCountMap[$user_id] += 1;
+			$message_date = $message['Message']['created'];
+			$today = date('Y-m-d');
+			CakeLog::write('dates', $message_date . ' ' . $today);
+			if ($message_date >= $today)
+				$userIdToDailyMessageCountMap[$user_id] += 1;
+		}
+
+		return array(
+			'daily' => $userIdToDailyMessageCountMap,
+			'total' => $userIdToTotalMessageCountMap
+		);
+	}
 }
 ?>

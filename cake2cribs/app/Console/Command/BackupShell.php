@@ -7,7 +7,8 @@ class BackupShell extends AppShell
     public function db_backup1() {
         $localFilePath = "~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql";
         $s3_path = "daily_backups/dump1.sql";
-        shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > " . $localFilePath);
+        shell_exec("mysqldump cake2cribs -u root -proot > ~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql");
+        chmod ($localFilePath, 0777);
         /* Upload file to s3 */
         $this->_uploadFileToS3($localFilePath, $s3_path);
         /* delete local file */
