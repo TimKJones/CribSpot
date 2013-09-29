@@ -64,7 +64,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<i class="small_font">All in </i><i class="large_font">One Spot.</i>
 	</div>
 	<div id="logo_zone">
-		<div id="where_to_school">What School Do You Attend:</div>
+		<div id="where_to_school">Choose your school!</div>
 		<!-- School Logo's go here -->
 		<?php // will need to figure out how to redesign for sublets and parking! ?>
 		<?php
