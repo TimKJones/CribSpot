@@ -150,7 +150,7 @@
             // die(debug($messages));
             if(empty($messages)){
                 $response = array('error' => 'NO_MESSAGES_FOUND');
-                $this->set('messages', $response);
+                $this->set('error', $response);
                 return;
             }
             if($page == 1){
@@ -162,7 +162,9 @@
         }
 
         $count = ($page-1) * $limit;
+        
         $this->set(array('messages'=> $messages, 'count'=> $count, 'user_id'=>$user['id']));
+
     }
 
     public function getParticipantInfo($conv_id){

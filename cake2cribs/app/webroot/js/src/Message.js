@@ -2,6 +2,7 @@
 (function() {
 
   A2Cribs.Messages = (function() {
+    var create_message_div;
 
     function Messages() {}
 
@@ -39,8 +40,7 @@
       if ($("#current_conversation").scrollTop() > 20 || this.NumMessagePages === 0) {
         return;
       }
-      this.NumMessagePages += 1;
-      return this.loadMessages(this.NumMessagePages);
+      return this.loadMessages(this.NumMessagePages + 1);
     };
 
     Messages.refresh = function() {
@@ -69,6 +69,7 @@
       url = myBaseUrl + "messages/getConversations";
       return $.get(url, function(data) {
         var conversations, convo, list_item, _i, _len, _results;
+        $("#messages_list_content").empty();
         conversations = JSON.parse(data);
         _results = [];
         for (_i = 0, _len = conversations.length; _i < _len; _i++) {
@@ -161,7 +162,7 @@
     };
 
     Messages.loadMessages = function(page, align_bottom, event) {
-      var url,
+      var url, _ref,
         _this = this;
       if (align_bottom == null) {
         align_bottom = false;
@@ -169,16 +170,26 @@
       if (event == null) {
         event = null;
       }
+      if (((_ref = this.DeferredLoadMessages) != null ? _ref.state() : void 0) === "pending") {
+        return;
+      }
+      this.DeferredLoadMessages = new $.Deferred();
       url = myBaseUrl + "messages/getMessages/" + this.CurrentConversation + "/" + page + "/";
-      return $.get(url, function(data, textStatus) {
-        var diff, initial_height, message_list;
-        data = JSON.parse(data);
-        if (data.error !== void 0) {
+      $.get(url, function(data, textStatus) {
+        var diff, initial_height, message, message_batch, message_list, messages, _i, _len;
+        messages = JSON.parse(data);
+        if (messages.error !== void 0) {
+          _this.DeferredLoadMessages.resolve();
           return;
         }
         message_list = $('#message_list');
         initial_height = message_list.innerHeight();
-        $(data).hide().prependTo('#message_list').fadeIn();
+        message_batch = "";
+        for (_i = 0, _len = messages.length; _i < _len; _i++) {
+          message = messages[_i];
+          message_batch += create_message_div(message);
+        }
+        $(message_batch).hide().prependTo('#message_list').fadeIn();
         $('.mli').each(function(index, element) {
           var new_height;
           new_height = $(this).find('.message_buble').height();
@@ -192,11 +203,14 @@
         }
         $('#current_conversation').trigger('scroll');
         if (event != null) {
-          return _this.attachConversationListItemHandler(event.delegateTarget);
+          _this.attachConversationListItemHandler(event.delegateTarget);
         }
+        _this.NumMessagePages = page;
+        return _this.DeferredLoadMessages.resolve();
       }).fail(function() {
         return _this.NumMessagePages = 0;
       });
+      return this.DeferredLoadMessages.promise();
     };
 
     Messages.attachConversationListItemHandler = function(container) {
@@ -210,7 +224,7 @@
       var message_list;
       this.NumMessagePages = 1;
       message_list = $('#message_list');
-      message_list.html('');
+      message_list.empty();
       return this.loadMessages(this.NumMessagePages, true, event);
     };
 
@@ -268,6 +282,10 @@
           return A2Cribs.UIManager.Error('Failed to delete the conversation');
         }
       });
+    };
+
+    create_message_div = function(message) {
+      return "<div class = 'mli mli-" + message.side + "-side row-fluid' id = 'mli_" + message.count + "' meta = '" + message.id + "'>			<div class = 'span12'>				<div class = 'participant_message_pic'>						<img src = '" + message.pic + "'></img>				</div>				<img src = '/img/messages/arrow-" + message.side + ".png' class = 'arrow-" + message.side + "'></img>				<div class = 'message_bubble'>					<div>						<span class = 'bubble-top-row'>							<strong>" + message.name + ":</strong>							<span class = 'time-ago'>" + message.time_ago + "</span>						</span>						<p class = 'message_body'>" + message.body + "</p>					</div>				</div>			</div>		</div>";
     };
 
     Messages.Direct = function(directive) {

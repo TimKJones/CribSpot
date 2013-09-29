@@ -42,8 +42,7 @@ class A2Cribs.Messages
 			# Don't need to load new content yet
 			return
 
-		@NumMessagePages += 1
-		@loadMessages(@NumMessagePages)
+		@loadMessages(@NumMessagePages + 1)
 
 
 
@@ -68,6 +67,7 @@ class A2Cribs.Messages
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
 		$.get url, (data) =>
+			$("#messages_list_content").empty()
 			conversations = JSON.parse data
 			for convo in conversations
 				list_item = $ "<li />", {
@@ -157,18 +157,28 @@ class A2Cribs.Messages
 		@refreshMessages event
 
 	@loadMessages:(page, align_bottom=false, event=null)->
+		if @DeferredLoadMessages?.state() is "pending"
+			return
+
+		@DeferredLoadMessages = new $.Deferred()
+
 		url = myBaseUrl + "messages/getMessages/" + @CurrentConversation +  "/" + page + "/" 
 		
 		# We want to put a hold on loading
 		$.get url, (data, textStatus) =>
-			data = JSON.parse data
-			if data.error != undefined
+			messages = JSON.parse data
+			if messages.error != undefined
+				@DeferredLoadMessages.resolve()
 				return
 
 			message_list = $('#message_list')
 			initial_height = message_list.innerHeight()
+			message_batch = ""
 
-			$(data).hide().prependTo('#message_list').fadeIn()
+			for message in messages
+				message_batch += create_message_div(message)
+
+			$(message_batch).hide().prependTo('#message_list').fadeIn()
 
 			$('.mli').each (index, element)->
 				new_height = $(@).find('.message_buble').height()
@@ -190,8 +200,14 @@ class A2Cribs.Messages
 			if event?
 				@attachConversationListItemHandler event.delegateTarget
 
+			@NumMessagePages = page
+
+			@DeferredLoadMessages.resolve()
+
 		.fail =>
 			@NumMessagePages = 0;
+
+		return @DeferredLoadMessages.promise()
 		
 
 	@attachConversationListItemHandler: (container)->
@@ -204,7 +220,7 @@ class A2Cribs.Messages
 	@refreshMessages:(event)->
 		@NumMessagePages = 1
 		message_list = $('#message_list')
-		message_list.html ''
+		message_list.empty()
 		@loadMessages(@NumMessagePages, true, event)
 	
 	@sendReply:(event)->
@@ -255,6 +271,25 @@ class A2Cribs.Messages
 				@refresh()
 			else
 				A2Cribs.UIManager.Error 'Failed to delete the conversation'
+
+	create_message_div = (message) ->
+		return "<div class = 'mli mli-#{message.side}-side row-fluid' id = 'mli_#{message.count}' meta = '#{message.id}'>
+			<div class = 'span12'>
+				<div class = 'participant_message_pic'>	
+					<img src = '#{message.pic}'></img>
+				</div>
+				<img src = '/img/messages/arrow-#{message.side}.png' class = 'arrow-#{message.side}'></img>
+				<div class = 'message_bubble'>
+					<div>
+						<span class = 'bubble-top-row'>
+							<strong>#{message.name}:</strong>
+							<span class = 'time-ago'>#{message.time_ago}</span>
+						</span>
+						<p class = 'message_body'>#{message.body}</p>
+					</div>
+				</div>
+			</div>
+		</div>"
 
 	@Direct: (directive)->
 		
