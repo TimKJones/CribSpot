@@ -66,7 +66,7 @@ class ReportingShell extends AppShell
 
         /* Get map of user_id to array of listing_ids they own */
         $userIdToListingIdsMap = $this->Listing->GetUserIdToOwnedListingIdsMap();
-        
+$counter = 0;
         foreach($userIdToListingIdsMap as $user_id => $listing_ids){
             $user = $this->User->get($user_id);
             $metricCounts = array();
@@ -109,8 +109,36 @@ class ReportingShell extends AppShell
             $metricCounts['mostViewed'] = $this->Listing->GetListingIdToTitleMap($metricCounts['mostViewed']);
             $metricCounts['leastViewed'] = $this->Listing->GetListingIdToTitleMap($metricCounts['leastViewed']);
 
+            $overviewMetrics = array(
+                'dailyListingClicks',
+                'dailyWebsiteReferrals',
+                'dailyPhoneCalls',
+                'dailyMessages',
+                'totalListingClicks',
+                'totalWebsiteReferrals',
+                'totalPhoneCalls',
+                'totalMessages'
+            );
+
+            $overviewMetricsCount = array();
+            foreach ($overviewMetrics as $metric){
+                $overviewMetricsCount[$metric] = $metricCounts[$metric];
+            }
+
+            $templateData = array('user' => $user['User'], 'overviewMetrics' => $overviewMetricsCount);
+
+            $month = date('F');
+            $day = date('j');
+            $year = date('Y');
+            $today = $month.' '.$day.', '.$year;
+            if ($counter === 1)
+                $this->_emailUser('tim@cribspot.com', 'Cribspot Daily Metrics Report: '.$today, "daily_pm_report", $templateData);
+
+
             CakeLog::write('mixpanelMetrics', $user_id);
             CakeLog::write('mixpanelMetrics', print_r($metricCounts, true));
+
+            $counter ++;
         }  
     }
 
