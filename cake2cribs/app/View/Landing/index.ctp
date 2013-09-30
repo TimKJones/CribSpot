@@ -59,6 +59,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 </div>
 
 <div id="landing_page">
+	<div class="fb-like" data-href="https://www.facebook.com/Cribspot" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
 	<div class="float" id="search-div">
 		<img src="/img/landing/logo.png" height="200px" width="400px">
 		<div id="slogan" class="text-center">
@@ -87,9 +88,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
-	<div class="school_logo"></div>
-	<div class="name">College Housing made easy.</div>
-	<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
+	<div>
+		<div class="school_logo"></div>
+		<div class="name">College Housing made easy.</div>
+		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
+	</div>
+	
 	<div class="school_info">
 		<div class="welcome_message">Welcome to Cribspot!</div>
 		<div class="description"></div>
