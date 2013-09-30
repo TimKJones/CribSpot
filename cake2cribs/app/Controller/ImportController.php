@@ -31,12 +31,12 @@ class ImportController extends AppController {
   		
   	}
 
-/*t
+/*
 Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='indiana.csv')
+	public function GetListings($fileName='msu.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
@@ -71,7 +71,7 @@ otherwise, processes only app/webroot/listings/$fileName
 Sets lat and long values for each address
 Then saves the array of listing objects.
 */
-	public function SaveListings($geocoder_necessary=false)
+	public function SaveListings($geocoder_necessary=true)
 	{
 		App::Import('model', 'User');
 
@@ -116,6 +116,8 @@ Then saves the array of listing objects.
 					}
 				}
 			}
+			if ($formatted_address === null)
+				return;
 			if (!array_key_exists('latitude', $formatted_address) || 
 				!array_key_exists('longitude', $formatted_address) || 
 				!array_key_exists('city', $formatted_address) ||
@@ -170,6 +172,10 @@ Then saves the array of listing objects.
 			$listing['Rental'] = $this->_removeNullEntries($listing['Rental']);
 			$listing['Marker'] = $this->_removeNullEntries($listing['Marker']);
 			$listing['Listing'] = $this->_removeNullEntries($listing['Listing']);
+
+			/* fix phone number formatting issues */
+			if (array_key_exists('phone', $listing['User']) && !empty($listing['User']['phone']))
+				$listing['User']['phone'] = str_replace('-', '', $listing['User']['phone']);
 
 			/* Copy contact info from user object to the rental object */
 			$this->_copyUserInfoToRental($listing);
@@ -482,7 +488,7 @@ return null on failure
 		return null;
 	}
 
-	public function ImportImages($directory='img/temp/indiana/')
+	public function ImportImages($directory='img/temp/msu/')
 	{
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
@@ -503,8 +509,8 @@ return null on failure
 		    $address = substr($file, 0, $address_length);
 		    $full_address = array(
 		    	'street_address' => $address, 
-		    	'city' => 'Bloomington',
-		    	'state' => 'IN'
+		    	'city' => 'East Lansing',
+		    	'state' => 'MI'
 		    );
 		//CakeLog::write('full_address', print_r($full_address, true));
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
@@ -641,6 +647,11 @@ Returns the lat, long coordinates as well as a formatted address.
 	        	$geocode_pending = false;	
 	        	$address_components = $this->_getAddressComponents($address);
 	        	CakeLog::write("address_components", print_r($address_components, true));
+	        	if (!array_key_exists('street_address', $address_components) ||
+	        		!array_key_exists('city', $address_components) ||
+	        		!array_key_exists('state', $address_components))
+	        		return null;
+
 	        	$lat_long = $this->_getLatLong($address);
 	        	$response = array(
 	        		'street_address' => $address_components['street_address'],
@@ -674,7 +685,7 @@ Returns the lat, long coordinates as well as a formatted address.
 	{
 		$geocoderOutput = $this->GeocoderAddress->GetGeocoderOutputFromAddress($input_address['street_address']);
 		if ($geocoderOutput == null){
-			CakeLog::write("failedToGetGeocodeOutput", $input_address);
+			CakeLog::write("failedToGetGeocodeOutput", print_r($input_address, true));
 			die();
 		}
 
@@ -687,10 +698,13 @@ Returns the lat, long coordinates as well as a formatted address.
     		'street_address' => $address_components['street_address'],
     		'city' => $address_components['city'],
     		'state' => $address_components['state'],
-    		'zip' => $address_components['zip'],
     		'latitude' => $lat_long['lat'],
     		'longitude' => $lat_long['lng'],
     	);
+
+    	if (array_key_exists('zip', $address_components))
+    		$response['zip'] = $address_components['zip'];
+
 CakeLog::write("response", print_r($response, true));
         return $response;
 	}
