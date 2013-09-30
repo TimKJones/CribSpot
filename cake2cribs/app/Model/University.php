@@ -16,8 +16,7 @@ class University extends AppModel {
 	public function getSchools()
 	{
 		return $this->find('all', array(
-			'contain' => false,
-			'fields' => array('University.name'))
+			'contain' => false)
 			);
 
 	}

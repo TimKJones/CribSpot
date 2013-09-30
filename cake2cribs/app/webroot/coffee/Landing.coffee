@@ -1,28 +1,55 @@
-###
-Not longer used!
 class A2Cribs.Landing
-	@Init: (locations) ->
-		@schoolList = Array()
-		for location in locations
-			@schoolList.push location.University.name
 
-		that = this
-		$(() ->
-			$( ".typeahead" ).typeahead({
-				source: that.schoolList
-			});
-		)
+	swap_backgrounds = (university_id) ->
+		old_background = $(".current_background")
+		if old_background.attr("data-university") isnt university_id
+			new_background = $("img[data-university='#{university_id}'].school_background")
+			new_background.css("opacity", "0.0").zIndex(-1).addClass "current_background"
+			old_background.zIndex(-2).removeClass "current_background"
+			new_background.animate
+				"opacity": 1.0
+			, 1200, () ->
+				old_background.zIndex(-3)
 
-		$(".typeahead").val("University of Michigan-Ann Arbor")
+	set_school = (university) ->
+		for key,val of university['University']
+			$("#school_page").find(".#{key}").hide().text(val).fadeIn()
 
-	@Submit: () ->
-		location = $("#search-text").val()
-		if location not in @schoolList 
-			A2Cribs.UIManager.Error location + " is not a valid location."
-			return false
+		swap_backgrounds university['University']['id']
 
-		window.location = $('#sublet-redirect').attr('href') + "/" + location.split(' ').join('_');
+		url_name = university['University']['name'].split(" ").join("_")
 
-###
+		$("#map_link").attr "href", "/map/rental/#{url_name}"
+
+		$(".background_source").attr "href", university['University']['background_source']
+
+		$(".school_logo").css "background-image", "url(#{university['University']['logo_path']})"
 
 
+	@Init: (@locations) ->
+		$(window).scroll () ->
+			scrolled = $(window).scrollTop()
+			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px');
+
+		$("#friends_invite").click () ->
+			FB?.ui
+				method: 'apprequests',
+				message: 'Join the Movement. All the College Rentals. All in One Spot.'
+
+		if @locations?.length?
+			random_school = Math.floor((Math.random() * @locations.length))
+			set_school @locations[random_school]
+
+		$(".university_link").click (event) =>
+			university_id = $(event.delegateTarget).attr "data-university"
+			for university in @locations
+				if university['University']['id'] is university_id
+					@Current_University = university
+					break
+			if @Current_University?
+				set_school @Current_University
+
+			$('html, body').animate
+				scrollTop: $("#school_page").offset().top
+			, 1200
+		

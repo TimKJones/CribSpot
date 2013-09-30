@@ -56,4 +56,16 @@
     font-style:normal;
 }
 
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('Montserrat-Bold.eot');
+    src: url('Montserrat-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Montserrat-Bold.woff') format('woff'),
+        url('Montserrat-Bold.ttf') format('truetype'),
+        url('Montserrat-Bold.svg#Montserrat-Bold') format('svg');
+}
 
+@font-face {
+    font-family: 'BorisBlackBloxx';
+    src: url('BorisBlackBloxx.ttf') format("truetype");
+}

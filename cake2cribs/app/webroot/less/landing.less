@@ -5,12 +5,130 @@
 @btn-contains-height: 22px;
 @header-height: 50px;
 
-#layoutsContainer
+#landing_page
 {
+	height: 100%;
+	width: 100%;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center bottom;
-	background-image: url(/img/landing/background_wood_large.jpg)
+	background-image: url(/img/landing/background_wood_large.jpg);
+}
+
+#school_page
+{
+	height: 100%;
+	width: 100%;
+	position: relative;
+	z-index: -1;
+
+	.school_background
+	{
+		position: fixed;
+		top: -100%;
+		height: 150%;
+		width: 100%;
+		z-index: -3;
+	}
+	.school_logo
+	{
+		height: 100px;
+		width: 100px;
+		background-size: 100%;
+		background-repeat: no-repeat;
+		float: left;
+		margin-left: 20px;
+	}
+	.name
+	{
+		color: hsl(0, 100%, 100%);
+		font-size: 30px;
+		line-height: 30px;
+		float: left;
+		padding: 40px 0;	
+		font-family: 'Montserrat-Bold';
+		text-transform: uppercase;
+		text-shadow: 1px 1px 5px black;
+	}
+	.cribspot_logo
+	{
+		float: right;
+		padding: 40px;
+	}
+	.school_info
+	{
+		width: 400px;
+		padding-left: 40px;
+		color: white;
+		font-family: 'Montserrat-Bold';
+		text-shadow: 1px 1px 5px black;
+		.welcome_message
+		{
+			font-family: 'BorisBlackBloxx';
+			font-size: 30px;
+			line-height: 30px;
+			margin-bottom: 20px;
+		}
+	}
+	.separator
+	{
+		width: 100%;
+		height: 2px;
+		background-color: white;
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+	.school_facts
+	{
+		div
+		{
+			display: inline-block;
+		}
+		margin-bottom: 20px;
+	}
+	.background_source
+	{
+		color: white;
+		text-shadow: 1px 1px 5px black;
+		font-family: 'Helvetica';
+		font-size: 12px;
+		position: absolute;
+		bottom: 10px;
+		right: 10px;
+	}
+	.getting_started
+	{
+		width: 700px;
+		text-align: center;
+		margin: 30px auto;
+		.banner
+		{
+			color: white;
+			font-family: 'ReklameScriptMediumRegular';
+			font-size: 30px;
+			line-height: 40px;
+			text-shadow: 1px 1px 5px black;
+		}
+		.btn
+		{
+			margin: 10px;
+			line-height: 30px;
+			background: #4693db;
+			background: -moz-linear-gradient(top,  #4693db 0%, #1a6dbf 0%, #175fa8 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4693db), color-stop(0%,#1a6dbf), color-stop(100%,#175fa8));
+			background: -webkit-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: -o-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: -ms-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: linear-gradient(to bottom,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4693db', endColorstr='#175fa8',GradientType=0 );
+			border-bottom: solid 1px hsl(218, 51%, 59%);
+			color: hsl(0, 100%, 100%);
+			font-size: 14px;
+			font-weight: bold;
+			text-shadow: none;
+			border-color: #0B2E51;
+		}
+	}
 }
 
 .fb-like-box
@@ -50,6 +168,9 @@
 {
 	background-image: none;
 	background-color: hsla(0, 0%, 0%, 0);
+	position: absolute;
+	top: 0;
+	width: 100%;
 	.navbar-inner
 	{
 		background-image: none;
@@ -125,26 +246,46 @@
 	position: relative;
 	#where_to_school
 	{
-		position: absolute;
-		top: 90px;
-		left: -100px;
-		width: 140px;
-		line-height: 25px;
-		font-size: 25px;
+		font-size: 22px;
 		font-family: 'ReklameScriptMediumRegular';
 		color: white;
 		text-shadow: 0px 0px 5px black;
+		text-align: center;
 	}
-	.university_icon
+	.university_link
 	{
 		height: 213px;
-		width: 225px;
+		width: 200px;
 		background-size: 100%;
 		display: inline-block;
 		background-position: 0 0;
-		&:hover
+		position: relative;
+		img
 		{
-			background-position: 0 213px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 100%;
+		}
+		.university_icon
+		{
+			opacity: 0.0;
+			transition: opacity 0.5s;
+			-webkit-transition: opacity 0.5s; /* Safari */
+			&:hover
+			{
+				opacity: 1.0;
+			}
+		}
+		.unselected_university
+		{
+			opacity: 1.0;
+			transition: opacity 0.5s;
+			-webkit-transition: opacity 0.5s; /* Safari */
+			&:hover
+			{
+				opacity: 0.0;
+			}
 		}
 	}
 	#indiana_logo
@@ -205,11 +346,10 @@
 
 #slogan
 {
-	width: 550px;
+	width: 100%;
 	line-height: 32px;
 	text-shadow: 0px 0px 5px black;
 	margin-bottom: 20px;
-	margin-left: -40px;
 }
 
 .small_font, .large_font
@@ -296,7 +436,7 @@ table
 	padding: 25px;
 	position: absolute;
 	height: 500px;
-	width: 450px;
+	width: 600px;
 	margin: auto;
 	
 	h1
