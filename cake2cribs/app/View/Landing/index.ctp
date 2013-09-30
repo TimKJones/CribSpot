@@ -95,7 +95,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<div class="description"></div>
 		<div class="separator"></div>
 		<div class="school_facts">
-			Average rent: <div class="avg_rent">NA</div>
+			Average rent: $<div class="avg_rent">NA</div>
 			Available Units: <div class="available_units">NA</div>
 		</div>
 	</div>
