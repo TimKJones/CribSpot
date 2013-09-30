@@ -180,6 +180,9 @@ Then saves the array of listing objects.
 			}
 		//}
 
+		/* Set this so we can tell later which users to send the welcome email to */
+		$listing['User']['received_welcome_email'] = 1;
+
 		CakeLog::write('imported_listings', print_r($listing, true));
 		if (!$this->Listing->saveAll($listing, array('deep' => true))){
 			CakeLog::write("failure", print_r($this->Listing->validationErrors, true));
