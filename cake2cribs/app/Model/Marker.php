@@ -11,7 +11,7 @@ class Marker extends AppModel {
 						)
 	);
 
-	public $RADIUS = 50; // radius from center (km) encompassing area to pull properties from
+	public $RADIUS = 12; // radius from center (km) encompassing area to pull properties from
 
 	public $validate = array(
 		'marker_id' =>'alphaNumeric', 
