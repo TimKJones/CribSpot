@@ -99,7 +99,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
 		echo $this->Html->css('basic');
-		echo $this->Html->css('/font/stylesheet.css');
+		echo $this->Html->css('/font/stylesheet.css?v=1');
 
 
 
