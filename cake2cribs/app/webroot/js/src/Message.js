@@ -59,7 +59,7 @@
       return $.get(url, function(data) {
         var response_data;
         response_data = JSON.parse(data);
-        return $('#message_count').html(response_data.unread_conversations);
+        return $('#message_count').html(response_data.unread_messages);
       });
     };
 
@@ -68,19 +68,27 @@
         _this = this;
       url = myBaseUrl + "messages/getConversations";
       return $.get(url, function(data) {
-        var conversations, convo, list_item, _i, _len, _results;
+        var conversations, convo, list_item, message_count_box, _i, _len, _results;
         $("#messages_list_content").empty();
         conversations = JSON.parse(data);
         _results = [];
         for (_i = 0, _len = conversations.length; _i < _len; _i++) {
           convo = conversations[_i];
+          message_count_box = $("<div />", {
+            "class": "notification_count pull-right",
+            text: convo.Conversation.unread_message_count
+          });
           list_item = $("<li />", {
             text: convo.Conversation.title,
             "class": "messages_list_item",
             id: convo.Conversation.conversation_id,
             "data-participant": convo.Participant.id,
-            "data-listing": convo.Conversation.listing_id
-          });
+            "data-listing": convo.Conversation.listing_id,
+            "data-title": convo.Conversation.title
+          }).append(message_count_box);
+          if (parseInt(convo.Conversation.unread_message_count, 10) > 0) {
+            list_item.addClass("unread");
+          }
           $("#messages_list_content").append(list_item);
           _results.push(_this.attachConversationListItemHandler(list_item));
         }
@@ -139,21 +147,20 @@
     };
 
     Messages.loadConversation = function(event) {
-      /*
-      		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
-      		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
-      
-      		$(event.currentTarget)
-      			.addClass('selected_conversation')
-      			.removeClass('unread_conversation')
-      */
-
-      var listing, title;
+      var listing, title, total_count, unread_count;
+      $('.messages_list_item').removeClass('selected');
+      $(event.currentTarget).addClass('selected').removeClass('unread');
+      unread_count = parseInt($(event.currentTarget).find(".notification_count").text(), 10);
+      if (unread_count > 0) {
+        total_count = parseInt($("#message_count").text(), 10);
+        $(event.currentTarget).find(".notification_count").text("0");
+        $("#message_count").text(total_count - unread_count);
+      }
       this.CurrentConversation = parseInt($(event.delegateTarget).attr('id'));
       this.CurrentParticipantID = $(event.delegateTarget).attr('data-participant');
       $('#message_reply').show();
       $('#participant_info_short').show();
-      title = $(event.delegateTarget).text();
+      title = $(event.delegateTarget).attr("data-title");
       listing = $(event.delegateTarget).attr("data-listing");
       $('#listing_title').text(title).attr('href', "/listings/view/" + listing);
       this.refreshParticipantInfo();

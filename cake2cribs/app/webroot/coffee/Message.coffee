@@ -62,7 +62,7 @@ class A2Cribs.Messages
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
 			response_data = JSON.parse data
-			$('#message_count').html response_data.unread_conversations 
+			$('#message_count').html response_data.unread_messages 
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
@@ -70,13 +70,22 @@ class A2Cribs.Messages
 			$("#messages_list_content").empty()
 			conversations = JSON.parse data
 			for convo in conversations
-				list_item = $ "<li />", {
+				message_count_box = $ "<div />",
+					class: "notification_count pull-right"
+					text: convo.Conversation.unread_message_count
+				
+				list_item = $ "<li />",
 					text: convo.Conversation.title
 					class: "messages_list_item"
 					id: convo.Conversation.conversation_id
 					"data-participant": convo.Participant.id
 					"data-listing": convo.Conversation.listing_id
-				}
+					"data-title": convo.Conversation.title
+				.append message_count_box
+
+				if parseInt(convo.Conversation.unread_message_count, 10) > 0
+					list_item.addClass "unread"
+
 				$("#messages_list_content").append list_item
 
 				@attachConversationListItemHandler list_item
@@ -130,15 +139,19 @@ class A2Cribs.Messages
 
 
 	@loadConversation:(event)->
-		###
-		$('#cli_' + @CurrentConversation).removeClass 'selected_conversation'
-		$('#cli_' + @CurrentConversation).addClass 'read_conversation'	
+
+		$('.messages_list_item').removeClass 'selected'
 
 		$(event.currentTarget)
-			.addClass('selected_conversation')
-			.removeClass('unread_conversation')
+			.addClass('selected')
+			.removeClass('unread')
 
-		###
+		unread_count = parseInt($(event.currentTarget).find(".notification_count").text(), 10)
+
+		if unread_count > 0
+			total_count = parseInt($("#message_count").text(), 10)
+			$(event.currentTarget).find(".notification_count").text "0"
+			$("#message_count").text total_count - unread_count
 
 		@CurrentConversation = parseInt $(event.delegateTarget).attr('id')
 		@CurrentParticipantID = $(event.delegateTarget).attr('data-participant')
@@ -148,7 +161,7 @@ class A2Cribs.Messages
 
 		# Get the title of the conversation being selected and make the title of ther
 		# center messaging window have that title as well.
-		title = $(event.delegateTarget).text()
+		title = $(event.delegateTarget).attr "data-title"
 		listing = $(event.delegateTarget).attr "data-listing"
 		$('#listing_title').text(title).attr('href', "/listings/view/#{listing}")
 
@@ -215,6 +228,8 @@ class A2Cribs.Messages
 		# of loadConversation Events
 		# After a conversation is loaded events will be put in again.
 		$(container).one 'click', (event)=>
+			#$(event.delegateTarget).removeClass "unread"
+			#message_count = $(event.delegateTarget).find(".notification_count").html()
 			@loadConversation(event)
 
 	@refreshMessages:(event)->
