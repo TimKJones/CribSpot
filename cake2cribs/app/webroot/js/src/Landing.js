@@ -30,7 +30,7 @@
       }
       swap_backgrounds(university['University']['id']);
       url_name = university['University']['name'].split(" ").join("_");
-      $("#map_link").attr("href", "/map/rental/" + url_name);
+      $("#map_link").attr("href", "/rental/" + url_name);
       $(".background_source").attr("href", university['University']['background_source']);
       return $(".school_logo").css("background-image", "url(" + university['University']['logo_path'] + ")");
     };
@@ -45,6 +45,7 @@
         return $('.current_background').css('top', (0 - (scrolled * .25)) + 'px');
       });
       $("#friends_invite").click(function() {
+        A2Cribs.MixPanel.Event("Invite Friends", null);
         return typeof FB !== "undefined" && FB !== null ? FB.ui({
           method: 'apprequests',
           message: 'Join the Movement. All the College Rentals. All in One Spot.'

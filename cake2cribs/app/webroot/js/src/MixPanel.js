@@ -122,6 +122,15 @@
       return mixpanel.track(action, data);
     };
 
+    /*
+    	Just for basic events
+    */
+
+
+    MixPanel.Event = function(action, data) {
+      return mixpanel.track(action, data);
+    };
+
     return MixPanel;
 
   })();
