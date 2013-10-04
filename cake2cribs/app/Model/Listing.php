@@ -677,6 +677,8 @@ class Listing extends AppModel {
 		));
 
 		$map = array();
+
+		App::import('model', 'RentalPrototype');
 		foreach ($listings as $listing){
 			$title = "";
 			if (!empty($listing['Marker']['alternate_name']))
@@ -684,9 +686,13 @@ class Listing extends AppModel {
 			else
 				$title = $listing['Marker']['street_address'];
 
-			if (!empty($listing['Listing']['unit_style_options']) && !empty($listing['Listing']['unit_style_description']))
-				$title .= ' - ' . $listing['Listing']['unit_style_options'].' - '.$listing['Listing']['unit_style_options'];
+			if (!empty($listing['Rental']['unit_style_options']) && !empty($listing['Rental']['unit_style_description'])){
+				$unit_style_options = RentalPrototype::unit_style_options($listing['Rental']['unit_style_options']);
+				$unit_style_description = $listing['Rental']['unit_style_description'];
+				$title .= ' - ' . $unit_style_options . ' - ' . $unit_style_description;
+			}
 
+			CakeLog::write('listing_idfuck', $listing['Listing']['listing_id']);
 			$map[$listing['Listing']['listing_id']] = $title;
 		}
 
