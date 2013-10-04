@@ -19,7 +19,7 @@ class A2Cribs.Landing
 
 		url_name = university['University']['name'].split(" ").join("_")
 
-		$("#map_link").attr "href", "/map/rental/#{url_name}"
+		$("#map_link").attr "href", "/rental/#{url_name}"
 
 		$(".background_source").attr "href", university['University']['background_source']
 
@@ -32,6 +32,7 @@ class A2Cribs.Landing
 			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px');
 
 		$("#friends_invite").click () ->
+			A2Cribs.MixPanel.Event "Invite Friends", null
 			FB?.ui
 				method: 'apprequests',
 				message: 'Join the Movement. All the College Rentals. All in One Spot.'

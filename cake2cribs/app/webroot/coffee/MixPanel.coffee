@@ -91,4 +91,10 @@ class A2Cribs.MixPanel
 	@AuthEvent: (action, data) ->
 		mixpanel.track action, data
 
+	###
+	Just for basic events
+	###
+	@Event: (action, data) ->
+		mixpanel.track action, data
+
 

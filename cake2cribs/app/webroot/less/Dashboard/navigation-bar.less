@@ -62,7 +62,15 @@
 					color: #6289cc;
 				}
 			}
-
+			&.unread
+			{
+				color: #484848;
+			}
+			&.selected
+			{
+				color: #6289cc;
+				background-color: hsla(240, 100%, 50%, 0.1);
+			}
 			.notification_count
 			{
 				position: absolute;
@@ -143,7 +151,9 @@
 			overflow: auto;
 			li
 			{
-				margin: 0 10px;
+				position: relative;
+				margin: 0;
+				padding-left: 10px;
 			}
 		}
 		.dropdown-search
