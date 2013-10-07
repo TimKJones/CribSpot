@@ -39,8 +39,14 @@ class ReportingShell extends AppShell
         $where = '"small popup"' . " == " . 'properties["display type"]';
         $dailyListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
     CakeLog::write('values', 'TOTAL');
+        if ($dailyListingIdToClickMap === null)
+            return;
+
         $totalListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
     CakeLog::write('values', 'TOTAL END');
+        if ($totalListingIdToClickMap === null)
+            return;
+
 CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         $mixpanelData['dailyListingClicks'] = $dailyListingIdToClickMap;
         $mixpanelData['totalListingClicks'] = $totalListingIdToClickMap;
@@ -49,6 +55,8 @@ CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         $where = '"go to realtor\'s website"' . " == " . 'properties["display type"]';
         $mixpanelData['dailyWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
         $mixpanelData['totalWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
+        if ($mixpanelData['dailyWebsiteReferrals'] === null || $mixpanelData['totalWebsiteReferrals'] === null)
+            return;
 
         /* Contacts */
         $where = '"full page contact user"' . " == " . 'properties["display type"]';
@@ -56,6 +64,8 @@ CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         $totalListingIdToContactsMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
         $mixpanelData['dailyContacts'] = $dailyListingIdToContactsMap;
         $mixpanelData['totalContacts'] = $totalListingIdToContactsMap;
+        if ($mixpanelData['dailyContacts'] === null || $mixpanelData['totalContacts'] === null)
+            return;
 
         CakeLog::write('totalListingIdToContactsMap', print_r($totalListingIdToContactsMap, true));
 
@@ -199,9 +209,13 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
             /* TODO: REMEMBER TO CHECK IF EMAIL IS NULL */
 
             if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])){
-                $email = $user['User']['email'];
-                if (!empty($email)){
-                    $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                //$email = $user['User']['email'];
+                $email = 'tim@cribspot.com';
+                $id = $user['User']['id'];
+                if ($id == 12 || $id == 200 || $id = 175) {
+                     if (!empty($email)){
+                        $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                    }
                 }
             }
 
@@ -301,6 +315,9 @@ CakeLog::write('metriccounts', print_r($titleToClicksMap, true));
     {
         $mixpanelData = $this->_getMixpanelData('segmentation', $event, "listing_id", $from_date, $to_date, $where);
         $map = array();
+        if (!property_exists($mixpanelData, 'data') || !property_exists($mixpanelData->data, 'values'))
+            return null;
+
         if ($mixpanelData->data !== null && $mixpanelData->data->values !== null){
             $values = $mixpanelData->data->values;
             CakeLog::write('values', print_r($values, true));
