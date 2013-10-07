@@ -18,7 +18,7 @@ class ReportingShell extends AppShell
             $from_date = $yesterday;
             $to_date = $yesterday;
         } else if ($time_period === 'WEEKLY') {
-            $from_date = date('Y-m-d', time() - 60 * 60 * 24 * 7);
+            $from_date = date('Y-m-d', time() - 60 * 60 * 24 * 8);
             $to_date = $yesterday;
         }
         
@@ -193,8 +193,12 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
 
             /* TODO: REMEMBER TO CHECK IF EMAIL IS NULL */
 
-            if ($user['User']['id'] == 12)
-                $this->_emailUser('tim@cribspot.com', 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+            if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])){
+                $email = $user['User']['email'];
+                if (!empty($email)){
+                    $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                }
+            }
 
             CakeLog::write('mixpanelMetrics', $user_id);
             CakeLog::write('mixpanelMetrics', print_r($metricCounts, true));

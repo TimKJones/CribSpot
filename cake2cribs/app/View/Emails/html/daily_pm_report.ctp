@@ -94,14 +94,14 @@ if ($timePeriod === 'Weekly'){ ?>
 <table id="hor-minimalist-b" style='font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size: 12px;background: #fff;margin: 15px;width: 550px;border-collapse: collapse;text-align: left;' summary="Your Most Viewed Rentals">
         <thead>
             <tr>
-                <th scope='col' style='<?php echo $thStyle?>'>Your Most Viewed Rentals Still Available</th>
+                <th scope='col' style='<?php echo $thStyle?>'>Your Most Viewed Rentals<br/> Still Available - View Count:</th>
 <?php
 if ($timePeriod === 'Weekly'){ ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Views Last Week</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Last Week<br/></th>
 <?php } else { ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Views Yesterday</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Yesterday<br/></th>
 <?php } ?>
-                <th scope='col' style='<?php echo $thStyle?>'>Total Views*</th>
+                <th scope='col' style='<?php echo $thStyle?>'>Total*<br/></th>
             </tr>
         </thead>
         <tbody>
@@ -138,11 +138,11 @@ if ($timePeriod === 'Weekly'){ ?>
                 <th scope='col' style='<?php echo $thStyle?>'>Your Most Contacted Rentals Still Available</th>
 <?php
 if ($timePeriod === 'Weekly'){ ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Last Week</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Last Week<br/></th>
 <?php } else { ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Yesterday</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Yesterday<br/></th>
 <?php } ?>
-                <th scope='col' style='<?php echo $thStyle?>'>Total*</th>
+                <th scope='col' style='<?php echo $thStyle?>'>Total*<br/></th>
             </tr>
         </thead>
         <tbody>
@@ -174,14 +174,14 @@ if ($timePeriod === 'Weekly'){ ?>
 <table id="hor-minimalist-b" style='font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size: 12px;background: #fff;margin: 15px;width: 550px;border-collapse: collapse;text-align: left;' summary="Your Least Viewed Rentals">
         <thead>
             <tr>
-                <th scope='col' style='<?php echo $thStyle?>'>Your Least Viewed Rentals Still Available</th>
+                <th scope='col' style='<?php echo $thStyle?>'>Your Least Viewed Rentals <br/>Still Available - View Count:</th>
 <?php
 if ($timePeriod === 'Weekly'){ ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Views Last Week</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Last Week<br/></th>
 <?php } else { ?>
-            <th scope='col' style='<?php echo $thStyle?>'>Views Yesterday</th>
+            <th scope='col' style='<?php echo $thStyle?>'>Yesterday<br/></th>
 <?php } ?>
-                <th scope='col' style='<?php echo $thStyle?>'>Total Views*</th>
+                <th scope='col' style='<?php echo $thStyle?>'>Total*<br/></th>
             </tr>
         </thead>
         <tbody>
@@ -210,7 +210,7 @@ if ($timePeriod === 'Weekly'){ ?>
         echo "</table>";
 ?>
 
-If you've leased out all your properties or if you'd like to stop receiving this email, reply to this email and let us know.
+If you've leased out all of your properties or if you'd like to stop receiving this email, reply to this email and let us know.
 <br/><br/>
 *Since <?php echo $sinceDate; ?>
 
