@@ -6,34 +6,22 @@ class ReportingShell extends AppShell
 
     /*
     Sends a daily usage report to property managers about their properties
-    IMPORTANT: schedule for 11:59 PM every day, not 12:00 AM.
+    
+
     */  
-    public function send_daily_pm_reports() 
+    public function send_pm_reports($time_period = 'WEEKLY') 
     {
-
-/* MAKE IT GO YESTERDAY INSTEAD OF TODAY */ 
-
-        /* 
-        Get map of user_id => list of listing_ids they own
-        Have maps for:
-            - listing_id => # listing clicks
-            - listing_id => # 'go to website' clicks
-            - listing_id => # times contact button pressed
-        Loop through (user_id => listing_ids) map
-            for each user_id, calculate each metric we're tracking
-            set variables
-            send email
-
-        Data I'm trying to get
-        - Total # of marker clicks for a specific PM's properties
-        - Total # of referrals to their website today
-        - # times contact button pressed for their properties
-        - # messages they've received today and total
-        - their most popular properties?
-        - their least popular properties?
-        - add that we can get them data for any property
-        */
-        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', time() - 60 * 60 * 24);
+        $from_date = null;
+        $to_date = null;
+        if ($time_period === 'DAILY') {
+            $from_date = $yesterday;
+            $to_date = $yesterday;
+        } else if ($time_period === 'WEEKLY') {
+            $from_date = date('Y-m-d', time() - 60 * 60 * 24 * 7);
+            $to_date = $yesterday;
+        }
+        
         $first_day = '2013-09-03';
         $mixpanelMetrics = array(
             'dailyListingClicks',
@@ -45,40 +33,56 @@ class ReportingShell extends AppShell
             'dailyMessages',
             'totalMessages'
         );
+
         $mixpanelData = array();
 
         $where = '"small popup"' . " == " . 'properties["display type"]';
-        $dailyListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $today, $today, $where);
-        $totalListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $today, $where);
+        $dailyListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
+    CakeLog::write('values', 'TOTAL');
+        $totalListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
+    CakeLog::write('values', 'TOTAL END');
+CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         $mixpanelData['dailyListingClicks'] = $dailyListingIdToClickMap;
         $mixpanelData['totalListingClicks'] = $totalListingIdToClickMap;
+
+        /* Website referrals */
         $where = '"go to realtor\'s website"' . " == " . 'properties["display type"]';
-        $mixpanelData['dailyWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $today, $today, $where);
-        $mixpanelData['totalWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $first_day, $today, $where);
+        $mixpanelData['dailyWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
+        $mixpanelData['totalWebsiteReferrals'] = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
 
+        /* Contacts */
         $where = '"full page contact user"' . " == " . 'properties["display type"]';
-        $dailyContactsMap = $this->_getListingIdToCountMap('Listing Click', $today, $today, $where);
-        $totalContactsMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $today, $where);
-        $mixpanelData['dailyContacts'] = $dailyContactsMap;
-        $mixpanelData['totalContacts'] = $totalContactsMap;
+        $dailyListingIdToContactsMap = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
+        $totalListingIdToContactsMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
+        $mixpanelData['dailyContacts'] = $dailyListingIdToContactsMap;
+        $mixpanelData['totalContacts'] = $totalListingIdToContactsMap;
 
-        $messages = $this->Message->GetUserIdToReceivedMessagesMap();
-        $dailyMessagesMap = $messages['daily'];
-        $totalMessagesMap = $messages['total'];  
-        $mixpanelData['dailyMessages'] = $dailyMessagesMap; 
-        $mixpanelData['totalMessages'] = $totalMessagesMap; 
+        CakeLog::write('totalListingIdToContactsMap', print_r($totalListingIdToContactsMap, true));
+
+        $messages = $this->Message->GetListingIdToReceivedMessagesMap();
+        CakeLog::write("messagesmap", print_r($messages, true));
+        $dailyListingIdToReceivedMessagesMap = $messages['daily'];
+        $totalListingIdToReceivedMessagesMap = $messages['total'];
+        $mixpanelData['dailyMessages'] = $dailyListingIdToReceivedMessagesMap;
+        $mixpanelData['totalMessages'] = $totalListingIdToReceivedMessagesMap;
 
         /* Get map of user_id to array of listing_ids they own */
         $userIdToListingIdsMap = $this->Listing->GetUserIdToOwnedListingIdsMap();
 
-        foreach($userIdToListingIdsMap as $user_id => $listing_ids){
+        foreach($userIdToListingIdsMap as $user_id => $listing_ids) {
             $user = $this->User->get($user_id);
+
+            /* map of totals for each individual user */
             $metricCounts = array();
             foreach ($mixpanelMetrics as $metric)
                 $metricCounts[$metric] = 0;
 
             $metricCounts['dailyPhoneCalls'] = 0;
             $metricCounts['totalPhoneCalls'] = 0;
+            $metricCounts['dailyMessages'] = 0;
+            $metricCounts['totalMessages'] = 0;
+            $metricCounts['dailyMessages'] = 0;
+            $metricCounts['totalMessages'] = 0;
             
             foreach ($listing_ids as $listing_id){
                 foreach ($mixpanelMetrics as $metric){
@@ -90,68 +94,53 @@ class ReportingShell extends AppShell
 
                 /* Calculate phone calls as being # contact buttons pressed - # messages sent */
 
-                if (array_key_exists($listing_id, $dailyContactsMap)){
+                if (array_key_exists($listing_id, $dailyListingIdToContactsMap)){
                     $messages = 0;
-                    if (array_key_exists($listing_id, $dailyMessagesMap))
-                        $messages = $dailyMessagesMap[$listing_id];
+                    if (array_key_exists($listing_id, $dailyListingIdToReceivedMessagesMap))
+                        $messages = $dailyListingIdToReceivedMessagesMap[$listing_id];
 
-                    $metricCounts['dailyPhoneCalls'] +=  ($dailyContactsMap[$listing_id] - $messages);
+                    $metricCounts['dailyPhoneCalls'] +=  ($dailyListingIdToContactsMap[$listing_id] - $messages);
                 }
                     
-                if (array_key_exists($listing_id, $totalContactsMap)){
+                if (array_key_exists($listing_id, $totalListingIdToContactsMap)){
                     $messages = 0;
-                    if (array_key_exists($listing_id, $totalMessagesMap))
-                        $messages = $totalMessagesMap[$listing_id];     
+                    if (array_key_exists($listing_id, $totalListingIdToReceivedMessagesMap))
+                        $messages = $totalListingIdToReceivedMessagesMap[$listing_id];     
 
-                    $metricCounts['totalPhoneCalls'] += ($totalContactsMap[$listing_id] - $messages);
-                }
+                    $metricCounts['totalPhoneCalls'] += ($totalListingIdToContactsMap[$listing_id] - $messages);
+                }              
             }
+
 CakeLog::write("userslistingids", $user_id . ': ' . print_r($listing_ids, true));
 CakeLog::write("dailyIdToClickMap", print_r($dailyListingIdToClickMap, true));
 CakeLog::write('lengths', 'dailyIdToClickMap: '. count($dailyListingIdToClickMap));
             /* Get map of listing_id to number of clicks on that listing_id */
-            $mostViewedListingIdToClicksMap = $this->_getTopNMostViewed(3, $listing_ids, $dailyListingIdToClickMap);
-            $leastViewedListingIdToClicksMap = $this->_getTopNMostViewed(5, $listing_ids, $dailyListingIdToClickMap, false);
-CakeLog::write('listingIdToClicksMap1', print_r($mostViewedListingIdToClicksMap, true));
-            /* Take out just the listing_ids to convert to their unit names */
-            $mostViewedListingIds = array();
-            $leastViewedListingIds = array();
-            foreach ($mostViewedListingIdToClicksMap as $listing_id=>$clicks)
-                array_push($mostViewedListingIds, $listing_id);
+            $dailyMostViewedListingIdToClicksMap = $this->_getTopNMostViewed(5, $listing_ids, $dailyListingIdToClickMap);
+            $dailyLeastViewedListingIdToClicksMap = $this->_getTopNMostViewed(5, $listing_ids, $dailyListingIdToClickMap, false);
+            $totalMostViewedListingIdToClicksMap = $this->_getTopNMostViewed(3, $listing_ids, $totalListingIdToClickMap);
+            $totalLeastViewedListingIdToClicksMap = $this->_getTopNMostViewed(5, $listing_ids, $totalListingIdToClickMap, false);
+CakeLog::write('dailyleastviewed', $user['User']['id'].': '. print_r($dailyLeastViewedListingIdToClicksMap, true));
+            $titleToClicksMaps = array();
+            $titleToClicksMaps['leastViewed'] = $this->_getListingTitleToClicksMetrics($dailyLeastViewedListingIdToClicksMap,
+                $totalListingIdToClickMap);
+CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleToClicksMaps['leastViewed'], true));
+            $titleToClicksMaps['mostViewed'] = $this->_getListingTitleToClicksMetrics($dailyMostViewedListingIdToClicksMap,
+                $totalListingIdToClickMap);
 
-            foreach ($leastViewedListingIdToClicksMap as $listing_id => $clicks)
-                array_push($leastViewedListingIds, $listing_id);
-CakeLog::write('mostViewed', print_r($mostViewedListingIds, true));
-CakeLog::write('leastViewed', print_r($leastViewedListingIds, true));
 
-            $mostViewedListingIdToTitleMap = $this->Listing->GetListingIdToTitleMap($mostViewedListingIds);
-            $leastViewedListingIdToTitleMap = $this->Listing->GetListingIdToTitleMap($leastViewedListingIds);
-CakeLog::write('listingIdToTitleMap', print_r($mostViewedListingIdToTitleMap, true));
-            /* Now put the unit names back into the original map to get ready to be formatted in the email */
-            foreach ($mostViewedListingIdToTitleMap as $listing_id => $title){
-                if (!array_key_exists($listing_id, $mostViewedListingIdToClicksMap))
-                        continue;
+            /* Get map of listing_id to number of contact events for that listing_id */
+            $dailyMostContactedListingIdToClicksMap = $this->_getTopNMostViewed(5, $listing_ids, $dailyListingIdToContactsMap);
 
-                $clickCount = 0;
-                if (array_key_exists($listing_id, $mostViewedListingIdToClicksMap))
-                    $clickCount = $mostViewedListingIdToClicksMap[$listing_id];
+            $titleToMostContactedMap = array();
+            $titleToMostContactedMap = $this->_getListingTitleToClicksMetrics($dailyMostContactedListingIdToClicksMap,
+                $dailyListingIdToContactsMap);
 
-                $metricCounts['mostViewed'][$title] = $clickCount;
-            }
-CakeLog::write('metriccountsMostViewedn', print_r($metricCounts['mostViewed'], true));
+            
 
-            foreach ($leastViewedListingIdToTitleMap as $listing_id => $title){
-                if (!array_key_exists($listing_id, $leastViewedListingIdToTitleMap))
-                    continue;   
 
-                CakeLog::write('listingIdToClicksMap', $listing_id . ' ' . $title);
-                $clickCount = 0;
-                if (array_key_exists($listing_id, $mostViewedListingIdToClicksMap))
-                    $clickCount = $dailyListingIdToClickMap[$listing_id];
+            //$titleToClicksMaps['totalLeastViewed'] = $this->_getListingTitleToClicksMetrics($totalLeastViewedListingIdToClicksMap);
+            //$titleToClicksMaps['totalMostViewed'] = $this->_getListingTitleToClicksMetrics($totalMostViewedListingIdToClicksMap);
 
-                $metricCounts['leastViewed'][$title] = $clickCount;
-            }
-CakeLog::write('gettingclose', print_r($metricCounts, true));
             /* Prepare data for the 'Daily Metrics Report' table */
 
             $overviewMetrics = array(
@@ -170,28 +159,42 @@ CakeLog::write('gettingclose', print_r($metricCounts, true));
                 $overviewMetricsCount[$metric] = $metricCounts[$metric];
             }
 
-            $mostViewed = null;
-            $leastViewed = null;
-            if (array_key_exists('mostViewed', $metricCounts))
-                $mostViewed = $metricCounts['mostViewed'];
+            $templateData['leastViewed'] = $titleToClicksMaps['leastViewed'];
+            $templateData['mostViewed'] = $titleToClicksMaps['mostViewed'];
+            $templateData['user'] = $user['User'];
+            $templateData['overviewMetrics'] = $overviewMetricsCount;
+            $templateData['mostContacted'] = $titleToMostContactedMap;
 
-            if (array_key_exists('leastViewed', $metricCounts))
-                $leastViewed = $metricCounts['leastViewed'];
+            /* Sort final arrays before inserting them into tables */
+            asort($templateData['leastViewed']);
+            arsort($templateData['mostViewed']);
+            arsort($templateData['mostContacted']);
 
-            $templateData = array(
-                'user' => $user['User'], 
-                'overviewMetrics' => $overviewMetricsCount,
-                'mostViewed' => $mostViewed,
-                'leastViewed' => $leastViewed
-            );
+            CakeLog::write('template', print_r($templateData, true));
 
             $month = date('F');
             $day = date('j');
             $year = date('Y');
-            $today = $month.' '.$day.', '.$year;
-            //if ($user['User']['id'] == 12)
-           //     $this->_emailUser('tim@cribspot.com', 'Cribspot Daily Metrics Report: '.$today, "daily_pm_report", $templateData);
+            $yesterday = $month.' '.$day.', '.$year;
+            $time_period_string = 'Weekly';
+            if ($time_period === 'DAILY')
+                $time_period_string = 'Daily';
 
+            /* Format the date for "Since ..." at the bottom of the email */
+            $since_date = $user['User']['created'];
+            $since_month = date('F', strtotime($since_date));
+            $since_day = date('j', strtotime($since_date));
+            $since_year = date('Y', strtotime($since_date));
+            $since_date = $since_month.' '.$since_day.', '.$since_year;
+            $templateData['sinceDate'] = $since_date;
+
+
+            $templateData['timePeriod'] = $time_period_string;
+
+            /* TODO: REMEMBER TO CHECK IF EMAIL IS NULL */
+
+            if ($user['User']['id'] == 12)
+                $this->_emailUser('tim@cribspot.com', 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
 
             CakeLog::write('mixpanelMetrics', $user_id);
             CakeLog::write('mixpanelMetrics', print_r($metricCounts, true));
@@ -211,7 +214,7 @@ CakeLog::write('gettingclose', print_r($metricCounts, true));
 
         CakeLog::write('sorted', print_r($listingIdToClicksMap, true));
 
-        /* Start by adding any listings that have 0 clicks */
+        /* Get a list of all listings that have clicks */
         $listingIdsWithClicks = array();
         foreach($listingIdToClicksMap as $listing_id => $clicks){
             array_push($listingIdsWithClicks, $listing_id);
@@ -231,21 +234,55 @@ CakeLog::write('gettingclose', print_r($metricCounts, true));
             if (in_array($listing_id, $listing_ids) && count($topN) < $n){
                 $topN[$listing_id] = $clicks;
             }
-        }
+        }   
 
-        /* If there aren't enough listings with clicks to fill out the array, fill in with random 0-click listings */
-       /* if (!$mostViewed && count($topN) <= $n){
-            foreach ($listing_ids as $listing_id){
-                if (!in_array($listing_id, $listingIdsWithClicks))
-                    $topN[$listing_id] = $clicks;
+        if ($mostViewed)
+            arsort($topN);
+        else
+            asort($topN);
 
-                if (count($topN) === $n)
-                    break;
-            }
-        }*/
-CakeLog::write('topn', print_r($topN, true));
+        CakeLog::write('topN', print_r($topN, true));
+
         return $topN;
     }
+
+    /*
+    Takes as input a map of listing_id to clicks for that listing_id for an unspecified time period.
+    Returns a map of Address (or alternate_name) with unit title and description => clicks
+    */
+    private function _getListingTitleToClicksMetrics($idToClicksMaps, $totalListingIdToClickMap)
+    {
+CakeLog::write('totalListingIdToClickMap', print_r($totalListingIdToClickMap, true));
+        $titleToClicksMap = array();
+        /* Take out just the listing_ids to convert to their unit names */
+        $listingIds = array();
+        foreach ($idToClicksMaps as $listing_id => $clicks)
+            array_push($listingIds, $listing_id);
+
+CakeLog::write('listingids', print_r($listingIds, true));
+
+        $listingIdToTitleMap = $this->Listing->GetListingIdToTitleMap($listingIds);
+CakeLog::write('listingIdToTitleMap', print_r($listingIdToTitleMap, true));
+        /* Now put the unit names back into the original map to get ready to be formatted in the email */
+        foreach ($listingIdToTitleMap as $listing_id => $title){
+            if (!array_key_exists($listing_id, $idToClicksMaps))
+                    continue;
+
+            $clickCount = 0;
+            if (array_key_exists($listing_id, $idToClicksMaps))
+                $clickCount = $idToClicksMaps[$listing_id];
+
+            $titleToClicksMap[$title] = array();
+            $titleToClicksMap[$title]['daily'] = $clickCount;
+            $titleToClicksMap[$title]['total'] = 0;
+            if (array_key_exists($listing_id, $totalListingIdToClickMap))
+                $titleToClicksMap[$title]['total'] = $totalListingIdToClickMap[$listing_id];
+        }
+
+CakeLog::write('metriccounts', print_r($titleToClicksMap, true));
+        return $titleToClicksMap;
+    }
+
 
     /*
     Queries for mixpanel data on 'Listing Click' event, segmenting on listing_id and display type = 'full page contact user'
@@ -257,6 +294,7 @@ CakeLog::write('topn', print_r($topN, true));
         $map = array();
         if ($mixpanelData->data !== null && $mixpanelData->data->values !== null){
             $values = $mixpanelData->data->values;
+            CakeLog::write('values', print_r($values, true));
             foreach ($values as $listing_id=>$dateToViewCountMap){
                 $map[$listing_id] = 0;
                 foreach ($dateToViewCountMap as $date=>$viewCount){
@@ -281,7 +319,8 @@ CakeLog::write('topn', print_r($topN, true));
             'event' => $event,
             'on' => 'properties["' . $properties .'"]',
             'from_date' => $from_date,
-            'to_date' => $to_date
+            'to_date' => $to_date,
+            'limit' => 10000
         );
         if ($where)
             $parameters['where'] = $where;

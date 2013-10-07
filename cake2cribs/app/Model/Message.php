@@ -67,36 +67,55 @@ class Message extends AppModel {
 	}
 
 	/*
-	Returns a map of user_id to # of messages they've received
+	Returns a map of listing_id to # of messages received for that listing_id
 	*/
-	public function GetUserIdToReceivedMessagesMap()
+	public function GetListingIdToReceivedMessagesMap()
 	{
 		$messages = $this->find('all', array(
-			'contain' => array('Conversation')
+			'contain' => array('Conversation'),
+			'conditions' => array('Listing.visible' => 1),
+			'joins' => array(
+				array(
+			        'table' => 'conversations',
+			        'alias' => 'C',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array('Message.conversation_id = C.conversation_id')
+			    ),
+			    array(
+			        'table' => 'listings',
+			        'alias' => 'Listing',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array(
+			            'Listing.listing_id = C.listing_id'
+			        )
+			    )
+			)
 		));
-		$userIdToDailyMessageCountMap = array();
-		$userIdToTotalMessageCountMap = array();
+		CakeLog::write('joinstest', print_r($messages, true));
+		$listingIdToDailyMessageCountMap = array();
+		$listingIdToTotalMessageCountMap = array();
 		foreach ($messages as $message)
 		{
 			$user_id = $message['Conversation']['participant2_id'];
 			$listing_id = $message['Conversation']['listing_id'];
-			if (!array_key_exists($user_id, $userIdToTotalMessageCountMap)) {
-				$userIdToTotalMessageCountMap[$user_id] = 0;
-				$userIdToDailyMessageCountMap[$user_id] = 0;
+			if (!array_key_exists($listing_id, $listingIdToTotalMessageCountMap)) {
+				$listingIdToTotalMessageCountMap[$listing_id] = 0;
+				$listingIdToDailyMessageCountMap[$listing_id] = 0;
 			}
 		
 
-			$userIdToTotalMessageCountMap[$user_id] += 1;
+			$listingIdToTotalMessageCountMap[$listing_id] += 1;
 			$message_date = $message['Message']['created'];
-			$today = date('Y-m-d');
-			CakeLog::write('dates', $message_date . ' ' . $today);
-			if ($message_date >= $today)
-				$userIdToDailyMessageCountMap[$user_id] += 1;
+			$yesterday = date('Y-m-d', time() - 60 * 60 * 24);
+			if ($message_date >= $yesterday)
+				$listingIdToDailyMessageCountMap[$listing_id] += 1;
 		}
 
 		return array(
-			'daily' => $userIdToDailyMessageCountMap,
-			'total' => $userIdToTotalMessageCountMap
+			'daily' => $listingIdToDailyMessageCountMap,
+			'total' => $listingIdToTotalMessageCountMap
 		);
 	}
 }

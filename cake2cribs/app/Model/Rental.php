@@ -285,7 +285,7 @@ class Rental extends RentalPrototype {
 		'contact_phone' => array(
 			'rule' => array('phone', null, 'us')
 		),
-		'website' => 'url',
+		/*'website' => 'url',*/
 		'is_complete' => 'boolean',
 		'created',
 		'modified'

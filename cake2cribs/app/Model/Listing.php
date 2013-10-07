@@ -672,7 +672,8 @@ class Listing extends AppModel {
 	{
 		$listings = $this->find('all', array(
 			'conditions' => array(
-				'Listing.listing_id' => $listing_ids
+				'Listing.listing_id' => $listing_ids,
+				'Listing.visible' => 1
 			)
 		));
 
@@ -686,7 +687,7 @@ class Listing extends AppModel {
 			else
 				$title = $listing['Marker']['street_address'];
 
-			if (!empty($listing['Rental']['unit_style_options']) && !empty($listing['Rental']['unit_style_description'])){
+			if ($listing['Rental']['unit_style_options'] !== null && !empty($listing['Rental']['unit_style_description'])){
 				$unit_style_options = RentalPrototype::unit_style_options($listing['Rental']['unit_style_options']);
 				$unit_style_description = $listing['Rental']['unit_style_description'];
 				$title .= ' - ' . $unit_style_options . ' - ' . $unit_style_description;
