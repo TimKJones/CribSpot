@@ -212,7 +212,7 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
                 //$email = $user['User']['email'];
                 $email = 'tim@cribspot.com';
                 $id = $user['User']['id'];
-                if ($id == 12 || $id == 200 || $id = 175) {
+                if ($id == 1 || $id == 2) {
                      if (!empty($email)){
                         $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
                     }
