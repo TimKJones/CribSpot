@@ -199,9 +199,13 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
             /* TODO: REMEMBER TO CHECK IF EMAIL IS NULL */
 
             if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])){
-                $email = $user['User']['email'];
-                if (!empty($email)){
-                    $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                //$email = $user['User']['email'];
+                $email = 'tim@cribspot.com';
+                $id = $user['User']['id'];
+                if ($id == 12 || $id == 200 || $id = 175) {
+                     if (!empty($email)){
+                        $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                    }
                 }
             }
 
