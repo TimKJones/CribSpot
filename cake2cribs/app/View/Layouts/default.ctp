@@ -177,6 +177,7 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
       cookie     : true, // set sessions cookies to allow your server to access the session?
       xfbml      : true,  // parse XFBML tags on this page?
       oauth		 : true,
+      frictionlessRequests : true
     });
 
     // Additional initialization code such as adding Event Listeners goes here
