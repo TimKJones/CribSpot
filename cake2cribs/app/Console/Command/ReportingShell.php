@@ -11,6 +11,7 @@ class ReportingShell extends AppShell
     */  
     public function send_pm_reports($time_period = 'WEEKLY') 
     {
+        $counter = 0;
         $yesterday = date('Y-m-d', time() - 60 * 60 * 24);
         $from_date = null;
         $to_date = null;
@@ -212,13 +213,13 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
                 //$email = $user['User']['email'];
                 $email = 'tim@cribspot.com';
                 $id = $user['User']['id'];
-                if ($id == 1 || $id == 2) {
+                if ($counter < 2) {
                      if (!empty($email)){
                         $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
                     }
                 }
             }
-
+            $counter++;
             CakeLog::write('mixpanelMetrics', $user_id);
             CakeLog::write('mixpanelMetrics', print_r($metricCounts, true));
         }  
