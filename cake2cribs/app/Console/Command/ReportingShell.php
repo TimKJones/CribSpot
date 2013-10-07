@@ -71,6 +71,11 @@ CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
 
         foreach($userIdToListingIdsMap as $user_id => $listing_ids) {
             $user = $this->User->get($user_id);
+            if (!array_key_exists('User', $user) ||
+                !array_key_exists('email', $user['User']) ||
+                !array_key_exists('user_type', $user['User']) ||
+                $user['User']['user_type'] != 1)
+                    continue;
 
             /* map of totals for each individual user */
             $metricCounts = array();
