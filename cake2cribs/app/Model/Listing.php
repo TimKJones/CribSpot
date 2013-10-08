@@ -491,7 +491,7 @@ class Listing extends AppModel {
 	/* 
 	Pulls all data in listing_ids for a newspaper_admin
 	*/
-	public function getForNewspaper($date, $university_id)
+	public function getForNewspaper($date, $university_id, $image_prefix='lrg_')
 	{
 		// Set timezone
         date_default_timezone_set('UTC');
@@ -527,8 +527,10 @@ class Listing extends AppModel {
                 $fldata['primary_image_url'] = '';
                 if (array_key_exists('Image', $fl)){
                     foreach ($fl['Image'] as $image){
-                        if (array_key_exists('is_primary', $image) && intval($image['is_primary']) === 1)
-                            $fldata['primary_image_url'] = 'www.cribspot.com/' . $image['image_path'];
+                        if (array_key_exists('is_primary', $image) && intval($image['is_primary']) === 1){
+                        	$image_path = $this->_formatImagePathWithPrefix($image['image_path'], $image_prefix);
+                        	$fldata['primary_image_url'] = 'www.cribspot.com/' . $image_path;
+                        }
                     }
                 }
 
@@ -699,6 +701,16 @@ class Listing extends AppModel {
 
 		return $map;
 	}	
+
+	/*
+	Returns $path with $prefix prepended to the filename at the end of the path
+	*/
+	private function _formatImagePathWithPrefix($path, $prefix)
+	{
+		$directory = dirname($path);
+		$filename = $prefix . basename($path);
+		return $directory . '/' . $filename;
+	}
 
 	/*
 	return all data needed for a rental hover menu (for all markers)
