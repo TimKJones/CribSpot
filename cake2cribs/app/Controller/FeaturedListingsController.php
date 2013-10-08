@@ -274,7 +274,7 @@ class FeaturedListingsController extends AppController {
   /*
   For a newspaper admin to fetch the featured listings
   they need to GET at this url providing their secret token
-
+  
   */
 
   public function newspaper(){
@@ -285,7 +285,23 @@ class FeaturedListingsController extends AppController {
       throw new NotFoundException();
     }
 
+    if ($this->request === null || $this->request->query === null ||
+      !array_key_exists('secret_token', $this->request->query)){
+      $error = array('ERROR' => 'URL formatting error');
+      $this->set("response", json_encode($error));
+    }
+
     $secret_token = $this->request->query['secret_token'];
+    $image_prefix = 'lrg_';
+    if (array_key_exists('image_type', $this->request->query)){
+      $image_type_param = $this->request->query['image_type'];
+      if ($image_type_param === 'small')
+        $image_prefix = 'sml_';
+      else if ($image_type_param === 'medium')
+        $image_prefix = 'med_';
+      else if ($image_type_param === 'large')
+        $image_prefix = 'lrg_';
+    }
 
     if($secret_token == null){
       CakeLog::write('API', 'Secret token null');
@@ -302,7 +318,7 @@ class FeaturedListingsController extends AppController {
 
     $date = date('Y-m-d');
     $listing_ids = $this->FeaturedListing->getByDate($date, $newspaper_admin['NewspaperAdmin']['university_id']);
-    $listings = $this->Listing->getForNewspaper($date, $newspaper_admin['NewspaperAdmin']['university_id']);
+    $listings = $this->Listing->getForNewspaper($date, $newspaper_admin['NewspaperAdmin']['university_id'], $image_prefix);
     CakeLog::write('api_example', print_r($listings, true));
     $this->set("response", json_encode($listings));
     

@@ -128,5 +128,25 @@ class University extends AppModel {
 
 		return $university['University']; 
 	}
+
+	/*
+	Returns map of university_id to university object for universities in $university_ids
+	*/
+	public function GetIdToUniversityMap($university_ids)
+	{
+		$universities = $this->find('all', array(
+			'contain' => array(),
+			'conditions' => array(
+				'id' => $university_ids
+			)
+		));
+		$map = array();
+		foreach ($universities as $university){
+			if (array_key_exists('University', $university))
+				$map[$university['University']['id']] = $university['University'];
+		}
+
+		return $map;
+	}
 }
 ?>

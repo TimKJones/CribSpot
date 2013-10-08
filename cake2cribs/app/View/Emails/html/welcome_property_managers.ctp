@@ -326,26 +326,24 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
+Hello <?php echo $school_abbreviation;?> Property Manager, <br/><br/>
 
-Hello,</p>
+I am excited to announce the launch of Cribspot.com at <?php echo $school_full_name;?>! More than two years of web development and meetings with local property managers have gone into creating the new platform for you to engage students.  Over <b>1,200 students have already used Cribspot</b> to help find their <?php echo $school_abbreviation;?> housing in the last week! From these students we can generate confirmed leads for your properties.<br/><br/>
 
-Today I am excited to announce the re-launch of Cribspot at the University of Michigan! Partnered with the Michigan Daily newspaper and officially endorsed by the University of Michigan Central Student Government, Cribspot is about to revolutionize the way you find and communicate with prospective tenants. We've already compiled thousands of listings across Ann Arbor, displaying them on a beautiful map interface. Best of all - it's <b>free</b>. That's right...<b>free</b> to post, <b>free</b> to receive leads</b>, and <b>free</b> to respond to interested students directly on the site. Unlike other services out there, we'll never charge you to upload your listings or photos. In addition, we've already seen thousands of students (click <a href="https://www.dropbox.com/sh/0zp9h9me0ihlcio/eC6PGyN8nk">here</a> to see the breakdown) use our site since we launched for students last Thursday.<br/><br/>
-
-We've already uploaded some of your listings. Click <a href='<?php echo $reset_password_url?>'>here</a> to set a password and get started! Alternatively, copy and paste the following link into your browser:<br/><br/>
+We've already uploaded a portion of your listings to ensure you are represented on our site. But for now, visitors have access to only basic rental information. <b>Click <a href='<?php echo $reset_password_url?>'>here</a> to access your portal and see if students have contacted you, to build up your rentals, and to engage with students using the site.</b> Alternatively, you can copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $reset_password_url; ?><br/><br/>
 
-We want to make this process as easy as possible. We'll even upload the rest of your listings for you, or update the ones we already have if you have more up-to-date information. If you have any questions or concerns, don't hesitate to contact me. Send me an email at jason@cribspot.com or contact us directly through the tab along the bottom of every page.
-<br/><br/>
-To summarize - Cribspot is free to post (we'll even upload listings for you!), free to receive high quality leads, and free to message interested students...all on a site being pushed to each and every student by the Michigan Daily, Central Student Government, and dozens of other student groups on campus. 
-<br/><br/>
-We're right here in Ann Arbor and would love to hear from you about how Cribspot can continue to make your life easier. Give me a call at 707-602-7768 or email me at jason@cribspot.com anytime. Also, let me know if you would like to chat over coffee, lunch, or a beer in the next few weeks and months.<br/><br/><br/>
- 
-Best,<br/>
-Jason and The Cribspot Team<br/><br/>
-<strong>Jason Okrasinski</strong><br/>
-Cribspot Founder and CEO <br/>
-jason@cribspot.com | 908.752.8187
+All these services are <b>FREE</b> of charge! Additional features include featuring your rentals for higher impact and managing tours.<br/><br/>
+
+Here at Cribspot, we want to make the process of finding the right tenants as simple as possible. If you have any questions, or would like to find out about other services we offer, please don't hesitate to contact me at alex@cribspot.com. You can also chat with us directly through the website by clicking the tab labeled "Contact Cribspot" at the bottom of every page. I hope the fall is going well for you so far, and look forward to helping you build your presence on the new platform.<br/><br/>
+
+Sincerely,<br/><br/>
+
+Alex and The Cribspot Team<br/><br/>
+<strong>Alex Gross</strong><br/>
+Cribspot Co-Founder<br/>
+alex@cribspot.com | 908.752.8187
 
                                     </div>
 
