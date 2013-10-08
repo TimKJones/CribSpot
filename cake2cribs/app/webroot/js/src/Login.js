@@ -83,7 +83,9 @@
       return false;
     };
 
-    Login.ResendConfirmationEmail = function() {
+    Login.ResendConfirmationEmail = function(canceled) {
+      if (canceled == null) canceled = false;
+      if (canceled) return;
       return $.ajax({
         url: myBaseUrl + "users/ResendConfirmationEmail",
         type: "POST",

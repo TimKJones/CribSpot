@@ -102,8 +102,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                     <div class="row-fluid">
                         <div class="span12 signup_input_container">
                             <div class="row-fluid">
-                                <input id="student_first_name" class="span6" type="text" placeholder="First Name">
-                                <input id="student_last_name" class="span6 right_input" type="text" placeholder="Last Name">
+                                <input id="student_first_name" class="span6" type="text" placeholder="First Name" value="<?= ($this->Session->read('FB.first_name')) ? $this->Session->read('FB.first_name') : "" ; ?>">
+                                <input id="student_last_name" class="span6 right_input" type="text" placeholder="Last Name" value="<?= ($this->Session->read('FB.last_name')) ? $this->Session->read('FB.last_name') : "" ; ?>">
                             </div>
                             <div class="row-fluid">
                                 <input id="student_email" class="span12" type="email" placeholder="Email">

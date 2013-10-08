@@ -79,7 +79,10 @@ class A2Cribs.Login
 
 		return false
 
-	@ResendConfirmationEmail: () ->
+	@ResendConfirmationEmail: (canceled=false) ->
+		if canceled
+			return
+			
 		$.ajax 
 			url: myBaseUrl + "users/ResendConfirmationEmail"
 			type:"POST"

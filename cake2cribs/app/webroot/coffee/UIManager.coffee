@@ -14,7 +14,7 @@ class A2Cribs.UIManager
 
 	@FlashMessage: () ->
 		if flash_message?
-			@[flash_message.method] flash_message.message
+			@[flash_message.method] flash_message.message, flash_message.callback
 
 	@Confirm: (message, callback) ->
 		alertify.set
