@@ -584,22 +584,26 @@ class User extends AppModel {
 	/*
 	Initialize password_reset_tokens for all property managers
 	*/
-	public function InitializePMPasswordResetTokens()
+	public function InitializePMPasswordResetTokens($university_ids = null)
 	{
+		$conditions = array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER);
+		if ($university_ids != null)
+			$conditions['User.pm_associated_university'] = $university_ids;
+
 		$users = $this->find('all', array(
-			'contains' => array('User'),
+			'contain' => array(),
 			'fields' => array('User.id'),
-			'conditions' => array('User.user_type' => User::USER_TYPE_PROPERTY_MANAGER)
+			'conditions' => $conditions
 		));
+
 		foreach ($users as &$user){
 			$user['User']['password_reset_token'] = uniqid();
 		}
 
-		foreach ($users as $user){
-			$just_user = array('User' => $user['User']);
-
+		foreach ($users as $savedUser){
+			$just_user = array('User' => $savedUser['User']);
 			if (!$this->save($just_user)){
-				CakeLog::write('failed', print_r($this->validationErrors, true));
+				CakeLog::write('failedUpdatingResetTokens', print_r($this->validationErrors, true));
 				return false;
 			}
 		}
@@ -614,6 +618,29 @@ class User extends AppModel {
 	public function ResetPasswordToken($user_id)
 	{
 		$this->saveField('password_reset_token', uniqid());
+	}
+
+	/*
+	Returns all property managers with pm_associated_university set to a value in $university_ids
+	*/	
+	public function GetPropertyManagersByAssociatedUniversity($university_ids)
+	{
+		$users = $this->find('all', array(
+			'contain' => array(),
+			'conditions' => array(
+				'User.pm_associated_university' => $university_ids,
+				'User.user_type' => 1
+			)
+		));
+
+		return $users;
+	}
+
+	/* Set received_welcome_email to true for the email specified */
+	public function ReceivedWelcomeEmail($user_id)
+	{
+		$this->id = $user_id;
+		$this->saveField('received_welcome_email', 1);
 	}
 
 	/*

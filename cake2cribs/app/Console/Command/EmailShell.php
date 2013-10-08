@@ -1,11 +1,72 @@
 <?php 
 
 class EmailShell extends AppShell{
-    public $uses = array('Error', 'User');
+    public $uses = array('Error', 'User', 'University');
 
-    // Fetch all the listings that will be featured over the next 3 days
-    // and email them out to people.
+    /*
+    Sends welcome email to all property managers with pm_associated_university set as a school in $university_ids
 
+    */
+    public function welcome_property_managers_by_associated_university($university_ids = array(2, 3))
+    {
+        $counter = 0;
+        /* Map of university_id to university object */
+        $universityMap = $this->University->GetIdToUniversityMap($university_ids);
+        CakeLog::write('universitymap', print_r($universityMap, true));
+
+        /* Initialize password_reset_tokens*/
+        if (!$this->User->InitializePMPasswordResetTokens($university_ids))
+            return;
+
+        /* Get all property managers that will be emailed */
+        $users = $this->User->GetPropertyManagersByAssociatedUniversity($university_ids);
+        CakeLog::write('PMs', print_r($users, true));
+
+        /*
+        For each user, set university-dependent template variables, set received_welcome_email = 1,
+        and send them an email
+        */
+        foreach ($users as $user){
+            if (!array_key_exists('User', $user) || !array_key_exists('id', $user['User']))
+                continue;
+
+            if (!array_key_exists('email', $user['User']) || empty($user['User']['email']))
+                continue;
+
+            CakeLog::write('nextuser', print_r($user, true));
+
+            $this->User->ReceivedWelcomeEmail($user['User']['id']);
+            if (!array_key_exists($user['User']['pm_associated_university'], $universityMap))
+                continue;
+
+            $usersUniversity = $universityMap[$user['User']['pm_associated_university']];
+            $school_abbreviation = $usersUniversity['abbreviation'];
+            $school_full_name = $usersUniversity['full_name'];
+            $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$user['User']['id'] . 
+            "&reset_token=".$user['User']['password_reset_token'];
+            $templateData = array(
+                'school_abbreviation' => $school_abbreviation,
+                'school_full_name' => $school_full_name,
+                'reset_password_url' => $reset_password_url
+            );
+
+            CakeLog::write('templatedata', print_r($templateData, true));
+
+            if ((Configure::read('EMAIL_DEBUG_MODE') === 'DEBUG' && $counter < 2) ||
+                Configure::read('EMAIL_DEBUG_MODE') === 'PRODUCTION') {
+                if (Configure::read('EMAIL_DEBUG_MODE') === 'DEBUG')
+                    $user['User']['email'] = 'tjones4413@gmail.com';
+
+
+                $from = array('alex@cribspot.com' => 'Cribspot Founder');
+                $subject = "Welcome to Cribspot at " . $school_full_name . "!";
+                $template = 'WelcomePropertyManagers';
+                $this->_emailUser($user['User']['email'], $subject, $template, $templateData, $from);
+            }
+
+            $counter ++;
+        }
+    }
 
     public function email_error_report(){
         // Set timezone
@@ -45,6 +106,18 @@ class EmailShell extends AppShell{
         foreach ($recipients as $recipient){
             $this->_emailUser($recipient, $subject, "users", $template_data);  
         }
+    }
+
+    private function _EmailWelcomedPropertyManagers($person, $tempateData)
+    {
+        $from = 'Cribspot Founder<alex@cribspot.com>';
+        $to = $person['email'];
+        $subject = "Welcome to Cribspot at" . $school_full_name . "!";
+        $template = 'WelcomePropertyManagers';
+        $sendAs = 'both';
+        $this->set('reset_password_url', "www.cribspot.com/users/ResetPasswordRedirect?id=".$person['id'] . 
+            "&reset_token=".$person['password_reset_token']);
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 }
 

@@ -38,11 +38,12 @@ App::uses('CakeEmail', 'Network/Email');
  */
 class AppShell extends Shell {
     
-    public function _emailUser($toAddress, $subject, $template, $template_data){
+    public function _emailUser($toAddress, $subject, $template, $template_data, $from=array('info@cribspot.com' => 'The Cribspot Team')){
         $Email = new CakeEmail("smtp");
         $Email->template($template)
             ->emailFormat('html')
             ->to($toAddress)
+            ->from($from)
             ->subject($subject)
             ->viewVars($template_data)
             ->send();
