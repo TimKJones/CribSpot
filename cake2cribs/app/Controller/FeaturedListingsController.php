@@ -274,7 +274,9 @@ class FeaturedListingsController extends AppController {
   /*
   For a newspaper admin to fetch the featured listings
   they need to GET at this url providing their secret token
-  
+  UPDATE 10-7-2013:
+    There is now an extra URL parameter, image_type, that specifies the image type.
+    Possible values for image_type include small, medium, and large.
   */
 
   public function newspaper(){
