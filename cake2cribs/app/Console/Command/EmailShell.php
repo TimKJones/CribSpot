@@ -61,7 +61,7 @@ class EmailShell extends AppShell{
                 $from = array('alex@cribspot.com' => 'Cribspot Founder');
                 $subject = "Welcome to Cribspot at " . $school_full_name . "!";
                 $template = 'WelcomePropertyManagers';
-                $this->_emailUser($user['User']['email'], $subject, $template, $templateData, $from);
+                $this->_emailUser('tjones4413@gmail.com'/*$user['User']['email']*/, $subject, $template, $templateData, $from);
             }
 
             $counter ++;
