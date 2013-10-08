@@ -36,8 +36,10 @@ class EmailShell extends AppShell{
             CakeLog::write('nextuser', print_r($user, true));
 
             $this->User->ReceivedWelcomeEmail($user['User']['id']);
-            if (!array_key_exists($user['User']['pm_associated_university'], $universityMap))
+            if (!array_key_exists('pm_associated_university', $user['User'] || 
+                !array_key_exists($user['User']['pm_associated_university'], $universityMap))
                 continue;
+
 
             $usersUniversity = $universityMap[$user['User']['pm_associated_university']];
             $school_abbreviation = $usersUniversity['abbreviation'];
