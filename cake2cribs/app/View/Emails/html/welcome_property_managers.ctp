@@ -328,15 +328,13 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                         <p style="margin-bottom:15px;" >
 Hello <?php echo $school_abbreviation;?> Property Manager, <br/><br/>
 
-I am excited to announce the launch of Cribspot.com at <?php echo $school_full_name;?>! More than two years of web development and meetings with local property managers have gone into creating the new platform for you to engage students.  Over <b>1,200 students have already used Cribspot</b> to help find their <?php echo $school_abbreviation;?> housing in the last week! From these students we can generate confirmed leads for your properties.<br/><br/>
+I am excited to announce the launch of Cribspot.com at <?php echo $school_full_name;?>! Our site was built by <?php echo $school_abbreviation;?> and University of Michigan students to help you connect with renters. We've crowdsourced all of our information directly from <?php echo $school_abbreviation;?> students. Over 1,500 students have already used Cribspot to help find their <?php echo $school_abbreviation;?> housing in the last week! From our platform, students can go right to your site or contact you via your phone and/or email. All these services are <b>FREE</b> of charge! Additional features include promoting your rentals for higher impact, after-hours scheduling, and live chat support.<br/><br/>
 
 We've already uploaded a portion of your listings to ensure you are represented on our site. But for now, visitors have access to only basic rental information. <b>Click <a href='<?php echo $reset_password_url?>'>here</a> to access your portal and see if students have contacted you, to build up your rentals, and to engage with students using the site.</b> Alternatively, you can copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $reset_password_url; ?><br/><br/>
 
-All these services are <b>FREE</b> of charge! Additional features include featuring your rentals for higher impact and managing tours.<br/><br/>
-
-Here at Cribspot, we want to make the process of finding the right tenants as simple as possible. If you have any questions, or would like to find out about other services we offer, please don't hesitate to contact me at alex@cribspot.com. You can also chat with us directly through the website by clicking the tab labeled "Contact Cribspot" at the bottom of every page. I hope the fall is going well for you so far, and look forward to helping you build your presence on the new platform.<br/><br/>
+Here at Cribspot, we want to make the process of finding the right tenants as simple as possible. If you have any questions, or would like to find out about other services we offer, please don't hesitate to contact me. You can also chat with us directly through the website by clicking the tab labeled "Contact Cribspot" at the bottom of every page. I hope the fall is going well for you so far, and look forward to helping you build your presence on the new platform.<br/><br/>
 
 Sincerely,<br/><br/>
 

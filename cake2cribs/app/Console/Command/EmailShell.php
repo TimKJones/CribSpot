@@ -33,6 +33,10 @@ class EmailShell extends AppShell{
             if (!array_key_exists('email', $user['User']) || empty($user['User']['email']))
                 continue;
 
+            /* Don't send email if this user has already verified their email */
+            if (array_key_exists('verified', $user['User']) && $user['User']['verified'] == 1)
+                continue;
+
             CakeLog::write('nextuser', print_r($user, true));
 
             $this->User->ReceivedWelcomeEmail($user['User']['id']);
@@ -63,7 +67,7 @@ class EmailShell extends AppShell{
                 $from = array('alex@cribspot.com' => 'Cribspot Founder');
                 $subject = "Welcome to Cribspot at " . $school_full_name . "!";
                 $template = 'WelcomePropertyManagers';
-                $this->_emailUser('tjones4413@gmail.com'/*$user['User']['email']*/, $subject, $template, $templateData, $from);
+                $this->_emailUser($user['User']['email'], $subject, $template, $templateData, $from);
             }
 
             $counter ++;
