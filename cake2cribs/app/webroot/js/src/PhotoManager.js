@@ -233,6 +233,10 @@
         previewMaxHeight: 100,
         previewCrop: true
       }).on('fileuploadadd', function(e, data) {
+        if (_this.NextAvailablePhoto() === -1) {
+          A2Cribs.UIManager.Error("Sorry - you can't upload more than 6 photos at this time.");
+          return;
+        }
         _this.UploadImageDefer();
         _this.div.find("#upload_image").button('loading');
         if ((_this.CurrentImageLoading = _this.NextAvailablePhoto()) >= 0 && (data.files != null) && (data.files[0] != null)) {
