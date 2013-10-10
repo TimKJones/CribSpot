@@ -222,7 +222,8 @@ class UsersController extends AppController {
     */
     public function Login($signup=false)
     {
-        CakeLog::write('hostname', gethostname());
+        $this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears());
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));

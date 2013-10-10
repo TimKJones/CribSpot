@@ -45,7 +45,18 @@ class A2Cribs.Login
 		@div.find("#pm_submit").click @CreatePropertyManager
 		@div.find("#pm_signup").submit @CreatePropertyManager
 
-			
+	@InitSignupSchoolSelect: (locations) ->
+		@schoolList = Array()
+		for location in locations
+			@schoolList.push location.University.name
+
+		that = this
+		$(() ->
+			$( ".typeahead" ).typeahead({
+				source: that.schoolList
+			});
+		)
+
 	@cribspotLogin:(div) ->
 		url = myBaseUrl + "users/AjaxLogin"
 		request_data = {
@@ -100,8 +111,16 @@ class A2Cribs.Login
 		for field in required_fields
 			if @div.find("##{type_prefix}#{field}").val().length is 0
 				isValid = no
+		#handle the university select box separately
+		if user_type is 0
+			if $("#registered_university").val().length is 0
+				isValid = false
+		if user_type is 0
+			if $("#student_year").val().length is 0
+				isValid = false
 		if not isValid
 			A2Cribs.UIManager.Error "Please fill in all of the fields!"
+
 		if user_type is 1
 			phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
 			if phone_number.length isnt 10 or isNaN phone_number
@@ -131,6 +150,9 @@ class A2Cribs.Login
 				for field in fields
 					if @div.find("##{type_prefix}#{field}").val().length isnt 0
 						request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
+				# Handle select inputs separately
+				request_data.User['registered_university'] = $("#registered_university").val()
+				request_data.User['student_year'] = $("#student_year").val()
 
 				# Post the request data using AjaxRegister
 				$.post "/users/AjaxRegister", request_data, (response) =>
