@@ -44,6 +44,21 @@
       return this.div.find("#pm_signup").submit(this.CreatePropertyManager);
     };
 
+    Login.InitializeUniversityAutocomplete = function(locations) {
+      var location, that, _i, _len;
+      this.schoolList = Array();
+      for (_i = 0, _len = locations.length; _i < _len; _i++) {
+        location = locations[_i];
+        this.schoolList.push(location.University.name);
+      }
+      that = this;
+      return $(function() {
+        return $(".typeahead").typeahead({
+          source: that.schoolList
+        });
+      });
+    };
+
     Login.cribspotLogin = function(div) {
       var request_data, url,
         _this = this;

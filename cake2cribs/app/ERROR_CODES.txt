@@ -141,3 +141,5 @@
 - Users/Login
 67
 - Image->_uploadTempImageToS3
+68
+- RentalSave.SaveImages()

@@ -45,6 +45,19 @@ class A2Cribs.Login
 		@div.find("#pm_submit").click @CreatePropertyManager
 		@div.find("#pm_signup").submit @CreatePropertyManager
 
+	# Set up auto-complete for university selection in student signup
+	@InitializeUniversityAutocomplete: (locations) ->
+		@schoolList = Array()
+		for location in locations
+			@schoolList.push location.University.name
+
+		that = this
+		$(() ->
+			$( ".typeahead" ).typeahead({
+				source: that.schoolList
+			});
+		)
+
 			
 	@cribspotLogin:(div) ->
 		url = myBaseUrl + "users/AjaxLogin"

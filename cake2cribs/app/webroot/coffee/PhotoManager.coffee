@@ -1,4 +1,5 @@
 class A2Cribs.PhotoManager
+	@
 	class Photo
 		constructor: (@_div)->
 			@_imageId = -1
@@ -116,6 +117,10 @@ class A2Cribs.PhotoManager
 		@MAX_CAPTION_LENGTH = 25
 		@BACKSPACE = 8
 
+	UploadImageDefer: () ->
+		@UploadCompleteDeferred = new $.Deferred()
+		@UploadCompletePromise = @UploadCompleteDeferred.promise()
+
 	SetupUI:() ->
 		that = @
 		@div.find('.imageContainer').hover (event) =>
@@ -172,18 +177,23 @@ class A2Cribs.PhotoManager
 			previewMaxHeight: 100
 			previewCrop: true
 		.on 'fileuploadadd', (e, data) =>
+			@UploadImageDefer()
 			@div.find("#upload_image").button 'loading'
 			if (@CurrentImageLoading = @NextAvailablePhoto()) >= 0 and data.files? and data.files[0]?
 				@Photos[@CurrentImageLoading].CreatePreview data.files[0], 
 					@div.find "#imageContent" + (@CurrentImageLoading + 1)
 		.on 'fileuploaddone', (e, data) =>
+			# Now listing save can proceed, resolve deferred object with either true or false
+
 			@div.find("#upload_image").button 'reset'
 			if data.result.errors? and data.result.errors.length
 				A2Cribs.UIManager.Error "Failed to upload image!"
+				@UploadCompleteDeferred.resolve(null)
 				@Photos[@CurrentImageLoading].Reset()
 			else
 				@Photos[@CurrentImageLoading].SetId data.result.image_id
 				@Photos[@CurrentImageLoading].SetPath data.result.image_path
+				@UploadCompleteDeferred.resolve(true)
 		.on 'fileuploadfail', (e, data) =>
 			A2Cribs.UIManager.Error "Failed to upload image!"
 			@div.find("#upload_image").button 'reset'
@@ -197,8 +207,14 @@ class A2Cribs.PhotoManager
 
 		@div.find("#finish_photo").unbind 'click'
 		@div.find("#finish_photo").click () =>
-			imageCallback row, @GetPhotos()
 			@div.modal('hide')
+			###
+			FIXING GITHUB ISSUE 141
+			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
+			###
+			$.when(@UploadCompletePromise).then (resolved) =>
+				if resolved
+					imageCallback row, @GetPhotos()
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos

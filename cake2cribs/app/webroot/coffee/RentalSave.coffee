@@ -356,8 +356,8 @@ class A2Cribs.RentalSave
 			A2Cribs.UserCache.Set new A2Cribs.Image images
 		else
 			data.Image = images
-		@Save row
 
+		@Save row
 
 	###
 	Called when user adds a new row for the existing marker
