@@ -108,9 +108,14 @@
             $only_unread = intval($this->request->query['only_unread']);
         }
         $conversations = $this->Conversation->getConversations($user['id'], ($only_unread==1));
+
+        /* FIX: $con */
+        $formattedConvos = array();
+        foreach ($conversations as $convo)
+            array_push($formattedConvos, $convo);
         
         $this->layout = 'ajax';
-        $json = json_encode($conversations);
+        $json = json_encode($formattedConvos);
         $this->set('response', $json);
     }
 
