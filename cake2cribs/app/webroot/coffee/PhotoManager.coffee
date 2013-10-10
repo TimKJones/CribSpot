@@ -177,6 +177,9 @@ class A2Cribs.PhotoManager
 			previewMaxHeight: 100
 			previewCrop: true
 		.on 'fileuploadadd', (e, data) =>
+			if @NextAvailablePhoto() == -1
+				A2Cribs.UIManager.Error "Sorry - you can't upload more than 6 photos at this time."
+				return
 			@UploadImageDefer()
 			@div.find("#upload_image").button 'loading'
 			if (@CurrentImageLoading = @NextAvailablePhoto()) >= 0 and data.files? and data.files[0]?
