@@ -152,6 +152,11 @@
       this.BACKSPACE = 8;
     }
 
+    PhotoManager.prototype.UploadImageDefer = function() {
+      this.UploadCompleteDeferred = new $.Deferred();
+      return this.UploadCompletePromise = this.UploadCompleteDeferred.promise();
+    };
+
     PhotoManager.prototype.SetupUI = function() {
       var that,
         _this = this;
@@ -166,10 +171,6 @@
         }
       });
       this.div.find('#upload_image').click(function() {
-        if (!_this.UploadCompleteDeferred) {
-          _this.UploadCompleteDeferred = new $.Deferred();
-          _this.UploadCompletePromise = _this.UploadCompleteDeferred.promise();
-        }
         return _this.div.find('#real-file-input').click();
       });
       this.div.find(".imageContent").click(function(event) {
@@ -232,6 +233,7 @@
         previewMaxHeight: 100,
         previewCrop: true
       }).on('fileuploadadd', function(e, data) {
+        _this.UploadImageDefer();
         _this.div.find("#upload_image").button('loading');
         if ((_this.CurrentImageLoading = _this.NextAvailablePhoto()) >= 0 && (data.files != null) && (data.files[0] != null)) {
           return _this.Photos[_this.CurrentImageLoading].CreatePreview(data.files[0], _this.div.find("#imageContent" + (_this.CurrentImageLoading + 1)));
@@ -272,8 +274,7 @@
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
         return $.when(_this.UploadCompletePromise).then(function(resolved) {
-          if (resolved) imageCallback(row, _this.GetPhotos());
-          return _this.UploadCompletePromise = null;
+          if (resolved) return imageCallback(row, _this.GetPhotos());
         });
       });
     };

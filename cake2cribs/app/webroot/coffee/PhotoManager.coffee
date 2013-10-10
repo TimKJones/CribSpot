@@ -117,6 +117,10 @@ class A2Cribs.PhotoManager
 		@MAX_CAPTION_LENGTH = 25
 		@BACKSPACE = 8
 
+	UploadImageDefer: () ->
+		@UploadCompleteDeferred = new $.Deferred()
+		@UploadCompletePromise = @UploadCompleteDeferred.promise()
+
 	SetupUI:() ->
 		that = @
 		@div.find('.imageContainer').hover (event) =>
@@ -127,10 +131,6 @@ class A2Cribs.PhotoManager
 					$(event.currentTarget).find('.image-actions-container').hide()
 
 		@div.find('#upload_image').click () =>
-			if not @UploadCompleteDeferred
-				@UploadCompleteDeferred = new $.Deferred()
-				@UploadCompletePromise = @UploadCompleteDeferred.promise()
-
 			@div.find('#real-file-input').click()
 
 		@div.find(".imageContent").click (event) =>
@@ -177,6 +177,7 @@ class A2Cribs.PhotoManager
 			previewMaxHeight: 100
 			previewCrop: true
 		.on 'fileuploadadd', (e, data) =>
+			@UploadImageDefer()
 			@div.find("#upload_image").button 'loading'
 			if (@CurrentImageLoading = @NextAvailablePhoto()) >= 0 and data.files? and data.files[0]?
 				@Photos[@CurrentImageLoading].CreatePreview data.files[0], 
@@ -214,8 +215,6 @@ class A2Cribs.PhotoManager
 			$.when(@UploadCompletePromise).then (resolved) =>
 				if resolved
 					imageCallback row, @GetPhotos()
-					
-				@UploadCompletePromise = null
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
