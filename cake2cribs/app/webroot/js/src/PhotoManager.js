@@ -272,7 +272,8 @@
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
         return $.when(_this.UploadCompletePromise).then(function(resolved) {
-          if (resolved) return imageCallback(row, _this.GetPhotos());
+          if (resolved) imageCallback(row, _this.GetPhotos());
+          return _this.UploadCompletePromise = null;
         });
       });
     };

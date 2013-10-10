@@ -214,6 +214,8 @@ class A2Cribs.PhotoManager
 			$.when(@UploadCompletePromise).then (resolved) =>
 				if resolved
 					imageCallback row, @GetPhotos()
+					
+				@UploadCompletePromise = null
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
