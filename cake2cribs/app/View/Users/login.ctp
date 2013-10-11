@@ -113,27 +113,25 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                                 <input id="student_confirm_password" class="span6 right_input" type="password" placeholder="Confirm Password">
                             </div>
                             <div class="row-fluid">
-                                <select id="registered_university" class="span12">
-                                <option value="">Select Your University</option>
-                                <?php
-                                foreach ($locations as $location) {
-                                    $id = $location['University']['id'];
-                                    $name = $location['University']['name'];
-                                    echo "<option value='" . $id . "'>" . $name . "</option>";
-                                }
-                                ?>
-                            </select>
-                            </div>
-                            <div class="row-fluid">
-                                <select id="student_year" class="span12">
-                                <option value="">Select Your Year</option>
-                                <?php
-                                $length = count($user_years);
-                                for ($i=0; $i<$length; $i++) {
-                                    echo "<option value='" . $i . "'>" . $user_years[$i] . "</option>";
-                                }
-                                ?>
-                            </select>
+                                <select id="registered_university" class="span7">
+                                    <option value="">Select Your University</option>
+                                    <?php
+                                    foreach ($locations as $location) {
+                                        $id = $location['University']['id'];
+                                        $name = $location['University']['name'];
+                                        echo "<option value='" . $id . "'>" . $name . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                                <select id="student_year" class="span5">
+                                    <option value="">Select Your Year</option>
+                                    <?php
+                                    $length = count($user_years);
+                                    for ($i=0; $i<$length; $i++) {
+                                        echo "<option value='" . $i . "'>" . $user_years[$i] . "</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                     </div>
