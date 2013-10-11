@@ -124,13 +124,15 @@ class User extends AppModel {
 		'linkedin_verified' => 'alphaNumeric',
 		'last_login' => 'datetime',
 		'preferred_university' => 'numeric',
+		'registered_university' => 'numeric',
+		'student_year' => 'numeric',
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
 		'password_reset_date' => 'datetime'
 	);
 
-	/* ---------- unit_style_options ---------- */
+	/* ---------- user_type ---------- */
 	const USER_TYPE_SUBLETTER = 0;
 	const USER_TYPE_PROPERTY_MANAGER = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
 	const USER_TYPE_NEWSPAPER_ADMIN = 2;
@@ -140,6 +142,25 @@ class User extends AppModel {
 		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
 		    self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
 		    self::USER_TYPE_UNIVERSITY_ADMIN => __('University Admin',true)
+		);
+		return parent::enum($value, $options);
+	}
+
+	/* ---------- year ---------- */
+	const USER_STUDENT_YEAR_FRESHMAN = 0;
+	const USER_STUDENT_YEAR_SOPHOMORE = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
+	const USER_STUDENT_YEAR_JUNIOR = 2;
+	const USER_STUDENT_YEAR_SENIOR = 3;
+	const USER_STUDENT_YEAR_GRADUATE_STUDENT = 4;
+	const USER_STUDENT_YEAR_OTHER = 5;
+	public static function year($value = null) {
+		$options = array(
+		    self::USER_STUDENT_YEAR_FRESHMAN => __('Freshman',true),
+		    self::USER_STUDENT_YEAR_SOPHOMORE => __('Sophomore',true),
+		    self::USER_STUDENT_YEAR_JUNIOR => __('Junior',true),
+		    self::USER_STUDENT_YEAR_SENIOR => __('Senior',true),
+		    self::USER_STUDENT_YEAR_GRADUATE_STUDENT => __('Graduate Student',true),
+		    self::USER_STUDENT_YEAR_OTHER => __('Other',true)
 		);
 		return parent::enum($value, $options);
 	}
@@ -641,6 +662,12 @@ class User extends AppModel {
 	{
 		$this->id = $user_id;
 		$this->saveField('received_welcome_email', 1);
+	}
+
+	/* Returns all student years in an array */
+	public function GetYears()
+	{
+		return $this->year(AppModel::GET_ALL_OF_THIS_TYPE);
 	}
 
 	/*
