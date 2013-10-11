@@ -258,6 +258,7 @@ class UsersController extends AppController {
             $url .= '&code=' . $code;
             CakeLog::write('url', $url);
             $fb_user = urldecode(file_get_contents($url));
+            CakeLog::write('fb_user', print_r($fb_user, true));
             parse_str($fb_user); /* Sets access token value in $access_token */
             /* 
             We have the access token.
