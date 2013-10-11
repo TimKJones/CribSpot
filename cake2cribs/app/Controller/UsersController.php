@@ -73,6 +73,11 @@ class UsersController extends AppController {
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
+        /* Check if user initially tried to log in with facebook */
+        $fb_id = $this->Session->read('FB.id');
+        if ($fb_id)
+            $user['facebook_id'] = $fb_id;
+
         $response = $this->User->RegisterUser($user);
         if (array_key_exists('error', $response)) {
             $this->set('response', json_encode($response));
@@ -217,7 +222,8 @@ class UsersController extends AppController {
     */
     public function Login($signup=false)
     {
-        CakeLog::write('hostname', gethostname());
+        $this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears());
         if ($this->Auth->loggedIn()){
             /* User already logged in */
             $this->User->UpdateLastLogin($this->Auth->User('id'));
@@ -236,7 +242,7 @@ class UsersController extends AppController {
         After the user is redirected from facebook, these URL parameters will have been set.
         We'll use these to get their access token, which we'll use to query for their basic information.
         */
-        if (array_key_exists('code', $_GET)){
+        if (array_key_exists('code', $_GET)) {
             $redirect_uri = Configure::read('HTTP_TYPE').'://www.cribspot.com/login';
             if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_LOCAL')
                 $redirect_uri = urlencode('http://localhost/login');
@@ -263,33 +269,69 @@ class UsersController extends AppController {
             }  
 
             $userData = $this->_getUserData($access_token);
+            $email = null;
+            if (property_exists($userData, 'email'))
+                $email = $userData->email;
+
             $user = array(
-                'email' => $userData->email,
+                'email' => $email,
                 'first_name' => $userData->first_name,
                 'last_name' => $userData->last_name,
                 'facebook_id' => $userData->id
             );
 
-            /* Check for null email returned from facebook */
-            if (empty($user['email'])) {
-                /* Null email was returned from facebook...we need email addresses, so don't log them in. */
+            /* 
+            First, check if we have a user with this facebook_id. 
+            If so, log them in.
+            If not, redirect them to /signup with first and last names filled in, and store fb_id in session
+            */
+
+            /* Didn't receive critical info from facebook - something went wrong */
+            if ($userData->id === null) {
                 $error = null;
                 $error['user'] = $user;
                 $this->User->LogError(null, 66, $error);
                 $flash_message['method'] = "Error";
-                $flash_message['message'] = "Looks like we had trouble getting your email address from Facebook..." .
+                $flash_message['message'] = "Looks like we had trouble logging you in from Facebook..." .
                 "but don't worry! You can still create an account right here. It'll take less than 30 seconds.";
                 $json = json_encode($flash_message);
                 $this->Cookie->write('flash-message', $json);
-                $this->set('show_signup', $signup);
+                $this->redirect(array('action' => 'login', 'signup'));
                 return;
-            }   
+            }
+
+            /* Check if we have a user with this facebook id */
+            if ($userData->id){
+                $local_user = $this->User->GetUserFromFacebookId($userData->id);
+                CakeLog::write('local_user', print_r($local_user, true));
+                if (array_key_exists('User', $local_user) && array_key_exists('email', $local_user['User'])) {
+                    /* Check if local user has verified their email yet */
+                    $response = $this->User->EmailIsConfirmed($local_user['User']['email']);
+                    if (array_key_exists('error', $response)){
+                        /* Save the user's email so that we can resend the email confirmation email if they request it */
+                        $this->Session->write('user_email_not_verified', $local_user['User']['email']);
+                        $flash_message['method'] = "Error";
+                        $flash_message['callback'] = "A2Cribs.Login.ResendConfirmationEmail";
+                        return;
+                    }
+
+                    $user['email'] = $local_user['User']['email'];
+                    $this->_facebookLogin($user);
+                    return;
+                }
+            }
+
+            /* 
+            No user exists with this facebook_id. Send them to /signup with first & last names filled in, 
+            and store fb_id in session
+            */
+            $this->Session->write('FB.first_name', $userData->first_name); 
+            $this->Session->write('FB.last_name', $userData->last_name); 
+            $this->Session->write('FB.id', $userData->id);
+            $this->redirect(array('action' => 'login', 'signup'));
+            return;
 
             /* Check for strange characters in first and last names of users */
-            
-            
-
-            $this->_facebookLogin($user);
         }
 
         $this->set('show_signup', $signup);

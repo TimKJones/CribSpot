@@ -102,8 +102,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                     <div class="row-fluid">
                         <div class="span12 signup_input_container">
                             <div class="row-fluid">
-                                <input id="student_first_name" class="span6" type="text" placeholder="First Name">
-                                <input id="student_last_name" class="span6 right_input" type="text" placeholder="Last Name">
+                                <input id="student_first_name" class="span6" type="text" placeholder="First Name" value="<?= ($this->Session->read('FB.first_name')) ? $this->Session->read('FB.first_name') : "" ; ?>">
+                                <input id="student_last_name" class="span6 right_input" type="text" placeholder="Last Name" value="<?= ($this->Session->read('FB.last_name')) ? $this->Session->read('FB.last_name') : "" ; ?>">
                             </div>
                             <div class="row-fluid">
                                 <input id="student_email" class="span12" type="email" placeholder="Email">
@@ -111,6 +111,29 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                             <div class="row-fluid">
                                 <input id="student_password" class="span6" type="password" placeholder="Password">
                                 <input id="student_confirm_password" class="span6 right_input" type="password" placeholder="Confirm Password">
+                            </div>
+                            <div class="row-fluid">
+                                <select id="registered_university" class="span12">
+                                <option value="">Select Your University</option>
+                                <?php
+                                foreach ($locations as $location) {
+                                    $id = $location['University']['id'];
+                                    $name = $location['University']['name'];
+                                    echo "<option value='" . $id . "'>" . $name . "</option>";
+                                }
+                                ?>
+                            </select>
+                            </div>
+                            <div class="row-fluid">
+                                <select id="student_year" class="span12">
+                                <option value="">Select Your Year</option>
+                                <?php
+                                $length = count($user_years);
+                                for ($i=0; $i<$length; $i++) {
+                                    echo "<option value='" . $i . "'>" . $user_years[$i] . "</option>";
+                                }
+                                ?>
+                            </select>
                             </div>
                         </div>
                     </div>

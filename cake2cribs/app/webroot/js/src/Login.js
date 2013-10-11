@@ -44,21 +44,6 @@
       return this.div.find("#pm_signup").submit(this.CreatePropertyManager);
     };
 
-    Login.InitializeUniversityAutocomplete = function(locations) {
-      var location, that, _i, _len;
-      this.schoolList = Array();
-      for (_i = 0, _len = locations.length; _i < _len; _i++) {
-        location = locations[_i];
-        this.schoolList.push(location.University.name);
-      }
-      that = this;
-      return $(function() {
-        return $(".typeahead").typeahead({
-          source: that.schoolList
-        });
-      });
-    };
-
     Login.cribspotLogin = function(div) {
       var request_data, url,
         _this = this;
@@ -98,7 +83,9 @@
       return false;
     };
 
-    Login.ResendConfirmationEmail = function() {
+    Login.ResendConfirmationEmail = function(canceled) {
+      if (canceled == null) canceled = false;
+      if (canceled) return;
       return $.ajax({
         url: myBaseUrl + "users/ResendConfirmationEmail",
         type: "POST",
@@ -123,6 +110,12 @@
         if (Login.div.find("#" + type_prefix + field).val().length === 0) {
           isValid = false;
         }
+      }
+      if (user_type === 0) {
+        if ($("#registered_university").val().length === 0) isValid = false;
+      }
+      if (user_type === 0) {
+        if ($("#student_year").val().length === 0) isValid = false;
       }
       if (!isValid) A2Cribs.UIManager.Error("Please fill in all of the fields!");
       if (user_type === 1) {
@@ -157,6 +150,8 @@
               request_data.User[field] = Login.div.find("#" + type_prefix + field).val();
             }
           }
+          request_data.User['registered_university'] = $("#registered_university").val();
+          request_data.User['student_year'] = $("#student_year").val();
           return $.post("/users/AjaxRegister", request_data, function(response) {
             var data, email;
             data = JSON.parse(response);
