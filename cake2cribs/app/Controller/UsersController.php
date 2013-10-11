@@ -623,6 +623,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     */
     private function _facebookLogin($fb_user)
     {
+CakeLog::write('fblogin_fbuser', print_r($fb_user, true));
         if ($fb_user){
             $local_user = $this->User->GetUserFromFacebookId($fb_user['facebook_id']);
 CakeLog::write('fblogin_localuser', print_r($local_user, true));
