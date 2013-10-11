@@ -138,12 +138,10 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <input id="sign_in" class="btn pull-right" type="submit" value="SIGN UP" >
-                    </div>
-                    <div class="row-fluid">
                         <div class="span12">
                             <div class="create_account_container">
                                 Wait a second... <a href="#" class="show_login">I have an account.</a>
+                                <input id="sign_in" class="btn pull-right" type="submit" value="SIGN UP" >
                             </div>
                         </div>
                     </div>
