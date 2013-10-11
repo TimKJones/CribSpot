@@ -304,12 +304,14 @@ class UsersController extends AppController {
             }
 
             /* Check if we have a user with this facebook id */
+    CakeLog::write('justlogging', 'id:' . $userData->id);
             if ($userData->id){
                 $local_user = $this->User->GetUserFromFacebookId($userData->id);
                 CakeLog::write('local_user', print_r($local_user, true));
                 if (array_key_exists('User', $local_user) && array_key_exists('email', $local_user['User'])) {
                     /* Check if local user has verified their email yet */
                     $response = $this->User->EmailIsConfirmed($local_user['User']['email']);
+                    CakeLog::write('justlogging', 'response: '.print_r($response, true));
                     if (array_key_exists('error', $response)){
                         /* Save the user's email so that we can resend the email confirmation email if they request it */
                         $this->Session->write('user_email_not_verified', $local_user['User']['email']);
@@ -319,6 +321,7 @@ class UsersController extends AppController {
                     }
 
                     $user['email'] = $local_user['User']['email'];
+                    CakeLog::write('justlogging', 'gonna try');
                     $this->_facebookLogin($user);
                     return;
                 }
@@ -328,6 +331,7 @@ class UsersController extends AppController {
             No user exists with this facebook_id. Send them to /signup with first & last names filled in, 
             and store fb_id in session
             */
+CakeLog::write('redirecting', 'getting ready');
             $this->Session->write('FB.first_name', $userData->first_name); 
             $this->Session->write('FB.last_name', $userData->last_name); 
             $this->Session->write('FB.id', $userData->id);
