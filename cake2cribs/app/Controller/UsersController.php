@@ -625,7 +625,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     {
         if ($fb_user){
             $local_user = $this->User->GetUserFromFacebookId($fb_user['facebook_id']);
-
+CakeLog::write('fblogin_localuser', print_r($local_user, true));
             /* User exists, so log them in. */
             if ($local_user){
                 $this->User->UpdateLastLogin($local_user['User']['id']);
