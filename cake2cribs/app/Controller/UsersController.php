@@ -265,11 +265,13 @@ class UsersController extends AppController {
             We now have to verify its validity
             */
             $response = $this->_verifyFBAccessToken($access_token);
+            CakeLog::write('at_response', print_r($response, true));
             if ($response === false){
                 /* TODO: HANDLE ERROR HERE */
             }  
 
             $userData = $this->_getUserData($access_token);
+            CakeLog::write('userdata', print_r($userData, true));
             $email = null;
             if (property_exists($userData, 'email'))
                 $email = $userData->email;
