@@ -47,7 +47,9 @@ class Listing extends AppModel {
 				'required' => false
 			)
 		),
-		'visible' => 'boolean' /* visible is set to false when listing is deleted */
+		'visible' => 'boolean', /* visible is set to false when listing is deleted */
+		'created' => 'datetime',
+		'modified' => 'datetime'
 	);
 
 	public $RADIUS = 12; // radius from center (km) encompassing area to pull properties from
@@ -64,6 +66,23 @@ class Listing extends AppModel {
 		    self::LISTING_TYPE_PARKING => __('Parking',true),
 		);
 		return parent::enum($value, $options);
+	}
+
+	public function beforeSave()
+	{
+		/* 
+		FIX: 10-12-2013 TKJ
+		waitlist_open_date fails validation sometimes due to the 00-00-00 for time at the end of the date.
+		*/
+		$date_fields = array('waitlist_open_date', 'start_date', 'alternate_start_date');
+		if (array_key_exists('Rental', $this->data)){
+			foreach ($date_fields as $field){
+				if (array_key_exists($field, $this->data['Rental']))
+					$this->data['Rental'][$field] = date('Y-m-d', strtotime($this->data['Rental'][$field]));
+			}
+		}
+		
+		CakeLog::write('beforesave', print_r($this->data, true));
 	}
 
 	/*

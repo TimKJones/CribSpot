@@ -305,18 +305,6 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
     
 
-    <div align="left" style="text-align:left;" >
-
-        
-
-        <img id="customHeaderImage" label="Header Image" width="306" src="https://i2.createsend1.com/ti/t/51/7B6/9E8/124100/images/email_logo_black.194444.png" class="w640" border="0" align="top" style="display:inline;outline-style:none;text-decoration:none;" />
-
-        
-
-    </div>
-
-    
-
     
 
 </td>
@@ -348,30 +336,53 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
-                                        <p style="margin-bottom:15px;" >
-
 <?php echo $intro_greeting; ?><br/><br/>
 
 <?php if ($is_property_manager && !$email_verified){ ?>
-In case you missed our first email, Cribspot is a new website dedicated to revolutionizing the way college students look for housing.  We're also making it easier than ever for property managers to get leads and communicate with tenants. And best of all, it's <b>free</b> to post and <b>free</b> to receive and respond to messages from interested students.<br/><br/>
+<?php echo $student_name;?> is now using <a href='www.cribspot.com'>Cribspot</a> to search for their student rentals. They’ve just used our built-in message feature to get in touch with you (don't worry, this lead and all future ones are free).<br/><br/>
+<?php } ?>
 
-In order to view this message and communicate with this prospective tenant, you'll first need to finish registration.  Click <a href='<?php echo $reset_password_url; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your password or copy and paste this url into your browser:<br/><br/>
+<?php if (!empty($message_text_header)){ ?>
+<span style='font-weight: bold;font-size:15px'><?php echo $message_text_header; ?>:</span><br/><br/>
+<?php } ?>
+
+<?php if (!empty($message_text)) { ?>
+<div style='margin-left: 2em;margin-right:2em;margin-bottom:-1px;font-style:italic'><?php echo $message_text; ?></div><br/><br/>
+<?php } ?>
+
+<?php if ($is_property_manager && !$email_verified){ ?>
+To respond to this message, click <a href='<?php echo $reset_password_url;?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your Cribspot password, or copy and paste the following URL into your browser:<br/><br/>
 
 <?php echo $reset_password_url; ?><br/><br/>
 
-After logging in with your new password, you'll be directed to the dashboard where you can view this message and respond.<br/><br/> 
+<b>What is Cribspot?</b>
+
+With Cribspot, managing the student side of your business is easier than ever before. You can respond to leads, see which of your properties receive the most traffic, and post your properties to thousands of students, all in one place. Best of all, this package of services is <b>FREE</b>.<br/><br/>
 
 <?php } else { ?>
-
-Click <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to view it and respond, or copy and paste the following link into your browser:<br/><br/>
+<?php
+$non_generic_name = $student_name;
+if ($student_name === 'A student')
+    $non_generic_name = 'this student';
+?>
+Visit your dashboard and 
+<?php if ($is_property_manager){?>
+    get back to <?php echo $non_generic_name; ?> 
+<?php } else { ?>
+respond
+<?php } ?> by clicking <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a>, or copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $view_msg; ?><br/><br/>
 
 <?php } ?>
 
-If you have any questions, you can message us directly on <a href='www.cribspot.com'>Cribspot</a> using the blue 'Chat with us!' tab along the bottom of the screen. You can also send us an email at help@cribspot.com and we'll get right back to you.<br/><br/>
+<?php if ($is_property_manager && !$email_verified){ ?>
+After logging in with your new password you'll be directed to your dashboard where you can manage your listings and view and respond to all of your messages.
+<?php } ?>
 
-Tim, Jason, Evan, and Alex<br/>
+ If you ever have any questions, message us directly on Cribspot using the blue 'Chat with Cribspot' tab along the bottom of the screen or send us an email at help@cribspot.com.<br/><br/>
+
+Best Regards,<br/>
 <i>The Cribspot Team</i>
 
                                     </div>

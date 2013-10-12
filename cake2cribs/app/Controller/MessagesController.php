@@ -17,8 +17,8 @@
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
-
     }
+
     //Redirects to the dashboard automatically opening the specified
     //conversation
     public function view($conv_id){
@@ -88,7 +88,7 @@
         if ($participant == null) {
             $json = json_encode(array('success'=>false));
         }else{
-            $this->emailUserAboutMessage($participant, $user, $conversation);
+            $this->emailUserAboutMessage($participant, $user, $conversation, $data['message_text']);
             $json = json_encode(array('success'=>$msg_id > 0)); 
         }
         
@@ -319,7 +319,7 @@
             $message = $this->Message->read();
         }   
 
-        $this->emailUserAboutMessage($listing['User'], $user['User'], $conversation); 
+        $this->emailUserAboutMessage($listing['User'], $user['User'], $conversation, $message_body); 
         $json = json_encode(array(
                 'success' => true,
         ));
@@ -328,7 +328,7 @@
     }
 
 
-    private function emailUserAboutMessage($recipient, $from_user, $conversation){
+    private function emailUserAboutMessage($recipient, $from_user, $conversation, $message_text){
             //send unread message email
         $this->Email->smtpOptions = array(
           'port'=>'587',
@@ -358,25 +358,31 @@
         );
         /* Get the data we need to fill in fields in the email */
         $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
-
-        if ($street_address !== null)
-            $this->Email->subject = "You've received a message from ".$from_name." about ".$street_address;
-
         $is_property_manager = (intval($recipient['user_type']) === 1);
-        $email_verified = $recipient['verified'];
-        $reset_password_url = null;
-//You've received a new message on Cribspot about your property at address!
-//You've received a new message on Cribspot about address!
-        $intro_greeting = "You've received a new message on Cribspot";
-        if ($street_address){
+
+        if ($street_address !== null){
             if ($is_property_manager)
-                $intro_greeting .= " about your property at ";
+                $this->Email->subject = "You've received a FREE lead from ".$from_name." about ".$street_address;
             else
-                $intro_greeting .= " about ";
-            $intro_greeting .= $street_address;
+                $this->Email->subject = "You've received a response from ".$from_name." about ".$street_address;
         }
 
-        $intro_greeting .= "!";
+        $email_verified = $recipient['verified'];
+        $reset_password_url = null;
+
+        $intro_greeting = "";
+        if ($is_property_manager && !$email_verified)
+            $intro_greeting = "A student is trying to contact you about your rental at ";
+        else if ($is_property_manager)
+            $intro_greeting = "You've just received a FREE Cribspot lead for your rental at ";
+        else
+            $intro_greeting = "You've received a response from " . $from_name . " about ";
+
+        if ($street_address){
+            $intro_greeting .= $street_address . "!";
+            if ($is_property_manager && $email_verified)
+                $intro_greeting .= " Here's their message for you:";
+        }
 
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
@@ -387,6 +393,33 @@
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
         $this->set('intro_greeting', $intro_greeting);
+        $this->set('message_text', $message_text);
+        $year = null;
+        if (array_key_exists('year', $from_user))
+            $year = $from_user['year'];
+
+        $message_text_header = null; /* ex. Tim - University of Michigan */
+        $this->set('student_year', $year);
+        $first_name = 'A student';
+        if (array_key_exists('first_name', $from_user)){
+            $first_name = $from_user['first_name'];
+            if ($is_property_manager)
+                $message_text_header = $first_name;
+        }
+            
+        $this->set('student_name', $first_name);
+        $student_school = null;
+        if (array_key_exists('registered_university', $from_user) && !empty($from_user['registered_university'])){
+            $student_school = $this->University->getNameFromId($from_user['registered_university']);
+            if ($is_property_manager)
+                $message_text_header .= ' - ' . $student_school;
+        }
+
+        if (!$is_property_manager && array_key_exists('company_name', $from_user)){
+            $message_text_header = $from_user['company_name'];
+        }
+
+        $this->set('message_text_header', $message_text_header);
         $this->Email->send();
 
     }
