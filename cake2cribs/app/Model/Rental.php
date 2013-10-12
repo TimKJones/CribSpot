@@ -74,11 +74,16 @@ class Rental extends RentalPrototype {
 		), 
 		'start_date' => array(
 			'date' => array(
-				'rule' => 'date',
+				'rule' => array('date', 'ymd'),
 				'required' => false
 			)
 		),
-		'alternate_start_date',
+		'alternate_start_date' => array(
+			'date' => array(
+				'rule' => array('date', 'ymd'),
+				'required' => false
+			)
+		),
 		'lease_length' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -257,7 +262,7 @@ class Rental extends RentalPrototype {
 		'waitlist' => 'boolean',
 		'waitlist_open_date' => array(
 			'date' => array(
-				'rule' => 'date',
+				'rule' => array('date', 'ymd'),
 				'required' => false
 			)
 		),
@@ -287,8 +292,8 @@ class Rental extends RentalPrototype {
 		),
 		/*'website' => 'url',*/
 		'is_complete' => 'boolean',
-		'created',
-		'modified'
+		'created' => 'datetime',
+		'modified' => 'datetime'
 	);
 
 	private $MAX_BEDS = 10;
