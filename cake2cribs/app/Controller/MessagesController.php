@@ -362,7 +362,7 @@
 
         if ($street_address !== null){
             if ($is_property_manager)
-                $this->Email->subject = "You've received a lead from ".$from_name." about ".$street_address;
+                $this->Email->subject = "You've received a FREE lead from ".$from_name." about ".$street_address;
             else
                 $this->Email->subject = "You've received a response from ".$from_name." about ".$street_address;
         }
@@ -374,7 +374,7 @@
         if ($is_property_manager && !$email_verified)
             $intro_greeting = "A student is trying to contact you about your rental at ";
         else if ($is_property_manager)
-            $intro_greeting = "You've just received a Cribspot lead for your rental at ";
+            $intro_greeting = "You've just received a FREE Cribspot lead for your rental at ";
         else
             $intro_greeting = "You've received a response from " . $from_name . " about ";
 

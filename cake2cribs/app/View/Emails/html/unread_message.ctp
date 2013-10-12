@@ -305,18 +305,6 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
     
 
-    <div align="left" style="text-align:left;" >
-
-        
-
-        <img id="customHeaderImage" label="Header Image" width="306" src="https://i2.createsend1.com/ti/t/51/7B6/9E8/124100/images/email_logo_black.194444.png" class="w640" border="0" align="top" style="display:inline;outline-style:none;text-decoration:none;" />
-
-        
-
-    </div>
-
-    
-
     
 
 </td>
@@ -348,20 +336,18 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
-                                        <p style="margin-bottom:15px;" >
-
 <?php echo $intro_greeting; ?><br/><br/>
 
 <?php if ($is_property_manager && !$email_verified){ ?>
-<?php echo $student_name;?> is now using Cribspot to search for their student rentals. They’ve just used our built-in message feature to get in touch with you.<br/><br/>
+<?php echo $student_name;?> is now using <a href='www.cribspot.com'>Cribspot</a> to search for their student rentals. They’ve just used our built-in message feature to get in touch with you (don't worry, this lead and all future ones are free).<br/><br/>
 <?php } ?>
 
 <?php if (!empty($message_text_header)){ ?>
-<span style='color: #090996;font-weight: bold;font-size:15px'><?php echo $message_text_header; ?>:</span><br/><br/>
+<span style='font-weight: bold;font-size:15px'><?php echo $message_text_header; ?>:</span><br/><br/>
 <?php } ?>
 
 <?php if (!empty($message_text)) { ?>
-<b><?php echo $message_text; ?></b><br/><br/>
+<div style='margin-left: 2em;margin-right:2em;margin-bottom:-1px;font-style:italic'><?php echo $message_text; ?></div><br/><br/>
 <?php } ?>
 
 <?php if ($is_property_manager && !$email_verified){ ?>
@@ -379,7 +365,12 @@ $non_generic_name = $student_name;
 if ($student_name === 'A student')
     $non_generic_name = 'this student';
 ?>
-Visit your dashboard and get back to <?php echo $non_generic_name; ?> by clicking <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a>, or copy and paste the following link into your browser:<br/><br/>
+Visit your dashboard and 
+<?php if ($is_property_manager){?>
+    get back to <?php echo $non_generic_name; ?> 
+<?php } else { ?>
+respond
+<?php } ?> by clicking <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a>, or copy and paste the following link into your browser:<br/><br/>
 
 <?php echo $view_msg; ?><br/><br/>
 
