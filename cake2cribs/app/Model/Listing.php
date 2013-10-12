@@ -68,23 +68,6 @@ class Listing extends AppModel {
 		return parent::enum($value, $options);
 	}
 
-	public function beforeSave()
-	{
-		/* 
-		FIX: 10-12-2013 TKJ
-		waitlist_open_date fails validation sometimes due to the 00-00-00 for time at the end of the date.
-		*/
-		$date_fields = array('waitlist_open_date', 'start_date', 'alternate_start_date');
-		if (array_key_exists('Rental', $this->data)){
-			foreach ($date_fields as $field){
-				if (array_key_exists($field, $this->data['Rental']))
-					$this->data['Rental'][$field] = date('Y-m-d', strtotime($this->data['Rental'][$field]));
-			}
-		}
-		
-		CakeLog::write('beforesave', print_r($this->data, true));
-	}
-
 	/*
 	Attempts to save $listing to the Listing table and any associated tables.
 	Returns listing_id of saved listing on success; validation errors on failure.
@@ -112,6 +95,8 @@ class Listing extends AppModel {
 		if (!array_key_exists('alternate_start_date', $listing['Rental']))
 			$listing['Rental']['alternate_start_date'] = '';
 	
+
+		$this->_formatDates($listing);
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
 			return array('listing_id' => $this->id);
@@ -866,7 +851,27 @@ class Listing extends AppModel {
 		return $filteredBasicData;
 	}
 
-
+	private function _formatDates(&$listing)
+	{
+		/* 
+		FIX: 10-12-2013 TKJ
+		waitlist_open_date fails validation sometimes due to the 00-00-00 for time at the end of the date.
+		*/
+		$date_fields = array('waitlist_open_date', 'start_date', 'alternate_start_date');
+		CakeLog::write('beforesave1', print_r($listing, true));
+		if (array_key_exists('Rental', $listing)){
+			foreach ($date_fields as $field){
+				if (array_key_exists($field, $listing['Rental'])){
+					if (!empty($listing['Rental'][$field]))
+						$listing['Rental'][$field] = date('Y-m-d', strtotime($listing['Rental'][$field]));
+					else
+						unset($listing['Rental'][$field]);
+				}
+			}
+		}
+		
+		CakeLog::write('beforesave', print_r($listing, true));
+	}
 
 }	
 
