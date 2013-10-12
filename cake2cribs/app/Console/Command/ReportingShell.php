@@ -39,16 +39,13 @@ class ReportingShell extends AppShell
 
         $where = '"small popup"' . " == " . 'properties["display type"]';
         $dailyListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $from_date, $to_date, $where);
-    CakeLog::write('values', 'TOTAL');
         if ($dailyListingIdToClickMap === null)
             return;
 
         $totalListingIdToClickMap = $this->_getListingIdToCountMap('Listing Click', $first_day, $yesterday, $where);
-    CakeLog::write('values', 'TOTAL END');
         if ($totalListingIdToClickMap === null)
             return;
 
-CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         $mixpanelData['dailyListingClicks'] = $dailyListingIdToClickMap;
         $mixpanelData['totalListingClicks'] = $totalListingIdToClickMap;
 
@@ -68,10 +65,7 @@ CakeLog::write('totalfuckingmap', print_r($totalListingIdToClickMap, true));
         if ($mixpanelData['dailyContacts'] === null || $mixpanelData['totalContacts'] === null)
             return;
 
-        CakeLog::write('totalListingIdToContactsMap', print_r($totalListingIdToContactsMap, true));
-
         $messages = $this->Message->GetListingIdToReceivedMessagesMap();
-        CakeLog::write("messagesmap", print_r($messages, true));
         $dailyListingIdToReceivedMessagesMap = $messages['daily'];
         $totalListingIdToReceivedMessagesMap = $messages['total'];
         $mixpanelData['dailyMessages'] = $dailyListingIdToReceivedMessagesMap;
@@ -170,6 +164,16 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
                 'totalMessages'
             );
 
+            /*
+            FIX: 10-12-2013 TKJ
+            Phone calls can be negative for a few weird edge cases as a result of not having tracked contact from full-page
+            */
+            $phoneMetrics = array('dailyPhoneCalls', 'totalPhoneCalls');
+            foreach ($phoneMetrics as $metric){
+                if (array_key_exists($metric, $metricCounts) && $metricCounts[$metric] < 0)
+                    $metricCounts[$metric] = 0;
+            }
+
             $overviewMetricsCount = array();
             foreach ($overviewMetrics as $metric){
                 $overviewMetricsCount[$metric] = $metricCounts[$metric];
@@ -207,12 +211,13 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
 
             $templateData['timePeriod'] = $time_period_string;
 
-            /* TODO: REMEMBER TO CHECK IF EMAIL IS NULL */
-
-            if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])) {
-                $email = $user['User']['email'];
-                if (!empty($email)){
-                    $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+            if ((Configure::read('EMAIL_DEBUG_MODE') === 'DEBUG' && $counter < 2) ||
+                Configure::read('EMAIL_DEBUG_MODE') === 'PRODUCTION'){
+                if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])) {
+                    $email = $user['User']['email'];
+                    if (!empty($email)){
+                        $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
+                    }
                 }
             }
 
