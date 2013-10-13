@@ -145,7 +145,6 @@ class Marker extends AppModel {
 		$this->contain();
 		$markers = $this->find('all', array('conditions'=>'Marker.visible=1'));
 		$filtered_markers = array();
-		CakeLog::write("loadMarkers", print_r($markers, true));
 		
 		// TODO change this functionality to use a custom sql query
 		// to eliminate the need to filter all the markers everytime

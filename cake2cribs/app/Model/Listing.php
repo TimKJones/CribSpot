@@ -48,6 +48,12 @@ class Listing extends AppModel {
 			)
 		),
 		'visible' => 'boolean', /* visible is set to false when listing is deleted */
+		'available' => array(
+			'boolean' => array(
+				'rule' => 'boolean',
+				'required' => false
+			)
+		),
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);
@@ -649,6 +655,7 @@ class Listing extends AppModel {
 		$listings = $this->find('all', array(
 			'conditions' => array(
 				'Listing.visible' => 1,
+				'Listing.available' => 1,
 				'User.user_type' => 1
 			),
 			'contain' => array('User', 'Rental')
@@ -679,9 +686,10 @@ class Listing extends AppModel {
 		$listings = $this->find('all', array(
 			'conditions' => array(
 				'Listing.listing_id' => $listing_ids,
-				'Listing.visible' => 1
+				'Listing.visible' => 1,
+				'Listing.available' => 1
 			)
-		));
+		)) ;
 
 		$map = array();
 
@@ -785,6 +793,7 @@ class Listing extends AppModel {
 			'Rental.lease_length',
 			'Listing.marker_id',
 			'Listing.listing_id',
+			'Listing.available',
 			'Marker.marker_id',
 			'Marker.latitude',
 			'Marker.longitude',
