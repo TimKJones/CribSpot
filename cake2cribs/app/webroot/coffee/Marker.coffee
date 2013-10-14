@@ -9,10 +9,17 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	GetBuildingType: ->
 		return @building_type_id
 
-	Init: ->
+	Init: (available = null) ->
+		if not available? # available is unknown
+			marker_dot = "unknown"
+		else if available is yes # this place is available
+			marker_dot = "available"
+		else # the place is leased
+			marker_dot = "leased"
+
 		@GMarker = new google.maps.Marker
 			position: new google.maps.LatLng(@latitude, @longitude)
-			icon: "/img/dots/available_dot.png"
+			icon: "/img/dots/dot_#{marker_dot}.png"
 			id: @GetId()
 		google.maps.event.addListener @GMarker, 'click', @MarkerClicked
 

@@ -78,9 +78,9 @@ class A2Cribs.Map
 		]###
 		imageStyles = [
 			{
-				height: 48
+				height: 39
 				url: '/img/dots/group_dot.png'
-				width: 48
+				width: 39
 				textColor: '#ffffff'
 				textSize: 13
 			}
@@ -130,7 +130,20 @@ class A2Cribs.Map
 		# Initialize all markers and add tehm to the map
 		all_markers = A2Cribs.UserCache.Get "marker"
 		for marker in all_markers
-			marker.Init()
+			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
+			is_available = no
+			for listing in listings
+				# check if marker is leased, unknown or available
+				# order is avail, unknown, leased
+				# marked as avail if one avail
+				# marked as unknown if one unknown and no avail
+				# marked as leased if all leased
+				if not listing.available? and is_available is no
+					is_available = null # Set to unknown
+				else if listing.available? is yes
+					is_available = yes # Set to true
+
+			marker.Init is_available
 			@GMarkerClusterer.addMarker marker.GMarker		
 
 		# Set all listings to visible
