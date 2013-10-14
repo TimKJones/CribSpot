@@ -147,13 +147,13 @@ class A2Cribs.ClickBubble
 
 	@setAvailability: (div_name, availability) ->
 		if not availability?
-			$(".#{div_name}").hide()
+			@div.find(".#{div_name}").hide()
 		else if availability
-			$(".#{div_name}").show().text "Available"
-			$(".#{div_name}").removeClass "leased"
+			@div.find(".#{div_name}").show().text "Available"
+			@div.find(".#{div_name}").removeClass "leased"
 		else
-			$(".#{div_name}").show().text "Leased"
-			$(".#{div_name}").addClass "leased"
+			@div.find(".#{div_name}").show().text "Leased"
+			@div.find(".#{div_name}").addClass "leased"
 
 	@linkWebsite: (div_name, link, listing_id) ->
 		if link?

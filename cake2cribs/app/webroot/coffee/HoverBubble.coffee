@@ -91,9 +91,18 @@ class A2Cribs.HoverBubble
 				else
 					listing_info["bed_desc"] = "Beds"
 
+				available_dot = "unknown"
+				if listing.available? is yes
+					available_dot = "available"
+				else if listing.available? and listing.available isnt yes
+					available_dot = "leased"
+
 				unit_template = $ "<div />",
 					class: "unit"
 				unit_template.attr "onclick", "A2Cribs.ClickBubble.Open(#{listing.GetId()})"
+				$ "<div />",
+					class: "dot #{available_dot}"
+				.appendTo unit_template
 				$ "<div />",
 					class: "beds"
 					text: listing_info["beds"]

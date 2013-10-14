@@ -203,13 +203,13 @@ ClickBubble class
 
     ClickBubble.setAvailability = function(div_name, availability) {
       if (!(availability != null)) {
-        return $("." + div_name).hide();
+        return this.div.find("." + div_name).hide();
       } else if (availability) {
-        $("." + div_name).show().text("Available");
-        return $("." + div_name).removeClass("leased");
+        this.div.find("." + div_name).show().text("Available");
+        return this.div.find("." + div_name).removeClass("leased");
       } else {
-        $("." + div_name).show().text("Leased");
-        return $("." + div_name).addClass("leased");
+        this.div.find("." + div_name).show().text("Leased");
+        return this.div.find("." + div_name).addClass("leased");
       }
     };
 
