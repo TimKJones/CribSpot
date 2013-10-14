@@ -94,7 +94,11 @@
         styles: this.style,
         panControl: false,
         streetViewControl: false,
-        mapTypeControl: false
+        mapTypeControl: false,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL,
+          position: google.maps.ControlPosition.TOP_RIGHT
+        }
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);
       google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);

@@ -83,7 +83,7 @@ Wrapper for google infobubble
 
 
     HoverBubble.SetContent = function(marker) {
-      var available_dot, codes, k, listing, listing_info, listings, sortedCodes, sortedListings, unit_template, _i, _len;
+      var available_dot, bed_count, bed_desc, codes, k, listing, listing_info, listings, sortedCodes, sortedListings, unit_template, _i, _len;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
       this.template.find(".building_type").text(marker.GetBuildingType());
       this.template.find(".unit_div").empty();
@@ -115,16 +115,15 @@ Wrapper for google infobubble
           sortedCodes = codes.sort(function(a, b) {
             return listings[b] - listings[a];
           });
+          bed_count = listing_info.beds;
+          bed_desc = "Beds";
           if (!(listing_info["beds"] != null)) {
-            listing_info["beds"] = "??";
-            listing_info["bed_desc"] = "Beds";
+            bed_count = "??";
           } else if (parseInt(listing_info["beds"], 10) === 0) {
-            listing_info["beds"] = "Studio";
-            listing_info["bed_desc"] = "";
+            bed_count = "Studio";
+            bed_desc = "";
           } else if (parseInt(listing_info["beds"], 10) === 1) {
-            listing_info["bed_desc"] = "Bed";
-          } else {
-            listing_info["bed_desc"] = "Beds";
+            bed_desc = "Bed";
           }
           available_dot = "unknown";
           if ((listing.available != null) === true) {
@@ -141,11 +140,11 @@ Wrapper for google infobubble
           }).appendTo(unit_template);
           $("<div />", {
             "class": "beds",
-            text: listing_info["beds"]
+            text: bed_count
           }).appendTo(unit_template);
           $("<div />", {
             "class": "bed_desc",
-            text: listing_info["bed_desc"]
+            text: bed_desc
           }).appendTo(unit_template);
           $("<div />", {
             "class": "rent",

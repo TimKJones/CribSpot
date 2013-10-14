@@ -61,13 +61,17 @@ class A2Cribs.Map
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
 		@MapOptions =
-  			zoom: zoom
-  			center: A2Cribs.Map.MapCenter
-  			mapTypeId: google.maps.MapTypeId.ROADMAP
-  			styles: @style
-  			panControl: false
-  			streetViewControl: false
-  			mapTypeControl: false
+			zoom: zoom
+			center: A2Cribs.Map.MapCenter
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+			styles: @style
+			panControl: false
+			streetViewControl: false
+			mapTypeControl: false
+			zoomControlOptions:
+				style: google.maps.ZoomControlStyle.SMALL
+				position: google.maps.ControlPosition.TOP_RIGHT
+
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
 		google.maps.event.addListener A2Cribs.Map.GMap, 'center_changed', () => A2Cribs.ClickBubble.Close()

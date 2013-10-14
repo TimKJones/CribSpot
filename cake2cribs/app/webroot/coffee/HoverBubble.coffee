@@ -80,16 +80,16 @@ class A2Cribs.HoverBubble
 				codes = (k for k of listings)
 				sortedCodes = codes.sort (a, b) -> listings[b] - listings[a]
 
+				bed_count = listing_info.beds
+				bed_desc = "Beds"
+
 				if not listing_info["beds"]?
-					listing_info["beds"] = "??"
-					listing_info["bed_desc"] = "Beds"
+					bed_count = "??"
 				else if parseInt(listing_info["beds"], 10) is 0
-					listing_info["beds"] = "Studio"
-					listing_info["bed_desc"] = ""
+					bed_count = "Studio"
+					bed_desc = ""
 				else if parseInt(listing_info["beds"], 10) is 1
-					listing_info["bed_desc"] = "Bed"
-				else
-					listing_info["bed_desc"] = "Beds"
+					bed_desc = "Bed"
 
 				available_dot = "unknown"
 				if listing.available? is yes
@@ -105,11 +105,11 @@ class A2Cribs.HoverBubble
 				.appendTo unit_template
 				$ "<div />",
 					class: "beds"
-					text: listing_info["beds"]
+					text: bed_count
 				.appendTo unit_template
 				$ "<div />",
 					class: "bed_desc"
-					text: listing_info["bed_desc"]
+					text: bed_desc
 				.appendTo unit_template
 				$ "<div />",
 					class: "rent"
