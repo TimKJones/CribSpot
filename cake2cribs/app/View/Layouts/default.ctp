@@ -113,7 +113,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		);
 */
 
-		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=2', array('type' => 'icon'));
+		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=3', array('type' => 'icon'));
 
 		/* Fetch data */
 		echo $this->fetch('meta');
