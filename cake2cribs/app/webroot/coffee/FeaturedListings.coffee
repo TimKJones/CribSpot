@@ -129,9 +129,9 @@ class A2Cribs.FeaturedListings
             @GetSidebarImagePaths(sidebar_listing_ids)
 
             # Set favorite add/delete event handlers for sidebar
-            for listing in listings
-                if listing.Listing?
-                    A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds            
+            #for listing in listings
+            #    if listing.Listing?
+            #        A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds
             $(".fl-sb-item").click (event) =>
                 marker_id = parseInt($(event.currentTarget).attr('marker_id'))
                 listing_id = parseInt($(event.currentTarget).attr('listing_id'))
@@ -168,7 +168,7 @@ class A2Cribs.FeaturedListings
             if listings is null then return
             list_html = @getListHtml(listings)
             if clear
-                @SidebarUI.find("##{list}-listings").html list_html
+                @SidebarUI.find("##{list}-listings").append list_html
             else
                 @SidebarUI.find("##{list}-listings").append list_html
 
@@ -185,7 +185,7 @@ class A2Cribs.FeaturedListings
 
         
         getListHtml:(listings)->
-            list = ""
+            list = $("<div />")
             for listing in listings
                 rent = name = beds = lease_length = start_date = null
 
@@ -209,7 +209,7 @@ class A2Cribs.FeaturedListings
                 else if listing.Rental.beds?
                     beds = "#{listing.Rental.beds} bed"
                 else
-                    beds = "-- beds"
+                    beds = "?? beds"
 
                 if listing.Rental.start_date?
                     # Fix date bug in firefox
@@ -238,7 +238,10 @@ class A2Cribs.FeaturedListings
                     marker_id: listing.Marker.marker_id
                 }
 
-                list += @ListItemTemplate(data)
+                listing_item = $(@ListItemTemplate data)
+                A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds)
+
+                list.append listing_item
 
             return list
 
@@ -248,7 +251,7 @@ class A2Cribs.FeaturedListings
 
 
     @ListItemHTML: """
-    <div class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
+    <div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
         <span class = 'img-wrapper'>
             <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>
         </span>
