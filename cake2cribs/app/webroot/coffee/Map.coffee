@@ -57,7 +57,7 @@ class A2Cribs.Map
 		A2Cribs.FilterManager.CurrentState = state
 		A2Cribs.FilterManager.CurrentSchool = school_name
 		@ACTIVE_LISTING_TYPE = active_listing_type
-		zoom = 16
+		zoom = 14
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
 		@MapOptions =
