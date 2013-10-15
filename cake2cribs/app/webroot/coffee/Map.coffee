@@ -57,7 +57,7 @@ class A2Cribs.Map
 		A2Cribs.FilterManager.CurrentState = state
 		A2Cribs.FilterManager.CurrentSchool = school_name
 		@ACTIVE_LISTING_TYPE = active_listing_type
-		zoom = 15
+		zoom = 16
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
 		@MapOptions =
@@ -142,9 +142,9 @@ class A2Cribs.Map
 				# marked as avail if one avail
 				# marked as unknown if one unknown and no avail
 				# marked as leased if all leased
-				if not listing.available? and is_available is no
+				if not listing.available? and is_available isnt yes
 					is_available = null # Set to unknown
-				else if listing.available? is yes
+				else if listing.available? and listing.available is yes
 					is_available = yes # Set to true
 
 			marker.Init is_available

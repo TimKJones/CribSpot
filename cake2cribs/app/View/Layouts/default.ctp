@@ -113,14 +113,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		);
 */
 
-		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=3', array('type' => 'icon'));
+		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=44', array('type' => 'icon'));
 
 		/* Fetch data */
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=4');
+	echo $this->Html->script('src/program.js?v=5');
 }
 
 		echo $this->fetch('script');

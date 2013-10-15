@@ -126,7 +126,7 @@ Wrapper for google infobubble
             bed_desc = "Bed";
           }
           available_dot = "unknown";
-          if ((listing.available != null) === true) {
+          if ((listing.available != null) && listing.available === true) {
             available_dot = "available";
           } else if ((listing.available != null) && listing.available !== true) {
             available_dot = "leased";

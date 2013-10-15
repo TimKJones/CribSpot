@@ -92,7 +92,7 @@ class A2Cribs.HoverBubble
 					bed_desc = "Bed"
 
 				available_dot = "unknown"
-				if listing.available? is yes
+				if listing.available? and listing.available is yes
 					available_dot = "available"
 				else if listing.available? and listing.available isnt yes
 					available_dot = "leased"

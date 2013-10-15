@@ -85,7 +85,7 @@
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
       this.ACTIVE_LISTING_TYPE = active_listing_type;
-      zoom = 15;
+      zoom = 16;
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
       this.MapOptions = {
         zoom: zoom,
@@ -175,9 +175,9 @@
         is_available = false;
         for (_k = 0, _len2 = listings.length; _k < _len2; _k++) {
           listing = listings[_k];
-          if (!(listing.available != null) && is_available === false) {
+          if (!(listing.available != null) && is_available !== true) {
             is_available = null;
-          } else if ((listing.available != null) === true) {
+          } else if ((listing.available != null) && listing.available === true) {
             is_available = true;
           }
         }
