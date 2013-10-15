@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
-    public $uses = array('User', 'University');
+    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite');
     public $components= array('Email', 'RequestHandler', 'Cookie');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
@@ -19,6 +19,7 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxLogin');
         $this->Auth->allow('AjaxEditUser');
         $this->Auth->allow('ResendConfirmationEmail');
+        $this->Auth->allow('AttemptFacebookLogin');
     }
 
     public function add()
@@ -34,6 +35,70 @@ class UsersController extends AppController {
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
     }
+
+    /*
+    Given facebook access_token, which we use to get facebook id.
+    Attempts to log in the current user by checking for a local user with the returned facebook id.
+    If user exists, log in the user and return 'LOGGED_IN'.
+    If user doesn't exist, store the facbeook id in the 'FB.id' session variable and return 'NOT_LOGGED_IN'
+    */
+    public function AttemptFacebookLogin()
+    {
+        if ($this->request === null || $this->request->data === null || !array_key_exists('signedRequest', $this->request->data)){
+            $error = null;
+            $error['request'] = $this->request;
+            $this->LogError(null, 69, $error);
+            $response = array('error' => "Looks like we had some problems logging you in with Facebook, but don't worry! You can still use our regular login to create an account in under 30 seconds.");
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* Get user's facebook id using the access token we got from the client */
+        $accessToken = $this->request->data['accessToken'];
+        CakeLog::write('sr', print_r($accessToken, true));
+        $url = 'https://graph.facebook.com/me?access_token=' . $accessToken;
+        $fb_user = urldecode(file_get_contents($url));
+        $fb_user = json_decode($fb_user);
+        CakeLog::write('fbuser', print_r($fb_user, true));
+        $fb_id = $fb_user->id;
+
+        /* See if there is already a user with the given facebook id */
+        $local_user = $this->User->GetUserFromFacebookId($fb_id);
+        if ($local_user != null && array_key_exists('User', $local_user) && array_key_exists('email', $local_user['User'])) {
+            $this->_login($local_user);
+            $data = $this->_getUserDataForAjaxLogin($local_user['User']);
+            $response = array(
+                'success' => 'LOGGED_IN',
+                'data' => $data
+            );
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /* 
+        User has not yet created an account with this facebook id.
+        Store their facebook id in the session to save during AjaxRegister
+        */
+        $this->Session->write('FB.id', $fb_id);
+
+        /* Get their img url to throw into login modal */
+        $img_url = "/img/head_large.jpg";
+        if (!empty($fb_id))
+            $img_url = "https://graph.facebook.com/".$fb_id."/picture?width=80&height=80";
+
+        $response = array(
+            'success' => 'NOT_LOGGED_IN',
+            'data' => array(
+                'first_name' => $fb_user->first_name,
+                'last_name' => $fb_user->last_name,
+                'img_url' => $img_url
+            )
+        );
+
+        $this->set('response', json_encode($response));
+    }
+
+
 
     /*
     User submits registration data here.
@@ -96,7 +161,6 @@ class UsersController extends AppController {
         $this->_sendVerificationEmail($user);
         $this->_savePreferredUniversity($this->User->id);
         $this->set('response', json_encode(array('success'=>'')));
-        //$this->redirect('/landing?registration_success=true');
     }
 
     /*
@@ -246,6 +310,7 @@ class UsersController extends AppController {
             $redirect_uri = Configure::read('HTTP_TYPE').'://www.cribspot.com/login';
             if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_LOCAL')
                 $redirect_uri = urlencode('http://localhost/login');
+            
             /*else if (Configure::read('CURRENT_ENVIRONMENT') === 'ENVIRONMENT_DEVELOPMENT')
                 $redirect_uri = urlencode('http://ec2-54-214-177-171.us-west-2.compute.amazonaws.com/login');*/
             $client_id = Configure::read('FB_APP_ID');
@@ -581,6 +646,53 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     }
 
     /*
+    Gets the user data necessary to set up the UI following a successful ajax login from the map page.
+    Data:
+    - name
+    - number of messages
+    - favorites listing ids
+    - user type
+    - image url
+    */
+    private function _getUserDataForAjaxLogin($user)
+    {
+        if (!array_key_exists('id', $user))
+            return null;
+
+        /* name is first_name if student and company_name if PM */
+        CakeLog::write('usershit', print_r($user, true));
+        $name = "";
+        if (array_key_exists('user_type', $user)){
+            if ($user['user_type'] == 0 && array_key_exists('first_name', $user))
+                $name = $user['first_name'];
+            else if ($user['user_type'] == 1 && array_key_exists('company_name', $user))
+                $name = $user['company_name'];
+        }
+
+        $num_messages = $this->UnreadMessage->getUnreadMessagesCount($user);
+        $favorites = $this->Favorite->GetFavoritesListingIds($user['id']);
+
+        /* Get the image url from facebook if facebook_id is set */ 
+        $img_url = "/img/head_large.jpg";
+        if (!empty($user['facebook_id']))
+            $img_url = "https://graph.facebook.com/".$user['facebook_id']."/picture?width=80&height=80";
+
+        $user_type = 0;
+        if (array_key_exists('user_type', $user))
+            $user_type = $user['user_type'];
+
+        $data = array(
+            'name' => $name,
+            'num_messages' => $num_messages,
+            'favorites' => $favorites,
+            'user_type' => $user_type,
+            'img_url' => $img_url
+        );
+
+        return $data;
+    }   
+
+    /*
     Verifies that the access_token retrieved from FB belongs to the person who is logging in,
     and that our app generated the token
     */
@@ -622,10 +734,8 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     */
     private function _facebookLogin($fb_user)
     {
-CakeLog::write('fblogin_fbuser', print_r($fb_user, true));
         if ($fb_user){
             $local_user = $this->User->GetUserFromFacebookId($fb_user['facebook_id']);
-CakeLog::write('fblogin_localuser', print_r($local_user, true));
             /* User exists, so log them in. */
             if ($local_user){
                 $this->User->UpdateLastLogin($local_user['User']['id']);
@@ -659,6 +769,16 @@ CakeLog::write('fblogin_localuser', print_r($local_user, true));
         else{
             
         }
+    }
+
+    /* 
+    Logs in a user given their local user object.
+    */
+    private function _login($user)
+    {
+        $this->User->UpdateLastLogin($user['User']['id']);
+        $this->Auth->login($user['User']);
+        return;
     }
 
     /*

@@ -12,13 +12,57 @@ Manager class for all social networking functionality
     FacebookManager.FacebookLogin = function() {
       var url;
       url = 'https://www.facebook.com/dialog/oauth?';
-      url += 'client_id=488039367944782';
+      url += 'client_id=450938858319396';
       url += '&redirect_uri=http://www.cribspot.com/login';
       url += '&scope=email';
       A2Cribs.MixPanel.AuthEvent('login', {
         'source': 'facebook'
       });
       return window.location.href = url;
+    };
+
+    FacebookManager.FacebookJSLogin = function() {
+      return FB.getLoginStatus(function(response) {
+        var accessToken, uid;
+        if (response.status === 'connected') {
+          if ((response != null) && (response.authResponse != null)) {
+            A2Cribs.FacebookManager.AttemptLogin(response.authResponse);
+          } else {
+            A2Cribs.UIManager.Error("We're having trouble logging you in with facebook, but don't worry!					You can still create an account with our regular login.");
+          }
+          uid = response.authResponse.userID;
+          return accessToken = response.authResponse.accessToken;
+        } else {
+          return FB.login(function(response) {
+            if ((response != null) && (response.authResponse != null)) {
+              return A2Cribs.FacebookManager.AttemptLogin(response.authResponse);
+            } else {
+              return A2Cribs.UIManager.Error("We're having trouble logging you in with facebook, but don't worry!						You can still create an account with our regular login.");
+            }
+          }, {
+            scope: 'email'
+          });
+        }
+      });
+    };
+
+    /*
+    	Send signed request to server to finish registration
+    */
+
+    FacebookManager.AttemptLogin = function(authResponse) {
+      var _this = this;
+      return $.ajax({
+        url: myBaseUrl + 'Users/AttemptFacebookLogin',
+        data: authResponse,
+        type: 'POST',
+        success: function(response) {
+          return console.log(response);
+        },
+        error: function(response) {
+          return console.log(response);
+        }
+      });
     };
 
     FacebookManager.Logout = function() {
