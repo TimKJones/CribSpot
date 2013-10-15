@@ -217,6 +217,7 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
                 if (array_key_exists('User', $user) && array_key_exists('email', $user['User'])) {
                     $email = $user['User']['email'];
                     if (!empty($email)){
+                        CakeLog::write('WEEKLY_METRICS_REPORT', print_r($templateData, true));
                         $this->_emailUser($email, 'Cribspot '.$time_period_string.' Metrics Report: '.$yesterday, "daily_pm_report", $templateData);
                     }
                 }
