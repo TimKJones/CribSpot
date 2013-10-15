@@ -315,10 +315,13 @@ class Listing extends AppModel {
 		));
 
 		/* We switched available from rental to listing. Copy rental.available to listing.available */
-		foreach ($listings as $listing){
+		foreach ($listings as &$listing){
+
 			if (array_key_exists('Rental', $listing) && array_key_exists('Listing', $listing) &&
-				array_key_exists('available', $listing['Rental']))
-				$listing['Listing']['available'] = $listing['Rental']['available'];
+				array_key_exists('available', $listing['Listing']))
+				$listing['Rental']['available'] = $listing['Listing']['available'];
+			else
+				$listing['Rental']['available'] = null;
 		}
 
 		return array_values($listings);
