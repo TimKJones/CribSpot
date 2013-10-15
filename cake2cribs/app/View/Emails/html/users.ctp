@@ -14,6 +14,8 @@ foreach ($users as $user){
     	echo "User Type: Student<br/>";
     	echo "First Name: " . $user['User']['first_name'] . "<br/>";
     	echo "Last Name: " . $user['User']['last_name'] . "<br/>";
+        echo "University: " . $user['User']['registered_university'] . "<br/>";
+        echo "Year: " . $user['User']['student_year'] . "<br/>";
     }
     else if ($user['User']['user_type'] == 1){
     	echo "User Type: Property Manager<br/>";
