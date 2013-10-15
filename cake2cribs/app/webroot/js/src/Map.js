@@ -115,7 +115,7 @@
       imageStyles = [
         {
           height: 39,
-          url: '/img/dots/group_dot.png',
+          url: '/img/dots/dot_group.png',
           width: 39,
           textColor: '#ffffff',
           textSize: 13
