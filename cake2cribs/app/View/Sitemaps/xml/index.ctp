@@ -3,10 +3,8 @@
       <loc><?php echo Router::url('/pages_sitemap.xml',true); ?></loc>
     </sitemap>
     <?php foreach ($sitemap_urls as $sitemap_url):?> 
-    <url>
-        <sitemap>
-            <loc><?php echo Router::url('/'.$sitemap_url,true); ?></loc>
-        </sitemap>
-    </url>
+    <sitemap>
+        <loc><?php echo Router::url('/'.$sitemap_url,true); ?></loc>
+    </sitemap>
     <?php endforeach; ?>
 </sitemapindex>
