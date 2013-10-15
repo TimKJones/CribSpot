@@ -180,6 +180,17 @@ CakeLog::write('dailyleastviewedNow', $user['User']['id'].': '. print_r($titleTo
                 $overviewMetricsCount[$metric] = $metricCounts[$metric];
             }
 
+            /* 
+            If user has 0 views on their listings this week,
+            either something is wrong, or their listings aren't popular enough for this report,
+            so don't sent it to them
+            */
+            if (array_key_exists('totalListingClicks', $overviewMetricsCount) && 
+                $overviewMetricsCount['totalListingClicks'] <= 0) {
+                CakeLog::write('FAILED_WEEKLY_METRICS_REPORT', print_r($user, true));
+                CakeLog::write('FAILED_WEEKLY_METRICS_REPORT', print_r($overviewMetricsCount, true));
+            }
+
             $templateData['leastViewed'] = $titleToClicksMaps['leastViewed'];
             $templateData['mostViewed'] = $titleToClicksMaps['mostViewed'];
             $templateData['user'] = $user['User'];
