@@ -3,8 +3,8 @@
     // [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
     // There was issue invalid links while testing on the dev enviorment
 
-    $partic_link = "http://www.cribspot.com/users/view/$participant[id]/";
-    $view_msg = "http://www.cribspot.com/messages/view/$conv_id";
+    $partic_link = "https://www.cribspot.com/users/view/$participant[id]/";
+    $view_msg = "https://www.cribspot.com/messages/view/$conv_id";
     // BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
 ?>
 <html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">

@@ -218,7 +218,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
             </tbody></table>
 
-            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="http://cribspot.com" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
+            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="https://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="https://cribspot.com" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
 
             <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
 
@@ -342,7 +342,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
                                     <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
 
                                         <p style="margin-bottom:15px;" >
-    <strong>Don't worry, we've got you covered. Just click</strong> <a href="http://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&reset_token=<?php echo $password_reset_token; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to reset your password.</strong></p>
+    <strong>Don't worry, we've got you covered. Just click</strong> <a href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&reset_token=<?php echo $password_reset_token; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to reset your password.</strong></p>
 
                                     </div>
 

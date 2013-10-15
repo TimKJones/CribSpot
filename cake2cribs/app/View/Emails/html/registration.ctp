@@ -219,7 +219,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
             </tbody></table>
 
-            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="http://cribspot.com" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
+            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="https://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="https://cribspot.com" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
 
             <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
 
@@ -343,7 +343,7 @@ body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; 
 
                                         <p style="margin-bottom:15px;" >
 
-    <strong>Click</strong> <a href="http://www.cribspot.com/users/VerifyEmailRedirect?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to verify your account.</strong></p>
+    <strong>Click</strong> <a href="https://www.cribspot.com/users/VerifyEmailRedirect?id=<?php echo $id; ?>&vericode=<?php echo $vericode; ?>" style="color:#d54849;font-weight:bold;text-decoration:none;" > here </a> <strong>to verify your account.</strong></p>
 
                                     </div>
 
