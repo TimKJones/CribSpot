@@ -94,7 +94,11 @@
         styles: this.style,
         panControl: false,
         streetViewControl: false,
-        mapTypeControl: false
+        mapTypeControl: false,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL,
+          position: google.maps.ControlPosition.TOP_RIGHT
+        }
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);
       google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
@@ -110,9 +114,9 @@
 
       imageStyles = [
         {
-          height: 48,
-          url: '/img/dots/group_dot.png',
-          width: 48,
+          height: 39,
+          url: '/img/dots/dot_group.png',
+          width: 39,
           textColor: '#ffffff',
           textSize: 13
         }
@@ -151,7 +155,7 @@
     };
 
     Map.LoadBasicDataCallback = function(response) {
-      var all_listings, all_markers, key, listing, listings, marker, value, _i, _j, _k, _len, _len1, _len2, _results;
+      var all_listings, all_markers, is_available, key, listing, listings, marker, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _results;
       if (response === null || response === void 0) {
         return;
       }
@@ -167,13 +171,23 @@
       all_markers = A2Cribs.UserCache.Get("marker");
       for (_j = 0, _len1 = all_markers.length; _j < _len1; _j++) {
         marker = all_markers[_j];
-        marker.Init();
+        listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
+        is_available = false;
+        for (_k = 0, _len2 = listings.length; _k < _len2; _k++) {
+          listing = listings[_k];
+          if (!(listing.available != null) && is_available === false) {
+            is_available = null;
+          } else if ((listing.available != null) === true) {
+            is_available = true;
+          }
+        }
+        marker.Init(is_available);
         Map.GMarkerClusterer.addMarker(marker.GMarker);
       }
       all_listings = A2Cribs.UserCache.Get("listings");
       _results = [];
-      for (_k = 0, _len2 = all_listings.length; _k < _len2; _k++) {
-        listing = all_listings[_k];
+      for (_l = 0, _len3 = all_listings.length; _l < _len3; _l++) {
+        listing = all_listings[_l];
         _results.push(listing.visible = true);
       }
       return _results;

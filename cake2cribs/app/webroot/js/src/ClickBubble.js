@@ -170,6 +170,7 @@ ClickBubble class
       }
       this.div.find('.unit_style_description').text(unit_style_description);
       this.div.find('unit_style_description').text;
+      this.setBeds(listing_object.beds);
       this.linkWebsite(".website_link", listing_object.website, listing_object.listing_id);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
@@ -186,7 +187,7 @@ ClickBubble class
       this.div.find(".twitter_share").click(function() {
         return A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
       });
-      return A2Cribs.FavoritesManager.setFavoriteButton("favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
+      return A2Cribs.FavoritesManager.setFavoriteButton(this.div.find(".favorite_listing"), listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
     };
 
     ClickBubble.resolveDateRange = function(startDate) {
@@ -203,13 +204,13 @@ ClickBubble class
 
     ClickBubble.setAvailability = function(div_name, availability) {
       if (!(availability != null)) {
-        return $("." + div_name).hide();
+        return this.div.find("." + div_name).hide();
       } else if (availability) {
-        $("." + div_name).show().text("Available");
-        return $("." + div_name).removeClass("leased");
+        this.div.find("." + div_name).show().text("Available");
+        return this.div.find("." + div_name).removeClass("leased");
       } else {
-        $("." + div_name).show().text("Leased");
-        return $("." + div_name).addClass("leased");
+        this.div.find("." + div_name).show().text("Leased");
+        return this.div.find("." + div_name).addClass("leased");
       }
     };
 
@@ -293,6 +294,22 @@ ClickBubble class
         win = window.open(link, '_blank');
         return win.focus();
       });
+    };
+
+    ClickBubble.setBeds = function(bed_count) {
+      if (!(bed_count != null) || parseInt(bed_count, 10) === NaN) {
+        this.div.find(".beds").text("??");
+        return this.div.find(".bed_desc").text("Beds");
+      } else if (parseInt(bed_count, 10) === 0) {
+        this.div.find(".beds").text("Studio");
+        return this.div.find(".bed_desc").text("");
+      } else if (parseInt(bed_count, 10) === 1) {
+        this.div.find(".bed_desc").text(bed_count);
+        return this.div.find(".bed_desc").text("Bed");
+      } else {
+        this.div.find(".bed_desc").text(bed_count);
+        return this.div.find(".bed_desc").text("Beds");
+      }
     };
 
     /*

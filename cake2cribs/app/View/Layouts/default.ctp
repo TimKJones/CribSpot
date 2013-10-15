@@ -42,7 +42,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		<script type="text/javascript">var flash_message = <?php echo $flash_message; ?></script>
 <?php
 		echo $this->Html->charset();
-		echo $this->Html->script('http://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
+		 echo $this->Html->script('https://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js');
@@ -113,14 +113,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		);
 */
 
-		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=2', array('type' => 'icon'));
+		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=3', array('type' => 'icon'));
 
 		/* Fetch data */
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=3');
+	echo $this->Html->script('src/program.js?v=4');
 }
 
 		echo $this->fetch('script');

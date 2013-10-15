@@ -100,7 +100,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<div class="separator"></div>
 		<div class="school_facts">
 			AVG RENT: $<div class="avg_rent">NA</div>
-			&nbsp&nbspAVAILABLE UNITS (2014): <div class="available_units">NA</div>
+			&nbsp;&nbsp;AVAILABLE UNITS (2014): <div class="available_units">NA</div>
 		</div>
 	</div>
 	<div class="getting_started">

@@ -27,11 +27,17 @@ class A2Cribs.FavoritesManager
 				A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
 		else
 			@FavoritesListingIds.push listing_id
+			fl_sidebar_item = $("#fl-sb-item-#{listing_id}")
+			if fl_sidebar_item.length is 1 # the item on the side bar is found
+				fl_sidebar_item.find(".favorite").attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + listing_id + ', this);'
+				fl_sidebar_item.find(".favorite").attr 'title', 'Delete from Favorites'
+				fl_sidebar_item.find(".favorite").addClass 'active'
 			if button?
 				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.DeleteFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Delete from Favorites'
 				$(button).addClass 'active'
-				@_setFavoriteCount()
+
+			@_setFavoriteCount()
 
 	###
 	Delete a favorite
@@ -53,6 +59,11 @@ class A2Cribs.FavoritesManager
 			index = A2Cribs.FavoritesManager.FavoritesListingIds.indexOf listing_id
 			if index != -1
 				A2Cribs.FavoritesManager.FavoritesListingIds.splice index
+			fl_sidebar_item = $("#fl-sb-item-#{listing_id}")
+			if fl_sidebar_item.length is 1 # the item on the side bar is found
+				fl_sidebar_item.find(".favorite").attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + listing_id + ', this);'
+				fl_sidebar_item.find(".favorite").attr 'title', 'Add to Favorites'
+				fl_sidebar_item.find(".favorite").removeClass 'active'
 			if button?
 				$(button).attr 'onclick', 'A2Cribs.FavoritesManager.AddFavorite(' + listing_id + ', this);'
 				$(button).attr 'title', 'Add to Favorites'
@@ -130,19 +141,13 @@ class A2Cribs.FavoritesManager
 	###
 	Initialize a heart icon for adding favorites
 	###
-	@setFavoriteButton: (div_name, listing_id, favorites_list) ->
-		div_string = ".#{div_name}"
-		if listing_id == null
-			#Featured listing list item - need to identify each icon
-			listing_id = parseInt(div_name)
-			div_string = "#" + "#{div_name}.favorite_listing"
-
+	@setFavoriteButton: (div, listing_id, favorites_list) ->
 		if favorites_list.indexOf(parseInt(listing_id, 10)) is -1
-			$(div_string).attr "onclick", "A2Cribs.FavoritesManager.AddFavorite("+listing_id+", this)"
-			$(div_string).removeClass "active"
+			div.attr "onclick", "A2Cribs.FavoritesManager.AddFavorite(#{listing_id}, this)"
+			div.removeClass "active"
 		else
-			$(div_string).attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite("+listing_id+", this)"
-			$(div_string).addClass "active"
+			div.attr "onclick", "A2Cribs.FavoritesManager.DeleteFavorite(#{listing_id}, this)"
+			div.addClass "active"
 
 	###
 	Inserts the recent favorite into the favorites tab

@@ -115,8 +115,10 @@ class A2Cribs.ClickBubble
 			unit_style_description = listing_object.unit_style_options + '-' + listing_object.unit_style_description
 		else if listing_object.unit_style_options == 'Entire House'
 			unit_style_description = 'Entire House'
+
 		@div.find('.unit_style_description').text unit_style_description
 		@div.find('unit_style_description').text 
+		@setBeds listing_object.beds
 		@linkWebsite ".website_link", listing_object.website, listing_object.listing_id
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
@@ -134,7 +136,7 @@ class A2Cribs.ClickBubble
 		@div.find(".twitter_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
 				marker.street_address, marker.city, marker.state, marker.zip)
-		A2Cribs.FavoritesManager.setFavoriteButton "favorite_listing", listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
+		A2Cribs.FavoritesManager.setFavoriteButton @div.find(".favorite_listing"), listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
 
 	@resolveDateRange: (startDate) ->
 		range = "Unknown Start Date"
@@ -147,13 +149,13 @@ class A2Cribs.ClickBubble
 
 	@setAvailability: (div_name, availability) ->
 		if not availability?
-			$(".#{div_name}").hide()
+			@div.find(".#{div_name}").hide()
 		else if availability
-			$(".#{div_name}").show().text "Available"
-			$(".#{div_name}").removeClass "leased"
+			@div.find(".#{div_name}").show().text "Available"
+			@div.find(".#{div_name}").removeClass "leased"
 		else
-			$(".#{div_name}").show().text "Leased"
-			$(".#{div_name}").addClass "leased"
+			@div.find(".#{div_name}").show().text "Leased"
+			@div.find(".#{div_name}").addClass "leased"
 
 	@linkWebsite: (div_name, link, listing_id) ->
 		if link?
@@ -211,6 +213,20 @@ class A2Cribs.ClickBubble
 			link = "/messages/contact/#{listing_id}"
 			win = window.open link, '_blank'
 			win.focus()
+
+	@setBeds: (bed_count) ->
+		if not bed_count? or parseInt(bed_count, 10) is NaN
+			@div.find(".beds").text "??"
+			@div.find(".bed_desc").text "Beds"
+		else if parseInt(bed_count, 10) is 0
+			@div.find(".beds").text "Studio"
+			@div.find(".bed_desc").text ""
+		else if parseInt(bed_count, 10) is 1
+			@div.find(".bed_desc").text bed_count
+			@div.find(".bed_desc").text "Bed"
+		else
+			@div.find(".bed_desc").text bed_count
+			@div.find(".bed_desc").text "Beds"
 
 	###
 	takes as arguments the x and y position of the clicked marker
