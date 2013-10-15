@@ -79,7 +79,8 @@ class ReportingShell extends AppShell
             if (!array_key_exists('User', $user) ||
                 !array_key_exists('email', $user['User']) ||
                 !array_key_exists('user_type', $user['User']) ||
-                $user['User']['user_type'] != 1)
+                $user['User']['user_type'] != 1 ||
+                (array_key_exists('receives', $user['User']) && $user['User']['receives_metrics_report'] != 1))
                     continue;
 
             /* map of totals for each individual user */
