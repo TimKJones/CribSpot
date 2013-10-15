@@ -55,7 +55,6 @@ class UsersController extends AppController {
 
         /* Get user's facebook id using the access token we got from the client */
         $accessToken = $this->request->data['accessToken'];
-        CakeLog::write('sr', print_r($accessToken, true));
         $url = 'https://graph.facebook.com/me?access_token=' . $accessToken;
         $fb_user = urldecode(file_get_contents($url));
         $fb_user = json_decode($fb_user);
