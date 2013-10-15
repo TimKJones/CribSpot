@@ -8,7 +8,7 @@ class A2Cribs.ShareManager
 			return null
 		street_address = street_address.split(' ').join('-')
 		city = city.split(' ').join('-')
-		url = 'http://cribspot.com/listing/' + listing_id
+		url = 'https://cribspot.com/listing/' + listing_id
 		return url
 
 	###
@@ -26,7 +26,7 @@ class A2Cribs.ShareManager
 		fbObj = 
 			method: 'feed'
 			link: url
-			picture: 'http://www.cribspot.com/img/upright_logo.png'
+			picture: 'https://www.cribspot.com/img/upright_logo.png'
 			name: building_name
 			caption: caption
 
@@ -60,7 +60,7 @@ class A2Cribs.ShareManager
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
 		$('#twitterDiv iframe').remove();
 		tweetBtn = $('<a></a>').addClass('twitter-share-button')
-		.attr('href', 'http://twitter.com/share')
+		.attr('href', 'https://twitter.com/share')
 		.attr('data-url', url)
 		.attr('data-text','Check out this awesome property on Cribspot.com! ' + url)
 		.attr('data-via', 'TheCribspot')
