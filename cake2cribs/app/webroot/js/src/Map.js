@@ -85,7 +85,7 @@
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
       this.ACTIVE_LISTING_TYPE = active_listing_type;
-      zoom = 16;
+      zoom = 14;
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
       this.MapOptions = {
         zoom: zoom,

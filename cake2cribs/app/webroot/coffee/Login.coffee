@@ -1,7 +1,7 @@
 class A2Cribs.Login
 
 	@LANDING_URL = "cribspot.com"
-	@HTTP_PREFIX = "http://"
+	@HTTP_PREFIX = "https://"
 
 	@setupUI:() ->
 		# Div variable to have starting place to search the document
