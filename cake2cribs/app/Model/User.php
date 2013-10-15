@@ -124,8 +124,18 @@ class User extends AppModel {
 		'linkedin_verified' => 'alphaNumeric',
 		'last_login' => 'datetime',
 		'preferred_university' => 'numeric',
-		'registered_university' => 'numeric',
-		'student_year' => 'numeric',
+		'registered_university' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
+		'student_year' => array(
+			'numeric' => array(
+				'rule' => 'numeric',
+				'required' => false
+			)
+		),
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -479,6 +489,15 @@ class User extends AppModel {
 				$user[$field] = rtrim($user[$field]);
 		}
 
+		$pm_fields_to_delete = array('registered_university', 'student_year');
+		if (array_key_exists('user_type', $user) && $user['user_type'] == 1){
+			/* Unset these fields that are causing PM save to fail validation */
+			foreach ($pm_fields_to_delete as $field){
+				if (array_key_exists($field, $user))
+					unset($user[$field]);
+			}
+		}
+
 		if (!$this->save(array('User'=>$user))) {
 			$error = null;
 			$error['user'] = $user;
@@ -684,7 +703,7 @@ class User extends AppModel {
 		if ($user_type === User::USER_TYPE_PROPERTY_MANAGER)
 			$required_fields = array('company_name', 'phone', 'street_address', 'city', 'state');
 		else if ($user_type === User::USER_TYPE_SUBLETTER)
-			$required_fields = array('first_name', 'last_name');
+			$required_fields = array('first_name', 'last_name', 'registered_university', 'student_year');
 
 		foreach ($required_fields as $value) {
 			if (!array_key_exists($value, $user)){
