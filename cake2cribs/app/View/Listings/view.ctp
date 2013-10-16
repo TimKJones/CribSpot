@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Listing/full_page.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Listing/full_page.less?v=2','stylesheet/less', array('inline' => false)); ?>
 <?php 
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/FullListing.js', array('inline' => false));
@@ -228,11 +228,13 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				<div class="large_image_container">
 					<?php
 					$primary_url = 'img/full_page/no_photo.jpg';
+					$has_primary_photo = false;
 					if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing)) {
 						$primary_url = $listing["Image"][$listing["primary_image"]]["image_path"];
+						$has_primary_photo = true;
 					}
 					?>
-					<div id="main_photo" style="background-image:url(/<?= $primary_url ?>)"></div>
+					<div id="main_photo" class="<?= ($has_primary_photo) ? '' : 'no_photo' ; ?>" style="background-image:url(/<?= $primary_url ?>)"></div>
 				</div>
 				<div class="image_footer">
 					<div class="page_left"><i class="icon-chevron-left icon-large"></i></div>

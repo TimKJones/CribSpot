@@ -283,10 +283,15 @@
 			left: 5px;
 			bottom: 5px;
 			//background-image: url()
-			background-size: cover;
+			background-size: contain;
 			background-position: center;
 			background-repeat: no-repeat;
 			box-shadow: inset 0 0 5px black;
+
+			&.no_photo
+			{
+				background-size: cover;
+			}
 		}
 	}
 	.image_footer
