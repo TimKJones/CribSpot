@@ -143,9 +143,14 @@ class UsersController extends AppController {
             $user['facebook_id'] = $fb_id;
 
         $response = $this->User->RegisterUser($user);
+        $savedUser = null;
         if (array_key_exists('error', $response)) {
             $this->set('response', json_encode($response));
             return;
+        }
+        else if (array_key_exists('success', $response)) {
+            $savedUser = $response['success'];
+            $this->_login($savedUser);
         }
 
         /* User record saved. Now send email to validate email address */
