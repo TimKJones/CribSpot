@@ -7,22 +7,22 @@ class BackupShell extends AppShell
     public function db_backup1() {
         $localFilePath = "/home/tim/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql";
         $s3_path = "daily_backups/dump1.sql";
-        shell_exec("mysqldump cake2cribs -u root -plancPA*travMIn > ~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql");
+        shell_exec("mysqldump cake2cribs -u root -proot > ~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql");
 
         /* Upload file to s3 */
-        shell_exec("~/Downloads/s3cmd-1.5.0-alpha1/s3cmd sync dump1.sql s3://cribspot-backup/daily_backups");
-
-        /* delete local file */
-        unlink($localFilePath);
+        $s3cmd = Configure::read("PATH_TO_S3CMD");
+        $db_dumps_path = Configure::read('PATH_TO_DB_DUMPS');
+        $backup_bucket_path = Configure::read("S3_DAILY_BACKUP_PATH");
+        shell_exec($s3cmd." put ".$db_dumps_path."dump1.sql ".$backup_bucket_path);
     }
 
     public function db_backup2() {      
         $localFilePath = "/home/tim/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql";
-        $s3_path = "daily_backups/dump2.sql";
+        $s3_path = "daily_backups/dump1.sql";
         shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/dump2.sql");
 
         /* Upload file to s3 */
-        shell_exec("~/Downloads/s3cmd-1.5.0-alpha1/s3cmd sync dump2.sql s3://cribspot-backup/daily_backups");
+        shell_exec("~/Downloads/s3cmd-1.5.0-alpha1/s3cmd sync dump1.sql s3://cribspot-backup/daily_backups/");
 
         /* delete local file */
         unlink($localFilePath);
