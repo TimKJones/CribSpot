@@ -12,8 +12,6 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('GetOwnedListingsByMarkerId');
 		$this->Auth->allow('LoadMarkerData');
-		$this->Auth->allow('Save');
-		$this->Auth->allow('Delete');
 	}
 
 	/*

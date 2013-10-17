@@ -103,6 +103,11 @@ class EmailShell extends AppShell{
             'conditions' => array('User.created >=' => $yesterday)
         ));
 
+        foreach ($users as &$user){
+            $user['User']['registered_university'] = $this->University->getNameFromId($user['User']['registered_university']);
+            $user['User']['student_year'] = $this->User->year($user['User']['student_year']);
+        }
+
         $template_data = array("users"=>$users);
         $month = date('F');
         $day = date('j') - 1;
