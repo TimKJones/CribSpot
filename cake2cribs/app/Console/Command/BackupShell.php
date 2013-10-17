@@ -4,19 +4,21 @@ class BackupShell extends AppShell
 {
 	public $uses = array('Listing');
 
-    public function db_backup1() {
-        $localFilePath = "~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql";
-        $s3_path = "daily_backups/dump1.sql";
-        shell_exec("mysqldump cake2cribs -u root -proot > ~/CribSpot/cake2cribs/app/webroot/dumps/dump1.sql");
-        chmod ($localFilePath, 0777);
-        /* Upload file to s3 */
-        $this->_uploadFileToS3($localFilePath, $s3_path);
-        /* delete local file */
-        unlink($localFilePath);
-    }
+    /*
+    Generates a database dump, and then uploads to the s3 backup bucket
+    Saves to file called dump[$number].sql
+    */
+    public function db_backup()
+    {
+        $number = $this->args[0];
 
-    public function db_backup2() {
-        shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/dump2.sql");
+        /* Generate local dump */
+        $this->_generateLocalDump($number); 
+
+        /* Upload file to s3 */
+        $db_dumps_path = Configure::read('PATH_TO_DB_DUMPS');
+        $backup_bucket_path = Configure::read("S3_DAILY_BACKUP_PATH");
+        $this->_uploadFileToS3($db_dumps_path."dump".strval($number).".sql", $backup_bucket_path);
     }
 
     /*
@@ -46,16 +48,21 @@ class BackupShell extends AppShell
         shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/".$filename);
     }
 
+    /*
+    Uploads the file at $localFilePath to the s3 bucket path specified by $s3_path
+    */
     private function _uploadFileToS3($localFilePath, $s3_path)
     {
-        App::import('Vendor', 'AmazonS3/S3');
-        $accessKey = Configure::read('S3_ACCESS_KEY');
-        $secretKey = Configure::read('S3_SECRET_KEY');
-        $backupBucket = Configure::read('S3_BACKUP_BUCKET');
-        $s3 = new S3($accessKey, $secretKey);
-        if (!$s3->putObjectFile($localFilePath, $backupBucket, $s3_path, S3::ACL_PUBLIC_READ)) {
-            CakeLog::write('FAILED_BACKUP', $localFilePath . '; ' . $backupBucket . '; ' . $s3_path);
-        }
+        $s3cmd = Configure::read("PATH_TO_S3CMD");
+        shell_exec($s3cmd." put ".$localFilePath." ".$s3_path);
+    }
+
+    /*
+    Dumpds entire database to a file in /webroot/dumps/dump[$dumpNumber].sql
+    */
+    private function _generateLocalDump($dumpNumber)
+    {
+        shell_exec("mysqldump cake2cribs -u root -plancPA*travMInj > ~/CribSpot/cake2cribs/app/webroot/dumps/dump".$dumpNumber.".sql");
     }
 }
 
