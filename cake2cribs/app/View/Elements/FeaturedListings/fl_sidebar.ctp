@@ -15,14 +15,14 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
         <div id = 'list-info'>
             <span>Listings: </span>
         </div>
+        <?php
+        if (strpos($university['name'], 'Ann') !== false)
+            echo "<div id='featured_pm' class='sidebar-bottom-bar'></div>";
+        ?>p
         <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'daily_ad' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
-        <?php
-        if (strpos($university['name'], 'Ann') !== false)
-            echo "<a href='http://michigandaily.com'<div class='sidebar-bottom-bar'>";
-        ?>
 
         </div></a>
         <!--div class = 'cycle-listings-bar'>

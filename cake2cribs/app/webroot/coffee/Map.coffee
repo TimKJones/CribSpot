@@ -178,12 +178,53 @@ class A2Cribs.Map
 		basicData = @LoadBasicData()
 		@BasicDataCached = new $.Deferred() # resolved after basic data has been added to cache
 		A2Cribs.FavoritesManager.LoadFavorites()
+		A2Cribs.FeaturedListings.LoadFeaturedPMListings()
 		$.when(basicData).then(@LoadBasicDataCallback)
 		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE, basicData, @BasicDataCached)
 
 	@CenterMap:(latitude, longitude)->
 		if not @GMap? then return
 		@GMap.setCenter new google.maps.LatLng(latitude, longitude);
+
+	###
+	Toggles visibility for the given listing_ids
+	When toggled on, only these listing_ids are visible.
+	When toggled off, all listings are visible 
+	###
+	@ToggleListingVisibility: (listing_ids, listingsCurrentlyVisible, button=undefined) ->
+		if button?
+			$(button).toggleClass 'active'
+		A2Cribs.HoverBubble?.Close()
+		A2Cribs.ClickBubble?.Close()
+
+		all_markers = A2Cribs.UserCache.Get 'marker'
+		all_listings = A2Cribs.UserCache.Get 'listing'
+
+		if !listingsCurrentlyVisible
+			# make only markers that are in listing_ids visible
+
+			# Set visibility of ALL markers to false
+			for marker in all_markers
+				marker.GMarker?.setVisible false
+
+			for listing in all_listings
+				listing.visible = false
+
+			# Set visibility of all markers with listings in listing_ids to true
+			for listing_id in listing_ids
+				listing = A2Cribs.UserCache.Get 'listing', listing_id
+				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
+				marker.GMarker?.setVisible true
+				listing.visible = true
+		else
+			# make all markers visible
+			for marker in all_markers
+				marker?.GMarker?.setVisible true
+
+			for listing in all_listings
+				listing.visible = true
+
+		A2Cribs.Map.GMarkerClusterer.repaint()
 
 
 	@style = [
