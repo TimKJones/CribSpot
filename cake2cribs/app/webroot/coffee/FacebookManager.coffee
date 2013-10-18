@@ -12,6 +12,38 @@ class A2Cribs.FacebookManager
 			'source':'facebook'
 		window.location.href = url 
 
+	@FacebookJSLogin: () ->
+		FB.getLoginStatus (response) ->
+			if response.status == 'connected'
+				if response? and response.authResponse?
+					A2Cribs.FacebookManager.AttemptLogin response.authResponse
+				else
+					A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
+					You can still create an account with our regular login."
+			else
+			# user logged in, but hasn't authorized us
+				FB.login (response) ->
+					if response? and response.authResponse?
+						A2Cribs.FacebookManager.AttemptLogin response.authResponse
+					else
+						A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
+						You can still create an account with our regular login."
+				, {scope:'email'}
+
+	###
+	Send signed request to server to finish registration
+
+	###
+	@AttemptLogin: (authResponse) ->
+		$.ajax
+			url: myBaseUrl + 'Users/AttemptFacebookLogin'
+			data: authResponse
+			type: 'POST'
+			success: (response) =>
+				console.log response
+			error: (response) =>
+				console.log response
+
 	@Logout: ->
 		alert 'logging out'
 		$.ajax 

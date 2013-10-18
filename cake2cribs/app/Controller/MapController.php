@@ -80,6 +80,8 @@ class MapController extends AppController {
             $user = $this->User->getSafe($this->Auth->User('id'));
         }
         $this->set('user', json_encode($user));
+        $this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears());
         $this->InitFilterValues();
 
         

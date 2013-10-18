@@ -12,6 +12,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		);
 
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
+
+	echo $this->element('Login/login');
+	echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
 ?>
 
 
@@ -19,40 +22,84 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">
 			<ul class="nav pull-right">
-				<?php if ($this->Session->read('Auth.User.id') != 0) { ?>
-					<li class="personal_menu dropdown">
-						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
-							Hi <?= (intval($AuthUser['user_type']) == 0) ? $AuthUser['first_name'] : $AuthUser['company_name'] ; ?> 
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
-							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-						</ul>
-					</li>
-				<?php } else { ?>
-					<li class="menu dropdown signup_btn">
-						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">Login</a>
-						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
-							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
-								<a href="#" class="fb_login" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
-								<p>** Facebook login is available for students only!</p>
-								<input type="email" id="inputEmail" name="email" placeholder="Email">
-								<input type="password" id="inputPassword" name="password" placeholder="Password">
-								<button type="submit" id="submitButton" class="btn">Sign in</button>
-								<?php echo $this->Html->link('Forgot Password?', array('controller' => 'users', 'action' => 'resetpassword'), array('class' => 'forgot_password')); ?>
-							</form>
-						</div>
-					</li>
-					<li class="nav-text">
-						or
-					</li>
-					<li>
-						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem', 'class' => 'nav-btn')); ?>
-					</li>
-				<?php } ?>
+				<?php
+					$pic_url = "/img/head_large.jpg";
+					$name = "Me";
+					$user_type = -1;
+					$signed_in = false;
+					if (isset($AuthUser))
+					{
+						$signed_in = true;
+						$user_type = $AuthUser['user_type'];
+						if(array_key_exists('facebook_id', $AuthUser) && isset($AuthUser['facebook_id']))
+							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
+						if ($user_type == 0)
+							$name = $AuthUser['first_name'];
+						else
+							$name = $AuthUser['company_name'];
+
+					}
+			
+					?> 
+				<!-- Dropdown for user type 0 -->
+				<li class="personal_menu personal_menu_0 dropdown <?= ($user_type == 0) ? '' : 'hide' ; ?>">
+					<a href="#" id="personal_dropdown_0" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
+						<?php
+						echo "<img src='" . $pic_url . "' >";
+						echo "<div class='user_name'>" . $name . "</div>";
+						?>
+						 <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_0">
+						<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+						<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+						<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+					</ul>
+				</li>
+
+
+				<!-- Dropdown for user type 1 -->
+				<li class="personal_menu personal_menu_1 dropdown <?= ($user_type == 1) ? '' : 'hide' ; ?>">
+					<a href="#" id="personal_dropdown_1" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
+						<div class='user_name'><?= $name; ?></div>
+						 <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_1">
+						<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+						<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+						<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+						<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+					</ul>
+				</li>
+
+				<!-- Dropdown for user type 2 -->
+				<li class="personal_menu personal_menu_2 dropdown <?= ($user_type == 2) ? '' : 'hide' ; ?>">
+					<a href="#" id="personal_dropdown_2" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
+						<div class='user_name'><?= $name; ?></div>
+						 <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_2">
+						<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+						
+						<li role="presentation"><?php echo $this->Html->link('Featured Listings', array('controller' => 'FeaturedListings', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+						<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+					</ul>
+				</li>
+
+				<li class="menu dropdown signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
+					<a class="nav-btn" href="#login_modal" role="button" data-toggle="modal">Login</a>
+				</li>
+				<li class="nav-text <?= ($signed_in) ? 'hide' : '' ; ?>">
+					or
+				</li>
+				<li class="signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
+					<a id="show_signup_modal" class="nav-btn" href="#">Sign Up</a>
+				</li>
 			</ul>
 		</div>
 	</div>

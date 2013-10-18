@@ -11,6 +11,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/PageHeader');
 }
 	echo $this->element('popups');
+	echo $this->element('Login/login');
+	if (isset($locations) && isset($user_years))
+		echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
 ?>
 
 <div id="header" class="navbar navbar-inverse navbar-fixed-top">
@@ -22,52 +25,79 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<a class="review_btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom" target="_blank"></a>
 				</li>
 				<li class="signup_btn"><a href="#claim_listing" data-toggle="modal">Claim a Listing</a></li>
-				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ 
-					if ($this->Session->read('Auth.User.id') != 0) { ?>
-					<li class="personal_menu dropdown">
-						<?
+				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ ?>
+
+					<?php
 						$pic_url = "/img/head_large.jpg";
-						if($AuthUser['facebook_id'])
-							$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
-						?>
-						<a href="#" id="personal_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">
-							<?php
-							if (intval($AuthUser["user_type"]) == 0)
-							{
-								echo '<img src="' . $pic_url . '">';
-								echo $AuthUser['first_name'];
-							}
+						$name = "Me";
+						$user_type = -1;
+						$signed_in = false;
+						if (isset($AuthUser))
+						{
+							$signed_in = true;
+							$user_type = $AuthUser['user_type'];
+							if(array_key_exists('facebook_id', $AuthUser) && isset($AuthUser['facebook_id']))
+								$pic_url = "https://graph.facebook.com/".$AuthUser['facebook_id']."/picture?width=80&height=80";
+							if ($user_type == 0)
+								$name = $AuthUser['first_name'];
 							else
-								echo $AuthUser['company_name'];
+								$name = $AuthUser['company_name'];
+
+						}
+				
+						?> 
+					<!-- Dropdown for user type 0 -->
+					<li class="personal_menu personal_menu_0 dropdown <?= ($user_type == 0) ? '' : 'hide' ; ?>">
+						<a href="#" id="personal_dropdown_0" role="button" class="dropdown-toggle" data-toggle="dropdown">
+							<?php
+							echo "<img src='" . $pic_url . "' >";
+							echo "<div class='user_name'>" . $name . "</div>";
 							?>
 							 <b class="caret"></b>
 						</a>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown">
+						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_0">
 							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<?php
-							if (intval($AuthUser["user_type"]) == 1)
-							{ ?>
-								<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<?php
-							}
-							if (intval($AuthUser["user_type"]) == 2)
-							{ 
-							?>
-							<li role="presentation"><?php echo $this->Html->link('Featured Listings', array('controller' => 'FeaturedListings', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<?php
-							}
-							if (intval($AuthUser["user_type"]) != 2)
-							{ 
-							?>
+
 							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
-							<?php
-							}
-							?>
+
 							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
 						</ul>
 					</li>
+
+
+					<!-- Dropdown for user type 1 -->
+					<li class="personal_menu personal_menu_1 dropdown <?= ($user_type == 1) ? '' : 'hide' ; ?>">
+						<a href="#" id="personal_dropdown_1" role="button" class="dropdown-toggle" data-toggle="dropdown">
+							<div class='user_name'><?= $name; ?></div>
+							 <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_1">
+							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							<li role="presentation"><?php echo $this->Html->link('My Rentals', array('controller' => 'rentals', 'action' => 'view'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+							<li role="presentation"><?php echo $this->Html->link('My Account', array('controller' => 'users', 'action' => 'accountinfo'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+						</ul>
+					</li>
+
+					<!-- Dropdown for user type 2 -->
+					<li class="personal_menu personal_menu_2 dropdown <?= ($user_type == 2) ? '' : 'hide' ; ?>">
+						<a href="#" id="personal_dropdown_2" role="button" class="dropdown-toggle" data-toggle="dropdown">
+							<div class='user_name'><?= $name; ?></div>
+							 <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="personal_dropdown_2">
+							<li role="presentation"><?php echo $this->Html->link('My Dashboard', array('controller' => 'dashboard', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+							
+							<li role="presentation"><?php echo $this->Html->link('Featured Listings', array('controller' => 'FeaturedListings', 'action' => 'index'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+
+							<li role="presentation"><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout'), array('tabindex' => '-1', 'role' => 'menuitem')); ?></li>
+						</ul>
+					</li>
+
 					<?php if (isset($show_personal) && $show_personal) { ?>
-					<li class="personal_buttons">
+					<li class="personal_buttons <?= ($signed_in) ? '' : 'hide'; ?> ">
 						<div class="personal_button">
 							<a href="/messages/"><i class="icon-comment icon-large"></i></a>
 							<div class="message_count personal_count"></div>
@@ -77,30 +107,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 							<div class="favorite_count personal_count"></div>
 						</div>
 					</li>
-					<?php } ?>
-				<?php } 
-					else { ?>
-					<li class="menu dropdown signup_btn">
-						<a href="#" id="login_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Login</a>
-						<div id="login_dropdown_content" class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
-							<form id="loginForm" onsubmit="return A2Cribs.Login.cribspotLogin(this);">
-								<a href="#" class="fb_login" onclick="A2Cribs.FacebookManager.FacebookLogin()"><img src="/img/user/btn-facebook-login.png"></a>
-								<p>** Facebook login is available for students only!</p>
-								<input type="email" id="inputEmail" name="email" placeholder="Email">
-								<input type="password" id="inputPassword" name="password" placeholder="Password">
-								<button type="submit" id="submitButton" class="btn">Sign in</button>
-								<?php echo $this->Html->link('Forgot Password?', array('controller' => 'users', 'action' => 'resetpassword'), array('class' => 'forgot_password')); ?>
-							</form>
-						</div>
+				<?php } ?>
+					<li class="menu dropdown signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
+						<a href="#login_modal" role="button" data-toggle="modal">Login</a>
 					</li>
-					<li class="signup_btn">
-						<?= $this->Html->link('Sign Up', array('controller' => 'users', 'action' => 'add'), array('tabindex' => '-1', 'role' => 'menuitem')); ?>
+					<li class="signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
+						<a id="show_signup_modal" href="#">Sign Up</a>
 					</li>
-				<?php
-					}
-				}
-				?>
-
+				<?php } ?>
 				<li class="menu dropdown">
 					<a href="#" id="menu_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu_dropdown">
@@ -115,8 +129,10 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	</div>
 </div>
 
-<?php 
+<?php
+	$signed_in_text = ($signed_in) ? "true" : "false";
 	$this->Js->buffer('
+		A2Cribs.Login.logged_in = ' . $signed_in_text  . '
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {
 			e.stopPropagation();
 		});

@@ -258,6 +258,27 @@ class ListingsController extends AppController {
 	}
 
 	/*
+	Function to redirect user to the property manager's website
+	You must be logged in to access the page
+	*/
+	public function website($listing_id)
+	{
+		$listing = $this->Listing->GetListing($listing_id);
+		if ($listing == null || count($listing) != 1)
+			throw new NotFoundException('There is no listing provided!');
+		$listing = $listing[0];
+		$this->set("response", json_encode($listing));
+		if (array_key_exists("Rental", $listing))
+		{
+			if (array_key_exists("website", $listing["Rental"]) && $listing["Rental"]["website"] != null)
+				$this->redirect($listing["Rental"]["website"], "301");
+			else
+				throw new NotFoundException('There is no listing provided!');
+		}
+		//	$this->redirect($listing["Rental"]["website"], "301");
+	}
+
+	/*
 	AJAX
 	Returns all listings of given listing_type with given marker_id
 	*/
