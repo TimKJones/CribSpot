@@ -159,11 +159,14 @@ class A2Cribs.ClickBubble
 
 	@linkWebsite: (div_name, link, listing_id) ->
 		if link?
-			if link.indexOf("http") is -1
-				link = "http://" + link
 			@div.find(div_name).unbind("click").click () =>
-				A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "go to realtor's website"
-				window.open link, '_blank'
+				if A2Cribs.Login?.logged_in is yes
+					mix_object = A2Cribs.UserCache.Get("listing", listing_id)
+					mix_object["logged_in"] = yes
+					A2Cribs.MixPanel.Click mix_object, "go to realtor's website"
+					window.open "/listings/website/#{listing_id}", '_blank'
+				else 
+					$("#signup_modal").modal("show").find(".signup_message").text "Please signup to view this website"
 		else
 			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
 

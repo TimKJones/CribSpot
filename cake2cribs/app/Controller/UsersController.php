@@ -137,6 +137,12 @@ class UsersController extends AppController {
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
+
+        if (array_key_exists('student_university', $user))
+        {
+            $user['registered_university'] = $user['student_university'];
+        }
+
         /* Check if user initially tried to log in with facebook */
         $fb_id = $this->Session->read('FB.id');
         if ($fb_id)
@@ -155,16 +161,24 @@ class UsersController extends AppController {
 
         /* User record saved. Now send email to validate email address */
         /* Create a new user object and save it */
+        /*
         if ($user['user_type'] == User::USER_TYPE_SUBLETTER)
             $this->set('name', $user['first_name']);
         else if ($user['user_type'] == User::USER_TYPE_PROPERTY_MANAGER)
             $this->set('name', $user['company_name']);
+
+        */
         
         $this->set('vericode', $user['vericode']);
         $this->set('id', $this->User->id);
-        $this->_sendVerificationEmail($user);
+        // $this->_sendVerificationEmail($user);
+        $data = $this->_getUserDataForAjaxLogin($savedUser['User']);
+        $response = array(
+            'success' => 'LOGGED_IN',
+            'data' => $data
+        );
+        $this->set('response', json_encode($response));
         $this->_savePreferredUniversity($this->User->id);
-        $this->set('response', json_encode(array('success'=>'')));
     }
 
     /*
@@ -192,24 +206,17 @@ class UsersController extends AppController {
             $this->set('response', json_encode($response));
         }
 
-        /* Return an error message if the user has not yet confirmed their email address. */
-        $response = $this->User->EmailIsConfirmed($this->request->data['User']['email']);
-        if (array_key_exists('error', $response)){
-            /* Save the user's email so that we can resend the email confirmation email if they request it */
-            $this->Session->write('user_email_not_verified', $this->request->data['User']['email']);
-            $this->set('response', json_encode($response));
-            return;
-        }
-
         if ($this->Auth->login()) {
             $user = $this->Auth->User();
             $first_log_in_ever = ($user['last_login'] === null);
             $this->User->UpdateLastLogin($this->Auth->User('id'));
             $this->_savePreferredUniversity($this->Auth->User('id'));
-            $this->set('response', json_encode(array('success'=>array(
-                'first_login' => $first_log_in_ever,
-                'user_id' => $this->Auth->User('id')
-            ))));
+            $data = $this->_getUserDataForAjaxLogin($user);
+            $response = array(
+                'success' => 'LOGGED_IN',
+                'data' => $data
+            );
+            $this->set('response', json_encode($response));
             return;
         }
 

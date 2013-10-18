@@ -217,12 +217,16 @@ ClickBubble class
     ClickBubble.linkWebsite = function(div_name, link, listing_id) {
       var _this = this;
       if (link != null) {
-        if (link.indexOf("http") === -1) {
-          link = "http://" + link;
-        }
         return this.div.find(div_name).unbind("click").click(function() {
-          A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "go to realtor's website");
-          return window.open(link, '_blank');
+          var mix_object, _ref;
+          if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
+            mix_object = A2Cribs.UserCache.Get("listing", listing_id);
+            mix_object["logged_in"] = true;
+            A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
+            return window.open("/listings/website/" + listing_id, '_blank');
+          } else {
+            return $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
+          }
         });
       } else {
         return this.div.find(div_name).unbind("click").click(function() {

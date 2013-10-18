@@ -6,7 +6,7 @@ class A2Cribs.FacebookManager
 	@FacebookLogin: () ->
 		url = 'https://www.facebook.com/dialog/oauth?'
 		url += 'client_id=450938858319396'
-		url += '&redirect_uri=http://www.cribspot.com/login'
+		url += '&redirect_uri=https://www.cribspot.com/login'
 		url += '&scope=email'
 		A2Cribs.MixPanel.AuthEvent 'login',
 			'source':'facebook'
@@ -20,8 +20,6 @@ class A2Cribs.FacebookManager
 				else
 					A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
 					You can still create an account with our regular login."
-				uid = response.authResponse.userID
-				accessToken = response.authResponse.accessToken
 			else
 			# user logged in, but hasn't authorized us
 				FB.login (response) ->

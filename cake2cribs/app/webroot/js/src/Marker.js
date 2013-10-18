@@ -30,9 +30,7 @@
 
     Marker.prototype.Init = function(available) {
       var marker_dot;
-      if (available == null) {
-        available = null;
-      }
+      this.available = available != null ? available : null;
       if (!(available != null)) {
         marker_dot = "unknown";
       } else if (available === true) {
