@@ -7,7 +7,7 @@
 	</div>
 	<div class="modal-body fluid-container">
 		<div class="row-fluid">
-			<button class="span12 button fb-login"><i class="icon-facebook-sign icon-large"></i>&nbsp;&nbsp;Log in with Facebook</button>
+			<button class="span12 button fb-login" data-loading-text="Loading FB info..."><i class="icon-facebook-sign icon-large"></i>&nbsp;&nbsp;Log in with Facebook</button>
 		</div>
 		<div class="row-fluid">
 			<p class="login-separator">Or log in using your email</p>
@@ -20,14 +20,14 @@
 				<input class="span12" id="inputPassword" type="password" placeholder="Password">
 			</div>
 			<div class="row-fluid">
-				<button type="submit" class="span12 button signup-button">Log in</button>
+				<button type="submit" class="span12 button signup-button" data-loading-text="Logging in...">Log in</button>
 			</div>
 		</form>
 
 	</div>
 	<div class="modal-footer fluid-container">
 		<div class="row-fluid">
-			<p>Don't have an account? <a href="">Sign up!</a></p>
+			<p>Don't have an account? <a class="show_signup_modal" href="#">Sign up!</a></p>
 		</div>
 	</div>
 </div>

@@ -17,14 +17,19 @@ class A2Cribs.Login
 		$("#student_email").focus()
 
 	@SignupModalSetupUI: () ->
-		$("#show_signup_modal").click () =>
+		$(".show_signup_modal").click () =>
+			$("#login_modal").modal "hide"
 			$("#signup_modal").modal("show").find(".signup_message").text "Signup for Cribspot."
 		$("#signup_modal").find("form").submit (event) =>
-			@CreateStudent event.delegateTarget
+			$("#signup_modal").find(".signup-button").button 'loading'
+			@CreateStudent(event.delegateTarget)
+			.always () =>
+				$("#signup_modal").find(".signup-button").button 'reset'
 			return false
 
 		$("#signup_modal").find(".fb-login").click () =>
-			$.when(@FacebookJSLogin())
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
 			.done (response) =>
 				if response.success is "NOT_LOGGED_IN"
 					setup_facebook_signup_modal response.data
@@ -35,13 +40,24 @@ class A2Cribs.Login
 					# Populate the header
 					@PopulateHeader response.data
 
+			.always () =>
+				$(".fb-login").button('reset')
+
 	@LoginModalSetupUI: () ->
+		$(".show_login_modal").click () =>
+			$("#signup_modal").modal "hide"
+			$("#login_modal").modal "show"
+
 		$("#login_modal").find("form").submit (event) =>
-			@cribspotLogin event.delegateTarget
+			$("#login_modal").find(".signup-button").button 'loading'
+			@cribspotLogin(event.delegateTarget)
+			.always () ->
+				$("#login_modal").find(".signup-button").button 'reset'
 			return false
 
 		$("#login_modal").find(".fb-login").click () =>
-			$.when(@FacebookJSLogin())
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
 			.done (response) =>
 				if response.success is "NOT_LOGGED_IN"
 					# If login is showing but the user has never created a profile
@@ -55,6 +71,8 @@ class A2Cribs.Login
 					@logged_in = true
 					# Populate the header
 					@PopulateHeader response.data
+			.always () =>
+				$(".fb-login").button('reset')
 
 
 
@@ -89,7 +107,8 @@ class A2Cribs.Login
 			@div.find(".student_signup").show()
 
 		@div.find(".fb_login_btn").click =>
-			$.when(@FacebookJSLogin())
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
 			.done (response) =>
 				if response.success is "NOT_LOGGED_IN"
 					# populate the info
@@ -111,24 +130,26 @@ class A2Cribs.Login
 				else if response.success is "LOGGED_IN"
 					@logged_in = true
 					location.reload()
+			.always () =>
+				$(".fb-login").button('reset')
 
 		# Click and form handlers for login
 		@div.find("#login_content").submit (event) => 
-			$.when(@cribspotLogin(event.delegateTarget))
+			@cribspotLogin(event.delegateTarget)
 			.done () =>
 				location.reload()
 			return false
 
 		# Click and form handlers for student user creation
 		@div.find("#student_signup").submit () =>
-			$.when(@CreateStudent())
+			@CreateStudent()
 			.done () =>
 				location.reload()
 			return false
 
 		# Click and form handlers for property manager user creation
 		@div.find("#pm_signup").submit () =>
-			$.when(@CreatePropertyManager())
+			@CreatePropertyManager()
 			.done () =>
 				location.reload()
 			return false

@@ -25,15 +25,20 @@
 
     Login.SignupModalSetupUI = function() {
       var _this = this;
-      $("#show_signup_modal").click(function() {
+      $(".show_signup_modal").click(function() {
+        $("#login_modal").modal("hide");
         return $("#signup_modal").modal("show").find(".signup_message").text("Signup for Cribspot.");
       });
       $("#signup_modal").find("form").submit(function(event) {
-        _this.CreateStudent(event.delegateTarget);
+        $("#signup_modal").find(".signup-button").button('loading');
+        _this.CreateStudent(event.delegateTarget).always(function() {
+          return $("#signup_modal").find(".signup-button").button('reset');
+        });
         return false;
       });
       return $("#signup_modal").find(".fb-login").click(function() {
-        return $.when(_this.FacebookJSLogin()).done(function(response) {
+        $(".fb-login").button('loading');
+        return _this.FacebookJSLogin().done(function(response) {
           if (response.success === "NOT_LOGGED_IN") {
             return setup_facebook_signup_modal(response.data);
           } else if (response.success === "LOGGED_IN") {
@@ -41,18 +46,28 @@
             _this.logged_in = true;
             return _this.PopulateHeader(response.data);
           }
+        }).always(function() {
+          return $(".fb-login").button('reset');
         });
       });
     };
 
     Login.LoginModalSetupUI = function() {
       var _this = this;
+      $(".show_login_modal").click(function() {
+        $("#signup_modal").modal("hide");
+        return $("#login_modal").modal("show");
+      });
       $("#login_modal").find("form").submit(function(event) {
-        _this.cribspotLogin(event.delegateTarget);
+        $("#login_modal").find(".signup-button").button('loading');
+        _this.cribspotLogin(event.delegateTarget).always(function() {
+          return $("#login_modal").find(".signup-button").button('reset');
+        });
         return false;
       });
       return $("#login_modal").find(".fb-login").click(function() {
-        return $.when(_this.FacebookJSLogin()).done(function(response) {
+        $(".fb-login").button('loading');
+        return _this.FacebookJSLogin().done(function(response) {
           if (response.success === "NOT_LOGGED_IN") {
             $("#login_modal").modal('hide');
             $("#signup_modal").modal('show');
@@ -62,6 +77,8 @@
             _this.logged_in = true;
             return _this.PopulateHeader(response.data);
           }
+        }).always(function() {
+          return $(".fb-login").button('reset');
         });
       });
     };
@@ -92,7 +109,8 @@
         return _this.div.find(".student_signup").show();
       });
       this.div.find(".fb_login_btn").click(function() {
-        return $.when(_this.FacebookJSLogin()).done(function(response) {
+        $(".fb-login").button('loading');
+        return _this.FacebookJSLogin().done(function(response) {
           if (response.success === "NOT_LOGGED_IN") {
             _this.div.find("#student_first_name").val(response.data.first_name);
             _this.div.find("#student_last_name").val(response.data.last_name);
@@ -108,22 +126,24 @@
             _this.logged_in = true;
             return location.reload();
           }
+        }).always(function() {
+          return $(".fb-login").button('reset');
         });
       });
       this.div.find("#login_content").submit(function(event) {
-        $.when(_this.cribspotLogin(event.delegateTarget)).done(function() {
+        _this.cribspotLogin(event.delegateTarget).done(function() {
           return location.reload();
         });
         return false;
       });
       this.div.find("#student_signup").submit(function() {
-        $.when(_this.CreateStudent()).done(function() {
+        _this.CreateStudent().done(function() {
           return location.reload();
         });
         return false;
       });
       return this.div.find("#pm_signup").submit(function() {
-        $.when(_this.CreatePropertyManager()).done(function() {
+        _this.CreatePropertyManager().done(function() {
           return location.reload();
         });
         return false;

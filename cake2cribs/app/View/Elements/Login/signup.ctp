@@ -7,7 +7,7 @@
 	</div>
 	<div class="modal-body fluid-container">
 		<div class="row-fluid">
-			<button class="span12 button fb-login"><i class="icon-facebook-sign icon-large"></i>&nbsp;&nbsp;Sign up with Facebook</button>
+			<button class="span12 button fb-login" data-loading-text="Loading FB info..."><i class="icon-facebook-sign icon-large"></i>&nbsp;&nbsp;Sign up with Facebook</button>
 		</div>
 		<div class="fb-signup-welcome row-fluid hide">
 			<img class="fb-image pull-left" src="https://graph.facebook.com/552918161/picture?width=80&amp;height=80">
@@ -64,14 +64,14 @@
 				<p>By signing up you confirm that you accept the <a href="/TermsOfUse" target="_blank">Terms of Use</a> and the <a href="/PrivacyPolicy" target="_blank">Privacy Policy</a></p>
 			</div>
 			<div class="row-fluid">
-				<button type="submit" class="span12 button signup-button">Sign Up</button>
+				<button type="submit" class="span12 button signup-button" data-loading-text="Signing up...">Sign Up</button>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer fluid-container">
 		<div class="row-fluid">
-			<p>Property Manager? Create an account <a href="/signup">here.</a><br>
-				Already have an account? <a href="/login">Login!</a></p>
+			<p>Property Manager? Create an account <a href="/signup/pm">here.</a><br>
+				Already have an account? <a class="show_login_modal" href="#">Login!</a></p>
 		</div>
 	</div>
 </div>

@@ -112,7 +112,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						<a href="#login_modal" role="button" data-toggle="modal">Login</a>
 					</li>
 					<li class="signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
-						<a id="show_signup_modal" href="#">Sign Up</a>
+						<a class="show_signup_modal" href="#">Sign Up</a>
 					</li>
 				<?php } ?>
 				<li class="menu dropdown">

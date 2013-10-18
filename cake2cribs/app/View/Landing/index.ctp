@@ -98,7 +98,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					or
 				</li>
 				<li class="signup_btn <?= ($signed_in) ? 'hide' : '' ; ?>">
-					<a id="show_signup_modal" class="nav-btn" href="#">Sign Up</a>
+					<a class="nav-btn show_signup_modal" href="#">Sign Up</a>
 				</li>
 			</ul>
 		</div>

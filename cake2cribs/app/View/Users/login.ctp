@@ -76,23 +76,23 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                     </div>
                     <div class="row-fluid">
                         <div class="span6 show_student">
-                            <div class="student_icon active"></div>
+                            <div class="student_icon  <?= ($show_pm) ? "" : "active"; ?>"></div>
                             <div class="user_desc text-center show_student">College Student/Renter</div>
                         </div>
                         <div class="span6 show_pm">
-                            <div class="pm_icon"></div>
+                            <div class="pm_icon <?= ($show_pm) ? "active" : ""; ?>"></div>
                             <div class="user_desc text-center">Rental Owner/Manager</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row-fluid info_box fb_box">
+            <div class="row-fluid info_box fb_box  <?= ($show_pm) ? "hide" : ""; ?>">
                 <div class="span12 fb_login_container">
                     <a href="#" class="fb_login_btn"><img src="/img/user/btn-facebook-login.png"></a>
                     <p>** Facebook login is available for students only!</p>
                 </div>
             </div>
-            <div class="row-fluid info_box student_signup">
+            <div class="row-fluid info_box student_signup <?= ($show_pm) ? "hide" : ""; ?>">
                 <form id="student_signup" class="span12">
                     <div class="row-fluid">
                         <div class="span12 email_login_message">
@@ -150,7 +150,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                     </div>
                 </form>
             </div>
-            <div class="row-fluid info_box pm_signup hide">
+            <div class="row-fluid info_box pm_signup <?= ($show_pm) ? "" : "hide"; ?>">
                 <div class="span12">
                     <div class="row-fluid">
                         <form id="pm_signup" class="span12 signup_input_container">

@@ -20,11 +20,18 @@ class UsersController extends AppController {
         $this->Auth->allow('AjaxEditUser');
         $this->Auth->allow('ResendConfirmationEmail');
         $this->Auth->allow('AttemptFacebookLogin');
+        $this->Auth->allow('PropertyManagerSignup');
     }
 
     public function add()
     {
         $this->redirect(array('action' => 'login', "signup"));
+    }
+
+    public function PropertyManagerSignup()
+    {
+        //$this->redirect(array('action' => 'login', "signup"));
+        $this->redirect(array('action' => 'login', "signup", "pm"));
     }
 
     // Sets the directive to view account information
@@ -138,10 +145,18 @@ class UsersController extends AppController {
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
 
-        if (array_key_exists('student_university', $user))
+        CakeLog::write("ErrorAjaxResetPassword", "Error code: 69;" . print_r($user, true));
+
+        if (array_key_exists('university', $user))
         {
-            $user['registered_university'] = $user['student_university'];
+            $user['registered_university'] = $user['university'];
         }
+
+        if (array_key_exists('year', $user))
+        {
+            $user['student_year'] = $user['year'];
+        }
+        
 
         /* Check if user initially tried to log in with facebook */
         $fb_id = $this->Session->read('FB.id');
@@ -295,7 +310,7 @@ class UsersController extends AppController {
     /*
     Action for login page.
     */
-    public function Login($signup=false)
+    public function Login($signup = false, $propertymanager = false)
     {
         $this->set('locations', $this->University->getSchools());
         $this->set('user_years', $this->User->GetYears());
@@ -413,6 +428,7 @@ class UsersController extends AppController {
         }
 
         $this->set('show_signup', $signup);
+        $this->set('show_pm', $propertymanager);
     }
 
     /*
