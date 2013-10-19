@@ -104,12 +104,8 @@ Call functions using FavoritesManager.FunctionName()
     */
 
 
-    FavoritesManager.InitializeFavorites = function(response) {
-      var listing_id, listing_ids, _i, _len;
-      if (response === null || response === void 0) {
-        return;
-      }
-      listing_ids = JSON.parse(response);
+    FavoritesManager.InitializeFavorites = function(listing_ids) {
+      var listing_id, _i, _len;
       for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
         listing_id = listing_ids[_i];
         A2Cribs.FavoritesManager.FavoritesListingIds.push(parseInt(listing_id));
@@ -123,11 +119,16 @@ Call functions using FavoritesManager.FunctionName()
 
 
     FavoritesManager.LoadFavorites = function() {
+      var _this = this;
       return $.ajax({
         url: myBaseUrl + "Favorites/LoadFavorites",
         type: "GET",
         context: this,
-        success: A2Cribs.FavoritesManager.InitializeFavorites
+        success: function(response) {
+          if (response != null) {
+            return _this.InitializeFavorites(JSON.parse(response));
+          }
+        }
       });
     };
 

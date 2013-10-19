@@ -3,7 +3,80 @@ class A2Cribs.Login
 	@LANDING_URL = "cribspot.com"
 	@HTTP_PREFIX = "https://"
 
-	@setupUI:() ->
+	setup_facebook_signup_modal = (user) ->
+		# Hide facebook button
+		$(".fb-name").text user.first_name
+		$(".fb-image").attr "src", user.img_url					
+		$("#signup_modal").find(".login-separator").fadeOut()
+		$("#signup_modal").find(".fb-login").fadeOut 'slow', () ->
+			$(".fb-signup-welcome").fadeIn()
+
+		# Fill in infomation in the form from facebook
+		$("#student_first_name").val user.first_name
+		$("#student_last_name").val user.last_name
+		$("#student_email").focus()
+
+	@SignupModalSetupUI: () ->
+		$(".show_signup_modal").click () =>
+			$("#login_modal").modal "hide"
+			$("#signup_modal").modal("show").find(".signup_message").text "Signup for Cribspot."
+		$("#signup_modal").find("form").submit (event) =>
+			$("#signup_modal").find(".signup-button").button 'loading'
+			@CreateStudent(event.delegateTarget)
+			.always () =>
+				$("#signup_modal").find(".signup-button").button 'reset'
+			return false
+
+		$("#signup_modal").find(".fb-login").click () =>
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
+			.done (response) =>
+				if response.success is "NOT_LOGGED_IN"
+					setup_facebook_signup_modal response.data
+
+				else if response.success is "LOGGED_IN"
+					$(".modal").modal('hide')
+					@logged_in = true
+					# Populate the header
+					@PopulateHeader response.data
+
+			.always () =>
+				$(".fb-login").button('reset')
+
+	@LoginModalSetupUI: () ->
+		$(".show_login_modal").click () =>
+			$("#signup_modal").modal "hide"
+			$("#login_modal").modal "show"
+
+		$("#login_modal").find("form").submit (event) =>
+			$("#login_modal").find(".signup-button").button 'loading'
+			@cribspotLogin(event.delegateTarget)
+			.always () ->
+				$("#login_modal").find(".signup-button").button 'reset'
+			return false
+
+		$("#login_modal").find(".fb-login").click () =>
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
+			.done (response) =>
+				if response.success is "NOT_LOGGED_IN"
+					# If login is showing but the user has never created a profile
+					# before
+					$("#login_modal").modal('hide')
+					$("#signup_modal").modal('show')
+					setup_facebook_signup_modal response.data
+
+				else if response.success is "LOGGED_IN"
+					$(".modal").modal('hide')
+					@logged_in = true
+					# Populate the header
+					@PopulateHeader response.data
+			.always () =>
+				$(".fb-login").button('reset')
+
+
+
+	@LoginPageSetupUI: () ->
 		# Div variable to have starting place to search the document
 		@div = $("#login_signup")
 
@@ -33,19 +106,150 @@ class A2Cribs.Login
 			@div.find(".fb_box").show()
 			@div.find(".student_signup").show()
 
+		@div.find(".fb_login_btn").click =>
+			$(".fb-login").button('loading')
+			@FacebookJSLogin()
+			.done (response) =>
+				if response.success is "NOT_LOGGED_IN"
+					# populate the info
+					@div.find("#student_first_name").val response.data.first_name
+					@div.find("#student_last_name").val response.data.last_name
+					@div.find(".fb-image").attr "src", response.data.img_url
+					$(".fb-name").text response.data.first_name
+
+					# hide the login if displayed
+					# make sure the signup is displayed
+					@div.find(".show_signup").first().click()
+					@div.find(".show_student").first().click()
+
+					@div.find(".email_login_message").fadeOut 'slow', () =>
+						@div.find(".fb-signup-welcome").fadeIn()
+
+					@div.find("#student_email").focus()
+
+				else if response.success is "LOGGED_IN"
+					@logged_in = true
+					location.reload()
+			.always () =>
+				$(".fb-login").button('reset')
+
 		# Click and form handlers for login
 		@div.find("#login_content").submit (event) => 
-			@cribspotLogin event.delegateTarget
+			@cribspotLogin(event.delegateTarget)
+			.done () =>
+				location.reload()
+			return false
 
 		# Click and form handlers for student user creation
-		@div.find("#student_submit").click @CreateStudent
-		@div.find("#student_signup").submit @CreateStudent
+		@div.find("#student_signup").submit () =>
+			@CreateStudent()
+			.done () =>
+				location.reload()
+			return false
 
 		# Click and form handlers for property manager user creation
-		@div.find("#pm_submit").click @CreatePropertyManager
-		@div.find("#pm_signup").submit @CreatePropertyManager
+		@div.find("#pm_signup").submit () =>
+			@CreatePropertyManager()
+			.done () =>
+				location.reload()
+			return false
+
+	###
+	Populate the header
+	Fill in dropdowns and show picture of the user
+	###
+	@PopulateHeader: (user) ->
+		example = user
+		# Hide sign up stuff
+		$(".signup_btn").hide()
+		# Hide or btn
+		$(".nav-text").hide()
+
+		# Favorites
+		$(".personal_buttons").show()
+		A2Cribs.FavoritesManager.InitializeFavorites user.favorites
+
+		# name
+		$(".personal_menu").find(".user_name").text user.name
+
+		# image
+		$(".personal_menu").find("img").attr "src", user.img_url
+
+		# message count
+		if user.num_messages isnt 0
+			$(".personal_buttons").find(".message_count").show().text user.num_messages
+
+		# show user dropdown
+		$(".personal_menu_#{user.user_type}").show()
+
+	@FacebookJSLogin: ->
+		@fb_login_deferred = new $.Deferred()
+		FB.getLoginStatus (response) =>
+			if response.status == 'connected'
+				if response? and response.authResponse?
+					@AttemptFacebookLogin response.authResponse
+				else
+					A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
+					You can still create an account with our regular login."
+					return @fb_login_deferred.reject()
+			else
+			# user logged in, but hasn't authorized us
+				FB.login (response) =>
+					if response? and response.authResponse?
+						@AttemptFacebookLogin response.authResponse
+					else
+						A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
+						You can still create an account with our regular login."
+						return @fb_login_deferred.reject()
+				, {scope:'email'}
+
+		return @fb_login_deferred.promise()
+
+	###
+	Send signed request to server to finish registration
+
+	###
+	@AttemptFacebookLogin: (authResponse) ->
+		$.ajax
+			url: myBaseUrl + 'Users/AttemptFacebookLogin'
+			data: authResponse
+			type: 'POST'
+			success: (response) =>
+				response = JSON.parse response
+				if response.error?
+					return  @fb_login_deferred.reject()
+				#if response.success is "NOT_LOGGED_IN"
+
+					# If login is showing but the user has never created a profile
+					# before
+					#if $("#login_modal").data('modal')?.isShown
+					#	$("#login_modal").modal('hide')
+					#	$("#signup_modal").modal('show')
+
+					# Hide facebook button
+					#$(".fb-name").text response.data.first_name
+					#$(".fb-image").attr "src", response.data.img_url					
+					#$("#signup_modal").find(".login-separator").fadeOut()
+					#$("#signup_modal").find(".fb-login").fadeOut 'slow', () ->
+					#	$(".fb-signup-welcome").fadeIn()
+
+					# Fill in infomation in the form from facebook
+					# $("#student_first_name").val response.data.first_name
+					# $("#student_last_name").val response.data.last_name
+					# $("#student_email").focus()
+
+				#else if response.success is "LOGGED_IN"
+				#	$(".modal").modal('hide')
+					# Populate the header
+					#@PopulateHeader response.data
+
+				return @fb_login_deferred.resolve response
+			error: (response) =>
+				console.log response
+				return @fb_login_deferred.reject()
 
 	@cribspotLogin:(div) ->
+		@_login_deferred = new $.Deferred()
 		url = myBaseUrl + "users/AjaxLogin"
 		request_data = {
 			User: {
@@ -57,6 +261,7 @@ class A2Cribs.Login
 		if request_data.User.email? and request_data.User.password?
 			$.post url, request_data, (response) =>
 				data = JSON.parse response
+				console.log data
 				if data.error?
 					if data.error_type is "EMAIL_UNVERIFIED"
 						A2Cribs.UIManager.Confirm "Your email address has not yet been confirmed. 
@@ -66,17 +271,15 @@ class A2Cribs.Login
 					else
 						A2Cribs.UIManager.CloseLogs()
 						A2Cribs.UIManager.Error data.error
-					###
-					TODO: GIVE USER THE OPTION TO RESEND CONFIRMATION EMAIL
-					if data.error_type == "EMAIL_UNVERIFIED"
-						A2Cribs.UIManager.Alert data.error
-					###
+					return @_login_deferred.reject()
 				else
 					A2Cribs.MixPanel.AuthEvent 'login',
 						'source':'cribspot'
-					window.location.reload()
+					$(".modal").modal('hide')
+					@PopulateHeader data.data
+					return @_login_deferred.resolve()
 
-		return false
+		return @_login_deferred.promise()
 
 	@ResendConfirmationEmail: (canceled=false) ->
 		if canceled
@@ -92,30 +295,23 @@ class A2Cribs.Login
 				else
 					A2Cribs.UIManager.Success "Email has been sent! Click the link to verify."
 
-	validate = (user_type, required_fields) =>
+	validate = (user_type, required_fields, div) =>
 		type_prefix = if user_type is 0 then "student_" else "pm_"
 		A2Cribs.UIManager.CloseLogs()
 		isValid = yes
 		for field in required_fields
-			if @div.find("##{type_prefix}#{field}").val().length is 0
+			if div.find("##{type_prefix}#{field}").val().length is 0
 				isValid = no
-		#handle the university select box separately
-		if user_type is 0
-			if $("#registered_university").val().length is 0
-				isValid = false
-		if user_type is 0
-			if $("#student_year").val().length is 0
-				isValid = false
 		if not isValid
 			A2Cribs.UIManager.Error "Please fill in all of the fields!"
 
 		if user_type is 1
-			phone_number = @div.find("##{type_prefix}phone").val().split("-").join("")
+			phone_number = div.find("##{type_prefix}phone").val().split("-").join("")
 			if phone_number.length isnt 10 or isNaN phone_number
 				isValid = false
 				A2Cribs.UIManager.Error "Please enter a valid phone number"
 
-		if @div.find("##{type_prefix}password").val().length < 6
+		if div.find("##{type_prefix}password").val().length < 6
 			isValid = false
 			A2Cribs.UIManager.Error "Please enter a password of 6 or more characters"
 
@@ -123,66 +319,72 @@ class A2Cribs.Login
 
 
 	# Static private function that creates and posts a user based on user_type
-	createUser = (user_type, required_fields, fields) =>
-		type_prefix = if user_type is 0 then "student_" else "pm_"
-		if validate user_type, required_fields
-			# Check to see if confirm password matches the actual password
-			if @div.find("##{type_prefix}password").val() isnt @div.find("##{type_prefix}confirm_password").val()
-				A2Cribs.UIManager.Error "Make sure passwords match!"
-			else
-				# Create request data
-				request_data =
-					User:
-						user_type: user_type
-				# Loop through all the required fields and grab based on id's
-				for field in fields
-					if @div.find("##{type_prefix}#{field}").val().length isnt 0
-						request_data.User[field] = @div.find("##{type_prefix}#{field}").val()
-				# Handle select inputs separately
-				request_data.User['registered_university'] = $("#registered_university").val()
-				request_data.User['student_year'] = $("#student_year").val()
+	createUser = (user_type, required_fields, fields, div) =>
+		@_create_user_deferred = new $.Deferred()
 
-				# Post the request data using AjaxRegister
-				$.post "/users/AjaxRegister", request_data, (response) =>
-					data = JSON.parse response
-					if data.error?
-						A2Cribs.UIManager.CloseLogs()
-						A2Cribs.UIManager.Error data.error
+		type_prefix = if user_type is 0 then "student_" else "pm_"
+		if validate user_type, required_fields, div
+			# Check to see if confirm password matches the actual password
+			if div.find("##{type_prefix}confirm_password").val()?
+				if div.find("##{type_prefix}password").val() isnt div.find("##{type_prefix}confirm_password").val()
+					A2Cribs.UIManager.Error "Make sure passwords match!"
+					return
+			
+			# Create request data
+			request_data =
+				User:
+					user_type: user_type
+			# Loop through all the required fields and grab based on id's
+			for field in fields
+				if div.find("##{type_prefix}#{field}").val().length isnt 0
+					request_data.User[field] = div.find("##{type_prefix}#{field}").val()
+
+			# Post the request data using AjaxRegister
+			$.post "/users/AjaxRegister", request_data, (response) =>
+				data = JSON.parse response
+				if data.error?
+					A2Cribs.UIManager.CloseLogs()
+					A2Cribs.UIManager.Error data.error
+					return @_create_user_deferred.reject()
+				else
+					email = null
+					if user_type == 0
+						email = $("#student_email").val()
 					else
-						email = null
-						if user_type == 0
-							email = $("#student_email").val()
-						else
-							email = $("#pm_email").val()
-						A2Cribs.MixPanel.AuthEvent 'signup',
-							'user_id':response.success
-							'user_type': user_type
-							'email':email
-							'source':'cribspot'
-							'user_data':request_data
-						mixpanel.people.set
-							'user_id':response.success
-							'user_type': user_type
-							'email':email
-							'user_data':request_data
-						@div.find(".show_login").click()
-						A2Cribs.UIManager.Alert "Check your email to validate your credentials!"
-						
+						email = $("#pm_email").val()
+					A2Cribs.MixPanel.AuthEvent 'signup',
+						'user_id':response.success
+						'user_type': user_type
+						'email':email
+						'source':'cribspot'
+						'user_data':request_data
+					mixpanel.people.set
+						'user_id':response.success
+						'user_type': user_type
+						'email':email
+						'user_data':request_data
+					@PopulateHeader data.data
+					$(".modal").modal('hide')
+
+					return @_create_user_deferred.resolve()
+			
+			return @_create_user_deferred.promise()
+
+		return @_create_user_deferred.reject()
 
 	# Creates a Student user
-	@CreateStudent: ->
-		required_fields = ["email", "password", "first_name", "last_name"]
+	@CreateStudent: (div) ->
+		div = if not div? then @div else $(div)
+		required_fields = ["email", "password", "first_name", "last_name", "university", "year"]
 		fields = required_fields.slice 0 # Used to copy the required array
-		createUser 0, required_fields, fields
-		return false
+		return createUser 0, required_fields, fields, div
 
 	# Creates a Property manager user
 	@CreatePropertyManager: ->
 		required_fields = ["email", "password", "company_name", "street_address", "phone", "city", "state"]
 		fields = required_fields.slice 0 # Used to copy the required array
 		fields.push "website"
-		createUser 1, required_fields, fields
-		return false
+		return createUser 1, required_fields, fields, @div
 				
 
 

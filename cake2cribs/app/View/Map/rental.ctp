@@ -13,7 +13,14 @@
 	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for off campus housing in " . $university["city"] . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
 	
 
-	echo $this->element('header', array('show_filter' => false, 'show_user' => true, 'show_personal' => true));
+	echo $this->element('header', 
+		array(
+			'show_filter' => false,
+			'show_user' => true,
+			'show_personal' => true,
+			'locations' => $locations,
+			'user_years' => $user_years
+		));
 	echo $this->element('map');
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	//echo $this->element('login');

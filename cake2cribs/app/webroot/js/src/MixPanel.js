@@ -32,14 +32,16 @@
 
 
     MixPanel.Click = function(object, display_type) {
-      var bed, i, is_featured, listing, listings, marker, mixpanel_object, month, unit_type, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _ref19, _ref2, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var available, bed, i, is_featured, listing, listings, marker, mixpanel_object, month, unit_type, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref16, _ref17, _ref18, _ref19, _ref2, _ref20, _ref21, _ref22, _ref23, _ref24, _ref25, _ref26, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       if (object === void 0 || object === null) {
         return;
       }
       is_featured = 0;
+      available = null;
       if (object.class_name === "listing") {
         listing = object;
         is_featured = 1 * (_ref = parseInt(listing.listing_id), __indexOf.call(A2Cribs.FeaturedListings.FLListingIds, _ref) >= 0);
+        available = listing.available;
         marker = A2Cribs.UserCache.Get("marker", listing.marker_id);
       } else if (object.class_name === "marker") {
         marker = object;
@@ -51,6 +53,7 @@
             break;
           }
         }
+        available = marker.available;
       } else if (object.class_name === "rental") {
         listing = A2Cribs.UserCache.Get("listing", object.listing_id);
         is_featured = 1 * (_ref2 = parseInt(listing.listing_id), __indexOf.call(A2Cribs.FeaturedListings.FLListingIds, _ref2) >= 0);
@@ -63,6 +66,7 @@
         'is featured': is_featured,
         'listing_id': listing != null ? listing.GetId() : void 0,
         'marker_id': marker != null ? marker.GetId() : void 0,
+        'available': available,
         'university_id': (_ref3 = A2Cribs.Map) != null ? _ref3.CurentSchoolId : void 0,
         'filter minimum beds': array_min((_ref4 = A2Cribs.RentalFilter.FilterData) != null ? _ref4.Beds : void 0),
         'filter maximum beds': array_max((_ref5 = A2Cribs.RentalFilter.FilterData) != null ? _ref5.Beds : void 0),
