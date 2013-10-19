@@ -120,7 +120,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=20');
+	echo $this->Html->script('src/program.js?v=69');
 }
 
 		echo $this->fetch('script');
