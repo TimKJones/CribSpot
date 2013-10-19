@@ -180,7 +180,7 @@
             return _this.AttemptFacebookLogin(response.authResponse);
           } else {
             A2Cribs.UIManager.Error("We're having trouble logging you in with facebook, but don't worry!					You can still create an account with our regular login.");
-            return _this.fb_login_deferred.fail();
+            return _this.fb_login_deferred.reject();
           }
         } else {
           return FB.login(function(response) {
@@ -188,7 +188,7 @@
               return _this.AttemptFacebookLogin(response.authResponse);
             } else {
               A2Cribs.UIManager.Error("We're having trouble logging you in with facebook, but don't worry!						You can still create an account with our regular login.");
-              return _this.fb_login_deferred.fail();
+              return _this.fb_login_deferred.reject();
             }
           }, {
             scope: 'email'
@@ -212,13 +212,13 @@
         success: function(response) {
           response = JSON.parse(response);
           if (response.error != null) {
-            return _this.fb_login_deferred.fail();
+            return _this.fb_login_deferred.reject();
           }
           return _this.fb_login_deferred.resolve(response);
         },
         error: function(response) {
           console.log(response);
-          return _this.fb_login_deferred.fail();
+          return _this.fb_login_deferred.reject();
         }
       });
     };
@@ -341,7 +341,7 @@
           if (data.error != null) {
             A2Cribs.UIManager.CloseLogs();
             A2Cribs.UIManager.Error(data.error);
-            return Login._create_user_deferred.fail();
+            return Login._create_user_deferred.reject();
           } else {
             email = null;
             if (user_type === 0) {
@@ -369,7 +369,7 @@
         });
         return Login._create_user_deferred.promise();
       }
-      return Login._create_user_deferred.fail();
+      return Login._create_user_deferred.reject();
     };
 
     Login.CreateStudent = function(div) {

@@ -191,7 +191,7 @@ class A2Cribs.Login
 				else
 					A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
 					You can still create an account with our regular login."
-					return @fb_login_deferred.fail()
+					return @fb_login_deferred.reject()
 			else
 			# user logged in, but hasn't authorized us
 				FB.login (response) =>
@@ -200,7 +200,7 @@ class A2Cribs.Login
 					else
 						A2Cribs.UIManager.Error "We're having trouble logging you in with facebook, but don't worry!
 						You can still create an account with our regular login."
-						return @fb_login_deferred.fail()
+						return @fb_login_deferred.reject()
 				, {scope:'email'}
 
 		return @fb_login_deferred.promise()
@@ -217,7 +217,7 @@ class A2Cribs.Login
 			success: (response) =>
 				response = JSON.parse response
 				if response.error?
-					return  @fb_login_deferred.fail()
+					return  @fb_login_deferred.reject()
 				#if response.success is "NOT_LOGGED_IN"
 
 					# If login is showing but the user has never created a profile
@@ -246,7 +246,7 @@ class A2Cribs.Login
 				return @fb_login_deferred.resolve response
 			error: (response) =>
 				console.log response
-				return @fb_login_deferred.fail()
+				return @fb_login_deferred.reject()
 
 	@cribspotLogin:(div) ->
 		@_login_deferred = new $.Deferred()
@@ -345,7 +345,7 @@ class A2Cribs.Login
 				if data.error?
 					A2Cribs.UIManager.CloseLogs()
 					A2Cribs.UIManager.Error data.error
-					return @_create_user_deferred.fail()
+					return @_create_user_deferred.reject()
 				else
 					email = null
 					if user_type == 0
@@ -370,7 +370,7 @@ class A2Cribs.Login
 			
 			return @_create_user_deferred.promise()
 
-		return @_create_user_deferred.fail()
+		return @_create_user_deferred.reject()
 
 	# Creates a Student user
 	@CreateStudent: (div) ->
