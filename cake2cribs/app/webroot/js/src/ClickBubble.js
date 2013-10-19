@@ -215,14 +215,18 @@ ClickBubble class
     };
 
     ClickBubble.linkWebsite = function(div_name, link, listing_id) {
-      var _this = this;
+      var mix_object, _ref,
+        _this = this;
+      mix_object = A2Cribs.UserCache.Get("listing", listing_id);
+      if (!(mix_object != null)) {
+        mix_object = {};
+      }
+      mix_object["logged_in"] = (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0;
+      A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
       if (link != null) {
         return this.div.find(div_name).unbind("click").click(function() {
-          var mix_object, _ref;
-          if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
-            mix_object = A2Cribs.UserCache.Get("listing", listing_id);
-            mix_object["logged_in"] = true;
-            A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
+          var _ref1;
+          if (((_ref1 = A2Cribs.Login) != null ? _ref1.logged_in : void 0) === true) {
             return window.open("/listings/website/" + listing_id, '_blank');
           } else {
             return $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
