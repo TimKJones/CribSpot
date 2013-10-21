@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin', 'User');
 	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
@@ -78,6 +78,8 @@ class ListingsController extends AppController {
 		
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', $email_exists || $phone_exists);
+		$this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears());
 	}
 
 	/*

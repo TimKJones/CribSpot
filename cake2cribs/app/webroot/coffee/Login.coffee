@@ -218,30 +218,6 @@ class A2Cribs.Login
 				response = JSON.parse response
 				if response.error?
 					return  @fb_login_deferred.reject()
-				#if response.success is "NOT_LOGGED_IN"
-
-					# If login is showing but the user has never created a profile
-					# before
-					#if $("#login_modal").data('modal')?.isShown
-					#	$("#login_modal").modal('hide')
-					#	$("#signup_modal").modal('show')
-
-					# Hide facebook button
-					#$(".fb-name").text response.data.first_name
-					#$(".fb-image").attr "src", response.data.img_url					
-					#$("#signup_modal").find(".login-separator").fadeOut()
-					#$("#signup_modal").find(".fb-login").fadeOut 'slow', () ->
-					#	$(".fb-signup-welcome").fadeIn()
-
-					# Fill in infomation in the form from facebook
-					# $("#student_first_name").val response.data.first_name
-					# $("#student_last_name").val response.data.last_name
-					# $("#student_email").focus()
-
-				#else if response.success is "LOGGED_IN"
-				#	$(".modal").modal('hide')
-					# Populate the header
-					#@PopulateHeader response.data
 
 				return @fb_login_deferred.resolve response
 			error: (response) =>
@@ -277,6 +253,7 @@ class A2Cribs.Login
 						'source':'cribspot'
 					$(".modal").modal('hide')
 					@PopulateHeader data.data
+					@logged_in = yes
 					return @_login_deferred.resolve()
 
 		return @_login_deferred.promise()
@@ -364,6 +341,7 @@ class A2Cribs.Login
 						'email':email
 						'user_data':request_data
 					@PopulateHeader data.data
+					@logged_in = yes
 					$(".modal").modal('hide')
 
 					return @_create_user_deferred.resolve()
