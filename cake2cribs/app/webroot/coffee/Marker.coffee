@@ -9,7 +9,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	GetBuildingType: ->
 		return @building_type_id
 
-	Init: (available = null) ->
+	Init: (@available = null) ->
 		if not available? # available is unknown
 			marker_dot = "unknown"
 		else if available is yes # this place is available

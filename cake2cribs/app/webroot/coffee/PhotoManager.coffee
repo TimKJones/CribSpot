@@ -196,6 +196,8 @@ class A2Cribs.PhotoManager
 			else
 				@Photos[@CurrentImageLoading].SetId data.result.image_id
 				@Photos[@CurrentImageLoading].SetPath data.result.image_path
+				if @PhotoCount() is 1
+					@MakePrimary @CurrentImageLoading
 				@UploadCompleteDeferred.resolve(true)
 		.on 'fileuploadfail', (e, data) =>
 			A2Cribs.UIManager.Error "Failed to upload image!"
@@ -224,6 +226,13 @@ class A2Cribs.PhotoManager
 			if photo.IsEmpty()
 				return i
 		return -1
+
+	PhotoCount: ->
+		count = 0
+		for photo, i in @Photos
+			if not photo.IsEmpty()
+				count += 1
+		return count
 
 	DeleteImage: (index) ->
 		$.ajax

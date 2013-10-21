@@ -22,9 +22,11 @@ class A2Cribs.MixPanel
 		if object == undefined or object == null
 			return
 		is_featured = 0
+		available = null
 		if object.class_name is "listing"
 			listing = object
 			is_featured = 1*(parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds)
+			available = listing.available
 			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
 		else if object.class_name is "marker"
 			marker = object
@@ -33,6 +35,7 @@ class A2Cribs.MixPanel
 				if parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds
 					is_featured = 1
 					break
+			available = marker.available
 		else if object.class_name is "rental"
 			listing = A2Cribs.UserCache.Get "listing", object.listing_id
 			is_featured = 1*(parseInt(listing.listing_id) in A2Cribs.FeaturedListings.FLListingIds)
@@ -45,6 +48,7 @@ class A2Cribs.MixPanel
 			'is featured': is_featured # needs to be figured out
 			'listing_id': listing?.GetId()
 			'marker_id': marker?.GetId()
+			'available' : available
 			'university_id': A2Cribs.Map?.CurentSchoolId
 			'filter minimum beds' : array_min A2Cribs.RentalFilter.FilterData?.Beds
 			'filter maximum beds' : array_max A2Cribs.RentalFilter.FilterData?.Beds
