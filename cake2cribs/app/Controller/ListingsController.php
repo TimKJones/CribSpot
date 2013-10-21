@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin', 'User');
 	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
@@ -78,6 +78,8 @@ class ListingsController extends AppController {
 		
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', $email_exists || $phone_exists);
+		$this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears());
 	}
 
 	/*
@@ -271,7 +273,13 @@ class ListingsController extends AppController {
 		if (array_key_exists("Rental", $listing))
 		{
 			if (array_key_exists("website", $listing["Rental"]) && $listing["Rental"]["website"] != null)
-				$this->redirect($listing["Rental"]["website"], "301");
+			{
+				$url_string = $listing["Rental"]["website"];
+				if (strpos($url_string, "http") === false)
+					$url_string = "http://" . $url_string;
+
+				$this->redirect($url_string, "301");
+			}
 			else
 				throw new NotFoundException('There is no listing provided!');
 		}
