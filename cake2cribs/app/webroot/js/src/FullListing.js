@@ -35,13 +35,13 @@
         }
       });
       this.div.find("#contact_owner").click(function() {
-        if (parseInt($("#contact_owner").attr('emailexists')) === 0) {
-          _this.div.find('#contact_message').show();
+        var _ref;
+        if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
           _this.div.find("#contact_owner").hide();
-          return;
+          return _this.div.find("#contact_message").slideDown();
+        } else {
+          return $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to contact the owner.");
         }
-        _this.div.find("#contact_owner").hide();
-        return _this.div.find("#contact_message").slideDown();
       });
       this.div.find("#message_cancel").click(function() {
         return _this.div.find("#contact_message").slideUp('fast', function() {

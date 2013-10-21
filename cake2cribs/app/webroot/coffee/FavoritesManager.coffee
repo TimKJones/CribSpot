@@ -73,11 +73,7 @@ class A2Cribs.FavoritesManager
 	###
 	response contains a list of listing_ids that have been favorited by the logged-in user
 	###
-	@InitializeFavorites: (response) ->
-		if response == null or response == undefined
-			return
-
-		listing_ids = JSON.parse response
+	@InitializeFavorites: (listing_ids) ->
 		for listing_id in listing_ids
 			A2Cribs.FavoritesManager.FavoritesListingIds.push parseInt(listing_id)
 
@@ -91,7 +87,9 @@ class A2Cribs.FavoritesManager
 			url: myBaseUrl + "Favorites/LoadFavorites"
 			type:"GET"	
 			context: this
-			success: A2Cribs.FavoritesManager.InitializeFavorites
+			success: (response) =>
+				if response?
+					@InitializeFavorites JSON.parse response
 
 	###
 	Called when user clicks the heart icon in the header.

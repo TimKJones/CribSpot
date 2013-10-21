@@ -509,7 +509,7 @@ class User extends AppModel {
 					'at help@cribspot.com. Reference error code 37.');
 		}
 
-		return array('success'=>$this->id);
+		return array('success'=>$this->get($this->id));
 	}
 
 	/*

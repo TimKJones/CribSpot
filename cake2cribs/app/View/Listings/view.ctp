@@ -17,9 +17,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
-<script type="text/javascript">
-  var lolz = <?php echo $listing_json; ?>;
-</script>
+
 <div class="row-fluid full_page">
 	<!-- Listing View side bar -->
 	<div class="span3 offset1">
@@ -59,9 +57,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				<div class="span4 detail_table_cell">
 					<?php
 					echo "<div class='available ";
-					if (!array_key_exists("available", $listing["Rental"]) || $listing["Rental"]["available"] === null)
+					if (!array_key_exists("available", $listing["Listing"]) || $listing["Listing"]["available"] === null)
 						echo "unknown'>Available?</div>";
-					else if ($listing["Rental"]["available"])
+					else if ($listing["Listing"]["available"])
 						echo "'>Available</div>";
 					else
 						echo "leased'>Leased</div>";
@@ -170,17 +168,17 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				<div class="row-fluid hide" id="contact_message">	
 					<?php
 					if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null
-						&& $messaging_enabled && ($AuthUser !== null))
+						&& $messaging_enabled)
 					{ ?>
 						<div class="row-fluid phone">
 							Phone Number: <?= $listing["Rental"]["contact_phone"] ?>
 						</div>
-					<?php } else if ($messaging_enabled && ($AuthUser !== null)) {?>
+					<?php } else if ($messaging_enabled) {?>
 						<div class="row-fluid phone">
 							Phone Number: Not Available
 						</div>
 					<? } ?>
-					<?php if ($email_exists && ($AuthUser !== null)) { ?>
+					<?php if ($email_exists) { ?>
 					<div class="row-fluid">
 						<textarea id="message_area" class="span12" rows="3"></textarea>
 					</div>
@@ -188,13 +186,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						<button id="message_cancel" class="btn span5">Cancel</button>
 						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
 					</div>
-					<?php } else if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null && ($AuthUser !== null)) {?>
+					<?php } else if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null) {?>
 						<b>This rental owner can only be contacted by phone.</b>
 					<?php } ?>
-					<?php if (!$messaging_enabled && ($AuthUser !== null)) { ?>
+					<?php if (!$messaging_enabled) { ?>
 						<b>No contact information is available for this property.</b>
-					<?php } else if ($AuthUser === null) { ?>
-					<b>You must log in to contact this property manager.</b>
 					<?php } ?>
 				</div>
 				<div class="row-fluid">

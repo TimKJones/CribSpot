@@ -143,3 +143,5 @@
 - Image->_uploadTempImageToS3
 68
 - RentalSave.SaveImages()
+69
+- Users/CompleteAjaxFacebookRegistration

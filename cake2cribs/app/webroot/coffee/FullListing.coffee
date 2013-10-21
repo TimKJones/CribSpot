@@ -25,14 +25,11 @@ class A2Cribs.FullListing
 				@div.find("#main_photo").css "background-image", next_photo.css "background-image"
 
 		@div.find("#contact_owner").click () =>
-			# Only bring down dropdown if email exists 
-			if parseInt($("#contact_owner").attr('emailexists')) == 0
-				@div.find('#contact_message').show()
+			if A2Cribs.Login?.logged_in is yes
 				@div.find("#contact_owner").hide()
-				return
-
-			@div.find("#contact_owner").hide()
-			@div.find("#contact_message").slideDown()
+				@div.find("#contact_message").slideDown()
+			else
+				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to contact the owner."
 
 		@div.find("#message_cancel").click () =>
 			@div.find("#contact_message").slideUp 'fast', () =>

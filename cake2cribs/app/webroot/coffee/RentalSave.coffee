@@ -227,8 +227,10 @@ class A2Cribs.RentalSave
 		if not rental_object.Listing?
 			rental_object.Listing = {
 				listing_type: 0
-				marker_id: @CurrentMarker 
+				marker_id: @CurrentMarker
 			}
+
+		rental_object.Listing.available = data.available
 		
 		if rental_object.Image?.length is 0 and data.Image?
 			rental_object.Image = data.Image
