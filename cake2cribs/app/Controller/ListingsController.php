@@ -271,7 +271,13 @@ class ListingsController extends AppController {
 		if (array_key_exists("Rental", $listing))
 		{
 			if (array_key_exists("website", $listing["Rental"]) && $listing["Rental"]["website"] != null)
-				$this->redirect($listing["Rental"]["website"], "301");
+			{
+				$url_string = $listing["Rental"]["website"];
+				if (strpos($url_string, "http") === false)
+					$url_string = "http://" . $url_string;
+
+				$this->redirect($url_string, "301");
+			}
 			else
 				throw new NotFoundException('There is no listing provided!');
 		}
