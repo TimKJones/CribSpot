@@ -1,5 +1,4 @@
 class A2Cribs.PhotoManager
-	@
 	class Photo
 		constructor: (@_div)->
 			@_imageId = -1
@@ -165,26 +164,35 @@ class A2Cribs.PhotoManager
 		@div.find(".edit").tooltip {'selector': '','placement': 'bottom', 'title': 'Edit'}
 		@div.find(".primary").tooltip {'selector': '','placement': 'bottom', 'title': 'Make Primary'}
 
+		max_file_size = 5000000 # 5 MB
+
 		@div.find('#ImageAddForm').fileupload
 			url: myBaseUrl + 'images/AddImage'
 			dataType: 'json'
 			acceptFileTypes: /(\.|\/)(jpeg|jpg|png)$/i
 			singleFileUploads: true
-			maxFileSize: 5000000 # 5 MB
-			loadImageMaxFileSize: 15000000 # 15MB
+			maxFileSize: max_file_size
+			loadImageMaxFileSize: max_file_size
 			disableImageResize: false,
 			previewMaxWidth: 100
 			previewMaxHeight: 100
 			previewCrop: true
-		.on 'fileuploadadd', (e, data) =>
+		.on 'fileuploadsend', (e, data) =>
+			if data.files[0].type.indexOf("image") is -1
+				A2Cribs.UIManager.Error "Sorry - Please only upload png, jpeg or jpg!"
+				return false
+			if data.files[0].size > max_file_size
+				A2Cribs.UIManager.Error "Sorry - the image you uploaded was too large!"
+				return false
 			if @NextAvailablePhoto() == -1
 				A2Cribs.UIManager.Error "Sorry - you can't upload more than 6 photos at this time."
-				return
+				return false
 			@UploadImageDefer()
 			@div.find("#upload_image").button 'loading'
 			if (@CurrentImageLoading = @NextAvailablePhoto()) >= 0 and data.files? and data.files[0]?
 				@Photos[@CurrentImageLoading].CreatePreview data.files[0], 
 					@div.find "#imageContent" + (@CurrentImageLoading + 1)
+			return true
 		.on 'fileuploaddone', (e, data) =>
 			# Now listing save can proceed, resolve deferred object with either true or false
 
@@ -200,9 +208,10 @@ class A2Cribs.PhotoManager
 					@MakePrimary @CurrentImageLoading
 				@UploadCompleteDeferred.resolve(true)
 		.on 'fileuploadfail', (e, data) =>
-			A2Cribs.UIManager.Error "Failed to upload image!"
-			@div.find("#upload_image").button 'reset'
-			@Photos[@CurrentImageLoading].Reset()
+			if @CurrentImageLoading
+				A2Cribs.UIManager.Error "Failed to upload image!"
+				@div.find("#upload_image").button 'reset'
+				@Photos[@CurrentImageLoading].Reset()
 
 	LoadImages: (image_array, row, imageCallback) ->
 		@Reset()
