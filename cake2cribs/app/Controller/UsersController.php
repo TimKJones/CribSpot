@@ -711,6 +711,41 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     }
 
     /*
+    Sends a randomly generated verification code to $phone_number.
+    Save this code in the database to check against later.
+    Save this user's phone number as unverified.
+    */
+    public function SendPhoneVerificationCode($phone_number)
+    {
+
+    }
+
+    /*
+    Verify that $code is correct code for this user
+    Set their phone number as verified in DB
+    */
+    public function ConfirmPhoneVerificationCode($code)
+    {
+
+    }
+
+    /*
+    Sends an invitation email to the emails in $people about $listing_id and Cribspot in general.
+    $people is an array of objects in the form {name: "Tim Jones", email:"tim@cribspot.com"}
+    $invite_type specifies the type of invitation this is, and $parameters is different based on this type.
+    For type 0 (tour invitation), $parameters is of the form {listing_id:5}
+    */
+    public function InviteFriends($people, $invite_type, $parameters)
+    {  
+         
+    }
+
+
+/* ------------------------------------ private functions -------------------------------------- */
+
+
+
+    /*
     Gets the user data necessary to set up the UI following a successful ajax login from the map page.
     Data:
     - name
