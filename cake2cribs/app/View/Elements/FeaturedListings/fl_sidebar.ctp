@@ -1,5 +1,5 @@
 <?php 
-echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false));
+echo $this->Html->css('/less/featured-listings.less?v=2','stylesheet/less', array('inline' => false));
 ?>
 
 <div class = 'featured-listings-wrapper'>
@@ -18,7 +18,7 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <div id='featured_pm'>
                 <img src="/img/sidebar/cmb_logo.png">
                 <p>Most Awarded Property Management Company in the Ann Arbor Area!</p>
-                <button>View 20+ Locations</button>
+                <button>Click to View 20+ Locations</button>
             </div>
         <?php
         }

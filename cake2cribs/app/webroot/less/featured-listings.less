@@ -218,10 +218,34 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     border-left: 2px solid #c2c2c2;
     // box-shadow: -1px 0 0 2px rgba(0,0,0,0.2);
 
+    ::-webkit-scrollbar
+    {
+        width: 3px;
+        height: 3px;
+    }
+    ::-webkit-scrollbar-button:start:decrement,
+    ::-webkit-scrollbar-button:end:increment 
+    {
+        height: 3px;
+        display: block;
+        background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-track-piece
+    {
+        //background-color: #3b3b3b;
+    }
+
+    ::-webkit-scrollbar-thumb:vertical
+    {
+        height: 50px;
+        background-color: hsla(0, 0%, 31%, 0.5);
+        -webkit-border-radius: 2px;
+    }
+
     #fl-side-bar{
         top: 0;
         bottom: 0;
-        width: 340px;
         //position: relative;
     }
 
@@ -283,7 +307,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     #listings-list{
         position: absolute;
-        top: 139px;
+        top: 113px;
         left: 0px;
         right: 0px;
         // width: 100%;
@@ -354,7 +378,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         line-height: 25px;
         font-size: 12px;
         color: #797979;
-        background-color: hsl(48, 100%, 82%);
+        background-color: white;
         text-align: center;
         height: @FEATURED_PM_HEIGHT;
         img
