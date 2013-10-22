@@ -216,7 +216,7 @@
               if (FeaturedListings.FeaturedPMListingsVisible) {
                 A2Cribs.Map.IsCluster(false);
                 _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', {
-                  user_id: user_id
+                  pm_id: user_id
                 }));
               } else {
                 _results.push(A2Cribs.Map.IsCluster(true));

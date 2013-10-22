@@ -177,10 +177,10 @@ class A2Cribs.FeaturedListings
                         if @FeaturedPMListingsVisible
                             A2Cribs.Map.IsCluster no
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
-                                user_id: user_id
+                                pm_id: user_id
                         else
                             A2Cribs.Map.IsCluster yes
-                            
+
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []
 
