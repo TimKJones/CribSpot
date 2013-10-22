@@ -205,24 +205,24 @@ class A2Cribs.Map
 
 			# Set visibility of ALL markers to false
 			for marker in all_markers
-				marker.GMarker?.setVisible false
+				marker.IsVisible false
 
 			for listing in all_listings
-				listing.visible = false
+				listing.IsVisible false
 
 			# Set visibility of all markers with listings in listing_ids to true
 			for listing_id in listing_ids
 				listing = A2Cribs.UserCache.Get 'listing', listing_id
 				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
-				marker.GMarker?.setVisible true
-				listing.visible = true
+				marker.IsVisible true
+				listing.IsVisible true
 		else
 			# make all markers visible
 			for marker in all_markers
-				marker?.GMarker?.setVisible true
+				marker?.IsVisible true
 
 			for listing in all_listings
-				listing.visible = true
+				listing.IsVisible true
 
 		A2Cribs.Map.GMarkerClusterer.repaint()
 

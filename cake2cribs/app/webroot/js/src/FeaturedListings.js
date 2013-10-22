@@ -136,6 +136,7 @@
           listing = A2Cribs.UserCache.Get('listing', id);
           marker = rental = null;
           if (listing != null) {
+            listing.InSidebar(true);
             marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
             rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id);
             if (rental[0] != null) {

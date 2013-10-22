@@ -33,7 +33,8 @@ class A2Cribs.HoverBubble
 	@Open: (marker) ->
 		@Close()
 		A2Cribs.ClickBubble?.Close()
-		if marker
+		if marker?
+			marker.IsVisible yes
 			@SetContent marker
 			# Pan map to leave enough room for click bubble
 			marker_pixel_position = A2Cribs.ClickBubble.ConvertLatLongToPixels marker.GMarker.getPosition()
@@ -74,7 +75,8 @@ class A2Cribs.HoverBubble
 			return parseInt(listing_a.rent, 10) - parseInt(listing_b.rent, 10);
 
 		for listing in sortedListings
-			if not listing.visible? or listing.visible
+			if listing.InSidebar() or listing.IsVisible()
+
 				listing_info = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId()
 
 				codes = (k for k of listings)

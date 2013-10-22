@@ -54,27 +54,15 @@ class A2Cribs.ClickBubble
 		@IsOpen = true
 		openDeferred = new $.Deferred
 		if listing_id?
-			listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
-			A2Cribs.MixPanel.Click listing, "large popup"
-			if listing.rental_id? # if the rental is cached
+			A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id)
+			.done (listing) =>
+				A2Cribs.MixPanel.Click listing, "large popup"
 				@SetContent listing.GetObject()
 				@Show listing_id
 				openDeferred.resolve listing_id
-			else
-				$.ajax 
-					url: myBaseUrl + "Listings/GetListing/" + listing_id
-					type:"GET"
-					success: (data) =>
-						response_data = JSON.parse data
-						for item in response_data
-							for key, value of item
-								if key isnt "Marker" and A2Cribs[key]?
-									A2Cribs.UserCache.Set new A2Cribs[key] value
+			.fail =>
+				A2Cribs.UIManager.Error "Sorry - We could not find this listing!"
 
-						listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
-						@SetContent listing.GetObject()
-						@Show listing_id
-						openDeferred.resolve listing_id
 		return openDeferred.promise()
 
 	@Show: (listing_id) ->

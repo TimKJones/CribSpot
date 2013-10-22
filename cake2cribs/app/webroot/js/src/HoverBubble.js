@@ -50,7 +50,8 @@ Wrapper for google infobubble
       if ((_ref = A2Cribs.ClickBubble) != null) {
         _ref.Close();
       }
-      if (marker) {
+      if (marker != null) {
+        marker.IsVisible(true);
         this.SetContent(marker);
         marker_pixel_position = A2Cribs.ClickBubble.ConvertLatLongToPixels(marker.GMarker.getPosition());
         pixels_to_pan = A2Cribs.ClickBubble.GetAdjustedClickBubblePosition(marker_pixel_position.x, marker_pixel_position.y);
@@ -102,7 +103,7 @@ Wrapper for google infobubble
       });
       for (_i = 0, _len = sortedListings.length; _i < _len; _i++) {
         listing = sortedListings[_i];
-        if (!(listing.visible != null) || listing.visible) {
+        if (listing.InSidebar() || listing.IsVisible()) {
           listing_info = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing.GetId());
           codes = (function() {
             var _results;

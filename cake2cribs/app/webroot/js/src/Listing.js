@@ -11,6 +11,64 @@
       Listing.__super__.constructor.call(this, "listing", listing);
     }
 
+    /*
+    	Checks/Sets if the listing is visible
+    	on the map
+    	Defaults to true
+    */
+
+
+    Listing.prototype.IsVisible = function(visible) {
+      if (visible == null) {
+        visible = null;
+      }
+      if (typeof visible === "boolean") {
+        this.visible = visible;
+      }
+      if (this.visible === false) {
+        return false;
+      }
+      return true;
+    };
+
+    /*
+    	Checks/Sets if the listing is in the sidebar
+    	This variable is set when the listing
+    	is loaded in the sidebar
+    */
+
+
+    Listing.prototype.InSidebar = function(in_sidebar) {
+      if (in_sidebar == null) {
+        in_sidebar = null;
+      }
+      if (typeof in_sidebar === "boolean") {
+        this.in_sidebar = in_sidebar;
+      }
+      if (this.in_sidebar === true) {
+        return true;
+      }
+      return false;
+    };
+
+    /*
+    	Check/Sets if the listing is featured
+    */
+
+
+    Listing.prototype.IsFeatured = function(is_featured) {
+      if (is_featured == null) {
+        is_featured = null;
+      }
+      if (typeof is_featured === "boolean") {
+        this.is_featured = is_featured;
+      }
+      if (this.is_featured === true) {
+        return true;
+      }
+      return false;
+    };
+
     return Listing;
 
   })(A2Cribs.Object);
