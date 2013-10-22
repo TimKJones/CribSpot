@@ -205,6 +205,10 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 /* Featured Listing Map CSS */
 
 .featured-listings-wrapper{
+
+    @FEATURED_PM_HEIGHT: 60px;
+
+
     position: absolute;
     top: 46px;
     width: 348px;
@@ -214,10 +218,34 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     border-left: 2px solid #c2c2c2;
     // box-shadow: -1px 0 0 2px rgba(0,0,0,0.2);
 
+    ::-webkit-scrollbar
+    {
+        width: 3px;
+        height: 3px;
+    }
+    ::-webkit-scrollbar-button:start:decrement,
+    ::-webkit-scrollbar-button:end:increment 
+    {
+        height: 3px;
+        display: block;
+        background-color: transparent;
+    }
+
+    ::-webkit-scrollbar-track-piece
+    {
+        //background-color: #3b3b3b;
+    }
+
+    ::-webkit-scrollbar-thumb:vertical
+    {
+        height: 50px;
+        background-color: hsla(0, 0%, 31%, 0.5);
+        -webkit-border-radius: 2px;
+    }
+
     #fl-side-bar{
         top: 0;
         bottom: 0;
-        width: 340px;
         //position: relative;
     }
 
@@ -279,7 +307,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     #listings-list{
         position: absolute;
-        top: 139px;
+        top: 113px;
         left: 0px;
         right: 0px;
         // width: 100%;
@@ -289,9 +317,9 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         // /bottom: 0;
         // width: 100%;
         background: #f2f3f4;
-        &.daily_ad
+        &.featured_pm
         {
-            bottom: 67px;
+            bottom: 28px + @FEATURED_PM_HEIGHT;
         }
     }
 
@@ -340,6 +368,76 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     }
 
+    #featured_pm
+    {
+        position: absolute;
+        bottom: 24px;
+        width: 100%;
+        border-top: 2px solid #c6c6c7;
+        border-bottom: 2px solid #c6c6c7;
+        line-height: 25px;
+        font-size: 12px;
+        color: #797979;
+        background-color: white;
+        text-align: center;
+        height: @FEATURED_PM_HEIGHT;
+        img
+        {
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 100px;
+            height: 45px;
+        }
+        p
+        {
+            position: absolute;
+            left: 110px;
+            margin-top: 8px;
+            line-height: 15px;
+            font-weight: bold;
+        }
+        button
+        {
+            -webkit-transition: background-color 0.25s ease-in-out;
+            -moz-transition: background-color 0.25s ease-in-out;
+            -o-transition: background-color 0.25s ease-in-out;
+            -ms-transition: background-color 0.25s ease-in-out;
+            transition: background-color 0.25s ease-in-out;
+            -webkit-border-radius: 4px;
+            -webkit-background-clip: padding-box;
+            -moz-border-radius: 4px;
+            -moz-background-clip: padding;
+            border-radius: 4px;
+            background-clip: padding-box;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 900 !important;
+            cursor: pointer;
+            background-color: #227dda;
+
+            position: absolute;
+            right: 25px;
+            bottom: 10px;
+
+            &:hover
+            {
+                background-color: #1e6fc1;
+            }
+        }
+        &:hover
+        {
+            cursor:pointer;
+        }
+    }
+
     .sidebar-bottom-bar{
         position: absolute;
         bottom: 24px;
@@ -351,9 +449,11 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         line-height: 25px;
         font-size: 12px;
         color: #797979;
-        background-image: url(/img/sidebar/newspaper.png);
-        background-size: 100%;
+        background-image: url(/img/sidebar/jkeller_logo.jpg);
+        background-size: contain;
+        background-position:center;
         background-repeat: no-repeat;
+        background-color: #282419;
         div{
             text-align: center;
             span{
@@ -373,7 +473,9 @@ table.ui-datepicker-calendar {border-collapse: separate;}
                 }
             }
         }
-
+        &:hover{
+                cursor:pointer;
+            }
 
     }
 

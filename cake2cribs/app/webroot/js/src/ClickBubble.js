@@ -79,40 +79,19 @@ ClickBubble class
 
 
     ClickBubble.Open = function(listing_id) {
-      var listing, openDeferred,
+      var openDeferred,
         _this = this;
       this.IsOpen = true;
       openDeferred = new $.Deferred;
       if (listing_id != null) {
-        listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
-        A2Cribs.MixPanel.Click(listing, "large popup");
-        if (listing.rental_id != null) {
-          this.SetContent(listing.GetObject());
-          this.Show(listing_id);
-          openDeferred.resolve(listing_id);
-        } else {
-          $.ajax({
-            url: myBaseUrl + "Listings/GetListing/" + listing_id,
-            type: "GET",
-            success: function(data) {
-              var item, key, response_data, value, _i, _len;
-              response_data = JSON.parse(data);
-              for (_i = 0, _len = response_data.length; _i < _len; _i++) {
-                item = response_data[_i];
-                for (key in item) {
-                  value = item[key];
-                  if (key !== "Marker" && (A2Cribs[key] != null)) {
-                    A2Cribs.UserCache.Set(new A2Cribs[key](value));
-                  }
-                }
-              }
-              listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
-              _this.SetContent(listing.GetObject());
-              _this.Show(listing_id);
-              return openDeferred.resolve(listing_id);
-            }
-          });
-        }
+        A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id).done(function(listing) {
+          A2Cribs.MixPanel.Click(listing, "large popup");
+          _this.SetContent(listing.GetObject());
+          _this.Show(listing_id);
+          return openDeferred.resolve(listing_id);
+        }).fail(function() {
+          return A2Cribs.UIManager.Error("Sorry - We could not find this listing!");
+        });
       }
       return openDeferred.promise();
     };

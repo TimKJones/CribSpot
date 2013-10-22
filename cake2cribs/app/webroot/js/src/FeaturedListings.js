@@ -6,6 +6,10 @@
 
     function FeaturedListings() {}
 
+    FeaturedListings.FeaturedPMIdToListingIdsMap = [];
+
+    FeaturedListings.FeaturedPMListingsVisible = false;
+
     FeaturedListings.GetFlIds = function(university_id) {
       var deferred,
         _this = this;
@@ -132,6 +136,7 @@
           listing = A2Cribs.UserCache.Get('listing', id);
           marker = rental = null;
           if (listing != null) {
+            listing.InSidebar(true);
             marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
             rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id);
             if (rental[0] != null) {
@@ -190,6 +195,35 @@
         },
         error: function() {
           return FeaturedListings.GetSidebarImagePathsDeferred.resolve(null);
+        }
+      });
+    };
+
+    FeaturedListings.LoadFeaturedPMListings = function() {
+      return $.ajax({
+        url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId,
+        type: "GET",
+        success: function(data) {
+          FeaturedListings.FeaturedPMIdToListingIdsMap = JSON.parse(data);
+          return $("#featured_pm").click(function() {
+            var listing_ids, user_id, _ref, _results;
+            _ref = FeaturedListings.FeaturedPMIdToListingIdsMap;
+            _results = [];
+            for (user_id in _ref) {
+              listing_ids = _ref[user_id];
+              A2Cribs.Map.ToggleListingVisibility(listing_ids, FeaturedListings.FeaturedPMListingsVisible);
+              FeaturedListings.FeaturedPMListingsVisible = !FeaturedListings.FeaturedPMListingsVisible;
+              if (FeaturedListings.FeaturedPMListingsVisible) {
+                _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', 'user_id:' + user_id));
+              } else {
+                _results.push(void 0);
+              }
+            }
+            return _results;
+          });
+        },
+        error: function() {
+          return FeaturedListings.FeaturedPMIdToListingIdsMap = [];
         }
       });
     };

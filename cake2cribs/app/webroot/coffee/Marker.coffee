@@ -9,6 +9,14 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	GetBuildingType: ->
 		return @building_type_id
 
+	IsVisible: (visible = null) ->
+		if typeof(visible) is "boolean"
+			@GMarker?.setVisible visible
+		if not @GMarker?
+			return no
+
+		return @GMarker?.getVisible()
+
 	Init: (@available = null) ->
 		if not available? # available is unknown
 			marker_dot = "unknown"

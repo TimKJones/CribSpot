@@ -1,7 +1,9 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin', 'User');
+	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin',
+		'FeaturedPM', 'User');
+
 	public $components= array('Session', 'Cookie');
 
 	public function beforeFilter()
@@ -12,6 +14,9 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetListingsByLoggedInUser');
 		$this->Auth->allow('GetOwnedListingsByMarkerId');
 		$this->Auth->allow('LoadMarkerData');
+		$this->Auth->allow('Save');
+		$this->Auth->allow('Delete');
+		$this->Auth->allow('GetFeaturedPMListings');
 	}
 
 	/*
@@ -298,6 +303,25 @@ class ListingsController extends AppController {
 		$this->layout = 'ajax';
 		$listings = $this->Listing->GetMarkerData($listing_type, $marker_id, $this->_getUserId());
 		$this->set('response', json_encode($listings));
+	}
+
+	/*
+	Returns json_encoded map of user_id => listing_ids for all featured pms for today
+	*/
+	public function GetFeaturedPMListings($university_id = null)
+	{
+		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		if ($university_id === null)
+			return;
+
+		$this->layout = 'ajax';
+		$pm_ids = $this->FeaturedPM->GetPMsByUniversityID($university_id);
+		CakeLog::write('pms', print_r($pm_ids, true));
+		$pmIdToListingIDsMap = $this->Listing->GetPMToListingIdsMap($pm_ids);
+		CakeLog::write("map", print_r($pmIdToListingIDsMap, true));
+		$this->set('response', json_encode($pmIdToListingIDsMap));
 	}
 
 	private function _setImagePathsForFullPageView(&$images)

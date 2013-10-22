@@ -26,6 +26,49 @@
       });
     };
 
+    /*
+    	Get Listing
+    	Retrieves a listing_type (rental, sublet, parking) by a listing id
+    	Uses deferred object to fetch from async
+    */
+
+
+    UserCache.GetListing = function(listing_type, listing_id) {
+      var deferred, listing,
+        _this = this;
+      deferred = new $.Deferred();
+      if (!(listing_type != null) || !(listing_id != null)) {
+        return deferred.reject();
+      }
+      listing = A2Cribs.UserCache.Get(listing_type, listing_id);
+      if (listing != null ? listing.IsComplete() : void 0) {
+        return deferred.resolve(listing);
+      }
+      $.ajax({
+        url: myBaseUrl + "Listings/GetListing/" + listing_id,
+        type: "GET",
+        success: function(data) {
+          var item, key, response_data, value, _i, _len;
+          response_data = JSON.parse(data);
+          for (_i = 0, _len = response_data.length; _i < _len; _i++) {
+            item = response_data[_i];
+            for (key in item) {
+              value = item[key];
+              if (key !== "Marker" && key !== "Listing" && (A2Cribs[key] != null)) {
+                A2Cribs.UserCache.Set(new A2Cribs[key](value));
+              }
+            }
+          }
+          listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
+          return deferred.resolve(listing);
+        },
+        error: function() {
+          return deferred.reject();
+        }
+      });
+      return deferred.promise();
+    };
+
     UserCache.GetDiferred = function(object_type, id) {
       var deferred, item,
         _this = this;

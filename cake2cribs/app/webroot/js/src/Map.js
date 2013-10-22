@@ -222,6 +222,7 @@
       basicData = this.LoadBasicData();
       this.BasicDataCached = new $.Deferred();
       A2Cribs.FavoritesManager.LoadFavorites();
+      A2Cribs.FeaturedListings.LoadFeaturedPMListings();
       $.when(basicData).then(this.LoadBasicDataCallback);
       return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE, basicData, this.BasicDataCached);
     };
@@ -231,6 +232,60 @@
         return;
       }
       return this.GMap.setCenter(new google.maps.LatLng(latitude, longitude));
+    };
+
+    /*
+    	Toggles visibility for the given listing_ids
+    	When toggled on, only these listing_ids are visible.
+    	When toggled off, all listings are visible
+    */
+
+
+    Map.ToggleListingVisibility = function(listing_ids, listingsCurrentlyVisible, button) {
+      var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
+      if (button == null) {
+        button = void 0;
+      }
+      if (button != null) {
+        $(button).toggleClass('active');
+      }
+      if ((_ref = A2Cribs.HoverBubble) != null) {
+        _ref.Close();
+      }
+      if ((_ref1 = A2Cribs.ClickBubble) != null) {
+        _ref1.Close();
+      }
+      all_markers = A2Cribs.UserCache.Get('marker');
+      all_listings = A2Cribs.UserCache.Get('listing');
+      if (!listingsCurrentlyVisible) {
+        for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
+          marker = all_markers[_i];
+          marker.IsVisible(false);
+        }
+        for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
+          listing = all_listings[_j];
+          listing.IsVisible(false);
+        }
+        for (_k = 0, _len2 = listing_ids.length; _k < _len2; _k++) {
+          listing_id = listing_ids[_k];
+          listing = A2Cribs.UserCache.Get('listing', listing_id);
+          marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
+          marker.IsVisible(true);
+          listing.IsVisible(true);
+        }
+      } else {
+        for (_l = 0, _len3 = all_markers.length; _l < _len3; _l++) {
+          marker = all_markers[_l];
+          if (marker != null) {
+            marker.IsVisible(true);
+          }
+        }
+        for (_m = 0, _len4 = all_listings.length; _m < _len4; _m++) {
+          listing = all_listings[_m];
+          listing.IsVisible(true);
+        }
+      }
+      return A2Cribs.Map.GMarkerClusterer.repaint();
     };
 
     Map.style = [

@@ -139,55 +139,13 @@ Call functions using FavoritesManager.FunctionName()
 
 
     FavoritesManager.ToggleFavoritesVisibility = function(button) {
-      var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
-      $(button).toggleClass('active');
-      if ((_ref = A2Cribs.HoverBubble) != null) {
-        _ref.Close();
-      }
-      if ((_ref1 = A2Cribs.ClickBubble) != null) {
-        _ref1.Close();
-      }
-      all_markers = A2Cribs.UserCache.Get('marker');
-      all_listings = A2Cribs.UserCache.Get('listing');
-      if (!A2Cribs.FavoritesManager.FavoritesVisible) {
-        $("#FavoritesHeaderIcon").addClass("pressed");
-        for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
-          marker = all_markers[_i];
-          if ((_ref2 = marker.GMarker) != null) {
-            _ref2.setVisible(false);
-          }
-        }
-        for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
-          listing = all_listings[_j];
-          listing.visible = false;
-        }
-        _ref3 = A2Cribs.FavoritesManager.FavoritesListingIds;
-        for (_k = 0, _len2 = _ref3.length; _k < _len2; _k++) {
-          listing_id = _ref3[_k];
-          listing = A2Cribs.UserCache.Get('listing', listing_id);
-          marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
-          if ((_ref4 = marker.GMarker) != null) {
-            _ref4.setVisible(true);
-          }
-          listing.visible = true;
-        }
+      A2Cribs.Map.ToggleListingVisibility(A2Cribs.FavoritesManager.FavoritesListingIds, A2Cribs.FavoritesManager.FavoritesVisible, button);
+      A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible;
+      if (A2Cribs.FavoritesManager.FavoritesVisible) {
+        return $("#FavoritesHeaderIcon").addClass("pressed");
       } else {
-        for (_l = 0, _len3 = all_markers.length; _l < _len3; _l++) {
-          marker = all_markers[_l];
-          if (marker != null) {
-            if ((_ref5 = marker.GMarker) != null) {
-              _ref5.setVisible(true);
-            }
-          }
-        }
-        for (_m = 0, _len4 = all_listings.length; _m < _len4; _m++) {
-          listing = all_listings[_m];
-          listing.visible = true;
-        }
-        $("#FavoritesHeaderIcon").removeClass("pressed");
+        return $("#FavoritesHeaderIcon").removeClass("pressed");
       }
-      A2Cribs.Map.GMarkerClusterer.repaint();
-      return A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible;
     };
 
     FavoritesManager.FavoritesVisibilityIsOn = function() {

@@ -280,10 +280,37 @@ class Listing extends AppModel {
 				$listings[$i]['Image'] = $this->_removeNullEntries($listings[$i]['Image']);
 			if (array_key_exists('Marker', $listings[$i]))
 				$listings[$i]['Marker'] = $this->_removeNullEntries($listings[$i]['Marker']);
-	}	
+		}	
 
 		return $listings;
 	}
+
+	/*
+	Returns map of user_id => owned listing_ids
+	*/
+	public function GetPMToListingIdsMap($pm_ids)
+	{
+		$listings = $this->find('all', array(
+			'fields' => array('Listing.user_id', 'Listing.listing_id'),
+			'contain' => array(),
+			'conditions' => array(
+				'user_id' => $pm_ids
+			)
+		));
+		$map = array();
+		foreach ($listings as $listing){
+			if (array_key_exists('Listing', $listing) && 
+				array_key_exists('user_id', $listing['Listing']) && array_key_exists('listing_id', $listing['Listing'])){
+				if (!array_key_exists($listing['Listing']['user_id'], $map) || !is_array($map[$listing['Listing']['user_id']]))
+					$map[$listing['Listing']['user_id']] = array();
+
+				array_push($map[$listing['Listing']['user_id']], $listing['Listing']['listing_id']);
+			}
+		}
+
+		return $map;
+	}
+
 	/*
 	Returns an array of listing ids owned by the user
 	*/

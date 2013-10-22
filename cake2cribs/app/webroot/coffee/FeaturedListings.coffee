@@ -1,4 +1,6 @@
 class A2Cribs.FeaturedListings
+    @FeaturedPMIdToListingIdsMap = []
+    @FeaturedPMListingsVisible = false
 
     @GetFlIds:(university_id)->
         deferred = new $.Deferred()
@@ -108,7 +110,8 @@ class A2Cribs.FeaturedListings
                 listingObject = {}
                 listing = A2Cribs.UserCache.Get('listing', id)
                 marker = rental = null
-                if listing? 
+                if listing?
+                    listing.InSidebar yes
                     marker = A2Cribs.UserCache.Get('marker', listing.marker_id)
                     rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id)
                     if rental[0]?
@@ -159,6 +162,23 @@ class A2Cribs.FeaturedListings
                 @GetSidebarImagePathsDeferred.resolve(data)
             error: ()=>
                 @GetSidebarImagePathsDeferred.resolve(null)
+
+    @LoadFeaturedPMListings: () =>
+        $.ajax 
+            url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId
+            type:"GET"
+            success: (data) =>
+                @FeaturedPMIdToListingIdsMap = JSON.parse data
+
+                $("#featured_pm").click () =>
+                    for user_id, listing_ids of @FeaturedPMIdToListingIdsMap
+                        A2Cribs.Map.ToggleListingVisibility(listing_ids, @FeaturedPMListingsVisible)
+                        @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
+                        if @FeaturedPMListingsVisible
+                            A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
+                                'user_id:'+user_id
+            error: ()=>
+                @FeaturedPMIdToListingIdsMap = []
 
     class Sidebar
         constructor:(@SidebarUI)->

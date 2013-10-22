@@ -12,6 +12,37 @@ class A2Cribs.UserCache
 			error: =>
 				callback?.error()
 
+	###
+	Get Listing
+	Retrieves a listing_type (rental, sublet, parking) by a listing id
+	Uses deferred object to fetch from async
+	###
+	@GetListing: (listing_type, listing_id) ->
+		deferred = new $.Deferred()
+		if not listing_type? or not listing_id?
+			return deferred.reject()
+
+		listing = A2Cribs.UserCache.Get listing_type, listing_id
+		if listing?.IsComplete()
+			return deferred.resolve listing
+
+		$.ajax
+			url: myBaseUrl + "Listings/GetListing/" + listing_id
+			type:"GET"
+			success: (data) =>
+				response_data = JSON.parse data
+				for item in response_data
+					for key, value of item
+						if key isnt "Marker" and key isnt "Listing" and A2Cribs[key]?
+							A2Cribs.UserCache.Set new A2Cribs[key] value
+				listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+				return deferred.resolve listing
+
+			error: ->
+				return deferred.reject()
+
+		return deferred.promise()
+
 	@GetDiferred: (object_type, id) ->
 		deferred = new $.Deferred()
 		item = @Get object_type, id
