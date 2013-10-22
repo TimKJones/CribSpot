@@ -2,7 +2,7 @@
 class ToursController extends AppController 
 { 
 	public $helpers = array('Html');
-	public $uses = array();
+	public $uses = array('User', 'Listing');
 	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter()
@@ -53,7 +53,23 @@ Schedule confirmation text to be sent 1 hour before tour.
 	*/
 	private function _emailTourInformationToScheduler($listing_id, $times, $note)
 	{
+		$from = 'donotreply@cribspot.com';
+		$to = 'scheduler@cribspot.com';
+		$id = 1;	
+		$subject = 'New Tour Request: ID: ' . $id;
+		$template = 'tours/tour_information_for_scheduler';
+		$sendAs = 'both';
 
+		$this->set('student_name', '');
+		$this->set('student_email', '');
+		$this->set('student_phone', '');
+		$this->set('student_university', '');
+		$this->set('student_year', '');
+		$this->set('listing_url', '');
+		$this->set('times_requested', '');
+		$this->set('notes', '');
+
+		$this->SendEmail($from, $to, $subject, $template, $sendAs);
 	}
 
 	/*
@@ -61,7 +77,29 @@ Schedule confirmation text to be sent 1 hour before tour.
 	*/
 	private function _emailStudentConfirmation($listing_id, $times, $note)
 	{
+		if (!$this->Auth->loggedIn() || $listing_id === null || $times === null)
+			return;
 
+		$from = 'scheduler@cribspot.com';
+		$to = $this->User->GetEmailFromId($this->Auth->User('id'));
+		if ($to === null)
+			return;
+
+		$title = $this->Listing->GetListingTitleFromId($listing_id);
+		$subject = 'New Tour Request: ID: ' . $id;
+		$template = 'tours/tour_information_for_scheduler';
+		$sendAs = 'both';
+
+		$this->set('student_name', '');
+		$this->set('student_email', '');
+		$this->set('student_phone', '');
+		$this->set('student_university', '');
+		$this->set('student_year', '');
+		$this->set('listing_url', '');
+		$this->set('times_requested', '');
+		$this->set('notes', '');
+
+		$this->SendEmail($from, $to, $subject, $template, $sendAs);
 	}
 
 	/*
@@ -70,7 +108,7 @@ Schedule confirmation text to be sent 1 hour before tour.
 	*/
 	private function _emailGenericRequestToPM($listing_id, $note)
 	{
-		
+
 	}
 
 }
