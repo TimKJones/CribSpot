@@ -21,6 +21,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ResendConfirmationEmail');
         $this->Auth->allow('AttemptFacebookLogin');
         $this->Auth->allow('PropertyManagerSignup');
+        $this->Auth->allow('IsLoggedIn');
     }
 
     public function add()
@@ -204,6 +205,34 @@ class UsersController extends AppController {
         );
         $this->set('response', json_encode($response));
         $this->_savePreferredUniversity($this->User->id);
+    }
+
+    /*
+    Checks if the current user is logged in.
+    Returns a code indicating their state.
+    If logged in, also returns the data necessary to update page elements following an ajax login.
+    */  
+    public function IsLoggedIn()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
+        $data = null;
+        $user = $this->Auth->User();
+        CakeLog::write("loggedinuser", print_r($user, true));
+        if ($user !== null)
+            $data = $this->_getUserDataForAjaxLogin($user);
+
+        $success = 'NOT_LOGGED_IN';
+        if ($this->Auth->loggedIn())
+            $success = 'LOGGED_IN';
+
+        $response = array(
+            'success' => $success,
+            'data' => $data
+        );
+
+        $this->set('response', json_encode($response));
     }
 
     /*
