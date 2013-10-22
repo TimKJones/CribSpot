@@ -11,6 +11,19 @@
 
     Login.HTTP_PREFIX = "https://";
 
+    $(document).ready(function() {
+      return Login.CheckLoggedIn();
+    });
+
+    /*
+    	Private function setup facebook signup modal
+    	Given a user, hides the facebook signup button
+    	and populates that area with the users profile
+    	picture and populates the input fields with
+    	first name and last name
+    */
+
+
     setup_facebook_signup_modal = function(user) {
       $(".fb-name").text(user.first_name);
       $(".fb-image").attr("src", user.img_url);
@@ -22,6 +35,49 @@
       $("#student_last_name").val(user.last_name);
       return $("#student_email").focus();
     };
+
+    /*
+    	Check Logged In
+    	Trys to fetch the user information from the backend
+    	If logged in populates the header
+    	Called when the document is ready
+    */
+
+
+    Login.CheckLoggedIn = function() {
+      var deferred,
+        _this = this;
+      deferred = new $.Deferred();
+      $.ajax({
+        url: myBaseUrl + 'Users/IsLoggedIn',
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.error != null) {
+            return deferred.reject();
+          }
+          if (response.success === "LOGGED_IN") {
+            _this.logged_in = true;
+            _this.PopulateHeader(response.data);
+          } else if (response.success === "NOT_LOGGED_IN") {
+            _this.logged_in = false;
+            _this.ResetHeader();
+          }
+          return deferred.resolve(response);
+        },
+        error: function(response) {
+          console.log(response);
+          return deferred.reject();
+        }
+      });
+      return deferred.promise();
+    };
+
+    /*
+    	Signup Modal SetupUI
+    	Adds click listeners to the show signup buttons, fb signup
+    	and submit for the new user form
+    */
+
 
     Login.SignupModalSetupUI = function() {
       var _this = this;
@@ -51,6 +107,13 @@
         });
       });
     };
+
+    /*
+    	Login Modal SetupUI
+    	Adds Listeners to open login modal, submit login,
+    	and fb login
+    */
+
 
     Login.LoginModalSetupUI = function() {
       var _this = this;
@@ -82,6 +145,12 @@
         });
       });
     };
+
+    /*
+    	Login Page SetupUI
+    	Sets up listeners for full page login
+    */
+
 
     Login.LoginPageSetupUI = function() {
       var _this = this;
@@ -151,6 +220,20 @@
     };
 
     /*
+    	Reset header
+    	Shows Login and signup buttons and removes
+    	the user information from the header
+    */
+
+
+    Login.ResetHeader = function() {
+      $(".personal_menu").hide();
+      $(".personal_buttons").hide();
+      $(".signup_btn").show();
+      return $(".nav-text").show();
+    };
+
+    /*
     	Populate the header
     	Fill in dropdowns and show picture of the user
     */
@@ -170,6 +253,11 @@
       }
       return $(".personal_menu_" + user.user_type).show();
     };
+
+    /*
+    	Facebook JS Login
+    */
+
 
     Login.FacebookJSLogin = function() {
       var _this = this;

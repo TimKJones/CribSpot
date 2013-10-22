@@ -3,6 +3,16 @@ class A2Cribs.Login
 	@LANDING_URL = "cribspot.com"
 	@HTTP_PREFIX = "https://"
 
+	$(document).ready =>
+		@CheckLoggedIn()
+
+	###
+	Private function setup facebook signup modal
+	Given a user, hides the facebook signup button
+	and populates that area with the users profile
+	picture and populates the input fields with
+	first name and last name
+	###
 	setup_facebook_signup_modal = (user) ->
 		# Hide facebook button
 		$(".fb-name").text user.first_name
@@ -16,10 +26,48 @@ class A2Cribs.Login
 		$("#student_last_name").val user.last_name
 		$("#student_email").focus()
 
+	###
+	Check Logged In
+	Trys to fetch the user information from the backend
+	If logged in populates the header
+	Called when the document is ready
+	###
+	@CheckLoggedIn: ->
+		deferred = new $.Deferred()
+		$.ajax
+			url: myBaseUrl + 'Users/IsLoggedIn'
+			success: (response) =>
+				response = JSON.parse response
+				if response.error?
+					return  deferred.reject()
+
+				if response.success is "LOGGED_IN"
+					@logged_in = true
+					@PopulateHeader response.data
+
+				else if response.success is "NOT_LOGGED_IN"
+					@logged_in = false
+					@ResetHeader()
+					
+				return deferred.resolve response
+			error: (response) =>
+				console.log response
+				return deferred.reject()
+
+		return deferred.promise()
+
+	###
+	Signup Modal SetupUI
+	Adds click listeners to the show signup buttons, fb signup
+	and submit for the new user form
+	###
 	@SignupModalSetupUI: () ->
+		# Shows the signup modal
 		$(".show_signup_modal").click () =>
 			$("#login_modal").modal "hide"
 			$("#signup_modal").modal("show").find(".signup_message").text "Signup for Cribspot."
+
+		# Submits the new user to the backend
 		$("#signup_modal").find("form").submit (event) =>
 			$("#signup_modal").find(".signup-button").button 'loading'
 			@CreateStudent(event.delegateTarget)
@@ -27,6 +75,8 @@ class A2Cribs.Login
 				$("#signup_modal").find(".signup-button").button 'reset'
 			return false
 
+		# Retrieves the facebook user information and
+		# signs in the user if account already created
 		$("#signup_modal").find(".fb-login").click () =>
 			$(".fb-login").button('loading')
 			@FacebookJSLogin()
@@ -43,11 +93,19 @@ class A2Cribs.Login
 			.always () =>
 				$(".fb-login").button('reset')
 
+	###
+	Login Modal SetupUI
+	Adds Listeners to open login modal, submit login,
+	and fb login
+	###
 	@LoginModalSetupUI: () ->
+
+		# Shows the login modal
 		$(".show_login_modal").click () =>
 			$("#signup_modal").modal "hide"
 			$("#login_modal").modal "show"
 
+		# Submits the login credentials to the backend
 		$("#login_modal").find("form").submit (event) =>
 			$("#login_modal").find(".signup-button").button 'loading'
 			@cribspotLogin(event.delegateTarget)
@@ -55,6 +113,7 @@ class A2Cribs.Login
 				$("#login_modal").find(".signup-button").button 'reset'
 			return false
 
+		# Trys to log user in with facebook
 		$("#login_modal").find(".fb-login").click () =>
 			$(".fb-login").button('loading')
 			@FacebookJSLogin()
@@ -74,8 +133,10 @@ class A2Cribs.Login
 			.always () =>
 				$(".fb-login").button('reset')
 
-
-
+	###
+	Login Page SetupUI
+	Sets up listeners for full page login
+	###
 	@LoginPageSetupUI: () ->
 		# Div variable to have starting place to search the document
 		@div = $("#login_signup")
@@ -155,6 +216,23 @@ class A2Cribs.Login
 			return false
 
 	###
+	Reset header
+	Shows Login and signup buttons and removes
+	the user information from the header
+	###
+	@ResetHeader: ->
+		# Hide user dropdown
+		$(".personal_menu").hide()
+
+		# Hide favorites and messages buttons
+		$(".personal_buttons").hide()
+
+		# Show signup and login buttons
+		$(".signup_btn").show()
+		# Show or btn
+		$(".nav-text").show()
+
+	###
 	Populate the header
 	Fill in dropdowns and show picture of the user
 	###
@@ -182,6 +260,9 @@ class A2Cribs.Login
 		# show user dropdown
 		$(".personal_menu_#{user.user_type}").show()
 
+	###
+	Facebook JS Login
+	###
 	@FacebookJSLogin: ->
 		@fb_login_deferred = new $.Deferred()
 		FB.getLoginStatus (response) =>
