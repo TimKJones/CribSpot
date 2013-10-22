@@ -175,8 +175,12 @@ class A2Cribs.FeaturedListings
                         A2Cribs.Map.ToggleListingVisibility(listing_ids, @FeaturedPMListingsVisible)
                         @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
                         if @FeaturedPMListingsVisible
+                            A2Cribs.Map.IsCluster no
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
                                 user_id: user_id
+                        else
+                            A2Cribs.Map.IsCluster yes
+                            
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []
 

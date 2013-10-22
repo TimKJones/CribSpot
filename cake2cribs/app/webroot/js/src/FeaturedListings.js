@@ -214,11 +214,12 @@
               A2Cribs.Map.ToggleListingVisibility(listing_ids, FeaturedListings.FeaturedPMListingsVisible);
               FeaturedListings.FeaturedPMListingsVisible = !FeaturedListings.FeaturedPMListingsVisible;
               if (FeaturedListings.FeaturedPMListingsVisible) {
+                A2Cribs.Map.IsCluster(false);
                 _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', {
                   user_id: user_id
                 }));
               } else {
-                _results.push(void 0);
+                _results.push(A2Cribs.Map.IsCluster(true));
               }
             }
             return _results;
