@@ -17,7 +17,7 @@ echo $this->Html->css('/less/featured-listings.less?v=2','stylesheet/less', arra
         { ?>
             <div id='featured_pm'>
                 <img src="/img/sidebar/cmb_logo.png">
-                <p>Most Awarded Property Management Company in the Ann Arbor Area!</p>
+                <p>Most Awarded Property Manager in A2!</p>
                 <button>Click to View 20+ Locations</button>
             </div>
         <?php
