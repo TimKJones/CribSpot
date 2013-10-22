@@ -1,5 +1,5 @@
 <?php 
-echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('inline' => false));
+echo $this->Html->css('/less/featured-listings.less?v=3','stylesheet/less', array('inline' => false));
 ?>
 
 <div class = 'featured-listings-wrapper'>
@@ -12,17 +12,24 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <span id = 'like-us'class = 'pull-right'><a href = "<?= (array_key_exists("facebook_url", $university) &&  $university["facebook_url"] != null) ?  $university["facebook_url"] : "https://facebook.com/Cribspot" ; ?>">Like</a> on Facebook</span>
             
         </div>
-        <div id = 'list-info'>
+        <?php
+        if (strpos($university['name'], 'Ann') !== false)
+        { ?>
+            <div id='featured_pm'>
+                <img src="/img/sidebar/cmb_logo.png">
+                <p>Most Awarded Property Manager in A2!</p>
+                <button>Click to View 20+ Locations</button>
+            </div>
+        <?php
+        }
+        ?>
+        <!--<div id = 'list-info'>
             <span>Listings: </span>
-        </div>
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'daily_ad' : '' ;?>'>
+        </div> -->
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'featured_pm' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
-        <?php
-        if (strpos($university['name'], 'Ann') !== false)
-            echo "<a href='http://michigandaily.com'<div class='sidebar-bottom-bar'>";
-        ?>
 
         </div></a>
         <!--div class = 'cycle-listings-bar'>

@@ -257,6 +257,7 @@
             });
             $(".modal").modal('hide');
             _this.PopulateHeader(data.data);
+            _this.logged_in = true;
             return _this._login_deferred.resolve();
           }
         });
@@ -363,6 +364,7 @@
               'user_data': request_data
             });
             Login.PopulateHeader(data.data);
+            Login.logged_in = true;
             $(".modal").modal('hide');
             return Login._create_user_deferred.resolve();
           }

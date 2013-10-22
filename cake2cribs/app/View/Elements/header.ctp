@@ -130,7 +130,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 </div>
 
 <?php
-	$signed_in_text = ($signed_in) ? "true" : "false";
+	$signed_in_text = (isset($show_user) && $show_user && $signed_in) ? "true" : "false";
 	$this->Js->buffer('
 		A2Cribs.Login.logged_in = ' . $signed_in_text  . '
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {

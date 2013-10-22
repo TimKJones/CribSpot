@@ -28,6 +28,22 @@
       return this.building_type_id;
     };
 
+    Marker.prototype.IsVisible = function(visible) {
+      var _ref, _ref1;
+      if (visible == null) {
+        visible = null;
+      }
+      if (typeof visible === "boolean") {
+        if ((_ref = this.GMarker) != null) {
+          _ref.setVisible(visible);
+        }
+      }
+      if (!(this.GMarker != null)) {
+        return false;
+      }
+      return (_ref1 = this.GMarker) != null ? _ref1.getVisible() : void 0;
+    };
+
     Marker.prototype.Init = function(available) {
       var marker_dot;
       this.available = available != null ? available : null;

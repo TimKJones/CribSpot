@@ -2,8 +2,6 @@
 (function() {
 
   A2Cribs.PhotoManager = (function() {
-    PhotoManager;
-
     var Photo;
 
     Photo = (function() {
@@ -167,7 +165,7 @@
     };
 
     PhotoManager.prototype.SetupUI = function() {
-      var that,
+      var max_file_size, that,
         _this = this;
       that = this;
       this.div.find('.imageContainer').hover(function(event) {
@@ -230,27 +228,37 @@
         'placement': 'bottom',
         'title': 'Make Primary'
       });
+      max_file_size = 5000000;
       return this.div.find('#ImageAddForm').fileupload({
         url: myBaseUrl + 'images/AddImage',
         dataType: 'json',
         acceptFileTypes: /(\.|\/)(jpeg|jpg|png)$/i,
         singleFileUploads: true,
-        maxFileSize: 5000000,
-        loadImageMaxFileSize: 15000000,
+        maxFileSize: max_file_size,
+        loadImageMaxFileSize: max_file_size,
         disableImageResize: false,
         previewMaxWidth: 100,
         previewMaxHeight: 100,
         previewCrop: true
-      }).on('fileuploadadd', function(e, data) {
+      }).on('fileuploadsend', function(e, data) {
+        if (data.files[0].type.indexOf("image") === -1) {
+          A2Cribs.UIManager.Error("Sorry - Please only upload png, jpeg or jpg!");
+          return false;
+        }
+        if (data.files[0].size > max_file_size) {
+          A2Cribs.UIManager.Error("Sorry - the image you uploaded was too large!");
+          return false;
+        }
         if (_this.NextAvailablePhoto() === -1) {
           A2Cribs.UIManager.Error("Sorry - you can't upload more than 6 photos at this time.");
-          return;
+          return false;
         }
         _this.UploadImageDefer();
         _this.div.find("#upload_image").button('loading');
         if ((_this.CurrentImageLoading = _this.NextAvailablePhoto()) >= 0 && (data.files != null) && (data.files[0] != null)) {
-          return _this.Photos[_this.CurrentImageLoading].CreatePreview(data.files[0], _this.div.find("#imageContent" + (_this.CurrentImageLoading + 1)));
+          _this.Photos[_this.CurrentImageLoading].CreatePreview(data.files[0], _this.div.find("#imageContent" + (_this.CurrentImageLoading + 1)));
         }
+        return true;
       }).on('fileuploaddone', function(e, data) {
         _this.div.find("#upload_image").button('reset');
         if ((data.result.errors != null) && data.result.errors.length) {
@@ -266,9 +274,11 @@
           return _this.UploadCompleteDeferred.resolve(true);
         }
       }).on('fileuploadfail', function(e, data) {
-        A2Cribs.UIManager.Error("Failed to upload image!");
-        _this.div.find("#upload_image").button('reset');
-        return _this.Photos[_this.CurrentImageLoading].Reset();
+        if (_this.CurrentImageLoading) {
+          A2Cribs.UIManager.Error("Failed to upload image!");
+          _this.div.find("#upload_image").button('reset');
+          return _this.Photos[_this.CurrentImageLoading].Reset();
+        }
       });
     };
 
