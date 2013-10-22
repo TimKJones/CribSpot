@@ -167,13 +167,13 @@ class A2Cribs.FeaturedListings
             url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId
             type:"GET"
             success: (data) =>
-                A2Cribs.FeaturedPMIdToListingIdsMap = JSON.parse data
-                console.log @FeaturedPMListingIds
-                $("#featured_pm").click () ->
-                    for user_id, listing_ids of A2Cribs.FeaturedPMIdToListingIdsMap
-                        A2Cribs.Map.ToggleListingVisibility(listing_ids, A2Cribs.FeaturedPMListingsVisible)
-                        A2Cribs.FeaturedPMListingsVisible = !A2Cribs.FeaturedPMListingsVisible
-                        if A2Cribs.FeaturedPMListingsVisible
+                @FeaturedPMIdToListingIdsMap = JSON.parse data
+
+                $("#featured_pm").click () =>
+                    for user_id, listing_ids of @FeaturedPMIdToListingIdsMap
+                        A2Cribs.Map.ToggleListingVisibility(listing_ids, @FeaturedPMListingsVisible)
+                        @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
+                        if @FeaturedPMListingsVisible
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
                                 'user_id:'+user_id
             error: ()=>

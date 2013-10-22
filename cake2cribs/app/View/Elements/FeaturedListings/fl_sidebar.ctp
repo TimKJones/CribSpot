@@ -12,14 +12,21 @@ echo $this->Html->css('/less/featured-listings.less?','stylesheet/less', array('
             <span id = 'like-us'class = 'pull-right'><a href = "<?= (array_key_exists("facebook_url", $university) &&  $university["facebook_url"] != null) ?  $university["facebook_url"] : "https://facebook.com/Cribspot" ; ?>">Like</a> on Facebook</span>
             
         </div>
-        <div id = 'list-info'>
-            <span>Listings: </span>
-        </div>
         <?php
         if (strpos($university['name'], 'Ann') !== false)
-            echo "<div id='featured_pm' class='sidebar-bottom-bar'></div>";
-        ?>p
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'daily_ad' : '' ;?>'>
+        { ?>
+            <div id='featured_pm'>
+                <img src="/img/sidebar/cmb_logo.png">
+                <p>Most Awarded Property Management Company in the Ann Arbor Area!</p>
+                <button>View 20+ Locations</button>
+            </div>
+        <?php
+        }
+        ?>
+        <!--<div id = 'list-info'>
+            <span>Listings: </span>
+        </div> -->
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'featured_pm' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
