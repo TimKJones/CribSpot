@@ -214,7 +214,9 @@
               A2Cribs.Map.ToggleListingVisibility(listing_ids, FeaturedListings.FeaturedPMListingsVisible);
               FeaturedListings.FeaturedPMListingsVisible = !FeaturedListings.FeaturedPMListingsVisible;
               if (FeaturedListings.FeaturedPMListingsVisible) {
-                _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', 'user_id:' + user_id));
+                _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', {
+                  user_id: user_id
+                }));
               } else {
                 _results.push(void 0);
               }

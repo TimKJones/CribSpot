@@ -176,7 +176,7 @@ class A2Cribs.FeaturedListings
                         @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
                         if @FeaturedPMListingsVisible
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
-                                'user_id:'+user_id
+                                user_id: user_id
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []
 
