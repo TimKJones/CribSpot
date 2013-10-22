@@ -219,7 +219,6 @@ class UsersController extends AppController {
 
         $data = null;
         $user = $this->Auth->User();
-        CakeLog::write("loggedinuser", print_r($user, true));
         if ($user !== null)
             $data = $this->_getUserDataForAjaxLogin($user);
 
