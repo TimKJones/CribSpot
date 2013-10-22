@@ -293,6 +293,19 @@ class User extends AppModel {
 	}
 
 	/*
+	Returns true if a user account exists with email=$email, false otherwise.
+	*/
+	public function FBIdExists($fb_id)
+	{
+		$idFound = $this->find('first', array(
+			'fields' => array('User.facebook_id'), 
+			'conditions' => array('User.facebook_id' => $fb_id)
+		));
+
+		return $idFound != null;
+	}
+
+	/*
 	Sets verified to true.
 	Sets university_verified to true if $university_id is not null.
 	*/

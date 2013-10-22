@@ -140,7 +140,6 @@ class UsersController extends AppController {
             return;
         }
 
-
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
@@ -160,8 +159,19 @@ class UsersController extends AppController {
 
         /* Check if user initially tried to log in with facebook */
         $fb_id = $this->Session->read('FB.id');
-        if ($fb_id)
+        if ($fb_id){
             $user['facebook_id'] = $fb_id;
+            /* Check if facebook_id has already been registered */
+            if ($this->User->FBIdExists($fb_id)) {
+                $response = array(
+                    'error' => '',
+                    'error_type' => 'FB_ID_EXISTS'
+                );
+
+                $this->set('response', json_encode($response));
+                return;
+            }
+        }
 
         $response = $this->User->RegisterUser($user);
         $savedUser = null;
