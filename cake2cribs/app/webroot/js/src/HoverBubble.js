@@ -149,7 +149,7 @@ Wrapper for google infobubble
           }).appendTo(unit_template);
           $("<div />", {
             "class": "rent",
-            text: listing_info["rent"] != null ? "$" + listing_info["rent"] : "??"
+            text: (listing_info["rent"] != null) && parseInt(listing_info["rent"], 10) !== 0 ? "$" + listing_info["rent"] : "Contact"
           }).appendTo(unit_template);
           this.template.find(".unit_div").append(unit_template);
         }

@@ -115,7 +115,7 @@ class A2Cribs.HoverBubble
 				.appendTo unit_template
 				$ "<div />",
 					class: "rent"
-					text: if listing_info["rent"]? then "$#{listing_info["rent"]}" else "??"
+					text: if listing_info["rent"]? and parseInt(listing_info["rent"],10) isnt 0 then "$#{listing_info["rent"]}" else "Contact"
 				.appendTo unit_template
 
 				@template.find(".unit_div").append unit_template

@@ -151,6 +151,7 @@ ClickBubble class
       this.div.find('unit_style_description').text;
       this.setBeds(listing_object.beds);
       this.linkWebsite(".website_link", listing_object.website, listing_object.listing_id);
+      this.setRent(listing_object.rent);
       this.setAvailability("available", listing_object.available);
       this.setOwnerName("property_manager", listing_object.listing_id);
       this.setPrimaryImage("property_image", listing_object.listing_id);
@@ -218,6 +219,22 @@ ClickBubble class
         return this.div.find(div_name).unbind("click").click(function() {
           return A2Cribs.UIManager.Error('This owner does not have a website for this listing');
         });
+      }
+    };
+
+    ClickBubble.setRent = function(rent) {
+      if (!(rent != null)) {
+        this.div.find(".rent").text("Ask for Rent");
+        this.div.find(".per_month").text("");
+        return this.div.find(".price_label").text("");
+      } else if (parseInt(rent, 10) !== 0) {
+        this.div.find(".rent").text(rent);
+        this.div.find(".per_month").text("/m");
+        return this.div.find(".price_label").text("$");
+      } else {
+        this.div.find(".rent").text("Call for Rent");
+        this.div.find(".per_month").text("");
+        return this.div.find(".price_label").text("");
       }
     };
 

@@ -48,18 +48,23 @@
         url: myBaseUrl + "Listings/GetListing/" + listing_id,
         type: "GET",
         success: function(data) {
-          var item, key, response_data, value, _i, _len;
+          var a2_object, item, key, old_object, response_data, value, _i, _len;
           response_data = JSON.parse(data);
           for (_i = 0, _len = response_data.length; _i < _len; _i++) {
             item = response_data[_i];
             for (key in item) {
               value = item[key];
-              if (key !== "Marker" && key !== "Listing" && (A2Cribs[key] != null)) {
-                A2Cribs.UserCache.Set(new A2Cribs[key](value));
+              if (key !== "Marker" && (A2Cribs[key] != null)) {
+                a2_object = new A2Cribs[key](value);
+                old_object = _this.Get(key.toLowerCase(), a2_object.GetId());
+                if ((old_object != null) && old_object.length !== 0) {
+                  a2_object = old_object.Update(value);
+                }
+                _this.Set(a2_object);
               }
             }
           }
-          listing = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
+          listing = _this.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
           return deferred.resolve(listing);
         },
         error: function() {

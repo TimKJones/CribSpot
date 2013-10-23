@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<div class="general_info">
-		<div class="bubble_label">$</div><div class="rent clear_field">700</div><div class="per_month">/m</div>
+		<div class="bubble_label price_label">$</div><div class="rent clear_field">700</div><div class="per_month">/m</div>
 		<div class="beds clear_field">2</div><div class="bed_desc">Beds</div>
 		<div class="available">Available</div>
 	</div>
