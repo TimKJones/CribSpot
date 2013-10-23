@@ -210,6 +210,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<li class="active"><a href="#photo_content" data-toggle="tab">Photos</a></li>
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
+					<li><a href="#schedule_tour" data-toggle="tab">Schedule My Tour</a></li>
 				</ul>
 				<ul class="nav pull-right share_buttons">
 					<li class="disabled"><a href="">Share This Listing:</a></li>
@@ -464,6 +465,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					</div>
 				</div>
 			</div>
+			<?= $this->element('Listings/schedule_tour'); ?>
 		</div>
 		
 	</div>
