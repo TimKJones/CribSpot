@@ -781,6 +781,28 @@ class Listing extends AppModel {
 	}
 
 	/*
+	Returns the user object for the property manager that owns $listing_id
+	*/	
+	public function GetPMByListingId($listing_id)
+	{
+		$pm = $this->find('first', array(
+			'conditions' => array(
+				'Listing.listing_id' => $listing_id
+			),
+			'contain' => array('User')
+		));
+
+		$userObject = null;
+		if (array_key_exists('User', $pm))
+			$userObject = $pm['User'];
+		
+		return $userObject;
+	}	
+
+/* ------------------------------------ private functions -------------------------------- */
+
+
+	/*
 	Returns $path with $prefix prepended to the filename at the end of the path
 	*/
 	private function _formatImagePathWithPrefix($path, $prefix)

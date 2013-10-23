@@ -145,3 +145,5 @@
 - RentalSave.SaveImages()
 69
 - Users/CompleteAjaxFacebookRegistration
+70
+- User->Save()

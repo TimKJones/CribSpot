@@ -16,8 +16,7 @@ class ImportController extends AppController {
 		'elevator');
 
 	public function beforeFilter(){
-		parent::beforeFilter();
-		
+		parent::beforeFilter();		
 		$this->Auth->allow('SaveMultipleImageCopies');
 		$this->Auth->allow('GetListings');
 		$this->Auth->allow('SaveListings');
