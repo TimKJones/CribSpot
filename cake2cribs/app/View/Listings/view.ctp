@@ -180,7 +180,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<? } ?>
 					<?php if ($email_exists) { ?>
 					<div class="row-fluid">
-						<textarea id="message_area" class="span12" rows="3"></textarea>
+						<textarea id="message_area" class="span12" rows="4">Hello, I found your listing on Cribspot and would like to find out more about this property. Please let me know when you are available for a viewing. Thank you.</textarea>
 					</div>
 					<div class="row-fluid">
 						<button id="message_cancel" class="btn span5">Cancel</button>

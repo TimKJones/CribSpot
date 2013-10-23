@@ -1,4 +1,7 @@
 class A2Cribs.Map
+
+	@CLUSTER_SIZE = 2
+
 	###
 	Add all markers in markerList to map
 	###
@@ -94,7 +97,7 @@ class A2Cribs.Map
 			maxZoom: 15
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
-		@GMarkerClusterer.ignoreHidden_ = true;
+		@GMarkerClusterer.setIgnoreHidden true
 		A2Cribs.ClickBubble.Init @GMap
 		A2Cribs.HoverBubble.Init @GMap
 		
@@ -224,7 +227,26 @@ class A2Cribs.Map
 			for listing in all_listings
 				listing.IsVisible true
 
-		A2Cribs.Map.GMarkerClusterer.repaint()
+		@Repaint()
+
+
+	###
+	Checks/Sets if the map is in clusters
+	###
+	@IsCluster: (is_clustered = null) ->
+		if typeof(is_clustered) is "boolean"
+			if is_clustered is yes
+				@GMarkerClusterer.setMinimumClusterSize @CLUSTER_SIZE
+			else
+				@GMarkerClusterer.setMinimumClusterSize Number.MAX_VALUE
+			@Repaint()
+		return @GMarkerClusterer.getMinimumClusterSize() is @CLUSTER_SIZE
+
+	###
+	Repaints the map
+	###
+	@Repaint: ->
+		@GMarkerClusterer.repaint()
 
 
 	@style = [

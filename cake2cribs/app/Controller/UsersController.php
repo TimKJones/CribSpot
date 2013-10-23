@@ -21,6 +21,7 @@ class UsersController extends AppController {
         $this->Auth->allow('ResendConfirmationEmail');
         $this->Auth->allow('AttemptFacebookLogin');
         $this->Auth->allow('PropertyManagerSignup');
+        $this->Auth->allow('IsLoggedIn');
     }
 
     public function add()
@@ -140,7 +141,6 @@ class UsersController extends AppController {
             return;
         }
 
-
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
@@ -160,8 +160,19 @@ class UsersController extends AppController {
 
         /* Check if user initially tried to log in with facebook */
         $fb_id = $this->Session->read('FB.id');
-        if ($fb_id)
+        if ($fb_id){
             $user['facebook_id'] = $fb_id;
+            /* Check if facebook_id has already been registered */
+            if ($this->User->FBIdExists($fb_id)) {
+                $response = array(
+                    'error' => '',
+                    'error_type' => 'FB_ID_EXISTS'
+                );
+
+                $this->set('response', json_encode($response));
+                return;
+            }
+        }
 
         $response = $this->User->RegisterUser($user);
         $savedUser = null;
@@ -194,6 +205,33 @@ class UsersController extends AppController {
         );
         $this->set('response', json_encode($response));
         $this->_savePreferredUniversity($this->User->id);
+    }
+
+    /*
+    Checks if the current user is logged in.
+    Returns a code indicating their state.
+    If logged in, also returns the data necessary to update page elements following an ajax login.
+    */  
+    public function IsLoggedIn()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
+        $data = null;
+        $user = $this->Auth->User();
+        if ($user !== null)
+            $data = $this->_getUserDataForAjaxLogin($user);
+
+        $success = 'NOT_LOGGED_IN';
+        if ($this->Auth->loggedIn())
+            $success = 'LOGGED_IN';
+
+        $response = array(
+            'success' => $success,
+            'data' => $data
+        );
+
+        $this->set('response', json_encode($response));
     }
 
     /*

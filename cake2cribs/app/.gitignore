@@ -1,1 +1,8 @@
 tmp/
+webroot/img/
+snippets/
+webroot/dumps/
+webroot/listings/
+View/FeaturedListings/get_cribspot_featured_listings.ctp
+View/Pages/get_cribspot_featured_listings.ctp
+notes/

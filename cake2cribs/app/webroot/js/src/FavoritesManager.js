@@ -142,9 +142,11 @@ Call functions using FavoritesManager.FunctionName()
       A2Cribs.Map.ToggleListingVisibility(A2Cribs.FavoritesManager.FavoritesListingIds, A2Cribs.FavoritesManager.FavoritesVisible, button);
       A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible;
       if (A2Cribs.FavoritesManager.FavoritesVisible) {
-        return $("#FavoritesHeaderIcon").addClass("pressed");
+        $("#FavoritesHeaderIcon").addClass("pressed");
+        return A2Cribs.Map.IsCluster(false);
       } else {
-        return $("#FavoritesHeaderIcon").removeClass("pressed");
+        $("#FavoritesHeaderIcon").removeClass("pressed");
+        return A2Cribs.Map.IsCluster(true);
       }
     };
 

@@ -158,6 +158,8 @@ class A2Cribs.ClickBubble
 					window.open "/listings/website/#{listing_id}", '_blank'
 				else 
 					$("#signup_modal").modal("show").find(".signup_message").text "Please signup to view this website"
+					A2Cribs.MixPanel.Event "login required",
+						"listing_id": listing_id
 		else
 			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
 

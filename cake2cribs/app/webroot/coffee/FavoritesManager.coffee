@@ -101,8 +101,10 @@ class A2Cribs.FavoritesManager
 		# make only markers that are in user's favorites visible
 		if A2Cribs.FavoritesManager.FavoritesVisible
 			$("#FavoritesHeaderIcon").addClass("pressed")
+			A2Cribs.Map.IsCluster no
 		else
 			$("#FavoritesHeaderIcon").removeClass("pressed")
+			A2Cribs.Map.IsCluster yes
 
 	@FavoritesVisibilityIsOn: () ->
 		return $("#FavoritesHeaderIcon").hasClass("pressed")

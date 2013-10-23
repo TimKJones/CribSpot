@@ -5,6 +5,8 @@
 
     function Map() {}
 
+    Map.CLUSTER_SIZE = 2;
+
     /*
     	Add all markers in markerList to map
     */
@@ -127,7 +129,7 @@
         styles: imageStyles
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
-      this.GMarkerClusterer.ignoreHidden_ = true;
+      this.GMarkerClusterer.setIgnoreHidden(true);
       A2Cribs.ClickBubble.Init(this.GMap);
       A2Cribs.HoverBubble.Init(this.GMap);
       A2Cribs.Map.InitBoundaries();
@@ -285,7 +287,36 @@
           listing.IsVisible(true);
         }
       }
-      return A2Cribs.Map.GMarkerClusterer.repaint();
+      return this.Repaint();
+    };
+
+    /*
+    	Checks/Sets if the map is in clusters
+    */
+
+
+    Map.IsCluster = function(is_clustered) {
+      if (is_clustered == null) {
+        is_clustered = null;
+      }
+      if (typeof is_clustered === "boolean") {
+        if (is_clustered === true) {
+          this.GMarkerClusterer.setMinimumClusterSize(this.CLUSTER_SIZE);
+        } else {
+          this.GMarkerClusterer.setMinimumClusterSize(Number.MAX_VALUE);
+        }
+        this.Repaint();
+      }
+      return this.GMarkerClusterer.getMinimumClusterSize() === this.CLUSTER_SIZE;
+    };
+
+    /*
+    	Repaints the map
+    */
+
+
+    Map.Repaint = function() {
+      return this.GMarkerClusterer.repaint();
     };
 
     Map.style = [
