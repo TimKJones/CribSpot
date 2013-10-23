@@ -208,7 +208,10 @@ ClickBubble class
           if (((_ref1 = A2Cribs.Login) != null ? _ref1.logged_in : void 0) === true) {
             return window.open("/listings/website/" + listing_id, '_blank');
           } else {
-            return $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
+            $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
+            return A2Cribs.MixPanel.Event("login required", {
+              "listing_id": listing_id
+            });
           }
         });
       } else {

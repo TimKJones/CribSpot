@@ -100,6 +100,7 @@
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
+            A2Cribs.MixPanel.Event("Logged In", null);
             return _this.PopulateHeader(response.data);
           }
         }).always(function() {
@@ -138,6 +139,7 @@
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
+            A2Cribs.MixPanel.Event("Logged In", null);
             return _this.PopulateHeader(response.data);
           }
         }).always(function() {
@@ -193,6 +195,7 @@
             return _this.div.find("#student_email").focus();
           } else if (response.success === "LOGGED_IN") {
             _this.logged_in = true;
+            A2Cribs.MixPanel.Event("Logged In", null);
             return location.reload();
           }
         }).always(function() {
@@ -346,6 +349,7 @@
             $(".modal").modal('hide');
             _this.PopulateHeader(data.data);
             _this.logged_in = true;
+            A2Cribs.MixPanel.Event("Logged In", null);
             return _this._login_deferred.resolve();
           }
         });
@@ -453,6 +457,7 @@
             });
             Login.PopulateHeader(data.data);
             Login.logged_in = true;
+            A2Cribs.MixPanel.Event("Logged In", null);
             $(".modal").modal('hide');
             return Login._create_user_deferred.resolve();
           }

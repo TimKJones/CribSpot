@@ -87,6 +87,7 @@ class A2Cribs.Login
 				else if response.success is "LOGGED_IN"
 					$(".modal").modal('hide')
 					@logged_in = true
+					A2Cribs.MixPanel.Event "Logged In", null
 					# Populate the header
 					@PopulateHeader response.data
 
@@ -128,6 +129,7 @@ class A2Cribs.Login
 				else if response.success is "LOGGED_IN"
 					$(".modal").modal('hide')
 					@logged_in = true
+					A2Cribs.MixPanel.Event "Logged In", null
 					# Populate the header
 					@PopulateHeader response.data
 			.always () =>
@@ -190,6 +192,7 @@ class A2Cribs.Login
 
 				else if response.success is "LOGGED_IN"
 					@logged_in = true
+					A2Cribs.MixPanel.Event "Logged In", null
 					location.reload()
 			.always () =>
 				$(".fb-login").button('reset')
@@ -335,6 +338,7 @@ class A2Cribs.Login
 					$(".modal").modal('hide')
 					@PopulateHeader data.data
 					@logged_in = yes
+					A2Cribs.MixPanel.Event "Logged In", null
 					return @_login_deferred.resolve()
 
 		return @_login_deferred.promise()
@@ -423,6 +427,7 @@ class A2Cribs.Login
 						'user_data':request_data
 					@PopulateHeader data.data
 					@logged_in = yes
+					A2Cribs.MixPanel.Event "Logged In", null
 					$(".modal").modal('hide')
 
 					return @_create_user_deferred.resolve()
