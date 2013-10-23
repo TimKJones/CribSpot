@@ -39,9 +39,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 <script>
 
-var a = A2Cribs.Login;
-
-a.setupUI();
 $(document).ready(function () {
 	var id = <?php echo $id; ?>;
 	var reset_token = "<?php echo $reset_token; ?>";
