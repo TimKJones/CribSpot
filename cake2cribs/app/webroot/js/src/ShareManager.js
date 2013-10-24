@@ -2,6 +2,7 @@
 (function() {
 
   A2Cribs.ShareManager = (function() {
+    var _this = this;
 
     function ShareManager() {}
 
@@ -44,13 +45,31 @@
       fbObj = {
         method: 'feed',
         link: url,
-        picture: 'https://www.cribspot.com/img/upright_logo.png',
+        picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png',
         name: building_name,
         caption: caption
       };
       if (description !== null) {
         fbObj['description'] = description;
       }
+      return FB.ui(fbObj);
+    };
+
+    /*
+    	Shares the school page on facebook
+    */
+
+
+    ShareManager.ShareOnFacebook = function() {
+      var fbObj;
+      fbObj = {
+        method: 'feed',
+        link: "https://cribspot.com/",
+        picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png',
+        name: "Join Cribspot",
+        caption: "It's a party!",
+        description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
+      };
       return FB.ui(fbObj);
     };
 
@@ -89,8 +108,14 @@
       return twttr.widgets.load();
     };
 
+    $("#header").ready(function() {
+      return $(".share_on_fb").click(function() {
+        return ShareManager.ShareOnFacebook();
+      });
+    });
+
     return ShareManager;
 
-  })();
+  }).call(this);
 
 }).call(this);

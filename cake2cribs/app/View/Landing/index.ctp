@@ -156,6 +156,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<button id="friends_invite" class="btn">Invite Your Friends or Group</button>
 		<a href="/login" class="btn">Login or Sign Up</a>
 	</div>
+	<div id="founder_box">
+		<img class="founder_photo" src="/img/founders/michigan.png">
+		<p><i class="founder_name">Evan Dancer</i><br><i class="founder_title">University of Michigan Founder</i><br><i class="founder_description">Class of 2013</i><br>
+		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email">evan@cribspot.com</i></p>
+	</div>
 	<a href="#" class="background_source"></a>
 </div>
 
