@@ -9,43 +9,82 @@ class Tour extends AppModel {
 			'foreignKey' => 'tour_id'
 		),
 	);*/
+	public $belongsTo = array(
+		'TourRequest' => array(
+            'className'    => 'TourRequest',
+            'foreignKey'   => 'tour_request_id',
+            'dependent'    => true
+        )
+	);
 
 	public $validate = array(
 		'id' => 'numeric',
-		'user_id' => 'numeric', /* user that initiated this tour request */
+		'tour_request_id' => 'numeric',
 		'date' => 'datetime', /* time this tour request is scheduled for */
 		'confirmed' => 'boolean', /* whether or not this specific tour time has been confirmed */
+		'confirmation_code' => 'alphaNumeric', /* Used in request from scheduler to confirm this tour */
 		'created' => 'datetime',
 		'modified' => 'datetime'
 	);
 
 	/*
-	Saves a new row for each $time in $times
+	If the ($tour_id, $confirmation_code) pair is legit, set confirmed to true for this tour.
 	*/
-	public function SaveTour ($times, $user_id)
+	public function ConfirmTour($tour_id, $confirmation_code, $listing_id)
 	{
-		$formattedTimes = array();
-		foreach ($times as $time){
-			$newTime = array(
-				'user_id' => $user_id,
-				'date' => $time,
-				'confirmed' => 0
-			);
-			if (!$this->save($newTime)) {
-				$error = null;
-				$error['formattedTimes'] = $formattedTimes;
-				$error['validationErrors'] = $this->validationErrors;
-				$this->LogError($user_id, 70, $error);
-				return array("error" => array(
-					'message' => 'Looks like we had an issue scheduling your tour. If the issue continues, ' .
-					'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-						'at help@cribspot.com. Reference error code 70.'));
-			}
+		/* Verify that this (tour_id, confirmation_code) pair is legit */
+		$tourExists = $this->find('first', array(
+			'contain' => array(),
+			'conditions' => array(
+				'id' => $tour_id,
+				'confirmation_code' => $confirmation_code
+			)
+		));
 
-			$this->create();
+		/* Get the user_id and listing_id of the user that scheduled this tour */
+		$tourData = $this->find('first', array(
+			'contain' => array(),
+			'conditions' => array(
+				'id' => $tour_id 
+			),
+			'fields' => array('Tour.listing_id', 'Tour.user_id')
+		));
+		
+		if ($tourExists !== null || $tourData === null || !array_key_exists('user_id', $tourData['User']) ||
+			!array_key_exists('listing_id', $tourData['User']))
+			return false;
+
+		$user_id = $tourData['User']['user_id'];
+		$listing_id = $tourData['User']['listing_id'];
+
+		/* Set confirmed to 0 for all other tours for this ($user_id, $listing_id) combo */
+		$this->_unconfirmAllToursForUser($user_id, $listing_id);
+
+		/* Set confirmed to 1 for this tour */
+		$this->id = $tour_id;
+		$this->saveField('confirmed', true);
+
+		return true;
+	}
+
+/* ---------------------------------- private ----------------------------------- */
+
+	/* Set confirmed to false for all tours $user_id had requested for $listing_id */
+	private function _unconfirmAllToursForUser($user_id, $listing_id)
+	{
+		$tours = $this->find('all', array(
+			'contain' => array(),
+			'conditions' => array(
+				'user_id' => $user_id,
+				'listing_id' => $listing_id
+			)
+		));
+
+		foreach ($tours as &$tour){
+			$tour['confirmed'] = 0;
 		}
 
-		return array('success' => '');
+		$this->save($tours);
 	}
 }
 

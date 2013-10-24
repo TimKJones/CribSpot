@@ -2,14 +2,14 @@
 class ToursController extends AppController 
 { 
 	public $helpers = array('Html');
-	public $uses = array('User', 'Listing', 'Tour', 'UsersInTours');
+	public $uses = array('User', 'Listing', 'Tour', 'UsersInTours', 'TourRequest');
 	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->Auth->allow('RequestTourTimes');
-		$this->Auth->allow('RequestGenericTour');
+		//$this->Auth->allow('RequestTourTimes');
+		$this->Auth->allow('ConfirmTour');
 	}
 
 	/*
@@ -42,10 +42,8 @@ class ToursController extends AppController
 		foreach ($times as &$time)
 			$time = date('Y-m-d H:i:s', strtotime($time['date']));
 
-CakeLog::write('times', print_r($times, true));
-
 		/* Save times in database */
-		$response = $this->Tour->SaveTour($times, $this->Auth->User('id'));
+		$response = $this->TourRequest->SaveTour($times, $this->Auth->User('id'), $listing_id);
 		if (array_key_exists('error', $response)) {
 			$this->set('response', json_encode($response));
 			return;
@@ -78,6 +76,31 @@ CakeLog::write('times', print_r($times, true));
 		);
 		$this->set('response', $response);
 	}
+
+	/*
+	URL inserted into Cribspot Tour Scheduler email to confirm a specific tour
+	*/
+	public function ConfirmTour()
+	{
+		if (!array_key_exists('id', $this->request->query) || !array_key_exists('code', $this->request->query))
+            $this->redirect('/');
+
+        $id = $this->request->query['id'];
+        $code = $this->request->query['code'];
+
+        /* Confirm the tour specified, if the credentials are correct */
+        $success = $this->Tour->ConfirmTour($id, $code);
+        if (!$success){
+        	$flash_message['method'] = "Error";
+            $flash_message['message'] = "This tour request is invalid.";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect('/users/login?invalid_link=true');
+        }
+	}
+
+
+/* ----------------------------------------- private ------------------------------------ */
 
 	/*
 	Emails all information necessary to coordinate tour scheduling to the Cribspot 

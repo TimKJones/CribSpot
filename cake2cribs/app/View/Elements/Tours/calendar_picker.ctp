@@ -26,7 +26,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		</tr>
 		<?php
 
-		$time_slots = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+		$time_slots = array(9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20);
 
 		$slot_number = sizeof($time_slots);
 

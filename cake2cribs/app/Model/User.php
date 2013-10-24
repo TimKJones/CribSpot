@@ -16,7 +16,7 @@ class User extends AppModel {
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
 
-	public $validate = array (
+	public $validate = array(
 		'id' => 'numeric',
 		'facebook_id' => 'numeric',
 		'user_type' => 'numeric',
