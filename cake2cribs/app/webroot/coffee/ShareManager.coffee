@@ -40,6 +40,10 @@ class A2Cribs.ShareManager
 	###
 	@ShareOnFacebook: ->
 
+		A2Cribs.MixPanel.Event "Social share",
+			type: "facebook"
+			element: "header"
+
 		fbObj = 
 			method: 'feed'
 			link: "https://cribspot.com/"
