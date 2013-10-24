@@ -36,7 +36,7 @@ class A2Cribs.UserCache
 						if key isnt "Marker" and A2Cribs[key]?
 							a2_object = new A2Cribs[key] value
 							old_object = @Get key.toLowerCase(), a2_object.GetId()
-							if old_object? and old_object.length isnt 0
+							if old_object? and not old_object.length?
 								a2_object = old_object.Update value
 							@Set a2_object
 				listing = @Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
