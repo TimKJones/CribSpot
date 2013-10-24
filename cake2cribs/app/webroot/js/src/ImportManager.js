@@ -184,6 +184,7 @@
         listing['Rental']['max_occupancy'] = l[this.Indices['max_occupancy']];
         listing['Rental']['unit_count'] = l[this.Indices['unit_count']];
         listing['Rental']['smoking'] = l[this.Indices['smoking']];
+        listing['Rental']['washer_dryer'] = l[this.Indices['laundry']];
         listing['User']['street_address'] = l[this.Indices['user_street_address']];
         processedListings.push(listing);
         _results.push($.ajax({
