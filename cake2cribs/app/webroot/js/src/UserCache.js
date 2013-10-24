@@ -57,7 +57,7 @@
               if (key !== "Marker" && (A2Cribs[key] != null)) {
                 a2_object = new A2Cribs[key](value);
                 old_object = _this.Get(key.toLowerCase(), a2_object.GetId());
-                if ((old_object != null) && old_object.length !== 0) {
+                if ((old_object != null) && !(old_object.length != null)) {
                   a2_object = old_object.Update(value);
                 }
                 _this.Set(a2_object);
