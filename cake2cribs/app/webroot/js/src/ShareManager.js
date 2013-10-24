@@ -62,6 +62,10 @@
 
     ShareManager.ShareOnFacebook = function() {
       var fbObj;
+      A2Cribs.MixPanel.Event("Social share", {
+        type: "facebook",
+        element: "header"
+      });
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
