@@ -26,7 +26,7 @@ class A2Cribs.ShareManager
 		fbObj = 
 			method: 'feed'
 			link: url
-			picture: 'https://www.cribspot.com/img/upright_logo.png'
+			picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
 			name: building_name
 			caption: caption
 
@@ -34,6 +34,22 @@ class A2Cribs.ShareManager
 			fbObj['description'] = description
 
 		FB.ui fbObj
+
+	###
+	Shares the school page on facebook
+	###
+	@ShareOnFacebook: ->
+
+		fbObj = 
+			method: 'feed'
+			link: "https://cribspot.com/"
+			picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
+			name: "Join Cribspot"
+			caption: "It's a party!"
+			description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
+
+		FB.ui fbObj
+
 
 	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
@@ -67,3 +83,7 @@ class A2Cribs.ShareManager
 		$('#twitterDiv').append(tweetBtn);
 
 		twttr.widgets.load();
+
+	$("#header").ready =>
+		$(".share_on_fb").click =>
+			@ShareOnFacebook()

@@ -269,12 +269,16 @@
         first = false;
         ajaxData += key + "=" + JSON.stringify(value);
       }
+      $("#loader").show();
       return $.ajax({
         url: myBaseUrl + "Rentals/ApplyFilter",
         data: ajaxData,
         type: "GET",
         context: this,
-        success: A2Cribs.FilterManager.UpdateListings
+        success: A2Cribs.FilterManager.UpdateListings,
+        complete: function() {
+          return $("#loader").hide();
+        }
       });
     };
 

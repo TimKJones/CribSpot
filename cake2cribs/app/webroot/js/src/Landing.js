@@ -32,7 +32,9 @@
       url_name = university['University']['name'].split(" ").join("_");
       $("#map_link").attr("href", "/rental/" + url_name);
       $(".background_source").attr("href", university['University']['background_source']);
-      return $(".school_logo").css("background-image", "url(" + university['University']['logo_path'] + ")");
+      $(".school_logo").css("background-image", "url(" + university['University']['logo_path'] + ")");
+      $(".founder_photo").attr("src", university.University.founder_image);
+      return $(".founder_title").text("" + university['University']['name'] + " Founder");
     };
 
     Landing.Init = function(locations) {

@@ -45,13 +45,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		 echo $this->Html->script('https://maps.googleapis.com/maps/api/js?key=AIzaSyChGyO2wCFqmDe8FNh_6GxITy7dDLQ0ZpE&libraries=places&sensor=false', false);
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.0/jquery.validate.min.js');
-		echo $this->Html->script('jquery.controls');
-	
-		echo $this->Html->script('jquery.dialog2');
-		echo $this->Html->script('jquery.dialog2.helpers');
 		echo $this->Html->script('restrict_browsers');
-		echo $this->Html->script('jquery.form');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('custom-bootstrap');
 		echo $this->Html->script('markerclusterer_packed.js');
@@ -64,30 +58,17 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/MixPanel');
 		echo $this->Html->script('src/User');
-		echo $this->Html->script('src/MarkerTooltip');
-		echo $this->Html->script('src/Favorite');
 		echo $this->Html->script('src/Listing');
-		echo $this->Html->script('src/Realtor');
 		echo $this->Html->script('src/Marker');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
-		echo $this->Html->script('src/UtilityFunctions');
 		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
 		echo $this->Html->script('src/HoverBubble');
 		echo $this->Html->script('src/ClickBubble');
-		echo $this->Html->script('src/Cache');
-		echo $this->Html->script('src/Sublet');
-		echo $this->Html->script('src/Housemate');
-		echo $this->Html->script('src/HoverData');
-		echo $this->Html->script('src/SubletOwner');
-		echo $this->Html->script('src/ListingPopup');
 		echo $this->Html->script('src/UIManager');
 		echo $this->Html->script('src/Image');
-		echo $this->Html->script('src/SubletAdd');
-		echo $this->Html->script('src/SubletEdit');
-		echo $this->Html->script('src/SubletInProgress');
 }
 	echo $this->Html->script('knockout.js');
 	echo $this->Html->script('alertify.min.js');
@@ -120,7 +101,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=73');
+	echo $this->Html->script('src/program.js?v=74');
 }
 
 		echo $this->fetch('script');

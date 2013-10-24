@@ -221,11 +221,14 @@
 
     Map.LoadAllMapData = function() {
       var basicData;
+      $("#loader").show();
       basicData = this.LoadBasicData();
       this.BasicDataCached = new $.Deferred();
       A2Cribs.FavoritesManager.LoadFavorites();
       A2Cribs.FeaturedListings.LoadFeaturedPMListings();
-      $.when(basicData).then(this.LoadBasicDataCallback);
+      basicData.done(this.LoadBasicDataCallback).always(function() {
+        return $("#loader").hide();
+      });
       return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE, basicData, this.BasicDataCached);
     };
 

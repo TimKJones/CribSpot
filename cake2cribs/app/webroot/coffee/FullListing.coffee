@@ -41,6 +41,7 @@ class A2Cribs.FullListing
 
 		@div.find("#message_send").click () =>
 			$("#message_send").button("loading")
+			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "Messages/messageSublet"
 				type: "POST"
@@ -61,6 +62,9 @@ class A2Cribs.FullListing
 						else
 							A2Cribs.UIManager.Error "Message Failed! Please Try Again."
 					$("#message_send").button "reset"
+
+				complete: ->
+					$("#loader").hide()
 
 	@Directive: (directive) ->
 		if directive.contact_owner?

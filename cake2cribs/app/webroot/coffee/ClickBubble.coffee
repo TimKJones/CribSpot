@@ -52,8 +52,10 @@ class A2Cribs.ClickBubble
 	###
 	@Open: (listing_id) ->
 		@IsOpen = true
-		openDeferred = new $.Deferred
+		openDeferred = new $.Deferred()
+
 		if listing_id?
+			$("#loader").show()
 			A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id)
 			.done (listing) =>
 				A2Cribs.MixPanel.Click listing, "large popup"
@@ -62,6 +64,8 @@ class A2Cribs.ClickBubble
 				openDeferred.resolve listing_id
 			.fail =>
 				A2Cribs.UIManager.Error "Sorry - We could not find this listing!"
+			.always =>
+				$("#loader").hide()
 
 		return openDeferred.promise()
 
@@ -108,6 +112,7 @@ class A2Cribs.ClickBubble
 		@div.find('unit_style_description').text 
 		@setBeds listing_object.beds
 		@linkWebsite ".website_link", listing_object.website, listing_object.listing_id
+		@setRent listing_object.rent
 		@setAvailability "available", listing_object.available
 		@setOwnerName "property_manager", listing_object.listing_id
 		@setPrimaryImage "property_image", listing_object.listing_id
@@ -162,6 +167,21 @@ class A2Cribs.ClickBubble
 						"listing_id": listing_id
 		else
 			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
+
+	@setRent: (rent) ->
+		if not rent?
+			@div.find(".rent").text "Ask for Rent"
+			@div.find(".per_month").text ""
+			@div.find(".price_label").text ""
+		else if parseInt(rent, 10) isnt 0
+			@div.find(".rent").text rent
+			@div.find(".per_month").text "/m"
+			@div.find(".price_label").text "$"
+		else
+			@div.find(".rent").text "Call for Rent"
+			@div.find(".per_month").text ""
+			@div.find(".price_label").text ""
+
 
 	@setOwnerName: (div_name, listing_id) ->
 		listing = A2Cribs.UserCache.Get "listing", listing_id

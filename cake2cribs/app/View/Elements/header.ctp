@@ -1,7 +1,7 @@
 <?php
 	/* Less files for style */
 	/* Eventually switch to css */
-	echo $this->Html->css('/less/header.less?v=69','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/header.less?v=70','stylesheet/less', array('inline' => false));
 
 	/* Datepicker and slider javascript */
 	// echo $this->Html->script('bootstrap-datepicker');
@@ -20,6 +20,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
+			<button class="share_on_fb btn">Share on facebook</button>
 			<ul class="nav pull-right">
 				<li>
 					<a class="review_btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom" target="_blank"></a>

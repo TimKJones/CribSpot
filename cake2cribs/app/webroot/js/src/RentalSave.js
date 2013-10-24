@@ -227,6 +227,7 @@
     RentalSave.prototype.Open = function(marker_id) {
       var deferred,
         _this = this;
+      $("#loader").show();
       deferred = new $.Deferred();
       $.ajax({
         url: myBaseUrl + "listings/GetOwnedListingsByMarkerId/" + marker_id,
@@ -253,7 +254,8 @@
           _this.CreateListingPreview(marker_id);
           A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
           _this.PopulateGrid(marker_id);
-          return deferred.resolve();
+          deferred.resolve();
+          return $("#loader").hide();
         }
       });
       return deferred.promise();
@@ -331,6 +333,7 @@
           "marker id": this.CurrentMarker,
           "listing id": rental_object.listing_id
         });
+        $("#loader").show();
         return $.ajax({
           url: myBaseUrl + "listings/Save/",
           type: "POST",
@@ -357,11 +360,12 @@
                   A2Cribs.UserCache.Set(new A2Cribs[key](value));
                 }
               }
-              return console.log(response);
+              console.log(response);
             } else {
               A2Cribs.UIManager.Error(response.error.message);
-              return console.log(response);
+              console.log(response);
             }
+            return $("#loader").hide();
           }
         });
       }

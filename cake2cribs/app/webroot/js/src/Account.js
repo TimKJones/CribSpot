@@ -40,23 +40,38 @@
           'trigger': 'hover'
         });
       });
-      $('#changePasswordButton').click(function() {
-        return _this.ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val());
+      $('#changePasswordButton').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val()).always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
       });
-      $('#VerifyUniversityButton').click(function() {
+      $('#VerifyUniversityButton').click(function(event) {
         return _this.VerifyUniversity();
       });
-      $('#changePhoneBtn').click(function() {
-        return _this.SavePhone();
+      $('#changePhoneBtn').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.SavePhone().always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
       });
-      $('#changeAddressBtn').click(function() {
-        return _this.SaveAddress();
+      $('#changeAddressBtn').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.SaveAddress().always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
       });
-      $('#changeCompanyNameBtn').click(function() {
-        return _this.SaveCompanyName();
+      $('#changeCompanyNameBtn').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.SaveCompanyName().always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
       });
-      return $('#changeFirstLastNameButton').click(function() {
-        return _this.SaveFirstLastName();
+      return $('#changeFirstLastNameButton').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.SaveFirstLastName().always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
       });
     };
 
@@ -86,7 +101,8 @@
         };
         return this.SaveAccount(pair, $("#changePhoneBtn"));
       } else {
-        return A2Cribs.UIManager.Error("Invalid phone number");
+        A2Cribs.UIManager.Error("Invalid phone number");
+        return (new $.Deferred()).reject();
       }
     };
 
@@ -133,7 +149,8 @@
     };
 
     Account.ChangePassword = function(change_password_button, new_password, confirm_password, id, reset_token, redirect) {
-      var data;
+      var data,
+        _this = this;
       if (id == null) {
         id = null;
       }
@@ -143,7 +160,7 @@
       if (redirect == null) {
         redirect = null;
       }
-      change_password_button.attr('disabled', 'disabled');
+      this._change_password_deferred = new $.Deferred();
       data = {
         'new_password': new_password,
         'confirm_password': confirm_password
@@ -152,26 +169,40 @@
         data['id'] = id;
         data['reset_token'] = reset_token;
       }
+      if (new_password.length < 5) {
+        A2Cribs.UIManager.Alert("Password must be at least 6 characters long.");
+        return this._change_password_deferred.reject();
+      }
       if (new_password !== confirm_password) {
         A2Cribs.UIManager.Alert("Passwords do not match.");
-        return;
+        return this._change_password_deferred.reject();
       }
-      return $.post(myBaseUrl + 'users/AjaxChangePassword', data, function(response) {
-        response = JSON.parse(response);
-        if (response.error === void 0) {
-          if (id === null && reset_token === null) {
-            alertify.success('Password Changed', 3000);
-            if (redirect !== null) {
-              window.location.href = redirect;
-            }
+      $.ajax({
+        url: myBaseUrl + 'users/AjaxChangePassword',
+        data: data,
+        type: "POST",
+        success: function(response) {
+          response = JSON.parse(response);
+          if (response.error != null) {
+            A2Cribs.UIManager.Alert(response.error);
+            return _this._change_password_deferred.reject();
           } else {
-            window.location.href = '/dashboard';
+            if (id === null && reset_token === null) {
+              alertify.success('Password Changed', 3000);
+              if (redirect !== null) {
+                window.location.href = redirect;
+              }
+            } else {
+              window.location.href = '/dashboard';
+            }
+            return _this._change_password_deferred.resolve();
           }
-        } else {
-          A2Cribs.UIManager.Alert(response.error);
+        },
+        error: function() {
+          return _this._change_password_deferred.reject();
         }
-        return change_password_button.removeAttr('disabled');
       });
+      return this._change_password_deferred.promise();
     };
 
     Account.SaveAccount = function(keyValuePairs, button) {
