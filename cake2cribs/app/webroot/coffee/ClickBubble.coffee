@@ -52,8 +52,10 @@ class A2Cribs.ClickBubble
 	###
 	@Open: (listing_id) ->
 		@IsOpen = true
-		openDeferred = new $.Deferred
+		openDeferred = new $.Deferred()
+
 		if listing_id?
+			$("#loader").show()
 			A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id)
 			.done (listing) =>
 				A2Cribs.MixPanel.Click listing, "large popup"
@@ -62,6 +64,8 @@ class A2Cribs.ClickBubble
 				openDeferred.resolve listing_id
 			.fail =>
 				A2Cribs.UIManager.Error "Sorry - We could not find this listing!"
+			.always =>
+				$("#loader").hide()
 
 		return openDeferred.promise()
 

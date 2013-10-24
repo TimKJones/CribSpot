@@ -178,11 +178,15 @@ class A2Cribs.Map
 	Use JQuery Deferred object to load all data asynchronously
 	###
 	@LoadAllMapData: () ->
+		$("#loader").show()
 		basicData = @LoadBasicData()
 		@BasicDataCached = new $.Deferred() # resolved after basic data has been added to cache
 		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FeaturedListings.LoadFeaturedPMListings()
-		$.when(basicData).then(@LoadBasicDataCallback)
+		basicData
+		.done(@LoadBasicDataCallback)
+		.always () ->
+			$("#loader").hide()
 		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE, basicData, @BasicDataCached)
 
 	@CenterMap:(latitude, longitude)->

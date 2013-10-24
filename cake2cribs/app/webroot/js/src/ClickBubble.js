@@ -82,8 +82,9 @@ ClickBubble class
       var openDeferred,
         _this = this;
       this.IsOpen = true;
-      openDeferred = new $.Deferred;
+      openDeferred = new $.Deferred();
       if (listing_id != null) {
+        $("#loader").show();
         A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id).done(function(listing) {
           A2Cribs.MixPanel.Click(listing, "large popup");
           _this.SetContent(listing.GetObject());
@@ -91,6 +92,8 @@ ClickBubble class
           return openDeferred.resolve(listing_id);
         }).fail(function() {
           return A2Cribs.UIManager.Error("Sorry - We could not find this listing!");
+        }).always(function() {
+          return $("#loader").hide();
         });
       }
       return openDeferred.promise();

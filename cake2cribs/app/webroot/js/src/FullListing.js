@@ -56,6 +56,7 @@
       });
       return this.div.find("#message_send").click(function() {
         $("#message_send").button("loading");
+        $("#loader").show();
         return $.ajax({
           url: myBaseUrl + "Messages/messageSublet",
           type: "POST",
@@ -80,6 +81,9 @@
               }
             }
             return $("#message_send").button("reset");
+          },
+          complete: function() {
+            return $("#loader").hide();
           }
         });
       });

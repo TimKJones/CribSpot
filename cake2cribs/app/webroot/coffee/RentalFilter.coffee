@@ -230,13 +230,15 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 				ajaxData += "&"
 			first = false
 			ajaxData += key + "=" + JSON.stringify value
-
+		$("#loader").show()
 		$.ajax
 			url: myBaseUrl + "Rentals/ApplyFilter"
 			data: ajaxData
 			type: "GET"
 			context: this
 			success: A2Cribs.FilterManager.UpdateListings
+			complete: () ->
+				$("#loader").hide()
 
 	###
 	Retrieves all listing_ids for a given marker_id that fit the current filter criteria
