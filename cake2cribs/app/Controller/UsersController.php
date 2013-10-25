@@ -2,7 +2,7 @@
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
     public $uses = array('User', 'University', 'UnreadMessage', 'Favorite');
-    public $components= array('Email', 'RequestHandler', 'Cookie');
+    public $components= array('Email', 'RequestHandler', 'Cookie', 'Twilio.Twilio');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {
@@ -717,7 +717,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     */
     public function SendPhoneVerificationCode($phone_number)
     {
-        
+        $this->set("response", $this->Twilio->sms('4154634484', '4158904484', '12345'));
     }
 
     /*
