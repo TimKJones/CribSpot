@@ -38,6 +38,7 @@ class A2Cribs.Tour
 	$("#schedule_tour").ready =>
 		@SetupCalendarUI()
 		@SetDates @current_offset
+		@SetupInfoUI()
 
 	###
 	SetupCalendarUI
@@ -100,14 +101,78 @@ class A2Cribs.Tour
 		$("#request_times_btn").click () =>
 			# Validate that there are at least three time slots
 			# selected
-			$("#calendar_picker").hide()
-			$("#schedule_info").show()
+			if @TimeSlotCount() >= 3
+				$("#calendar_picker").hide()
+				$("#schedule_info").show()
+			else
+				A2Cribs.UIManager.Error "Please select at least three time slots that work for you!"
 
 	###
 	Setup My Info UI
 	###
 	@SetupInfoUI: ->
+		# Validate phone number
+		$("#verify_phone_btn").click =>
+			# if phone number looks legit
+			phone = $("#verify_phone_number").val()
+			if phone?.length isnt 10 or isNaN phone
+				A2Cribs.UIManager.Error "Please enter a valid phone number"
+				return
+
+			# Send the text
+			$.ajax
+				url: myBaseUrl + "Users/SendPhoneVerificationCode"
+				type: 'POST'
+				data: 
+					phone: phone
+				success: ->
+					# Message was sent
+				error: ->
+					#Failed to send message
+
+			$("#verify_phone").modal 'show'
+
+		# Confirm Valiation Code
+		$("#confirm_validation_code").click =>
+			# if code looks legit
+			code = $("#verification_code").val()
+			if code?.length isnt 5 or isNaN code
+				A2Cribs.UIManager.Error "Invalid Code!"
+				return
+
+			# Send the text
+			$.ajax
+				url: myBaseUrl + "Users/ConfirmPhoneVerificationCode"
+				type: 'POST'
+				data: 
+					code: code
+				success: ->
+					$("#verify_phone").modal 'hide'
+				error: ->
+					A2Cribs.UIManager.Error "Invalid Code!"
+
 		# To be completed
+		$("#complete_tour_request").click =>
+			# if phone number is verified
+			phone = $("#verify_phone_number").val()
+			if phone?.length isnt 10 or isNaN phone
+				A2Cribs.UIManager.Error "Please enter a valid phone number"
+				return
+			if $("#phone_verified").val()?.length isnt 1
+				A2Cribs.UIManager.Error "Please click the verify button to send verification text"
+				return
+
+			$("#complete_tour_request").button 'loading'
+
+			@RequestTourTimes(1, $("#tour_notes").val())
+			.done ->
+				$(".schedule_page").hide()
+				$("#schedule_completed").show()
+			.fail ->
+				A2Cribs.UIManager.Error "Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue"
+			.always ->
+				$("#complete_tour_request").button 'reset'
+
 
 
 	###
@@ -131,21 +196,32 @@ class A2Cribs.Tour
 			delete @selected_timeslots[hash]
 
 	###
+	Time Slot Count
+	Returns the number of timeslots currently
+	selected
+	###
+	@TimeSlotCount: ->
+		count = 0
+		for key of @selected_timeslots
+			count++
+		return count
+
+	###
 	Request Tour Times
 	Sends a list of the date objects to
 	Tours/RequestTourTimes
 	###
-	@RequestTourTimes: ->
+	@RequestTourTimes: (listing_id, note = "") ->
 		times = []
 		for key, time of @selected_timeslots
 			times.push time
-		$.ajax
+		return $.ajax
 			url: myBaseUrl + 'Tours/RequestTourTimes'
 			type: 'POST'
 			data:
 				times: times
-				listing_id: 1
-				notes: "This is a note"
+				listing_id: listing_id
+				notes: note
 			success: (response) ->
 				alert response
 
