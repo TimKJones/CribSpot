@@ -4,5 +4,11 @@
 	<?= $this->element('Tours/calendar_picker'); ?>
 	
 	<?= $this->element('Tours/schedule_info'); ?>
+
+	<?= $this->element('Tours/schedule_completed'); ?>
+
+	<?= $this->element('email_invite'); ?>
+
+	<?= $this->element('Tours/verify_phone'); ?>
 	
 </div>

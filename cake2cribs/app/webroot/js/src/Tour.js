@@ -55,7 +55,8 @@ Class is for scheduling and picking a time to tour
 
     $("#schedule_tour").ready(function() {
       Tour.SetupCalendarUI();
-      return Tour.SetDates(Tour.current_offset);
+      Tour.SetDates(Tour.current_offset);
+      return Tour.SetupInfoUI();
     });
 
     /*
@@ -113,8 +114,12 @@ Class is for scheduling and picking a time to tour
         }
       });
       return $("#request_times_btn").click(function() {
-        $("#calendar_picker").hide();
-        return $("#schedule_info").show();
+        if (_this.TimeSlotCount() >= 3) {
+          $("#calendar_picker").hide();
+          return $("#schedule_info").show();
+        } else {
+          return A2Cribs.UIManager.Error("Please select at least three time slots that work for you!");
+        }
       });
     };
 
@@ -122,7 +127,74 @@ Class is for scheduling and picking a time to tour
     	Setup My Info UI
     */
 
+<<<<<<< HEAD
     Tour.SetupInfoUI = function() {};
+=======
+
+    Tour.SetupInfoUI = function() {
+      var _this = this;
+      $("#verify_phone_btn").click(function() {
+        var phone;
+        phone = $("#verify_phone_number").val();
+        if ((phone != null ? phone.length : void 0) !== 10 || isNaN(phone)) {
+          A2Cribs.UIManager.Error("Please enter a valid phone number");
+          return;
+        }
+        $.ajax({
+          url: myBaseUrl + "Users/SendPhoneVerificationCode",
+          type: 'POST',
+          data: {
+            phone: phone
+          },
+          success: function() {},
+          error: function() {}
+        });
+        return $("#verify_phone").modal('show');
+      });
+      $("#confirm_validation_code").click(function() {
+        var code;
+        code = $("#verification_code").val();
+        if ((code != null ? code.length : void 0) !== 5 || isNaN(code)) {
+          A2Cribs.UIManager.Error("Invalid Code!");
+          return;
+        }
+        return $.ajax({
+          url: myBaseUrl + "Users/ConfirmPhoneVerificationCode",
+          type: 'POST',
+          data: {
+            code: code
+          },
+          success: function() {
+            return $("#verify_phone").modal('hide');
+          },
+          error: function() {
+            return A2Cribs.UIManager.Error("Invalid Code!");
+          }
+        });
+      });
+      return $("#complete_tour_request").click(function() {
+        var phone, _ref;
+        phone = $("#verify_phone_number").val();
+        if ((phone != null ? phone.length : void 0) !== 10 || isNaN(phone)) {
+          A2Cribs.UIManager.Error("Please enter a valid phone number");
+          return;
+        }
+        if (((_ref = $("#phone_verified").val()) != null ? _ref.length : void 0) !== 1) {
+          A2Cribs.UIManager.Error("Please click the verify button to send verification text");
+          return;
+        }
+        $("#complete_tour_request").button('loading');
+        return _this.RequestTourTimes(1, $("#tour_notes").val()).done(function() {
+          $(".schedule_page").hide();
+          return $("#schedule_completed").show();
+        }).fail(function() {
+          return A2Cribs.UIManager.Error("Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue");
+        }).always(function() {
+          return $("#complete_tour_request").button('reset');
+        });
+      });
+    };
+>>>>>>> 98f7474f73082943d757cb15cdd2f8dc9b1b5a4e
 
     /*
     	Add Time Slot
@@ -153,13 +225,37 @@ Class is for scheduling and picking a time to tour
     };
 
     /*
+    	Time Slot Count
+    	Returns the number of timeslots currently
+    	selected
+    */
+
+
+    Tour.TimeSlotCount = function() {
+      var count, key;
+      count = 0;
+      for (key in this.selected_timeslots) {
+        count++;
+      }
+      return count;
+    };
+
+    /*
     	Request Tour Times
     	Sends a list of the date objects to
     	Tours/RequestTourTimes
     */
 
+<<<<<<< HEAD
     Tour.RequestTourTimes = function() {
+=======
+
+    Tour.RequestTourTimes = function(listing_id, note) {
+>>>>>>> 98f7474f73082943d757cb15cdd2f8dc9b1b5a4e
       var key, time, times, _ref;
+      if (note == null) {
+        note = "";
+      }
       times = [];
       _ref = this.selected_timeslots;
       for (key in _ref) {
@@ -171,8 +267,8 @@ Class is for scheduling and picking a time to tour
         type: 'POST',
         data: {
           times: times,
-          listing_id: 1,
-          notes: "This is a note"
+          listing_id: listing_id,
+          notes: note
         },
         success: function(response) {
           return alert(response);

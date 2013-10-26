@@ -771,13 +771,18 @@ class Listing extends AppModel {
 		else
 			$title = $listing['Marker']['street_address'];
 
+		$unit_description = null;
+
 		if (!empty($listing['Rental']['unit_style_options']) && !empty($listing['Rental']['unit_style_description'])){
 			$unit_style_options = RentalPrototype::unit_style_options($listing['Rental']['unit_style_options']);
 			$unit_style_description = $listing['Rental']['unit_style_description'];
-			$title .= ' - ' . $unit_style_options . ' - ' . $unit_style_description;
+			$unit_description = $unit_style_options . ' - ' . $unit_style_description;
 		}
 
-		return $title;
+		return array(
+			'name' => $title,
+			'description' => $unit_description
+		);
 	}
 
 	/*

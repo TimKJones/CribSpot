@@ -50,7 +50,7 @@ class ToursController extends AppController
 		}
 
 		/* Send email to scheduler@cribspot.com with all necessary information */
-		//$this->_emailInformationToScheduler($listing_id, $times, $note);
+		$this->_emailInformationToScheduler($listing_id, $times, $note);
 
 		/* Send email to student saying their times are pending and one will be assigned. */
 		//$this->_emailStudentConfirmation($listing_id, $times, $note);
@@ -91,11 +91,10 @@ class ToursController extends AppController
         /* Confirm the tour specified, if the credentials are correct */
         $success = $this->Tour->ConfirmTour($id, $code);
         if (!$success){
-        	$flash_message['method'] = "Error";
-            $flash_message['message'] = "This tour request is invalid.";
-            $json = json_encode($flash_message);
-            $this->Cookie->write('flash-message', $json);
-            $this->redirect('/users/login?invalid_link=true');
+            $this->redirect('/');
+        }
+        else{
+        	$this->set('result', 'Tour Confirmed!');
         }
 	}
 
@@ -109,31 +108,31 @@ class ToursController extends AppController
 	private function _emailInformationToScheduler($listing_id, $times, $notes=null)
 	{
 		$from = 'donotreply@cribspot.com';
-		$to = 'scheduler@cribspot.com';
+		$to = 'tim@cribspot.com';
 		$id = 1;	
 		$subject = 'New Tour Request: ID: ' . $id;
 		$template = 'tours/tour_information_for_scheduler';
 		$sendAs = 'both';
 
-		$from = array('scheduler@cribspot.com' => 'Cribspot Tour Requests');
-
 		/* Get user information to fill into email template */
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
-		$to = $this->User->GetEmailFromId($loggedInUser['id']);
+		/*$to = $this->User->GetEmailFromId($loggedInUser['id']);
 		if ($to === null)
-			return;
+			return;*/
 
 		$title = $this->Listing->GetListingTitleFromId($listing_id);
-		$subject = $loggedInUser['first_name'].$loggedInUser['last_name']." Has Requested to Tour Your Property at ".$title;
+		$name = $title['name'];
+		$unit_description = $title['description'];
+		$subject = "Tour Request from ".$loggedInUser['first_name']." ".$loggedInUser['last_name']." (id: ".
+			$loggedInUser['id'].") "."about ".$name.' - '.$unit_description;
 		
-		$template = 'tours/generic_request_to_pm';
+		$template = 'tours/tour_information_for_scheduler';
 		$sendAs = 'both';
 
 		$this->set('student_data', $loggedInUser);
 		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
-		$this->set('times_requested', '');
-		$this->set('notes', '');
-
+		$this->set('times_requested', $times);
+		$this->set('notes', $notes);
 		$this->SendEmail($from, $to, $subject, $template, $sendAs);
 	}
 

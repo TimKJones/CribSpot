@@ -30,32 +30,33 @@ class Tour extends AppModel {
 	/*
 	If the ($tour_id, $confirmation_code) pair is legit, set confirmed to true for this tour.
 	*/
-	public function ConfirmTour($tour_id, $confirmation_code, $listing_id)
+	public function ConfirmTour($tour_id, $confirmation_code)
 	{
 		/* Verify that this (tour_id, confirmation_code) pair is legit */
 		$tourExists = $this->find('first', array(
 			'contain' => array(),
 			'conditions' => array(
-				'id' => $tour_id,
+				'Tour.id' => $tour_id,
 				'confirmation_code' => $confirmation_code
 			)
 		));
 
+		$tourExists = array_key_exists('Tour', $tourExists);
 		/* Get the user_id and listing_id of the user that scheduled this tour */
 		$tourData = $this->find('first', array(
-			'contain' => array(),
+			'contain' => array('TourRequest'),
 			'conditions' => array(
-				'id' => $tour_id 
+				'Tour.id' => $tour_id 
 			),
-			'fields' => array('Tour.listing_id', 'Tour.user_id')
-		));
-		
-		if ($tourExists !== null || $tourData === null || !array_key_exists('user_id', $tourData['User']) ||
-			!array_key_exists('listing_id', $tourData['User']))
+			'fields' => array('TourRequest.listing_id', 'TourRequest.user_id')
+		));		
+
+		if (!$tourExists || $tourData === null || !array_key_exists('user_id', $tourData['TourRequest']) ||
+			!array_key_exists('listing_id', $tourData['TourRequest']))
 			return false;
 
-		$user_id = $tourData['User']['user_id'];
-		$listing_id = $tourData['User']['listing_id'];
+		$user_id = $tourData['TourRequest']['user_id'];
+		$listing_id = $tourData['TourRequest']['listing_id'];
 
 		/* Set confirmed to 0 for all other tours for this ($user_id, $listing_id) combo */
 		$this->_unconfirmAllToursForUser($user_id, $listing_id);
@@ -75,16 +76,18 @@ class Tour extends AppModel {
 		$tours = $this->find('all', array(
 			'contain' => array(),
 			'conditions' => array(
-				'user_id' => $user_id,
-				'listing_id' => $listing_id
+				'TourRequest.user_id' => $user_id,
+				'TourRequest.listing_id' => $listing_id
 			)
 		));
 
 		foreach ($tours as &$tour){
-			$tour['confirmed'] = 0;
+			$tour['Tour']['confirmed'] = 0;
 		}
 
-		$this->save($tours);
+		CakeLog::write('tours', print_r($tours, true));
+		if (!$this->saveAll($tours))
+			CakeLog::write('tourfailed', print_r($this->validationErrors, true));
 	}
 }
 
