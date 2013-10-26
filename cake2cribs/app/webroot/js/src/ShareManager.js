@@ -69,9 +69,9 @@
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
-        picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png',
-        name: "Join Cribspot",
-        caption: "It's a party!",
+        picture: 'http://i.imgur.com/f75Gkt7.jpg',
+        name: "Cribspot raising the woof!",
+        caption: "Looks like we're fresh out of puppies! Doggone it.",
         description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
       };
       return FB.ui(fbObj);
