@@ -20,10 +20,10 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	<div class="navbar-inner">
 		<div class="container" style="width: auto;">
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
-			<button class="share_on_fb btn">Share on facebook</button>
+			<button class="share_on_fb btn">Share with friends</button>
 			<ul class="nav pull-right">
 				<li>
-					<a class="review_btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom" target="_blank"></a>
+					<a class="review_btn btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom" target="_blank">Review my rental or dorm</a>
 				</li>
 				<li class="signup_btn"><a href="#claim_listing" data-toggle="modal">Claim a Listing</a></li>
 				<?php if (isset($show_user) && $show_user) { /* Next step is to check if logged in */ ?>
@@ -100,11 +100,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<?php if (isset($show_personal) && $show_personal) { ?>
 					<li class="personal_buttons <?= ($signed_in) ? '' : 'hide'; ?> ">
 						<div class="personal_button">
-							<a href="/messages/"><i class="icon-comment icon-large"></i></a>
+							<a class="message_button" href="/messages/"></a>
 							<div class="message_count personal_count"></div>
 						</div>
 						<div class="personal_button">
-							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility(this)"><i class="icon-heart icon-large"></i></a>
+							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility(this)"></a>
 							<div class="favorite_count personal_count"></div>
 						</div>
 					</li>
