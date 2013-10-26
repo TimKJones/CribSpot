@@ -127,10 +127,6 @@ Class is for scheduling and picking a time to tour
     	Setup My Info UI
     */
 
-<<<<<<< HEAD
-    Tour.SetupInfoUI = function() {};
-=======
-
     Tour.SetupInfoUI = function() {
       var _this = this;
       $("#verify_phone_btn").click(function() {
@@ -194,7 +190,6 @@ Class is for scheduling and picking a time to tour
         });
       });
     };
->>>>>>> 98f7474f73082943d757cb15cdd2f8dc9b1b5a4e
 
     /*
     	Add Time Slot
@@ -230,7 +225,6 @@ Class is for scheduling and picking a time to tour
     	selected
     */
 
-
     Tour.TimeSlotCount = function() {
       var count, key;
       count = 0;
@@ -246,16 +240,9 @@ Class is for scheduling and picking a time to tour
     	Tours/RequestTourTimes
     */
 
-<<<<<<< HEAD
-    Tour.RequestTourTimes = function() {
-=======
-
     Tour.RequestTourTimes = function(listing_id, note) {
->>>>>>> 98f7474f73082943d757cb15cdd2f8dc9b1b5a4e
       var key, time, times, _ref;
-      if (note == null) {
-        note = "";
-      }
+      if (note == null) note = "";
       times = [];
       _ref = this.selected_timeslots;
       for (key in _ref) {

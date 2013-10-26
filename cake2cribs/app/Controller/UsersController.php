@@ -717,7 +717,8 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     */
     public function SendPhoneVerificationCode($phone_number)
     {
-        $this->set("response", $this->Twilio->sms('4154634484', '4158904484', '12345'));
+        $this->Twilio->sms('4154634484', '4158904484', '12345');
+        $this->set("response", "");
     }
 
     /*

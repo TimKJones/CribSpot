@@ -53,7 +53,7 @@ class TourRequest extends AppModel {
 					'at help@cribspot.com. Reference error code 70.'));
 		}
 
-		return array('success' => '');
+		return array('success' => $this->read());
 	}
 
 /* ---------------------------------- private ----------------------------------- */

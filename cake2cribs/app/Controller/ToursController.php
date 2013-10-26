@@ -2,7 +2,7 @@
 class ToursController extends AppController 
 { 
 	public $helpers = array('Html');
-	public $uses = array('User', 'Listing', 'Tour', 'UsersInTours', 'TourRequest');
+	public $uses = array('User', 'Listing', 'Tour', 'UsersInTours', 'TourRequest', 'University');
 	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter()
@@ -36,21 +36,27 @@ class ToursController extends AppController
 
 		$listing_id = $this->request->data['listing_id'];
 		$times = $this->request->data['times'];
-		if (array_key_exists('note', $this->request->data))
-			$note = $this->request->data['note'];
+		if (array_key_exists('notes', $this->request->data))
+			$note = $this->request->data['notes'];
 
-		foreach ($times as &$time)
-			$time = date('Y-m-d H:i:s', strtotime($time['date']));
+		$processedTimes = array();
+		foreach ($times as &$time){
+			/* Request times in 30-minute blocks during the student's stated availablility window */
+			$date = strtotime($time['date']);
+			array_push($processedTimes, date('Y-m-d H:i:s', strtotime($time['date'])));
+			array_push($processedTimes, date('Y-m-d H:i:s',strtotime($time['date'])+30*60));
+		}
 
 		/* Save times in database */
-		$response = $this->TourRequest->SaveTour($times, $this->Auth->User('id'), $listing_id);
+		$response = $this->TourRequest->SaveTour($processedTimes, $this->Auth->User('id'), $listing_id);
 		if (array_key_exists('error', $response)) {
 			$this->set('response', json_encode($response));
 			return;
 		}
 
 		/* Send email to scheduler@cribspot.com with all necessary information */
-		$this->_emailInformationToScheduler($listing_id, $times, $note);
+		$this->_emailInformationToScheduler($listing_id, $response['success'], $note);
+		$response['success'] = '';
 
 		/* Send email to student saying their times are pending and one will be assigned. */
 		//$this->_emailStudentConfirmation($listing_id, $times, $note);
@@ -129,9 +135,37 @@ class ToursController extends AppController
 		$template = 'tours/tour_information_for_scheduler';
 		$sendAs = 'both';
 
+		/* Convert data from numeric constants to their string values */
+		if (!empty($loggedInUser['registered_university']))
+			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
+
+		if (!empty($loggedInUser['student_year']))
+			$loggedInUser['student_year'] = $this->User->year($loggedInUser['student_year']);
+
+		$pm = $this->Listing->GetPMByListingId($listing_id);
+		$pm_data = array(
+			'id' => $pm['id'],
+			'company_name' => $pm['company_name'],
+			'email'=>$pm['email'],
+			'phone'=>$pm['phone']
+		);
+
+		/* Process tour request times */
+		$tourTimes = $times['Tour'];
+		$tourData = array();
+		foreach ($tourTimes as $tourTime){
+			$confirm_link = 'https://www.cribspot.com/Tours/ConfirmTour?id='.$tourTime['id'].'&code='.$tourTime['confirmation_code'];
+			$time = $tourTime['date'];
+			array_push($tourData, array(
+				'confirm_link' => $confirm_link,
+				'time' => $time
+			));
+		}
+
 		$this->set('student_data', $loggedInUser);
+		$this->set('pm_data', $pm_data);
 		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
-		$this->set('times_requested', $times);
+		$this->set('tour_data', $tourData);
 		$this->set('notes', $notes);
 		$this->SendEmail($from, $to, $subject, $template, $sendAs);
 	}
@@ -215,7 +249,6 @@ class ToursController extends AppController
 
 	private function _getLoggedInUserBasicInformation()
 	{
-		$userInfo = array();
 		$user = $this->Auth->User();
 		if ($user === null)
 			return null;
