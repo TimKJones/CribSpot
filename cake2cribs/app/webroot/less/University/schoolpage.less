@@ -1,0 +1,207 @@
+@color: #366FBC; //#499bea;
+@stop-color: #2A5691; //#207ce5;
+@footer-color: #404042;
+@compact-width: 800px;
+@btn-contains-height: 22px;
+@header-height: 50px;
+
+
+#school_page
+{
+	height: 100%;
+	width: 100%;
+	position: relative;
+	background-size: cover;
+	background-position: center center;
+
+	.school_logo
+	{
+		height: 100px;
+		width: 100px;
+		float: left;
+		margin-left: 20px;
+		img
+		{
+			max-height: 100%;
+			max-width: 100%;
+			height: auto;
+			width: auto;
+		}
+	}
+	.name
+	{
+		color: hsl(0, 100%, 100%);
+		font-size: 30px;
+		line-height: 30px;
+		float: left;
+		padding: 40px 0;	
+		font-family: 'Montserrat-Bold';
+		text-transform: uppercase;
+		text-shadow: 1px 1px 5px black;
+	}
+	.cribspot_logo
+	{
+		position: absolute;
+		bottom: 30px;
+		right: 30px;
+	}
+	.school_info
+	{
+		width: 400px;
+		padding-left: 40px;
+		color: white;
+		font-family: 'Montserrat-Bold';
+		text-shadow: 1px 1px 5px black;
+		.welcome_message
+		{
+			font-family: 'BorisBlackBloxx';
+			font-size: 30px;
+			line-height: 30px;
+			margin-bottom: 20px;
+		}
+	}
+	.separator
+	{
+		width: 100%;
+		height: 2px;
+		background-color: white;
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+	.school_facts
+	{
+		div
+		{
+			display: inline-block;
+		}
+		margin-bottom: 20px;
+	}
+	.background_source
+	{
+		color: white;
+		text-shadow: 1px 1px 5px black;
+		font-family: 'Helvetica';
+		font-size: 12px;
+		position: absolute;
+		bottom: 10px;
+		right: 10px;
+	}
+	.getting_started
+	{
+		width: 700px;
+		text-align: center;
+		margin: 30px auto;
+		.banner
+		{
+			color: white;
+			font-family: 'ReklameScriptMediumRegular';
+			font-size: 30px;
+			line-height: 40px;
+			text-shadow: 1px 1px 5px black;
+		}
+		.btn
+		{
+			margin: 10px;
+			line-height: 30px;
+			background: #4693db;
+			background: -moz-linear-gradient(top,  #4693db 0%, #1a6dbf 0%, #175fa8 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4693db), color-stop(0%,#1a6dbf), color-stop(100%,#175fa8));
+			background: -webkit-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: -o-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: -ms-linear-gradient(top,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			background: linear-gradient(to bottom,  #4693db 0%,#1a6dbf 0%,#175fa8 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4693db', endColorstr='#175fa8',GradientType=0 );
+			border-bottom: solid 1px hsl(218, 51%, 59%);
+			color: hsl(0, 100%, 100%);
+			font-size: 14px;
+			font-weight: bold;
+			text-shadow: none;
+			border-color: #0B2E51;
+		}
+	}
+	#founder_box
+	{
+		position: absolute;
+		.founder_photo
+		{
+			width: 150px;
+			height: 150px;
+			float: left;
+			vertical-align: middle;
+		}
+		i
+		{
+			font-style: normal;
+		}
+		p
+		{
+			margin: 13px;
+			display: inline-block;
+			font-family: 'ReklameScriptMediumRegular';
+			color: hsl(0, 100%, 100%);
+			line-height: 25px;
+			text-shadow: 1px 1px 5px black;
+			.founder_name
+			{
+				font-size: 30px;
+			}
+			.founder_title, .founder_description
+			{
+				font-size: 20px;
+			}
+		}
+	}
+}
+
+#header
+{
+	background-image: none;
+	background-color: hsla(0, 0%, 0%, 0);
+	position: absolute;
+	top: 0;
+	width: 100%;
+	.navbar-inner
+	{
+		background-image: none;
+		background-color: hsla(0, 0%, 0%, 0);
+		border: none;
+		.container
+		{
+			background-image: none;
+			background-color: hsla(0, 0%, 0%, 0);
+			a
+			{
+				background-color: hsla(0, 0%, 0%, 0);
+			}
+		}
+	}
+	img
+	{
+		height: 30px;
+		width: 30px;
+		margin-right: 5px;
+		margin-top: -5px;
+	}
+	.user_name
+	{
+		display: inline-block;
+	}
+	.nav-btn
+	{
+		font-family: 'Helvetica';
+		letter-spacing: -1px;
+		font-weight: lighter;
+		font-size: 25px;
+		color: white;
+		text-shadow: 1px 1px 2px black;
+	}
+	.nav-text
+	{
+		margin-top: 10px;
+		color: #5d8dc4;
+		font-family: 'ReklameScriptMediumRegular';
+		font-size: 20px;
+		text-shadow: 1px 1px 2px black;
+	}
+}
+

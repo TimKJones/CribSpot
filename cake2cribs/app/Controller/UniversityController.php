@@ -1,14 +1,41 @@
 <?php
 	class UniversityController extends AppController {
-		public $uses = array ("University");
+		public $uses = array ("University", "User");
 		public $components= array('Session','Auth');
 		function beforeFilter(){
 			parent::beforeFilter();
-	    	if(!$this->Auth->user()){
-	        	//$this->flash("You may not access this page until you login.", array('controller' => 'users', 'action' => 'login'));
-	        	$this->Session->setFlash(__('Please login to view your dashbaord.'));
-	        	$this->redirect(array('controller'=>'users', 'action'=>'login'));
-	    	}
+			$this->Auth->allow('schoolpage');
+		}
+
+		public function schoolpage($school_name)
+		{
+			if ($school_name == null)
+				$this->redirect(array('controller' => 'landing', 'action' => 'index'));
+
+			if ($school_name != null)
+			{             
+				$this->Session->write("currentUniversity", $school_name);
+				$school_name = str_replace("_", " ", $school_name);
+				$id = $this->University->getIdfromName($school_name);
+				if ($id == null)
+					throw new NotFoundException();
+
+				/* store university id to enable 'back to map' button */
+				if ($this->Auth->User('id') != null)
+					$this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
+				else
+					$this->Session->write('preferredUniversity', $id); 
+
+				$this->set('school_id', $id);
+				$university = $this->University->findById($id);
+				if ($university == null)
+					throw new NotFoundException();
+	
+				$this->set('university', $university);
+			}
+			$this->set('school_name', $school_name);
+			$this->set('locations', $this->University->getSchools());
+			$this->set('user_years', $this->User->GetYears());
 		}
 		
 	 	public function getAll(){
