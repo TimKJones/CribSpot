@@ -286,7 +286,7 @@ class A2Cribs.FeaturedListings
                 <span class = 'rent price-text'><%= "$" + rent %></span>
                 <span class = 'divider'>|</span>
                 <span class = 'beds'><%= beds %> </span>
-                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    
+                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

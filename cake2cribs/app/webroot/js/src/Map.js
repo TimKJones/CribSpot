@@ -224,7 +224,6 @@
       $("#loader").show();
       basicData = this.LoadBasicData();
       this.BasicDataCached = new $.Deferred();
-      A2Cribs.FavoritesManager.LoadFavorites();
       A2Cribs.FeaturedListings.LoadFeaturedPMListings();
       basicData.done(this.LoadBasicDataCallback).always(function() {
         return $("#loader").hide();

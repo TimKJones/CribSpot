@@ -181,7 +181,6 @@ class A2Cribs.Map
 		$("#loader").show()
 		basicData = @LoadBasicData()
 		@BasicDataCached = new $.Deferred() # resolved after basic data has been added to cache
-		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FeaturedListings.LoadFeaturedPMListings()
 		basicData
 		.done(@LoadBasicDataCallback)

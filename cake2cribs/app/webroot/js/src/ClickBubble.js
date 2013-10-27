@@ -170,7 +170,8 @@ ClickBubble class
       this.div.find(".twitter_share").click(function() {
         return A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
       });
-      return A2Cribs.FavoritesManager.setFavoriteButton(this.div.find(".favorite_listing"), listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
+      this.div.find(".favorite_listing").data("listing-id", listing_object.listing_id);
+      return A2Cribs.FavoritesManager.setFavoriteButton(this.div.find(".favorite_listing"), listing_object.listing_id);
     };
 
     ClickBubble.resolveDateRange = function(startDate) {

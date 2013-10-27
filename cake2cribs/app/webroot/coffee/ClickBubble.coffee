@@ -129,7 +129,9 @@ class A2Cribs.ClickBubble
 		@div.find(".twitter_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
 				marker.street_address, marker.city, marker.state, marker.zip)
-		A2Cribs.FavoritesManager.setFavoriteButton @div.find(".favorite_listing"), listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds
+
+		@div.find(".favorite_listing").data "listing-id", listing_object.listing_id
+		A2Cribs.FavoritesManager.setFavoriteButton @div.find(".favorite_listing"), listing_object.listing_id
 
 	@resolveDateRange: (startDate) ->
 		range = "Unknown Start Date"
