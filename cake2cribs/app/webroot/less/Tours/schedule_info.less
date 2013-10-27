@@ -21,6 +21,29 @@
 			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6bba70', endColorstr='#6bba70',GradientType=0 );
 		}
 	}
+	#email_invite_list
+	{
+		.email_row
+		{
+			.complete_email
+			{
+				display: none;
+				height: 30px;
+				vertical-align: middle;
+				i
+				{
+					color: green;
+				}
+			}
+			&.completed_roommate
+			{
+				.complete_email
+				{
+					display: inline-block;
+				}
+			}
+		}
+	}
 	.comment
 	{
 		width: 70%;
