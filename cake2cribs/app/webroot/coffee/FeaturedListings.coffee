@@ -170,16 +170,17 @@ class A2Cribs.FeaturedListings
             success: (data) =>
                 @FeaturedPMIdToListingIdsMap = JSON.parse data
 
-                $("#featured_pm").click () =>
-                    for user_id, listing_ids of @FeaturedPMIdToListingIdsMap
-                        A2Cribs.Map.ToggleListingVisibility(listing_ids, @FeaturedPMListingsVisible)
-                        @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
-                        if @FeaturedPMListingsVisible
+                $(".featured_pm").click (event) =>
+                    user_id = $(event.delegateTarget).data "user-id"
+                    if @FeaturedPMIdToListingIdsMap[user_id]?
+                        listing_ids = @FeaturedPMIdToListingIdsMap[user_id]
+                        if A2Cribs.Map.ToggleListingVisibility(listing_ids, "PM_#{user_id}")
+                            A2Cribs.Map.IsCluster yes
+                        else
                             A2Cribs.Map.IsCluster no
+                            $(event.delegateTarget).addClass "active"
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
                                 pm_id: user_id
-                        else
-                            A2Cribs.Map.IsCluster yes
 
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []
@@ -285,7 +286,7 @@ class A2Cribs.FeaturedListings
                 <span class = 'rent price-text'><%= "$" + rent %></span>
                 <span class = 'divider'>|</span>
                 <span class = 'beds'><%= beds %> </span>
-                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    
+                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

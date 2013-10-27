@@ -170,7 +170,8 @@ ClickBubble class
       this.div.find(".twitter_share").click(function() {
         return A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip);
       });
-      return A2Cribs.FavoritesManager.setFavoriteButton(this.div.find(".favorite_listing"), listing_object.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
+      this.div.find(".favorite_listing").data("listing-id", listing_object.listing_id);
+      return A2Cribs.FavoritesManager.setFavoriteButton(this.div.find(".favorite_listing"), listing_object.listing_id);
     };
 
     ClickBubble.resolveDateRange = function(startDate) {
@@ -205,16 +206,17 @@ ClickBubble class
         mix_object = {};
       }
       mix_object["logged_in"] = (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0;
-      A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
       if (link != null) {
         return this.div.find(div_name).unbind("click").click(function() {
           var _ref1;
           if (((_ref1 = A2Cribs.Login) != null ? _ref1.logged_in : void 0) === true) {
+            A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
             return window.open("/listings/website/" + listing_id, '_blank');
           } else {
             $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
             return A2Cribs.MixPanel.Event("login required", {
-              "listing_id": listing_id
+              "listing_id": listing_id,
+              action: "go to realtor's website"
             });
           }
         });

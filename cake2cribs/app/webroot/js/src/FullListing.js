@@ -36,16 +36,17 @@
       });
       this.div.find("#contact_owner").click(function() {
         var _ref;
-        A2Cribs.MixPanel.Event("Contact PM", {
-          "listing_id": _this.listing_id
-        });
         if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
+          A2Cribs.MixPanel.Click({
+            listing_id: _this.listing_id
+          }, "full page contact user");
           _this.div.find("#contact_owner").hide();
           return _this.div.find("#contact_message").slideDown();
         } else {
           $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to contact the owner.");
           return A2Cribs.MixPanel.Event("login required", {
-            "listing_id": _this.listing_id
+            "listing_id": _this.listing_id,
+            action: "full page contact user"
           });
         }
       });

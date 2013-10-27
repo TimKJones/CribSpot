@@ -224,7 +224,6 @@
       $("#loader").show();
       basicData = this.LoadBasicData();
       this.BasicDataCached = new $.Deferred();
-      A2Cribs.FavoritesManager.LoadFavorites();
       A2Cribs.FeaturedListings.LoadFeaturedPMListings();
       basicData.done(this.LoadBasicDataCallback).always(function() {
         return $("#loader").hide();
@@ -246,14 +245,10 @@
     */
 
 
-    Map.ToggleListingVisibility = function(listing_ids, listingsCurrentlyVisible, button) {
-      var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
-      if (button == null) {
-        button = void 0;
-      }
-      if (button != null) {
-        $(button).toggleClass('active');
-      }
+    Map.ToggleListingVisibility = function(listing_ids, toggle_type) {
+      var all_listings, all_markers, is_current_toggle, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
+      $(".favorite_button").removeClass("active");
+      $(".featured_pm").removeClass("active");
       if ((_ref = A2Cribs.HoverBubble) != null) {
         _ref.Close();
       }
@@ -262,7 +257,8 @@
       }
       all_markers = A2Cribs.UserCache.Get('marker');
       all_listings = A2Cribs.UserCache.Get('listing');
-      if (!listingsCurrentlyVisible) {
+      is_current_toggle = this.CurrentToggle === toggle_type;
+      if (!is_current_toggle) {
         for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
           marker = all_markers[_i];
           marker.IsVisible(false);
@@ -278,6 +274,7 @@
           marker.IsVisible(true);
           listing.IsVisible(true);
         }
+        this.CurrentToggle = toggle_type;
       } else {
         for (_l = 0, _len3 = all_markers.length; _l < _len3; _l++) {
           marker = all_markers[_l];
@@ -289,8 +286,10 @@
           listing = all_listings[_m];
           listing.IsVisible(true);
         }
+        this.CurrentToggle = null;
       }
-      return this.Repaint();
+      this.Repaint();
+      return is_current_toggle;
     };
 
     /*
