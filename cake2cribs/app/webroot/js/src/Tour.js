@@ -255,7 +255,16 @@ Class is for scheduling and picking a time to tour
         data: {
           times: times,
           listing_id: listing_id,
-          notes: note
+          notes: note,
+          housemates: [
+            {
+              name: "Evan Dancer",
+              email: 'tjones4413@gmail.com'
+            }, {
+              name: "Mildrew Jones",
+              email: 'tim@cribspot.com'
+            }
+          ]
         },
         success: function(response) {
           return alert(response);

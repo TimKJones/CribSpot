@@ -222,6 +222,11 @@ class A2Cribs.Tour
 				times: times
 				listing_id: listing_id
 				notes: note
+				housemates:[
+					{name:"Evan Dancer", email: 'tjones4413@gmail.com'}
+					{name: "Mildrew Jones", email: 'tim@cribspot.com'}
+				]
+
 			success: (response) ->
 				alert response
 

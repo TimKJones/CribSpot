@@ -56,11 +56,18 @@ class ToursController extends AppController
 
 		/* Send email to scheduler@cribspot.com with all necessary information */
 		$this->_emailInformationToScheduler($listing_id, $response['success'], $note);
-		$response['success'] = '';
 
 		/* Send email to student saying their times are pending and one will be assigned. */
-		//$this->_emailStudentConfirmation($listing_id, $times, $note);
+		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
 
+		/* Handle invitations to housemates */
+		if (array_key_exists('housemates', $this->request->data)) {
+			$housemates = $this->request->data['housemates'];
+			//$this->
+			$this->_emailInvitationToHousemates($listing_id, $housemates);
+		}
+
+		$response['success'] = '';
 		$this->set('response', json_encode($response));
 	}
 
@@ -178,23 +185,67 @@ class ToursController extends AppController
 		if (!$this->Auth->loggedIn() || $listing_id === null || $times === null)
 			return;
 
-		$from = array('scheduler@cribspot.com' => 'Cribspot Tour Requests');
+		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
 		$to = $this->User->GetEmailFromId($this->Auth->User('id'));
 		if ($to === null)
 			return;
 
 		$title = $this->Listing->GetListingTitleFromId($listing_id);
-		$subject = 'New Tour Request: ID: ' . $id;
+		$subject = "Your Cribspot Tour Request for " . $title['name'] . " Has Been Received";
 		$template = 'tours/student_confirmation';
 		$sendAs = 'both';
 
-		$this->set('student_name', '');
-		$this->set('student_email', '');
-		$this->set('student_phone', '');
-		$this->set('student_university', '');
-		$this->set('student_year', '');
-		$this->set('listing_url', '');
-		$this->set('times_requested', '');
+		$loggedInUser = $this->_getLoggedInUserBasicInformation();
+		/* Convert data from numeric constants to their string values */
+		if (!empty($loggedInUser['registered_university']))
+			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
+
+		if (!empty($loggedInUser['student_year']))
+			$loggedInUser['student_year'] = $this->User->year($loggedInUser['student_year']);
+
+		/* Process tour request times */
+		$tourTimes = $times['Tour'];
+		/* 
+		Only take every other tour time, starting with the first. We added extra times at each half hour that 
+		we will ignore for this purpose
+		*/
+		$tourData = array();
+		$skipEveryOther = false;
+		foreach ($tourTimes as $tourTime){
+			$skipEveryOther = !$skipEveryOther;
+			if ($skipEveryOther)
+				continue;
+
+			$confirm_link = 'https://www.cribspot.com/Tours/ConfirmTour?id='.$tourTime['id'].'&code='.$tourTime['confirmation_code'];
+			$time = $tourTime['date'];
+			/* format the time in a more human readable form */
+			$month = date('F', strtotime($time));
+	        $day = date('j', strtotime($time));
+	        $year = date('Y', strtotime($time));
+
+	        $first_hour = $second_hour = null;
+	        $first_hour_24 = date('G', strtotime($time));
+	        $second_hour_24 = $first_hour_24 + 1;
+	        $first_hour_12 = date('g', strtotime($time));
+	        $second_hour_12 = ($first_hour_12 + 1) % 12;
+	        if ($second_hour_12 === 0)
+	        	$second_hour_12 = 12;
+	        $am_pm_options = array('AM', 'PM');
+	        $first_hour_am_pm = $am_pm_options[($first_hour_24 >= 12)];
+	        $second_hour_am_pm = $am_pm_options[($second_hour_24 >= 12)];
+
+	        $hourRange = $first_hour_12.' '.$first_hour_am_pm.' - '.$second_hour_12.' '.$second_hour_am_pm;
+	       	$time = $month.' '.$day.': '.$hourRange;
+			array_push($tourData, array(
+				'confirm_link' => $confirm_link,
+				'time' => $time
+			));
+		}
+
+		$this->set('student_data', $loggedInUser);
+		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
+		$this->set('tour_data', $tourData);
+		$this->set('building_name', $title['name']);
 		$this->set('notes', $notes);
 
 		$this->SendEmail($from, $to, $subject, $template, $sendAs);
@@ -202,20 +253,14 @@ class ToursController extends AppController
 
 	/*
 	Emails PM telling them about the tour request.
-	Includes link that will log them in and allow them to respond directly to message.
-	$parameters is of a different form based on whether the user invited friends via email or facebook.
-	$parameters['invite_type'] specifies either 'INVITE_FACEBOOK', 'INVITE_EMAIL', or 'INVITE_NONE'
-	$parameters['housemates'] is:
-	- if INVITE_FACEBOOK: = list of facebook_ids of housemates
-	- if INVITE_EMAIL: = list of names of housemates
-	- if INVITE_NONE: = null
+	$housemates is a list of objects of the form (name, email)
 	*/
-	private function _emailGenericRequestToPM($listing_id, $parameters, $notes=null)
+	private function _emailGenericRequestToPM($listing_id, $housemates, $notes=null)
 	{
 		if (!$this->Auth->loggedIn() || $listing_id === null || $times === null)
 			return;
 
-		$from = array('scheduler@cribspot.com' => 'Cribspot Tour Requests');
+		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
 		$to = $this->User->GetEmailFromId($this->Auth->User('id'));
 		if ($to === null)
 			return;
@@ -245,6 +290,41 @@ class ToursController extends AppController
 		$this->set('notes', $notes);
 
 		$this->SendEmail($from, $to, $subject, $template, $sendAs);
+	}
+
+	/*
+	Sends an invitation to $emails inviting them to join Cribspot and tour $listing_id
+	*/	
+	private function _emailInvitationToHousemates($listing_id, $housemates=null)
+	{
+		if (!$this->Auth->loggedIn() || $listing_id === null)
+			return;
+
+		$loggedInUser = $this->_getLoggedInUserBasicInformation();
+		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
+		foreach ($housemates as $housemate){
+			if (!array_key_exists('email', $housemate))
+				continue;
+
+			$to = $housemate['email'];
+			if ($to === null)
+				return;
+
+			$title = $this->Listing->GetListingTitleFromId($listing_id);
+			$subject = $loggedInUser['first_name'].' '.$loggedInUser['last_name'].' wants you to join their tour at '.
+				$title['name'];
+			$template = 'tours/housemate_invitation';
+			$sendAs = 'both';
+
+			$this->set('logged_in_first_name', $loggedInUser['first_name']);
+			$this->set('logged_in_last_name', $loggedInUser['last_name']);
+			$this->set('housemate_name', $housemate['name']);
+			$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
+			$this->set('building_name', $title['name']);
+
+			$this->SendEmail($from, $to, $subject, $template, $sendAs);
+		}
+
 	}
 
 	private function _getLoggedInUserBasicInformation()
