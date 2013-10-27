@@ -1,7 +1,7 @@
 <?php
 	/* Less files for style */
 	/* Eventually switch to css */
-	echo $this->Html->css('/less/header.less?v=70','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/header.less?v=71','stylesheet/less', array('inline' => false));
 
 	/* Datepicker and slider javascript */
 	// echo $this->Html->script('bootstrap-datepicker');
