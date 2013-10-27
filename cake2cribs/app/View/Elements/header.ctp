@@ -104,7 +104,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 							<div class="message_count personal_count"></div>
 						</div>
 						<div class="personal_button">
-							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility(this)"></a>
+							<a class="favorite_button" href="#" onclick="A2Cribs.FavoritesManager.ToggleFavoritesVisibility()"></a>
 							<div class="favorite_count personal_count"></div>
 						</div>
 					</li>

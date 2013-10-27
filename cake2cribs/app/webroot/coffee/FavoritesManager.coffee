@@ -95,16 +95,13 @@ class A2Cribs.FavoritesManager
 	Called when user clicks the heart icon in the header.
 	Toggles visibility of markers where user has favorited a listing.
 	###
-	@ToggleFavoritesVisibility: (button) ->
-		A2Cribs.Map.ToggleListingVisibility(A2Cribs.FavoritesManager.FavoritesListingIds, A2Cribs.FavoritesManager.FavoritesVisible, button)
-		A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible
-		# make only markers that are in user's favorites visible
-		if A2Cribs.FavoritesManager.FavoritesVisible
-			$("#FavoritesHeaderIcon").addClass("pressed")
-			A2Cribs.Map.IsCluster no
-		else
-			$("#FavoritesHeaderIcon").removeClass("pressed")
+	@ToggleFavoritesVisibility: =>
+		if A2Cribs.Map.ToggleListingVisibility(@FavoritesListingIds, "favorites")
 			A2Cribs.Map.IsCluster yes
+			$(".favorite_button").removeClass "active"
+		else
+			A2Cribs.Map.IsCluster no
+			$(".favorite_button").addClass "active"
 
 	@FavoritesVisibilityIsOn: () ->
 		return $("#FavoritesHeaderIcon").hasClass("pressed")

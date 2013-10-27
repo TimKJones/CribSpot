@@ -14,7 +14,7 @@ echo $this->Html->css('/less/featured-listings.less?v=3','stylesheet/less', arra
         <?php
         if (strpos($university['name'], 'Ann') !== false)
         { ?>
-            <div id='featured_pm'>
+            <div class='featured_pm' data-user-id="30">
                 <img src="/img/sidebar/cmb_logo.png">
                 <p>Most Awarded Property Manager in A2!</p>
                 <button>Click to View 20+ Locations</button>
@@ -25,7 +25,7 @@ echo $this->Html->css('/less/featured-listings.less?v=3','stylesheet/less', arra
         <!--<div id = 'list-info'>
             <span>Listings: </span>
         </div> -->
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'featured_pm' : '' ;?>'>
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'has_featured_pm' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>

@@ -170,16 +170,17 @@ class A2Cribs.FeaturedListings
             success: (data) =>
                 @FeaturedPMIdToListingIdsMap = JSON.parse data
 
-                $("#featured_pm").click () =>
-                    for user_id, listing_ids of @FeaturedPMIdToListingIdsMap
-                        A2Cribs.Map.ToggleListingVisibility(listing_ids, @FeaturedPMListingsVisible)
-                        @FeaturedPMListingsVisible = !@FeaturedPMListingsVisible
-                        if @FeaturedPMListingsVisible
+                $(".featured_pm").click (event) =>
+                    user_id = $(event.delegateTarget).data "user-id"
+                    if @FeaturedPMIdToListingIdsMap[user_id]?
+                        listing_ids = @FeaturedPMIdToListingIdsMap[user_id]
+                        if A2Cribs.Map.ToggleListingVisibility(listing_ids, "PM_#{user_id}")
+                            A2Cribs.Map.IsCluster yes
+                        else
                             A2Cribs.Map.IsCluster no
+                            $(event.delegateTarget).addClass "active"
                             A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
                                 pm_id: user_id
-                        else
-                            A2Cribs.Map.IsCluster yes
 
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []

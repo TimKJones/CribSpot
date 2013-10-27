@@ -323,7 +323,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         // /bottom: 0;
         // width: 100%;
         background: #f2f3f4;
-        &.featured_pm
+        &.has_featured_pm
         {
             bottom: 28px + @FEATURED_PM_HEIGHT;
         }
@@ -374,7 +374,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     }
 
-    #featured_pm
+    .featured_pm
     {
         position: absolute;
         bottom: 24px;
@@ -441,6 +441,13 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         &:hover
         {
             cursor:pointer;
+        }
+        &.active
+        {
+            button
+            {
+                background-color: #154c84;
+            }
         }
     }
 

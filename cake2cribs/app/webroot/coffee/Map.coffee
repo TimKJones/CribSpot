@@ -198,16 +198,18 @@ class A2Cribs.Map
 	When toggled on, only these listing_ids are visible.
 	When toggled off, all listings are visible 
 	###
-	@ToggleListingVisibility: (listing_ids, listingsCurrentlyVisible, button=undefined) ->
-		if button?
-			$(button).toggleClass 'active'
+	@ToggleListingVisibility: (listing_ids, toggle_type) ->
+		$(".favorite_button").removeClass "active"
+		$(".featured_pm").removeClass "active"
+
 		A2Cribs.HoverBubble?.Close()
 		A2Cribs.ClickBubble?.Close()
 
 		all_markers = A2Cribs.UserCache.Get 'marker'
 		all_listings = A2Cribs.UserCache.Get 'listing'
 
-		if !listingsCurrentlyVisible
+		is_current_toggle = @CurrentToggle is toggle_type
+		if not is_current_toggle
 			# make only markers that are in listing_ids visible
 
 			# Set visibility of ALL markers to false
@@ -223,6 +225,8 @@ class A2Cribs.Map
 				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
 				marker.IsVisible true
 				listing.IsVisible true
+			
+			@CurrentToggle = toggle_type
 		else
 			# make all markers visible
 			for marker in all_markers
@@ -231,7 +235,10 @@ class A2Cribs.Map
 			for listing in all_listings
 				listing.IsVisible true
 
+			@CurrentToggle = null
+
 		@Repaint()
+		return is_current_toggle
 
 
 	###

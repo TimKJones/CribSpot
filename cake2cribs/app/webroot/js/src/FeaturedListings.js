@@ -205,24 +205,21 @@
         type: "GET",
         success: function(data) {
           FeaturedListings.FeaturedPMIdToListingIdsMap = JSON.parse(data);
-          return $("#featured_pm").click(function() {
-            var listing_ids, user_id, _ref, _results;
-            _ref = FeaturedListings.FeaturedPMIdToListingIdsMap;
-            _results = [];
-            for (user_id in _ref) {
-              listing_ids = _ref[user_id];
-              A2Cribs.Map.ToggleListingVisibility(listing_ids, FeaturedListings.FeaturedPMListingsVisible);
-              FeaturedListings.FeaturedPMListingsVisible = !FeaturedListings.FeaturedPMListingsVisible;
-              if (FeaturedListings.FeaturedPMListingsVisible) {
-                A2Cribs.Map.IsCluster(false);
-                _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', {
-                  pm_id: user_id
-                }));
+          return $(".featured_pm").click(function(event) {
+            var listing_ids, user_id;
+            user_id = $(event.delegateTarget).data("user-id");
+            if (FeaturedListings.FeaturedPMIdToListingIdsMap[user_id] != null) {
+              listing_ids = FeaturedListings.FeaturedPMIdToListingIdsMap[user_id];
+              if (A2Cribs.Map.ToggleListingVisibility(listing_ids, "PM_" + user_id)) {
+                return A2Cribs.Map.IsCluster(true);
               } else {
-                _results.push(A2Cribs.Map.IsCluster(true));
+                A2Cribs.Map.IsCluster(false);
+                $(event.delegateTarget).addClass("active");
+                return A2Cribs.MixPanel.Event('Sidebar Featured PM', {
+                  pm_id: user_id
+                });
               }
             }
-            return _results;
           });
         },
         error: function() {

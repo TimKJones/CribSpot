@@ -138,15 +138,13 @@ Call functions using FavoritesManager.FunctionName()
     */
 
 
-    FavoritesManager.ToggleFavoritesVisibility = function(button) {
-      A2Cribs.Map.ToggleListingVisibility(A2Cribs.FavoritesManager.FavoritesListingIds, A2Cribs.FavoritesManager.FavoritesVisible, button);
-      A2Cribs.FavoritesManager.FavoritesVisible = !A2Cribs.FavoritesManager.FavoritesVisible;
-      if (A2Cribs.FavoritesManager.FavoritesVisible) {
-        $("#FavoritesHeaderIcon").addClass("pressed");
-        return A2Cribs.Map.IsCluster(false);
+    FavoritesManager.ToggleFavoritesVisibility = function() {
+      if (A2Cribs.Map.ToggleListingVisibility(FavoritesManager.FavoritesListingIds, "favorites")) {
+        A2Cribs.Map.IsCluster(true);
+        return $(".favorite_button").removeClass("active");
       } else {
-        $("#FavoritesHeaderIcon").removeClass("pressed");
-        return A2Cribs.Map.IsCluster(true);
+        A2Cribs.Map.IsCluster(false);
+        return $(".favorite_button").addClass("active");
       }
     };
 
@@ -242,6 +240,6 @@ Call functions using FavoritesManager.FunctionName()
 
     return FavoritesManager;
 
-  })();
+  }).call(this);
 
 }).call(this);
