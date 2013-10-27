@@ -43,14 +43,15 @@ class A2Cribs.ShareManager
 		A2Cribs.MixPanel.Event "Social share",
 			type: "facebook"
 			element: "header"
+			promotion: "puppies"
 
 		fbObj = 
 			method: 'feed'
 			link: "https://cribspot.com/"
 			picture: 'http://i.imgur.com/f75Gkt7.jpg'
-			name: "Cribspot raising the woof!"
+			name: "Cribspot's raising the woof!"
 			caption: "Looks like we're fresh out of puppies! Doggone it."
-			description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
+			description: "See Spot run. See Spot find his next off-campus dog house with Cribspot."
 
 		FB.ui fbObj
 
