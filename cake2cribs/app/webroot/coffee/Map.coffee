@@ -1,4 +1,7 @@
 class A2Cribs.Map
+
+	@CLUSTER_SIZE = 2
+
 	###
 	Add all markers in markerList to map
 	###
@@ -94,7 +97,7 @@ class A2Cribs.Map
 			maxZoom: 15
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
-		@GMarkerClusterer.ignoreHidden_ = true;
+		@GMarkerClusterer.setIgnoreHidden true
 		A2Cribs.ClickBubble.Init @GMap
 		A2Cribs.HoverBubble.Init @GMap
 		
@@ -175,11 +178,14 @@ class A2Cribs.Map
 	Use JQuery Deferred object to load all data asynchronously
 	###
 	@LoadAllMapData: () ->
+		$("#loader").show()
 		basicData = @LoadBasicData()
 		@BasicDataCached = new $.Deferred() # resolved after basic data has been added to cache
-		A2Cribs.FavoritesManager.LoadFavorites()
 		A2Cribs.FeaturedListings.LoadFeaturedPMListings()
-		$.when(basicData).then(@LoadBasicDataCallback)
+		basicData
+		.done(@LoadBasicDataCallback)
+		.always () ->
+			$("#loader").hide()
 		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE, basicData, @BasicDataCached)
 
 	@CenterMap:(latitude, longitude)->
@@ -191,16 +197,18 @@ class A2Cribs.Map
 	When toggled on, only these listing_ids are visible.
 	When toggled off, all listings are visible 
 	###
-	@ToggleListingVisibility: (listing_ids, listingsCurrentlyVisible, button=undefined) ->
-		if button?
-			$(button).toggleClass 'active'
+	@ToggleListingVisibility: (listing_ids, toggle_type) ->
+		$(".favorite_button").removeClass "active"
+		$(".featured_pm").removeClass "active"
+
 		A2Cribs.HoverBubble?.Close()
 		A2Cribs.ClickBubble?.Close()
 
 		all_markers = A2Cribs.UserCache.Get 'marker'
 		all_listings = A2Cribs.UserCache.Get 'listing'
 
-		if !listingsCurrentlyVisible
+		is_current_toggle = @CurrentToggle is toggle_type
+		if not is_current_toggle
 			# make only markers that are in listing_ids visible
 
 			# Set visibility of ALL markers to false
@@ -216,6 +224,8 @@ class A2Cribs.Map
 				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
 				marker.IsVisible true
 				listing.IsVisible true
+			
+			@CurrentToggle = toggle_type
 		else
 			# make all markers visible
 			for marker in all_markers
@@ -224,7 +234,29 @@ class A2Cribs.Map
 			for listing in all_listings
 				listing.IsVisible true
 
-		A2Cribs.Map.GMarkerClusterer.repaint()
+			@CurrentToggle = null
+
+		@Repaint()
+		return is_current_toggle
+
+
+	###
+	Checks/Sets if the map is in clusters
+	###
+	@IsCluster: (is_clustered = null) ->
+		if typeof(is_clustered) is "boolean"
+			if is_clustered is yes
+				@GMarkerClusterer.setMinimumClusterSize @CLUSTER_SIZE
+			else
+				@GMarkerClusterer.setMinimumClusterSize Number.MAX_VALUE
+			@Repaint()
+		return @GMarkerClusterer.getMinimumClusterSize() is @CLUSTER_SIZE
+
+	###
+	Repaints the map
+	###
+	@Repaint: ->
+		@GMarkerClusterer.repaint()
 
 
 	@style = [

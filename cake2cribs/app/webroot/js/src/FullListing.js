@@ -36,11 +36,17 @@
       });
       this.div.find("#contact_owner").click(function() {
         var _ref;
+        A2Cribs.MixPanel.Event("Contact PM", {
+          "listing_id": _this.listing_id
+        });
         if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
           _this.div.find("#contact_owner").hide();
           return _this.div.find("#contact_message").slideDown();
         } else {
-          return $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to contact the owner.");
+          $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to contact the owner.");
+          return A2Cribs.MixPanel.Event("login required", {
+            "listing_id": _this.listing_id
+          });
         }
       });
       this.div.find("#message_cancel").click(function() {
@@ -50,6 +56,7 @@
       });
       return this.div.find("#message_send").click(function() {
         $("#message_send").button("loading");
+        $("#loader").show();
         return $.ajax({
           url: myBaseUrl + "Messages/messageSublet",
           type: "POST",
@@ -63,6 +70,9 @@
             if (data.success) {
               $("#message_area").val("");
               A2Cribs.UIManager.Success("Message Sent!");
+              A2Cribs.MixPanel.Event("message sent", {
+                "listing_id": _this.listing_id
+              });
             } else {
               if (data.message != null) {
                 A2Cribs.UIManager.Error(data.message);
@@ -71,6 +81,9 @@
               }
             }
             return $("#message_send").button("reset");
+          },
+          complete: function() {
+            return $("#loader").hide();
           }
         });
       });

@@ -157,8 +157,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<div class="span12 owner_info">
 						<?
 						$pic_url = "/img/head_large.jpg";
-						if(array_key_exists('facebook_userid', $listing['User']) && $listing['User']['facebook_userid'] !== null)
+						if (array_key_exists('profile_img', $listing['User']) && !empty($listing['User']['profile_img']))
+						{
+							$pic_url = "/" . $listing['User']['profile_img'];
+						}
+						else if(array_key_exists('facebook_userid', $listing['User']) && !empty($listing['User']['facebook_userid']))
+						{
 							$pic_url = "https://graph.facebook.com/".$listing['User']['facebook_userid']."/picture?width=80&height=80";
+						}
 						?>
 						<img src="<?= $pic_url ?>" class="pull-left">
 						<div class="owner"><?= $listing["User"]["company_name"] ?></div>
@@ -180,7 +186,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<? } ?>
 					<?php if ($email_exists) { ?>
 					<div class="row-fluid">
-						<textarea id="message_area" class="span12" rows="3"></textarea>
+						<textarea id="message_area" class="span12" rows="4">Hello, I found your listing on Cribspot and would like to find out more about this property. Please let me know when you are available for a viewing. Thank you.</textarea>
 					</div>
 					<div class="row-fluid">
 						<button id="message_cancel" class="btn span5">Cancel</button>

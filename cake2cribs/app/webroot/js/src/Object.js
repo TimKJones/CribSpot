@@ -14,6 +14,17 @@
       }
     }
 
+    Object.prototype.Update = function(a2_object) {
+      var key, value;
+      for (key in a2_object) {
+        value = a2_object[key];
+        if (value != null) {
+          this[key] = value;
+        }
+      }
+      return this;
+    };
+
     Object.prototype.GetId = function(id) {
       return parseInt(this["" + this.class_name + "_id"], 10);
     };

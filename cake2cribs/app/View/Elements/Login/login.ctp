@@ -29,6 +29,9 @@
 		<div class="row-fluid">
 			<p>Don't have an account? <a class="show_signup_modal" href="#">Sign up!</a></p>
 		</div>
+		<div class="row-fluid">
+			<p><a href="/users/resetpassword">Forgot your password?</a></p>
+		</div>
 	</div>
 </div>
 

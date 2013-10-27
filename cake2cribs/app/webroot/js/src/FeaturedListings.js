@@ -205,23 +205,21 @@
         type: "GET",
         success: function(data) {
           FeaturedListings.FeaturedPMIdToListingIdsMap = JSON.parse(data);
-          return $("#featured_pm").click(function() {
-            var listing_ids, user_id, _ref, _results;
-            _ref = FeaturedListings.FeaturedPMIdToListingIdsMap;
-            _results = [];
-            for (user_id in _ref) {
-              listing_ids = _ref[user_id];
-              A2Cribs.Map.ToggleListingVisibility(listing_ids, FeaturedListings.FeaturedPMListingsVisible);
-              FeaturedListings.FeaturedPMListingsVisible = !FeaturedListings.FeaturedPMListingsVisible;
-              if (FeaturedListings.FeaturedPMListingsVisible) {
-                _results.push(A2Cribs.MixPanel.Event('Sidebar Featured PM', {
-                  user_id: user_id
-                }));
+          return $(".featured_pm").click(function(event) {
+            var listing_ids, user_id;
+            user_id = $(event.delegateTarget).data("user-id");
+            if (FeaturedListings.FeaturedPMIdToListingIdsMap[user_id] != null) {
+              listing_ids = FeaturedListings.FeaturedPMIdToListingIdsMap[user_id];
+              if (A2Cribs.Map.ToggleListingVisibility(listing_ids, "PM_" + user_id)) {
+                return A2Cribs.Map.IsCluster(true);
               } else {
-                _results.push(void 0);
+                A2Cribs.Map.IsCluster(false);
+                $(event.delegateTarget).addClass("active");
+                return A2Cribs.MixPanel.Event('Sidebar Featured PM', {
+                  pm_id: user_id
+                });
               }
             }
-            return _results;
           });
         },
         error: function() {
@@ -329,7 +327,7 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 

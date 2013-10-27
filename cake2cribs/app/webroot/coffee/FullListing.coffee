@@ -25,11 +25,15 @@ class A2Cribs.FullListing
 				@div.find("#main_photo").css "background-image", next_photo.css "background-image"
 
 		@div.find("#contact_owner").click () =>
+			A2Cribs.MixPanel.Event "Contact PM",
+						"listing_id": @listing_id
 			if A2Cribs.Login?.logged_in is yes
 				@div.find("#contact_owner").hide()
 				@div.find("#contact_message").slideDown()
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to contact the owner."
+				A2Cribs.MixPanel.Event "login required",
+						"listing_id": @listing_id
 
 		@div.find("#message_cancel").click () =>
 			@div.find("#contact_message").slideUp 'fast', () =>
@@ -37,6 +41,7 @@ class A2Cribs.FullListing
 
 		@div.find("#message_send").click () =>
 			$("#message_send").button("loading")
+			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "Messages/messageSublet"
 				type: "POST"
@@ -49,12 +54,17 @@ class A2Cribs.FullListing
 					if data.success
 						$("#message_area").val ""
 						A2Cribs.UIManager.Success "Message Sent!"
+						A2Cribs.MixPanel.Event "message sent",
+							"listing_id": @listing_id
 					else
 						if data.message?
 							A2Cribs.UIManager.Error data.message
 						else
 							A2Cribs.UIManager.Error "Message Failed! Please Try Again."
 					$("#message_send").button "reset"
+
+				complete: ->
+					$("#loader").hide()
 
 	@Directive: (directive) ->
 		if directive.contact_owner?

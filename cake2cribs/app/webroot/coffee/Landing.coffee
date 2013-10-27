@@ -25,6 +25,10 @@ class A2Cribs.Landing
 
 		$(".school_logo").css "background-image", "url(#{university['University']['logo_path']})"
 
+		$(".founder_photo").attr "src", university.University.founder_image
+
+		$(".founder_title").text "#{university['University']['name']} Founder"
+
 
 	@Init: (@locations) ->
 		$(window).scroll () ->

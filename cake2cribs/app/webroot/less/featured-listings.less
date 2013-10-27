@@ -262,11 +262,17 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         background: #FFF;
         border-bottom: 1px solid rgb(206, 206, 206);
         #name{
-            font-size: 18px;
+            font-size: 16px;
             padding-left: 10px;
             color: #3f3f3f;
-            font-family: ReklameScriptRegularRegular, ReklameScriptMediumRegular, Serif;
+            font-family: ReklameScriptMediumRegular, Serif;
+            letter-spacing: 1px;
 
+        }
+        .fb-like
+        {
+            height: 20px;
+            padding: 5px;
         }
         
         #like-us{
@@ -317,7 +323,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         // /bottom: 0;
         // width: 100%;
         background: #f2f3f4;
-        &.featured_pm
+        &.has_featured_pm
         {
             bottom: 28px + @FEATURED_PM_HEIGHT;
         }
@@ -368,7 +374,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     }
 
-    #featured_pm
+    .featured_pm
     {
         position: absolute;
         bottom: 24px;
@@ -435,6 +441,13 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         &:hover
         {
             cursor:pointer;
+        }
+        &.active
+        {
+            button
+            {
+                background-color: #154c84;
+            }
         }
     }
 
