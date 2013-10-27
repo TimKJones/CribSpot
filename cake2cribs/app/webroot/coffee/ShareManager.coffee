@@ -53,7 +53,12 @@ class A2Cribs.ShareManager
 			caption: "Looks like we're fresh out of puppies! Doggone it."
 			description: "See Spot run. See Spot find his next off-campus dog house with Cribspot."
 
-		FB.ui fbObj
+		FB.ui fbObj, (response) ->
+			if response?.post_id
+				A2Cribs.MixPanel.Event "Social share complete",
+					type: "facebook"
+					element: "header"
+					promotion: "puppies"
 
 
 	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->
