@@ -26,11 +26,13 @@ class ListingsController extends AppController {
 	public function view($listing_id = null, $address = null)
 	{
 		if ($listing_id == null)
+		{
 			$flash_message['method'] = "Error";
 			$flash_message['message'] = "Sorry - That listing no longer exists!";
 			$json = json_encode($flash_message);
 			$this->Cookie->write('flash-message', $json);
 			$this->redirect(array('controller' => 'landing', 'action' => 'index'), 301);
+		}
 
 		$AuthUser = null;
 		if ($this->Auth->User())
@@ -41,11 +43,13 @@ class ListingsController extends AppController {
 		$listing = $this->Listing->GetListing($listing_id);
 		
 		if (!array_key_exists(0, $listing) || $listing === null)
+		{
 			$flash_message['method'] = "Error";
 			$flash_message['message'] = "Sorry - That listing no longer exists!";
 			$json = json_encode($flash_message);
 			$this->Cookie->write('flash-message', $json);
 			$this->redirect(array('controller' => 'landing', 'action' => 'index'), 301);
+		}
 		
 		$listing = $listing[0];
 		
