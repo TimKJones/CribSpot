@@ -25,15 +25,15 @@ class A2Cribs.FullListing
 				@div.find("#main_photo").css "background-image", next_photo.css "background-image"
 
 		@div.find("#contact_owner").click () =>
-			A2Cribs.MixPanel.Event "Contact PM",
-						"listing_id": @listing_id
 			if A2Cribs.Login?.logged_in is yes
+				A2Cribs.MixPanel.Click { listing_id: @listing_id }, "full page contact user"
 				@div.find("#contact_owner").hide()
 				@div.find("#contact_message").slideDown()
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to contact the owner."
 				A2Cribs.MixPanel.Event "login required",
 						"listing_id": @listing_id
+						action: "full page contact user"
 
 		@div.find("#message_cancel").click () =>
 			@div.find("#contact_message").slideUp 'fast', () =>

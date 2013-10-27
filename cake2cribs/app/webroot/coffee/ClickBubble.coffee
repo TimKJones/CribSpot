@@ -157,16 +157,17 @@ class A2Cribs.ClickBubble
 		if not mix_object?
 			mix_object = {}
 		mix_object["logged_in"] = A2Cribs.Login?.logged_in
-		A2Cribs.MixPanel.Click mix_object, "go to realtor's website"
 
 		if link?
 			@div.find(div_name).unbind("click").click () =>
 				if A2Cribs.Login?.logged_in is yes
+					A2Cribs.MixPanel.Click mix_object, "go to realtor's website"
 					window.open "/listings/website/#{listing_id}", '_blank'
 				else 
 					$("#signup_modal").modal("show").find(".signup_message").text "Please signup to view this website"
 					A2Cribs.MixPanel.Event "login required",
 						"listing_id": listing_id
+						action: "go to realtor's website"
 		else
 			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
 
