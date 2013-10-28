@@ -137,7 +137,7 @@ class ToursController extends AppController
 	private function _emailInformationToScheduler($listing_id, $times, $notes=null)
 	{
 		$from = 'donotreply@cribspot.com';
-		$to = 'tim@cribspot.com';
+		$to = 'scheduler@cribspot.com';
 		$id = 1;	
 		$subject = 'New Tour Request: ID: ' . $id;
 		$template = 'tours/tour_information_for_scheduler';
