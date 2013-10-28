@@ -729,7 +729,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
         $code = substr($random, strlen($random)-5);
         $text = "Here is your Cribspot verification code: " . $code;
         $response = $this->Twilio->sms(Configure::read('TWILIO_PHONE_NUMBER'), $phone, $text);
-
+CakeLog::write('twiliodebug', print_r($response, true));
         /* Store this code to be able to verify later */
         $this->User->UpdatePhoneFields($phone, $code, false, $this->Auth->User('id'));
 
@@ -751,6 +751,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
 
         $code = $this->request->data['code'];
         $response = $this->User->CheckPhoneCodeValidityAndConfirm($code, $this->Auth->User('id'));
+        CakeLog::write('fuckit', print_r($response, true));
         $this->set("response", json_encode($response));
     }   
 

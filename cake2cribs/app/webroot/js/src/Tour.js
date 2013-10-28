@@ -177,15 +177,18 @@ Class is for scheduling and picking a time to tour
           A2Cribs.UIManager.Error("Please enter a valid phone number");
           return;
         }
-        $.ajax({
-          url: myBaseUrl + "Users/SendPhoneVerificationCode",
-          type: 'POST',
-          data: {
-            phone: phone
-          },
-          success: function() {},
-          error: function() {}
-        });
+        /*
+        			$.ajax
+        				url: myBaseUrl + "Users/SendPhoneVerificationCode"
+        				type: 'POST'
+        				data: 
+        					phone: phone
+        				success: ->
+        					# Message was sent
+        				error: ->
+        					#Failed to send message
+        */
+
         return $("#verify_phone").modal('show');
       });
       $("#confirm_validation_code").click(function() {
@@ -203,6 +206,7 @@ Class is for scheduling and picking a time to tour
             code: code
           },
           success: function(response) {
+            response = JSON.parse(response);
             if (response.error != null) {
               return A2Cribs.UIManager.Error(response.error);
             } else {
