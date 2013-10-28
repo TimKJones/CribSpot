@@ -8,6 +8,10 @@ class TourRequest extends AppModel {
 			'className' => 'Tour',
 			'foreignKey' => 'tour_request_id'
 		),
+		'TourInvitation' => array(
+			'className' => 'TourRequest',
+			'foreignKey' => 'tour_request_id'
+		),
 	);
 
 	public $validate = array(
@@ -41,7 +45,7 @@ class TourRequest extends AppModel {
 			);
 			array_push($tourRequest['Tour'], $newTime);
 		}
-
+CakeLog::write('tourrequest', print_r($tourRequest, true));
 		if (!$this->saveAll($tourRequest)) {
 			$error = null;
 			$error['formattedTimes'] = $formattedTimes;

@@ -5,11 +5,7 @@ class User extends AppModel {
 		'Listing' => array(
 			'className' => 'Listing',
 			'foreignKey' => 'user_id'
-		),
-		'UsersInTours' => array(
-			'className' => 'UsersInTours',
-			'foreignKey' => 'user_id'
-		),
+		)
 	);
 	public $belongsTo = array('University');
 	public $actsAs = array('Containable');

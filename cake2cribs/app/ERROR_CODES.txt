@@ -147,3 +147,5 @@
 - Users/CompleteAjaxFacebookRegistration
 70
 - User->Save()
+71
+- TourInvitation->InviteHousemates

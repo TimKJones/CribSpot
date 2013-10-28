@@ -80,6 +80,7 @@ class Listing extends AppModel {
 	*/
 	public function SaveListing($listing, $user_id=null)
 	{
+		CakeLog::write('savelisting', print_r($listing, true));
 		if ($user_id != null)
 			$listing['Listing']['user_id'] = $user_id;
 

@@ -3,12 +3,6 @@
 class Tour extends AppModel {
 	public $name = 'Tour';
 	public $primaryKey = 'id';
-	/*public $hasMany = array(
-		'UsersInTours' => array(
-			'className' => 'UsersInTours',
-			'foreignKey' => 'tour_id'
-		),
-	);*/
 	public $belongsTo = array(
 		'TourRequest' => array(
             'className'    => 'TourRequest',
@@ -66,6 +60,24 @@ class Tour extends AppModel {
 		$this->saveField('confirmed', true);
 
 		return true;
+	}
+
+	/*
+	Returns the tour object with the given id
+	*/
+	public function GetTourRequestFromTourId($tour_id)
+	{
+		$tour = $this->find('first', array(
+			'conditions' => array('Tour.id' => $tour_id)
+		));
+
+		if (array_key_exists('Tour', $tour))
+			return array(
+				'tour_request_id' => $tour['Tour']['tour_request_id'],
+				'listing_id' => $tour['TourRequest']['listing_id'],
+				'user_id' => $tour['TourRequest']['user_id'],
+				'tour' => $tour['Tour']
+			);
 	}
 
 /* ---------------------------------- private ----------------------------------- */

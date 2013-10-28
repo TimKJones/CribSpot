@@ -2,7 +2,7 @@
 class ToursController extends AppController 
 { 
 	public $helpers = array('Html');
-	public $uses = array('User', 'Listing', 'Tour', 'UsersInTours', 'TourRequest', 'University');
+	public $uses = array('User', 'Listing', 'TourInvitation', 'Tour', 'UsersInTours', 'TourRequest', 'University');
 	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter()
@@ -61,13 +61,25 @@ class ToursController extends AppController
 		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
 
 		/* Handle invitations to housemates */
+		$invitationsSuccess = null;
 		if (array_key_exists('housemates', $this->request->data)) {
 			$housemates = $this->request->data['housemates'];
-			//$this->
+			$tour_request = null;
+			CakeLog::write('tourrequestid', print_r($response, true));
+			if (array_key_exists('TourRequest', $response['success']))
+				$tour_request = $response['success']['TourRequest'];
+
+			App::import('model', 'TourInvitation');
+			$TourInvitation = new TourInvitation();
+			$invitationsSuccess = $TourInvitation->InviteHousematesToTour($this->Auth->User('id'), $housemates, $tour_request);
 			$this->_emailInvitationToHousemates($listing_id, $housemates);
 		}
 
-		$response['success'] = '';
+		if (array_key_exists('error', $invitationsSuccess))
+			$response = $invitationsSuccess;
+		else
+			$response['success'] = '';
+
 		$this->set('response', json_encode($response));
 	}
 
@@ -103,6 +115,10 @@ class ToursController extends AppController
 
         /* Confirm the tour specified, if the credentials are correct */
         $success = $this->Tour->ConfirmTour($id, $code);
+
+        /* Email student and his invited housemates */
+        $this->_emailStudentAfterTourConfirmed($id);
+
         if (!$success){
             $this->redirect('/');
         }
@@ -325,6 +341,59 @@ class ToursController extends AppController
 			$this->SendEmail($from, $to, $subject, $template, $sendAs);
 		}
 
+	}
+
+	/*
+	Emails student and their housemates that a time has been confirmed for $tour_id
+	*/	
+	private function _emailStudentAfterTourConfirmed($tour_id)
+	{
+		/* Get housemate data from previous invitations */
+		$tour_request = $this->Tour->GetTourRequestFromTourId($tour_id);
+		$recipients = $this->TourInvitation->GetPeopleForConfirmationEmail($tour_request['tour_request_id']);
+
+		/* add the user that initiated the request */
+		CakeLog::write('why', print_r($tour_request, true));
+		$tour_initiator = $this->User->get($tour_request['user_id']);
+		CakeLog::write('initatior', print_r($tour_initiator, true));
+		array_push($recipients, array(
+			'name' => $tour_initiator['User']['first_name'].' '.$tour_initiator['User']['last_name'],
+			'email' => $tour_initiator['User']['email']
+		));
+		$title = $this->Listing->GetListingTitleFromId($tour_request['listing_id']);
+		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
+		foreach ($recipients as $recipient){
+			if (!array_key_exists('email', $recipient))
+				continue;
+
+			$to = $recipient['email'];
+			if (empty($to))
+				return;
+
+			$title = $this->Listing->GetListingTitleFromId($tour_request['listing_id']);
+			/* Format tour time */
+			$time = $tour_request['tour']['date'];
+			/* format the time in a more human readable form */
+			$month = date('F', strtotime($time));
+	        $day = date('j', strtotime($time));
+	        $year = date('Y', strtotime($time));
+	        $hour_24 = date('G', strtotime($time));
+	        $hour_12 = date('g', strtotime($time));
+	        $minutes = date('i', strtotime($time));
+	        $am_pm_options = array('AM', 'PM');
+	        $am_pm = $am_pm_options[($hour_24 >= 12)];
+	       	$time = $month.' '.$day.': '.$hour_12.':'.$minutes.$am_pm;
+			$subject = "Your tour at ".$title['name']." has been confirmed";
+			$template = 'tours/tour_time_confirmed';
+			$sendAs = 'both';
+
+			$this->set('name', $recipient['name']);
+			$this->set('tour_time', $time);
+			$this->set('listing_url', 'https://www.cribspot.com/listing/'.$tour_request['listing_id']);
+			$this->set('building_name', $title['name']);
+
+			$this->SendEmail($from, $to, $subject, $template, $sendAs);
+		}
 	}
 
 	private function _getLoggedInUserBasicInformation()

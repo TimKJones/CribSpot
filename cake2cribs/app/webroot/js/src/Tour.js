@@ -259,7 +259,7 @@ Class is for scheduling and picking a time to tour
           housemates: [
             {
               name: "Evan Dancer",
-              email: 'tjones4413@gmail.com'
+              email: 'evan@cribspot.com'
             }, {
               name: "Mildrew Jones",
               email: 'tim@cribspot.com'
