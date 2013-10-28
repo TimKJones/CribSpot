@@ -227,7 +227,7 @@ class Tour
 					return
 				$(".schedule_page").hide()
 				$("#schedule_completed").show()
-				A2Cribs.UIManager.Success "Your tour times has been received"
+				A2Cribs.UIManager.Success "Your tour times have been received"
 				A2Cribs.MixPanel.Event "Finished Tour",
 					success: true
 			.fail ->

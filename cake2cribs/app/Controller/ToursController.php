@@ -327,7 +327,7 @@ class ToursController extends AppController
 				return;
 
 			$title = $this->Listing->GetListingTitleFromId($listing_id);
-			$subject = $loggedInUser['first_name'].' '.$loggedInUser['last_name'].' wants you to join their tour at '.
+			$subject = $loggedInUser['first_name'].' '.$loggedInUser['last_name'].' wants you to join a tour at '.
 				$title['name'];
 			$template = 'tours/housemate_invitation';
 			$sendAs = 'both';
