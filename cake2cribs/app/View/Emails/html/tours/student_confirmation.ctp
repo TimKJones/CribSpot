@@ -602,7 +602,7 @@
                     <td valign="top" class="mcnTextContent" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%;text-align: left;">
                         <strong>CRIBSPOT, BUILT AND UPDATED BY STUDENTS JUST LIKE YOU</strong><br>
 <span style="color: #A9A9A9;">We're students trying to make the rental search a little less stressful.<br>
-808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;<a href="http://www.cribspot.com/test" target="_self" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-weight: normal;text-decoration: underline;">Unsubscribe from Cribspot</a>&nbsp;</span>
+808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;&nbsp;</span>
                     </td>
                 </tr>
             </tbody></table>
