@@ -633,20 +633,6 @@ Best,</span></span></span><br>
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" id="canspamBarWrapper" style="background-color:#FFFFFF; border-top:1px solid #E5E5E5;">
                     <tr>
                         <td align="center" valign="top" style="padding-top:20px; padding-bottom:20px;">
-                            <table border="0" cellpadding="0" cellspacing="0" id="canspamBar">
-                                <tr>
-                                    <td align="center" valign="top" style="color:#606060; font-family:Helvetica, Arial, sans-serif; font-size:11px; line-height:150%; padding-right:20px; padding-bottom:5px; padding-left:20px; text-align:center;">
-                                        This email was sent to <a href="*|EMAIL|*" target="_blank" style="color:#404040 !important;">*|EMAIL|*</a>
-                                        <br />
-                                        <a href="*|ABOUT_LIST|*" target="_blank" style="color:#404040 !important;"><em>why did I get this?</em></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="*|UNSUB|*" style="color:#404040 !important;">unsubscribe from this list</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="*|UPDATE_PROFILE|*" style="color:#404040 !important;">update subscription preferences</a>
-                                        <br />
-                                        *|LIST:ADDRESSLINE|*
-                                        <br />
-                                        <br />
-                                        *|REWARDS|*
-                                    </td>
-                                </tr>
-                            </table>
                         </td>
                     </tr>
                 </table>
