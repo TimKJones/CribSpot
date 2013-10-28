@@ -189,7 +189,7 @@ Class is for scheduling and picking a time to tour
       $("#confirm_validation_code").click(function() {
         var code;
         code = $("#verification_code").val();
-        if ((code != null ? code.length : void 0) !== 5 || isNaN(code)) {
+        if ((code != null ? code.length : void 0) !== 5) {
           A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Invalid Code!");
           return false;
@@ -200,10 +200,15 @@ Class is for scheduling and picking a time to tour
           data: {
             code: code
           },
-          success: function() {
-            $("#verify_phone").modal('hide');
-            $("#phone_verified").val($("#verify_phone_number").val());
-            return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
+          success: function(response) {
+            if (response.error != null) {
+              return A2Cribs.UIManager.Error(response.error);
+            } else {
+              A2Cribs.UIManager.Success("Phone Number Verified!");
+              $("#verify_phone").modal('hide');
+              $("#phone_verified").val($("#verify_phone_number").val());
+              return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
+            }
           },
           error: function() {
             A2Cribs.UIManager.CloseLogs();

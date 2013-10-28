@@ -104,6 +104,8 @@ class User extends AppModel {
 				'message' => 'Someone already registered with that phone number. Try again.'
 				)*/
 			),
+		'phone_verified' => 'boolean',
+		'phone_confirmation_code' => 'alphaNumeric',
 		'group_id' => 'alphaNumeric', 
 		'university_id' => array(
 			'isNumber' => array(
@@ -700,6 +702,58 @@ class User extends AppModel {
 	public function GetYears()
 	{
 		return $this->year(AppModel::GET_ALL_OF_THIS_TYPE);
+	}
+
+	/*
+	Updates a user's phone credentials before or after confirmation text sent to them.
+	*/
+	public function UpdatePhoneFields($phone, $code, $confirmed, $user_id)
+	{
+		$this->id = $user_id;
+		$success = $this->save(array(
+			'User'=>array(
+				'phone' => $phone,
+				'phone_confirmation_code' => $code,
+				'confirmed' => 0
+			)
+		));
+		if (!$success){
+			$error = null;
+			$error['phone'] = $phone;
+			$error['code'] = $code;
+			$error['confirmed'] = $confirmed;
+			$error['validationErrors'] = $this->validationErrors;
+			$this->LogError($user_id, 72, $error);
+			return array("error" => array('validation' => $this->validationErrors,
+				'message' => 'Looks like we had an issue verifying your phone number. If the issue continues, ' .
+				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
+					'at help@cribspot.com. Reference error code 72.'));
+		}
+
+		return array('success' => '');
+	}
+
+	/*
+	Makes sure $code is the correct phone_confirmation_code for $user_id.
+	If $code is correct, set phone_verified to 1.
+	If $code is incorrect, return error message.
+	*/	
+	public function CheckPhoneCodeValidityAndConfirm($code, $user_id)
+	{
+		$this->id = $user_id;
+		$correct_code = $this->read('phone_confirmation_code');
+		if ($correct_code === null)
+			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
+
+		$correct_code = $correct_code['User']['phone_confirmation_code'];
+		if ($code === $correct_code){
+			/* Set user's phone as verified */
+			$this->saveField('phone_verified', 1);
+			return array('success' => '');
+		}
+		else{
+			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
+		}
 	}
 
 	/*

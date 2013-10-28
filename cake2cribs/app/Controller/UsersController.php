@@ -715,32 +715,44 @@ CakeLog::write('userdata', print_r($this->request->data, true));
     Save this code in the database to check against later.
     Save this user's phone number as unverified.
     */
-    public function SendPhoneVerificationCode($phone_number)
+    public function SendPhoneVerificationCode()
     {
-        $this->Twilio->sms('4154634484', '4158904484', '12345');
-        $this->set("response", "");
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
+        $this->layout = 'ajax';
+        if (!array_key_exists('phone', $this->request->data))
+            return;
+
+        $phone = $this->request->data['phone'];
+        $random = uniqid();
+        $code = substr($random, strlen($random)-5);
+        $text = "Here is your Cribspot verification code: " . $code;
+        $response = $this->Twilio->sms(Configure::read('TWILIO_PHONE_NUMBER'), $phone, $text);
+
+        /* Store this code to be able to verify later */
+        $this->User->UpdatePhoneFields($phone, $code, false, $this->Auth->User('id'));
+
+        $this->set("response", json_encode(array('success' => '')));
     }
 
     /*
     Verify that $code is correct code for this user
     Set their phone number as verified in DB
     */
-    public function ConfirmPhoneVerificationCode($code)
+    public function ConfirmPhoneVerificationCode()
     {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
 
-    }
+        $this->layout = 'ajax';
+        if (!array_key_exists('code', $this->request->data))
+            return;
 
-    /*
-    Sends an invitation email to the emails in $people about $listing_id and Cribspot in general.
-    $people is an array of objects in the form {name: "Tim Jones", email:"tim@cribspot.com"}
-    $invite_type specifies the type of invitation this is, and $parameters is different based on this type.
-    For type 0 (tour invitation), $parameters is of the form {listing_id:5}
-    */
-    public function InviteFriends($people, $invite_type, $parameters)
-    {  
-         
-    }
-
+        $code = $this->request->data['code'];
+        $response = $this->User->CheckPhoneCodeValidityAndConfirm($code, $this->Auth->User('id'));
+        $this->set("response", json_encode($response));
+    }   
 
 /* ------------------------------------ private functions -------------------------------------- */
 
