@@ -375,6 +375,7 @@ class ToursController extends AppController
 			$time = $tour_request['tour']['date'];
 			/* format the time in a more human readable form */
 			$month = date('F', strtotime($time));
+			$x = 5;
 	        $day = date('j', strtotime($time));
 	        $year = date('Y', strtotime($time));
 	        $hour_24 = date('G', strtotime($time));
