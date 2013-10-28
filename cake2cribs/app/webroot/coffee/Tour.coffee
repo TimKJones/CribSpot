@@ -76,7 +76,7 @@ class A2Cribs.Tour
 				.addClass("icon-plus-sign")
 				$(event.delegateTarget).removeClass("selected")
 				offset_date = parseInt $(event.delegateTarget).attr("data-dateoffset"), 10
-				@AddTimeSlot @current_offset + offset_date, $(event.delegateTarget).attr("data-timeslot")
+				@DeleteTimeSlot @current_offset + offset_date, $(event.delegateTarget).attr("data-timeslot")
 			else
 				filler.show().find("i")
 				.removeClass("icon-plus-sign")
@@ -105,6 +105,7 @@ class A2Cribs.Tour
 				$("#calendar_picker").hide()
 				$("#schedule_info").show()
 			else
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please select at least three time slots that work for you!"
 
 	###
@@ -119,6 +120,10 @@ class A2Cribs.Tour
 					return 
 			$(event.currentTarget.parentElement).removeClass "completed_roommate"
 
+		$("#back_to_timeslots").click ->
+			$("#schedule_info").hide()
+			$("#calendar_picker").show()
+
 		$("#add_roommate_email").click =>
 			row_count = $(".email_row").last().data "email-row"
 			email_row = $("<div data-email-row='#{row_count + 1}' class='row-fluid email_row'>
@@ -128,11 +133,18 @@ class A2Cribs.Tour
 			</div>")
 			$("#email_invite_list").append email_row
 
+		$("#verify_phone_number").keyup =>
+			if $("#verify_phone_number").val() is $("#phone_verified").val()
+				$("#verify_phone_btn").addClass("verified").text("Verified").prop "disabled", true
+			else
+				$("#verify_phone_btn").removeClass("verified").text("Click to Verify").prop "disabled", false
+
 		# Validate phone number
 		$("#verify_phone_btn").click =>
 			# if phone number looks legit
 			phone = $("#verify_phone_number").val()
 			if phone?.length isnt 10 or isNaN phone
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please enter a valid phone number"
 				return
 
@@ -153,9 +165,11 @@ class A2Cribs.Tour
 		$("#confirm_validation_code").click =>
 			# if code looks legit
 			code = $("#verification_code").val()
+
 			if code?.length isnt 5
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Invalid Code!"
-				return
+				return false
 
 			# Send the text
 			$.ajax
@@ -163,13 +177,18 @@ class A2Cribs.Tour
 				type: 'POST'
 				data: 
 					code: code
+
 				success: (response) ->
 					if response.error?
 						A2Cribs.UIManager.Error response.error
 					else
 						A2Cribs.UIManager.Success "Phone Number Verified!"
 						$("#verify_phone").modal 'hide'
+						$("#phone_verified").val $("#verify_phone_number").val()
+						$("#verify_phone_btn").addClass("verified").text("Verified").prop "disabled", true
+
 				error: ->
+					A2Cribs.UIManager.CloseLogs()
 					A2Cribs.UIManager.Error "Invalid Code!"
 
 		# To be completed
@@ -177,9 +196,11 @@ class A2Cribs.Tour
 			# if phone number is verified
 			phone = $("#verify_phone_number").val()
 			if phone?.length isnt 10 or isNaN phone
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please enter a valid phone number"
 				return
 			if $("#phone_verified").val()?.length isnt 1
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please click the verify button to send verification text"
 				return
 
@@ -190,6 +211,7 @@ class A2Cribs.Tour
 				$(".schedule_page").hide()
 				$("#schedule_completed").show()
 			.fail ->
+				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue"
 			.always ->
 				$("#complete_tour_request").button 'reset'
@@ -212,7 +234,7 @@ class A2Cribs.Tour
 	map
 	###
 	@DeleteTimeSlot: (offset_date, time_slot) ->
-		hash = "#{offset_date} + #{time_slot}"
+		hash = "#{offset_date}#{time_slot}"
 		if @selected_timeslots[hash]?
 			delete @selected_timeslots[hash]
 
