@@ -9,6 +9,19 @@
       var _this = this;
       this.listing_id = listing_id;
       this.div = $(".full_page");
+      this.div.find("#schedule_tour_tab").click(function(event) {
+        var _ref;
+        if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
+          $(event.currentTarget).tab('show');
+        } else {
+          $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to schedule a tour.");
+          A2Cribs.MixPanel.Event("login required", {
+            "listing_id": _this.listing_id,
+            action: "full page schedule tour"
+          });
+        }
+        return event.preventDefault();
+      });
       this.div.find(".image_preview").click(function(event) {
         var image;
         image = $(event.delegateTarget).css("background-image");

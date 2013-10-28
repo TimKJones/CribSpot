@@ -218,7 +218,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
 					<?php if ($listing['Listing']['scheduling'] === true){ ?>
-						<li><a href="#schedule_tour" data-toggle="tab">Schedule My Tour</a></li>
+						<li><a id="schedule_tour_tab" href="#schedule_tour">Schedule My Tour</a></li>
 					<?php } ?>
 				</ul>
 				<ul class="nav pull-right share_buttons">
