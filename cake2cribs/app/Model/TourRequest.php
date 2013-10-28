@@ -8,10 +8,10 @@ class TourRequest extends AppModel {
 			'className' => 'Tour',
 			'foreignKey' => 'tour_request_id'
 		),
-		'TourInvitation' => array(
+		/*'TourInvitation' => array(
 			'className' => 'TourRequest',
 			'foreignKey' => 'tour_request_id'
-		),
+		),*/
 	);
 
 	public $validate = array(
@@ -33,7 +33,8 @@ class TourRequest extends AppModel {
 				'user_id' => $user_id,
 				'listing_id' => $listing_id
 			),
-			'Tour' => array()
+			'Tour' => array(),
+			'TourInvitation' => array()
 		);
 		foreach ($times as $time){
 			$newTime = array(

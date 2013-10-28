@@ -18,7 +18,7 @@
 	/**
 	 * Mode ("sandbox" or "prod")
 	 **/
-	$config['Twilio']['mode']   = 'sandbox';
+	$config['Twilio']['mode']   = Configure::read('TWILIO_MODE');
 
 	/**
 	 * Account SID
