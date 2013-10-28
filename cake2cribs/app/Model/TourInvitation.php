@@ -3,12 +3,12 @@
 class TourInvitation extends AppModel {
 	public $name = 'TourInvitation';
 	public $primaryKey = 'id';
-	public $belongsTo = array(
+	/*public $belongsTo = array(
         'TourRequest' => array(
             'className'    => 'TourRequest',
             'foreignKey'   => 'tour_request_id'
         )
-	);
+	);*/
 	public $actsAs = array('Containable');
 	public $validate = array(
 		'id' => 'numeric',

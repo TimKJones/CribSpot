@@ -61,8 +61,8 @@ class ToursController extends AppController
 		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
 
 		/* Handle invitations to housemates */
-		$invitationsSuccess = null;
-		if (array_key_exists('housemates', $this->request->data)) {
+		$invitationsSuccess = array('success' => '');
+		if (array_key_exists('housemates', $this->request->data) && count($this->request->data['housemates']) > 0) {
 			$housemates = $this->request->data['housemates'];
 			$tour_request = null;
 			CakeLog::write('tourrequestid', print_r($response, true));
