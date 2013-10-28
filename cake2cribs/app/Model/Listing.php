@@ -80,6 +80,7 @@ class Listing extends AppModel {
 	*/
 	public function SaveListing($listing, $user_id=null)
 	{
+		CakeLog::write('savelisting', print_r($listing, true));
 		if ($user_id != null)
 			$listing['Listing']['user_id'] = $user_id;
 
@@ -744,12 +745,68 @@ class Listing extends AppModel {
 				$title .= ' - ' . $unit_style_options . ' - ' . $unit_style_description;
 			}
 
-			CakeLog::write('listing_idfuck', $listing['Listing']['listing_id']);
 			$map[$listing['Listing']['listing_id']] = $title;
 		}
 
 		return $map;
 	}	
+
+	/*
+	Returns a formatted listing title for the listing specified by $listing_id
+	*/	
+	public function GetListingTitleFromId($listing_id)
+	{
+		$listing = $this->find('first', array(
+			'conditions' => array(
+				'Listing.listing_id' => $listing_id
+			)
+		));
+
+		if ($listing === null || !array_key_exists('Listing', $listing) || !array_key_exists('Marker', $listing) ||
+			!array_key_exists('Rental', $listing))
+			return null;
+
+		$title = "";
+		if (!empty($listing['Marker']['alternate_name']))
+			$title = $listing['Marker']['alternate_name'];
+		else
+			$title = $listing['Marker']['street_address'];
+
+		$unit_description = null;
+
+		if (!empty($listing['Rental']['unit_style_options']) && !empty($listing['Rental']['unit_style_description'])){
+			$unit_style_options = RentalPrototype::unit_style_options($listing['Rental']['unit_style_options']);
+			$unit_style_description = $listing['Rental']['unit_style_description'];
+			$unit_description = $unit_style_options . ' - ' . $unit_style_description;
+		}
+
+		return array(
+			'name' => $title,
+			'description' => $unit_description
+		);
+	}
+
+	/*
+	Returns the user object for the property manager that owns $listing_id
+	*/	
+	public function GetPMByListingId($listing_id)
+	{
+		$pm = $this->find('first', array(
+			'conditions' => array(
+				'Listing.listing_id' => $listing_id
+			),
+			'contain' => array('User')
+		));
+
+		$userObject = null;
+		if (array_key_exists('User', $pm))
+			$userObject = $pm['User'];
+		
+		return $userObject;
+	}	
+
+/* ------------------------------------ private functions -------------------------------- */
+
 
 	/*
 	Returns $path with $prefix prepended to the filename at the end of the path
@@ -831,6 +888,7 @@ class Listing extends AppModel {
 			'Listing.marker_id',
 			'Listing.listing_id',
 			'Listing.available',
+			'Listing.scheduling',
 			'Marker.marker_id',
 			'Marker.latitude',
 			'Marker.longitude',

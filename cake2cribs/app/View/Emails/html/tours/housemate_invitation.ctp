@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <!-- NAME: RIGHT SIDEBAR -->
+    	<!-- NAME: RIGHT SIDEBAR -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>*|MC:SUBJECT|*</title>
@@ -13,415 +13,415 @@
         </style>
         <![endif]-->
     <style type="text/css">
-    body,#bodyTable,#bodyCell{
-    height:100% !important;
-    margin:0;
-    padding:0;
-    width:100% !important;
-    }
-    table{
-    border-collapse:collapse;
-    }
-    img,a img{
-    border:0;
-    outline:none;
-    text-decoration:none;
-    }
-    h1,h2,h3,h4,h5,h6{
-    margin:0;
-    padding:0;
-    }
-    p{
-    margin:1em 0;
-    }
-    a{
-    word-wrap:break-word;
-    }
-    .ReadMsgBody{
-    width:100%;
-    }
-    .ExternalClass{
-    width:100%;
-    }
-    .ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
-    line-height:100%;
-    }
-    table,td{
-    mso-table-lspace:0pt;
-    mso-table-rspace:0pt;
-    }
-    #outlook a{
-    padding:0;
-    }
-    img{
-    -ms-interpolation-mode:bicubic;
-    }
-    body,table,td,p,a,li,blockquote{
-    -ms-text-size-adjust:100%;
-    -webkit-text-size-adjust:100%;
-    }
-    #bodyCell{
-    padding:20px;
-    border-top:0;
-    }
-    .mcnImage{
-    vertical-align:bottom;
-    }
-    .mcnTextContent img{
-    height:auto !important;
-    }
-    body,#bodyTable{
-    background-color:#4f9cd8;
-    }
-    #bodyCell{
-    border-top:0;
-    }
-    #templateContainer{
-    border:5px solid #3d7199;
-    }
-    h1{
-    color:#606060 !important;
-    display:block;
-    font-family:Helvetica;
-    font-size:40px;
-    font-style:normal;
-    font-weight:bold;
-    line-height:125%;
-    letter-spacing:-1px;
-    margin:0;
-    text-align:left;
-    }
-    h2{
-    color:#404040 !important;
-    display:block;
-    font-family:Helvetica;
-    font-size:26px;
-    font-style:normal;
-    font-weight:bold;
-    line-height:125%;
-    letter-spacing:-.75px;
-    margin:0;
-    text-align:left;
-    }
-    h3{
-    color:#606060 !important;
-    display:block;
-    font-family:Helvetica;
-    font-size:18px;
-    font-style:normal;
-    font-weight:bold;
-    line-height:125%;
-    letter-spacing:-.5px;
-    margin:0;
-    text-align:left;
-    }
-    h4{
-    color:#808080 !important;
-    display:block;
-    font-family:Helvetica;
-    font-size:16px;
-    font-style:normal;
-    font-weight:bold;
-    line-height:125%;
-    letter-spacing:normal;
-    margin:0;
-    text-align:left;
-    }
-    #templatePreheader{
-    background-color:#FFFFFF;
-    border-top:0;
-    border-bottom:0;
-    }
-    .preheaderContainer .mcnTextContent,.preheaderContainer .mcnTextContent p{
-    color:#606060;
-    font-family:Helvetica;
-    font-size:11px;
-    line-height:125%;
-    text-align:left;
-    }
-    .preheaderContainer .mcnTextContent a{
-    color:#606060;
-    font-weight:normal;
-    text-decoration:underline;
-    }
-    #templateHeader{
-    background-color:#FFFFFF;
-    border-top:0;
-    border-bottom:0;
-    }
-    .headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
-    color:#606060;
-    font-family:Helvetica;
-    font-size:15px;
-    line-height:150%;
-    text-align:left;
-    }
-    .headerContainer .mcnTextContent a{
-    color:#6DC6DD;
-    font-weight:normal;
-    text-decoration:underline;
-    }
-    #templateBody{
-    background-color:#FFFFFF;
-    border-top:0;
-    border-bottom:0;
-    }
-    #templateSidebar{
-    border-left:0;
-    }
-    .bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
-    color:#606060;
-    font-family:Helvetica;
-    font-size:15px;
-    line-height:150%;
-    text-align:left;
-    }
-    .bodyContainer .mcnTextContent a{
-    color:#6DC6DD;
-    font-weight:normal;
-    text-decoration:underline;
-    }
-    #templateSidebar{
-    background-color:#FFFFFF;
-    }
-    #templateSidebarInner{
-    border-left:0;
-    }
-    .sidebarContainer .mcnTextContent,.sidebarContainer .mcnTextContent p{
-    color:#606060;
-    font-family:Helvetica;
-    font-size:13px;
-    line-height:125%;
-    text-align:left;
-    }
-    .sidebarContainer .mcnTextContent a{
-    color:#6DC6DD;
-    font-weight:normal;
-    text-decoration:underline;
-    }
-    #templateFooter{
-    background-color:#FFFFFF;
-    border-top:0;
-    border-bottom:0;
-    }
-    .footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
-    color:#606060;
-    font-family:Helvetica;
-    font-size:11px;
-    line-height:125%;
-    text-align:left;
-    }
-    .footerContainer .mcnTextContent a{
-    color:#606060;
-    font-weight:normal;
-    text-decoration:underline;
-    }
-    @media only screen and (max-width: 480px){
-    body,table,td,p,a,li,blockquote{
-    -webkit-text-size-adjust:none !important;
-    }
+		body,#bodyTable,#bodyCell{
+			height:100% !important;
+			margin:0;
+			padding:0;
+			width:100% !important;
+		}
+		table{
+			border-collapse:collapse;
+		}
+		img,a img{
+			border:0;
+			outline:none;
+			text-decoration:none;
+		}
+		h1,h2,h3,h4,h5,h6{
+			margin:0;
+			padding:0;
+		}
+		p{
+			margin:1em 0;
+		}
+		a{
+			word-wrap:break-word;
+		}
+		.ReadMsgBody{
+			width:100%;
+		}
+		.ExternalClass{
+			width:100%;
+		}
+		.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
+			line-height:100%;
+		}
+		table,td{
+			mso-table-lspace:0pt;
+			mso-table-rspace:0pt;
+		}
+		#outlook a{
+			padding:0;
+		}
+		img{
+			-ms-interpolation-mode:bicubic;
+		}
+		body,table,td,p,a,li,blockquote{
+			-ms-text-size-adjust:100%;
+			-webkit-text-size-adjust:100%;
+		}
+		#bodyCell{
+			padding:20px;
+			border-top:0;
+		}
+		.mcnImage{
+			vertical-align:bottom;
+		}
+		.mcnTextContent img{
+			height:auto !important;
+		}
+		body,#bodyTable{
+			background-color:#4f9cd8;
+		}
+		#bodyCell{
+			border-top:0;
+		}
+		#templateContainer{
+			border:5px solid #3d7199;
+		}
+		h1{
+			color:#606060 !important;
+			display:block;
+			font-family:Helvetica;
+			font-size:40px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:-1px;
+			margin:0;
+			text-align:left;
+		}
+		h2{
+			color:#404040 !important;
+			display:block;
+			font-family:Helvetica;
+			font-size:26px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:-.75px;
+			margin:0;
+			text-align:left;
+		}
+		h3{
+			color:#606060 !important;
+			display:block;
+			font-family:Helvetica;
+			font-size:18px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:-.5px;
+			margin:0;
+			text-align:left;
+		}
+		h4{
+			color:#808080 !important;
+			display:block;
+			font-family:Helvetica;
+			font-size:16px;
+			font-style:normal;
+			font-weight:bold;
+			line-height:125%;
+			letter-spacing:normal;
+			margin:0;
+			text-align:left;
+		}
+		#templatePreheader{
+			background-color:#FFFFFF;
+			border-top:0;
+			border-bottom:0;
+		}
+		.preheaderContainer .mcnTextContent,.preheaderContainer .mcnTextContent p{
+			color:#606060;
+			font-family:Helvetica;
+			font-size:11px;
+			line-height:125%;
+			text-align:left;
+		}
+		.preheaderContainer .mcnTextContent a{
+			color:#606060;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+		#templateHeader{
+			background-color:#FFFFFF;
+			border-top:0;
+			border-bottom:0;
+		}
+		.headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
+			color:#606060;
+			font-family:Helvetica;
+			font-size:15px;
+			line-height:150%;
+			text-align:left;
+		}
+		.headerContainer .mcnTextContent a{
+			color:#6DC6DD;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+		#templateBody{
+			background-color:#FFFFFF;
+			border-top:0;
+			border-bottom:0;
+		}
+		#templateSidebar{
+			border-left:0;
+		}
+		.bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
+			color:#606060;
+			font-family:Helvetica;
+			font-size:15px;
+			line-height:150%;
+			text-align:left;
+		}
+		.bodyContainer .mcnTextContent a{
+			color:#6DC6DD;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+		#templateSidebar{
+			background-color:#FFFFFF;
+		}
+		#templateSidebarInner{
+			border-left:0;
+		}
+		.sidebarContainer .mcnTextContent,.sidebarContainer .mcnTextContent p{
+			color:#606060;
+			font-family:Helvetica;
+			font-size:13px;
+			line-height:125%;
+			text-align:left;
+		}
+		.sidebarContainer .mcnTextContent a{
+			color:#6DC6DD;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+		#templateFooter{
+			background-color:#FFFFFF;
+			border-top:0;
+			border-bottom:0;
+		}
+		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
+			color:#606060;
+			font-family:Helvetica;
+			font-size:11px;
+			line-height:125%;
+			text-align:left;
+		}
+		.footerContainer .mcnTextContent a{
+			color:#606060;
+			font-weight:normal;
+			text-decoration:underline;
+		}
+	@media only screen and (max-width: 480px){
+		body,table,td,p,a,li,blockquote{
+			-webkit-text-size-adjust:none !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    body{
-    width:100% !important;
-    min-width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		body{
+			width:100% !important;
+			min-width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[id=bodyCell]{
-    padding:10px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[id=bodyCell]{
+			padding:10px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnTextContentContainer]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnTextContentContainer]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnBoxedTextContentContainer]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnBoxedTextContentContainer]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcpreview-image-uploader]{
-    width:100% !important;
-    display:none !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcpreview-image-uploader]{
+			width:100% !important;
+			display:none !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    img[class=mcnImage]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		img[class=mcnImage]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnImageGroupContentContainer]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnImageGroupContentContainer]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnImageGroupContent]{
-    padding:9px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnImageGroupContent]{
+			padding:9px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnImageGroupBlockInner]{
-    padding-bottom:0 !important;
-    padding-top:0 !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnImageGroupBlockInner]{
+			padding-bottom:0 !important;
+			padding-top:0 !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    tbody[class=mcnImageGroupBlockOuter]{
-    padding-bottom:9px !important;
-    padding-top:9px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		tbody[class=mcnImageGroupBlockOuter]{
+			padding-bottom:9px !important;
+			padding-top:9px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnCaptionTopContent],table[class=mcnCaptionBottomContent]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnCaptionTopContent],table[class=mcnCaptionBottomContent]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnCaptionLeftTextContentContainer],table[class=mcnCaptionRightTextContentContainer],table[class=mcnCaptionLeftImageContentContainer],table[class=mcnCaptionRightImageContentContainer],table[class=mcnImageCardLeftTextContentContainer],table[class=mcnImageCardRightTextContentContainer]{
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnCaptionLeftTextContentContainer],table[class=mcnCaptionRightTextContentContainer],table[class=mcnCaptionLeftImageContentContainer],table[class=mcnCaptionRightImageContentContainer],table[class=mcnImageCardLeftTextContentContainer],table[class=mcnImageCardRightTextContentContainer]{
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnImageCardLeftImageContent],td[class=mcnImageCardRightImageContent]{
-    padding-right:18px !important;
-    padding-left:18px !important;
-    padding-bottom:0 !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnImageCardLeftImageContent],td[class=mcnImageCardRightImageContent]{
+			padding-right:18px !important;
+			padding-left:18px !important;
+			padding-bottom:0 !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnImageCardBottomImageContent]{
-    padding-bottom:9px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnImageCardBottomImageContent]{
+			padding-bottom:9px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnImageCardTopImageContent]{
-    padding-top:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnImageCardTopImageContent]{
+			padding-top:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnCaptionLeftContentOuter] td[class=mcnTextContent],table[class=mcnCaptionRightContentOuter] td[class=mcnTextContent]{
-    padding-top:9px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnCaptionLeftContentOuter] td[class=mcnTextContent],table[class=mcnCaptionRightContentOuter] td[class=mcnTextContent]{
+			padding-top:9px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnCaptionBlockInner] table[class=mcnCaptionTopContent]:last-child td[class=mcnTextContent]{
-    padding-top:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnCaptionBlockInner] table[class=mcnCaptionTopContent]:last-child td[class=mcnTextContent]{
+			padding-top:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=mcnBoxedTextContentColumn]{
-    padding-left:18px !important;
-    padding-right:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=mcnBoxedTextContentColumn]{
+			padding-left:18px !important;
+			padding-right:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=sectionContainer]{
-    display:block !important;
-    max-width:600px !important;
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=sectionContainer]{
+			display:block !important;
+			max-width:600px !important;
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateBody],table[id=templateBodyInner],table[id=templateSidebar],table[id=templateSidebarInner],table[id=templateFooter]{
-    max-width:600px !important;
-    width:100% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateBody],table[id=templateBodyInner],table[id=templateSidebar],table[id=templateSidebarInner],table[id=templateFooter]{
+			max-width:600px !important;
+			width:100% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    h1{
-    font-size:24px !important;
-    line-height:125% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		h1{
+			font-size:24px !important;
+			line-height:125% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    h2{
-    font-size:20px !important;
-    line-height:125% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		h2{
+			font-size:20px !important;
+			line-height:125% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    h3{
-    font-size:18px !important;
-    line-height:125% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		h3{
+			font-size:18px !important;
+			line-height:125% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    h4{
-    font-size:16px !important;
-    line-height:125% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		h4{
+			font-size:16px !important;
+			line-height:125% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[class=mcnBoxedTextContentContainer] td[class=mcnTextContent]{
-    font-size:18px !important;
-    line-height:125% !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[class=mcnBoxedTextContentContainer] td[class=mcnTextContent]{
+			font-size:18px !important;
+			line-height:125% !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[id=templatePreheader]{
-    display:block !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[id=templatePreheader]{
+			display:block !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=preheaderContainer] td[class=mcnTextContent]{
-    font-size:14px !important;
-    line-height:115% !important;
-    padding-right:18px !important;
-    padding-left:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=preheaderContainer] td[class=mcnTextContent]{
+			font-size:14px !important;
+			line-height:115% !important;
+			padding-right:18px !important;
+			padding-left:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=headerContainer] td[class=mcnTextContent]{
-    font-size:18px !important;
-    line-height:125% !important;
-    padding-right:18px !important;
-    padding-left:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=headerContainer] td[class=mcnTextContent]{
+			font-size:18px !important;
+			line-height:125% !important;
+			padding-right:18px !important;
+			padding-left:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=bodyContainer] td[class=mcnTextContent]{
-    font-size:18px !important;
-    line-height:125% !important;
-    padding-right:18px !important;
-    padding-left:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=bodyContainer] td[class=mcnTextContent]{
+			font-size:18px !important;
+			line-height:125% !important;
+			padding-right:18px !important;
+			padding-left:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=sidebarContainer] td[class=mcnTextContent]{
-    font-size:18px !important;
-    line-height:125% !important;
-    padding-right:18px !important;
-    padding-left:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=sidebarContainer] td[class=mcnTextContent]{
+			font-size:18px !important;
+			line-height:125% !important;
+			padding-right:18px !important;
+			padding-left:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[id=templateSidebar]{
-    border-left:0 !important;
-    border-right:0 !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[id=templateSidebar]{
+			border-left:0 !important;
+			border-right:0 !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    table[id=templateSidebarInner]{
-    border-left:0 !important;
-    border-right:0 !important;
-    }
+}	@media only screen and (max-width: 480px){
+		table[id=templateSidebarInner]{
+			border-left:0 !important;
+			border-right:0 !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=footerContainer] td[class=mcnTextContent]{
-    font-size:14px !important;
-    line-height:115% !important;
-    padding-right:18px !important;
-    padding-left:18px !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=footerContainer] td[class=mcnTextContent]{
+			font-size:14px !important;
+			line-height:115% !important;
+			padding-right:18px !important;
+			padding-left:18px !important;
+		}
 
-}   @media only screen and (max-width: 480px){
-    td[class=footerContainer] a[class=utilityLink]{
-    display:block !important;
-    }
+}	@media only screen and (max-width: 480px){
+		td[class=footerContainer] a[class=utilityLink]{
+			display:block !important;
+		}
 
 }</style></head>
     <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #4f9cd8;height: 100% !important;width: 100% !important;">
@@ -436,7 +436,7 @@
                                     <!-- BEGIN PREHEADER // -->
                                     <table border="0" cellpadding="0" cellspacing="0" width="600" id="templatePreheader" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
                                         <tr>
-                                            <td valign="top" class="preheaderContainer" style="padding-top: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
+                                        	<td valign="top" class="preheaderContainer" style="padding-top: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
                                         </tr>
                                     </table>
                                     <!-- // END PREHEADER -->
@@ -459,9 +459,9 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
                                         <tr>
                                             <td align="center" valign="top" width="390" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBodyInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                    <tr>
-                                                        <td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                            	<table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBodyInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                	<tr>
+                                                    	<td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
@@ -469,13 +469,13 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                     <tbody><tr>
                         
-                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;line-height: 150%;text-align: left;">
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
                         
-                            <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
-    <span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Forgot your password?</span></span></h3>
-<br>
-<span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Don't worry, we've got you covered. Just click the "Reset Password" button below to set a new password.&nbsp;</span></span></span><br>
-<br>
+                            <span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Hi <?php echo $housemate_name ?>,</span></span><br>
+<div>
+	<br>
+	<span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><strong><?= $logged_in_first_name.' '.$logged_in_last_name; ?></strong> has invited you to tour <strong><a href='<?= $listing_url;?>'><?= $building_name;?></a></strong> with them! We're still finalizing the tour booking, and will notify you as soon as it's been completed. In the mean time, you'll need to sign up&nbsp;for an account on&nbsp;<a href="http://www.cribspot.com" target="_blank" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #6DC6DD;font-weight: normal;text-decoration: underline;">Cribspot</a>&nbsp;by clicking the button below.</span></span><br>
+	&nbsp;</div>
 
                         </td>
                     </tr>
@@ -491,8 +491,8 @@
                 <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #457FC6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                     <tbody>
                         <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Reset Your Password" href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&amp;reset_token=<?php echo $password_reset_token; ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Reset Your Password</a>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 16px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                <a class="mcnButton " title="Join the Tour" href="https://www.cribspot/signup" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Tour</a>
                             </td>
                         </tr>
                     </tbody>
@@ -508,10 +508,11 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                     <tbody><tr>
                         
-                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;line-height: 150%;text-align: left;">
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
                         
-                            <span style="font-size:14px;">If you run into any trouble, send us a message at&nbsp;<a href="mailto:help@cribspot.com" target="_blank" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #6DC6DD;font-weight: normal;text-decoration: underline;">help@cribspot.com</a>&nbsp;or click on the "Contact Cribspot" tab on our website.&nbsp;</span><br>
-
+                            <span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;">Thanks,</span><br>
+<span style="font-family: arial, sans-serif; font-size: 13px;">&nbsp;</span><br style="font-family: arial, sans-serif; font-size: 13px;">
+<img align="none" height="27" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/cribspot_team.png" style="font-family: arial, sans-serif;font-size: 13px;width: 180px;height: 27px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" width="180">
                         </td>
                     </tr>
                 </tbody></table>
@@ -525,11 +526,11 @@
                                             </td>
                                             <td align="center" valign="top" width="200" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebar" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;background-color: #FFFFFF;">
-                                                    <tr>
-                                                        <td align="right" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebarInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;">
-                                                                <tr>
-                                                                    <td valign="top" class="sidebarContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                	<tr>
+                                                    	<td align="right" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                        	<table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebarInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;">
+                                                            	<tr>
+                                                                	<td valign="top" class="sidebarContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
     <tbody class="mcnCaptionBlockOuter">
         <tr>
             <td class="mcnCaptionBlockInner" valign="top" style="padding: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
@@ -619,8 +620,8 @@
                 <tbody><tr>
                     <td valign="top" class="mcnTextContent" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%;text-align: left;">
                         <strong>CRIBSPOT, BUILT AND UPDATED BY STUDENTS JUST LIKE YOU</strong><br>
-<span style="color: #A9A9A9;">We're students trying to make the housing search a little less stressful.<br>
-808 Brown Street, Ann Arbor, MI 48104 &nbsp;</span><a class="utilityLink" href="*|UNSUB|*" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-weight: normal;text-decoration: underline;">unsubscribe from this list</a>&nbsp;
+<span style="color: #A9A9A9;">We're students trying to make the rental search a little less stressful.<br>
+808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;&nbsp;</span>
                     </td>
                 </tr>
             </tbody></table>
@@ -662,3 +663,10 @@
             </center></body>
 </html>
 
+
+
+
+
+<b>Hi <?php echo $housemate_name ?>,</b><br><br>
+<?php 
+echo $logged_in_first_name.' '.$logged_in_last_name.' has invited you to tour '.$building_name." with them! We're still finalizing the tour booking, and will notify you as soon as it's completed.  In the mean time, you'll need to <a href='https://www.cribspot.com/signup'>sign up</a> for an account on <a href='https://www.cribspot.com'>Cribspot</a>. It'll only take 30 seconds!<br><br>";

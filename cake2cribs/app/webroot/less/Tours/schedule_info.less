@@ -1,0 +1,89 @@
+#schedule_info
+{
+	padding: 0 20px;
+	.input-label
+	{
+		color: hsl(219, 6%, 52%);
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 30px;
+	}
+	#verify_phone_btn
+	{
+		&.verified
+		{
+			background: #6bba70;
+			background: -moz-linear-gradient(top,  #6bba70 0%, #6bba70 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6bba70), color-stop(100%,#6bba70));
+			background: -webkit-linear-gradient(top,  #6bba70 0%,#6bba70 100%);
+			background: -o-linear-gradient(top,  #6bba70 0%,#6bba70 100%);
+			background: -ms-linear-gradient(top,  #6bba70 0%,#6bba70 100%);
+			background: linear-gradient(to bottom,  #6bba70 0%,#6bba70 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6bba70', endColorstr='#6bba70',GradientType=0 );
+		}
+	}
+	#email_invite_list
+	{
+		.email_row
+		{
+			.complete_email
+			{
+				display: none;
+				height: 30px;
+				vertical-align: middle;
+				i
+				{
+					color: green;
+				}
+			}
+			&.completed_roommate
+			{
+				.complete_email
+				{
+					display: inline-block;
+				}
+			}
+		}
+	}
+	.comment
+	{
+		width: 70%;
+		color: hsl(210, 29%, 29%);
+		display: block;
+		font-family: Lato, sans-serif;
+		font-size: 12px;
+		line-height: 16px;
+		margin: auto 0 auto auto;
+		padding: 8px 5px 5px 5px;
+		position: relative;
+
+		.comment-arrow
+		{
+			border-color: rgba(0, 0, 0, 0);
+			border-style: solid;
+			border-width: 9px;
+			border-bottom-color: #34495e;
+			border-top-width: 0px;
+			color: hsl(210, 29%, 29%);
+			height: 0px;
+			left: 103.5px;
+			line-height: 16px;
+			margin-left: -9px;
+			position: absolute;
+			top: -1px;
+			width: 0px;
+		}
+
+		.comment-inner
+		{
+			background-color: #34495e;
+			border-radius: 6px;
+			color: hsl(0, 100%, 100%);
+			line-height: 18px;
+			padding: 12px;
+			text-align: justify;
+			text-decoration: none;
+			zoom: 1;
+		}
+	}
+}

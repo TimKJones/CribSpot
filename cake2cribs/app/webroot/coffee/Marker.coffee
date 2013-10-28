@@ -17,7 +17,12 @@ class A2Cribs.Marker extends  A2Cribs.Object
 
 		return @GMarker?.getVisible()
 
-	Init: (@available = null) ->
+	HasScheduling: ->
+		if @scheduling?
+			return @scheduling
+		return false
+
+	Init: (@available = null, @scheduling = null) ->
 		if not available? # available is unknown
 			marker_dot = "unknown"
 		else if available is yes # this place is available
@@ -25,10 +30,14 @@ class A2Cribs.Marker extends  A2Cribs.Object
 		else # the place is leased
 			marker_dot = "leased"
 
+		if (available or available is null) and scheduling
+			marker_dot = 'schedule'
+
 		@GMarker = new google.maps.Marker
 			position: new google.maps.LatLng(@latitude, @longitude)
 			icon: "/img/dots/dot_#{marker_dot}.png"
 			id: @GetId()
+
 		google.maps.event.addListener @GMarker, 'click', @MarkerClicked
 
 	GetObject: ->

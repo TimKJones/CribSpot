@@ -19,6 +19,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
+<input id="listing-data" type="hidden" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>">
 
 <div class="row-fluid full_page">
 	<!-- Listing View side bar -->
@@ -210,6 +211,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<li class="active"><a href="#photo_content" data-toggle="tab">Photos</a></li>
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
+					<?php if ($listing['Listing']['scheduling'] === true && $listing['Listing']['available'] === true){ ?>
+						<li><a id="schedule_tour_tab" href="#schedule_tour">Schedule My Tour</a></li>
+					<?php } ?>
 				</ul>
 				<ul class="nav pull-right share_buttons">
 					<li class="disabled"><a href="">Share This Listing:</a></li>
@@ -464,6 +468,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					</div>
 				</div>
 			</div>
+			<?= $this->element('Listings/schedule_tour'); ?>
 		</div>
 		
 	</div>
