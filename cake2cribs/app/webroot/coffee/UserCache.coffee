@@ -33,9 +33,13 @@ class A2Cribs.UserCache
 				response_data = JSON.parse data
 				for item in response_data
 					for key, value of item
-						if key isnt "Marker" and key isnt "Listing" and A2Cribs[key]?
-							A2Cribs.UserCache.Set new A2Cribs[key] value
-				listing = A2Cribs.UserCache.Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+						if key isnt "Marker" and A2Cribs[key]?
+							a2_object = new A2Cribs[key] value
+							old_object = @Get key.toLowerCase(), a2_object.GetId()
+							if old_object? and not old_object.length?
+								a2_object = old_object.Update value
+							@Set a2_object
+				listing = @Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 				return deferred.resolve listing
 
 			error: ->

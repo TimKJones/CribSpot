@@ -111,6 +111,23 @@ class A2Cribs.Tour
 	Setup My Info UI
 	###
 	@SetupInfoUI: ->
+		$("body").on "keyup", ".roommate_input", (event) =>
+			if $(event.currentTarget.parentElement).find(".roommate_name").val()?.length isnt 0
+				re = /\S+@\S+\.\S+/
+				if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()
+					$(event.currentTarget.parentElement).addClass "completed_roommate"
+					return 
+			$(event.currentTarget.parentElement).removeClass "completed_roommate"
+
+		$("#add_roommate_email").click =>
+			row_count = $(".email_row").last().data "email-row"
+			email_row = $("<div data-email-row='#{row_count + 1}' class='row-fluid email_row'>
+				<input class='roommate_input roommate_name' type='text' placeholder='Name'>
+				<input class='roommate_input roommate_email' type='email' placeholder='Email'>
+				<span class='complete_email'><i class='icon-ok-sign icon-large'></i></span>
+			</div>")
+			$("#email_invite_list").append email_row
+
 		# Validate phone number
 		$("#verify_phone_btn").click =>
 			# if phone number looks legit

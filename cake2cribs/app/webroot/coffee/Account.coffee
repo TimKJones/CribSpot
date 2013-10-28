@@ -28,38 +28,54 @@ class A2Cribs.Account
 		$('.veridd').each (index, element)=>
 			$(element).tooltip({'title': 'Verify?', 'trigger': 'hover'})
 
-		$('#changePasswordButton').click =>
+		$('#changePasswordButton').click (event) =>
+			$(event.delegateTarget).button('loading')
 			@ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val())
-		$('#VerifyUniversityButton').click =>
+			.always ->
+				$(event.delegateTarget).button('reset')
+		$('#VerifyUniversityButton').click (event) =>
 			@VerifyUniversity()
-		$('#changePhoneBtn').click =>
+		$('#changePhoneBtn').click (event) =>
+			$(event.delegateTarget).button('loading')
 			@SavePhone()
-		$('#changeAddressBtn').click =>
+			.always ->
+				$(event.delegateTarget).button('reset')
+		$('#changeAddressBtn').click (event) =>
+			$(event.delegateTarget).button('loading')
 			@SaveAddress()
-		$('#changeCompanyNameBtn').click =>
+			.always ->
+				$(event.delegateTarget).button('reset')
+		$('#changeCompanyNameBtn').click (event) =>
+			$(event.delegateTarget).button('loading')
 			@SaveCompanyName()
-		$('#changeFirstLastNameButton').click =>
+			.always ->
+				$(event.delegateTarget).button('reset')
+		$('#changeFirstLastNameButton').click (event) =>
+			$(event.delegateTarget).button('loading')
 			@SaveFirstLastName()
+			.always ->
+				$(event.delegateTarget).button('reset')
 
 	@SaveFirstLastName: () ->
 			pair = 
 				'first_name':$("#first_name_input").val()
 				'last_name':$("#last_name_input").val()
-			@SaveAccount pair, $("#changeFirstLastNameButton")
+			return @SaveAccount pair, $("#changeFirstLastNameButton")
 
 	@SaveCompanyName: () ->
 			pair = 
 				'company_name':$("#company_name_input").val()
-			@SaveAccount pair, $("#changeCompanyNameButton")
+			return @SaveAccount pair, $("#changeCompanyNameButton")
 
 	@SavePhone: () ->
 		phone = $("#phone_input").val()
 		if @ValidatePhone phone
 			pair = 
 				'phone':phone
-			@SaveAccount pair, $("#changePhoneBtn")
+			return @SaveAccount pair, $("#changePhoneBtn")
 		else
 			A2Cribs.UIManager.Error "Invalid phone number"
+			return (new $.Deferred()).reject()
 
 	@ValidatePhone: (phone) ->
 		phone = phone.replace(/[^0-9]/g, '')
@@ -72,7 +88,7 @@ class A2Cribs.Account
 		pair = 
 			'street_address':street_address
 			'city':city
-		@SaveAccount pair, $("#changeAddressBtn")
+		return @SaveAccount pair, $("#changeAddressBtn")
 
 	@Direct: (directive)->
 
@@ -101,7 +117,8 @@ class A2Cribs.Account
 		
 
 	@ChangePassword: (change_password_button, new_password, confirm_password, id=null, reset_token=null, redirect=null) ->
-		change_password_button.attr 'disabled','disabled'
+		@_change_password_deferred = new $.Deferred()
+
 		data =
 			'new_password' : new_password,
 			'confirm_password': confirm_password
@@ -109,28 +126,40 @@ class A2Cribs.Account
 			data['id'] = id
 			data['reset_token'] = reset_token
 
-		if new_password != confirm_password
+		if new_password.length < 5
+			A2Cribs.UIManager.Alert "Password must be at least 6 characters long."
+			return  @_change_password_deferred.reject()
+
+		if new_password isnt confirm_password
 			A2Cribs.UIManager.Alert "Passwords do not match."
-			return
+			return @_change_password_deferred.reject()
 
-		$.post myBaseUrl + 'users/AjaxChangePassword', data, (response) ->
-			response = JSON.parse(response)
-
-			if response.error == undefined
-				if id == null and reset_token == null
-					alertify.success 'Password Changed', 3000
-					if redirect != null
-						window.location.href = redirect
+		$.ajax
+			url: myBaseUrl + 'users/AjaxChangePassword'
+			data: data
+			type: "POST"
+			success: (response) =>
+				response = JSON.parse(response)
+				if response.error?
+					A2Cribs.UIManager.Alert response.error
+					return @_change_password_deferred.reject()
 				else
-					#redirect user to dashboard
-					window.location.href = '/dashboard'
-			else
-				A2Cribs.UIManager.Alert response.error
+					if id == null and reset_token == null
+						alertify.success 'Password Changed', 3000
+						if redirect != null
+							window.location.href = redirect
+					else
+						#redirect user to dashboard
+						window.location.href = '/dashboard'
+					return @_change_password_deferred.resolve()
 
-			change_password_button.removeAttr 'disabled'
+			error: () =>
+				return @_change_password_deferred.reject()
+
+		return @_change_password_deferred.promise()
 
 	@SaveAccount:(keyValuePairs = null, button=null)->
-		$.post myBaseUrl + 'users/AjaxEditUser', keyValuePairs, (response)->
+		return $.post myBaseUrl + 'users/AjaxEditUser', keyValuePairs, (response)->
 			# console.log response
 			json_response = JSON.parse(response)
 			if json_response.error == undefined

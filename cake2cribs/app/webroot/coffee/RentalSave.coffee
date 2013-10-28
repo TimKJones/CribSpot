@@ -158,6 +158,7 @@ class A2Cribs.RentalSave
 	Open: (marker_id) ->	
 		# Gets rental info and saves to JS object
 		# First, retrieve all data for this marker
+		$("#loader").show()
 		deferred = new $.Deferred()
 		$.ajax
 			url: myBaseUrl + "listings/GetOwnedListingsByMarkerId/" + marker_id
@@ -181,6 +182,7 @@ class A2Cribs.RentalSave
 
 				@PopulateGrid marker_id
 				deferred.resolve()
+				$("#loader").hide()
 
 		return deferred.promise()
 
@@ -245,6 +247,7 @@ class A2Cribs.RentalSave
 				"save type": if rental_object.listing_id? then "edit" else "save"
 				"marker id": @CurrentMarker
 				"listing id": rental_object.listing_id
+			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "listings/Save/"
 				type: "POST"
@@ -267,6 +270,8 @@ class A2Cribs.RentalSave
 					else
 						A2Cribs.UIManager.Error response.error.message
 						console.log response
+
+					$("#loader").hide()
 
 	###
 	Test function for Listings/GetListing.

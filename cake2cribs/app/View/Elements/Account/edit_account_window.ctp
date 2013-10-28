@@ -18,7 +18,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'changeFirstLastNameButton' type="button" class="btn" maxlength="200">Save changes</button>
+	  			<button id = 'changeFirstLastNameButton' type="button" class="btn" maxlength="200" data-loading-text="Saving...">Save changes</button>
 	  		</div>
 	  </div>
 	</form>
@@ -37,7 +37,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id="changePasswordButton" type="button" class="btn">Change password</button>
+	  			<button id="changePasswordButton" type="button" class="btn" data-loading-text="Saving...">Change password</button>
 	  		</div>
 	  </div>
 	</form>
@@ -55,7 +55,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'changeCompanyNameBtn' type="button" class="btn">Save Company Name</button>
+	  			<button id = 'changeCompanyNameBtn' type="button" class="btn" data-loading-text="Saving...">Save Company Name</button>
 	  		</div>
 	  </div>
 	</form>
@@ -77,7 +77,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id = 'changeAddressBtn' type="button" class="btn">Save Address</button>
+	  			<button id = 'changeAddressBtn' type="button" class="btn" data-loading-text="Saving...">Save Address</button>
 	  		</div>
 	  </div>
 	</form>
@@ -90,7 +90,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id="changePhoneBtn" type="button" class="btn">Save Phone</button>
+	  			<button id="changePhoneBtn" type="button" class="btn" data-loading-text="Saving...">Save Phone</button>
 	  		</div>
 	  </div>
 	</form>
@@ -109,7 +109,7 @@
 	  </div>
 	  <div class="control-group">
 	  	    <div class="controls">
-	  			<button id="changePasswordButton" type="button" class="btn">Change password</button>
+	  			<button id="changePasswordButton" type="button" class="btn" data-loading-text="Saving...">Change password</button>
 	  		</div>
 	  </div>
 	</form>

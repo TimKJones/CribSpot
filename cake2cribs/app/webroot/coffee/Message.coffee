@@ -121,21 +121,18 @@ class A2Cribs.Messages
 		if participant.first_name?
 			nameString += participant.first_name
 			if participant.last_name?
-				nameString += participant.last_name
+				nameString += " #{participant.last_name}"
 		$(".from_participant")
 			.html nameString
 			#.attr('href', (myBaseUrl + 'users/view/' + participant['id']))
-		
-		A2Cribs.VerifyManager.getVerificationFor(participant).then (verification_info)->
-			veripanel = $('#verification-panel')
+		img_url = "img/head_large.jpg"
 
-			if verification_info.verified_email
-				veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+		if participant.profile_img?
+			img_url = "/#{participant.profile_img}"
+		else if participant.facebook_id?		
+			img_url = "https://graph.facebook.com/#{participant.facebook_id}/picture?width=480"
 
-			if verification_info.verified_fb
-				url = "https://graph.facebook.com/#{verification_info.fb_id}/picture?width=480"
-				console.log(url)
-				$('#p_pic').attr 'src', url
+		$('#p_pic').attr 'src', img_url
 
 
 	@loadConversation:(event)->
@@ -236,7 +233,10 @@ class A2Cribs.Messages
 		@NumMessagePages = 1
 		message_list = $('#message_list')
 		message_list.empty()
+		$("#loader").show()
 		@loadMessages(@NumMessagePages, true, event)
+		.always () ->
+			$("#loader").hide()
 	
 	@sendReply:(event)->
 		# Gather the data to send to the server
@@ -245,7 +245,7 @@ class A2Cribs.Messages
 			A2Cribs.UIManager.Error "Message can not be empty"
 			return false
 		# Disable the submit button
-		$('#send_reply').attr 'disabled','disabled'
+		$('#send_reply').button('loading')
 		message_text = $('#message_text textarea').val()	
 		# Build the data object that we'll send to the server
 		message_data = 
@@ -262,7 +262,7 @@ class A2Cribs.Messages
 			if data?.success == false
 				A2Cribs.UIManager.Error "Something went wrong while sending a reply, please refresh the page and try again"
 		.always ()=>
-			$('#send_reply').removeAttr 'disabled'
+			$('#send_reply').button('reset')
 		false
 
 	@DeleteConversation:()->

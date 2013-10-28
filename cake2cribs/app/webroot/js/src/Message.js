@@ -123,27 +123,22 @@
     };
 
     Messages.setParticipantInfoUI = function(participant) {
-      var nameString;
+      var img_url, nameString;
       nameString = "";
       if (participant.first_name != null) {
         nameString += participant.first_name;
         if (participant.last_name != null) {
-          nameString += participant.last_name;
+          nameString += " " + participant.last_name;
         }
       }
       $(".from_participant").html(nameString);
-      return A2Cribs.VerifyManager.getVerificationFor(participant).then(function(verification_info) {
-        var url, veripanel;
-        veripanel = $('#verification-panel');
-        if (verification_info.verified_email) {
-          veripanel.find('#veri-email  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-        }
-        if (verification_info.verified_fb) {
-          url = "https://graph.facebook.com/" + verification_info.fb_id + "/picture?width=480";
-          console.log(url);
-          return $('#p_pic').attr('src', url);
-        }
-      });
+      img_url = "img/head_large.jpg";
+      if (participant.profile_img != null) {
+        img_url = "/" + participant.profile_img;
+      } else if (participant.facebook_id != null) {
+        img_url = "https://graph.facebook.com/" + participant.facebook_id + "/picture?width=480";
+      }
+      return $('#p_pic').attr('src', img_url);
     };
 
     Messages.loadConversation = function(event) {
@@ -232,7 +227,10 @@
       this.NumMessagePages = 1;
       message_list = $('#message_list');
       message_list.empty();
-      return this.loadMessages(this.NumMessagePages, true, event);
+      $("#loader").show();
+      return this.loadMessages(this.NumMessagePages, true, event).always(function() {
+        return $("#loader").hide();
+      });
     };
 
     Messages.sendReply = function(event) {
@@ -243,7 +241,7 @@
         A2Cribs.UIManager.Error("Message can not be empty");
         return false;
       }
-      $('#send_reply').attr('disabled', 'disabled');
+      $('#send_reply').button('loading');
       message_text = $('#message_text textarea').val();
       message_data = {
         'message_text': message_text,
@@ -259,7 +257,7 @@
           return A2Cribs.UIManager.Error("Something went wrong while sending a reply, please refresh the page and try again");
         }
       }).always(function() {
-        return $('#send_reply').removeAttr('disabled');
+        return $('#send_reply').button('reset');
       });
       return false;
     };

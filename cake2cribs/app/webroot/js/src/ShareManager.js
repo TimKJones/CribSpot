@@ -2,6 +2,7 @@
 (function() {
 
   A2Cribs.ShareManager = (function() {
+    var _this = this;
 
     function ShareManager() {}
 
@@ -44,7 +45,7 @@
       fbObj = {
         method: 'feed',
         link: url,
-        picture: 'https://www.cribspot.com/img/upright_logo.png',
+        picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png',
         name: building_name,
         caption: caption
       };
@@ -52,6 +53,37 @@
         fbObj['description'] = description;
       }
       return FB.ui(fbObj);
+    };
+
+    /*
+    	Shares the school page on facebook
+    */
+
+
+    ShareManager.ShareOnFacebook = function() {
+      var fbObj;
+      A2Cribs.MixPanel.Event("Social share", {
+        type: "facebook",
+        element: "header",
+        promotion: "puppies"
+      });
+      fbObj = {
+        method: 'feed',
+        link: "https://cribspot.com/",
+        picture: 'http://i.imgur.com/f75Gkt7.jpg',
+        name: "Cribspot's raising the woof!",
+        caption: "Looks like we're fresh out of puppies! Doggone it.",
+        description: "See Spot run. See Spot find his next off-campus dog house with Cribspot."
+      };
+      return FB.ui(fbObj, function(response) {
+        if (response != null ? response.post_id : void 0) {
+          return A2Cribs.MixPanel.Event("Social share complete", {
+            type: "facebook",
+            element: "header",
+            promotion: "puppies"
+          });
+        }
+      });
     };
 
     ShareManager.CopyListingUrl = function(listing_id, street_address, city, state, zip) {
@@ -89,8 +121,14 @@
       return twttr.widgets.load();
     };
 
+    $("#header").ready(function() {
+      return $(".share_on_fb").click(function() {
+        return ShareManager.ShareOnFacebook();
+      });
+    });
+
     return ShareManager;
 
-  })();
+  }).call(this);
 
 }).call(this);

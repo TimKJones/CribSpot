@@ -1,6 +1,6 @@
 <?php echo $this->Html->css('/less/Tours/schedule_info.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div id="schedule_info" class="schedule_page hide">
+<div id="schedule_info" class="schedule_page">
 	<h3>Just a few more clicks away...</h3>
 	<div class="row-fluid">
 		<div class="input-label span4">My Phone Number</div>
@@ -21,13 +21,21 @@
 	<div class="row-fluid">
 		<div class="input-label span12">Invite My Housemates</div>
 	</div>
+	<div id="email_invite_list">
+	<?php
+		for ($i=0; $i < 3; $i++) { 
+			echo "
+			<div data-email-row='" . $i ."' class='row-fluid email_row'>
+				<input class='roommate_input roommate_name' type='text' placeholder='Name'>
+				<input class='roommate_input roommate_email' type='email' placeholder='Email'>
+				<span class='complete_email'><i class='icon-ok-sign icon-large'></i></span>
+			</div>
+			";
+		}
+	?>
+	</div>
 	<div class="row-fluid">
-		<div class="span6 text-center">
-			<button class="btn">Invite from Facebook</button>
-		</div>
-		<div class="span6 text-center">
-			<button class="btn">Invite through Email</button>
-		</div>
+		<a id="add_roommate_email" href="#add_roommate_email"><i class="icon-plus-sign"></i> Add more roomies!</a>
 	</div>
 	<br>
 	<br>

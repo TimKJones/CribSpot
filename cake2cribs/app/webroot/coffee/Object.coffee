@@ -4,6 +4,12 @@ class A2Cribs.Object
 			if value?
 				@[key] = value
 
+	Update: (a2_object) ->
+		for key, value of a2_object
+			if value?
+				@[key] = value
+		return this
+
 	GetId: (id) ->
 		return parseInt this["#{@class_name}_id"], 10
 

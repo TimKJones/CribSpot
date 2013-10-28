@@ -5,6 +5,8 @@
 
     function Map() {}
 
+    Map.CLUSTER_SIZE = 2;
+
     /*
     	Add all markers in markerList to map
     */
@@ -127,7 +129,7 @@
         styles: imageStyles
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
-      this.GMarkerClusterer.ignoreHidden_ = true;
+      this.GMarkerClusterer.setIgnoreHidden(true);
       A2Cribs.ClickBubble.Init(this.GMap);
       A2Cribs.HoverBubble.Init(this.GMap);
       A2Cribs.Map.InitBoundaries();
@@ -219,11 +221,13 @@
 
     Map.LoadAllMapData = function() {
       var basicData;
+      $("#loader").show();
       basicData = this.LoadBasicData();
       this.BasicDataCached = new $.Deferred();
-      A2Cribs.FavoritesManager.LoadFavorites();
       A2Cribs.FeaturedListings.LoadFeaturedPMListings();
-      $.when(basicData).then(this.LoadBasicDataCallback);
+      basicData.done(this.LoadBasicDataCallback).always(function() {
+        return $("#loader").hide();
+      });
       return A2Cribs.FeaturedListings.InitializeSidebar(this.CurentSchoolId, this.ACTIVE_LISTING_TYPE, basicData, this.BasicDataCached);
     };
 
@@ -241,14 +245,10 @@
     */
 
 
-    Map.ToggleListingVisibility = function(listing_ids, listingsCurrentlyVisible, button) {
-      var all_listings, all_markers, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
-      if (button == null) {
-        button = void 0;
-      }
-      if (button != null) {
-        $(button).toggleClass('active');
-      }
+    Map.ToggleListingVisibility = function(listing_ids, toggle_type) {
+      var all_listings, all_markers, is_current_toggle, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
+      $(".favorite_button").removeClass("active");
+      $(".featured_pm").removeClass("active");
       if ((_ref = A2Cribs.HoverBubble) != null) {
         _ref.Close();
       }
@@ -257,7 +257,8 @@
       }
       all_markers = A2Cribs.UserCache.Get('marker');
       all_listings = A2Cribs.UserCache.Get('listing');
-      if (!listingsCurrentlyVisible) {
+      is_current_toggle = this.CurrentToggle === toggle_type;
+      if (!is_current_toggle) {
         for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
           marker = all_markers[_i];
           marker.IsVisible(false);
@@ -273,6 +274,7 @@
           marker.IsVisible(true);
           listing.IsVisible(true);
         }
+        this.CurrentToggle = toggle_type;
       } else {
         for (_l = 0, _len3 = all_markers.length; _l < _len3; _l++) {
           marker = all_markers[_l];
@@ -284,8 +286,39 @@
           listing = all_listings[_m];
           listing.IsVisible(true);
         }
+        this.CurrentToggle = null;
       }
-      return A2Cribs.Map.GMarkerClusterer.repaint();
+      this.Repaint();
+      return is_current_toggle;
+    };
+
+    /*
+    	Checks/Sets if the map is in clusters
+    */
+
+
+    Map.IsCluster = function(is_clustered) {
+      if (is_clustered == null) {
+        is_clustered = null;
+      }
+      if (typeof is_clustered === "boolean") {
+        if (is_clustered === true) {
+          this.GMarkerClusterer.setMinimumClusterSize(this.CLUSTER_SIZE);
+        } else {
+          this.GMarkerClusterer.setMinimumClusterSize(Number.MAX_VALUE);
+        }
+        this.Repaint();
+      }
+      return this.GMarkerClusterer.getMinimumClusterSize() === this.CLUSTER_SIZE;
+    };
+
+    /*
+    	Repaints the map
+    */
+
+
+    Map.Repaint = function() {
+      return this.GMarkerClusterer.repaint();
     };
 
     Map.style = [

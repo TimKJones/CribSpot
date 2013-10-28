@@ -3,3 +3,29 @@ html,body,#layoutsContainer
 	height: 100%;
 	width: 100%;
 }
+
+::-webkit-scrollbar
+{
+	width: 3px;
+	height: 3px;
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment 
+{
+	height: 3px;
+	display: block;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece
+{
+	//background-color: #3b3b3b;
+	//-webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical
+{
+	height: 50px;
+	background-color: hsla(0, 0%, 31%, 0.5);
+	-webkit-border-radius: 2px;
+}
