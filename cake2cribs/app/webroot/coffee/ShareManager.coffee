@@ -48,10 +48,10 @@ class A2Cribs.ShareManager
 		fbObj = 
 			method: 'feed'
 			link: "https://cribspot.com/"
-			picture: 'http://i.imgur.com/f75Gkt7.jpg'
-			name: "Cribspot's raising the woof!"
-			caption: "Looks like we're fresh out of puppies! Doggone it."
-			description: "See Spot run. See Spot find his next off-campus dog house with Cribspot."
+			picture: 'http://foglobe.com/data_images/main/albert-einstein/albert-einstein-04.jpg'
+			name: "Einstein developed a theory about space, and it was about time too."
+			caption: "Cribspot Pun of the Day!"
+			description: ""
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
