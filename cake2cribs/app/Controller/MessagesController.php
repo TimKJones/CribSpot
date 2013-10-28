@@ -420,6 +420,13 @@
         }
 
         $this->set('message_text_header', $message_text_header);
+
+        /* Set the students facebook img url, if facebook_id is saved */
+        $img_url = null;
+        if (!empty($from_user['facebook_id']))
+            $img_url = "https://graph.facebook.com/".$from_user['facebook_id']."/picture?width=80&height=80";
+
+        $this->set('img_url', $img_url);
         $this->Email->send();
 
     }
