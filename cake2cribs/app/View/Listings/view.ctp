@@ -15,8 +15,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	$this->Html->meta('description', $listing["Rental"]["description"], array('inline' => false));
 
+	echo $this->element('SEO/places_rich_snippet', array('latitude' => $listing["Marker"]["latitude"], 'longitude' => $listing["Marker"]["longitude"]));
+
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
+<input id="listing-data" type="hidden" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>">
 
 <div class="row-fluid full_page">
 	<!-- Listing View side bar -->
@@ -66,18 +69,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					?>
 				</div>
 			</div>
-			<?php
-			if ($this->Session->read('Auth.User.id') != 0)
-			{
-				if ($listing['Favorite'])
-					echo '<a href="#" class="favorite_listing active" onclick="A2Cribs.FavoritesManager.DeleteFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
-				else 
-					echo '<a href="#" class="favorite_listing" onclick="A2Cribs.FavoritesManager.AddFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
-			}
-			else
-				echo '<a href="#" class="favorite_listing" onclick="A2Cribs.UIManager.Error(\'Please log in or sign up to favorite!\')"><i class="icon-heart icon-large"></i></a>';
-
-			?>
+			<a href="#" class="favorite_listing" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>" ><i class="icon-heart icon-large"></i></a>
 		</div>
 
 		<div class="row-fluid more_info">
@@ -144,9 +136,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				</div>
 			</div>
 
-			<div class="row-fluid detail_row">
-				<div class="span12">
-					<i class-"icon-map-marker"></i><?= $listing["Marker"]["street_address"] . ", " . $listing["Marker"]["city"] . ", " .$listing["Marker"]["state"] . " " . $listing["Marker"]["zip"] ?>
+			<div class="row-fluid detail_row" itemscope itemtype="http://schema.org/Residence">
+				<div class="span12" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+					<i class-"icon-map-marker"></i>
+					<span itemprop="streetAddress"><?= $listing["Marker"]["street_address"]; ?></span>,
+					<span itemprop="addressLocality"><?= $listing["Marker"]["city"]; ?></span>,
+					<span itemprop="addressRegion"><?= $listing["Marker"]["state"] ?></span> <?= $listing["Marker"]["zip"] ?>
 				</div>
 			</div>
 		</div>
@@ -216,6 +211,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<li class="active"><a href="#photo_content" data-toggle="tab">Photos</a></li>
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
+					<?php if ($listing['Listing']['scheduling'] === true && $listing['Listing']['available'] === true){ ?>
+						<li><a id="schedule_tour_tab" href="#schedule_tour">Schedule My Tour</a></li>
+					<?php } ?>
 				</ul>
 				<ul class="nav pull-right share_buttons">
 					<li class="disabled"><a href="">Share This Listing:</a></li>
@@ -472,6 +470,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					</div>
 				</div>
 			</div>
+			<?= $this->element('Listings/schedule_tour'); ?>
 		</div>
 		
 	</div>

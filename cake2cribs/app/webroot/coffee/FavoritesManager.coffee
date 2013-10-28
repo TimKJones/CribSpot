@@ -7,8 +7,12 @@ class A2Cribs.FavoritesManager
 	@FavoritesListingIds = []
 	@FavoritesVisible = false
 
+	##
 	$(document).ready =>
 		$("body").on 'click', '.favorite_listing', (event) =>
+			if A2Cribs.Login?.logged_in is no
+				$("#signup_modal").modal("show").find(".signup_message").text "Please signup to favorite this listing."
+				return false
 			listing_id = $(event.currentTarget).data "listing-id"
 			if @FavoritesListingIds.indexOf(parseInt(listing_id, 10)) is -1
 				@AddFavorite listing_id, event.currentTarget
@@ -31,9 +35,9 @@ class A2Cribs.FavoritesManager
 		response = JSON.parse response
 		if response.success == undefined
 			if response.error.message != undefined
-				A2Cribs.UIManager.Alert response.error.message
+				A2Cribs.UIManager.Error response.error.message
 			else
-				A2Cribs.UIManager.Alert "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
+				A2Cribs.UIManager.Error "There was an error adding your favorite. Contact help@cribspot.com if the error persists."
 		else
 			@FavoritesListingIds.push parseInt(listing_id, 10)
 			fl_sidebar_item = $("#fl-sb-item-#{listing_id}")
@@ -60,7 +64,7 @@ class A2Cribs.FavoritesManager
 	@DeleteFavoriteCallback: (response, listing_id, button) ->
 		response = JSON.parse response
 		if response.error != undefined
-			A2Cribs.UIManager.Alert response.error.message
+			A2Cribs.UIManager.Error response.error.message
 		else
 			# remove listing_id from list of favorites
 			index = A2Cribs.FavoritesManager.FavoritesListingIds.indexOf parseInt(listing_id, 10)

@@ -1,0 +1,114 @@
+#calendar_picker
+{
+	padding: 0 80px;
+
+	#at_least_three
+	{
+		font-size: 12px;
+		text-align: center;
+		margin-top: -15px;
+		margin-bottom: 5px;
+	}
+
+	.date_selecter
+	{
+		@height: 30px;
+
+		text-align: center;
+		.date_range
+		{
+			font-size: 16px;
+			line-height: @height;
+			vertical-align: top;
+			margin: 0 20px;
+			text-transform: uppercase;
+			display: inline-block;
+		}
+
+		.date_changer
+		{
+			font-size: @height;
+			display: inline-block;
+			color: #3382e4;
+			-webkit-transition: color 0.25s ease-in-out;
+			-moz-transition: color 0.25s ease-in-out;
+			-o-transition: color 0.25s ease-in-out;
+			-ms-transition: color 0.25s ease-in-out;
+			transition: color 0.25s ease-in-out;
+
+			&.disabled
+			{
+				color: #EBEBEB !important;
+			}
+
+			&:hover
+			{
+				cursor: pointer;
+				color: #1a5da1;
+			}
+		}
+	}
+
+	table
+	{
+		width: 100%;
+		font-size: 90%;
+		margin: 20px 0;
+		th
+		{
+			height: 35px;
+		}
+		.time_slot
+		{
+			@TIME_SLOT_HEIGHT: 25px;
+			height: @TIME_SLOT_HEIGHT;
+			border: 1px solid #e8eae9;
+			padding: 5px;
+			font-size: 135%;
+			text-align: center;
+			width: 30%;
+
+			&.selected
+			{
+				background-color: #EBEBEB !important;
+			}
+
+			&:hover
+			{
+				background-color: #7AB1E9;
+				cursor: pointer;
+			}
+
+			.time_slot_filler
+			{
+				height: 100%;
+				width: 100%;
+				position: relative;
+				border-radius: 15px;
+				background-color: white;
+				line-height: @TIME_SLOT_HEIGHT;
+				box-shadow: inset 0 0 5px gray;
+
+				i
+				{
+					line-height: 10px;
+					font-size: 22px;
+					margin-right: 10px;
+				}
+
+				.icon-plus-sign
+				{
+					color: #3382e4;
+				}
+				.icon-ok-sign
+				{
+					color: #64E986;
+				}
+				.icon-remove-sign
+				{
+					color: #E42217;
+				}
+			}
+		}
+	}
+}

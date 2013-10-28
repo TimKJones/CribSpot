@@ -16,8 +16,7 @@ class ImportController extends AppController {
 		'elevator');
 
 	public function beforeFilter(){
-		parent::beforeFilter();
-		
+		parent::beforeFilter();		
 		$this->Auth->allow('SaveMultipleImageCopies');
 		$this->Auth->allow('GetListings');
 		$this->Auth->allow('SaveListings');
@@ -36,7 +35,7 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='msu.csv')
+	public function GetListings($fileName='wisconsin.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
@@ -45,6 +44,7 @@ otherwise, processes only app/webroot/listings/$fileName
 			/* only retrieve file specified */
 			$file = fopen(WWW_ROOT . 'listings/' . $fileName, 'r');
 			$listing = $this->_processFileToJSON($file);
+			CakeLog::write('jsonlisting', print_r($listing, true));
 			if ($listing != null)
 				array_push($listings, $listing);
 		}
@@ -71,7 +71,7 @@ otherwise, processes only app/webroot/listings/$fileName
 Sets lat and long values for each address
 Then saves the array of listing objects.
 */
-	public function SaveListings($geocoder_necessary=true)
+	public function SaveListings($geocoder_necessary=false)
 	{
 		App::Import('model', 'User');
 
@@ -104,17 +104,7 @@ Then saves the array of listing objects.
 			if ($geocoder_necessary)
 				$formatted_address = $this->_geocoderProcessAddress($address);
 			else{
-				/* lat, long, zip, etc. already processed in excel */
-				$formatted_address = $address;
-				$marker_fields = array('zip', 'latitude', 'longitude');
-				foreach ($marker_fields as $field){
-					if (array_key_exists($field, $listing['Marker']))
-						$formatted_address[$field] = $listing['Marker'][$field];
-					else if ($field !== 'zip'){
-						CakeLog::write('FAILED_IMPORT', 'MISSING INFO: '.print_r($listing, true));
-						return;
-					}
-				}
+				$formatted_address = $this->_processGeocoderFromSavedData($address);
 			}
 			if ($formatted_address === null)
 				return;
@@ -184,6 +174,19 @@ Then saves the array of listing objects.
 			if (!array_key_exists('unit_count', $listing['Rental'])){
 				$listing['Rental']['unit_count'] = 1;
 			}
+			else
+				$listing['Rental']['unit_count'] = intval($listing['Rental']['unit_count']);
+
+			/* Handle some random cases that have been throwing errors */
+			if (array_key_exists('Rental', $listing) && array_key_exists('rent', $listing['Rental']))
+				$listing['Rental']['rent'] = intval($listing['Rental']['rent']);
+
+			if (array_key_exists('Rental', $listing) && array_key_exists('upper_floor_amount', $listing['Rental'])
+				&& !is_numeric($listing['Rental']['upper_floor_amount']))
+				unset($listing['Rental']['upper_floor_amount']);
+
+			
+
 		//}
 
 		/* Set this so we can tell later which users to send the welcome email to */
@@ -465,6 +468,9 @@ return null on failure
 			$counter = 1; 
 		    while (!feof($handle)) {
 		    	$nextline = fgets($handle);
+		    	if (strrpos($nextline,'Ê') === false)
+					$listing=str_replace('Ê', '', $nextline);
+
 		    	CakeLog::write('nextline', $nextline);
 		    	/* use preg_split to escape \ before commas */
 				$listing = preg_split('~(?<!\\\)' . preg_quote(',', '~') . '~', $nextline);
@@ -474,7 +480,6 @@ return null on failure
 					continue;
 				
 				}
-
 				$this->_trimListing($listing); /* remove excess white space from each field */
 				array_push($listings, $listing);
 				$counter++;
@@ -488,7 +493,7 @@ return null on failure
 		return null;
 	}
 
-	public function ImportImages($directory='img/temp/msu/')
+	public function ImportImages($directory='img/temp/wisconsin/')
 	{
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
@@ -509,8 +514,8 @@ return null on failure
 		    $address = substr($file, 0, $address_length);
 		    $full_address = array(
 		    	'street_address' => $address, 
-		    	'city' => 'East Lansing',
-		    	'state' => 'MI'
+		    	'city' => 'Madison',
+		    	'state' => 'WI'
 		    );
 		//CakeLog::write('full_address', print_r($full_address, true));
 		    $geocoded_address = $this->_geocoderProcessAddress($full_address);

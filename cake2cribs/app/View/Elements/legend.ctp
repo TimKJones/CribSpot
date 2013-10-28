@@ -29,13 +29,17 @@
 	}
 	#legend .legend_dot.leased
 	{
-		background-position: 0, -30px;
+		background-position: 0 -30px;
 	}
 	#legend .legend_dot.available
 	{
 		background-position: 0 0;
 	}
 	#legend .legend_dot.unknown
+	{
+		background-position: 0 -90px;
+	}
+	#legend .legend_dot.schedule
 	{
 		background-position: 0 -60px;
 	}
@@ -47,6 +51,9 @@
 	<br>
 	<div class="legend_dot leased"></div>
 	<div class="legend_text">Leased</div>
+	<br>
+	<div class="legend_dot schedule"></div>
+	<div class="legend_text">Schedule Now</div>
 	<br>
 	<div class="legend_dot unknown"></div>
 	<div class="legend_text">Unknown</div>

@@ -51,6 +51,7 @@
       $.ajax({
         url: myBaseUrl + 'Users/IsLoggedIn',
         success: function(response) {
+          var _ref;
           response = JSON.parse(response);
           if (response.error != null) {
             return deferred.reject();
@@ -58,6 +59,7 @@
           if (response.success === "LOGGED_IN") {
             _this.logged_in = true;
             _this.PopulateHeader(response.data);
+            _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
           } else if (response.success === "NOT_LOGGED_IN") {
             _this.logged_in = false;
             _this.ResetHeader();
@@ -95,13 +97,15 @@
       return $("#signup_modal").find(".fb-login").click(function() {
         $(".fb-login").button('loading');
         return _this.FacebookJSLogin().done(function(response) {
+          var _ref;
           if (response.success === "NOT_LOGGED_IN") {
             return setup_facebook_signup_modal(response.data);
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
             A2Cribs.MixPanel.Event("Logged In", null);
-            return _this.PopulateHeader(response.data);
+            _this.PopulateHeader(response.data);
+            return _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -132,6 +136,7 @@
       return $("#login_modal").find(".fb-login").click(function() {
         $(".fb-login").button('loading');
         return _this.FacebookJSLogin().done(function(response) {
+          var _ref;
           if (response.success === "NOT_LOGGED_IN") {
             $("#login_modal").modal('hide');
             $("#signup_modal").modal('show');
@@ -140,7 +145,8 @@
             $(".modal").modal('hide');
             _this.logged_in = true;
             A2Cribs.MixPanel.Event("Logged In", null);
-            return _this.PopulateHeader(response.data);
+            _this.PopulateHeader(response.data);
+            return _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -258,6 +264,22 @@
     };
 
     /*
+    	Populate favorites
+    	Highlight or un-highlight favorites
+    */
+
+
+    Login.PopulateFavorites = function(favorites) {
+      var listing_id, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = favorites.length; _i < _len; _i++) {
+        listing_id = favorites[_i];
+        _results.push($(".favorite_listing*[data-listing-id='" + listing_id + "']").addClass("active"));
+      }
+      return _results;
+    };
+
+    /*
     	Facebook JS Login
     */
 
@@ -327,7 +349,7 @@
       };
       if ((request_data.User.email != null) && (request_data.User.password != null)) {
         $.post(url, request_data, function(response) {
-          var data;
+          var data, _ref;
           data = JSON.parse(response);
           console.log(data);
           if (data.error != null) {
@@ -348,6 +370,7 @@
             });
             $(".modal").modal('hide');
             _this.PopulateHeader(data.data);
+            _this.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
             _this.logged_in = true;
             A2Cribs.MixPanel.Event("Logged In", null);
             return _this._login_deferred.resolve();
@@ -429,7 +452,7 @@
           }
         }
         $.post("/users/AjaxRegister", request_data, function(response) {
-          var data, email;
+          var data, email, _ref;
           data = JSON.parse(response);
           if (data.error != null) {
             A2Cribs.UIManager.CloseLogs();
@@ -456,6 +479,7 @@
               'user_data': request_data
             });
             Login.PopulateHeader(data.data);
+            Login.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
             Login.logged_in = true;
             A2Cribs.MixPanel.Event("Logged In", null);
             $(".modal").modal('hide');

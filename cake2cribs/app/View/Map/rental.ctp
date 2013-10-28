@@ -23,6 +23,7 @@
 		));
 	echo $this->element('map');
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
+	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
 	//echo $this->element('login');
 	//echo $this->element('register');
 	/*

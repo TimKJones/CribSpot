@@ -2,7 +2,7 @@
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
     public $uses = array('User', 'University', 'UnreadMessage', 'Favorite');
-    public $components= array('Email', 'RequestHandler', 'Cookie');
+    public $components= array('Email', 'RequestHandler', 'Cookie', 'Twilio.Twilio');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
     public function beforeFilter() {
@@ -709,6 +709,55 @@ CakeLog::write('userdata', print_r($this->request->data, true));
 
         return $url;
     }
+
+    /*
+    Sends a randomly generated verification code to $phone_number.
+    Save this code in the database to check against later.
+    Save this user's phone number as unverified.
+    */
+    public function SendPhoneVerificationCode()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+                return;
+
+        $this->layout = 'ajax';
+        if (!array_key_exists('phone', $this->request->data))
+            return;
+
+        $phone = $this->request->data['phone'];
+        $random = uniqid();
+        $code = substr($random, strlen($random)-5);
+        $text = "Here is your Cribspot verification code: " . $code;
+        $response = $this->Twilio->sms(Configure::read('TWILIO_PHONE_NUMBER'), $phone, $text);
+CakeLog::write('twiliodebug', print_r($response, true));
+        /* Store this code to be able to verify later */
+        $this->User->UpdatePhoneFields($phone, $code, false, $this->Auth->User('id'));
+
+        $this->set("response", json_encode(array('success' => '')));
+    }
+
+    /*
+    Verify that $code is correct code for this user
+    Set their phone number as verified in DB
+    */
+    public function ConfirmPhoneVerificationCode()
+    {
+        if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+            return;
+
+        $this->layout = 'ajax';
+        if (!array_key_exists('code', $this->request->data))
+            return;
+
+        $code = $this->request->data['code'];
+        $response = $this->User->CheckPhoneCodeValidityAndConfirm($code, $this->Auth->User('id'));
+        CakeLog::write('fuckit', print_r($response, true));
+        $this->set("response", json_encode($response));
+    }   
+
+/* ------------------------------------ private functions -------------------------------------- */
+
+
 
     /*
     Gets the user data necessary to set up the UI following a successful ajax login from the map page.

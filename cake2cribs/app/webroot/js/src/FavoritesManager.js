@@ -19,7 +19,11 @@ Call functions using FavoritesManager.FunctionName()
 
     $(document).ready(function() {
       return $("body").on('click', '.favorite_listing', function(event) {
-        var listing_id;
+        var listing_id, _ref;
+        if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === false) {
+          $("#signup_modal").modal("show").find(".signup_message").text("Please signup to favorite this listing.");
+          return false;
+        }
         listing_id = $(event.currentTarget).data("listing-id");
         if (FavoritesManager.FavoritesListingIds.indexOf(parseInt(listing_id, 10)) === -1) {
           FavoritesManager.AddFavorite(listing_id, event.currentTarget);
@@ -51,9 +55,9 @@ Call functions using FavoritesManager.FunctionName()
       response = JSON.parse(response);
       if (response.success === void 0) {
         if (response.error.message !== void 0) {
-          return A2Cribs.UIManager.Alert(response.error.message);
+          return A2Cribs.UIManager.Error(response.error.message);
         } else {
-          return A2Cribs.UIManager.Alert("There was an error adding your favorite. Contact help@cribspot.com if the error persists.");
+          return A2Cribs.UIManager.Error("There was an error adding your favorite. Contact help@cribspot.com if the error persists.");
         }
       } else {
         this.FavoritesListingIds.push(parseInt(listing_id, 10));
@@ -90,7 +94,7 @@ Call functions using FavoritesManager.FunctionName()
       var fl_sidebar_item, index;
       response = JSON.parse(response);
       if (response.error !== void 0) {
-        return A2Cribs.UIManager.Alert(response.error.message);
+        return A2Cribs.UIManager.Error(response.error.message);
       } else {
         index = A2Cribs.FavoritesManager.FavoritesListingIds.indexOf(parseInt(listing_id, 10));
         if (index !== -1) {
