@@ -87,7 +87,7 @@ class SitemapsController extends AppController{
 
         foreach ($universities as &$university){
             $school_name = str_replace(" ", "_", $university['University']['name']);
-            $university['url'] = 'rental/' . $school_name;
+            $university['url'] = 'university/' . $school_name;
         }
 
         $this->set('universities', $universities);

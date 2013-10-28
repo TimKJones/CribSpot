@@ -888,6 +888,7 @@ class Listing extends AppModel {
 			'Listing.marker_id',
 			'Listing.listing_id',
 			'Listing.available',
+			'Listing.scheduling',
 			'Marker.marker_id',
 			'Marker.latitude',
 			'Marker.longitude',
