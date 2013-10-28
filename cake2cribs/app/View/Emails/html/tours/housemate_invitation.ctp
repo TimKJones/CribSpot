@@ -662,11 +662,3 @@
                 </style>
             </center></body>
 </html>
-
-
-
-
-
-<b>Hi <?php echo $housemate_name ?>,</b><br><br>
-<?php 
-echo $logged_in_first_name.' '.$logged_in_last_name.' has invited you to tour '.$building_name." with them! We're still finalizing the tour booking, and will notify you as soon as it's completed.  In the mean time, you'll need to <a href='https://www.cribspot.com/signup'>sign up</a> for an account on <a href='https://www.cribspot.com'>Cribspot</a>. It'll only take 30 seconds!<br><br>";
