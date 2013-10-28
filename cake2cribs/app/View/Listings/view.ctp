@@ -15,6 +15,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	$this->Html->meta('description', $listing["Rental"]["description"], array('inline' => false));
 
+	echo $this->element('SEO/places_rich_snippet', array('latitude' => $listing["Marker"]["latitude"], 'longitude' => $listing["Marker"]["longitude"]));
+
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 
@@ -133,9 +135,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				</div>
 			</div>
 
-			<div class="row-fluid detail_row">
-				<div class="span12">
-					<i class-"icon-map-marker"></i><?= $listing["Marker"]["street_address"] . ", " . $listing["Marker"]["city"] . ", " .$listing["Marker"]["state"] . " " . $listing["Marker"]["zip"] ?>
+			<div class="row-fluid detail_row" itemscope itemtype="http://schema.org/Residence">
+				<div class="span12" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+					<i class-"icon-map-marker"></i>
+					<span itemprop="streetAddress"><?= $listing["Marker"]["street_address"]; ?></span>,
+					<span itemprop="addressLocality"><?= $listing["Marker"]["city"]; ?></span>,
+					<span itemprop="addressRegion"><?= $listing["Marker"]["state"] ?></span> <?= $listing["Marker"]["zip"] ?>
 				</div>
 			</div>
 		</div>
