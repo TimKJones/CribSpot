@@ -472,13 +472,13 @@
                         <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;line-height: 150%;text-align: left;">
                         
                             <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
-	<span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Your request to tour <?php echo $building_name;?> has been confirmed!</span></span></h3>
+	<span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Your request to tour <a href='<?= $listing_url;?>'><?= $building_name;?></a> has been confirmed!</span></span></h3>
 <br>
 <span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">You're now scheduled to view this property at:</span></span></span><br>
 <br>
 <strong><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><?php echo $tour_time;?></span></span></strong><br>
 <br>
-<span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Put it in your calendar now before you forget! We’ll also be sending you a text message 1 hour before to confirm that the tour is still on.&nbsp;<u>If you find at any point you cannot make the above time, please respond to this email with “Cannot Attend" to let us know.&nbsp;</u><br>
+<span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Put it in your calendar now before you forget! We’ll also be sending you a text message 1 hour before to confirm that the tour is still on.&nbsp;<u>If you find you can't make the above time, please respond to this email with “Cannot Attend" to let us know.&nbsp;</u><br>
 <br>
 Happy touring!<br>
 <br>

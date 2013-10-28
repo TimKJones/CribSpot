@@ -474,7 +474,7 @@
                             <span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">Hi <?php echo $housemate_name ?>,</span></span><br>
 <div>
 	<br>
-	<span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><strong><?= $logged_in_first_name.' '.$logged_in_last_name; ?></strong> has invited you to tour <strong><?= $building_name; ?></strong> with them! We're still finalizing the tour booking, and will notify you as soon as it's been completed. In the mean time, you'll need to sign up&nbsp;for an account on&nbsp;<a href="http://www.cribspot.com" target="_blank" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #6DC6DD;font-weight: normal;text-decoration: underline;">Cribspot</a>&nbsp;by clicking the button below.</span></span><br>
+	<span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><strong><?= $logged_in_first_name.' '.$logged_in_last_name; ?></strong> has invited you to tour <strong><a href='<?= $listing_url;?>'><?= $building_name;?></a></strong> with them! We're still finalizing the tour booking, and will notify you as soon as it's been completed. In the mean time, you'll need to sign up&nbsp;for an account on&nbsp;<a href="http://www.cribspot.com" target="_blank" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #6DC6DD;font-weight: normal;text-decoration: underline;">Cribspot</a>&nbsp;by clicking the button below.</span></span><br>
 	&nbsp;</div>
 
                         </td>
@@ -492,7 +492,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 16px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Join the Tour" href="https://www.cribspot/com/signup" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Tour</a>
+                                <a class="mcnButton " title="Join the Tour" href="https://www.cribspot/signup" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Tour</a>
                             </td>
                         </tr>
                     </tbody>
