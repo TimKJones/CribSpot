@@ -153,7 +153,7 @@ class A2Cribs.Tour
 		$("#confirm_validation_code").click =>
 			# if code looks legit
 			code = $("#verification_code").val()
-			if code?.length isnt 5 or isNaN code
+			if code?.length isnt 5
 				A2Cribs.UIManager.Error "Invalid Code!"
 				return
 
@@ -163,8 +163,12 @@ class A2Cribs.Tour
 				type: 'POST'
 				data: 
 					code: code
-				success: ->
-					$("#verify_phone").modal 'hide'
+				success: (response) ->
+					if response.error?
+						A2Cribs.UIManager.Error response.error
+					else
+						A2Cribs.UIManager.Success "Phone Number Verified!"
+						$("#verify_phone").modal 'hide'
 				error: ->
 					A2Cribs.UIManager.Error "Invalid Code!"
 

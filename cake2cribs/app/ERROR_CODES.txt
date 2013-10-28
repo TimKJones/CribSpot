@@ -149,3 +149,5 @@
 - User->Save()
 71
 - TourInvitation->InviteHousemates
+72
+- User->UpdatePhoneFields

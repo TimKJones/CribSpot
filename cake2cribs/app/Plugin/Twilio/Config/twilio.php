@@ -18,7 +18,7 @@
 	/**
 	 * Mode ("sandbox" or "prod")
 	 **/
-	$config['Twilio']['mode']   = 'prod';
+	$config['Twilio']['mode']   = 'sandbox';
 
 	/**
 	 * Account SID
@@ -38,7 +38,7 @@
 	/**
 	 * Twilio Phone Number
 	 **/
-	$config['Twilio']['number']        = '3232742704';
+	$config['Twilio']['number']        = Configure::read('TWILIO_PHONE_NUMBER');
 
 
 /* End of file twilio.php */
