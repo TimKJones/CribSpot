@@ -24,7 +24,7 @@
 	{
 		height: 10px;
 		width: 10px;
-		background-image: url('/img/dots/dot_sprite.png');
+		background-image: url('/img/dots/dot_sprite.png?v=2');
 		display: inline-block;
 	}
 	#legend .legend_dot.leased
