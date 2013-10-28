@@ -139,6 +139,7 @@ class A2Cribs.Map
 		for marker in all_markers
 			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
 			is_available = no
+			is_scheduled = no
 			for listing in listings
 				# check if marker is leased, unknown or available
 				# order is avail, unknown, leased
@@ -150,7 +151,11 @@ class A2Cribs.Map
 				else if listing.available? and listing.available is yes
 					is_available = yes # Set to true
 
-			marker.Init is_available
+				if listing.scheduling is yes
+					is_scheduled = true
+					lol = "lol"
+
+			marker.Init is_available, is_scheduled
 			@GMarkerClusterer.addMarker marker.GMarker		
 
 		# Set all listings to visible
