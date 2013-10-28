@@ -97,7 +97,7 @@ Class is for scheduling and picking a time to tour
           filler.hide().find("i").removeClass("icon-remove-sign").addClass("icon-plus-sign");
           $(event.delegateTarget).removeClass("selected");
           offset_date = parseInt($(event.delegateTarget).attr("data-dateoffset"), 10);
-          return _this.AddTimeSlot(_this.current_offset + offset_date, $(event.delegateTarget).attr("data-timeslot"));
+          return _this.DeleteTimeSlot(_this.current_offset + offset_date, $(event.delegateTarget).attr("data-timeslot"));
         } else {
           filler.show().find("i").removeClass("icon-plus-sign").addClass("icon-ok-sign");
           $(event.delegateTarget).addClass("selected");
@@ -126,6 +126,7 @@ Class is for scheduling and picking a time to tour
           $("#calendar_picker").hide();
           return $("#schedule_info").show();
         } else {
+          A2Cribs.UIManager.CloseLogs();
           return A2Cribs.UIManager.Error("Please select at least three time slots that work for you!");
         }
       });
@@ -149,16 +150,28 @@ Class is for scheduling and picking a time to tour
         }
         return $(event.currentTarget.parentElement).removeClass("completed_roommate");
       });
+      $("#back_to_timeslots").click(function() {
+        $("#schedule_info").hide();
+        return $("#calendar_picker").show();
+      });
       $("#add_roommate_email").click(function() {
         var email_row, row_count;
         row_count = $(".email_row").last().data("email-row");
         email_row = $("<div data-email-row='" + (row_count + 1) + "' class='row-fluid email_row'>				<input class='roommate_input roommate_name' type='text' placeholder='Name'>				<input class='roommate_input roommate_email' type='email' placeholder='Email'>				<span class='complete_email'><i class='icon-ok-sign icon-large'></i></span>			</div>");
         return $("#email_invite_list").append(email_row);
       });
+      $("#verify_phone_number").keyup(function() {
+        if ($("#verify_phone_number").val() === $("#phone_verified").val()) {
+          return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
+        } else {
+          return $("#verify_phone_btn").removeClass("verified").text("Click to Verify").prop("disabled", false);
+        }
+      });
       $("#verify_phone_btn").click(function() {
         var phone;
         phone = $("#verify_phone_number").val();
         if ((phone != null ? phone.length : void 0) !== 10 || isNaN(phone)) {
+          A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Please enter a valid phone number");
           return;
         }
@@ -177,8 +190,9 @@ Class is for scheduling and picking a time to tour
         var code;
         code = $("#verification_code").val();
         if ((code != null ? code.length : void 0) !== 5 || isNaN(code)) {
+          A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Invalid Code!");
-          return;
+          return false;
         }
         return $.ajax({
           url: myBaseUrl + "Users/ConfirmPhoneVerificationCode",
@@ -187,9 +201,12 @@ Class is for scheduling and picking a time to tour
             code: code
           },
           success: function() {
-            return $("#verify_phone").modal('hide');
+            $("#verify_phone").modal('hide');
+            $("#phone_verified").val($("#verify_phone_number").val());
+            return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
           },
           error: function() {
+            A2Cribs.UIManager.CloseLogs();
             return A2Cribs.UIManager.Error("Invalid Code!");
           }
         });
@@ -198,10 +215,12 @@ Class is for scheduling and picking a time to tour
         var phone, _ref;
         phone = $("#verify_phone_number").val();
         if ((phone != null ? phone.length : void 0) !== 10 || isNaN(phone)) {
+          A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Please enter a valid phone number");
           return;
         }
         if (((_ref = $("#phone_verified").val()) != null ? _ref.length : void 0) !== 1) {
+          A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Please click the verify button to send verification text");
           return;
         }
@@ -210,6 +229,7 @@ Class is for scheduling and picking a time to tour
           $(".schedule_page").hide();
           return $("#schedule_completed").show();
         }).fail(function() {
+          A2Cribs.UIManager.CloseLogs();
           return A2Cribs.UIManager.Error("Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue");
         }).always(function() {
           return $("#complete_tour_request").button('reset');
@@ -241,7 +261,7 @@ Class is for scheduling and picking a time to tour
 
     Tour.DeleteTimeSlot = function(offset_date, time_slot) {
       var hash;
-      hash = "" + offset_date + " + " + time_slot;
+      hash = "" + offset_date + time_slot;
       if (this.selected_timeslots[hash] != null) {
         return delete this.selected_timeslots[hash];
       }

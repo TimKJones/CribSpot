@@ -1,6 +1,6 @@
 <?php echo $this->Html->css('/less/Tours/schedule_info.less?','stylesheet/less', array('inline' => false)); ?>
 
-<div id="schedule_info" class="schedule_page">
+<div id="schedule_info" class="schedule_page hide">
 	<h3>Just a few more clicks away...</h3>
 	<div class="row-fluid">
 		<div class="input-label span4">My Phone Number</div>
@@ -46,6 +46,7 @@
 		<textarea id="tour_notes" class="span12" rows="3"></textarea>
 	</div>
 	<div class="btn-row">
+		<button id="back_to_timeslots" class="btn pull-left">Back</button>
 		<button id="complete_tour_request" class="btn" data-loading-text="Requesting...">Request My Tour</button>
 	</div>
 </div>
