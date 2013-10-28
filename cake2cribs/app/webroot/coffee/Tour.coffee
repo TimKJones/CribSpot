@@ -149,6 +149,7 @@ class A2Cribs.Tour
 				return
 
 			# Send the text
+			###
 			$.ajax
 				url: myBaseUrl + "Users/SendPhoneVerificationCode"
 				type: 'POST'
@@ -158,6 +159,7 @@ class A2Cribs.Tour
 					# Message was sent
 				error: ->
 					#Failed to send message
+			###
 
 			$("#verify_phone").modal 'show'
 
@@ -179,6 +181,7 @@ class A2Cribs.Tour
 					code: code
 
 				success: (response) ->
+					response = JSON.parse response
 					if response.error?
 						A2Cribs.UIManager.Error response.error
 					else

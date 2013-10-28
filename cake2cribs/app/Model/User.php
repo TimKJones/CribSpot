@@ -746,7 +746,7 @@ class User extends AppModel {
 			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
 
 		$correct_code = $correct_code['User']['phone_confirmation_code'];
-		if ($code === $correct_code){
+		if (strcmp($code,$correct_code) === 0) {
 			/* Set user's phone as verified */
 			$this->saveField('phone_verified', 1);
 			return array('success' => '');
