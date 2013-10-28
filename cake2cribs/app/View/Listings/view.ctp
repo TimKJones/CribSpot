@@ -66,18 +66,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					?>
 				</div>
 			</div>
-			<?php
-			if ($this->Session->read('Auth.User.id') != 0)
-			{
-				if ($listing['Favorite'])
-					echo '<a href="#" class="favorite_listing active" onclick="A2Cribs.FavoritesManager.DeleteFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
-				else 
-					echo '<a href="#" class="favorite_listing" onclick="A2Cribs.FavoritesManager.AddFavorite(' . $listing["Listing"]["listing_id"] . ', this)"><i class="icon-heart icon-large"></i></a>';
-			}
-			else
-				echo '<a href="#" class="favorite_listing" onclick="A2Cribs.UIManager.Error(\'Please log in or sign up to favorite!\')"><i class="icon-heart icon-large"></i></a>';
-
-			?>
+			<a href="#" class="favorite_listing" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>" ><i class="icon-heart icon-large"></i></a>
 		</div>
 
 		<div class="row-fluid more_info">

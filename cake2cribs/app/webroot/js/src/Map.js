@@ -270,9 +270,11 @@
         for (_k = 0, _len2 = listing_ids.length; _k < _len2; _k++) {
           listing_id = listing_ids[_k];
           listing = A2Cribs.UserCache.Get('listing', listing_id);
-          marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
-          marker.IsVisible(true);
-          listing.IsVisible(true);
+          if (listing != null) {
+            marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
+            marker.IsVisible(true);
+            listing.IsVisible(true);
+          }
         }
         this.CurrentToggle = toggle_type;
       } else {

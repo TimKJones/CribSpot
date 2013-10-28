@@ -44,6 +44,7 @@ class A2Cribs.Login
 				if response.success is "LOGGED_IN"
 					@logged_in = true
 					@PopulateHeader response.data
+					@PopulateFavorites response.data?.favorites
 
 				else if response.success is "NOT_LOGGED_IN"
 					@logged_in = false
@@ -90,6 +91,7 @@ class A2Cribs.Login
 					A2Cribs.MixPanel.Event "Logged In", null
 					# Populate the header
 					@PopulateHeader response.data
+					@PopulateFavorites response.data?.favorites
 
 			.always () =>
 				$(".fb-login").button('reset')
@@ -132,6 +134,7 @@ class A2Cribs.Login
 					A2Cribs.MixPanel.Event "Logged In", null
 					# Populate the header
 					@PopulateHeader response.data
+					@PopulateFavorites response.data?.favorites
 			.always () =>
 				$(".fb-login").button('reset')
 
@@ -264,6 +267,14 @@ class A2Cribs.Login
 		$(".personal_menu_#{user.user_type}").show()
 
 	###
+	Populate favorites
+	Highlight or un-highlight favorites
+	###
+	@PopulateFavorites: (favorites) ->
+		for listing_id in favorites
+			$(".favorite_listing*[data-listing-id='#{listing_id}']").addClass("active")
+
+	###
 	Facebook JS Login
 	###
 	@FacebookJSLogin: ->
@@ -337,6 +348,7 @@ class A2Cribs.Login
 						'source':'cribspot'
 					$(".modal").modal('hide')
 					@PopulateHeader data.data
+					@PopulateFavorites data.data?.favorites
 					@logged_in = yes
 					A2Cribs.MixPanel.Event "Logged In", null
 					return @_login_deferred.resolve()
@@ -426,6 +438,7 @@ class A2Cribs.Login
 						'email':email
 						'user_data':request_data
 					@PopulateHeader data.data
+					@PopulateFavorites data.data?.favorites
 					@logged_in = yes
 					A2Cribs.MixPanel.Event "Logged In", null
 					$(".modal").modal('hide')

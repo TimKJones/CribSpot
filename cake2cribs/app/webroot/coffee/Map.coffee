@@ -221,9 +221,10 @@ class A2Cribs.Map
 			# Set visibility of all markers with listings in listing_ids to true
 			for listing_id in listing_ids
 				listing = A2Cribs.UserCache.Get 'listing', listing_id
-				marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
-				marker.IsVisible true
-				listing.IsVisible true
+				if listing?
+					marker = A2Cribs.UserCache.Get 'marker', listing.marker_id
+					marker.IsVisible true
+					listing.IsVisible true
 			
 			@CurrentToggle = toggle_type
 		else
