@@ -23,12 +23,12 @@
 	/**
 	 * Account SID
 	 **/
-	$config['Twilio']['account_sid']   = 'AC2e374284ae46d156642a003e0ebb5577';
+	$config['Twilio']['account_sid']   = Configure::read('TWILIO_SID');
 
 	/**
 	 * Auth Token
 	 **/
-	$config['Twilio']['auth_token']    = '4416e02ab64fd97348e13c61b8a7f413';
+	$config['Twilio']['auth_token']    = Configure::read('TWILIO_AUTH_TOKEN');
 
 	/**
 	 * API Version
