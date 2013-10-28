@@ -161,7 +161,9 @@ Class is for scheduling and picking a time to tour
         return $("#email_invite_list").append(email_row);
       });
       $("#verify_phone_number").keyup(function() {
-        if ($("#verify_phone_number").val() === $("#phone_verified").val()) {
+        var phone;
+        phone = $("#verify_phone_number").val();
+        if ((phone != null ? phone.length : void 0) > 0 && phone === $("#phone_verified").val()) {
           return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
         } else {
           return $("#verify_phone_btn").removeClass("verified").text("Click to Verify").prop("disabled", false);
@@ -217,20 +219,20 @@ Class is for scheduling and picking a time to tour
         });
       });
       return $("#complete_tour_request").click(function() {
-        var phone, _ref;
+        var phone;
         phone = $("#verify_phone_number").val();
         if ((phone != null ? phone.length : void 0) !== 10 || isNaN(phone)) {
           A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Please enter a valid phone number");
           return;
         }
-        if (((_ref = $("#phone_verified").val()) != null ? _ref.length : void 0) !== 1) {
+        if ((phone != null ? phone.length : void 0) === 0 || phone !== $("#phone_verified").val()) {
           A2Cribs.UIManager.CloseLogs();
           A2Cribs.UIManager.Error("Please click the verify button to send verification text");
           return;
         }
         $("#complete_tour_request").button('loading');
-        return _this.RequestTourTimes(1, $("#tour_notes").val()).done(function() {
+        return _this.RequestTourTimes($("#listing-data").data("listing-id"), $("#tour_notes").val(), _this.GetHousematesList()).done(function() {
           $(".schedule_page").hide();
           return $("#schedule_completed").show();
         }).fail(function() {
@@ -240,6 +242,24 @@ Class is for scheduling and picking a time to tour
           return $("#complete_tour_request").button('reset');
         });
       });
+    };
+
+    /*
+    	Get Housemates List
+    	Fetches all the validated housemates email and names
+    */
+
+
+    Tour.GetHousematesList = function() {
+      var housemates_list;
+      housemates_list = [];
+      $(".completed_roommate").each(function(index, element) {
+        return housemates_list.push({
+          name: $(element).find(".roommate_name").val(),
+          email: $(element).find(".roommate_email").val()
+        });
+      });
+      return housemates_list;
     };
 
     /*
@@ -295,7 +315,7 @@ Class is for scheduling and picking a time to tour
     */
 
 
-    Tour.RequestTourTimes = function(listing_id, note) {
+    Tour.RequestTourTimes = function(listing_id, note, housemates) {
       var key, time, times, _ref;
       if (note == null) {
         note = "";
@@ -313,15 +333,7 @@ Class is for scheduling and picking a time to tour
           times: times,
           listing_id: listing_id,
           notes: note,
-          housemates: [
-            {
-              name: "Evan Dancer",
-              email: 'evan@cribspot.com'
-            }, {
-              name: "Mildrew Jones",
-              email: 'tim@cribspot.com'
-            }
-          ]
+          housemates: housemates
         },
         success: function(response) {
           return alert(response);

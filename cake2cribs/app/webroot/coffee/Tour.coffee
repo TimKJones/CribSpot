@@ -134,7 +134,8 @@ class A2Cribs.Tour
 			$("#email_invite_list").append email_row
 
 		$("#verify_phone_number").keyup =>
-			if $("#verify_phone_number").val() is $("#phone_verified").val()
+			phone = $("#verify_phone_number").val()
+			if phone?.length > 0 and phone is $("#phone_verified").val()
 				$("#verify_phone_btn").addClass("verified").text("Verified").prop "disabled", true
 			else
 				$("#verify_phone_btn").removeClass("verified").text("Click to Verify").prop "disabled", false
@@ -199,14 +200,14 @@ class A2Cribs.Tour
 				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please enter a valid phone number"
 				return
-			if $("#phone_verified").val()?.length isnt 1
+			if phone?.length is 0 or phone isnt $("#phone_verified").val()
 				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please click the verify button to send verification text"
 				return
 
 			$("#complete_tour_request").button 'loading'
 
-			@RequestTourTimes(1, $("#tour_notes").val())
+			@RequestTourTimes($("#listing-data").data("listing-id"), $("#tour_notes").val(), @GetHousematesList())
 			.done ->
 				$(".schedule_page").hide()
 				$("#schedule_completed").show()
@@ -216,7 +217,17 @@ class A2Cribs.Tour
 			.always ->
 				$("#complete_tour_request").button 'reset'
 
-
+	###
+	Get Housemates List
+	Fetches all the validated housemates email and names
+	###
+	@GetHousematesList: ->
+		housemates_list = []
+		$(".completed_roommate").each (index, element) ->
+			housemates_list.push
+				name: $(element).find(".roommate_name").val()
+				email: $(element).find(".roommate_email").val()
+		return housemates_list
 
 	###
 	Add Time Slot
@@ -254,7 +265,7 @@ class A2Cribs.Tour
 	Sends a list of the date objects to
 	Tours/RequestTourTimes
 	###
-	@RequestTourTimes: (listing_id, note = "") ->
+	@RequestTourTimes: (listing_id, note = "", housemates) ->
 		times = []
 		for key, time of @selected_timeslots
 			times.push time
@@ -265,10 +276,7 @@ class A2Cribs.Tour
 				times: times
 				listing_id: listing_id
 				notes: note
-				housemates:[
-					{name:"Evan Dancer", email: 'evan@cribspot.com'}
-					{name: "Mildrew Jones", email: 'tim@cribspot.com'}
-				]
+				housemates: housemates
 
 			success: (response) ->
 				alert response

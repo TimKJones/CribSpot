@@ -17,6 +17,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
+<input id="listing-data" type="hidden" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>">
 
 <div class="row-fluid full_page">
 	<!-- Listing View side bar -->
