@@ -604,10 +604,12 @@ As current and former students, we know just how hectic the leasing process can 
     <tbody><tr>
         <td class="mcnCaptionBottomImageContent" align="right" valign="top" style="padding: 0 9px 9px 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
         
-            
-
-            <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
-            
+  
+            <?php if (!empty($img_url)) { ?>
+                <img alt="" src="<?= $img_url ?>" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+            <? } else { ?>
+                <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+            <?php } ?>
         
         </td>
     </tr>

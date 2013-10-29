@@ -391,6 +391,18 @@
             $year = $from_user['year'];
 
         $this->set('student_year', $year);
+
+        /* Set the students facebook img url, if facebook_id is saved */
+        $img_url = "/img/head_large.jpg";
+        if (!empty($from_user['facebook_id']))
+            $img_url = "https://graph.facebook.com/".$from_user['facebook_id']."/picture?width=180&height=180";
+
+        if (!empty($from_user['profile_img']))
+            $img_url = '/'.$from_user['profile_img'];
+
+        $this->set('img_url', $img_url);
+
+
         $this->Email->send();
 
     }
