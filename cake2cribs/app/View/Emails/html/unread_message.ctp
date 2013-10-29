@@ -1,9 +1,3 @@
-<?php
-    $view_msg = "https://www.cribspot.com/messages/view/" . $conv_id;
-?>
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -546,7 +540,7 @@
                                 <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
 
                                 <? if (isset($reset_password_url) && $reset_password_url != null) { ?>
-                                Click <a href='<?php echo $reset_password_url;?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your Cribspot password, or copy and paste the following URL into your browser:<br/><br/><?php echo $reset_password_url; ?><br/><br>
+                                After you're redirected to your dashboard, you'll be able to set your password for future visits in the 'My Account' tab.<br/><br>
                                 <? } ?>
 As current and former students, we know just how hectic the leasing process can be - for both renters and property managers. This is why we created Cribspot last year. If you would like to know more about Cribspot, feel free to give us a call at 908-752-8187. You can also reach us at info@cribspot.com or jason@cribspot.com.</span></span>
 

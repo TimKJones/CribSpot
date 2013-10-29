@@ -377,8 +377,14 @@
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
 
-        $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
-                "&reset_token=".$recipient['password_reset_token'];
+        /* Set user login code if not yet set */
+        $code = null;
+        if (empty($recipient['login_code'])) {
+            $code = uniqid();
+            $this->User->SetLoginCode($recipient['id'], $code);
+        }
+        $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                "&code=".$recipient['login_code'];
         $this->set('to_property_manager', $is_property_manager);
         $this->set('from_name', $from_name);
         $this->set('from_university', $from_university);
@@ -394,14 +400,19 @@
         $this->set('student_year', $year);
 
         /* Set the students facebook img url, if facebook_id is saved */
-        $img_url = "/img/head_large.jpg";
+        $img_url = "https://www.cribspot.com/img/head_large.jpg";
         if (!empty($from_user['facebook_id']))
             $img_url = "https://graph.facebook.com/".$from_user['facebook_id']."/picture?width=180&height=180";
 
         if (!empty($from_user['profile_img']))
-            $img_url = '/'.$from_user['profile_img'];
+            $img_url = 'https://www.cribspot.com/img/'.$from_user['profile_img'];
 
         $this->set('img_url', $img_url);
+
+        /* Set URL to open message */
+        $view_msg = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                "&code=".$recipient['login_code'].'&convid='.$conversation['Conversation']['conversation_id'];
+        $this->set('view_msg', $view_msg);
 
         $this->Email->send();
 
