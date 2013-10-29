@@ -3,9 +3,12 @@ class A2Cribs.FullListing
 	@SetupUI: (@listing_id) ->
 		@div = $(".full_page")
 
-		@div.find("#schedule_tour_tab").click (event) =>
+		@div.find(".show_scheduling").click (event) =>
 			if A2Cribs.Login?.logged_in is yes
-				$(event.currentTarget).tab('show')
+				if not $(event.currentTarget).attr("href")?
+					$("#scheduling_tour_tab").click()
+				else
+					$(event.currentTarget).tab('show')
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to schedule a tour."
 				A2Cribs.MixPanel.Event "login required",
