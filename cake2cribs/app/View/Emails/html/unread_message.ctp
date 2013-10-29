@@ -1,502 +1,728 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?php 
-    // [NOTE] url is hard coded instead of using a php function like $_Server['Http_Host']
-    // There was issue invalid links while testing on the dev enviorment
-
-    $partic_link = "https://www.cribspot.com/users/view/$participant[id]/";
-    $view_msg = "https://www.cribspot.com/messages/view/$conv_id";
-    // BUG the links don't evaluate to clickable links, maybe its because the link I'm providing is from localhost
+<?php
+    $view_msg = "https://www.cribspot.com/messages/view/" . $conv_id;
 ?>
-<html><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><style type="text/css">
 
-@media only screen and (max-device-width: 480px) { 
 
-table[class=w0], td[class=w0] { width: 0 !important; }
 
-table[class=w10], td[class=w10], img[class=w10] { width:10px !important; }
-
-table[class=w15], td[class=w15], img[class=w15] { width:5px !important; }
-
-table[class=w30], td[class=w30], img[class=w30] { width:10px !important; }
-
-table[class=w60], td[class=w60], img[class=w60] { width:10px !important; }
-
-table[class=w125], td[class=w125], img[class=w125] { width:80px !important; }
-
-table[class=w130], td[class=w130], img[class=w130] { width:55px !important; }
-
-table[class=w140], td[class=w140], img[class=w140] { width:90px !important; }
-
-table[class=w160], td[class=w160], img[class=w160] { width:180px !important; }
-
-table[class=w170], td[class=w170], img[class=w170] { width:100px !important; }
-
-table[class=w180], td[class=w180], img[class=w180] { width:80px !important; }
-
-table[class=w195], td[class=w195], img[class=w195] { width:80px !important; }
-
-table[class=w220], td[class=w220], img[class=w220] { width:80px !important; }
-
-table[class=w240], td[class=w240], img[class=w240] { width:180px !important; }
-
-table[class=w255], td[class=w255], img[class=w255] { width:185px !important; }
-
-table[class=w275], td[class=w275], img[class=w275] { width:135px !important; }
-
-table[class=w280], td[class=w280], img[class=w280] { width:135px !important; }
-
-table[class=w300], td[class=w300], img[class=w300] { width:140px !important; }
-
-table[class=w325], td[class=w325], img[class=w325] { width:95px !important; }
-
-table[class=w360], td[class=w360], img[class=w360] { width:140px !important; }
-
-table[class=w410], td[class=w410], img[class=w410] { width:180px !important; }
-
-table[class=w470], td[class=w470], img[class=w470] { width:200px !important; }
-
-table[class=w580], td[class=w580], img[class=w580] { width:280px !important; }
-
-table[class=w640], td[class=w640], img[class=w640] { width:300px !important; }
-
-table[class*=hide], td[class*=hide], img[class*=hide], p[class*=hide], span[class*=hide] { display:none !important; }
-
-table[class=h0], td[class=h0] { height: 0 !important; }
-
-p[class=footer-content-left] { text-align: center !important; }
-
-#headline p { font-size: 30px !important; }
-
-.article-content, #left-sidebar{ -webkit-text-size-adjust: 90% !important; -ms-text-size-adjust: 90% !important; }
-
-.header-content, .footer-content-left {-webkit-text-size-adjust: 80% !important; -ms-text-size-adjust: 80% !important;}
-
-img { height: auto; line-height: 100%;}
-
- } 
-
-#outlook a { padding: 0; }  
-
-body { width: 100% !important; }
-
-.ReadMsgBody { width: 100%; }
-
-.ExternalClass { width: 100%; display:block !important; } 
-
-body { background-color: #cfcfcf; margin: 0; padding: 0; }
-
-img { outline: none; text-decoration: none; display: block;}
-
-br, strong br, b br, em br, i br { line-height:100%; }
-
-h1, h2, h3, h4, h5, h6 { line-height: 100% !important; -webkit-font-smoothing: antialiased; }
-
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: blue !important; }
-
-h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active { color: red !important; }
-
-h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited { color: purple !important; }
-
-  
-
-table td, table tr { border-collapse: collapse; }
-
-.yshortcuts, .yshortcuts a, .yshortcuts a:link,.yshortcuts a:visited, .yshortcuts a:hover, .yshortcuts a span {
-
-color: black; text-decoration: none !important; border-bottom: none !important; background: none !important;
-
-}   
-
-code {
-
-  white-space: normal;
-
-  word-break: break-all;
-
-}
-
-#background-table { background-color: #cfcfcf; }
-
-#top-bar { border-radius:6px 6px 0px 0px; -moz-border-radius: 6px 6px 0px 0px; -webkit-border-radius:6px 6px 0px 0px; -webkit-font-smoothing: antialiased; background-color: #2b2b2b; color: #ffffff; }
-
-#top-bar a { font-weight: bold; color: #ffffff; text-decoration: none;}
-
-#footer { border-radius:0px 0px 6px 6px; -moz-border-radius: 0px 0px 6px 6px; -webkit-border-radius:0px 0px 6px 6px; -webkit-font-smoothing: antialiased; }
-
-body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; }
-
-.header-content, .footer-content-left, .footer-content-right { -webkit-text-size-adjust: none; -ms-text-size-adjust: none; }
-
-.header-content { font-size: 12px; color: #ffffff; }
-
-.header-content a { font-weight: bold; color: #ffffff; text-decoration: none; }
-
-#headline p { color: #eeeeee; font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; font-size: 36px; text-align: center; margin-top:0px; margin-bottom:30px; }
-
-#headline p a { color: #eeeeee; text-decoration: none; }
-
-.article-title { font-size: 18px; line-height:24px; color: #3c95c9; font-weight:bold; margin-top:0px; margin-bottom:18px; font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; }
-
-.article-title a { color: #3c95c9; text-decoration: none; }
-
-.article-title.with-meta {margin-bottom: 0;}
-
-.article-meta { font-size: 13px; line-height: 20px; color: #ccc; font-weight: bold; margin-top: 0;}
-
-.article-content { font-size: 13px; line-height: 18px; color: #444444; margin-top: 0px; margin-bottom: 18px; font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; }
-
-.article-content a { color: #d54849; font-weight:bold; text-decoration:none; }
-
-.article-content img { max-width: 100% }
-
-.article-content ol, .article-content ul { margin-top:0px; margin-bottom:18px; margin-left:19px; padding:0; }
-
-.article-content li { font-size: 13px; line-height: 18px; color: #444444; }
-
-.article-content li a { color: #d54849; text-decoration:underline; }
-
-.article-content p {margin-bottom: 15px;}
-
-.footer-content-left { font-size: 12px; line-height: 15px; color: #888888; margin-top: 0px; margin-bottom: 15px; }
-
-.footer-content-left a { color: #eeeeee; font-weight: bold; text-decoration: none; }
-
-.footer-content-right { font-size: 11px; line-height: 16px; color: #888888; margin-top: 0px; margin-bottom: 15px; }
-
-.footer-content-right a { color: #eeeeee; font-weight: bold; text-decoration: none; }
-
-#footer { background-color: #2b2b2b; color: #888888; }
-
-#footer a { color: #eeeeee; text-decoration: none; font-weight: bold; }
-
-#permission-reminder { white-space: normal; }
-
-#street-address { color: #ffffff; white-space: normal; }
-
-</style>
-
-<!--[if gte mso 9]>
-
-<style _tmplitem="54" >
-
-.article-content ol, .article-content ul {
-
-   margin: 0 0 0 24px !important;
-
-   padding: 0 !important;
-
-   list-style-position: inside !important;
-
-}
-
-</style>
-
-<![endif]--><meta name="robots" content="noindex,nofollow"></meta>
-
-<meta property="og:title" content="Cribspot"></meta>
-
-<link href="cribspot.com" media="screen,projection" rel="stylesheet" type="text/css" />
-
-</head><body style="width:100% !important;background-color:#cfcfcf;margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" ><table width="100%" cellpadding="0" cellspacing="0" border="0" id="background-table" style="background-color:#cfcfcf;" >
-
-    <tbody><tr style="border-collapse:collapse;" >
-
-        <td align="center" bgcolor="#cfcfcf" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-            <table class="w640"  width="640" cellpadding="0" cellspacing="0" border="0" style="margin-top:0;margin-bottom:0;margin-right:10px;margin-left:10px;" >
-
-                <tbody><tr style="border-collapse:collapse;" ><td class="w640" width="640" height="20" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!-- NAME: RIGHT SIDEBAR -->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>*|MC:SUBJECT|*</title>
+        
+        <!--[if gte mso 6]>
+        <style>
+            table.mcnFollowContent {width:100% !important;}
+            table.mcnShareContent {width:100% !important;}
+        </style>
+        <![endif]-->
+    <style type="text/css">
+        body,#bodyTable,#bodyCell{
+            height:100% !important;
+            margin:0;
+            padding:0;
+            width:100% !important;
+        }
+        table{
+            border-collapse:collapse;
+        }
+        img,a img{
+            border:0;
+            outline:none;
+            text-decoration:none;
+        }
+        h1,h2,h3,h4,h5,h6{
+            margin:0;
+            padding:0;
+        }
+        p{
+            margin:1em 0;
+        }
+        a{
+            word-wrap:break-word;
+        }
+        .ReadMsgBody{
+            width:100%;
+        }
+        .ExternalClass{
+            width:100%;
+        }
+        .ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div{
+            line-height:100%;
+        }
+        table,td{
+            mso-table-lspace:0pt;
+            mso-table-rspace:0pt;
+        }
+        #outlook a{
+            padding:0;
+        }
+        img{
+            -ms-interpolation-mode:bicubic;
+        }
+        body,table,td,p,a,li,blockquote{
+            -ms-text-size-adjust:100%;
+            -webkit-text-size-adjust:100%;
+        }
+        #bodyCell{
+            padding:20px;
+            border-top:0;
+        }
+        .mcnImage{
+            vertical-align:bottom;
+        }
+        .mcnTextContent img{
+            height:auto !important;
+        }
+        body,#bodyTable{
+            background-color:#4f9cd8;
+        }
+        #bodyCell{
+            border-top:0;
+        }
+        #templateContainer{
+            border:5px solid #3d7199;
+        }
+        h1{
+            color:#606060 !important;
+            display:block;
+            font-family:Helvetica;
+            font-size:40px;
+            font-style:normal;
+            font-weight:bold;
+            line-height:125%;
+            letter-spacing:-1px;
+            margin:0;
+            text-align:left;
+        }
+        h2{
+            color:#404040 !important;
+            display:block;
+            font-family:Helvetica;
+            font-size:26px;
+            font-style:normal;
+            font-weight:bold;
+            line-height:125%;
+            letter-spacing:-.75px;
+            margin:0;
+            text-align:left;
+        }
+        h3{
+            color:#606060 !important;
+            display:block;
+            font-family:Helvetica;
+            font-size:18px;
+            font-style:normal;
+            font-weight:bold;
+            line-height:125%;
+            letter-spacing:-.5px;
+            margin:0;
+            text-align:left;
+        }
+        h4{
+            color:#808080 !important;
+            display:block;
+            font-family:Helvetica;
+            font-size:16px;
+            font-style:normal;
+            font-weight:bold;
+            line-height:125%;
+            letter-spacing:normal;
+            margin:0;
+            text-align:left;
+        }
+        #templatePreheader{
+            background-color:#FFFFFF;
+            border-top:0;
+            border-bottom:0;
+        }
+        .preheaderContainer .mcnTextContent,.preheaderContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:11px;
+            line-height:125%;
+            text-align:left;
+        }
+        .preheaderContainer .mcnTextContent a{
+            color:#606060;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        #templateHeader{
+            background-color:#FFFFFF;
+            border-top:0;
+            border-bottom:0;
+        }
+        .headerContainer .mcnTextContent,.headerContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:15px;
+            line-height:150%;
+            text-align:left;
+        }
+        .headerContainer .mcnTextContent a{
+            color:#6DC6DD;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        #templateBody{
+            background-color:#FFFFFF;
+            border-top:0;
+            border-bottom:0;
+        }
+        #templateSidebar{
+            border-left:0;
+        }
+        .bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:15px;
+            line-height:150%;
+            text-align:left;
+        }
+        .bodyContainer .mcnTextContent a{
+            color:#6DC6DD;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        #templateSidebar{
+            background-color:#FFFFFF;
+        }
+        #templateSidebarInner{
+            border-left:0;
+        }
+        .sidebarContainer .mcnTextContent,.sidebarContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:13px;
+            line-height:125%;
+            text-align:left;
+        }
+        .sidebarContainer .mcnTextContent a{
+            color:#6DC6DD;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        #templateFooter{
+            background-color:#FFFFFF;
+            border-top:0;
+            border-bottom:0;
+        }
+        .footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:11px;
+            line-height:125%;
+            text-align:left;
+        }
+        .footerContainer .mcnTextContent a{
+            color:#606060;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+    @media only screen and (max-width: 480px){
+        body,table,td,p,a,li,blockquote{
+            -webkit-text-size-adjust:none !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        body{
+            width:100% !important;
+            min-width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[id=bodyCell]{
+            padding:10px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnTextContentContainer]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnBoxedTextContentContainer]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcpreview-image-uploader]{
+            width:100% !important;
+            display:none !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        img[class=mcnImage]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnImageGroupContentContainer]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnImageGroupContent]{
+            padding:9px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnImageGroupBlockInner]{
+            padding-bottom:0 !important;
+            padding-top:0 !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        tbody[class=mcnImageGroupBlockOuter]{
+            padding-bottom:9px !important;
+            padding-top:9px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnCaptionTopContent],table[class=mcnCaptionBottomContent]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnCaptionLeftTextContentContainer],table[class=mcnCaptionRightTextContentContainer],table[class=mcnCaptionLeftImageContentContainer],table[class=mcnCaptionRightImageContentContainer],table[class=mcnImageCardLeftTextContentContainer],table[class=mcnImageCardRightTextContentContainer]{
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnImageCardLeftImageContent],td[class=mcnImageCardRightImageContent]{
+            padding-right:18px !important;
+            padding-left:18px !important;
+            padding-bottom:0 !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnImageCardBottomImageContent]{
+            padding-bottom:9px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnImageCardTopImageContent]{
+            padding-top:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnCaptionLeftContentOuter] td[class=mcnTextContent],table[class=mcnCaptionRightContentOuter] td[class=mcnTextContent]{
+            padding-top:9px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnCaptionBlockInner] table[class=mcnCaptionTopContent]:last-child td[class=mcnTextContent]{
+            padding-top:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=mcnBoxedTextContentColumn]{
+            padding-left:18px !important;
+            padding-right:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=sectionContainer]{
+            display:block !important;
+            max-width:600px !important;
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateBody],table[id=templateBodyInner],table[id=templateSidebar],table[id=templateSidebarInner],table[id=templateFooter]{
+            max-width:600px !important;
+            width:100% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        h1{
+            font-size:24px !important;
+            line-height:125% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        h2{
+            font-size:20px !important;
+            line-height:125% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        h3{
+            font-size:18px !important;
+            line-height:125% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        h4{
+            font-size:16px !important;
+            line-height:125% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[class=mcnBoxedTextContentContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[id=templatePreheader]{
+            display:block !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=preheaderContainer] td[class=mcnTextContent]{
+            font-size:14px !important;
+            line-height:115% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=headerContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=bodyContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=sidebarContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[id=templateSidebar]{
+            border-left:0 !important;
+            border-right:0 !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        table[id=templateSidebarInner]{
+            border-left:0 !important;
+            border-right:0 !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=footerContainer] td[class=mcnTextContent]{
+            font-size:14px !important;
+            line-height:115% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=footerContainer] a[class=utilityLink]{
+            display:block !important;
+        }
+
+}</style></head>
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #4f9cd8;height: 100% !important;width: 100% !important;">
+        <center>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;margin: 0;padding: 0;background-color: #4f9cd8;height: 100% !important;width: 100% !important;">
+                <tr>
+                    <td align="center" valign="top" id="bodyCell" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;margin: 0;padding: 20px;border-top: 0;height: 100% !important;width: 100% !important;">
+                        <!-- BEGIN TEMPLATE // -->
+                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border: 5px solid #3d7199;">
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN PREHEADER // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templatePreheader" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td valign="top" class="preheaderContainer" style="padding-top: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
+                                        </tr>
+                                    </table>
+                                    <!-- // END PREHEADER -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN HEADER // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td valign="top" class="headerContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
+                                        </tr>
+                                    </table>
+                                    <!-- // END HEADER -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN BODY // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td align="center" valign="top" width="390" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBodyInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                    <tr>
+                                                        <td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
+                        
+                            <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
+    <span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
+
+        <?php if ($to_property_manager == true) { ?>
+
+        <?= $from_name ?> <?= (isset($from_university)) ? "from " . $from_university : "" ; ?> is interested in </span>
+
+        <?php } else { ?>
+
+        <?= $from_name ?> responded about </span>
+
+        <?php } ?>
+
+    </span>
+    <span style="color:#3366cc;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
+
+        <?= $street_address ?></span></span><span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">.</span></span></h3>
+<br>
+<span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
+
+    <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
+
+    <?= $from_name ?> and many other students are currently using Cribspot to search for rentals. However, we've noticed that you haven't claimed your rental listings on our site yet. Click the "Message" button below to create your password and respond to <?= $from_name ?>. Or, use the create a password link towards the bottom of this email.</span></span><br>
+
+    <?php } ?>
+<br>
+<span style="color:#000000;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;"><strong><?= $from_name ?>:&nbsp;</strong></span><br>
+<br>
+<strong><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><em><?= $message_text ?></em></span></span></strong></span><br>
+<br>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+                
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnButtonBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnButtonBlockOuter">
+        <tr>
+            <td style="padding-top: 0;padding-right: 18px;padding-bottom: 18px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="top" align="center" class="mcnButtonBlockInner">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #457FC6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody>
+                        <tr>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                <a class="mcnButton " title="Message <?= $from_name ?>" href="<?= $view_msg ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Message <?= $from_name ?></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
+                        
+                            <span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
+
+                                <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
+
+                                <? if (isset($reset_password_url) && $reset_password_url != null) { ?>
+                                Click <a href='<?php echo $reset_password_url;?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your Cribspot password, or copy and paste the following URL into your browser:<br/><br/><?php echo $reset_password_url; ?><br/><br>
+                                <? } ?>
+As current and former students, we know just how hectic the leasing process can be - for both renters and property managers. This is why we created Cribspot last year. If you would like to know more about Cribspot, feel free to give us a call at 908-752-8187. You can also reach us at info@cribspot.com or jason@cribspot.com.</span></span>
+
+                                <?php } else {
+                                ?>
+                                Thanks again for using Cribspot and let us know if we can help with anything!
+                                <?php } ?>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+                
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;text-align: left;">
+                        
+                            <span style="color:#696969;"><span style="font-size: 14px;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;">Best Regards,</span></span></span><br>
+<br>
+<img align="none" height="27" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/cribspot_team.png" style="width: 180px;height: 27px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" width="180"><br>
+<br>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+                
+            </td>
+        </tr>
+    </tbody>
+</table></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td align="center" valign="top" width="200" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebar" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;background-color: #FFFFFF;">
+                                                    <tr>
+                                                        <td align="right" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebarInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;">
+                                                                <tr>
+                                                                    <td valign="top" class="sidebarContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnCaptionBlockOuter">
+        <tr>
+            <td class="mcnCaptionBlockInner" valign="top" style="padding: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                 
 
-                <tr style="border-collapse:collapse;" >
+<table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionBottomContent" width="false" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody><tr>
+        <td class="mcnCaptionBottomImageContent" align="right" valign="top" style="padding: 0 9px 9px 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+        
+            
 
-                    <td class="w640" width="640" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-                        <table id="top-bar" class="w640" width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border-radius:6px 6px 0px 0px;-moz-border-radius:6px 6px 0px 0px;-webkit-border-radius:6px 6px 0px 0px;-webkit-font-smoothing:antialiased;background-color:#2b2b2b;color:#ffffff;" >
-
-    <tbody><tr style="border-collapse:collapse;" >
-
-        <td class="w15" width="15" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        <td class="w325" width="350" valign="middle" align="left" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-            <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
-
-                <tbody><tr style="border-collapse:collapse;" ><td class="w325" width="350" height="8" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-            </tbody></table>
-
-            <div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.com" style="font-weight:bold; color:#ffffff; text-decoration:none;" >Cribspot, LLC.</a><span class="hide">&nbsp;&nbsp;|&nbsp; <a href="http://cribspot.com" lang="en" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Made By Students, For Students.</a></span></div>
-
-            <table class="w325" width="350" cellpadding="0" cellspacing="0" border="0">
-
-                <tbody><tr style="border-collapse:collapse;" ><td class="w325" width="350" height="8" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-            </tbody></table>
-
+            <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+            
+        
         </td>
-
-        <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        <td class="w255" width="255" valign="middle" align="right" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-            <table class="w255" width="255" cellpadding="0" cellspacing="0" border="0">
-
-                <tbody><tr style="border-collapse:collapse;" ><td class="w255" width="255" height="8" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-            </tbody></table>
-
-            <table cellpadding="0" cellspacing="0" border="0">
-
-    <tbody><tr style="border-collapse:collapse;" >
-
-        
-
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><a href="http://cribspot.createsend1.com/t/t-fb-qkkvd-l-t/" likeurl="www.facebook.com/Cribspot" rel="cs_facebox" style="font-weight:bold;color:#ffffff;text-decoration:none;" ><img src="https://img.createsend1.com/img/templatebuilder/like-glyph.png" border="0" width="8" height="14" alt="Facebook icon" ="" style="outline-style:none;text-decoration:none;display:block;" /></a></td>
-
-        <td width="3" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a href="http://cribspot.createsend1.com/t/t-fb-qkkvd-l-i/" likeurl="www.facebook.com/Cribspot" rel="cs_facebox" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Like</a></div></td>
-
-        
-
-        
-
-        <td class="w10" width="10" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><a class="twitter popup" href="http://twitter.com/share?text=Check%20Out%20Cribspot%20-%20Student%20Sublets%20and%20Rentals%20-%20@TheCribspot" style="font-weight:bold;color:#ffffff;text-decoration:none;" ><img src="https://img.createsend1.com/img/templatebuilder/tweet-glyph.png" border="0" width="17" height="13" alt="Twitter icon" ="" style="outline-style:none;text-decoration:none;display:block;" /></a></td>
-
-        <td width="3" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        <td valign="middle" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><div class="header-content" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;color:#ffffff;" ><a class="twitter popup" href="http://twitter.com/share?text=Check%20Out%20Cribspot%20-%20Student%20Sublets%20and%20Rentals%20-%20@TheCribspot" style="font-weight:bold;color:#ffffff;text-decoration:none;" >Tweet</a></div></td>
-
-        
-
-        
-
     </tr>
-
+    <tr>
+        <td class="mcnTextContent" valign="top" style="padding: 0px 9px;text-align: right;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 13px;line-height: 125%;" width="168">
+            
+        </td>
+    </tr>
 </tbody></table>
 
-            <table class="w255" width="255" cellpadding="0" cellspacing="0" border="0">
 
-                <tbody><tr style="border-collapse:collapse;" ><td class="w255" width="255" height="8" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
 
-            </tbody></table>
 
-        </td>
 
-        <td class="w15" width="15" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
+            </td>
+        </tr>
+    </tbody>
+</table></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- // END BODY -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN FOOTER // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateFooter" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td valign="top" class="footerContainer" style="padding-bottom: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnDividerBlockOuter">
+        <tr>
+            <td class="mcnDividerBlockInner" style="padding: 15px 18px 5px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top-width: 1px;border-top-style: dashed;border-top-color: #B8B8B8;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody><tr>
+                        <td style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                            <span></span>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </td>
+        </tr>
+    </tbody>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnCaptionBlockOuter">
+        <tr>
+            <td class="mcnCaptionBlockInner" valign="top" style="padding: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                
 
-    </tr>
 
-</tbody></table>
 
+<table border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightContentOuter" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody><tr>
+        <td valign="top" class="mcnCaptionRightContentInner" style="padding: 0 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+            <table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionRightImageContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                <tbody><tr>
+                    <td class="mcnCaptionRightImageContent" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    
                         
 
-                    </td>
-
-                </tr>
-
-                <tr style="border-collapse:collapse;" >
-
-                <td id="header" class="w640" width="640" align="center" bgcolor="#ffffff" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-    
-
-    
-
-</td>
-
-                </tr>
-
-                
-
-                <tr style="border-collapse:collapse;" ><td class="w640" width="640" height="20" bgcolor="#ffffff" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-                <tr id="simple-content-row" style="border-collapse:collapse;" ><td class="w640" width="640" bgcolor="#ffffff" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-    <table class="w640" width="640" cellpadding="0" cellspacing="0" border="0">
-
-        <tbody><tr style="border-collapse:collapse;" >
-
-            <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-            <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-                
-
-                        <table class="w580" width="580" cellpadding="0" cellspacing="0" border="0">
-
-                            <tbody><tr style="border-collapse:collapse;" >
-
-                                <td class="w580" width="580" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-
-                                    <div align="left" class="article-content" style="font-size:13px;line-height:18px;color:#444444;margin-top:0px;margin-bottom:18px;font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;" >
-
-<?php echo $intro_greeting; ?><br/><br/>
-
-<?php if ($is_property_manager && !$email_verified){ ?>
-<?php echo $student_name;?> is now using <a href='www.cribspot.com'>Cribspot</a> to search for their student rentals. They’ve just used our built-in message feature to get in touch with you (don't worry, this lead and all future ones are free).<br/><br/>
-<?php } ?>
-
-<?php if (!empty($message_text_header)){ ?>
-<span style='font-weight: bold;font-size:15px'><?php echo $message_text_header; ?>:</span><br/><br/>
-<?php } ?>
-
-<?php if (!empty($message_text)) { ?>
-<div style='margin-left: 2em;margin-right:2em;margin-bottom:-1px;font-style:italic'><?php echo $message_text; ?></div><br/><br/>
-<?php } ?>
-
-<?php if ($is_property_manager && !$email_verified){ ?>
-To respond to this message, click <a href='<?php echo $reset_password_url;?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a> to set your Cribspot password, or copy and paste the following URL into your browser:<br/><br/>
-
-<?php echo $reset_password_url; ?><br/><br/>
-
-<b>What is Cribspot?</b>
-
-With Cribspot, managing the student side of your business is easier than ever before. You can respond to leads, see which of your properties receive the most traffic, and post your properties to thousands of students, all in one place. Best of all, this package of services is <b>FREE</b>.<br/><br/>
-
-<?php } else { ?>
-<?php
-$non_generic_name = $student_name;
-if ($student_name === 'A student')
-    $non_generic_name = 'this student';
-?>
-Visit your dashboard and 
-<?php if ($is_property_manager){?>
-    get back to <?php echo $non_generic_name; ?> 
-<?php } else { ?>
-respond
-<?php } ?> by clicking <a href='<?php echo $view_msg; ?>' style="color:#d54849;font-weight:bold;text-decoration:none;">here</a>, or copy and paste the following link into your browser:<br/><br/>
-
-<?php echo $view_msg; ?><br/><br/>
-
-<?php } ?>
-
-<?php if ($is_property_manager && !$email_verified){ ?>
-After logging in with your new password you'll be directed to your dashboard where you can manage your listings and view and respond to all of your messages.
-<?php } ?>
-
- If you ever have any questions, message us directly on Cribspot using the blue 'Chat with Cribspot' tab along the bottom of the screen or send us an email at help@cribspot.com.<br/><br/>
-
-Best Regards,<br/>
-<i>The Cribspot Team</i>
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-                            <tr style="border-collapse:collapse;" ><td class="w580" width="580" height="10" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-                        </tbody></table>
+                        <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/logo2.5.png" width="176" style="max-width: 182px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+                        
 
                     
-
-            </td>
-
-            <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        </tr>
-
-    </tbody></table>
-
-</td></tr>
-
-                <tr style="border-collapse:collapse;" ><td class="w640" width="640" height="15" bgcolor="#ffffff" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-                
-
-                <tr style="border-collapse:collapse;" >
-
-                <td class="w640" width="640" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-    <table id="footer" class="w640" width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#2b2b2b" style="border-radius:0px 0px 6px 6px;-moz-border-radius:0px 0px 6px 6px;-webkit-border-radius:0px 0px 6px 6px;-webkit-font-smoothing:antialiased;background-color:#2b2b2b;color:#888888;" >
-
-        <tbody><tr style="border-collapse:collapse;" ><td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w580 h0" width="360" height="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w0" width="60" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w0" width="160" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-        <tr style="border-collapse:collapse;" >
-
-            <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-            <td class="w580" width="360" valign="top" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ><p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:2px;color:#888888;margin-top:0px;margin-bottom:15px;" >&nbsp;</p>
-              <p align="left" class="footer-content-left" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:12px;line-height:10px;color:#888888;margin-top:0px;margin-bottom:15px;" ><a href="mailto:help@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Help</a> | <a href="mailto:info@cribspot.com" style="color:#eeeeee;text-decoration:none;font-weight:bold;" >Contact</a></p>
-
-            </td>
-
-            <td class="hide w0" width="60" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-            <td class="hide w0" width="160" valign="top" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" >
-
-            <p id="street-address" align="right" class="footer-content-right" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;font-size:11px;line-height:16px;margin-top:0px;margin-bottom:15px;color:#ffffff;white-space:normal;" ><span>12180 Peninsula Drive</span><br style="line-height:100%;" />
-
-<span>Traverse City, Michigan 49686</span></p>
-
-            </td>
-
-            <td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td>
-
-        </tr>
-
-        <tr style="border-collapse:collapse;" ><td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w580 h0" width="360" height="15" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w0" width="60" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w0" width="160" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td><td class="w30" width="30" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
-    </tbody></table>
-
-</td>
-
+                    </td>
                 </tr>
-
-                <tr style="border-collapse:collapse;" ><td class="w640" width="640" height="60" style="font-family:'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif;border-collapse:collapse;" ></td></tr>
-
             </tbody></table>
-
+            <table class="mcnCaptionRightTextContentContainer" align="right" border="0" cellpadding="0" cellspacing="0" width="352" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                <tbody><tr>
+                    <td valign="top" class="mcnTextContent" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%;text-align: left;">
+                        <strong>CRIBSPOT, BUILT AND UPDATED BY STUDENTS</strong><br>
+<span style="color: #A9A9A9;">We're students trying to make the housing search a little less stressful.<br>
+808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;&nbsp;</span>
+                    </td>
+                </tr>
+            </tbody></table>
         </td>
-
     </tr>
-
 </tbody></table>
 
 
-<script>
-  $('.popup').click(function(event) {
-    var width  = 575,
-        height = 400,
-        left   = ($(window).width()  - width)  / 2,
-        top    = ($(window).height() - height) / 2,
-        url    = this.href,
-        opts   = 'status=1' +
-                 ',width='  + width  +
-                 ',height=' + height +
-                 ',top='    + top    +
-                 ',left='   + left;
-    
-    window.open(url, 'twitter', opts);
- 
-    return false;
-  });
-</script>
 
-<div id="fb-root"></div>
 
-<script src="https://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-
-<script type="text/javascript" src="https://js.createsend1.com/js/jquery-1.7.2.min.js?h=C99A4659sb2"></script>
-
-<script type="text/javascript" src="https://js.createsend1.com/js/track.min.js?h=A95B7562sb2"></script>
-
-<script type="text/javascript">
-
-$(document).ready(function () {
-
-    CS.WebVersion.setup({"LikeActionBase":"/t/t-fb-qkkvd-l-","IsSubscriber":false});
-
-});
-
-</script>
-
-</body></html>
-
+            </td>
+        </tr>
+    </tbody>
+</table></td>
+                                        </tr>
+                                    </table>
+                                    <!-- // END FOOTER -->
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- // END TEMPLATE -->
+                    </td>
+                </tr>
+            </table>
+        </center>
+                <center>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <style type="text/css">
+                    @media only screen and (max-width: 480px){
+                        table[id="canspamBar"] td{font-size:14px !important;}
+                        table[id="canspamBar"] td a{display:block !important; margin-top:10px !important;}
+                    }
+                </style>
+            </center></body>
+</html>

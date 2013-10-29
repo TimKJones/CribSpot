@@ -340,6 +340,10 @@
         );  
 
         $from_name = $from_user['first_name'];
+        $from_university = null;
+        if (array_key_exists('registered_university', $from_user) && !empty($from_user['registered_university']))
+            $from_university = $this->University->getNameFromId($from_user['registered_university']);
+
         if (intval($from_user['user_type']) === 1)
             $from_name = $from_user['company_name'];
 
@@ -370,56 +374,23 @@
         $email_verified = $recipient['verified'];
         $reset_password_url = null;
 
-        $intro_greeting = "";
-        if ($is_property_manager && !$email_verified)
-            $intro_greeting = "A student is trying to contact you about your rental at ";
-        else if ($is_property_manager)
-            $intro_greeting = "You've just received a FREE Cribspot lead for your rental at ";
-        else
-            $intro_greeting = "You've received a response from " . $from_name . " about ";
-
-        if ($street_address){
-            $intro_greeting .= $street_address . "!";
-            if ($is_property_manager && $email_verified)
-                $intro_greeting .= " Here's their message for you:";
-        }
-
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
                 $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
                 "&reset_token=".$recipient['password_reset_token'];
-        $this->set('is_property_manager', $is_property_manager);
+        $this->set('to_property_manager', $is_property_manager);
+        $this->set('from_name', $from_name);
+        $this->set('from_university', $from_university);
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
-        $this->set('intro_greeting', $intro_greeting);
         $this->set('message_text', $message_text);
+        $this->set('conv_id', $conversation['Conversation']['conversation_id']);
         $year = null;
         if (array_key_exists('year', $from_user))
             $year = $from_user['year'];
 
-        $message_text_header = null; /* ex. Tim - University of Michigan */
         $this->set('student_year', $year);
-        $first_name = 'A student';
-        if (array_key_exists('first_name', $from_user)){
-            $first_name = $from_user['first_name'];
-            if ($is_property_manager)
-                $message_text_header = $first_name;
-        }
-            
-        $this->set('student_name', $first_name);
-        $student_school = null;
-        if (array_key_exists('registered_university', $from_user) && !empty($from_user['registered_university'])){
-            $student_school = $this->University->getNameFromId($from_user['registered_university']);
-            if ($is_property_manager)
-                $message_text_header .= ' - ' . $student_school;
-        }
-
-        if (!$is_property_manager && array_key_exists('company_name', $from_user)){
-            $message_text_header = $from_user['company_name'];
-        }
-
-        $this->set('message_text_header', $message_text_header);
         $this->Email->send();
 
     }
