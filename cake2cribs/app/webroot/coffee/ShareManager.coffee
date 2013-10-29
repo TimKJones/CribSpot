@@ -59,6 +59,7 @@ class A2Cribs.ShareManager
 					type: "facebook"
 					element: "header"
 					promotion: "surgeons"
+					post_id: response.post_id
 
 	@FBPromotion: ->
 		A2Cribs.MixPanel.Event "Social share",
@@ -80,6 +81,7 @@ class A2Cribs.ShareManager
 					type: "facebook"
 					element: "header"
 					promotion: "wisconsin sunglasses"
+					post_id: response.post_id
 
 
 	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->

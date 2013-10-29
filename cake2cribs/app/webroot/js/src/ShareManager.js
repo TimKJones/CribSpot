@@ -80,7 +80,8 @@
           return A2Cribs.MixPanel.Event("Social share complete", {
             type: "facebook",
             element: "header",
-            promotion: "surgeons"
+            promotion: "surgeons",
+            post_id: response.post_id
           });
         }
       });
@@ -106,7 +107,8 @@
           return A2Cribs.MixPanel.Event("Social share complete", {
             type: "facebook",
             element: "header",
-            promotion: "wisconsin sunglasses"
+            promotion: "wisconsin sunglasses",
+            post_id: response.post_id
           });
         }
       });
