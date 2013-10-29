@@ -73,7 +73,7 @@ class A2Cribs.ShareManager
 			picture: 'https://lh4.googleusercontent.com/-JCwU1KBqw1I/UnAMzgSnPeI/AAAAAAAAAIA/ySQHQfwYGFA/w726-h545-no/sunglasses.jpg'
 			name: "Free Shades for Wisconsin Students!"
 			caption: "You're gonna need to protect your eyes - your off-campus housing search is now looking pretty bright."
-			description: "To celebrate our recent launch at University of Wisconsin-Madison, we're giving away 5 pairs of these awesome sunglasses!"
+			description: "To celebrate our recent launch at University of Wisconsin-Madison, we're giving away 5 pairs of these awesome sunglasses! Offer only valid for Wisconsin students - just share this post to qualify! We'll notify the winners on Thursday, October 31st."
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
