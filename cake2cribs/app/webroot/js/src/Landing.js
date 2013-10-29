@@ -51,6 +51,8 @@
         return typeof FB !== "undefined" && FB !== null ? FB.ui({
           method: 'apprequests',
           message: 'Join the Movement. All the College Rentals. All in One Spot.'
+        }, function(response) {
+          return A2Cribs.MixPanel.Event("Invite Friends completed", null);
         }) : void 0;
       });
       if (((_ref = this.locations) != null ? _ref.length : void 0) != null) {
