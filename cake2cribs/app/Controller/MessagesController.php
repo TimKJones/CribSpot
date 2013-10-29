@@ -386,8 +386,8 @@
 
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
-                $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
-                "&reset_token=".$recipient['password_reset_token'];
+                $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                "&code=".$recipient['password_reset_token'];
         $this->set('is_property_manager', $is_property_manager);
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
@@ -430,7 +430,10 @@
             $img_url = '/'.$from_user['profile_img'];
 
         $this->set('img_url', $img_url);
-        CakeLog::write('img_url', $img_url);
+        
+        /* Set URL to open message */
+        $view_msg = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                "&code=".$recipient['password_reset_token'].'&convid='.$conversation['Conversation']['conversation_id'];
         $this->Email->send();
 
     }

@@ -48,8 +48,8 @@ class EmailShell extends AppShell{
             $usersUniversity = $universityMap[$user['User']['pm_associated_university']];
             $school_abbreviation = $usersUniversity['abbreviation'];
             $school_full_name = $usersUniversity['full_name'];
-            $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$user['User']['id'] . 
-            "&reset_token=".$user['User']['password_reset_token'];
+            $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$user['User']['id'] . 
+            "&code=".$user['User']['password_reset_token'];
             $templateData = array(
                 'school_abbreviation' => $school_abbreviation,
                 'school_full_name' => $school_full_name,
