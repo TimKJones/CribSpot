@@ -670,6 +670,7 @@ class UsersController extends AppController {
         $user = $this->User->get($id);
         $this->User->VerifyEmail($id);
         $this->_login($user);
+        $this->User->InvalidatePMLogin($id);
         if (array_key_exists('convid', $this->request->query)){
             $conv_id = $this->request->query['convid'];
             CakeLog::write('convid', $conv_id);
