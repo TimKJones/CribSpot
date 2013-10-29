@@ -110,6 +110,8 @@
     FullListing.Directive = function(directive) {
       if (directive.contact_owner != null) {
         return this.div.find("#contact_owner").click();
+      } else if (directive.schedule != null) {
+        return this.div.find("#scheduling_tour_tab").click();
       }
     };
 

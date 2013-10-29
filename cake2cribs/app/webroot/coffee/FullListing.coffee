@@ -82,3 +82,5 @@ class A2Cribs.FullListing
 	@Directive: (directive) ->
 		if directive.contact_owner?
 			@div.find("#contact_owner").click()
+		else if directive.schedule?
+			@div.find("#scheduling_tour_tab").click()
