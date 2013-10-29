@@ -22,6 +22,7 @@ class UsersController extends AppController {
         $this->Auth->allow('AttemptFacebookLogin');
         $this->Auth->allow('PropertyManagerSignup');
         $this->Auth->allow('IsLoggedIn');
+        $this->Auth->allow('PMLogin');
     }
 
     public function add()
@@ -644,9 +645,44 @@ class UsersController extends AppController {
     }
 
     /*
+    Automatically logs in a property manager if the supplied URL credentials are correct
+    */
+    public function PMLogin()
+    {
+        if (!array_key_exists('id', $this->request->query) || !array_key_exists('code', $this->request->query))
+            $this->redirect('/');
+
+        $id = $this->request->query['id'];
+        $code = $this->request->query['code'];
+        if (!$this->User->IsValidResetToken($id, $code)){
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "That reset password link does not seem to be legitimate!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect('/users/login?invalid_link=true');
+        }
+
+        /* 
+        credentials were correct - log the user in. 
+        If conversation id present, redirect user to that conversation
+        */
+        $user = $this->User->get($id);
+        $this->User->VerifyEmail($id);
+        $this->_login($user);
+        if (array_key_exists('convid', $this->request->query)){
+            $conv_id = $this->request->query['convid'];
+            CakeLog::write('convid', $conv_id);
+            $this->redirect('/messages/view/'.$conv_id);
+        } else {
+            $this->redirect('/dashboard');
+        }
+    }
+
+    /*
     Called from the dashboard to edit basic account information from the 'My Account' tab.
     */
-    public function AjaxEditUser(){
+    public function AjaxEditUser()
+    {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 CakeLog::write('userdata', print_r($this->request->data, true));

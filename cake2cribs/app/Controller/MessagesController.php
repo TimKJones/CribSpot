@@ -376,7 +376,8 @@
 
         if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['password_reset_token']))
-                $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
+
+        $reset_password_url = "www.cribspot.com/users/ResetPasswordRedirect?id=".$recipient['id'] . 
                 "&reset_token=".$recipient['password_reset_token'];
         $this->set('to_property_manager', $is_property_manager);
         $this->set('from_name', $from_name);
@@ -401,7 +402,6 @@
             $img_url = '/'.$from_user['profile_img'];
 
         $this->set('img_url', $img_url);
-
 
         $this->Email->send();
 

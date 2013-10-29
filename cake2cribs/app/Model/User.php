@@ -399,6 +399,15 @@ class User extends AppModel {
 	}
 
 	/*
+	Verify the user with the given $user_id
+	*/
+	public function VerifyEmail($user_id)
+	{
+		$this->id = $user_id;
+		$this->saveField('verified', 1);
+	}
+
+	/*
 	Given a user's email address, returns that user's id, email, and first name.
 	Returns null if $email doesn't exist.
 	*/
