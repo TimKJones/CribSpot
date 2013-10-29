@@ -65,13 +65,13 @@
       A2Cribs.MixPanel.Event("Social share", {
         type: "facebook",
         element: "header",
-        promotion: "puppies"
+        promotion: "surgeons"
       });
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
-        picture: 'http://foglobe.com/data_images/main/albert-einstein/albert-einstein-04.jpg',
-        name: "Einstein developed a theory about space, and it was about time too.",
+        picture: 'http://ak6.picdn.net/shutterstock/videos/3810257/preview/stock-footage-head-shoulders-caucasian-surgeon-female-asian-medical-student-wearing-full-surgical-scrubs.jpg',
+        name: "Surgeons often have to have an open heart and an open mind.",
         caption: "Cribspot Pun of the Day!",
         description: ""
       };
@@ -80,7 +80,7 @@
           return A2Cribs.MixPanel.Event("Social share complete", {
             type: "facebook",
             element: "header",
-            promotion: "puppies"
+            promotion: "surgeons"
           });
         }
       });

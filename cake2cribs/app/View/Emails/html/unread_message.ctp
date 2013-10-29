@@ -493,7 +493,7 @@
 
     <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
 
-    <?= $from_name ?> and many other students are currently using Cribspot to search for rentals. However, we've noticed that you haven't claimed your rental listings on our site yet. Click the "Message" button below to create your password and respond to <?= $from_name ?>. Or, use the create a password link towards the bottom of this email.</span></span><br>
+    <?= $from_name ?> and many other students are currently using Cribspot to search for rentals. However, we've noticed that you haven't claimed your rental listings on our site yet. Click the "Message" button below to respond to <?= $from_name ?>.</span></span><br>
 
     <?php } ?>
 <br>
