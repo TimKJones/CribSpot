@@ -302,7 +302,6 @@ ClickBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "full page contact user");
         link = "/messages/contact/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();
@@ -320,7 +319,6 @@ ClickBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel.Click(listing, "full page contact user");
         link = "/tours/schedule/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();
