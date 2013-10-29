@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/click-bubble.less?v=1','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/click-bubble.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div class="click-bubble hide">
 	<div class="click_header"><div class="building_name clear_field">10202  West Chester Rd.</div><div class="close_button">&times;</div></div>
