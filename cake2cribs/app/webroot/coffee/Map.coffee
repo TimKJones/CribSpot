@@ -137,31 +137,39 @@ class A2Cribs.Map
 		# Initialize all markers and add tehm to the map
 		all_markers = A2Cribs.UserCache.Get "marker"
 		for marker in all_markers
-			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
-			is_available = no
-			is_scheduled = no
-			for listing in listings
-				# check if marker is leased, unknown or available
-				# order is avail, unknown, leased
-				# marked as avail if one avail
-				# marked as unknown if one unknown and no avail
-				# marked as leased if all leased
-				if not listing.available? and is_available isnt yes
-					is_available = null # Set to unknown
-				else if listing.available? and listing.available is yes
-					is_available = yes # Set to true
-
-				if listing.scheduling is yes
-					is_scheduled = true
-					lol = "lol"
-
-			marker.Init is_available, is_scheduled
+			marker.Init()
 			@GMarkerClusterer.addMarker marker.GMarker		
 
 		# Set all listings to visible
-		all_listings = A2Cribs.UserCache.Get "listings"
+		all_listings = A2Cribs.UserCache.Get "listing"
 		for listing in all_listings
 			listing.visible = true
+
+		@Repaint()
+
+	###
+	Set Marker Types
+	Loops through all the listings and if changes the marker
+	type (icon) based on the availability of the marker
+	###
+	@SetMarkerTypes: ->
+		all_markers = A2Cribs.UserCache.Get "marker"
+		for marker in all_markers
+			marker.SetType A2Cribs.Marker.TYPE.LEASED
+
+		all_listings = A2Cribs.UserCache.Get "listing"
+		for listing in all_listings
+			if listing.InSidebar() or listing.IsVisible()
+				marker = A2Cribs.UserCache.Get "marker", listing.marker_id
+				if not listing.available? and marker.GetType() is A2Cribs.Marker.TYPE.LEASED
+					marker.SetType A2Cribs.Marker.TYPE.UNKNOWN # Set to unknown
+				else if listing.available? and listing.available is yes
+					marker.SetType A2Cribs.Marker.TYPE.AVAILABLE # Set to true
+
+				if listing.scheduling is yes and marker.GetType() isnt A2Cribs.Marker.TYPE.LEASED
+					marker.SetType A2Cribs.Marker.TYPE.SCHEDULING
+
+
 
 	###
 	EVAN:
@@ -262,6 +270,7 @@ class A2Cribs.Map
 	Repaints the map
 	###
 	@Repaint: ->
+		@SetMarkerTypes()
 		@GMarkerClusterer.repaint()
 
 

@@ -55,7 +55,7 @@
           marker.GMarker.setVisible(false);
         }
       }
-      return A2Cribs.Map.GMarkerClusterer.repaint();
+      return A2Cribs.Map.Repaint();
     };
 
     FilterManager.WheneverButtonClicked = function(event) {

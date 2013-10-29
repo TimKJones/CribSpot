@@ -39,7 +39,7 @@ class A2Cribs.FilterManager
 			else
 				marker.GMarker.setVisible false
 
-		A2Cribs.Map.GMarkerClusterer.repaint()
+		A2Cribs.Map.Repaint()
 
 	@WheneverButtonClicked: (event) ->
 		if $("#startDate").datepicker().valueOf()[0].value == "Whenever"
