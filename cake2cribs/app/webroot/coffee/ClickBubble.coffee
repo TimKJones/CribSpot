@@ -118,6 +118,7 @@ class A2Cribs.ClickBubble
 		@setPrimaryImage "property_image", listing_object.listing_id
 		@setFullPage "full_page_link", listing_object.listing_id
 		@setFullPageContact "full_page_contact", listing_object.listing_id
+		@setFullPageSchedule "schedule_tour", listing_object.listing_id
 		@div.find(".share_btn").unbind "click"
 		@div.find(".facebook_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id,
@@ -230,6 +231,19 @@ class A2Cribs.ClickBubble
 		$(".#{div_name}").click () ->
 			A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "full page contact user"
 			link = "/messages/contact/#{listing_id}"
+			win = window.open link, '_blank'
+			win.focus()
+
+	@setFullPageSchedule: (div_name, listing_id) ->
+		listing = A2Cribs.UserCache.Get("listing", listing_id)
+		if listing?.scheduling is yes and listing.available is yes
+			$(".#{div_name}").show()
+		else
+			$(".#{div_name}").hide()
+		$(".#{div_name}").unbind "click"
+		$(".#{div_name}").click () ->
+			A2Cribs.MixPanel.Click listing, "full page contact user"
+			link = "/tours/schedule/#{listing_id}"
 			win = window.open link, '_blank'
 			win.focus()
 
