@@ -40,6 +40,8 @@ class A2Cribs.Landing
 			FB?.ui
 				method: 'apprequests',
 				message: 'Join the Movement. All the College Rentals. All in One Spot.'
+			, (response) ->
+				A2Cribs.MixPanel.Event "Invite Friends completed", null
 
 		if @locations?.length?
 			random_school = Math.floor((Math.random() * @locations.length))

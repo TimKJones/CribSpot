@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/hover-bubble.less?v=1','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/hover-bubble.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div>
 	<div class="hover-bubble">
