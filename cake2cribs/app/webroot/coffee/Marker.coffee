@@ -1,5 +1,11 @@
 class A2Cribs.Marker extends  A2Cribs.Object
 	@BuildingType = ["House", "Apartment", "Duplex"]
+	@TYPE = 
+		UNKNOWN: 0
+		LEASED: 1
+		SCHEDULING: 2
+		AVAILABLE: 3
+
 	constructor: (marker) ->
 		super "marker", marker
 
@@ -8,6 +14,17 @@ class A2Cribs.Marker extends  A2Cribs.Object
 
 	GetBuildingType: ->
 		return @building_type_id
+
+	GetType: ->
+		return @_type
+
+	SetType: (@_type) ->
+		switch @_type
+			when A2Cribs.Marker.TYPE.UNKNOWN then marker_dot = "unknown"
+			when A2Cribs.Marker.TYPE.SCHEDULING then marker_dot = "schedule"
+			when A2Cribs.Marker.TYPE.LEASED then marker_dot = "leased"
+			when A2Cribs.Marker.TYPE.AVAILABLE then marker_dot = "available"
+		@GMarker?.setIcon "/img/dots/dot_#{marker_dot}.png"
 
 	IsVisible: (visible = null) ->
 		if typeof(visible) is "boolean"
@@ -22,20 +39,10 @@ class A2Cribs.Marker extends  A2Cribs.Object
 			return @scheduling
 		return false
 
-	Init: (@available = null, @scheduling = null) ->
-		if not available? # available is unknown
-			marker_dot = "unknown"
-		else if available is yes # this place is available
-			marker_dot = "available"
-		else # the place is leased
-			marker_dot = "leased"
-
-		if (available or available is null) and scheduling
-			marker_dot = 'schedule'
-
+	Init: ->
 		@GMarker = new google.maps.Marker
 			position: new google.maps.LatLng(@latitude, @longitude)
-			icon: "/img/dots/dot_#{marker_dot}.png"
+			icon: "/img/dots/dot_leased.png"
 			id: @GetId()
 
 		google.maps.event.addListener @GMarker, 'click', @MarkerClicked

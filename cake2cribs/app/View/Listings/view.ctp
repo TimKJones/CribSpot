@@ -199,6 +199,13 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						<button class="btn" id="contact_owner" emailExists='<?php echo $email_exists; ?>'>CONTACT RENTAL OWNER</button>
 					</div>
 				</div>
+				<?php if ($listing['Listing']['scheduling'] === true && $listing['Listing']['available'] === true){ ?>
+				<div class="row-fluid">
+					<div class="span12">
+						<button class="btn show_scheduling" >SCHEDULE TOUR NOW</button>
+					</div>
+				</div>
+				<?php } ?>
 			</div>
 		</div>
 	</div>
@@ -212,7 +219,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					<li><a href="#details_content" data-toggle="tab">Details</a></li>
 					<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
 					<?php if ($listing['Listing']['scheduling'] === true && $listing['Listing']['available'] === true){ ?>
-						<li><a id="schedule_tour_tab" href="#schedule_tour">Schedule My Tour</a></li>
+						<li><a id="scheduling_tour_tab" class="show_scheduling" href="#schedule_tour">Schedule My Tour</a></li>
 					<?php } ?>
 				</ul>
 				<ul class="nav pull-right share_buttons">

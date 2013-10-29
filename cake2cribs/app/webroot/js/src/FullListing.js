@@ -9,10 +9,14 @@
       var _this = this;
       this.listing_id = listing_id;
       this.div = $(".full_page");
-      this.div.find("#schedule_tour_tab").click(function(event) {
+      this.div.find(".show_scheduling").click(function(event) {
         var _ref;
         if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
-          $(event.currentTarget).tab('show');
+          if (!($(event.currentTarget).attr("href") != null)) {
+            $("#scheduling_tour_tab").click();
+          } else {
+            $(event.currentTarget).tab('show');
+          }
         } else {
           $("#signup_modal").modal("show").find(".signup_message").text("Please sign in to schedule a tour.");
           A2Cribs.MixPanel.Event("login required", {

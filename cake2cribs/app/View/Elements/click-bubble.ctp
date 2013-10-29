@@ -26,6 +26,7 @@
 	<div class="action_buttons">
 		<a class="full_page_link" href="#">More Info <i class="icon-plus"></i></a>
 		<a class="full_page_contact" href="#">Contact <i class="icon-comment"></i></a>
+		<a class="full_page_schedule" href="#"></a>
 		<a href="#" class="website_link">Website <i class="icon-share-alt"></i></a>
 	</div>
 </div>
