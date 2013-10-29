@@ -145,6 +145,7 @@ class UsersController extends AppController {
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
+        $user['login_code'] = uniqid();
 
         CakeLog::write("ErrorAjaxResetPassword", "Error code: 69;" . print_r($user, true));
 
@@ -654,7 +655,7 @@ class UsersController extends AppController {
 
         $id = $this->request->query['id'];
         $code = $this->request->query['code'];
-        if (!$this->User->IsValidResetToken($id, $code)){
+        if (!$this->User->IsValidLoginCode($id, $code)){
             $flash_message['method'] = "Error";
             $flash_message['message'] = "That reset password link does not seem to be legitimate!";
             $json = json_encode($flash_message);

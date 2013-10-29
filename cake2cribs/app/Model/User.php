@@ -489,6 +489,24 @@ class User extends AppModel {
 		return $result != null;
 	}
 
+	public function IsValidLoginCode($id, $login_code)
+	{
+		$result = $this->find('first', array(
+			'fields' => array('User.id'),
+			'conditions' => array(
+				'User.id' => $id,
+				'User.login_code' => $login_code
+		)));
+
+		return $result != null;
+	}
+
+	public function SetLoginCode($user_id, $code)
+	{
+		$this->id = $user_id;
+		$this->saveField('login_code', $code);
+	}
+
 	/*
 	Ensure that all necessary fields are present based on user type.
 	Then saves user object
@@ -661,7 +679,7 @@ class User extends AppModel {
 		));
 
 		foreach ($users as &$user){
-			$user['User']['password_reset_token'] = uniqid();
+			$user['User']['login_code'] = uniqid();
 		}
 
 		foreach ($users as $savedUser){

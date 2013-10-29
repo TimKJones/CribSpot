@@ -15,7 +15,7 @@ class EmailShell extends AppShell{
         CakeLog::write('universitymap', print_r($universityMap, true));
 
         /* Initialize password_reset_tokens*/
-        if (!$this->User->InitializePMPasswordResetTokens($university_ids))
+        if (!$this->User->InitializePMLoginCodes($university_ids))
             return;
 
         /* Get all property managers that will be emailed */
@@ -49,7 +49,7 @@ class EmailShell extends AppShell{
             $school_abbreviation = $usersUniversity['abbreviation'];
             $school_full_name = $usersUniversity['full_name'];
             $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$user['User']['id'] . 
-            "&code=".$user['User']['password_reset_token'];
+            "&code=".$user['User']['login_code'];
             $templateData = array(
                 'school_abbreviation' => $school_abbreviation,
                 'school_full_name' => $school_full_name,
