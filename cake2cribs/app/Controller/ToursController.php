@@ -10,6 +10,14 @@ class ToursController extends AppController
 		parent::beforeFilter();
 		//$this->Auth->allow('RequestTourTimes');
 		$this->Auth->allow('ConfirmTour');
+		$this->Auth->allow('Schedule');
+	}
+
+	public function Schedule($listing_id)
+	{
+		$directive['schedule'] = true;
+        $this->Cookie->write('fullpage-directive', json_encode($directive));
+        $this->redirect(array('controller' => 'listings', 'action' => 'view', $listing_id));			
 	}
 
 	/*
