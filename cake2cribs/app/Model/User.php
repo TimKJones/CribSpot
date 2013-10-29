@@ -783,6 +783,12 @@ class User extends AppModel {
 		}
 	}
 
+	public function InvalidatePMLogin($user_id)
+	{
+		$this->id = $user_id;
+		$this->saveField('login_code', uniqid());
+	}
+
 	/*
 	Returns true if all fields are present (based on user type).
 	Returns false otherwise.
