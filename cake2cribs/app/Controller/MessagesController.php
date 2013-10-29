@@ -405,7 +405,7 @@
             $img_url = "https://graph.facebook.com/".$from_user['facebook_id']."/picture?width=180&height=180";
 
         if (!empty($from_user['profile_img']))
-            $img_url = 'https://www.cribspot.com/img/'.$from_user['profile_img'];
+            $img_url = 'https://www.cribspot.com/'.$from_user['profile_img'];
 
         $this->set('img_url', $img_url);
 
