@@ -374,8 +374,10 @@
         $email_verified = $recipient['verified'];
         $reset_password_url = null;
 
-        if (array_key_exists('id', $recipient) && array_key_exists('password_reset_token', $recipient) &&
-            !empty($recipient['id']) && !empty($recipient['password_reset_token']))
+        if (array_key_exists('id', $recipient) && array_key_exists('login_code', $recipient) &&
+            !empty($recipient['id']) && !empty($recipient['login_code']))
+                $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                "&code=".$recipient['login_code'];
 
         /* Set user login code if not yet set */
         $code = null;
