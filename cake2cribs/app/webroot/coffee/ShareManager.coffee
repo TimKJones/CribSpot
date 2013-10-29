@@ -60,6 +60,27 @@ class A2Cribs.ShareManager
 					element: "header"
 					promotion: "surgeons"
 
+	@FBPromotion: ->
+		A2Cribs.MixPanel.Event "Social share",
+			type: "facebook"
+			element: "header"
+			promotion: "wisconsin sunglasses"
+
+		fbObj = 
+			method: 'feed'
+			link: "https://cribspot.com/"
+			picture: 'https://lh4.googleusercontent.com/-JCwU1KBqw1I/UnAMzgSnPeI/AAAAAAAAAIA/ySQHQfwYGFA/w726-h545-no/sunglasses.jpg'
+			name: "Free Shades for Wisconsin Students!"
+			caption: "You're gonna need to protect your eyes - your off-campus housing search is now looking pretty bright."
+			description: "To celebrate our recent launch at University of Wisconsin-Madison, we're giving away 5 pairs of these awesome sunglasses!"
+
+		FB.ui fbObj, (response) ->
+			if response?.post_id
+				A2Cribs.MixPanel.Event "Social share complete",
+					type: "facebook"
+					element: "header"
+					promotion: "wisconsin sunglasses"
+
 
 	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
@@ -97,3 +118,6 @@ class A2Cribs.ShareManager
 	$("#header").ready =>
 		$(".share_on_fb").click =>
 			@ShareOnFacebook()
+
+		$(".promotion_on_fb").click =>
+			@FBPromotion()
