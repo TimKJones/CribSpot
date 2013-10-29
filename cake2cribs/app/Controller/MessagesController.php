@@ -384,6 +384,7 @@
         if (empty($recipient['login_code'])) {
             $code = uniqid();
             $this->User->SetLoginCode($recipient['id'], $code);
+            $recipient['login_code'] = $code;
         }
         $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
