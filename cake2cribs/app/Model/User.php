@@ -126,18 +126,6 @@ class User extends AppModel {
 		'linkedin_verified' => 'alphaNumeric',
 		'last_login' => 'datetime',
 		'preferred_university' => 'numeric',
-		'registered_university' => array(
-			'numeric' => array(
-				'rule' => 'numeric',
-				'required' => false
-			)
-		),
-		'student_year' => array(
-			'numeric' => array(
-				'rule' => 'numeric',
-				'required' => false
-			)
-		),
 		'created' => 'datetime',
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
@@ -803,7 +791,7 @@ class User extends AppModel {
 		if ($user_type === User::USER_TYPE_PROPERTY_MANAGER)
 			$required_fields = array('company_name', 'phone', 'street_address', 'city', 'state');
 		else if ($user_type === User::USER_TYPE_SUBLETTER)
-			$required_fields = array('first_name', 'last_name', 'registered_university', 'student_year');
+			$required_fields = array('first_name', 'last_name');
 
 		foreach ($required_fields as $value) {
 			if (!array_key_exists($value, $user)){

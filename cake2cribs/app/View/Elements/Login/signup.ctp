@@ -22,43 +22,14 @@
 		</div>
 		<form>
 			<div class="row-fluid">
-				<input id="student_first_name" class="span12" type="text" placeholder="First Name">
-			</div>
-			<div class="row-fluid">
-				<input id="student_last_name" class="span12" type="text" placeholder="Last Name">
+				<input id="student_first_name" class="span6" type="text" placeholder="First Name">
+				<input id="student_last_name" class="span6" type="text" placeholder="Last Name">
 			</div>
 			<div class="row-fluid">
 				<input id="student_email" class="span12" type="email" placeholder="Email">
 			</div>
 			<div class="row-fluid">
 				<input id="student_password" class="span12" type="password" placeholder="Password">
-			</div>
-			<div class="row-fluid">
-				<select id="student_university" class="span7">
-					<option value="">University</option>
-					<?php
-					if (isset($locations))
-					{
-						foreach ($locations as $location) {
-						$id = $location['University']['id'];
-						$name = $location['University']['name'];
-						echo "<option value='" . $id . "'>" . $name . "</option>";
-						}
-					}
-					?>
-				</select>
-				<select id="student_year" class="span5">
-					<option value="">Year</option>
-					<?php
-					if (isset($user_years))
-					{
-						$length = count($user_years);
-						for ($i=0; $i<$length; $i++) {
-						echo "<option value='" . $i . "'>" . $user_years[$i] . "</option>";
-						}
-					}
-					?>
-				</select>
 			</div>
 			<div class="row-fluid">
 				<p>By signing up you confirm that you accept the <a href="/TermsOfUse" target="_blank">Terms of Use</a> and the <a href="/PrivacyPolicy" target="_blank">Privacy Policy</a></p>
