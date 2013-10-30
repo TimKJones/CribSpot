@@ -65,22 +65,22 @@
       A2Cribs.MixPanel.Event("Social share", {
         type: "facebook",
         element: "header",
-        promotion: "surgeons"
+        promotion: "none"
       });
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
-        picture: 'http://ak6.picdn.net/shutterstock/videos/3810257/preview/stock-footage-head-shoulders-caucasian-surgeon-female-asian-medical-student-wearing-full-surgical-scrubs.jpg',
-        name: "Surgeons often have to have an open heart and an open mind.",
-        caption: "Cribspot Pun of the Day!",
-        description: ""
+        picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png',
+        name: "Join Cribspot",
+        caption: "It's a party!",
+        description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
       };
       return FB.ui(fbObj, function(response) {
         if (response != null ? response.post_id : void 0) {
           return A2Cribs.MixPanel.Event("Social share complete", {
             type: "facebook",
             element: "header",
-            promotion: "surgeons",
+            promotion: "none",
             post_id: response.post_id
           });
         }
@@ -149,12 +149,58 @@
       return twttr.widgets.load();
     };
 
+    ShareManager.EmailInvite = function(email_list) {
+      return $.ajax({
+        url: myBaseUrl + "Invitations/InviteFriends",
+        type: 'POST',
+        data: {
+          emails: email_list
+        },
+        success: function() {
+          return A2Cribs.MixPanel.Event("Send Verify Text", {
+            success: true
+          });
+        },
+        error: function() {
+          return A2Cribs.MixPanel.Event("Send Verify Text", {
+            success: false
+          });
+        }
+      });
+    };
+
     $("#header").ready(function() {
       $(".share_on_fb").click(function() {
         return ShareManager.ShareOnFacebook();
       });
       return $(".promotion_on_fb").click(function() {
         return ShareManager.FBPromotion();
+      });
+    });
+
+    $("#email_invite").ready(function() {
+      $("#send_email_invite").click(function(event) {
+        var emails;
+        emails = [];
+        $("#email_invite").find(".roommate_email").each(function(index, element) {
+          return emails.push($(element).val());
+        });
+        return ShareManager.EmailInvite(emails);
+      });
+      $("#email_invite").on("keyup", ".roommate_email", function(event) {
+        var re;
+        re = /\S+@\S+\.\S+/;
+        if (re.test($(event.currentTarget.parentElement).find(".roommate_email").val())) {
+          $(event.currentTarget.parentElement).addClass("completed_roommate");
+          return;
+        }
+        return $(event.currentTarget.parentElement).removeClass("completed_roommate");
+      });
+      return $(".add_roommate").click(function() {
+        var email_row, row_count;
+        row_count = $("#email_invite").find(".roommate_email").last().data("roommate-count");
+        email_row = $("<div class='roommate_row'><input data-roommate-count='" + (row_count + 1) + "' class='roommate_email' type='email' placeholder='E.g. myhousem@te.com'><i class='icon-ok-sign'></i></div>");
+        return $("#email_invite").find(".email_invite_list").append(email_row);
       });
     });
 

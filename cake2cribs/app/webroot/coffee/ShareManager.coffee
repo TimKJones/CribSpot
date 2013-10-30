@@ -43,22 +43,23 @@ class A2Cribs.ShareManager
 		A2Cribs.MixPanel.Event "Social share",
 			type: "facebook"
 			element: "header"
-			promotion: "surgeons"
+			promotion: "none"
 
 		fbObj = 
 			method: 'feed'
 			link: "https://cribspot.com/"
-			picture: 'http://ak6.picdn.net/shutterstock/videos/3810257/preview/stock-footage-head-shoulders-caucasian-surgeon-female-asian-medical-student-wearing-full-surgical-scrubs.jpg'
-			name: "Surgeons often have to have an open heart and an open mind."
-			caption: "Cribspot Pun of the Day!"
-			description: ""
+			picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
+			name: "Join Cribspot"
+			caption: "It's a party!"
+			description: "Make your life easier...use Cribspot. Search off-campus houses and apartments quickly."
+
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
 				A2Cribs.MixPanel.Event "Social share complete",
 					type: "facebook"
 					element: "header"
-					promotion: "surgeons"
+					promotion: "none"
 					post_id: response.post_id
 
 	@FBPromotion: ->
@@ -117,9 +118,44 @@ class A2Cribs.ShareManager
 
 		twttr.widgets.load();
 
+	@EmailInvite: (email_list) ->
+		return $.ajax
+			url: myBaseUrl + "Invitations/InviteFriends"
+			type: 'POST'
+			data: 
+				emails: email_list
+			success: ->
+				A2Cribs.MixPanel.Event "Send Verify Text",
+					success: true
+			error: ->
+				#Failed to send message
+				A2Cribs.MixPanel.Event "Send Verify Text",
+					success: false
+
+	
 	$("#header").ready =>
 		$(".share_on_fb").click =>
 			@ShareOnFacebook()
 
 		$(".promotion_on_fb").click =>
 			@FBPromotion()
+
+	$("#email_invite").ready =>
+		$("#send_email_invite").click (event) =>
+			emails = []
+			$("#email_invite").find(".roommate_email").each (index, element) ->
+				emails.push $(element).val()
+			@EmailInvite emails
+
+		$("#email_invite").on "keyup", ".roommate_email", (event) =>
+			re = /\S+@\S+\.\S+/
+			if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()
+				$(event.currentTarget.parentElement).addClass "completed_roommate"
+				return 
+			$(event.currentTarget.parentElement).removeClass "completed_roommate"
+
+		$(".add_roommate").click =>
+			row_count = $("#email_invite").find(".roommate_email").last().data "roommate-count"
+			email_row = $("<div class='roommate_row'><input data-roommate-count='#{row_count + 1}' class='roommate_email' type='email' placeholder='E.g. myhousem@te.com'><i class='icon-ok-sign'></i></div>")
+			$("#email_invite").find(".email_invite_list").append email_row
+	

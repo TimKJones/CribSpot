@@ -89,7 +89,9 @@
       });
       $("#signup_modal").find("form").submit(function(event) {
         $("#signup_modal").find(".signup-button").button('loading');
-        _this.CreateStudent(event.delegateTarget).always(function() {
+        _this.CreateStudent(event.delegateTarget).done(function() {
+          return $("#email_invite").modal("show");
+        }).always(function() {
           return $("#signup_modal").find(".signup-button").button('reset');
         });
         return false;

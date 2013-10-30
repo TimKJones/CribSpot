@@ -13,7 +13,10 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->element('popups');
 	echo $this->element('Login/login');
 	if (isset($locations) && isset($user_years))
+	{
 		echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
+		echo $this->element('Invitations/email_invite');
+	}
 ?>
 
 <div id="header" class="navbar navbar-inverse navbar-fixed-top">
@@ -23,7 +26,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<?php if (isset($school_name) && strpos($school_name, 'Madison')) { ?>
 				<button class="promotion_on_fb btn"><img src="/img/sunglasses.png"> Free Shades</button>
 			<?php } else { ?>
-				<button class="share_on_fb btn">Pun of the Day</button>
+				<button class="share_on_fb btn">Share on Facebook</button>
 			<?php } ?>
 			<ul class="nav pull-right">
 				<li>

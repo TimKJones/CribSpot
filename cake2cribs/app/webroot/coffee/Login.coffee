@@ -72,6 +72,8 @@ class A2Cribs.Login
 		$("#signup_modal").find("form").submit (event) =>
 			$("#signup_modal").find(".signup-button").button 'loading'
 			@CreateStudent(event.delegateTarget)
+			.done ->
+				$("#email_invite").modal "show"
 			.always () =>
 				$("#signup_modal").find(".signup-button").button 'reset'
 			return false
