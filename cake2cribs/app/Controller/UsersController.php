@@ -666,7 +666,7 @@ class UsersController extends AppController {
 CakeLog::write('userdata', print_r($this->request->data, true));
         $this->layout = 'ajax';
 
-        $editable_fields = array('first_name', 'last_name', 'company_name', 'street_address',
+        $editable_fields = array('email', 'first_name', 'last_name', 'company_name', 'street_address',
             'city', 'state', 'phone', 'website');
 
         $user = array('id' => $this->Auth->User('id'));
@@ -674,6 +674,13 @@ CakeLog::write('userdata', print_r($this->request->data, true));
         foreach ($editable_fields as $field){
             if (array_key_exists($field, $this->request->data) &&
                 !empty($this->request->data[$field])) {
+                    if (!strcmp($field, 'email') && $this->User->EmailExists($this->request->data[$field])){
+                        /* Email already exists */
+                        $response = array('error' => 'An account with this email address already exists');
+                        $this->set('response', json_encode($response));
+                        return;
+                    }
+                    
                     $user[$field] = $this->request->data[$field];
             }
         }

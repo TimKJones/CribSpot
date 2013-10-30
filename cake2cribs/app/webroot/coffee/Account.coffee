@@ -164,7 +164,7 @@ class A2Cribs.Account
 				alertify.success('Account Saved', 3000)
 				# console.log JSON.parse(json_response.user)
 			else
-				A2Cribs.UIManager.Error 'Account Failed to Save: ' + json_response.error.message
+				A2Cribs.UIManager.Error 'Account Failed to Save: ' + json_response.error
 
 			if button?
 				button.removeAttr 'disabled'
