@@ -15,6 +15,6 @@
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn btn-link pull-left" data-dismiss="modal" aria-hidden="true">SKIP</a>
-		<a href="#" class="btn btn-primary" id="send_email_invite">SEND INVITATIONS</a>
+		<a href="#" class="btn btn-primary" id="send_email_invite" data-loading-text="Sending...">SEND INVITATIONS</a>
 	</div>
 </div>
