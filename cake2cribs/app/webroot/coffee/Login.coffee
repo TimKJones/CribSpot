@@ -454,7 +454,7 @@ class A2Cribs.Login
 	# Creates a Student user
 	@CreateStudent: (div) ->
 		div = if not div? then @div else $(div)
-		required_fields = ["email", "password", "first_name", "last_name", "university", "year"]
+		required_fields = ["email", "password", "first_name", "last_name"]
 		fields = required_fields.slice 0 # Used to copy the required array
 		return createUser 0, required_fields, fields, div
 

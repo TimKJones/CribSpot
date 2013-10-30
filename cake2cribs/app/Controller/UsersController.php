@@ -67,7 +67,6 @@ class UsersController extends AppController {
         $url = 'https://graph.facebook.com/me?access_token=' . $accessToken;
         $fb_user = urldecode(file_get_contents($url));
         $fb_user = json_decode($fb_user);
-        CakeLog::write('fbuser', print_r($fb_user, true));
         $fb_id = $fb_user->id;
 
         /* See if there is already a user with the given facebook id */
@@ -85,22 +84,39 @@ class UsersController extends AppController {
 
         /* 
         User has not yet created an account with this facebook id.
-        Store their facebook id in the session to save during AjaxRegister
+        Give them a random password and log them in.
         */
-        $this->Session->write('FB.id', $fb_id);
+        $user['user_type'] = 0;
+        $user['verified'] = 0;
+        $user['group_id'] = 1;
+        $user['vericode'] = uniqid();
+        $user['login_code'] = uniqid();     
+        $user['first_name'] = $fb_user->first_name;
+        $user['last_name'] = $fb_user->last_name;
+        $user['facebook_id'] = $fb_user->id;
+        $user['password'] = uniqid();
+
+        $response = $this->User->RegisterUser($user);
+        $this->_savePreferredUniversity($this->User->id);
+        $savedUser = null;
+        if (array_key_exists('error', $response)) {
+            $this->set('response', json_encode($response));
+            return;
+        }
+        else if (array_key_exists('success', $response)) {
+            $savedUser = $response['success'];
+            $this->_login($savedUser);
+        }
 
         /* Get their img url to throw into login modal */
         $img_url = "/img/head_large.jpg";
         if (!empty($fb_id))
             $img_url = "https://graph.facebook.com/".$fb_id."/picture?width=80&height=80";
 
+        $data = $this->_getUserDataForAjaxLogin($savedUser['User']);
         $response = array(
-            'success' => 'NOT_LOGGED_IN',
-            'data' => array(
-                'first_name' => $fb_user->first_name,
-                'last_name' => $fb_user->last_name,
-                'img_url' => $img_url
-            )
+            'success' => 'LOGGED_IN',
+            'data' => $data
         );
 
         $this->set('response', json_encode($response));
@@ -145,36 +161,7 @@ class UsersController extends AppController {
         $user['verified'] = 0;
         $user['group_id'] = 1;
         $user['vericode'] = uniqid();
-        $user['login_code'] = uniqid();
-
-        CakeLog::write("ErrorAjaxResetPassword", "Error code: 69;" . print_r($user, true));
-
-        if (array_key_exists('university', $user))
-        {
-            $user['registered_university'] = $user['university'];
-        }
-
-        if (array_key_exists('year', $user))
-        {
-            $user['student_year'] = $user['year'];
-        }
-        
-
-        /* Check if user initially tried to log in with facebook */
-        $fb_id = $this->Session->read('FB.id');
-        if ($fb_id){
-            $user['facebook_id'] = $fb_id;
-            /* Check if facebook_id has already been registered */
-            if ($this->User->FBIdExists($fb_id)) {
-                $response = array(
-                    'error' => '',
-                    'error_type' => 'FB_ID_EXISTS'
-                );
-
-                $this->set('response', json_encode($response));
-                return;
-            }
-        }
+        $user['login_code'] = uniqid();     
 
         $response = $this->User->RegisterUser($user);
         $savedUser = null;
@@ -187,19 +174,8 @@ class UsersController extends AppController {
             $this->_login($savedUser);
         }
 
-        /* User record saved. Now send email to validate email address */
         /* Create a new user object and save it */
-        /*
-        if ($user['user_type'] == User::USER_TYPE_SUBLETTER)
-            $this->set('name', $user['first_name']);
-        else if ($user['user_type'] == User::USER_TYPE_PROPERTY_MANAGER)
-            $this->set('name', $user['company_name']);
 
-        */
-        
-        $this->set('vericode', $user['vericode']);
-        $this->set('id', $this->User->id);
-        // $this->_sendVerificationEmail($user);
         $data = $this->_getUserDataForAjaxLogin($savedUser['User']);
         $response = array(
             'success' => 'LOGGED_IN',

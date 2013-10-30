@@ -117,27 +117,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
                                 <input id="student_email" class="span6" type="email" placeholder="Email">
                                 <input id="student_password" class="span6 right_input" type="password" placeholder="Password">
                             </div>
-                            <div class="row-fluid">
-                                <select id="student_university" class="span7">
-                                    <option value="">Select Your University</option>
-                                    <?php
-                                    foreach ($locations as $location) {
-                                        $id = $location['University']['id'];
-                                        $name = $location['University']['name'];
-                                        echo "<option value='" . $id . "'>" . $name . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                                <select id="student_year" class="span5 right_input">
-                                    <option value="">Select Your Year</option>
-                                    <?php
-                                    $length = count($user_years);
-                                    for ($i=0; $i<$length; $i++) {
-                                        echo "<option value='" . $i . "'>" . $user_years[$i] . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
                         </div>
                     </div>
                     <div class="row-fluid">

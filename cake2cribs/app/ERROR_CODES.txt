@@ -151,3 +151,5 @@
 - TourInvitation->InviteHousemates
 72
 - User->UpdatePhoneFields
+73
+- EmailInvitation->InviteFriends
