@@ -6,7 +6,12 @@ class EmailInvitation extends AppModel {
 	public $actsAs = array('Containable');
 	public $validate = array(
 		'id' => 'numeric',
-		'email' => 'numeric',
+		'email' => array(
+			'email' => array(
+        		'rule'    => array('email', true),
+        		'message' => 'Please supply a valid email address.'
+    			)
+		),
 		'inviter_id' => 'numeric',
 		'created' => 'datetime',
 		'modified' => 'datetime'

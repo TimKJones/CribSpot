@@ -19,8 +19,14 @@ class InvitationsController extends AppController {
         $emails = $this->request->data['emails'];
         CakeLog::write('emails', print_r($emails, true));
 
+        $response = null;
         if ($this->Auth->loggedIn()){
-            $this->EmailInvitation->InviteFriends($this->Auth->User('id'), $emails);
+            $response = $this->EmailInvitation->InviteFriends($this->Auth->User('id'), $emails);
+            if (array_key_exists('error', $response)){
+                $this->set('response', json_encode($response));
+                return;
+            }
+            
             $this->_sendEmailsToInvitees($emails);
         }
 
@@ -35,13 +41,18 @@ class InvitationsController extends AppController {
         $loggedInUser = $this->Auth->User();
         $first_name = $loggedInUser['first_name'];
         $last_name = $loggedInUser['last_name'];
+        $img_url = null;
+        if (!empty($loggedInUser['facebook_id']))
+            $img_url = "https://graph.facebook.com/".$loggedInUser['facebook_id']."/picture?width=140&height=140";
+
         foreach ($emails as $email){
             $this->set('inviter_first_name', $first_name);
             $this->set('inviter_last_name', $last_name);
+            $this->set('img_url', $img_url);
             $from = $first_name.' '.$last_name.'<info@cribspot.com>';
             $to = $email;    
-            $subject = 'Join me on Cribspot! Off-campus housing made simple.'
-            $template = 'tours/tour_information_for_scheduler';
+            $subject = 'Join me on Cribspot! Off-campus housing made simple';
+            $template = 'email_invitation';
             $sendAs = 'both';
             $this->SendEmail($from, $to, $subject, $template, $sendAs);
         }
