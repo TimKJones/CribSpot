@@ -6,21 +6,8 @@
     function Account() {}
 
     Account.setupUI = function() {
-      var my_verification_info, url, veripanel,
+      var my_verification_info, veripanel,
         _this = this;
-      url = myBaseUrl + "university/getAll/";
-      $.get(url, function(data) {
-        _this.UniversityData = JSON.parse(data);
-        _this.UniversityNames = [];
-        _this.UniversityID = [];
-        _.each(_this.UniversityData, function(value, key, list) {
-          _this.UniversityNames[key] = value['University']['name'];
-          return _this.UniversityID[key] = value['University']['id'];
-        });
-        return $('#university').typeahead({
-          source: _this.UniversityNames
-        });
-      });
       my_verification_info = A2Cribs.VerifyManager.getMyVerification();
       veripanel = $('#my-verification-panel');
       if (my_verification_info.verified_email) {

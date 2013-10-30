@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/click-bubble.less?v=1','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/click-bubble.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div class="click-bubble hide">
 	<div class="click_header"><div class="building_name clear_field">10202  West Chester Rd.</div><div class="close_button">&times;</div></div>
@@ -23,6 +23,7 @@
 		<div class="property_manager clear_field">Investor's Property Management</div>
 		<div class="verified hide">VERIFIED</div>
 	</div>
+	<a href="#" class="schedule_tour"><div>Schedule a tour now</div></a>
 	<div class="action_buttons">
 		<a class="full_page_link" href="#">More Info <i class="icon-plus"></i></a>
 		<a class="full_page_contact" href="#">Contact <i class="icon-comment"></i></a>

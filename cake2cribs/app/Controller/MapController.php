@@ -79,6 +79,7 @@ class MapController extends AppController {
         if($this->Auth->User()){
             $user = $this->User->getSafe($this->Auth->User('id'));
         }
+        $this->set('school_name', $school_name);
         $this->set('user', json_encode($user));
         $this->set('locations', $this->University->getSchools());
         $this->set('user_years', $this->User->GetYears());

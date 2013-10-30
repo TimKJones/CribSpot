@@ -160,6 +160,7 @@ ClickBubble class
       this.setPrimaryImage("property_image", listing_object.listing_id);
       this.setFullPage("full_page_link", listing_object.listing_id);
       this.setFullPageContact("full_page_contact", listing_object.listing_id);
+      this.setFullPageSchedule("schedule_tour", listing_object.listing_id);
       this.div.find(".share_btn").unbind("click");
       this.div.find(".facebook_share").click(function() {
         return A2Cribs.ShareManager.ShareListingOnFacebook(listing_object.listing_id, marker.street_address, marker.city, marker.state, marker.zip, listing_object.description, listing_object.building_type_id);
@@ -301,8 +302,24 @@ ClickBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "full page contact user");
         link = "/messages/contact/" + listing_id;
+        win = window.open(link, '_blank');
+        return win.focus();
+      });
+    };
+
+    ClickBubble.setFullPageSchedule = function(div_name, listing_id) {
+      var listing;
+      listing = A2Cribs.UserCache.Get("listing", listing_id);
+      if ((listing != null ? listing.scheduling : void 0) === true && listing.available === true) {
+        $("." + div_name).show();
+      } else {
+        $("." + div_name).hide();
+      }
+      $("." + div_name).unbind("click");
+      return $("." + div_name).click(function() {
+        var link, win;
+        link = "/tours/schedule/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();
       });
