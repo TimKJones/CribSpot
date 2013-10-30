@@ -246,10 +246,9 @@ class User extends AppModel {
 				$user_id = $user['User']['id'];
 
 			$this->LogError($user_id, 47, $error);
-			return array("error" => array('validation' => $this->validationErrors,
-				'message' => 'Looks like we had an issue editing your account. If the issue continues, ' .
+			return array("error" => 'Looks like we had an issue editing your account. If the issue continues, ' .
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 47.'));
+					'at help@cribspot.com. Reference error code 47.');
 		}
 
 		return array('success' => '');
