@@ -142,12 +142,14 @@ class A2Cribs.ShareManager
 
 	$("#email_invite").ready =>
 		$("#send_email_invite").click (event) =>
+			$("#send_email_invite").button "loading"
 			emails = []
 			$("#email_invite").find(".roommate_email").each (index, element) ->
 				emails.push $(element).val()
 			@EmailInvite(emails)
 			.always ->
 				$("#email_invite").modal "hide"
+				$("#send_email_invite").button "reset"
 			A2Cribs.MixPanel.Event "Email Friends",
 				"number of emails": email?.length
 				"action": "after signup"

@@ -181,12 +181,14 @@
     $("#email_invite").ready(function() {
       $("#send_email_invite").click(function(event) {
         var emails;
+        $("#send_email_invite").button("loading");
         emails = [];
         $("#email_invite").find(".roommate_email").each(function(index, element) {
           return emails.push($(element).val());
         });
         ShareManager.EmailInvite(emails).always(function() {
-          return $("#email_invite").modal("hide");
+          $("#email_invite").modal("hide");
+          return $("#send_email_invite").button("reset");
         });
         return A2Cribs.MixPanel.Event("Email Friends", {
           "number of emails": typeof email !== "undefined" && email !== null ? email.length : void 0,
