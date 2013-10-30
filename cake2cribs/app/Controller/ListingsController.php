@@ -35,10 +35,16 @@ class ListingsController extends AppController {
 		}
 
 		$AuthUser = null;
+		$email = null;
 		if ($this->Auth->User())
+		{
+			$user = $this->Auth->User();
+			$email = $user['email'];
 			$AuthUser = $this->Auth->User('id');
+		}
 
 		$this->set('AuthUser', $AuthUser);
+		$this->set('user_email', $email);
 		
 		$listing = $this->Listing->GetListing($listing_id);
 		

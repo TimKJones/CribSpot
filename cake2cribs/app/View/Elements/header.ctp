@@ -26,7 +26,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<?php if (isset($school_name) && strpos($school_name, 'Madison')) { ?>
 				<button class="promotion_on_fb btn"><img src="/img/sunglasses.png"> Free Shades</button>
 			<?php } else { ?>
-				<button class="share_on_fb btn">Share on Facebook</button>
+				<button class="share_on_fb btn">Tell my friends</button>
 			<?php } ?>
 			<ul class="nav pull-right">
 				<li>
