@@ -493,7 +493,7 @@
                         <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
                         
                             <span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
-                            Your off-campus housing search just got a whole lot easier. Join <?= $inviter_first_name ?> and the thousands of other college students using Cribspot to search for their next off-campus home.  
+                            Your housing search just got a whole lot easier. Join <?= $inviter_first_name ?> and the thousands of other college students using Cribspot to find their next off-campus home.  
 
                         </td>
                     </tr>
