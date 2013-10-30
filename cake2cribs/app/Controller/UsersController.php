@@ -76,6 +76,7 @@ class UsersController extends AppController {
             $data = $this->_getUserDataForAjaxLogin($local_user['User']);
             $response = array(
                 'success' => 'LOGGED_IN',
+                'account_exists' => true,
                 'data' => $data
             );
             $this->set('response', json_encode($response));
@@ -116,7 +117,8 @@ class UsersController extends AppController {
         $data = $this->_getUserDataForAjaxLogin($savedUser['User']);
         $response = array(
             'success' => 'LOGGED_IN',
-            'data' => $data
+            'data' => $data,
+            'account_exists' => false
         );
 
         $this->set('response', json_encode($response));
@@ -663,7 +665,7 @@ class UsersController extends AppController {
     {
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-CakeLog::write('userdata', print_r($this->request->data, true));
+
         $this->layout = 'ajax';
 
         $editable_fields = array('email', 'first_name', 'last_name', 'company_name', 'street_address',
@@ -680,7 +682,7 @@ CakeLog::write('userdata', print_r($this->request->data, true));
                         $this->set('response', json_encode($response));
                         return;
                     }
-                    
+
                     $user[$field] = $this->request->data[$field];
             }
         }
