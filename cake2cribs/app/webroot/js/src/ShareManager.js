@@ -65,7 +65,7 @@
       A2Cribs.MixPanel.Event("Social share", {
         type: "facebook",
         element: "header",
-        promotion: "none"
+        promotion: "tell my friends"
       });
       fbObj = {
         method: 'feed',
@@ -80,7 +80,7 @@
           return A2Cribs.MixPanel.Event("Social share complete", {
             type: "facebook",
             element: "header",
-            promotion: "none",
+            promotion: "tell my friends",
             post_id: response.post_id
           });
         }
