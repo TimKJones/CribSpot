@@ -82,6 +82,7 @@ ClickBubble class
       var openDeferred,
         _this = this;
       this.IsOpen = true;
+      $("#map_canvas").trigger("click_bubble_open", [listing_id]);
       openDeferred = new $.Deferred();
       if (listing_id != null) {
         $("#loader").show();

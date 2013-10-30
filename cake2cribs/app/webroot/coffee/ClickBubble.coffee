@@ -52,6 +52,7 @@ class A2Cribs.ClickBubble
 	###
 	@Open: (listing_id) ->
 		@IsOpen = true
+		$("#map_canvas").trigger "click_bubble_open", [listing_id]
 		openDeferred = new $.Deferred()
 
 		if listing_id?
