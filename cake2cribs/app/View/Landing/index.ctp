@@ -5,7 +5,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Login', array('inline' => false));
 	echo $this->Html->script('src/Landing', array('inline' => false));
 }
-	$this->set('title_for_layout', 'Cribspot - Every College Rental...All In One Spot');
+	$this->set('title_for_layout', 'Cribspot - College Off-Campus Housing & Apartments.');
 
 	$this->Html->meta('keywords', 
 			"off campus housing, student housing, campus apartments, college apartments, college housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
@@ -15,6 +15,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	echo $this->element('Login/login');
 	echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
+	echo $this->element('Invitations/email_invite');
 ?>
 
 

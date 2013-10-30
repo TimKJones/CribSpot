@@ -22,6 +22,19 @@
 	  		</div>
 	  </div>
 	</form>
+	<form id="emailForm" class="form-horizontal">
+	  <div class="control-group">
+	    <label class="control-label" for="new_password">Email:</label>
+	    <div class="controls">
+	      <input type="email" id="new_email" value = '<?= $user['User']['email'] ?>'>
+	    </div>
+	  </div>
+	  <div class="control-group">
+	    <div class="controls">
+			<button id="changeEmailButton" type="button" class="btn" data-loading-text="Saving...">Save Email</button>
+		</div>
+	  </div>
+	</form>
 	<form id="passwordForm" class="form-horizontal">
 	  <div class="control-group">
 	    <label class="control-label" for="new_password">New Password:</label>
