@@ -96,6 +96,7 @@ class UsersController extends AppController {
         $user['last_name'] = $fb_user->last_name;
         $user['facebook_id'] = $fb_user->id;
         $user['password'] = uniqid();
+        $user['email'] = $fb_user->email;
 
         $response = $this->User->RegisterUser($user);
         $this->_savePreferredUniversity($this->User->id);
