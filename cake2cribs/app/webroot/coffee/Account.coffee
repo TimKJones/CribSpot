@@ -43,12 +43,22 @@ class A2Cribs.Account
 			@SaveFirstLastName()
 			.always ->
 				$(event.delegateTarget).button('reset')
+		$('#changeEmailButton').click (event) =>
+			$(event.delegateTarget).button('loading')
+			@SaveEmail()
+			.always ->
+				$(event.delegateTarget).button('reset')
 
 	@SaveFirstLastName: () ->
 			pair = 
 				'first_name':$("#first_name_input").val()
 				'last_name':$("#last_name_input").val()
 			return @SaveAccount pair, $("#changeFirstLastNameButton")
+
+	@SaveEmail: ->
+		pair =
+			'email': $("#new_email").val()
+		return @SaveAccount pair, $("#changeEmailButton")
 
 	@SaveCompanyName: () ->
 			pair = 

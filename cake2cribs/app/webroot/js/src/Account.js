@@ -54,9 +54,15 @@
           return $(event.delegateTarget).button('reset');
         });
       });
-      return $('#changeFirstLastNameButton').click(function(event) {
+      $('#changeFirstLastNameButton').click(function(event) {
         $(event.delegateTarget).button('loading');
         return _this.SaveFirstLastName().always(function() {
+          return $(event.delegateTarget).button('reset');
+        });
+      });
+      return $('#changeEmailButton').click(function(event) {
+        $(event.delegateTarget).button('loading');
+        return _this.SaveEmail().always(function() {
           return $(event.delegateTarget).button('reset');
         });
       });
@@ -69,6 +75,14 @@
         'last_name': $("#last_name_input").val()
       };
       return this.SaveAccount(pair, $("#changeFirstLastNameButton"));
+    };
+
+    Account.SaveEmail = function() {
+      var pair;
+      pair = {
+        'email': $("#new_email").val()
+      };
+      return this.SaveAccount(pair, $("#changeEmailButton"));
     };
 
     Account.SaveCompanyName = function() {
