@@ -99,7 +99,6 @@ class UsersController extends AppController {
         $user['email'] = $fb_user->email;
 
         $response = $this->User->RegisterUser($user);
-        $this->_savePreferredUniversity($this->User->id);
         $savedUser = null;
         if (array_key_exists('error', $response)) {
             $this->set('response', json_encode($response));
@@ -110,6 +109,8 @@ class UsersController extends AppController {
             $this->_login($savedUser);
         }
 
+        $this->_savePreferredUniversity($this->Auth->User('id'));
+        
         /* Get their img url to throw into login modal */
         $img_url = "/img/head_large.jpg";
         if (!empty($fb_id))
