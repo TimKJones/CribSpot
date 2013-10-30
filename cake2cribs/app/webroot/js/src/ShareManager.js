@@ -185,7 +185,13 @@
         $("#email_invite").find(".roommate_email").each(function(index, element) {
           return emails.push($(element).val());
         });
-        return ShareManager.EmailInvite(emails);
+        ShareManager.EmailInvite(emails).always(function() {
+          return $("#email_invite").modal("hide");
+        });
+        return A2Cribs.MixPanel.Event("Email Friends", {
+          "number of emails": typeof email !== "undefined" && email !== null ? email.length : void 0,
+          "action": "after signup"
+        });
       });
       $("#email_invite").on("keyup", ".roommate_email", function(event) {
         var re;

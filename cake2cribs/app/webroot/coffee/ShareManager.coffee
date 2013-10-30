@@ -145,7 +145,12 @@ class A2Cribs.ShareManager
 			emails = []
 			$("#email_invite").find(".roommate_email").each (index, element) ->
 				emails.push $(element).val()
-			@EmailInvite emails
+			@EmailInvite(emails)
+			.always ->
+				$("#email_invite").modal "hide"
+			A2Cribs.MixPanel.Event "Email Friends",
+				"number of emails": email?.length
+				"action": "after signup"
 
 		$("#email_invite").on "keyup", ".roommate_email", (event) =>
 			re = /\S+@\S+\.\S+/

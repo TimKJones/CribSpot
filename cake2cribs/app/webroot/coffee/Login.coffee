@@ -66,7 +66,7 @@ class A2Cribs.Login
 		# Shows the signup modal
 		$(".show_signup_modal").click () =>
 			$("#login_modal").modal "hide"
-			$("#signup_modal").modal("show").find(".signup_message").text "Signup for Cribspot."
+			$("#signup_modal").modal("show").find(".signup_message").text "Sign up for Cribspot."
 
 		# Submits the new user to the backend
 		$("#signup_modal").find("form").submit (event) =>
@@ -94,6 +94,8 @@ class A2Cribs.Login
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
+					if response.account_exists is no
+						$("#email_invite").modal "show"
 
 			.always () =>
 				$(".fb-login").button('reset')
@@ -137,6 +139,8 @@ class A2Cribs.Login
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
+					if response.account_exists is no
+						$("#email_invite").modal "show"
 			.always () =>
 				$(".fb-login").button('reset')
 

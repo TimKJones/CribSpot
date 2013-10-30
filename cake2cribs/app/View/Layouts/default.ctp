@@ -60,6 +60,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/User');
 		echo $this->Html->script('src/Listing');
 		echo $this->Html->script('src/Marker');
+		echo $this->Html->script('src/MapActivity');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
 		echo $this->Html->script('src/CorrectMarker');
