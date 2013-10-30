@@ -1,5 +1,5 @@
 <?php echo $this->Html->css('/less/Invitations/email_invite.less?','stylesheet/less', array('inline' => false)); ?>
-<div id="email_invite" class="modal">
+<div id="email_invite" class="modal hide fade">
 	<div class="modal-body">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h3>Almost done!</h3>
