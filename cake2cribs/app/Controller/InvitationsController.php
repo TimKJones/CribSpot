@@ -51,7 +51,7 @@ class InvitationsController extends AppController {
             $this->set('img_url', $img_url);
             $from = $first_name.' '.$last_name.'<info@cribspot.com>';
             $to = $email;    
-            $subject = 'Join me on Cribspot! Off-campus housing made simple';
+            $subject = 'Join my group on Cribspot! Off-campus housing made simple';
             $template = 'email_invitation';
             $sendAs = 'both';
             $this->SendEmail($from, $to, $subject, $template, $sendAs);

@@ -6,18 +6,6 @@ class SubletsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index');
-		$this->Auth->allow('view');
-		$this->Auth->allow('show');
-		$this->Auth->allow('getSubletsAjax');
-		$this->Auth->allow('userView');
-		$this->Auth->allow('ajax_add');
-		$this->Auth->allow('ajax_add_create');
-		$this->Auth->allow('ajax_add2');
-		$this->Auth->allow('ApplyFilter');
-		$this->Auth->allow('LoadMarkerData');
-		$this->Auth->allow('getSubletDataById');
-		$this->Auth->allow('ajax_submit_sublet');
 	}
 
 	/*
