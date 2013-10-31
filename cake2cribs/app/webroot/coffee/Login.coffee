@@ -272,6 +272,9 @@ class A2Cribs.Login
 		# show user dropdown
 		$(".personal_menu_#{user.user_type}").show()
 
+		# Change user email
+		$(".user_email").text user.email
+
 	###
 	Populate favorites
 	Highlight or un-highlight favorites
