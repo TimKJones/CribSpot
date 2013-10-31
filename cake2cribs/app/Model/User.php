@@ -476,18 +476,6 @@ class User extends AppModel {
 		return $result != null;
 	}
 
-	public function IsValidLoginCode($id, $login_code)
-	{
-		$result = $this->find('first', array(
-			'fields' => array('User.id'),
-			'conditions' => array(
-				'User.id' => $id,
-				'User.login_code' => $login_code
-		)));
-
-		return $result != null;
-	}
-
 	public function SetLoginCode($user_id, $code)
 	{
 		$this->id = $user_id;
@@ -769,13 +757,7 @@ class User extends AppModel {
 			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
 		}
 	}
-
-	public function InvalidatePMLogin($user_id)
-	{
-		$this->id = $user_id;
-		$this->saveField('login_code', uniqid());
-	}
-
+	
 	/*
 	Returns true if all fields are present (based on user type).
 	Returns false otherwise.

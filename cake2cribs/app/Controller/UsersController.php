@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
-    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite');
+    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite', 'LoginCode');
     public $components= array('Email', 'RequestHandler', 'Cookie', 'Twilio.Twilio');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
@@ -635,14 +635,19 @@ class UsersController extends AppController {
 
         $id = $this->request->query['id'];
         $code = $this->request->query['code'];
-        if (!$this->User->IsValidLoginCode($id, $code)){
+        $response = $this->LoginCode->IsValidLoginCode($id, $code);
+        if (array_key_exists('error', $response)){
+            $message = "That reset password link does not seem to be legitimate!";
+            if (!strcmp($response['error'], 'LOGIN_CODE_EXPIRED'))
+                $message = "That link is over 2 days old and has expired. You can still login here with your email and password!";
+        
             $flash_message['method'] = "Error";
-            $flash_message['message'] = "That reset password link does not seem to be legitimate!";
+            $flash_message['message'] = $message;
             $json = json_encode($flash_message);
             $this->Cookie->write('flash-message', $json);
             $this->redirect('/users/login?invalid_link=true');
         }
-
+        
         /* 
         credentials were correct - log the user in. 
         If conversation id present, redirect user to that conversation
@@ -650,7 +655,7 @@ class UsersController extends AppController {
         $user = $this->User->get($id);
         $this->User->VerifyEmail($id);
         $this->_login($user);
-        $this->User->InvalidatePMLogin($id);
+        $this->LoginCode->InvalidateCode($id);
         if (array_key_exists('convid', $this->request->query)){
             $conv_id = $this->request->query['convid'];
             CakeLog::write('convid', $conv_id);

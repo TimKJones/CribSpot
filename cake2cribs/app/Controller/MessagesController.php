@@ -2,7 +2,7 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental', 'LoginCode');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
@@ -379,13 +379,11 @@
                 $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
 
-        /* Set user login code if not yet set */
-        $code = null;
-        if (empty($recipient['login_code'])) {
-            $code = uniqid();
-            $this->User->SetLoginCode($recipient['id'], $code);
-            $recipient['login_code'] = $code;
-        }
+        /* Set new login code */
+        $code = uniqid();
+        $this->LoginCode->Add($recipient['id'], $code);
+        $recipient['login_code'] = $code;
+
         $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
         $this->set('to_property_manager', $is_property_manager);
