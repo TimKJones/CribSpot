@@ -39,7 +39,9 @@ class A2Cribs.FullListing
 
 		@div.find("#contact_owner").click () =>
 			if A2Cribs.Login?.logged_in is yes
-				A2Cribs.MixPanel.Click { listing_id: @listing_id }, "full page contact user"
+				A2Cribs.MixPanel.Event "Listing Click", 
+					"display type": "full page contact user"
+					"listing_id": listing_id
 				@div.find("#contact_owner").hide()
 				@div.find("#contact_message").slideDown()
 			else
