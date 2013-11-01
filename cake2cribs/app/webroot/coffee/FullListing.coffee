@@ -9,6 +9,9 @@ class A2Cribs.FullListing
 					$("#scheduling_tour_tab").click()
 				else
 					$(event.currentTarget).tab('show')
+					A2Cribs.MixPanel.Event "Listing Click", 
+						"display type": "full page schedule tour"
+						"listing_id": listing_id
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to schedule a tour."
 				A2Cribs.MixPanel.Event "login required",
