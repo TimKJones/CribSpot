@@ -669,6 +669,27 @@ class User extends AppModel {
 	}
 
 	/*
+	Returns the user_ids for PMs at the given universities
+	*/
+	public function GetPMUserIdsByAssociatedUniversity($university_ids)
+	{
+		$users = $this->find('all', array(
+			'fields' => array('User.id'),
+			'contain' => array(),
+			'conditions' => array(
+				'User.pm_associated_university' => $university_ids,
+				'User.user_type' => User::USER_TYPE_PROPERTY_MANAGER
+			)
+		));
+CakeLog::write("userlist", print_r($users, true));
+		$user_ids = array();
+		foreach ($users as $user)
+			array_push($user_ids, $user['User']['id']);
+
+		return $user_ids;
+	}
+
+	/*
 	Invalidate the previous password reset token
 	Called after a user has successfully reset their password from an email link
 	*/	
