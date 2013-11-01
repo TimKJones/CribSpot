@@ -51,7 +51,6 @@ class EmailShell extends AppShell{
             $school_abbreviation = $usersUniversity['abbreviation'];
             $school_full_name = $usersUniversity['full_name'];
             $code = $this->LoginCode->GetCodeByUserId($user['User']['id']);
-CakeLog::write('codeit', $code);
             if ($code === null)
                 continue;
 
@@ -75,7 +74,7 @@ CakeLog::write('codeit', $code);
                 $template = 'WelcomePropertyManagers';
                 $this->_emailUser($user['User']['email'], $subject, $template, $templateData, $from);
             }
-
+    
             $counter ++;
         }
     }
