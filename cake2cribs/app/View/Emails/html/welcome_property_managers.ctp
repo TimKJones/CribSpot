@@ -339,9 +339,9 @@ Here at Cribspot, we want to make the process of finding the right tenants as si
 Sincerely,<br/><br/>
 
 Alex and The Cribspot Team<br/><br/>
-<strong>Alex Gross</strong><br/>
+<strong>Jason Okrasinksi</strong><br/>
 Cribspot Co-Founder<br/>
-alex@cribspot.com | 908.752.8187
+jason@cribspot.com | 908.752.8187
 
                                     </div>
 

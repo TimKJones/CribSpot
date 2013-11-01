@@ -1,13 +1,13 @@
 <?php 
 
 class EmailShell extends AppShell{
-    public $uses = array('Error', 'User', 'University');
+    public $uses = array('Error', 'User', 'University', 'LoginCode');
 
     /*
     Sends welcome email to all property managers with pm_associated_university set as a school in $university_ids
 
     */
-    public function welcome_property_managers_by_associated_university($university_ids = array(2, 3))
+    public function welcome_property_managers_by_associated_university($university_ids = array(4))
     {
         $counter = 0;
         /* Map of university_id to university object */
@@ -15,7 +15,9 @@ class EmailShell extends AppShell{
         CakeLog::write('universitymap', print_r($universityMap, true));
 
         /* Initialize password_reset_tokens*/
-        if (!$this->User->InitializePMLoginCodes($university_ids))
+        $user_ids = $this->User->GetPMUserIdsByAssociatedUniversity($university_ids);
+        CakeLog::write('user_ids', print_r($user_ids, true));
+        if (!$this->LoginCode->InitializePMLoginCodes($user_ids))
             return;
 
         /* Get all property managers that will be emailed */
@@ -48,8 +50,12 @@ class EmailShell extends AppShell{
             $usersUniversity = $universityMap[$user['User']['pm_associated_university']];
             $school_abbreviation = $usersUniversity['abbreviation'];
             $school_full_name = $usersUniversity['full_name'];
-            $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$user['User']['id'] . 
-            "&code=".$user['User']['login_code'];
+            $code = $this->LoginCode->GetCodeByUserId($user['User']['id']);
+CakeLog::write('codeit', $code);
+            if ($code === null)
+                continue;
+
+            $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$user['User']['id']."&code=".$code;
             $templateData = array(
                 'school_abbreviation' => $school_abbreviation,
                 'school_full_name' => $school_full_name,
@@ -64,7 +70,7 @@ class EmailShell extends AppShell{
                     $user['User']['email'] = 'tjones4413@gmail.com';
 
 
-                $from = array('alex@cribspot.com' => 'Cribspot Founder');
+                $from = array('jason@cribspot.com' => 'Cribspot Founder');
                 $subject = "Welcome to Cribspot at " . $school_full_name . "!";
                 $template = 'WelcomePropertyManagers';
                 $this->_emailUser($user['User']['email'], $subject, $template, $templateData, $from);

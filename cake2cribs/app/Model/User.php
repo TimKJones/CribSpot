@@ -476,18 +476,6 @@ class User extends AppModel {
 		return $result != null;
 	}
 
-	public function IsValidLoginCode($id, $login_code)
-	{
-		$result = $this->find('first', array(
-			'fields' => array('User.id'),
-			'conditions' => array(
-				'User.id' => $id,
-				'User.login_code' => $login_code
-		)));
-
-		return $result != null;
-	}
-
 	public function SetLoginCode($user_id, $code)
 	{
 		$this->id = $user_id;
@@ -681,6 +669,27 @@ class User extends AppModel {
 	}
 
 	/*
+	Returns the user_ids for PMs at the given universities
+	*/
+	public function GetPMUserIdsByAssociatedUniversity($university_ids)
+	{
+		$users = $this->find('all', array(
+			'fields' => array('User.id'),
+			'contain' => array(),
+			'conditions' => array(
+				'User.pm_associated_university' => $university_ids,
+				'User.user_type' => User::USER_TYPE_PROPERTY_MANAGER
+			)
+		));
+CakeLog::write("userlist", print_r($users, true));
+		$user_ids = array();
+		foreach ($users as $user)
+			array_push($user_ids, $user['User']['id']);
+
+		return $user_ids;
+	}
+
+	/*
 	Invalidate the previous password reset token
 	Called after a user has successfully reset their password from an email link
 	*/	
@@ -769,13 +778,7 @@ class User extends AppModel {
 			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
 		}
 	}
-
-	public function InvalidatePMLogin($user_id)
-	{
-		$this->id = $user_id;
-		$this->saveField('login_code', uniqid());
-	}
-
+	
 	/*
 	Returns true if all fields are present (based on user type).
 	Returns false otherwise.
