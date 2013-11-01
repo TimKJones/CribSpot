@@ -54,9 +54,10 @@
       this.div.find("#contact_owner").click(function() {
         var _ref;
         if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
-          A2Cribs.MixPanel.Click({
-            listing_id: _this.listing_id
-          }, "full page contact user");
+          A2Cribs.MixPanel.Event("Listing Click", {
+            "display type": "full page contact user",
+            "listing_id": listing_id
+          });
           _this.div.find("#contact_owner").hide();
           return _this.div.find("#contact_message").slideDown();
         } else {

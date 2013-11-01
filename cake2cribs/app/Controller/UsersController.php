@@ -824,9 +824,13 @@ CakeLog::write('twiliodebug', print_r($response, true));
         $user_type = 0;
         if (array_key_exists('user_type', $user))
             $user_type = $user['user_type'];
+        $user_email = "";
+        if (array_key_exists('email', $user))
+            $user_email = $user["email"];
 
         $data = array(
             'name' => $name,
+            'email' => $user_email,
             'num_messages' => $num_messages,
             'favorites' => $favorites,
             'user_type' => $user_type,

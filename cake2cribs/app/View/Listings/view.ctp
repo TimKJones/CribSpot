@@ -188,7 +188,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
 					</div>
 					<div class="row-fluid">
-						<div class="info_message">Responses will be sent to you current email, <strong><?= $user_email ?></strong>. If this is incorrect, click <?php echo $this->Html->link('here', array('controller' => 'users', 'action' => 'accountinfo')); ?> to set your email</div>
+						<div class="info_message">Responses will be sent to you current email, <strong class="user_email"></strong>. If this is incorrect, click <?php echo $this->Html->link('here', array('controller' => 'users', 'action' => 'accountinfo')); ?> to set your email</div>
 					</div>
 					<?php } else if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null) {?>
 						<b>This rental owner can only be contacted by phone.</b>

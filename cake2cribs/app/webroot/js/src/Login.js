@@ -268,7 +268,8 @@
       if (user.num_messages !== 0) {
         $(".personal_buttons").find(".message_count").show().text(user.num_messages);
       }
-      return $(".personal_menu_" + user.user_type).show();
+      $(".personal_menu_" + user.user_type).show();
+      return $(".user_email").text(user.email);
     };
 
     /*
