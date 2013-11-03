@@ -477,7 +477,7 @@
 <span style="color:#696969;"><font face="arial, helvetica neue, helvetica, sans-serif"><span style="font-size: 14px;">Hi <?php echo $school_abbreviation;?> Property Manager,</span></font></span><br>
 <br>
 <div>
-    <span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">I am excited to announce the launch of Cribspot.com at <?php echo $school_full_name;?>! Our site was built by <?php echo $school_abbreviation;?> and University of Michigan students to help you connect with renters. We've crowdsourced all of our information directly from <?php echo $school_abbreviation;?> students. Over 1,500 students have already used Cribspot to help find their <?php echo $school_abbreviation;?> housing in the last week! From our platform, students can go right to your site or contact you via your phone and/or email. All these services are <b>FREE</b> of charge! Additional features include promoting your rentals for higher impact, after-hours scheduling, and live chat support.<br><br>
+    <span style="color:#696969;"><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">I am excited to announce the launch of Cribspot.com at <?php echo $school_full_name;?>! Our site was built by <?php echo $school_abbreviation;?> and University of Michigan students to help you connect with renters. We've crowdsourced all of our information directly from <?php echo $school_abbreviation;?> students. Over 700 students have already used Cribspot to help find their <?php echo $school_abbreviation;?> housing in the first week! From our platform, students can go right to your site or contact you via your phone and/or email. All these services are <b>FREE</b> of charge! Additional features include promoting your rentals for higher impact, after-hours scheduling, and live chat support.<br><br>
     We've already uploaded a portion of your listings to ensure you are represented on our site. But for now, visitors have access to only basic rental information.
     <br>
     <br>
@@ -499,7 +499,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Verify Your Account" href="http://www.test.com" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Go to My Account</a>
+                                <a class="mcnButton " title="Verify Your Account" href='<?= $reset_password_url;?>' target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Go to My Account</a>
                             </td>
                         </tr>
                     </tbody>

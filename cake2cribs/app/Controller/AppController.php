@@ -86,6 +86,18 @@ class AppController extends Controller {
 		));
 	}
 
+	/* 
+    Logs in a user given their local user object.
+    */
+    protected function _login($user)
+    {
+    	App::import('model', 'User');
+    	$User = new User();
+        $User->UpdateLastLogin($user['User']['id']);
+        $this->Auth->login($user['User']);
+        return;
+    }
+
 	protected function _getUserId()
 	{
 		return $this->Auth->User('id'); 

@@ -348,7 +348,10 @@
             $from_name = $from_user['company_name'];
 
         $this->Email->delivery = 'smtp';
-        $this->Email->from = 'The Cribspot Team<info@cribspot.com>';
+        $from_full_name = $from_name;
+        if (intval($from_user['user_type']) === 0)
+            $from_full_name .= ' '.$from_user['last_name'];
+        $this->Email->from = $from_full_name.'<info@cribspot.com>';
         $this->Email->to = $recipient['email'];
         
         $this->Email->subject = "You've received a new message from " . $from_name . " on Cribspot!";
@@ -366,7 +369,7 @@
 
         if ($street_address !== null){
             if ($is_property_manager)
-                $this->Email->subject = "You've received a FREE lead from ".$from_name." about ".$street_address;
+                $this->Email->subject = "I'm interested in ".$street_address;
             else
                 $this->Email->subject = "You've received a response from ".$from_name." about ".$street_address;
         }

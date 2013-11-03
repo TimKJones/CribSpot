@@ -2,7 +2,7 @@
 
 class ListingsController extends AppController {
 	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin',
-		'FeaturedPM', 'User');
+		'FeaturedPM', 'User', 'LoginCode');
 
 	public $components= array('Session', 'Cookie');
 
@@ -17,6 +17,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('Save');
 		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetFeaturedPMListings');
+		$this->Auth->allow('SetAvailabilityFromEmail');
 	}
 
 	/*
@@ -341,6 +342,72 @@ class ListingsController extends AppController {
 		CakeLog::write("map", print_r($pmIdToListingIDsMap, true));
 		$this->set('response', json_encode($pmIdToListingIDsMap));
 	}
+
+
+	/* 
+	Function called when PM sets availability directly from an email
+	URL parameters will include:
+	id: user_id of the user
+	code: code from the login_codes table used to ensure this is the correct user
+	l: listing_id being modified
+	a: set to 0 (not available) or 1 (available)
+	*/
+	public function SetAvailabilityFromEmail()
+	{
+		/* Check URL credentials */
+		if (!array_key_exists('id', $this->request->query) || !array_key_exists('code', $this->request->query) 
+			|| !array_key_exists('l', $this->request->query) || !array_key_exists('a', $this->request->query))
+				$this->redirect('/login');
+
+		$listing_id = $this->request->query['l'];
+		$user_id = $this->request->query['id'];
+		$code = $this->request->query['code'];
+		$available = $this->request->query['a'];
+
+		/* 
+		Initialize error message and alert method (type of message user sees following this action's completion 
+		The method and message will be modified based on the success or failure of this request
+		*/
+		$errorMessage = null;
+		$method = 'Error';
+		$redirect_url = '/users/login?invalid_link=true';
+		$valid = $this->LoginCode->IsValidLoginCode($user_id, $code);
+		if (array_key_exists('error', $valid)){
+            $errorMessage = "That link is invalid. Let us know in the chat along the bottom of the screen if you think we messed up!";
+            if (!strcmp($valid['error'], 'LOGIN_CODE_EXPIRED'))
+                $errorMessage = "That link is over 3 days old and has expired. Log in to update availabilities from your dashboard.";
+        } 
+        else if (!$this->Listing->UserOwnsListing($listing_id, $user_id)){
+        	/* Make sure user owns this listing */
+            $errorMessage = "That link is invalid. Let us know in the chat along the bottom of the screen ".
+            "if you think we messed up!";
+		} else {
+			/* Update availability */
+			$response = $this->Listing->SetAvailable($listing_id, $available);
+			if (array_key_exists('error', $response))
+				$errorMessage = $response['error'];
+		}
+
+		/* Availability updated */
+		if ($errorMessage === null){
+			$method = 'Success';
+			$message = "Successfully updated your listing's availability!";
+			/* Log in the user */
+			$user = $this->User->get($user_id);
+	        $this->User->VerifyEmail($user_id);
+	        $this->_login($user);
+			$redirect_url = '/dashboard?updated_listing=true&l_id='.$listing_id.'&a='.$available;
+		}
+
+		$flash_message['method'] = $method;
+        $flash_message['message'] = $message;
+        $json = json_encode($flash_message);
+        $this->Cookie->write('flash-message', $json);
+        $this->redirect($redirect_url);
+	}
+
+
+/* ----------------------------------- private ---------------------------------------- */
 
 	private function _setImagePathsForFullPageView(&$images)
 	{
