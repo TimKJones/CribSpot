@@ -155,18 +155,56 @@
         type: 'POST',
         data: {
           emails: email_list
-        },
-        success: function() {
-          return A2Cribs.MixPanel.Event("Send Verify Text", {
-            success: true
-          });
-        },
-        error: function() {
-          return A2Cribs.MixPanel.Event("Send Verify Text", {
-            success: false
-          });
         }
       });
+    };
+
+    /*
+    	Show Share Modal
+    	Will show the email or fb modal dependent on whether
+    */
+
+
+    ShareManager.ShowShareModal = function(subject, message, type) {
+      var _this = this;
+      A2Cribs.MixPanel.Event("Invite Friends started", null);
+      return typeof FB !== "undefined" && FB !== null ? FB.getLoginStatus(function(response) {
+        if (response.status === 'unknown') {
+          $("#email_invite").modal("show");
+          $("#email_invite").find(".modal_subject").text(subject);
+          $("#email_invite").find(".modal_message").text(message);
+          return $("#send_email_invite").unbind("click").click(function(event) {
+            var emails;
+            $("#send_email_invite").button("loading");
+            emails = [];
+            $(".completed_roommate").find(".roommate_email").each(function(index, element) {
+              return emails.push($(element).val());
+            });
+            _this.EmailInvite(emails).always(function() {
+              $("#email_invite").modal("hide");
+              return $("#send_email_invite").button("reset");
+            });
+            return A2Cribs.MixPanel.Event("Invite Friends completed", {
+              "number of people": emails != null ? emails.length : void 0,
+              "action": type,
+              "type": "email"
+            });
+          });
+        } else {
+          return FB.ui({
+            method: 'apprequests',
+            message: message
+          }, function(response) {
+            var _ref;
+            return A2Cribs.MixPanel.Event("Invite Friends completed", {
+              "number of people": (_ref = response.to) != null ? _ref.length : void 0,
+              "action": type,
+              "type": "facebook",
+              "fb_ids": JSON.stringify(response.to)
+            });
+          });
+        }
+      }) : void 0;
     };
 
     $("#header").ready(function() {
@@ -179,22 +217,6 @@
     });
 
     $("#email_invite").ready(function() {
-      $("#send_email_invite").click(function(event) {
-        var emails;
-        $("#send_email_invite").button("loading");
-        emails = [];
-        $("#email_invite").find(".roommate_email").each(function(index, element) {
-          return emails.push($(element).val());
-        });
-        ShareManager.EmailInvite(emails).always(function() {
-          $("#email_invite").modal("hide");
-          return $("#send_email_invite").button("reset");
-        });
-        return A2Cribs.MixPanel.Event("Email Friends", {
-          "number of emails": typeof email !== "undefined" && email !== null ? email.length : void 0,
-          "action": "after signup"
-        });
-      });
       $("#email_invite").on("keyup", ".roommate_email", function(event) {
         var re;
         re = /\S+@\S+\.\S+/;

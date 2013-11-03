@@ -73,7 +73,10 @@ class A2Cribs.Login
 			$("#signup_modal").find(".signup-button").button 'loading'
 			@CreateStudent(event.delegateTarget)
 			.done ->
-				$("#email_invite").modal "show"
+				A2Cribs.ShareManager.ShowShareModal("Almost done!",
+				"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
+				"after signup"
+				)
 			.always () =>
 				$("#signup_modal").find(".signup-button").button 'reset'
 			return false
@@ -95,7 +98,10 @@ class A2Cribs.Login
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
 					if response.account_exists is no
-						$("#email_invite").modal "show"
+						A2Cribs.ShareManager.ShowShareModal("Almost done!",
+						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
+						"after signup"
+						)
 
 			.always () =>
 				$(".fb-login").button('reset')
@@ -140,7 +146,10 @@ class A2Cribs.Login
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
 					if response.account_exists is no
-						$("#email_invite").modal "show"
+						A2Cribs.ShareManager.ShowShareModal("Almost done!",
+						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
+						"after signup"
+						)
 			.always () =>
 				$(".fb-login").button('reset')
 
