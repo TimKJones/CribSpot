@@ -400,7 +400,7 @@ class ListingsController extends AppController {
 		}
 
 		$flash_message['method'] = $method;
-        $flash_message['message'] = $message;
+        $flash_message['message'] = $errorMessage;
         $json = json_encode($flash_message);
         $this->Cookie->write('flash-message', $json);
         $this->redirect($redirect_url);

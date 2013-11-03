@@ -382,19 +382,34 @@
                 $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
 
-        /* Set new login code */
-        $code = uniqid();
-        $this->LoginCode->Add($recipient['id'], $code);
-        $recipient['login_code'] = $code;
+        /* 
+        Set new login code 
+        Need one login code for "Message [person_name]" button and another for update availability buttons
+        */
+        $code_for_message = uniqid();
+        $code_for_availability = uniqid();
+
+        $this->LoginCode->Add($recipient['id'], $code_for_message);
+        $this->LoginCode->Add($recipient['id'], $code_for_availability);
+        $recipient['login_code'] = array(
+            'message' => $code_for_message,
+            'availability' => $code_for_availability
+        );
 
         $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
-                "&code=".$recipient['login_code'];
+            "&code=".$recipient['login_code']['message'];
+        $availability_base_url = "www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
+            "&code=".$recipient['login_code']['availability']."&l=".$conversation['Conversation']['listing_id']."&a=";
+        $set_available_url = $availability_base_url.'1';
+        $set_unavailable_url = $availability_base_url.'0';
         $this->set('to_property_manager', $is_property_manager);
         $this->set('from_name', $from_name);
         $this->set('from_university', $from_university);
         $this->set('street_address', $street_address);
         $this->set('email_verified', $email_verified);
         $this->set('reset_password_url', $reset_password_url);
+        $this->set('set_available_url', $set_available_url);
+        $this->set('set_unavailable_url', $set_unavailable_url);
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
         $year = null;
