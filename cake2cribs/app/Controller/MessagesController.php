@@ -387,21 +387,31 @@
         Need one login code for "Message [person_name]" button and another for update availability buttons
         */
         $code_for_message = uniqid();
-        $code_for_availability = uniqid();
+        $code_for_availability = uniqid(); /* 'pseudo-randomize' the second code */
+        if (!strcmp($code_for_message, $code_for_availability))
+            $code_for_availability .='1';
 
         $this->LoginCode->Add($recipient['id'], $code_for_message);
+        $this->LoginCode->create();
         $this->LoginCode->Add($recipient['id'], $code_for_availability);
+
         $recipient['login_code'] = array(
             'message' => $code_for_message,
             'availability' => $code_for_availability
         );
 
+        /*
+        Generate URLs for:
+        - log in and respond to message.
+        - 1 button each for set as available, set as unavailable
+        */
         $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
             "&code=".$recipient['login_code']['message'];
         $availability_base_url = "www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
             "&code=".$recipient['login_code']['availability']."&l=".$conversation['Conversation']['listing_id']."&a=";
         $set_available_url = $availability_base_url.'1';
         $set_unavailable_url = $availability_base_url.'0';
+
         $this->set('to_property_manager', $is_property_manager);
         $this->set('from_name', $from_name);
         $this->set('from_university', $from_university);
@@ -412,6 +422,7 @@
         $this->set('set_unavailable_url', $set_unavailable_url);
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
+        $this->set('listing_url', 'www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
         $year = null;
         if (array_key_exists('year', $from_user))
             $year = $from_user['year'];
@@ -430,7 +441,7 @@
 
         /* Set URL to open message */
         $view_msg = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
-                "&code=".$recipient['login_code'].'&convid='.$conversation['Conversation']['conversation_id'];
+                "&code=".$recipient['login_code']['message'].'&convid='.$conversation['Conversation']['conversation_id'];
         $this->set('view_msg', $view_msg);
 
         $this->Email->send();
