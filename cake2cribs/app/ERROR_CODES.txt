@@ -153,3 +153,5 @@
 - User->UpdatePhoneFields
 73
 - EmailInvitation->InviteFriends
+74
+- Listing->SetAvailable

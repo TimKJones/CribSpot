@@ -805,6 +805,25 @@ class Listing extends AppModel {
 		return $userObject;
 	}	
 
+	/*
+	Sets $listing_id to be available = $available
+	*/
+	public function SetAvailable($listing_id, $available)
+	{
+		$this->id = $listing_id;
+		if (!$this->saveField('available', $available)){
+			$error = null;
+			$error['listing_id'] = $listing_id;
+			$error['available'] = $available;
+			$error['validation'] = $this->validationErrors;
+			$this->LogError($user_id, 74, $error);
+			return array('error' => 
+					"Looks like we had some issues updating your listing's availability...but we want to help! You ".
+					"can always chat with us by clicking the tab along the bottom of the screen.");
+		}
+
+		return array('success' => '');
+	}
 /* ------------------------------------ private functions -------------------------------- */
 
 

@@ -485,19 +485,11 @@
         <?php } ?>
 
     </span>
-    <span style="color:#3366cc;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
+    <a href='<?= $listing_url; ?>'><span style="color:#3366cc;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
 
-        <?= $street_address ?></span></span><span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">.</span></span></h3>
+        <?= $street_address ?></span></a></span><span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">.</span></span></h3>
 <br>
-<span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
 
-    <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
-
-    <?= $from_name ?> and many other students are currently using Cribspot to search for rentals. However, we've noticed that you haven't claimed your rental listings on our site yet. Click the "Message" button below to respond to <?= $from_name ?>.</span></span><br>
-
-    <?php } ?>
-<br>
-<span style="color:#000000;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;"><strong><?= $from_name ?>:&nbsp;</strong></span><br>
 <br>
 <strong><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><em><?= $message_text ?></em></span></span></strong></span><br>
 <br>
@@ -530,28 +522,7 @@
         <tr>
             <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                 
-                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                    <tbody><tr>
-                        
-                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
-                        
-                            <span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
-
-                                <?php if ($to_property_manager == true && (empty($email_verified) || $email_verified == false)) { ?>
-
-                                <? if (isset($reset_password_url) && $reset_password_url != null) { ?>
-                                After you're redirected to your dashboard, you'll be able to set your password for future visits in the 'My Account' tab.<br/><br>
-                                <? } ?>
-As current and former students, we know just how hectic the leasing process can be - for both renters and property managers. This is why we created Cribspot last year. If you would like to know more about Cribspot, feel free to give us a call at 908-752-8187. You can also reach us at info@cribspot.com or jason@cribspot.com.</span></span>
-
-                                <?php } else {
-                                ?>
-                                Thanks again for using Cribspot and let us know if we can help with anything!
-                                <?php } ?>
-
-                        </td>
-                    </tr>
-                </tbody></table>
+                
                 
             </td>
         </tr>
@@ -560,20 +531,6 @@ As current and former students, we know just how hectic the leasing process can 
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                
-                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                    <tbody><tr>
-                        
-                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;text-align: left;">
-                        
-                            <span style="color:#696969;"><span style="font-size: 14px;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;">Best Regards,</span></span></span><br>
-<br>
-<img align="none" height="27" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/cribspot_team.png" style="width: 180px;height: 27px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" width="180"><br>
-<br>
-
-                        </td>
-                    </tr>
-                </tbody></table>
                 
             </td>
         </tr>

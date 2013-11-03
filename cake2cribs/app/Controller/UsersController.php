@@ -639,7 +639,7 @@ class UsersController extends AppController {
         if (array_key_exists('error', $response)){
             $message = "That reset password link does not seem to be legitimate!";
             if (!strcmp($response['error'], 'LOGIN_CODE_EXPIRED'))
-                $message = "That link is over 2 days old and has expired. You can still login here with your email and password!";
+                $message = "That link is over 3 days old and has expired. You can still login here with your email and password!";
         
             $flash_message['method'] = "Error";
             $flash_message['message'] = $message;
@@ -917,16 +917,6 @@ CakeLog::write('twiliodebug', print_r($response, true));
         else{
             
         }
-    }
-
-    /* 
-    Logs in a user given their local user object.
-    */
-    private function _login($user)
-    {
-        $this->User->UpdateLastLogin($user['User']['id']);
-        $this->Auth->login($user['User']);
-        return;
     }
 
     /*
