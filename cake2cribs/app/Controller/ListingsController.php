@@ -391,7 +391,7 @@ class ListingsController extends AppController {
 		/* Availability updated */
 		if ($errorMessage === null){
 			$method = 'Success';
-			$message = "Successfully updated your listing's availability!";
+			$errorMessage = "Successfully updated your listing's availability!";
 			/* Log in the user */
 			$user = $this->User->get($user_id);
 	        $this->User->VerifyEmail($user_id);
