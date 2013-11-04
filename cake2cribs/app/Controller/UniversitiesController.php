@@ -5,6 +5,7 @@
 		function beforeFilter(){
 			parent::beforeFilter();
 			$this->Auth->allow('loadAll');	
+			$this->Auth->allow('GetUniversities');	
 		}
 		
 		/*
@@ -22,4 +23,17 @@
 	 		$this->set('response', $response);
 	 	}
 
+/* ----------------------------------- API --------------------------------------------- */
+		public function GetUniversities()
+		{
+			$universities = null;
+			if (array_key_exists('token', $this->request->query) &&
+				!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+				header('Access-Control-Allow-Origin: *');
+				$universities = $this->University->getSchools();
+				$universities = json_encode($universities);
+			}
+		
+			$this->set('response', $universities);
+		}
 	}

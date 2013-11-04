@@ -127,10 +127,10 @@ Only return */
     /* ----------------------------------- iPhone API ------------------------------------- */
     public function APIGetBasicData($listing_type, $university_id)
     {
-        header('Access-Control-Allow-Origin: *');
         $basicData = null;
         if (array_key_exists('token', $this->request->query) &&
             !strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+            header('Access-Control-Allow-Origin: *');
             $basicData = $this->_getBasicData($listing_type, $university_id);
             $basicData = json_encode($basicData);
         }

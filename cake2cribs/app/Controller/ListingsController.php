@@ -21,7 +21,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('APIGetListing');
 	}
 
-	/*
+	/*					
 	View a full page listing. Grabs the listing data and modifies it for
 	the full page listing view (view.ctp)
 	*/
@@ -410,18 +410,16 @@ class ListingsController extends AppController {
 /* ----------------------------------- iPhone API ------------------------------------- */
 	public function APIGetListing($listing_id)
 	{
-		header('Access-Control-Allow-Origin: *');
 		$listing = null;
 		if (array_key_exists('token', $this->request->query) &&
 			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+			header('Access-Control-Allow-Origin: *');
 			$listing = $this->Listing->GetListing($listing_id);
 			$listing = json_encode($listing);
 		}
 	
 		$this->set('response', $listing);
 	}
-
-
 
 /* ----------------------------------- private ---------------------------------------- */
 
