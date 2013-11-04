@@ -18,6 +18,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('Delete');
 		$this->Auth->allow('GetFeaturedPMListings');
 		$this->Auth->allow('SetAvailabilityFromEmail');
+		$this->Auth->allow('APIGetListing');
 	}
 
 	/*
@@ -250,7 +251,7 @@ class ListingsController extends AppController {
 	unless the user is a newspaper admin in which case they are returned
 	all the listings near their university
 .	*/
-	function GetListing($listing_id = null)
+	public function GetListing($listing_id = null)
 	{
 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
 			return;
@@ -405,6 +406,21 @@ class ListingsController extends AppController {
         $this->Cookie->write('flash-message', $json);
         $this->redirect($redirect_url);
 	}
+
+/* ----------------------------------- iPhone API ------------------------------------- */
+	public function APIGetListing($listing_id)
+	{
+		header('Access-Control-Allow-Origin: *');
+		$listing = null;
+		if (array_key_exists('token', $this->request->query) &&
+			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+			$listing = $this->Listing->GetListing($listing_id);
+			$listing = json_encode($listing);
+		}
+	
+		$this->set('response', $listing);
+	}
+
 
 
 /* ----------------------------------- private ---------------------------------------- */
