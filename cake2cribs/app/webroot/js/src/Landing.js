@@ -47,13 +47,7 @@
         return $('.current_background').css('top', (0 - (scrolled * .25)) + 'px');
       });
       $("#friends_invite").click(function() {
-        A2Cribs.MixPanel.Event("Invite Friends", null);
-        return typeof FB !== "undefined" && FB !== null ? FB.ui({
-          method: 'apprequests',
-          message: 'Join the Movement. All the College Rentals. All in One Spot.'
-        }, function(response) {
-          return A2Cribs.MixPanel.Event("Invite Friends completed", null);
-        }) : void 0;
+        return A2Cribs.ShareManager.ShowShareModal("", "College housing sucks! Tell your friends how easy finding the perfect house can be. Share Cribspot!", "landing page share");
       });
       if (((_ref = this.locations) != null ? _ref.length : void 0) != null) {
         random_school = Math.floor(Math.random() * this.locations.length);

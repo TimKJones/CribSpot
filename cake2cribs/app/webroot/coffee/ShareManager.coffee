@@ -124,14 +124,46 @@ class A2Cribs.ShareManager
 			type: 'POST'
 			data: 
 				emails: email_list
-			success: ->
-				A2Cribs.MixPanel.Event "Send Verify Text",
-					success: true
-			error: ->
-				#Failed to send message
-				A2Cribs.MixPanel.Event "Send Verify Text",
-					success: false
 
+	###
+	Show Share Modal
+	Will show the email or fb modal dependent on whether
+	###
+	@ShowShareModal: (subject, message, type) ->
+		A2Cribs.MixPanel.Event "Invite Friends started", null
+
+		FB?.getLoginStatus (response) =>
+			if response.status == 'unknown'
+				$("#email_invite")
+					.modal("show")
+				$("#email_invite")
+					.find(".modal_subject").text(subject)
+				$("#email_invite")
+					.find(".modal_message").text(message)
+
+				$("#send_email_invite").unbind("click").click (event) =>
+					$("#send_email_invite").button "loading"
+					emails = []
+					$(".completed_roommate").find(".roommate_email").each (index, element) ->
+						emails.push $(element).val()
+					@EmailInvite(emails)
+					.always ->
+						$("#email_invite").modal "hide"
+						$("#send_email_invite").button "reset"
+					A2Cribs.MixPanel.Event "Invite Friends completed",
+						"number of people": emails?.length
+						"action": type
+						"type": "email"
+			else
+				FB.ui
+					method: 'apprequests',
+					message: message
+				, (response) ->
+					A2Cribs.MixPanel.Event "Invite Friends completed",
+						"number of people": response.to?.length
+						"action": type
+						"type": "facebook"
+						"fb_ids": JSON.stringify response.to
 	
 	$("#header").ready =>
 		$(".share_on_fb").click =>
@@ -141,19 +173,6 @@ class A2Cribs.ShareManager
 			@FBPromotion()
 
 	$("#email_invite").ready =>
-		$("#send_email_invite").click (event) =>
-			$("#send_email_invite").button "loading"
-			emails = []
-			$("#email_invite").find(".roommate_email").each (index, element) ->
-				emails.push $(element).val()
-			@EmailInvite(emails)
-			.always ->
-				$("#email_invite").modal "hide"
-				$("#send_email_invite").button "reset"
-			A2Cribs.MixPanel.Event "Email Friends",
-				"number of emails": email?.length
-				"action": "after signup"
-
 		$("#email_invite").on "keyup", ".roommate_email", (event) =>
 			re = /\S+@\S+\.\S+/
 			if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()

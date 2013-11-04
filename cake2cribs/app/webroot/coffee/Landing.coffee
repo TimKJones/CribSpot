@@ -36,13 +36,11 @@ class A2Cribs.Landing
 			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px');
 
 		$("#friends_invite").click () ->
-			A2Cribs.MixPanel.Event "Invite Friends", null
-			FB?.ui
-				method: 'apprequests',
-				message: 'Join the Movement. All the College Rentals. All in One Spot.'
-			, (response) ->
-				A2Cribs.MixPanel.Event "Invite Friends completed", null
-
+			A2Cribs.ShareManager.ShowShareModal("",
+			"College housing sucks! Tell your friends how easy finding the perfect house can be. Share Cribspot!",
+			"landing page share"
+			)
+			
 		if @locations?.length?
 			random_school = Math.floor((Math.random() * @locations.length))
 			set_school @locations[random_school]
