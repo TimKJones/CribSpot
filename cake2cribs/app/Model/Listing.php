@@ -992,8 +992,7 @@ class Listing extends AppModel {
 				}
 			}
 		}
-		
-		CakeLog::write('beforesave', print_r($listing, true));
+
 	}
 
 }	
