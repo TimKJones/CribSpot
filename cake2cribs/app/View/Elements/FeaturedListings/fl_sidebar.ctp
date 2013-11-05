@@ -21,11 +21,18 @@ echo $this->Html->css('/less/featured-listings.less?v=4','stylesheet/less', arra
             </div>
         <?php
         }
+        else if (strpos($university['name'], 'Bloom') !== false)
+        { ?>
+            <div class='featured_banner'>
+                <img src="/img/sidebar/IUSA_logo.png">
+            </div>
+        <?php
+        }
         ?>
         <!--<div id = 'list-info'>
             <span>Listings: </span>
         </div> -->
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'has_featured_pm' : '' ;?>'>
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>
