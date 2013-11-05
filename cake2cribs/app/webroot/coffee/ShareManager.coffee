@@ -9,6 +9,8 @@ class A2Cribs.ShareManager
 		street_address = street_address.split(' ').join('-')
 		city = city.split(' ').join('-')
 		url = 'https://cribspot.com/listing/' + listing_id
+		A2Cribs.MixPanel.Event "Share",
+			type: "copy listing url"
 		return url
 
 	###
@@ -22,6 +24,9 @@ class A2Cribs.ShareManager
 			building_name = street_address
 		else
 			caption = street_address
+
+		A2Cribs.MixPanel.Event "Share",
+			type: "listing on fb"
 
 		fbObj = 
 			method: 'feed'
@@ -91,6 +96,9 @@ class A2Cribs.ShareManager
 
 	@ShareListingOnTwitter: (listing_id, street_address, city, state, zip) ->
 		url = @GetTwitterShareUrl listing_id, street_address, city, state, zip
+		A2Cribs.MixPanel.Event "Share",
+			type: "listing on twitter"
+
 		# Center popup based on the screen size
 		x = screen.width / 2 - 600 / 2
 		y = screen.height / 2 - 350 / 2

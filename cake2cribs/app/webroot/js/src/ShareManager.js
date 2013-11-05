@@ -19,6 +19,9 @@
       street_address = street_address.split(' ').join('-');
       city = city.split(' ').join('-');
       url = 'https://cribspot.com/listing/' + listing_id;
+      A2Cribs.MixPanel.Event("Share", {
+        type: "copy listing url"
+      });
       return url;
     };
 
@@ -42,6 +45,9 @@
       } else {
         caption = street_address;
       }
+      A2Cribs.MixPanel.Event("Share", {
+        type: "listing on fb"
+      });
       fbObj = {
         method: 'feed',
         link: url,
@@ -123,6 +129,9 @@
     ShareManager.ShareListingOnTwitter = function(listing_id, street_address, city, state, zip) {
       var url, x, y;
       url = this.GetTwitterShareUrl(listing_id, street_address, city, state, zip);
+      A2Cribs.MixPanel.Event("Share", {
+        type: "listing on twitter"
+      });
       x = screen.width / 2 - 600 / 2;
       y = screen.height / 2 - 350 / 2;
       return window.open(url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=" + y + ",left=" + x);

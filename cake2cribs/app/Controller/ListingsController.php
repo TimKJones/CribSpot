@@ -576,6 +576,10 @@ class ListingsController extends AppController {
 	private function _setPrimaryImage(&$listing)
 	{
 		$length = count($listing["Image"]);
+		// Default to the first image if there is no primary image set
+		if ($length > 0)
+			$listing["primary_image"] = 0;
+
 		for ($i=0; $i < $length; $i++)
 		{
 			if ($listing["Image"][$i]["is_primary"])
