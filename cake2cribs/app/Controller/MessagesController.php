@@ -2,7 +2,8 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental', 'LoginCode');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental', 'LoginCode',
+        'CribspotAdmin');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
@@ -17,6 +18,39 @@
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
+    }
+
+    /*
+    Returns all data for PM dashboard used by Cribspot admins
+    */
+    public function GetPMAdminDashboard()
+    {
+        if ($this->CribspotAdmin->GetByUserId($this->Auth->User('id')) === null)
+            return;
+
+        $response = array(
+            'pm_name' => '',
+            'pm_email' => '',
+            'pm_phone' => '',
+            'unit_description',
+            'student_name' => '',
+            'student_email' => '',
+            'date_sent_by_student' => '', /* sorted by default */
+            'pm_response_date' => '',
+            'pm_verified' => ''
+        );
+
+        $conversations = $this->Conversation->getAllConversations();
+        $response_dates = $this->Message->getConversationIdToPMResponseDateMap($conversations);
+        foreach ($conversations as $conversation){
+            
+        }
+
+        /* Get all listing data */
+        //$listings = $this->Listing->
+
+        CakeLog::write("allmessages", print_r($messages, true));
+        $this->set('response', json_encode($messages));
     }
 
     //Redirects to the dashboard automatically opening the specified

@@ -118,5 +118,52 @@ class Message extends AppModel {
 			'total' => $listingIdToTotalMessageCountMap
 		);
 	}
+
+	/* Returns all messages */
+	public function getAllMessagesSentByStudents()
+	{
+		return $this->find('all', array(
+			'conditions' => array(
+				'User.user_type' => 0
+			),
+			'joins' => array(
+				array(
+			        'table' => 'conversations',
+			        'alias' => 'C',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array('Message.conversation_id = C.conversation_id')
+			    ),
+			    array(
+			        'table' => 'listings',
+			        'alias' => 'Listing',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array(
+			            'Listing.listing_id = C.listing_id'
+			        )
+			    )
+			)
+		));
+	}
+
+
+	public function getConversationIdToPMResponseDateMap($conversations)
+	{
+		$pm_id_conversation_id_pairs = array();
+		foreach ($conversations as $conversation){
+			if (!array_key_exists('Conversation', $conversation))
+				continue;
+
+			$pm_id = $conversation['Conversation']['participant2_id'];
+			$conversation_id = $conversation['Conversation']['conversation_id'];
+			array_push($pm_id_conversation_id_pairs, array(
+				'pm_id' => $pm_id,
+				'conversation_id' => $conversation_id
+			));
+		}
+
+		
+	}
 }
 ?>

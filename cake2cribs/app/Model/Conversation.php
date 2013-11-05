@@ -32,6 +32,30 @@ class Conversation extends AppModel {
 		'last_message_id' => 'numeric',
 	);
 
+	public function getAllConversations()
+	{
+		return $this->find('all');/*, array(
+			'joins' => array(
+				array(
+			        'table' => 'conversations',
+			        'alias' => 'C',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array('Message.conversation_id = C.conversation_id')
+			    ),
+			    array(
+			        'table' => 'listings',
+			        'alias' => 'Listing',
+			        'type' => 'inner',
+			        'foreignKey' => false,
+			        'conditions'=> array(
+			            'Listing.listing_id = C.listing_id'
+			        )
+			    )
+			)
+		));*/
+	}
+
 	//Returns all the conversations belonging to the given user. It takes
 	// an optional paramater to determine whether to only show the unread
 	// conversations. It is defaulted to false which means you will be returned
