@@ -93,7 +93,8 @@ class UsersController extends AppController {
                 'account_exists' => false,
                 'data' => array(
                     'first_name' => $fb_user->first_name,
-                    'last_name' => $fb_user->last_name
+                    'last_name' => $fb_user->last_name,
+                    'img_url' => 'https://graph.facebook.com/'.$fb_id.'/picture?width=80&height=80'
                 )
             );
 
