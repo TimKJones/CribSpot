@@ -20,6 +20,7 @@ class MapController extends AppController {
     $this->Auth->allow('LoadTypeTables');
     $this->Auth->allow('LoadHoverData');
     $this->Auth->allow('GetBasicData');
+    $this->Auth->allow('APIGetBasicData');
   }
 
     public function index()
@@ -119,6 +120,27 @@ Only return */
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
+        $response = $this->_getBasicData($listing_type, $university_id);
+        $this->set("response", $response);
+    }
+
+    /* ----------------------------------- iPhone API ------------------------------------- */
+    public function APIGetBasicData($listing_type, $university_id)
+    {
+        $basicData = null;
+        if (array_key_exists('token', $this->request->query) &&
+            !strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+            header('Access-Control-Allow-Origin: *');
+            $basicData = $this->_getBasicData($listing_type, $university_id);
+            $basicData = json_encode($basicData);
+        }
+    
+        $this->set('response', $basicData);   
+    }
+
+    /* ------------------------------- private functions ------------------------------------ */
+    private function _getBasicData($listing_type, $university_id)
+    {
         $target_lat_long = Cache::read('universityTargetLatLong-'.$university_id, 'LongTerm');
         if ($target_lat_long === false){
             $target_lat_long = $this->University->getTargetLatLong($university_id);
@@ -132,6 +154,6 @@ Only return */
         }
         
         $response = json_encode($basicData);
-        $this->set("response", $response);
+        return $response;
     }
 }

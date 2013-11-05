@@ -85,6 +85,24 @@ class UsersController extends AppController {
 
         /* 
         User has not yet created an account with this facebook id.
+        Check to see if email has been returned to facebook.
+        */
+        if (empty($fb_user->email)){
+            $response = array(
+                'success' => 'NOT_LOGGED_IN',
+                'account_exists' => false,
+                'data' => array(
+                    'first_name' => $fb_user->first_name,
+                    'last_name' => $fb_user->last_name
+                )
+            );
+
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /*
+        facebook email exists.
         Give them a random password and log them in.
         */
         $user['user_type'] = 0;

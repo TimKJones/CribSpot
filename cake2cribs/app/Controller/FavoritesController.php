@@ -10,6 +10,7 @@ class FavoritesController extends AppController {
      $this->Auth->allow('LoadFavorites');
      $this->Auth->allow('AddFavorite');
      $this->Auth->allow('DeleteFavorite');
+     $this->Auth->allow('GetFavoritesListingIds');
   	}
   	
 	public function LoadFavorites()
@@ -53,4 +54,17 @@ class FavoritesController extends AppController {
 		$this->set('response', json_encode($response));
 	}
 
+/* --------------------------------- API ------------------------------------------------- */
+	public function GetFavoritesListingIds($user_id)
+	{
+		$listing_ids = null;
+		if (array_key_exists('token', $this->request->query) &&
+			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+			header('Access-Control-Allow-Origin: *');
+			$listing_ids = $this->Favorite->GetFavoritesListingIds($user_id);
+			$listing_ids = json_encode($listing_ids);
+		}
+	
+		$this->set('response', $listing_ids);
+	}
 }
