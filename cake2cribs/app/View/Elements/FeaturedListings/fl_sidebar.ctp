@@ -24,7 +24,7 @@ echo $this->Html->css('/less/featured-listings.less?v=5','stylesheet/less', arra
         else if (strpos($university['name'], 'Bloom') !== false)
         { ?>
             <div class='featured_banner'>
-                <img src="/img/sidebar/IUSA_logo.png">
+                <a href="http://iusa.indiana.edu/" target="_blank"><img src="/img/sidebar/IUSA_logo.jpg"></a>
             </div>
         <?php
         }
