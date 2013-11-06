@@ -151,6 +151,8 @@ class Message extends AppModel {
 	public function getConversationIdToPMResponseDateMap($conversations)
 	{
 		$pm_id_conversation_id_pairs = array();
+		$allMessages = $this->find('all');
+		/* Get a */
 		foreach ($conversations as $conversation){
 			if (!array_key_exists('Conversation', $conversation))
 				continue;
