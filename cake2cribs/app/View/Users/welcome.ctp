@@ -48,5 +48,9 @@
 
 <?= $this->element('header', array('show_filter' => false, 'show_user' => false)); ?>
 <?= $this->Html->css('/less/User/welcome.less?v=5','stylesheet/less', array('inline' => false));?>
-<?= $this->Html->script('src/Account', array('inline' => false)); ?>
+<?php
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	$this->Html->script('src/Account', array('inline' => false));
+}
+?>
 <?php $this->Js->buffer('A2Cribs.Account.setupUI();'); ?>
