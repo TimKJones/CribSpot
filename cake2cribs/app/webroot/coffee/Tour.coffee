@@ -255,7 +255,7 @@ class Tour
 	Adds timeslot to selected timeslot map
 	###					
 	@AddTimeSlot: (offset_date, time_slot) ->
-		hash = "#{offset_date}#{time_slot}"
+		hash = "#{offset_date}-#{time_slot}"
 		today = new Date()
 		@selected_timeslots[hash] =
 			date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + offset_date, time_slot)
@@ -266,7 +266,7 @@ class Tour
 	map
 	###
 	@DeleteTimeSlot: (offset_date, time_slot) ->
-		hash = "#{offset_date}#{time_slot}"
+		hash = "#{offset_date}-#{time_slot}"
 		if @selected_timeslots[hash]?
 			delete @selected_timeslots[hash]
 
@@ -309,7 +309,7 @@ class Tour
 		# Loop through selected timeslots
 		for timeslot in timeslots
 			for i in [offset_date..offset_date + @DATE_RANGE_SIZE - 1]
-				if @selected_timeslots["#{i}#{timeslot}"]?
+				if @selected_timeslots["#{i}-#{timeslot}"]?
 					console.log "Timeslot : #{timeslot} #{i}"
 					$("#ts_#{i - offset_date}#{timeslot}")
 					.addClass("selected")
