@@ -13,7 +13,6 @@ class Sublet extends AppModel {
 	public $validate = array(
 		'sublet_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'marker_id' => 'numeric', 
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
@@ -28,13 +27,15 @@ class Sublet extends AppModel {
 		),
 		'baths' => 'decimal',
 		'bathroom_type' => 'integer',
-		'parking' => array(
+		'parking_available' => 'boolean',
+		'parking_description' => array(
 			'between' => array(
 				'rule' => array('between',0,1000),
 				'message' => 'Must be less than 100 characters'
 			)
 		),
-		'utilities' => array(
+		'utilities_included' => 'boolean',
+		'utilities_description' => array(
 			'between' => array(
 				'rule' => array('between',0,1000),
 				'message' => 'Must be less than 100 characters'
