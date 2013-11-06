@@ -25,6 +25,42 @@ class UsersController extends AppController {
         $this->Auth->allow('PMLogin');
     }
 
+    public function hotlist()
+    {
+        $user_id = $this->Auth->User('id');
+        $response = $this->User->getHotlist($user_id);
+        $this->set('response', $response);
+
+        $users = $this->User->find('all');
+        $this->set('users', $users);
+    }
+
+    public function addToHotlist()
+    {
+        $user_id = $this->Auth->User('id');
+        $friend_id = $this->request->data['friend_id'];
+        $response = $this->User->addToHotlist($user_id, $friend_id);
+
+        $this->set('response', $response);
+
+        $users = $this->User->find('all');
+        $this->set('users', $users);
+        $this->render('hotlist');
+    }
+
+    public function removeFromHotlist() 
+    {
+        $user_id = $this->Auth->User('id');
+        $friend_id = $this->request->data['friend_id'];
+        $response = $this->User->removeFromHotlist($user_id, $friend_id);
+
+        $this->set('response', $response);
+
+        $users = $this->User->find('all');
+        $this->set('users', $users);
+        $this->render('hotlist');
+    }
+
     public function add()
     {
         $this->redirect(array('action' => 'login', "signup"));

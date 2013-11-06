@@ -8,6 +8,22 @@ class User extends AppModel {
 		)
 	);
 	public $belongsTo = array('University');
+	public $hasAndBelongsToMany = array(
+		'Hotlist' => array(
+			'className' => 'User',
+			'joinTable' => 'users_friends',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'friend_id',
+			'conditions' => array('UsersFriend.hotlist' => '1'),
+			'unique' => 'keepExisting',
+			'fields' => array(
+				'Hotlist.id', 
+				'Hotlist.first_name', 
+				'Hotlist.last_name', 
+				'Hotlist.profile_img'
+			)
+		)
+	);
 	public $actsAs = array('Containable');
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
@@ -171,6 +187,24 @@ class User extends AppModel {
 		}
 
 		return true;
+	}
+
+	public function getHotlist($user_id)
+	{
+    CakeLog::write('HOTLIST', 'Entered getHotlist(' . $user_id . ')');
+		$user = $this->find('first', array('conditions' => array('User.id' => $user_id)));
+		return $user['Hotlist'];
+	}
+
+	public function removeFromHotlist($user_id, $friend_id) {
+    CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
+    return $this->getHotlist($user_id);
+	}
+
+	public function addToHotlist($user_id, $friend_id) {
+    CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_id . ')');
+    $this->Hotlist->save(array('user_id' => $user_id, 'friend_id' => $friend_id));
+    return $this->getHotlist($user_id);
 	}
 
 	public function FacebookVerify($user_id)
