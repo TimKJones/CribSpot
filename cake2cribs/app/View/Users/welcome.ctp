@@ -50,6 +50,7 @@
 <?= $this->Html->css('/less/User/welcome.less?v=5','stylesheet/less', array('inline' => false));?>
 <?php
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+	$this->Html->script('src/VerifyManager', array('inline' => false));
 	$this->Html->script('src/Account', array('inline' => false));
 }
 ?>
