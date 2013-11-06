@@ -23,6 +23,7 @@ class UsersController extends AppController {
         $this->Auth->allow('PropertyManagerSignup');
         $this->Auth->allow('IsLoggedIn');
         $this->Auth->allow('PMLogin');
+        $this->Auth->allow('welcome');
     }
 
     public function add()
@@ -43,6 +44,28 @@ class UsersController extends AppController {
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
+    }
+
+    /*
+    */
+    public function welcome($user_type = "student")
+    {
+        if (!array_key_exists('id', $this->request->query) || !array_key_exists('reset_token', $this->request->query))
+            $this->redirect('/');
+
+        $id = $this->request->query['id'];
+        $reset_token = $this->request->query['reset_token'];
+        if (!$this->User->IsValidResetToken($id, $reset_token)){
+            CakeLog::write("ErrorResetPasswordRedirect", $id . "; " . $reset_token);
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "That reset password link does not seem to be legitimate!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect('/users/login?invalid_link=true');
+        }
+
+        $this->set('id', $id);
+        $this->set('reset_token', $reset_token);
     }
 
     /*
