@@ -28,13 +28,15 @@ class Sublet extends AppModel {
 		),
 		'baths' => 'decimal',
 		'bathroom_type' => 'integer',
-		'parking' => array(
+		'parking_available' => 'boolean',
+		'parking_description' => array(
 			'between' => array(
 				'rule' => array('between',0,1000),
 				'message' => 'Must be less than 100 characters'
 			)
 		),
-		'utilities' => array(
+		'utilities_included' => 'boolean',
+		'utilities_description' => array(
 			'between' => array(
 				'rule' => array('between',0,1000),
 				'message' => 'Must be less than 100 characters'
