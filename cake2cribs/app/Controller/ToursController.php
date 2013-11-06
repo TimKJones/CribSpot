@@ -220,6 +220,7 @@ class ToursController extends AppController
 		$sendAs = 'both';
 
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
+CakeLog::write('loggedinuser', print_r($loggedInUser, true));
 		/* Convert data from numeric constants to their string values */
 		if (!empty($loggedInUser['registered_university']))
 			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
@@ -406,10 +407,12 @@ class ToursController extends AppController
 
 	private function _getLoggedInUserBasicInformation()
 	{
-		$user = $this->Auth->User();
+		$user = $this->User->get($this->Auth->User('id'));
 		if ($user === null)
 			return null;
 
+		$user = $user['User'];
+CakeLog::write('usersdata', print_r($user, true));
 		$user['img_url'] = null;
 		if (!empty($user['facebook_id']))
 			$user['img_url'] = "https://graph.facebook.com/".$user['facebook_id']."/picture?width=80&height=80";
