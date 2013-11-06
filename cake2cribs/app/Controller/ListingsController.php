@@ -175,7 +175,7 @@ class ListingsController extends AppController {
 
 	/*
 	Returns all marker data by the logged in user
-	If this user is a university admin, returns all listings close to tha tuniversity
+	If this user is a university admin, returns all listings close to that university
 	*/
 	public function GetMarkerDataByLoggedInUser()
 	{

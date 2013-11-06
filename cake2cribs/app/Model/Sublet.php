@@ -13,7 +13,6 @@ class Sublet extends AppModel {
 	public $validate = array(
 		'sublet_id' => 'numeric',
 		'listing_id' => 'numeric',
-		'marker_id' => 'numeric', 
 		'rent' => array(  /*this is total rent, not per person */
 			'numeric' => array(
 				'rule' => 'numeric',
