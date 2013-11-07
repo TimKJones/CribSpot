@@ -30,35 +30,20 @@
     RentalSave.prototype.CreateCallbacks = function() {
       var _this = this;
       $('body').on("Rental_marker_added", function(event, marker_id) {
-        var list_item, name;
-        if ($("#rentals_list_content").find("#" + marker_id).length === 0) {
-          name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
-          list_item = $("<li />", {
-            text: name,
-            "class": "rentals_list_item",
-            id: marker_id
-          });
-          $("#rentals_list_content").append(list_item);
-          $("#rentals_list_content").slideDown();
-        }
-        A2Cribs.Dashboard.Direct({
-          classname: 'rentals',
-          data: true
-        });
-        return $.when(_this.Open(marker_id)).then(function() {
+        return _this.Open(marker_id).done(function() {
           return _this.AddNewUnit();
         });
       });
       $('body').on("Rental_marker_updated", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list_content").find("#" + marker_id).length === 1) {
-          list_item = $("#rentals_list_content").find("#" + marker_id);
+        if ($("#rental_list_content").find("#" + marker_id).length === 1) {
+          list_item = $("#rental_list_content").find("#" + marker_id);
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item.text(name);
           return _this.CreateListingPreview(marker_id);
         }
       });
-      $("body").on('click', '.rentals_list_item', function(event) {
+      $("body").on('click', '.rental_list_item', function(event) {
         if (_this.Editable) {
           return A2Cribs.UIManager.ConfirmBox("By selecting a new address, all unsaved changes will be lost.", {
             "ok": "Abort Changes",

@@ -43,9 +43,10 @@
           'classname': 'featured-listing'
         });
       });
-      $("#create-listing").find("a").click(function(event) {
-        A2Cribs.MarkerModal.NewMarker();
-        return A2Cribs.MarkerModal.Open();
+      $(".create-listing").find("a").click(function(event) {
+        var listing_type;
+        listing_type = $(event.currentTarget).data("listing-type");
+        return A2Cribs.MarkerModal.Open(listing_type);
       });
       $("body").on('click', '.messages_list_item', function(event) {
         return _this.ShowContent($('.messages-content'));
@@ -66,7 +67,36 @@
           return false;
         }).hide();
       });
+      this.AttachListeners();
       return this.GetUserMarkerData();
+    };
+
+    /*
+    	Attach Listeners
+    	Attaches events listeners to objects
+    */
+
+
+    Dashboard.AttachListeners = function() {
+      var _this = this;
+      return $(".list_content").on("marker_added", function(event, marker_id) {
+        var list_item, listing_type, name;
+        listing_type = $(event.currentTarget).data("listing-type");
+        if ($(event.currentTarget).find("#" + marker_id).length === 0) {
+          name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
+          list_item = $("<li />", {
+            text: name,
+            "class": "" + listing_type + "_list_item",
+            id: marker_id
+          });
+          $(event.currentTarget).append(list_item);
+          $(event.currentTarget).slideDown();
+        }
+        return A2Cribs.Dashboard.Direct({
+          classname: listing_type,
+          data: true
+        });
+      });
     };
 
     /*

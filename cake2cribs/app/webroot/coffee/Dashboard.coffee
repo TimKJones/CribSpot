@@ -31,9 +31,9 @@ class A2Cribs.Dashboard
 		$("#feature-btn").click (event)=>
 			@Direct({'classname' : 'featured-listing'})
 
-		$("#create-listing").find("a").click (event) =>
-			A2Cribs.MarkerModal.NewMarker()
-			A2Cribs.MarkerModal.Open()
+		$(".create-listing").find("a").click (event) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			A2Cribs.MarkerModal.Open listing_type
 
 		$("body").on 'click', '.messages_list_item', (event) =>
 			@ShowContent $('.messages-content')
@@ -52,9 +52,27 @@ class A2Cribs.Dashboard
 				return false
 			.hide()
 
+		@AttachListeners()
 		#@GetListings()
 		@GetUserMarkerData()
 
+	###
+	Attach Listeners
+	Attaches events listeners to objects
+	###
+	@AttachListeners: ->
+		$(".list_content").on "marker_added", (event, marker_id) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if $(event.currentTarget).find("##{marker_id}").length is 0
+				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
+				list_item = $ "<li />", {
+					text: name
+					class: "#{listing_type}_list_item"
+					id: marker_id
+				}
+				$(event.currentTarget).append list_item
+				$(event.currentTarget).slideDown()
+			A2Cribs.Dashboard.Direct { classname: listing_type, data: true }
 
 	###
 

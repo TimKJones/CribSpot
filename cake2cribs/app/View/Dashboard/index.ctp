@@ -47,8 +47,12 @@ echo $this->Html->script('underscore');
 				</div>
 			</div>
 
-			<div class = 'rentals-content hidden'>
+			<div class = 'rental-content hidden'>
 				<?php echo $this->element('Dashboard/rentals_window', $user) ?>
+			</div>
+
+			<div class = 'sublet-content'>
+				<?php echo $this->element('Dashboard/sublets_window', $user) ?>
 			</div>
 
 			<div class = 'row-fluid featuredlisting-content hidden'>

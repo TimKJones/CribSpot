@@ -17,28 +17,18 @@ class A2Cribs.RentalSave
 		@CreateGrids dropdown_content
 
 	CreateCallbacks: () ->
-		$('body').on "Rental_marker_added", (event, marker_id) =>
-			if $("#rentals_list_content").find("##{marker_id}").length is 0
-				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
-				list_item = $ "<li />", {
-					text: name
-					class: "rentals_list_item"
-					id: marker_id
-				}
-				$("#rentals_list_content").append list_item
-				$("#rentals_list_content").slideDown()
-			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
-			$.when(@Open(marker_id))
-			.then () => @AddNewUnit()
+		$('#rental_list_content').on "marker_added", (event, marker_id) =>
+			@Open(marker_id)
+			.done => @AddNewUnit()
 
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
-			if $("#rentals_list_content").find("##{marker_id}").length is 1
-				list_item = $("#rentals_list_content").find("##{marker_id}")
+			if $("#rental_list_content").find("##{marker_id}").length is 1
+				list_item = $("#rental_list_content").find("##{marker_id}")
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item.text name
 				@CreateListingPreview marker_id
 
-		$("body").on 'click', '.rentals_list_item', (event) =>
+		$("body").on 'click', '.rental_list_item', (event) =>
 			if @Editable
 				A2Cribs.UIManager.ConfirmBox "By selecting a new address, all unsaved changes will be lost.",
 					{
