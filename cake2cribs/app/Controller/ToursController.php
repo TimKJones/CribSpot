@@ -220,7 +220,7 @@ class ToursController extends AppController
 		$sendAs = 'both';
 
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
-CakeLog::write('loggedinuser', print_r($loggedInUser, true));
+
 		/* Convert data from numeric constants to their string values */
 		if (!empty($loggedInUser['registered_university']))
 			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
