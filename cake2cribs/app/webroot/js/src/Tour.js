@@ -303,7 +303,7 @@ Class is for scheduling and picking a time to tour
 
     Tour.AddTimeSlot = function(offset_date, time_slot) {
       var hash, today;
-      hash = "" + offset_date + time_slot;
+      hash = "" + offset_date + "-" + time_slot;
       today = new Date();
       return this.selected_timeslots[hash] = {
         date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + offset_date, time_slot)
@@ -319,7 +319,7 @@ Class is for scheduling and picking a time to tour
 
     Tour.DeleteTimeSlot = function(offset_date, time_slot) {
       var hash;
-      hash = "" + offset_date + time_slot;
+      hash = "" + offset_date + "-" + time_slot;
       if (this.selected_timeslots[hash] != null) {
         return delete this.selected_timeslots[hash];
       }
@@ -388,7 +388,7 @@ Class is for scheduling and picking a time to tour
           var _j, _ref, _results1;
           _results1 = [];
           for (i = _j = offset_date, _ref = offset_date + this.DATE_RANGE_SIZE - 1; offset_date <= _ref ? _j <= _ref : _j >= _ref; i = offset_date <= _ref ? ++_j : --_j) {
-            if (this.selected_timeslots["" + i + timeslot] != null) {
+            if (this.selected_timeslots["" + i + "-" + timeslot] != null) {
               console.log("Timeslot : " + timeslot + " " + i);
               _results1.push($("#ts_" + (i - offset_date) + timeslot).addClass("selected").find(".time_slot_filler").show().find("i").removeClass("icon-plus-sign").addClass("icon-ok-sign"));
             } else {
