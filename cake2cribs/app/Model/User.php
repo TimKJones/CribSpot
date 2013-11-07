@@ -15,7 +15,7 @@ class User extends AppModel {
 			'foreignKey' => 'user_id',
 			'associationForeignKey' => 'friend_id',
 			'conditions' => array('UsersFriend.hotlist' => '1'),
-			'unique' => 'keepExisting',
+			'unique' => true,
 			'fields' => array(
 				'Hotlist.id', 
 				'Hotlist.first_name', 
@@ -198,12 +198,19 @@ class User extends AppModel {
 
 	public function removeFromHotlist($user_id, $friend_id) {
     CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
+    $this->query("UPDATE users_friends SET hotlist = '0' WHERE user_id = $user_id AND friend_id = $friend_id");
     return $this->getHotlist($user_id);
 	}
 
 	public function addToHotlist($user_id, $friend_id) {
     CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_id . ')');
-    $this->Hotlist->save(array('user_id' => $user_id, 'friend_id' => $friend_id));
+    if ($user_id != $friend_id){
+	    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+	  }
+	  else {
+	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+	  }
+	  
     return $this->getHotlist($user_id);
 	}
 
