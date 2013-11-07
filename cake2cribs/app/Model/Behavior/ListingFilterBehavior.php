@@ -1,7 +1,6 @@
 <?php
 
-class ListingFilter extends ModelBehavior {
-	public $mapMethods = array('/_get(\w+)/MarkerIdList' => 'GetMarkerIdList');
+class ListingFilterBehavior extends ModelBehavior {
 
 /*
 Sets up the configuration for the model
@@ -9,25 +8,18 @@ Parameters needed:
 - $filter_fields: the fields being filtered for this model
 */
 	public function setup(Model $model, $config = array()) {
-		if (!isset($this->settings[$Model->alias])) {
-	        $this->settings[$Model->alias] = array(
-	            'max_beds' => 10,
-	            'max_rent' => 5000,
-	            'filter_fields' => null,
-	            'table_name' => $Model->alias
-	        );
-	    }
 
-	    $this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], (array)$settings);
 	}
 
-	public function GetMarkerIdList(Model $model, $method, $params)
+	public function GetMarkerIdList(Model $model, $listing_type, $params)
 	{
-		App::import('model', $method);
-		$conditions = $this->_getFilteredQueryConditions($params, $method::$FILTER_FIELDS, $method);
+		CakeLog::write('method', $listing_type);
+		App::import('model', $listing_type);
+		$listingTypeModel = new $listing_type();
+		$conditions = $this->_getFilteredQueryConditions($params, $listingTypeModel->FILTER_FIELDS, $listing_type);
 
 		/* Limit which tables are queried */
-		$contains = array('Marker', $method);
+		$contains = array('Marker', $listing_type);
 
 		$findConditions = array(
 		    'contain' => $contains,

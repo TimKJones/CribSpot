@@ -19,6 +19,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetFeaturedPMListings');
 		$this->Auth->allow('SetAvailabilityFromEmail');
 		$this->Auth->allow('APIGetListing');
+		$this->Auth->allow('ApplyFilter');
 	}
 
 	/*					
@@ -186,7 +187,8 @@ Returns a list of marker_ids that will be visible based on the current filter se
 
 		$this->layout = 'ajax';
 		$filterSettings = $this->params['url'];
-		$response = $this->Listing->ApplyFilter($listing_type, $filterSettings);
+		$listing_type = $this->Listing->listing_type($listing_type);
+		$response = $this->Listing->GetMarkerIdList($listing_type, $filterSettings);
 		$this->set('response', $response);
 	}
 

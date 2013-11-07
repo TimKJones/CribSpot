@@ -10,7 +10,6 @@ class RentalsController extends AppController
     parent::beforeFilter();
     $this->Auth->allow('Save');
     $this->Auth->allow('Get');
-    $this->Auth->allow('ApplyFilter');
   }
 
   public function View()

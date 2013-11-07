@@ -3,7 +3,7 @@
 class Listing extends AppModel {
 	public $name = 'Listing';
 	public $primaryKey = 'listing_id';
-	public $actsAs = array('Containable');
+	public $actsAs = array('Containable', 'ListingFilter');
 	public $hasOne = array(
 		'Rental' => array(
 			'className' => 'Rental',
@@ -12,7 +12,7 @@ class Listing extends AppModel {
 		'Sublet' => array(
 			'className' => 'Sublet',
 			'dependent' => true
-		),
+		)
 	);
 	public $hasMany = array(
 		'Fee' => array(
@@ -79,48 +79,48 @@ class Listing extends AppModel {
 	}
 
 	private $BASIC_DATA_FIELDS = array(
-		'Rental' => array(
-			'Rental.rent',
-			'Rental.listing_id',
-			'Rental.beds',
-			'Rental.start_date',
-			'Rental.lease_length',
-			'Listing.marker_id',
-			'Listing.listing_id',
-			'Listing.available',
-			'Listing.scheduling',
-			'Marker.marker_id',
-			'Marker.latitude',
-			'Marker.longitude',
-			'Marker.street_address',
-			'Marker.building_type_id',
-			'Marker.alternate_name',
-			'Marker.city',
-			'Marker.state',
-			'Marker.zip'
-		),
-		'Sublet' => array(
-			'Sublet.rent',
-			'Sublet.listing_id',
-			'Sublet.beds',
-			'Sublet.start_date',
-			'Sublet.end_date',
-			'Sublet.available_now',
-			'Listing.marker_id',
-			'Listing.listing_id',
-			'Listing.available',
-			'Listing.scheduling',
-			'Marker.marker_id',
-			'Marker.latitude',
-			'Marker.longitude',
-			'Marker.street_address',
-			'Marker.building_type_id',
-			'Marker.alternate_name',
-			'Marker.city',
-			'Marker.state',
-			'Marker.zip'
-		)
-	);
+        'Rental' => array(
+                'Rental.rent',
+                'Rental.listing_id',
+                'Rental.beds',
+                'Rental.start_date',
+                'Rental.lease_length',
+                'Listing.marker_id',
+                'Listing.listing_id',
+                'Listing.available',
+                'Listing.scheduling',
+                'Marker.marker_id',
+                'Marker.latitude',
+                'Marker.longitude',
+                'Marker.street_address',
+                'Marker.building_type_id',
+                'Marker.alternate_name',
+                'Marker.city',
+                'Marker.state',
+                'Marker.zip'
+        ),
+        'Sublet' => array(
+                'Sublet.rent',
+                'Sublet.listing_id',
+                'Sublet.beds',
+                'Sublet.start_date',
+                'Sublet.end_date',
+                'Sublet.available_now',
+                'Listing.marker_id',
+                'Listing.listing_id',
+                'Listing.available',
+                'Listing.scheduling',
+                'Marker.marker_id',
+                'Marker.latitude',
+                'Marker.longitude',
+                'Marker.street_address',
+                'Marker.building_type_id',
+                'Marker.alternate_name',
+                'Marker.city',
+                'Marker.state',
+                'Marker.zip'
+        )
+);
 
 	/*
 	Attempts to save $listing to the Listing table and any associated tables.
@@ -486,64 +486,87 @@ class Listing extends AppModel {
 	}
 
 	public function GetBasicData($listing_type, $target_lat_long, $radius)
-	{
-		if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
-			return null;
+    {
+        if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
+                return null;
 
-		$latitude = $target_lat_long['latitude'];
-		$longitude = $target_lat_long['longitude'];
-		$lat1 = $latitude - $radius/69;
-		$lat2 = $latitude + $radius/69;
-		
-		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
-		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+           if ($listing_type == Listing::LISTING_TYPE_RENTAL)
+                        return $this->_getRentalBasicData($target_lat_long, $radius);
 
-		$lat_long_pairs = array(
-			'lat1' => $lat1,
-			'lat2' => $lat2,
-			'lon1' => $lon1,
-			'lon2' => $lon2
+        $latitude = $target_lat_long['latitude'];
+        $longitude = $target_lat_long['longitude'];
+        $lat1 = $latitude - $radius/69;
+        $lat2 = $latitude + $radius/69;
+        
+        $lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+        $lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
+        $lat_long_pairs = array(
+                'lat1' => $lat1,
+                'lat2' => $lat2,
+                'lon1' => $lon1,
+                'lon2' => $lon2
+        );
+
+        $options['fields'] = array(
+			'Rental.rent',
+			'Rental.listing_id',
+			'Rental.beds',
+			'Rental.start_date',
+			'Rental.lease_length',
+			'Listing.marker_id',
+			'Listing.listing_id',
+			'Listing.available',
+			'Listing.scheduling',
+			'Marker.marker_id',
+			'Marker.latitude',
+			'Marker.longitude',
+			'Marker.street_address',
+			'Marker.building_type_id',
+			'Marker.alternate_name',
+			'Marker.city',
+			'Marker.state',
+			'Marker.zip'
 		);
 
-		$search_conditions = array(
+		$options['conditions'] = array(
 			'Listing.visible' => 1,
-			'Listing.listing_type' => $listing_type,
-			'Marker.latitude >' => $lat_long_pairs['lat1'],
-			'Marker.latitude <=' => $lat_long_pairs['lat2'],
-			'Marker.longitude >' => $lat_long_pairs['lon1'],
-			'Marker.longitude <=' => $lat_long_pairs['lon2']
+			'Marker.latitude >' => $lat1,
+			'Marker.latitude <=' => $lat2,
+			'Marker.longitude >' => $lon1,
+			'Marker.longitude <=' => $lon2
 		);
+
+        $search_conditions = array(
+                'Listing.visible' => 1,
+                'Listing.listing_type' => $listing_type,
+                'Marker.latitude >' => $lat_long_pairs['lat1'],
+                'Marker.latitude <=' => $lat_long_pairs['lat2'],
+                'Marker.longitude >' => $lat_long_pairs['lon1'],
+                'Marker.longitude <=' => $lat_long_pairs['lon2']
+        );
 CakeLog::write('listing_type', $listing_type);
-		$table = 'Rental';
-		if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET){
-			$table = 'Sublet';
-			$search_conditions['Listing.listing_type'] = Listing::LISTING_TYPE_SUBLET;
-		}
-			
-		$this->contain($table, 'Marker');
-		$options = array();
-		$options['fields'] = $this->BASIC_DATA_FIELDS[$table];
+        $table = 'Rental';
+        if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET)
+                $table = 'Sublet';
+                
+        $this->contain($table, 'Marker');
+        $options = array();
+        $options['fields'] = $this->BASIC_DATA_FIELDS[$table];
 
-		$options['conditions'] = $search_conditions;
-	
-		$this->virtualFields = array(
-    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
-		);
+        $options['conditions'] = $search_conditions;
 
-		$basicData = $this->find('all', $options);
-		CakeLog::write('basicdata', print_r($basicData, true));
-		App::Import('model', 'Rental');
-		foreach ($basicData as &$listing) {
-			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
-		}
+        $this->virtualFields = array(
+            'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+        );
 
-		return $basicData;
+        $basicData = $this->find('all', $options);
+        foreach ($basicData as &$listing) {
+                $listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
+        }
 
-		/*
-		else
-		return $this->loadParkingHoverData();
-		*/
-	}
+        return $basicData;
+    }
 
 	/*
 	Returns true if the user with $user_id owns at least one listing at $marker_id
@@ -920,19 +943,6 @@ CakeLog::write('listing_type', $listing_type);
 
 		return array('success' => '');
 	}
-
-	/*
-	Given array of parameter values as input.
-	Returns a list of marker_ids that have rentals matching the parameter criteria.
-	*/
-	public function ApplyFilter($listing_type, $params)
-	{
-		$listing_type = Listing::listing_type($listing_type);
-		$getMarkerIdListFunction = "$this->Get".$listing_type."MarkerIdList";
-		$marker_id_list = $getMarkerIdListFunction($params);
-		return json_encode($marker_id_list);
-	}
-
 /* ------------------------------------ private functions -------------------------------- */
 
 
@@ -989,6 +999,66 @@ CakeLog::write('listing_type', $listing_type);
 		$hover_data = $this->find('all', $options);
 	}
 
+	/*
+	Returns basic data for all listings within $RADIUS of $target_lat_long
+	*/
+	private function _getRentalBasicData($target_lat_long, $radius)
+	{
+		if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
+			return null;
+
+		$latitude = $target_lat_long['latitude'];
+		$longitude = $target_lat_long['longitude'];
+		$lat1 = $latitude - $radius/69;
+		$lat2 = $latitude + $radius/69;
+		
+		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
+		$this->contain('Rental', 'Marker');
+		$options = array();
+		$options['fields'] = array(
+			'Rental.rent',
+			'Rental.listing_id',
+			'Rental.beds',
+			'Rental.start_date',
+			'Rental.lease_length',
+			'Listing.marker_id',
+			'Listing.listing_id',
+			'Listing.available',
+			'Listing.scheduling',
+			'Marker.marker_id',
+			'Marker.latitude',
+			'Marker.longitude',
+			'Marker.street_address',
+			'Marker.building_type_id',
+			'Marker.alternate_name',
+			'Marker.city',
+			'Marker.state',
+			'Marker.zip'
+			);
+
+		$options['conditions'] = array(
+			'Listing.visible' => 1,
+			'Marker.latitude >' => $lat1,
+			'Marker.latitude <=' => $lat2,
+			'Marker.longitude >' => $lon1,
+			'Marker.longitude <=' => $lon2
+		);
+	
+		$this->virtualFields = array(
+    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+		);
+
+		$basicData = $this->find('all', $options);
+		//$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+		foreach ($basicData as &$listing) {
+			$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
+		}
+
+		return $basicData;
+	}
+
 	function distance($lat1,$lon1,$lat2,$lon2) {
 	  $R = 6371; // Radius of the earth in km
 	  $dLat = deg2rad($lat2-$lat1);  // deg2rad below
@@ -1041,7 +1111,8 @@ CakeLog::write('listing_type', $listing_type);
 				}
 			}
 		}
-
+		
+		CakeLog::write('beforesave', print_r($listing, true));
 	}
 
 }	

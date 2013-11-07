@@ -69,13 +69,6 @@ class Sublet extends AppModel {
 	public $MAX_BEDS = 4;
 	public $MAX_RENT = 1000;
 	public $FILTER_FIELDS = array(
-		'Dates' => array('Date' => array()), 
-		'LeaseRange' => array('Range' => array('lease_length', null, 'Sublet')),
-		'UnitTypes' => array('MultipleOption' => array('building_type_id', Rental::BUILDING_TYPE_CONDO, 'Marker')),
-		'Beds' => array('MultipleOption'=>array('beds', 10, 'Sublet')), /* 10 is MAX_BEDS */
-		'Rent' => array('Range' => array('rent', 5000, 'Sublet')), /* 5000 is MAX_RENT */
-		'PetsAllowed'  => array('Boolean' => array('pets_type', Rental::PETS_NOT_ALLOWED, 'Sublet')),
-		'ParkingAvailable' => array('Boolean' => array('parking_type', 0, 'Sublet')),
-		'Air' => array('Boolean' => array('air', Rental::AIR_NO_AIR, 'Sublet'))
+		'ParkingAvailable' => array('Boolean' => array('parking_type', 0, 'Sublet'))
 	);
 };
