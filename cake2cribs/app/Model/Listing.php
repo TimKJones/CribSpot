@@ -920,6 +920,19 @@ CakeLog::write('listing_type', $listing_type);
 
 		return array('success' => '');
 	}
+
+	/*
+	Given array of parameter values as input.
+	Returns a list of marker_ids that have rentals matching the parameter criteria.
+	*/
+	public function ApplyFilter($listing_type, $params)
+	{
+		$listing_type = Listing::listing_type($listing_type);
+		$getMarkerIdListFunction = "$this->Get".$listing_type."MarkerIdList";
+		$marker_id_list = $getMarkerIdListFunction($params);
+		return json_encode($marker_id_list);
+	}
+
 /* ------------------------------------ private functions -------------------------------- */
 
 

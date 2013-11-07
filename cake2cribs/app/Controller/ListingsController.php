@@ -173,6 +173,23 @@ class ListingsController extends AppController {
 		return;
 	}
 
+/*
+Returns a list of marker_ids that will be visible based on the current filter settings.
+*/
+	public function ApplyFilter($listing_type)
+	{
+		if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		if ($this->params == null || !array_key_exists('url', $this->params))
+			return;
+
+		$this->layout = 'ajax';
+		$filterSettings = $this->params['url'];
+		$response = $this->Listing->ApplyFilter($listing_type, $filterSettings);
+		$this->set('response', $response);
+	}
+
 	/*
 	Returns all marker data by the logged in user
 	If this user is a university admin, returns all listings close to that university
