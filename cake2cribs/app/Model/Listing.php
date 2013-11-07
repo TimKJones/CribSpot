@@ -140,18 +140,18 @@ class Listing extends AppModel {
 				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id'], $user_id);
 				$listing['Rental']['rental_id'] = $rental_id;
 			}
+
+			/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
+			if (!array_key_exists('alternate_start_date', $listing['Rental']))
+				$listing['Rental']['alternate_start_date'] = '';
 		}
 		else if (array_key_exists('Sublet', $listing))
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
 		else if (array_key_exists('Parking', $listing))
-			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
-
-		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
-		if (!array_key_exists('alternate_start_date', $listing['Rental']))
-			$listing['Rental']['alternate_start_date'] = '';
-	
+			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);	
 
 		$this->_formatDates($listing);
+		
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
 			return array('listing_id' => $this->id);

@@ -26,7 +26,7 @@ class Sublet extends AppModel {
                 )
         ),
         'baths' => 'decimal',
-        'bathroom_type' => 'integer',
+        'bathroom_type' => 'numeric',
         'parking_available' => 'boolean',
         'parking_description' => array(
                 'between' => array(
@@ -56,8 +56,7 @@ class Sublet extends AppModel {
         'available_now' => 'boolean',
         'deposit' => 'numeric',
         'air' => 'boolean',
-        'furnished' => 'integer',
-        'pets' => 'integer',
+        'furnished' => 'numeric',
         'description' => array(
                 'between' => array(
                         'rule' => array('between',0,1000),
