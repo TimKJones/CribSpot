@@ -51,4 +51,14 @@ class MarkersController extends AppController {
 		$marker_id = $this->Marker->FindMarkerId($marker, $this->_getUserId(), $user_type);
 		$this->set('response', $marker_id);
 	}
+
+	/*
+	Returns via AJAX a marker given the address information, or null if it doesn't exist.
+	*/
+	public function FindMarkerByAddress($street_address, $city, $state)
+	{
+		$this->layout = 'ajax';
+		$marker = $this->Marker->FindByAddress($street_address, $city, $state);
+		$this->set('response', json_encode($marker));
+	}
 }

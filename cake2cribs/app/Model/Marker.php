@@ -273,6 +273,25 @@ class Marker extends AppModel {
 		$this->save($marker);
 	}
 
+	/* 
+	Returns a marker by its address information, or null if no marker exists
+	*/
+	public function FindByAddress($street_address, $city, $state)
+	{
+		$marker = $this->find('first', array(
+			'conditions' => array(
+				'Marker.street_address' => $street_address,
+				'Marker.city' => $city,
+				'Marker.state' => $state
+			)
+		));
+
+		if (array_key_exists('Marker', $marker))
+			return $marker['Marker'];
+
+		return null;	
+	}
+
 	private function _getMarkerByStreetAddress($street_address, $city, $state)
 	{
 		$conditions = array('Marker.street_address' => $street_address,

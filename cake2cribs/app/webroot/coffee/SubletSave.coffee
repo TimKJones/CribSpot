@@ -167,6 +167,16 @@ class SubletSave
 			# TODO: NEED TO WRITE METHOD ON BACKEND TO RETURN MARKER ID
 			@div.find(".marker_id").val "1"
 
+	@FindMarkerTest:() ->
+		street_address = '114 N Division St'
+		city = 'Ann Arbor'
+		state = 'MI'
+		return $.ajax
+			url: myBaseUrl + "Markers/FindMarkerByAddress/"+street_address+"/"+city+"/"+state
+			type: "GET"
+			success: (response) =>
+				console.log response
+
 
 	###
 	Get Backend Date Format
