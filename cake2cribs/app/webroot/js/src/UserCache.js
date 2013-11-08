@@ -27,6 +27,39 @@
     };
 
     /*
+    	Cache Data
+    	Caches an array of Listing objects
+    */
+
+
+    UserCache.CacheData = function(object) {
+      var a2_object, item, key, old_object, value, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = object.length; _i < _len; _i++) {
+        item = object[_i];
+        _results.push((function() {
+          var _results1;
+          _results1 = [];
+          for (key in item) {
+            value = item[key];
+            if (A2Cribs[key] != null) {
+              a2_object = new A2Cribs[key](value);
+              old_object = this.Get(key.toLowerCase(), a2_object.GetId());
+              if ((old_object != null) && !(old_object.length != null)) {
+                a2_object = old_object.Update(value);
+              }
+              _results1.push(this.Set(a2_object));
+            } else {
+              _results1.push(void 0);
+            }
+          }
+          return _results1;
+        }).call(this));
+      }
+      return _results;
+    };
+
+    /*
     	Get Listing
     	Retrieves a listing_type (rental, sublet, parking) by a listing id
     	Uses deferred object to fetch from async
@@ -48,22 +81,9 @@
         url: myBaseUrl + "Listings/GetListing/" + listing_id,
         type: "GET",
         success: function(data) {
-          var a2_object, item, key, old_object, response_data, value, _i, _len;
+          var response_data;
           response_data = JSON.parse(data);
-          for (_i = 0, _len = response_data.length; _i < _len; _i++) {
-            item = response_data[_i];
-            for (key in item) {
-              value = item[key];
-              if (key !== "Marker" && (A2Cribs[key] != null)) {
-                a2_object = new A2Cribs[key](value);
-                old_object = _this.Get(key.toLowerCase(), a2_object.GetId());
-                if ((old_object != null) && !(old_object.length != null)) {
-                  a2_object = old_object.Update(value);
-                }
-                _this.Set(a2_object);
-              }
-            }
-          }
+          _this.CacheData(response_data);
           listing = _this.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
           return deferred.resolve(listing);
         },

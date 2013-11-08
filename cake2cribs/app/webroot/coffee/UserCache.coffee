@@ -13,6 +13,20 @@ class A2Cribs.UserCache
 				callback?.error()
 
 	###
+	Cache Data
+	Caches an array of Listing objects
+	###
+	@CacheData: (object) ->
+		for item in object
+			for key, value of item
+				if A2Cribs[key]?
+					a2_object = new A2Cribs[key] value
+					old_object = @Get key.toLowerCase(), a2_object.GetId()
+					if old_object? and not old_object.length?
+						a2_object = old_object.Update value
+					@Set a2_object
+
+	###
 	Get Listing
 	Retrieves a listing_type (rental, sublet, parking) by a listing id
 	Uses deferred object to fetch from async
@@ -31,14 +45,7 @@ class A2Cribs.UserCache
 			type:"GET"
 			success: (data) =>
 				response_data = JSON.parse data
-				for item in response_data
-					for key, value of item
-						if key isnt "Marker" and A2Cribs[key]?
-							a2_object = new A2Cribs[key] value
-							old_object = @Get key.toLowerCase(), a2_object.GetId()
-							if old_object? and not old_object.length?
-								a2_object = old_object.Update value
-							@Set a2_object
+				@CacheData response_data
 				listing = @Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
 				return deferred.resolve listing
 

@@ -102,33 +102,27 @@ class A2Cribs.Dashboard
             success: @GetUserMarkerDataCallback
 
 	@GetUserMarkerDataCallback: (data) =>
-		markers = JSON.parse data
 
 		# Counts listings and adds them to the dropdown list
 		listings_count = [0, 0, 0]
-		listing_types = ["rentals", "sublet", "parking"]
-		$("#rentals_count").text markers.length
-		marker_ids_processed = []
+		listing_types = ["rental", "sublet", "parking"]
 
-		for marker in markers
-			if marker.Marker?
-				marker = marker.Marker
-			else
-				continue
+		A2Cribs.UserCache.CacheData JSON.parse data
 
-			if marker.marker_id? and marker.marker_id in marker_ids_processed
-				continue
+		listings = A2Cribs.UserCache.Get "listing"
 
-			name = marker.alternate_name
-			if !marker.alternate_name || !marker.alternate_name.length
-				name = marker.street_address
-			list_item = $ "<li />", {
-				text: name
-				class: "rentals_list_item"
-				id: marker.marker_id
-			}
-			$("#rentals_list_content").append list_item
-			marker_ids_processed.push marker.marker_id
+		for listing in listings
+			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
+			if $("##{listing_types[listing.listing_type]}_list_content").find("##{marker.GetId()}").length is 0
+				list_item = $ "<li />", {
+					text: marker.GetName()
+					class: "#{listing_types[listing.listing_type]}_list_item"
+					id: marker.GetId()
+				}
+			$("##{listing_types[listing.listing_type]}_list_content").append list_item
+			listings_count[listing.listing_type] += 1
+		for listing_type, i in listing_types	
+			$("##{listing_type}_count").text listings_count[i]
 
 	###
 	Retrieves all listings for logged-in user and adds them to the cache.
