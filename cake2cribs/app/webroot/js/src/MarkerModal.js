@@ -248,43 +248,19 @@
         addressObj = {
           address: div.find("#Marker_street_address").val() + " " + div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()
         };
-        return A2Cribs.Geocoder.geocode(addressObj, function(response, status) {
-          var component, street_name, street_number, type, _i, _j, _len, _len1, _ref, _ref1;
-          if (status === google.maps.GeocoderStatus.OK && response[0].address_components.length >= 2) {
-            _ref = response[0].address_components;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              component = _ref[_i];
-              _ref1 = component.types;
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                type = _ref1[_j];
-                switch (type) {
-                  case "street_number":
-                    street_number = component.short_name;
-                    break;
-                  case "route":
-                    street_name = component.short_name;
-                    break;
-                  case "locality":
-                    div.find('#Marker_city').val(component.short_name);
-                    break;
-                  case "administrative_area_level_1":
-                    div.find('#Marker_state').val(component.short_name);
-                    break;
-                  case "postal_code":
-                    div.find('#Marker_zip').val(component.short_name);
-                }
-              }
-            }
-            if (!(street_number != null)) {
-              A2Cribs.UIManager.Alert("Entered street address is not valid.");
-              $("#Marker_street_address").text("");
-              return;
-            }
-            _this.MiniMap.SetMarkerPosition(response[0].geometry.location);
-            div.find("#Marker_street_address").val(street_number + " " + street_name);
-            div.find("#Marker_latitude").val(response[0].geometry.location.lat());
-            return div.find("#Marker_longitude").val(response[0].geometry.location.lng());
-          }
+        return A2Cribs.Geocoder.FindAddress(div.find("#Marker_street_address").val(), div.find("#Marker_city").val(), div.find("#Marker_state").val()).done(function(response) {
+          var city, location, state, street_address, zip;
+          street_address = response[0], city = response[1], state = response[2], zip = response[3], location = response[4];
+          _this.MiniMap.SetMarkerPosition(location);
+          div.find("#Marker_street_address").val(street_address);
+          div.find("#Marker_latitude").val(location.lat());
+          div.find("#Marker_longitude").val(location.lng());
+          div.find('#Marker_city').val(city);
+          div.find('#Marker_state').val(state);
+          return div.find('#Marker_zip').val(zip);
+        }).fail(function() {
+          A2Cribs.UIManager.Alert("Entered street address is not valid.");
+          return $("#Marker_street_address").text("");
         });
       }
     };

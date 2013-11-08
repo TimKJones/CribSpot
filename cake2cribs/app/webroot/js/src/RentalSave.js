@@ -18,9 +18,6 @@
     }
 
     RentalSave.prototype.SetupUI = function(dropdown_content) {
-      if (!(A2Cribs.Geocoder != null)) {
-        A2Cribs.Geocoder = new google.maps.Geocoder();
-      }
       $('#middle_content').height();
       this.div.find("grid-pane").height;
       this.CreateCallbacks();
@@ -29,7 +26,7 @@
 
     RentalSave.prototype.CreateCallbacks = function() {
       var _this = this;
-      $('body').on("Rental_marker_added", function(event, marker_id) {
+      $('#rental_list_content').on("marker_added", function(event, marker_id) {
         return _this.Open(marker_id).done(function() {
           return _this.AddNewUnit();
         });

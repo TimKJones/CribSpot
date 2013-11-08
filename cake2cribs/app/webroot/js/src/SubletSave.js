@@ -23,9 +23,16 @@
       $('#sublet_list_content').on('click', '.sublet_list_item', function(event) {
         return _this.Open(event.currentTarget.id);
       });
-      return this.div.find("#sublet_save_button").click(function() {
+      this.div.find("#sublet_save_button").click(function() {
         return _this.Save();
       });
+      this.div.find(".btn-group.sublet_fields .btn").click(function(event) {
+        return $(event.currentTarget).parent().val($(event.currentTarget).val());
+      });
+      this.div.find("#find_address").click(function() {
+        return _this.FindAddress();
+      });
+      return this.div.find('.date-field').datepicker();
     };
 
     /*
@@ -38,11 +45,17 @@
     SubletSave.Validate = function() {
       var isValid;
       isValid = true;
-      return this.div.find(".btn-group").each(function(index, value) {
+      this.div.find(".btn-group").each(function(index, value) {
         if ($(value).find(".active").size() === 0) {
           return isValid = false;
         }
       });
+      this.div.find(".date-field").each(function(index, value) {
+        if ($(value).val().length === 0) {
+          return isValid = false;
+        }
+      });
+      return isValid;
     };
 
     /*
@@ -80,14 +93,14 @@
 
 
     SubletSave.Populate = function(sublet_object) {
+      var _this = this;
       return $(".sublet_fields").each(function(index, value) {
         var lol;
+        $(value).val(sublet_object[$(value).data("field-name")]);
         if ($(value).hasClass("btn-group")) {
           return lol = "lol";
         } else if ($(value).hasClass("date-field")) {
-          return lol = "lol";
-        } else if ($(value).hasClass("text-field")) {
-          return lol = "lol";
+          return $(value).val(_this.GetFormattedDate(sublet_object[$(value).data("field-name")]));
         }
       });
     };
@@ -107,8 +120,7 @@
           type: "POST",
           data: this.GetSubletObject(),
           success: function(response) {
-            var lol;
-            return lol = "lol";
+            return console.log(response);
           }
         });
       } else {
@@ -123,27 +135,21 @@
 
 
     SubletSave.GetSubletObject = function() {
-      var sublet_object;
-      sublet_object = {
-        'rent': 9999,
-        'beds': 1,
-        'baths': 1,
-        'bathroom_type': 1,
-        'parking_available': 1,
-        'parking_description': 'lol',
-        'utilities_included': 1,
-        'utilities_description': "LOL",
-        'start_date': '2013-09-02',
-        'end_date': '2013-09-03',
-        'available_now': 1,
-        'air': 1,
-        'furnished': 1,
-        'description': 1
-      };
+      var sublet_object,
+        _this = this;
+      sublet_object = {};
+      this.div.find(".sublet_fields").each(function(index, value) {
+        var field_value;
+        field_value = $(value).val();
+        if ($(value).hasClass("date-field")) {
+          field_value = _this.GetBackendDateFormat(field_value);
+        }
+        return sublet_object[$(value).data("field-name")] = field_value;
+      });
       return {
         'Listing': {
           listing_type: 1,
-          marker_id: 1
+          marker_id: this.div.find(".marker_id").val()
         },
         'Sublet': sublet_object,
         'Image': []
@@ -151,11 +157,41 @@
     };
 
     /*
-    	Replaces '/' with '-' to make convertible to mysql datetime format
+    	Find Address
+    	Finds the geocode address and searches the backend
+    	for the correct address
     */
 
 
-    SubletSave.GetMysqlDateFormat = function(dateString) {
+    SubletSave.FindAddress = function() {
+      var isValid, location_object,
+        _this = this;
+      location_object = {};
+      isValid = true;
+      $(".location_fields").each(function(index, value) {
+        if ($(value).val().length === 0) {
+          isValid = false;
+        }
+        return location_object[$(value).data("field-name")] = $(value).val();
+      });
+      if (!isValid) {
+        A2Cribs.UIManager.Error("Please complete all fields to find address");
+        return;
+      }
+      return A2Cribs.Geocoder.FindAddress(location_object.street_address, location_object.city, location_object.state).done(function(response) {
+        var city, location, state, street_address, zip;
+        street_address = response[0], city = response[1], state = response[2], zip = response[3], location = response[4];
+        return _this.div.find(".marker_id").val("1");
+      });
+    };
+
+    /*
+    	Get Backend Date Format
+    	Replaces '/' with '-' to make convertible to db format
+    */
+
+
+    SubletSave.GetBackendDateFormat = function(dateString) {
       var beginDateFormatted, date, day, month, year;
       date = new Date(dateString);
       month = date.getMonth() + 1;
@@ -169,6 +205,12 @@
       year = date.getUTCFullYear();
       return beginDateFormatted = year + "-" + month + "-" + day;
     };
+
+    /*
+    	Get Today's Date
+    	Returns todays date in readable front-end syntax
+    */
+
 
     SubletSave.GetTodaysDate = function() {
       var dd, mm, today, yyyy;
@@ -185,6 +227,12 @@
       today = mm + '/' + dd + '/' + yyyy;
       return today;
     };
+
+    /*
+    	Get Formatted Date
+    	Returns date in readable front-end syntax
+    */
+
 
     SubletSave.GetFormattedDate = function(date) {
       var beginDateFormatted, day, month, year;

@@ -192,27 +192,19 @@ class A2Cribs.MarkerModal
 			addressObj = 
 				address: div.find("#Marker_street_address").val() + " " + 
 					div.find("#Marker_city").val() + ", " + div.find("#Marker_state").val()
-			A2Cribs.Geocoder.geocode addressObj, (response, status) =>
-				if status is google.maps.GeocoderStatus.OK and response[0].address_components.length >= 2
-					for component in response[0].address_components
-						for type in component.types
-							switch type
-								when "street_number" then street_number = component.short_name
-								when "route" then street_name = component.short_name
-								when "locality" then div.find('#Marker_city').val component.short_name
-								when "administrative_area_level_1" then div.find('#Marker_state').val component.short_name
-								when "postal_code" then div.find('#Marker_zip').val component.short_name
-
-					if not street_number?
-						A2Cribs.UIManager.Alert "Entered street address is not valid."
-						$("#Marker_street_address").text ""
-						return
-					
-					@MiniMap.SetMarkerPosition response[0].geometry.location
-					div.find("#Marker_street_address").val street_number + " " + street_name
-					div.find("#Marker_latitude").val response[0].geometry.location.lat()
-					div.find("#Marker_longitude").val response[0].geometry.location.lng()
-
+			A2Cribs.Geocoder.FindAddress(div.find("#Marker_street_address").val(), div.find("#Marker_city").val(), div.find("#Marker_state").val())
+			.done (response) =>
+				[street_address, city, state, zip, location] = response
+				@MiniMap.SetMarkerPosition location
+				div.find("#Marker_street_address").val street_address
+				div.find("#Marker_latitude").val location.lat()
+				div.find("#Marker_longitude").val location.lng()
+				div.find('#Marker_city').val city
+				div.find('#Marker_state').val state
+				div.find('#Marker_zip').val zip
+			.fail () =>
+				A2Cribs.UIManager.Alert "Entered street address is not valid."
+				$("#Marker_street_address").text ""
 
 	$('#marker-modal').ready () =>
 		@modal = $('#marker-modal')
