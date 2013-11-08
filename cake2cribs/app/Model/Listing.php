@@ -514,10 +514,9 @@ class Listing extends AppModel {
                 'lon2' => $lon2
         );
 
-        $numeric_listing_type = self::listing_type_reverse($listing_type);
         $search_conditions = array(
                 'Listing.visible' => 1,
-                'Listing.listing_type' => $numeric_listing_type,
+                'Listing.listing_type' => $listing_type,
                 'Marker.latitude >' => $lat_long_pairs['lat1'],
                 'Marker.latitude <=' => $lat_long_pairs['lat2'],
                 'Marker.longitude >' => $lat_long_pairs['lon1'],
@@ -525,9 +524,9 @@ class Listing extends AppModel {
         );
 
         $table = 'Rental';
-        if ($numeric_listing_type === self::LISTING_TYPE_SUBLET)
+        if ($listing_type === self::LISTING_TYPE_SUBLET)
         	$table = 'Sublet';
-        CakeLog::write('reversed', 'table:'.$table);
+
         $this->contain($table, 'Marker');
         $options = array();
         $options['fields'] = $this->BASIC_DATA_FIELDS[$table];
@@ -539,7 +538,6 @@ class Listing extends AppModel {
         );
 
         $basicData = $this->find('all', $options);
-CakeLog::write('itsthebasicdata', print_r($basicData, true));
         foreach ($basicData as &$listing) {
                 $listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
         }

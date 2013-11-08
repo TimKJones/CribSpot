@@ -13,7 +13,6 @@ Parameters needed:
 
 	public function GetMarkerIdList(Model $model, $listing_type, $params)
 	{
-		CakeLog::write('method', $listing_type);
 		App::import('model', $listing_type);
 		$listingTypeModel = new $listing_type();
 		$conditions = $this->_getFilteredQueryConditions($params, $listingTypeModel->FILTER_FIELDS, $listing_type);
@@ -68,7 +67,12 @@ Parameters needed:
 						if (intval($params[$field]) === 1)
 							$next_conditions = $this->_getBooleanFilterConditions($filterParams[0], $filterParams[1], $filterParams[2]);
 					}
-
+					else if ($filterType === 'DatePicker'){
+						$decoded = json_decode($params[$field]);
+						$date = $decoded->date;
+						$next_conditions = $this->_getDatePickerConditions($field_name, $filterParams[0], $date, $filterParams[1]);
+					}
+			
 					if ($next_conditions !== null)
 						array_push($conditions, $next_conditions);
 				}
@@ -81,6 +85,15 @@ Parameters needed:
 			array_push($conditions, $this->_getParkingConditions($params, $method));
 
 		return $conditions;
+	}
+
+	/*
+	Returns the piece of the filter conditions array for a specific date.
+	$compareOperator is either '<' or '>' to specify that listings > or < than this date are returned.
+	*/
+	private function _getDatePickerConditions($field_name, $compareOperator, $date, $table_name='Rental')
+	{
+		return array($table_name.'.'.$field_name.' '.$compareOperator.' '.$date);
 	}
 
 	/*
@@ -128,7 +141,6 @@ Parameters needed:
 	/*
 	Takes an input of an array of (key, value) pairs
 	Only filters for fields that can be multiple values (ex. unit_type)
-	$prefix is the part of the key that has been pre-pended (ex. 'unit_type'), excluding the last underscore.
 	$other_max_value - value above which (and equal to) all values are valid if 'other' box is checked.
 	*/
 	private function _getMultipleOptionFilterConditions($params, $field_name, $other_value, $table_name='Rental')
