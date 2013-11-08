@@ -232,7 +232,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			ajaxData += key + "=" + JSON.stringify value
 		$("#loader").show()
 		$.ajax
-			url: myBaseUrl + "Rentals/ApplyFilter"
+			url: myBaseUrl + "Listings/ApplyFilter/0"
 			data: ajaxData
 			type: "GET"
 			context: this

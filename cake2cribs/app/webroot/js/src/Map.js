@@ -136,7 +136,7 @@
         this.BasicDataDeferred = new $.Deferred();
       }
       $.ajax({
-        url: myBaseUrl + ("Map/GetBasicData/1/" + this.CurentSchoolId),
+        url: myBaseUrl + ("Map/GetBasicData/" + this.ACTIVE_LISTING_TYPE + "/" + this.CurentSchoolId),
         type: "POST",
         success: function(responses) {
           return _this.BasicDataDeferred.resolve(responses);

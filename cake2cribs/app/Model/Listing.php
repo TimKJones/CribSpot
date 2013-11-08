@@ -78,6 +78,15 @@ class Listing extends AppModel {
 		return parent::enum($value, $options);
 	}
 
+	public static function listing_type_reverse($value = null) {
+		$options = array(
+			'rental' => self::LISTING_TYPE_RENTAL,
+			'sublet' => self::LISTING_TYPE_SUBLET,
+			'parking' => self::LISTING_TYPE_PARKING
+		);
+		return parent::StringToInteger($value, $options);
+	}
+
 	private $BASIC_DATA_FIELDS = array(
         'Rental' => array(
                 'Rental.rent',
@@ -490,9 +499,6 @@ class Listing extends AppModel {
         if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
                 return null;
 
-           if ($listing_type == Listing::LISTING_TYPE_RENTAL)
-                        return $this->_getRentalBasicData($target_lat_long, $radius);
-
         $latitude = $target_lat_long['latitude'];
         $longitude = $target_lat_long['longitude'];
         $lat1 = $latitude - $radius/69;
@@ -508,48 +514,20 @@ class Listing extends AppModel {
                 'lon2' => $lon2
         );
 
-        $options['fields'] = array(
-			'Rental.rent',
-			'Rental.listing_id',
-			'Rental.beds',
-			'Rental.start_date',
-			'Rental.lease_length',
-			'Listing.marker_id',
-			'Listing.listing_id',
-			'Listing.available',
-			'Listing.scheduling',
-			'Marker.marker_id',
-			'Marker.latitude',
-			'Marker.longitude',
-			'Marker.street_address',
-			'Marker.building_type_id',
-			'Marker.alternate_name',
-			'Marker.city',
-			'Marker.state',
-			'Marker.zip'
-		);
-
-		$options['conditions'] = array(
-			'Listing.visible' => 1,
-			'Marker.latitude >' => $lat1,
-			'Marker.latitude <=' => $lat2,
-			'Marker.longitude >' => $lon1,
-			'Marker.longitude <=' => $lon2
-		);
-
+        $numeric_listing_type = self::listing_type_reverse($listing_type);
         $search_conditions = array(
                 'Listing.visible' => 1,
-                'Listing.listing_type' => $listing_type,
+                'Listing.listing_type' => $numeric_listing_type,
                 'Marker.latitude >' => $lat_long_pairs['lat1'],
                 'Marker.latitude <=' => $lat_long_pairs['lat2'],
                 'Marker.longitude >' => $lat_long_pairs['lon1'],
                 'Marker.longitude <=' => $lat_long_pairs['lon2']
         );
-CakeLog::write('listing_type', $listing_type);
+
         $table = 'Rental';
-        if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET)
-                $table = 'Sublet';
-                
+        if ($numeric_listing_type === self::LISTING_TYPE_SUBLET)
+        	$table = 'Sublet';
+        CakeLog::write('reversed', 'table:'.$table);
         $this->contain($table, 'Marker');
         $options = array();
         $options['fields'] = $this->BASIC_DATA_FIELDS[$table];
@@ -561,6 +539,7 @@ CakeLog::write('listing_type', $listing_type);
         );
 
         $basicData = $this->find('all', $options);
+CakeLog::write('itsthebasicdata', print_r($basicData, true));
         foreach ($basicData as &$listing) {
                 $listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
         }

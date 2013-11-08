@@ -15,7 +15,7 @@ class MapController extends AppController {
     $this->Auth->allow('LoadMarkers');
     $this->Auth->allow('index');
     $this->Auth->allow('sublet');
-    $this->Auth->allow('rental');
+    $this->Auth->allow('listing');
     $this->Auth->allow('ViewListing');
     $this->Auth->allow('LoadTypeTables');
     $this->Auth->allow('LoadHoverData');
@@ -43,7 +43,7 @@ class MapController extends AppController {
     /*
     Action for main map page for rentals
     */
-    public function rental($school_name = null)
+    public function listing($listing_type, $school_name = null)
     {
         if ($school_name == null)
             $this->redirect(array('controller' => 'landing', 'action' => 'index'));
@@ -51,7 +51,7 @@ class MapController extends AppController {
         $marker_id_to_open = -1;
         $subletData = -1;
         
-        $this->set('active_listing_type', 'rental');
+        $this->set('active_listing_type', $listing_type);
 
         if ($school_name != null)
         {             
@@ -66,7 +66,6 @@ class MapController extends AppController {
                 $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
             else{
                 $this->Session->write('preferredUniversity', $id); 
-                CakeLog::write('writing session', $id);
             } 
             
             $this->set('school_id', $id);
@@ -83,11 +82,13 @@ class MapController extends AppController {
         $this->set('school_name', $school_name);
         $this->set('user', json_encode($user));
         $this->set('locations', $this->University->getSchools());
-        $this->set('user_years', $this->User->GetYears());
-        $this->InitFilterValues();
-
-        
+        $this->set('user_years', $this->User->GetYears());      
     }
+
+    /*
+    Action for main map page for sublets
+    */
+    
 
     public function ViewListing($listing_id = null)
     {
@@ -117,6 +118,7 @@ Only return */
     */
     public function GetBasicData($listing_type, $university_id)
     {
+        CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 CakeLog::write('debuggingit', '-1');
@@ -147,10 +149,11 @@ CakeLog::write('debuggingit', '-1');
             Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
-        $basicData = Cache::read('mapBasicData-'.$university_id, 'MapData');
+        $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
         if ($basicData === false){
             $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
-            Cache::write('mapBasicData-'.$university_id, $basicData, 'MapData');
+            CakeLog::write("fetchedbasicdata", print_r($basicData, true));
+            Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
         }
         
         $response = json_encode($basicData);
