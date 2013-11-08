@@ -57,13 +57,13 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/MixPanel');
+		echo $this->Html->script('src/Geocoder');
 		echo $this->Html->script('src/User');
 		echo $this->Html->script('src/Listing');
 		echo $this->Html->script('src/Marker');
 		echo $this->Html->script('src/MapActivity');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
-		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
 		echo $this->Html->script('src/HoverBubble');

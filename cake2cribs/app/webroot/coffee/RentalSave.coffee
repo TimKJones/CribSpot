@@ -8,9 +8,6 @@ class A2Cribs.RentalSave
 		@NextListing
 
 	SetupUI: (dropdown_content) ->
-		if not A2Cribs.Geocoder?
-			A2Cribs.Geocoder = new google.maps.Geocoder()
-
 		$('#middle_content').height()
 		@div.find("grid-pane").height 
 		@CreateCallbacks()
