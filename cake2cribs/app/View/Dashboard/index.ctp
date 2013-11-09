@@ -51,7 +51,7 @@ echo $this->Html->script('underscore');
 				<?php echo $this->element('Dashboard/rentals_window', $user) ?>
 			</div>
 
-			<div class = 'sublet-content'>
+			<div class = 'sublet-content hidden'>
 				<?php echo $this->element('Dashboard/sublets_window', $user) ?>
 			</div>
 
