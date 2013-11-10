@@ -131,6 +131,7 @@
 
     SubletSave.Populate = function(sublet_object) {
       var _this = this;
+      this.Reset();
       return $(".sublet_fields").each(function(index, value) {
         var input_val;
         input_val = sublet_object[$(value).data("field-name")];

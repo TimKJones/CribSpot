@@ -107,6 +107,9 @@ class SubletSave
 	Populates the sublet fields in the dom
 	###
 	@Populate: (sublet_object) ->
+		# Reset the sublet form first
+		@Reset()
+		
 		# Get all fields from dom
 		# Loop through them and populate
 		$(".sublet_fields").each (index, value) =>

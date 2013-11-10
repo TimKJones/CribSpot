@@ -1,0 +1,62 @@
+#photo_picker
+{
+	.main_photo
+	{
+		min-height: 250px;
+		position: relative;
+		box-shadow: inset 0 0 5px black;
+		text-align: center;
+		background-image: url(http://www.whitegadget.com/attachments/pc-wallpapers/85254d1320380902-house-house-wallpaper.jpg);
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+
+		.photo_editor
+		{
+			position: absolute;
+			bottom: 0;
+			right:0;
+			left: 0;
+			height: 40px;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+	}
+
+	.photo_list
+	{
+		height: 250px;
+		overflow: auto;
+		border: solid 1px hsl(0, 0%, 82%);
+	}
+
+	.photo_preview
+	{
+		position: relative;
+		height: 50px;
+		margin: 10px;
+
+		.is_primary
+		{
+			position: absolute;
+			right: 0px;
+		}
+		.photo_description
+		{
+			position: absolute;
+			right: 10px;
+			left: 60px;
+			top: 0;
+			bottom: 0;
+		}
+	}
+	.mini_photo
+	{
+		height: 50px;
+		width: 50px;
+		box-shadow: inset 0 0 5px black;
+		background-image: url(http://www.whitegadget.com/attachments/pc-wallpapers/85254d1320380902-house-house-wallpaper.jpg);
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+}
