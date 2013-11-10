@@ -51,6 +51,7 @@ class MapController extends AppController {
         $marker_id_to_open = -1;
         $subletData = -1;
         
+        $listing_type = $this->Listing->listing_type_reverse($listing_type);
         $this->set('active_listing_type', $listing_type);
 
         if ($school_name != null)
