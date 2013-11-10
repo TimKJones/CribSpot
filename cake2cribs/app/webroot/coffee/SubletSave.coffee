@@ -29,6 +29,12 @@ class SubletSave
 		# Date Picker Init
 		@div.find('.date-field').datepicker()
 
+		# Create new sublet button clicked
+		$(".create-listing").find("a").click (event) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if listing_type is "sublet"
+				@Open()
+
 	###
 	Validate
 	Called before advancing steps
@@ -62,14 +68,17 @@ class SubletSave
 	Open
 	Opens up an existing sublet from a marker_id
 	###
-	@Open: (marker_id) ->
-		sublets = A2Cribs.UserCache.GetAllAssociatedObjects "sublet", "marker",  marker_id
-		if sublets.length isnt 0
-			@Populate sublets[0]
+	@Open: (marker_id = null) ->
+		if marker_id?
+			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
+			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
+			.done (sublet) =>
+				@Populate sublet
 		else
 			@Reset()
-
-		@div.show()
+		A2Cribs.Dashboard.Direct 
+			"classname": "sublet"
+			"data": {}
 
 	###
 	###

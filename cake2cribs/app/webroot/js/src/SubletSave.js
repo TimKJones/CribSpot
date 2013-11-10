@@ -32,7 +32,14 @@
       this.div.find("#find_address").click(function() {
         return _this.FindAddress();
       });
-      return this.div.find('.date-field').datepicker();
+      this.div.find('.date-field').datepicker();
+      return $(".create-listing").find("a").click(function(event) {
+        var listing_type;
+        listing_type = $(event.currentTarget).data("listing-type");
+        if (listing_type === "sublet") {
+          return _this.Open();
+        }
+      });
     };
 
     /*
@@ -78,14 +85,23 @@
 
 
     SubletSave.Open = function(marker_id) {
-      var sublets;
-      sublets = A2Cribs.UserCache.GetAllAssociatedObjects("sublet", "marker", marker_id);
-      if (sublets.length !== 0) {
-        this.Populate(sublets[0]);
+      var listings,
+        _this = this;
+      if (marker_id == null) {
+        marker_id = null;
+      }
+      if (marker_id != null) {
+        listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker_id);
+        A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id).done(function(sublet) {
+          return _this.Populate(sublet);
+        });
       } else {
         this.Reset();
       }
-      return this.div.show();
+      return A2Cribs.Dashboard.Direct({
+        "classname": "sublet",
+        "data": {}
+      });
     };
 
     /*
