@@ -31,10 +31,6 @@ class A2Cribs.Dashboard
 		$("#feature-btn").click (event)=>
 			@Direct({'classname' : 'featured-listing'})
 
-		$(".create-listing").find("a").click (event) =>
-			listing_type = $(event.currentTarget).data "listing-type"
-			A2Cribs.MarkerModal.Open listing_type
-
 		$("body").on 'click', '.messages_list_item', (event) =>
 			@ShowContent $('.messages-content')
 
@@ -81,13 +77,18 @@ class A2Cribs.Dashboard
 		content_header = $(event.delegateTarget)
 		class_name = content_header.attr 'classname'
 		content = $('.' + class_name + '-content')
-		$(".list-dropdown").slideUp()
 		$('.content-header.active').removeClass "active"
 		$(event.delegateTarget).addClass "active"
+
 		if content_header.hasClass "list-dropdown-header"
-			#Toggle Drop down
-			$("##{class_name}_list").slideDown()
+			if not $("##{class_name}_list").is(":visible")
+				if $(".list-dropdown.active").size() isnt 0
+					$(".list-dropdown.active").removeClass("active").slideUp 'fast', () ->
+						$("##{class_name}_list").addClass("active").slideDown()
+				else
+					$("##{class_name}_list").addClass("active").slideDown()
 		else
+			$(".list-dropdown").slideUp()
 			@ShowContent content, true
 
 	
@@ -218,7 +219,7 @@ class A2Cribs.Dashboard
 		$(".#{ classname }-content").addClass 'hidden'
 
 	@Direct: (directive)->
-		content_header = $('#' + directive.classname + "-content-header")
+		content_header = $("##{directive.classname}-content-header")
 		content_header.trigger 'click'
 		if directive.data?
-			@ShowContent($('.' + directive.classname + "-content"))
+			@ShowContent($(".#{directive.classname}-content"))

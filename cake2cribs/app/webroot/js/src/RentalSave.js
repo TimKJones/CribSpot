@@ -18,8 +18,16 @@
     }
 
     RentalSave.prototype.SetupUI = function(dropdown_content) {
+      var _this = this;
       $('#middle_content').height();
       this.div.find("grid-pane").height;
+      $(".create-listing").find("a").click(function(event) {
+        var listing_type;
+        listing_type = $(event.currentTarget).data("listing-type");
+        if (listing_type === "rental") {
+          return A2Cribs.MarkerModal.Open(listing_type);
+        }
+      });
       this.CreateCallbacks();
       return this.CreateGrids(dropdown_content);
     };

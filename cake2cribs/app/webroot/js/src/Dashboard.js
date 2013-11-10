@@ -42,11 +42,6 @@
           'classname': 'featured-listing'
         });
       });
-      $(".create-listing").find("a").click(function(event) {
-        var listing_type;
-        listing_type = $(event.currentTarget).data("listing-type");
-        return A2Cribs.MarkerModal.Open(listing_type);
-      });
       $("body").on('click', '.messages_list_item', function(event) {
         return _this.ShowContent($('.messages-content'));
       });
@@ -107,12 +102,20 @@
       content_header = $(event.delegateTarget);
       class_name = content_header.attr('classname');
       content = $('.' + class_name + '-content');
-      $(".list-dropdown").slideUp();
       $('.content-header.active').removeClass("active");
       $(event.delegateTarget).addClass("active");
       if (content_header.hasClass("list-dropdown-header")) {
-        return $("#" + class_name + "_list").slideDown();
+        if (!$("#" + class_name + "_list").is(":visible")) {
+          if ($(".list-dropdown.active").size() !== 0) {
+            return $(".list-dropdown.active").removeClass("active").slideUp('fast', function() {
+              return $("#" + class_name + "_list").addClass("active").slideDown();
+            });
+          } else {
+            return $("#" + class_name + "_list").addClass("active").slideDown();
+          }
+        }
       } else {
+        $(".list-dropdown").slideUp();
         return this.ShowContent(content, true);
       }
     };
@@ -262,10 +265,10 @@
 
     Dashboard.Direct = function(directive) {
       var content_header;
-      content_header = $('#' + directive.classname + "-content-header");
+      content_header = $("#" + directive.classname + "-content-header");
       content_header.trigger('click');
       if (directive.data != null) {
-        return this.ShowContent($('.' + directive.classname + "-content"));
+        return this.ShowContent($("." + directive.classname + "-content"));
       }
     };
 

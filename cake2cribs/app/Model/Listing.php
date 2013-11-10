@@ -239,8 +239,8 @@ class Listing extends AppModel {
 	*/
 	public function GetListing($listing_id)
 	{
-		$listing = $this->find('all', array(
-			'contain' => array('Image', 'Rental', 'User', 'Marker'),
+		$listing = $this->find('first', array(
+			'contain' => array('Image', 'Rental', 'Sublet', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.listing_id' => $listing_id,
 				'Listing.visible' => 1)
@@ -249,20 +249,32 @@ class Listing extends AppModel {
 		/* Remove sensitive user data */
 		/* Convert type fields to their appropriate string values */
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
-		for ($i = 0; $i < count($listing); $i++){
-			if (array_key_exists('User', $listing[$i])){
-				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
-			}
-			if (array_key_exists('Rental', $listing[$i])){
-				foreach ($amenities as $field){
-					if (empty($listing[$i]['Rental'][$field]))
-						$listing[$i]['Rental'][$field] = '-';
-				}
-			}
-			$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
+		if (array_key_exists('User', $listing)){
+			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
 		}
 
-		return $listing;
+		// If the listing to be returned is Rental
+		if (strcmp($this->listing_type($listing['Listing']['listing_type']), "Rental") == 0) {
+			unset($listing['Sublet']);
+			unset($listing['Parking']);
+			foreach ($amenities as $field){
+				if (empty($listing['Rental'][$field]))
+					$listing['Rental'][$field] = '-';
+			}
+		}
+		// If the listing returned is a Sublet
+		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Sublet") == 0) {
+			unset($listing['Rental']);
+			unset($listing['Parking']);
+		}
+		// If the listing returned is Parking
+		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Parking") == 0) {
+			unset($listing['Rental']);
+			unset($listing['Sublet']);
+		}
+		$listing = $this->_convertTypesToStrings($listing);
+
+		return array($listing);
 	}
 
 	/*

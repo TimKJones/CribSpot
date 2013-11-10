@@ -73,6 +73,7 @@ class SubletSave
 			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
 			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
 			.done (sublet) =>
+				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
 				@Populate sublet
 		else
 			@Reset()
@@ -81,6 +82,29 @@ class SubletSave
 			"data": {}
 
 	###
+	Populate Marker
+	Populates the fields based on the marker
+	###
+	@PopulateMarker: (marker) ->
+		# Loop through all the location fields
+		# These fields are used to find address
+		$(".location_fields").each (index, value) =>
+
+			# Set value equal to marker attribute
+			input_val = marker[$(value).data("field-name")]
+			if typeof marker[$(value).data("field-name")] is "boolean"
+				input_val = +input_val
+			$(value).val input_val
+
+		# Populate Marker Card
+		# Fill in the values of the marker fields
+		# TODO: Make marker card
+
+
+
+	###
+	Populate
+	Populates the sublet fields in the dom
 	###
 	@Populate: (sublet_object) ->
 		# Get all fields from dom
@@ -88,11 +112,15 @@ class SubletSave
 		$(".sublet_fields").each (index, value) =>
 
 			# Set value equal to sublet_object attribute
-			$(value).val sublet_object[$(value).data("field-name")]
+			input_val = sublet_object[$(value).data("field-name")]
+			if typeof sublet_object[$(value).data("field-name")] is "boolean"
+				input_val = +input_val
+			$(value).val input_val
 
 			# If the sublet_field is a btn-group
 			if $(value).hasClass "btn-group"
-				lol = "lol"
+				$(value).find("button[value='#{input_val}']")
+				.addClass "active"
 
 			# Format to more readable date
 			else if $(value).hasClass "date-field"
@@ -203,35 +231,12 @@ class SubletSave
 		beginDateFormatted = year + "-" + month + "-" + day
 
 	###
-	Get Today's Date
-	Returns todays date in readable front-end syntax
-	###
-	@GetTodaysDate: () ->
-		today = new Date()
-		dd = today.getDate()
-		mm = today.getMonth()+1
-		yyyy = today.getFullYear()
-		if(dd<10)
-			dd='0'+dd
-		if(mm<10)
-			mm='0'+mm
-		today = mm+'/'+dd+'/'+yyyy
-		return today
-
-	###
 	Get Formatted Date
 	Returns date in readable front-end syntax
 	###
-	@GetFormattedDate:(date) ->
-		month = date.getMonth() + 1
-		if month < 10
-			month = "0" + month
-		day = date.getDate()
-		if day < 10
-			day = "0" + day
-		year = date.getUTCFullYear()
-		beginDateFormatted = month + "/" + day + "/" + year
-
+	@GetFormattedDate: (dateString) ->
+		date_array = dateString.split "-"
+		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
 	$("#sublet_window").ready =>
 		@SetupUI($("#sublet_window"))

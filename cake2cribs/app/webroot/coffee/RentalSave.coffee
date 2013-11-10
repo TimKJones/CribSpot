@@ -9,7 +9,13 @@ class A2Cribs.RentalSave
 
 	SetupUI: (dropdown_content) ->
 		$('#middle_content').height()
-		@div.find("grid-pane").height 
+		@div.find("grid-pane").height
+
+		$(".create-listing").find("a").click (event) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if listing_type is "rental"
+				A2Cribs.MarkerModal.Open listing_type
+				 
 		@CreateCallbacks()
 		@CreateGrids dropdown_content
 

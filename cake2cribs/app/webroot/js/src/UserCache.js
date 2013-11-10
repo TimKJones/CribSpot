@@ -84,7 +84,7 @@
           var response_data;
           response_data = JSON.parse(data);
           _this.CacheData(response_data);
-          listing = _this.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
+          listing = _this.Get(listing_type, listing_id);
           return deferred.resolve(listing);
         },
         error: function() {

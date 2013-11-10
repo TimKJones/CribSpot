@@ -46,7 +46,7 @@ class A2Cribs.UserCache
 			success: (data) =>
 				response_data = JSON.parse data
 				@CacheData response_data
-				listing = @Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+				listing = @Get listing_type, listing_id
 				return deferred.resolve listing
 
 			error: ->
