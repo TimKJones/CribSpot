@@ -19,6 +19,7 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetFeaturedPMListings');
 		$this->Auth->allow('SetAvailabilityFromEmail');
 		$this->Auth->allow('APIGetListing');
+		$this->Auth->allow('APIGetListingsByMarkerId');
 	}
 
 	/*					
