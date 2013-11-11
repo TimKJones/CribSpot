@@ -41,6 +41,9 @@
           return _this.Open();
         }
       });
+      $("#sublet_list_content").on("marker_updated", function(event, marker_id) {
+        return _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
+      });
       return this.div.find(".photo_adder").click(function() {
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
@@ -266,7 +269,11 @@
         street_address = response[0], city = response[1], state = response[2], zip = response[3], location = response[4];
         return _this.FindMarkerByAddress(street_address, city, state).done(function(marker) {
           return _this.PopulateMarker(marker);
+        }).fail(function() {
+          return A2Cribs.MarkerModal.OpenLocation('sublet', street_address, city, state);
         });
+      }).fail(function() {
+        return A2Cribs.MarkerModal.OpenLocation('sublet', location_object.street_address, location_object.city, location_object.state);
       });
     };
 
@@ -279,9 +286,14 @@
         type: "GET",
         success: function(response) {
           var marker;
-          marker = new A2Cribs.Marker(JSON.parse(response));
-          A2Cribs.UserCache.Set(marker);
-          return deferred.resolve(marker);
+          response = JSON.parse(response);
+          if (response != null) {
+            marker = new A2Cribs.Marker(response);
+            A2Cribs.UserCache.Set(marker);
+            return deferred.resolve(marker);
+          } else {
+            return deferred.reject();
+          }
         }
       });
       return deferred.promise();

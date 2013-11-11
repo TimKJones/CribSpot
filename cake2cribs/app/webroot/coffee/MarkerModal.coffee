@@ -132,6 +132,19 @@ class A2Cribs.MarkerModal
 
 		@modal.modal 'show'
 
+	@OpenLocation: (listing_type, street_address, city, state) ->
+		if listing_type? then @ListingType = listing_type
+		@Clear()
+		@modal.find(".title").text "Create a New #{@ListingType.charAt(0).toUpperCase() + @ListingType.slice(1)}"
+		@modal.find('#marker_add').show()
+		@modal.find("#marker_select_container").hide()
+		@modal.find("#Marker_street_address").val street_address
+		@modal.find('#Marker_city').val city
+		@modal.find('#Marker_state').val state
+		@modal.find("#continue-button").unbind('click').click () =>
+			@Save @TriggerMarkerUpdated
+		@modal.modal 'show'
+
 	@NewMarker: () ->
 		@Clear()
 		@modal.find('#marker_add').hide()
@@ -185,7 +198,7 @@ class A2Cribs.MarkerModal
 		$("##{@ListingType}_list_content").trigger "marker_added", [marker_id]
 
 	@TriggerMarkerUpdated: (marker_id) =>
-		$('body').trigger "#{@ListingType}_marker_updated", [marker_id]		
+		$("##{@ListingType}_list_content").trigger "marker_updated", [marker_id]		
 
 	@FindAddress: (div) ->
 		if @MarkerValidate()

@@ -38,6 +38,9 @@ class SubletSave
 			if listing_type is "sublet"
 				@Open()
 
+		$("#sublet_list_content").on "marker_updated", (event, marker_id) =>
+			@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
+
 		# Popup add photo manager when clicked
 		@div.find(".photo_adder").click () =>
 			listing_id = @div.find(".listing_id").val()
@@ -255,6 +258,10 @@ class SubletSave
 			@FindMarkerByAddress(street_address, city, state)
 			.done (marker) =>
 				@PopulateMarker(marker)
+			.fail =>
+				A2Cribs.MarkerModal.OpenLocation('sublet', street_address, city, state)
+		.fail =>
+			A2Cribs.MarkerModal.OpenLocation('sublet', location_object.street_address, location_object.city, location_object.state)
 
 	@FindMarkerByAddress: (street_address, city, state) ->
 		deferred = new $.Deferred()
@@ -262,9 +269,13 @@ class SubletSave
 			url: myBaseUrl + "Markers/FindMarkerByAddress/"+street_address+"/"+city+"/"+state
 			type: "GET"
 			success: (response) =>
-				marker = new A2Cribs.Marker(JSON.parse(response))
-				A2Cribs.UserCache.Set marker
-				deferred.resolve marker
+				response = JSON.parse response
+				if response?
+					marker = new A2Cribs.Marker(response)
+					A2Cribs.UserCache.Set marker
+					return deferred.resolve marker
+				else
+					return deferred.reject()
 
 		return deferred.promise()
 

@@ -176,6 +176,24 @@
       return this.modal.modal('show');
     };
 
+    MarkerModal.OpenLocation = function(listing_type, street_address, city, state) {
+      var _this = this;
+      if (listing_type != null) {
+        this.ListingType = listing_type;
+      }
+      this.Clear();
+      this.modal.find(".title").text("Create a New " + (this.ListingType.charAt(0).toUpperCase() + this.ListingType.slice(1)));
+      this.modal.find('#marker_add').show();
+      this.modal.find("#marker_select_container").hide();
+      this.modal.find("#Marker_street_address").val(street_address);
+      this.modal.find('#Marker_city').val(city);
+      this.modal.find('#Marker_state').val(state);
+      this.modal.find("#continue-button").unbind('click').click(function() {
+        return _this.Save(_this.TriggerMarkerUpdated);
+      });
+      return this.modal.modal('show');
+    };
+
     MarkerModal.NewMarker = function() {
       var marker, markers, name, option, _i, _len,
         _this = this;
@@ -238,7 +256,7 @@
     };
 
     MarkerModal.TriggerMarkerUpdated = function(marker_id) {
-      return $('body').trigger("" + MarkerModal.ListingType + "_marker_updated", [marker_id]);
+      return $("#" + MarkerModal.ListingType + "_list_content").trigger("marker_updated", [marker_id]);
     };
 
     MarkerModal.FindAddress = function(div) {
