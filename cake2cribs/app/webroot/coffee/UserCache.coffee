@@ -12,19 +12,25 @@ class A2Cribs.UserCache
 			error: =>
 				callback?.error()
 
+	_cache_object = (object) =>
+		for key, value of object
+			if A2Cribs[key]?
+				a2_object = new A2Cribs[key] value
+				old_object = @Get key.toLowerCase(), a2_object.GetId()
+				if old_object? and not old_object.length?
+					a2_object = old_object.Update value
+				@Set a2_object
+
 	###
 	Cache Data
 	Caches an array of Listing objects
 	###
 	@CacheData: (object) ->
-		for item in object
-			for key, value of item
-				if A2Cribs[key]?
-					a2_object = new A2Cribs[key] value
-					old_object = @Get key.toLowerCase(), a2_object.GetId()
-					if old_object? and not old_object.length?
-						a2_object = old_object.Update value
-					@Set a2_object
+		if object instanceof Array
+			for item in object
+				_cache_object(item)
+		else
+			_cache_object(object)
 
 	###
 	Get Listing

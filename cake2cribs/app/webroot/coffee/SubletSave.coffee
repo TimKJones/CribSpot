@@ -195,8 +195,12 @@ class SubletSave
 				type: "POST"
 				data: @GetSubletObject()
 				success: (response) =>
-					console.log response
-					#A2Cribs.UserCache.Set new Sublet(response)
+					response = JSON.parse response
+					if response.error?
+						A2Cribs.UIManager.Error response.error
+					else
+						A2Cribs.UserCache.CacheData response.listing
+						A2Cribs.UIManager.Success "Your listing has been saved!"
 		else
 			return new $.Deferred().reject()
 
@@ -305,7 +309,8 @@ class SubletSave
 	Returns date in readable front-end syntax
 	###
 	@GetFormattedDate: (dateString) ->
-		date_array = dateString.split "-"
+		date_array = dateString.split " " # Remove the 00:00:00 if necessary
+		date_array = date_array[0].split "-" # Split the date
 		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
 	$("#sublet_window").ready =>

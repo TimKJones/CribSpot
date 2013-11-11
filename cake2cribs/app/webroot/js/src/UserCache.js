@@ -2,7 +2,8 @@
 (function() {
 
   A2Cribs.UserCache = (function() {
-    var _get;
+    var _cache_object, _get,
+      _this = this;
 
     function UserCache() {}
 
@@ -26,6 +27,25 @@
       });
     };
 
+    _cache_object = function(object) {
+      var a2_object, key, old_object, value, _results;
+      _results = [];
+      for (key in object) {
+        value = object[key];
+        if (A2Cribs[key] != null) {
+          a2_object = new A2Cribs[key](value);
+          old_object = UserCache.Get(key.toLowerCase(), a2_object.GetId());
+          if ((old_object != null) && !(old_object.length != null)) {
+            a2_object = old_object.Update(value);
+          }
+          _results.push(UserCache.Set(a2_object));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
     /*
     	Cache Data
     	Caches an array of Listing objects
@@ -33,30 +53,17 @@
 
 
     UserCache.CacheData = function(object) {
-      var a2_object, item, key, old_object, value, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = object.length; _i < _len; _i++) {
-        item = object[_i];
-        _results.push((function() {
-          var _results1;
-          _results1 = [];
-          for (key in item) {
-            value = item[key];
-            if (A2Cribs[key] != null) {
-              a2_object = new A2Cribs[key](value);
-              old_object = this.Get(key.toLowerCase(), a2_object.GetId());
-              if ((old_object != null) && !(old_object.length != null)) {
-                a2_object = old_object.Update(value);
-              }
-              _results1.push(this.Set(a2_object));
-            } else {
-              _results1.push(void 0);
-            }
-          }
-          return _results1;
-        }).call(this));
+      var item, _i, _len, _results;
+      if (object instanceof Array) {
+        _results = [];
+        for (_i = 0, _len = object.length; _i < _len; _i++) {
+          item = object[_i];
+          _results.push(_cache_object(item));
+        }
+        return _results;
+      } else {
+        return _cache_object(object);
       }
-      return _results;
     };
 
     /*
@@ -190,6 +197,6 @@
 
     return UserCache;
 
-  })();
+  }).call(this);
 
 }).call(this);

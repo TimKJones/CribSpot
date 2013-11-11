@@ -205,7 +205,13 @@
           type: "POST",
           data: this.GetSubletObject(),
           success: function(response) {
-            return console.log(response);
+            response = JSON.parse(response);
+            if (response.error != null) {
+              return A2Cribs.UIManager.Error(response.error);
+            } else {
+              A2Cribs.UserCache.CacheData(response.listing);
+              return A2Cribs.UIManager.Success("Your listing has been saved!");
+            }
           }
         });
       } else {
@@ -330,7 +336,8 @@
 
     SubletSave.GetFormattedDate = function(dateString) {
       var date_array;
-      date_array = dateString.split("-");
+      date_array = dateString.split(" ");
+      date_array = date_array[0].split("-");
       return "" + date_array[1] + "/" + date_array[2] + "/" + date_array[0];
     };
 

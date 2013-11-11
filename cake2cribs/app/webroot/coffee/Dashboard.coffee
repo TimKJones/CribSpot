@@ -211,8 +211,8 @@ class A2Cribs.Dashboard
 			dropdown.slideUp 'fast'
 
 	@ShowContent:(content)->
-		content.siblings().addClass 'hidden'
-		content.removeClass 'hidden'
+		content.siblings().addClass('hidden').hide()
+		content.removeClass('hidden').hide().fadeIn()
 		content.trigger 'shown'
 
 	@HideContent: (classname)->
