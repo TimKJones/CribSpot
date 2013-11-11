@@ -421,6 +421,19 @@ class ListingsController extends AppController {
 		$this->set('response', $listing);
 	}
 
+	public function APIGetListingsByMarkerId($marker_id)
+	{
+		$listings = null;
+		if (array_key_exists('token', $this->request->query) &&
+			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+			header('Access-Control-Allow-Origin: *');
+			$listings = $this->Listing->GetListingsByMarkerId($marker_id);
+			$listings = json_encode($listings);
+		}
+
+		$this->set('response', $listings);
+	}
+
 /* ----------------------------------- private ---------------------------------------- */
 
 	private function _setImagePathsForFullPageView(&$images)
