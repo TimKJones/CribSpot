@@ -376,7 +376,7 @@ class ListingsController extends AppController {
 		if (array_key_exists('error', $valid)){
             $errorMessage = "That link is invalid. Let us know in the chat along the bottom of the screen if you think we messed up!";
             if (!strcmp($valid['error'], 'LOGIN_CODE_EXPIRED'))
-                $errorMessage = "That link is over 3 days old and has expired. Log in to update availabilities from your dashboard.";
+                $errorMessage = "That link is over 2 weeks old and has expired. Log in to update availabilities from your dashboard.";
         } 
         else if (!$this->Listing->UserOwnsListing($listing_id, $user_id)){
         	/* Make sure user owns this listing */

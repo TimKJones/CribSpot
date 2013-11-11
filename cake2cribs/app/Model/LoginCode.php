@@ -44,8 +44,8 @@ class LoginCode extends AppModel {
 		$created = strtotime($result['LoginCode']['created']);
 		$diff = abs(strtotime($now) - $created);
 
-		/* Invalidate code if older than 72 hours */
-		if ($diff > (72 * 60 * 60)){
+		/* Invalidate code if older than 2 weeks */
+		if ($diff > (2 * 7 * 24 * 60 * 60)) {
 			$this->set('code', uniqid());
 			return array('error' => 'LOGIN_CODE_EXPIRED');
 		}
