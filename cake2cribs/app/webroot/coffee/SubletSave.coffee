@@ -201,13 +201,16 @@ class SubletSave
 			# Add the field to the sublet_object
 			sublet_object[$(value).data("field-name")] = field_value
 
+		listing_id = if @div.find(".listing_id").val().length isnt 0 then @div.find(".listing_id").val()
+		sublet_object.listing_id = listing_id
+
 		# Return the object that is sent to backend
 		return {
 			# listing_type is 1 for Sublets
 			'Listing': {
 				listing_type: 1
 				marker_id: @div.find(".marker_id").val()
-				listing_id: @div.find(".listing_id").val()
+				listing_id: listing_id
 			}
 			'Sublet': sublet_object
 			'Image': @_temp_images

@@ -7,13 +7,14 @@
 
 		<input type="hidden" class="marker_id">
 		<input type="hidden" class="listing_id">
+		<input type="hidden" class="sublet_fields" data-field-name="sublet_id">
 
 		<!-- PHOTO SECTION -->
 		<div class="row-fluid text-center">
 			<button class="btn btn-large photo_adder" type="button"><i class="icon-plus-sign"></i> Add Some Photos</button>
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 			<!-- MARKER INFO -->
 			<div class="span6">
 
@@ -52,7 +53,7 @@
 			</div>
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 			<!-- BEDS -->
 			<div class="span4">
 				<div><strong>Beds:</strong></div>
@@ -84,7 +85,7 @@
 			</div>
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 
 			<!-- START DATE -->
 			<div class="span4">
@@ -108,7 +109,7 @@
 			</div>
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 
 			<!-- AIR CONDITIONING -->
 			<div class="span4">
@@ -126,7 +127,9 @@
 					<button type="button" class="btn" value="1">Yes</button>
 					<button type="button" class="btn" value="0">No</button>
 				</div>
-				<input type="text" class="sublet_fields" data-field-name="utilities_description">
+				<p type="text" class="triangle-isosceles after">
+					<input type="text" class="sublet_fields" placeholder="Utilities Desc. (Optional)" data-field-name="utilities_description">
+				</p>
 			</div>
 
 			<!-- PARKING -->
@@ -136,26 +139,28 @@
 					<button type="button" class="btn" value="1">Yes</button>
 					<button type="button" class="btn" value="0">No</button>
 				</div>
-				<input type="text" class="sublet_fields" data-field-name="parking_description">
+				<p type="text" class="triangle-isosceles after">
+					<input type="text" class="sublet_fields" placeholder="Parking Desc. (Optional)" data-field-name="parking_description">
+				</p>
 			</div>
 
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 
 			<!-- WASHER/DRYER -->
-			<!-- <div class="pull-left">
-				<div>Washer/Dryer:</div>
+			<div class="span6">
+				<div><strong>Washer/Dryer:</strong></div>
 				<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="washer">
 					<button type="button" class="btn" value="0">None</button>
 					<button type="button" class="btn" value="1">In-Unit</button>
 					<button type="button" class="btn" value="2">On-Site</button>
 					<button type="button" class="btn" value="3">Off-Site</button>
 				</div>
-			</div> -->
+			</div>
 
 			<!-- FURNITURE TYPE -->
-			<div class="pull-left">
+			<div class="span6">
 				<div><strong>Furnished?</strong></div>
 				<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="furnished">
 					<button type="button" class="btn" value="2">Fully</button>
@@ -166,7 +171,7 @@
 
 		</div>
 
-		<div class="row-fluid">
+		<div class="row-fluid sublet_row">
 			<div><strong>Description:</strong></div>
 			<textarea class="span12 sublet_fields" rows="3" data-field-name="description" placeholder="Insert a description here"></textarea>
 		</div>

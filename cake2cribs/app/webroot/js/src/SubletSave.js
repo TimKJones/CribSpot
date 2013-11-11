@@ -44,7 +44,7 @@
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
         if ((listing_id != null ? listing_id.length : void 0) !== 0) {
-          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetObject() : void 0;
+          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetImages() : void 0;
         } else {
           image_array = _this._temp_images;
         }
@@ -206,7 +206,7 @@
 
 
     SubletSave.GetSubletObject = function() {
-      var sublet_object,
+      var listing_id, sublet_object,
         _this = this;
       sublet_object = {};
       this.div.find(".sublet_fields").each(function(index, value) {
@@ -217,11 +217,13 @@
         }
         return sublet_object[$(value).data("field-name")] = field_value;
       });
+      listing_id = this.div.find(".listing_id").val().length !== 0 ? this.div.find(".listing_id").val() : void 0;
+      sublet_object.listing_id = listing_id;
       return {
         'Listing': {
           listing_type: 1,
           marker_id: this.div.find(".marker_id").val(),
-          listing_id: this.div.find(".listing_id").val()
+          listing_id: listing_id
         },
         'Sublet': sublet_object,
         'Image': this._temp_images
