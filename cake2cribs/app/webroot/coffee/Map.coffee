@@ -200,6 +200,7 @@ class A2Cribs.Map
 		.always () ->
 			$("#loader").hide()
 		A2Cribs.FeaturedListings.InitializeSidebar(@CurentSchoolId, @ACTIVE_LISTING_TYPE, basicData, @BasicDataCached)
+		A2Cribs.Hotlist.Initialize()
 
 	@CenterMap:(latitude, longitude)->
 		if not @GMap? then return

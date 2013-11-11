@@ -29,10 +29,7 @@ class UsersController extends AppController {
     {
         $user_id = $this->Auth->User('id');
         $response = $this->User->getHotlist($user_id);
-        $this->set('response', $response);
-
-        $users = $this->User->find('all');
-        $this->set('users', $users);
+        $this->set('response', json_encode($response));
     }
 
     public function addToHotlist()
@@ -41,10 +38,7 @@ class UsersController extends AppController {
         $friend_id = $this->request->data['friend_id'];
         $response = $this->User->addToHotlist($user_id, $friend_id);
 
-        $this->set('response', $response);
-
-        $users = $this->User->find('all');
-        $this->set('users', $users);
+        $this->set('response', json_encode($response));
         $this->render('hotlist');
     }
 
@@ -54,10 +48,7 @@ class UsersController extends AppController {
         $friend_id = $this->request->data['friend_id'];
         $response = $this->User->removeFromHotlist($user_id, $friend_id);
 
-        $this->set('response', $response);
-
-        $users = $this->User->find('all');
-        $this->set('users', $users);
+        $this->set('response', json_encode($response));
         $this->render('hotlist');
     }
 

@@ -4,13 +4,7 @@ echo $this->Html->css('/less/featured-listings.less?v=4','stylesheet/less', arra
 
 <div class = 'featured-listings-wrapper'>
     <div id = 'fl-side-bar'>
-        <div id = 'uni-banner'>
-            <img id="sidebar_top_image" src ='<?= (array_key_exists("sidebar_img_path", $university) &&  $university["sidebar_img_path"] != null) ?  $university["sidebar_img_path"] : "/img/sidebar/default_university.png" ; ?>'></img>            
-        </div>
-        <div id = 'uni-name'>
-            <span id ='name'><?php echo $university["name"]; ?></span>
-            <div class="fb-like pull-right" data-href="<?= (array_key_exists('facebook_url', $university) &&  $university['facebook_url'] != null) ?  $university['facebook_url'] : 'https://facebook.com/Cribspot'; ?>" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-colorscheme="light" data-layout="button_count" data-action="like" data-show-faces="false" data-send="false"></div>            
-        </div>
+        <div id='friends-list'></div>
         <?php
         if (strpos($university['name'], 'Ann') !== false)
         { ?>
