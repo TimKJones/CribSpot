@@ -163,7 +163,12 @@ class Listing extends AppModel {
 		
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
-			return array('listing_id' => $this->id);
+			$savedListing = $this->Get($this->id, array('Image', 'Sublet'));
+
+			return array(
+				'listing_id' => $this->id,
+				'listing' => $savedListing
+			);
 		}
 
 		/* Listing failed to save - return error code */
@@ -178,11 +183,13 @@ class Listing extends AppModel {
 	}
 
 	/* returns listing with id = $listing_id */
-	public function Get($listing_id)
+	public function Get($listing_id, $contain=null)
 	{
-		$listing = $this->find('first', array(
-        	'conditions' => array('Listing.listing_id' => $listing_id)
-    	));
+		$findConditions = array('conditions' => array('Listing.listing_id' => $listing_id));
+    	if ($contain !== null)
+    		$findConditions['contain'] = $contain;
+
+		$listing = $this->find('first', $findConditions);
 
 		if (array_key_exists('User', $listing))
 			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
