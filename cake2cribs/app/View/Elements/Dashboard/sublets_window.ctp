@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=2','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=3','stylesheet/less', array('inline' => false)); ?>
 
 <div id="sublet_window" class="row-fluid">
 
@@ -51,8 +51,8 @@
 					<div class="building_type">House</div>
 					<div class="full_address"><em><i class="icon-map-marker"></i> 722 Packard Ann Arbor, MI</em></div>
 					<div class="rent_container">
-						<input type="text" class="sublet_fields text-field" data-field-name="rent" data-error-message="Please provide the monthly rent">
-						<div><strong>Monthly Rent</strong></div>
+						<span>$</span><input type="text" class="sublet_fields text-field" data-field-name="rent" data-error-message="Please provide the monthly rent">
+						<div class="text-center"><strong>Monthly Rent</strong></div>
 					</div>
 				</div>
 			</div>
