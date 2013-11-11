@@ -6,6 +6,9 @@ class SubletSave
 	Sublet window
 	###
 	@SetupUI: (@div) ->
+		# Set up Mini Map preview
+		@MiniMap = new A2Cribs.MiniMap @div.find(".mini_map")
+
 		# Open sublet on marker added event
 		$('#sublet_list_content').on "marker_added", (event, marker_id) =>
 			@Open marker_id
@@ -130,10 +133,18 @@ class SubletSave
 				input_val = +input_val
 			$(value).val input_val
 
-		@div.find(".marker_id").val marker.marker_id
+		@div.find(".marker_id").val marker.GetId()
+
 		# Populate Marker Card
 		# Fill in the values of the marker fields
-		# TODO: Make marker card
+		@MiniMap.SetMarkerPosition new google.maps.LatLng(marker.latitude, marker.longitude)
+		@div.find(".building_name").text marker.GetName()
+		@div.find(".building_type").text marker.GetBuildingType()
+		@div.find(".full_address").html "<i class='icon-map-marker'></i> #{marker.street_address}, #{marker.city}, #{marker.state}"
+
+		@div.find(".marker_searchbox").fadeOut 'fast', () =>
+			@div.find(".marker_card").fadeIn()
+			@div.find(".more_info").slideDown()
 
 
 
@@ -241,19 +252,21 @@ class SubletSave
 		A2Cribs.Geocoder.FindAddress(location_object.street_address, location_object.city, location_object.state)
 		.done (response) =>
 			[street_address, city, state, zip, location] = response
+			@FindMarkerByAddress(street_address, city, state)
+			.done (marker) =>
+				@PopulateMarker(marker)
 
-			# TODO: NEED TO WRITE METHOD ON BACKEND TO RETURN MARKER ID
-			@div.find(".marker_id").val "1"
-
-	@FindMarkerTest:() ->
-		street_address = '114 N Division St'
-		city = 'Ann Arbor'
-		state = 'MI'
-		return $.ajax
+	@FindMarkerByAddress: (street_address, city, state) ->
+		deferred = new $.Deferred()
+		$.ajax
 			url: myBaseUrl + "Markers/FindMarkerByAddress/"+street_address+"/"+city+"/"+state
 			type: "GET"
 			success: (response) =>
-				console.log response
+				marker = new A2Cribs.Marker(JSON.parse(response))
+				A2Cribs.UserCache.Set marker
+				deferred.resolve marker
+
+		return deferred.promise()
 
 
 	###

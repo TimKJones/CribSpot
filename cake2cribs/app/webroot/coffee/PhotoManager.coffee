@@ -305,7 +305,7 @@ class A2Cribs.PhotoManager
 	Waits for the picture modal element to be loaded
 	before initializing the PhotoManager
 	###
-	$("#picture-modal").ready =>
+	$("#picture-modal").load =>
 		A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"))
 
 	

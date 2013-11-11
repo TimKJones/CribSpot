@@ -10,9 +10,81 @@
 		padding: 30px;
 	}
 
+	.mini_map
+	{
+		height: 100px;
+		width: 150px;
+
+		#correctLocationMap
+		{
+			height: 100%;
+			width: 100%;
+		}
+	}
+
+	.marker_info
+	{
+		position: absolute;
+		right: 170px;
+		left: 170px;
+	}
+
+	.photo_adder
+	{
+		background-color: hsl(114, 28%, 63%);
+		color: hsl(0, 100%, 100%);
+		font-size: 16px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;
+	}
+
+	#find_address
+	{
+		position: absolute;
+		right: 30px;
+		width: 100px;
+		top: 20px;
+		background-color: hsl(218, 51%, 59%);
+		color: hsl(0, 100%, 100%);
+		font-size: 16px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;
+	}
+
+	.marker_card
+	{
+		.building_name
+		{
+			font-size: 20px;
+			font-weight: bold;
+		}
+		.full_address
+		{
+			margin-top: 20px;
+			color: hsl(0, 0%, 58%);
+			font-style: italic;
+		}
+	}
+
+	#sublet_save_button
+	{
+		background-color: hsl(218, 51%, 59%);
+		color: hsl(0, 100%, 100%);
+		font-size: 12px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;	
+	}
+
 	.sublet_row
 	{
 		margin: 20px 0;
+		position: relative;
 	}
 
 	.btn-group
@@ -38,6 +110,7 @@
 		margin:1em 0 3em;
 		color:#000;
 		background: hsl(218, 51%, 59%);
+		width: 218px;
 
 		/* css3 */
 		-moz-border-radius:10px;

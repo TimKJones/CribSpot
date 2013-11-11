@@ -17,6 +17,7 @@
     SubletSave.SetupUI = function(div) {
       var _this = this;
       this.div = div;
+      this.MiniMap = new A2Cribs.MiniMap(this.div.find(".mini_map"));
       $('#sublet_list_content').on("marker_added", function(event, marker_id) {
         return _this.Open(marker_id);
       });
@@ -149,7 +150,15 @@
         }
         return $(value).val(input_val);
       });
-      return this.div.find(".marker_id").val(marker.marker_id);
+      this.div.find(".marker_id").val(marker.GetId());
+      this.MiniMap.SetMarkerPosition(new google.maps.LatLng(marker.latitude, marker.longitude));
+      this.div.find(".building_name").text(marker.GetName());
+      this.div.find(".building_type").text(marker.GetBuildingType());
+      this.div.find(".full_address").html("<i class='icon-map-marker'></i> " + marker.street_address + ", " + marker.city + ", " + marker.state);
+      return this.div.find(".marker_searchbox").fadeOut('fast', function() {
+        _this.div.find(".marker_card").fadeIn();
+        return _this.div.find(".more_info").slideDown();
+      });
     };
 
     /*
@@ -255,23 +264,27 @@
       return A2Cribs.Geocoder.FindAddress(location_object.street_address, location_object.city, location_object.state).done(function(response) {
         var city, location, state, street_address, zip;
         street_address = response[0], city = response[1], state = response[2], zip = response[3], location = response[4];
-        return _this.div.find(".marker_id").val("1");
+        return _this.FindMarkerByAddress(street_address, city, state).done(function(marker) {
+          return _this.PopulateMarker(marker);
+        });
       });
     };
 
-    SubletSave.FindMarkerTest = function() {
-      var city, state, street_address,
+    SubletSave.FindMarkerByAddress = function(street_address, city, state) {
+      var deferred,
         _this = this;
-      street_address = '114 N Division St';
-      city = 'Ann Arbor';
-      state = 'MI';
-      return $.ajax({
+      deferred = new $.Deferred();
+      $.ajax({
         url: myBaseUrl + "Markers/FindMarkerByAddress/" + street_address + "/" + city + "/" + state,
         type: "GET",
         success: function(response) {
-          return console.log(response);
+          var marker;
+          marker = new A2Cribs.Marker(JSON.parse(response));
+          A2Cribs.UserCache.Set(marker);
+          return deferred.resolve(marker);
         }
       });
+      return deferred.promise();
     };
 
     /*

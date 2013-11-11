@@ -439,7 +439,7 @@
     */
 
 
-    $("#picture-modal").ready(function() {
+    $("#picture-modal").load(function() {
       return A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
     });
 
