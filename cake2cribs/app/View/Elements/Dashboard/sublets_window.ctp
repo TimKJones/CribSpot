@@ -9,7 +9,9 @@
 		<input type="hidden" class="listing_id">
 
 		<!-- PHOTO SECTION -->
-		<?php echo $this->element('photo_picker'); ?>
+		<div class="row-fluid text-center">
+			<button class="btn btn-large photo_adder" type="button"><i class="icon-plus-sign"></i> Add Some Photos</button>
+		</div>
 
 		<div class="row-fluid">
 			<!-- MARKER INFO -->

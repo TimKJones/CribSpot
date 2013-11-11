@@ -213,7 +213,11 @@ class A2Cribs.PhotoManager
 				@div.find("#upload_image").button 'reset'
 				@Photos[@CurrentImageLoading].Reset()
 
-	LoadImages: (image_array, row, imageCallback) ->
+	Open: (image_array, imageCallback, row = null) ->
+		@LoadImages(image_array, imageCallback, row)
+		@div.modal('show')
+
+	LoadImages: (image_array, imageCallback, row = null) ->
 		@Reset()
 		if image_array?.length?
 			for image in image_array
@@ -228,7 +232,7 @@ class A2Cribs.PhotoManager
 			###
 			$.when(@UploadCompletePromise).then (resolved) =>
 				if resolved
-					imageCallback row, @GetPhotos()
+					imageCallback @GetPhotos(), row
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
@@ -294,5 +298,14 @@ class A2Cribs.PhotoManager
 			success: (response) =>
 				response = JSON.parse response
 				console.log response
+
+
+	###
+	Picture Modal On Ready
+	Waits for the picture modal element to be loaded
+	before initializing the PhotoManager
+	###
+	$("#picture-modal").ready =>
+		A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"))
 
 	

@@ -35,6 +35,27 @@ class SubletSave
 			if listing_type is "sublet"
 				@Open()
 
+		# Popup add photo manager when clicked
+		@div.find(".photo_adder").click () =>
+			listing_id = @div.find(".listing_id").val()
+			if listing_id?.length isnt 0
+				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetImages()
+			else
+				image_array = @_temp_images
+
+			A2Cribs.PhotoManager.Open image_array, @PhotoAddedCallback
+
+	###
+	Photo Added
+	When photos have been added, decides whether to cache if sublet
+	has been saved and save in temp_images
+	###
+	@PhotoAddedCallback: (photos) =>
+		listing_id = @div.find(".listing_id").val()
+		@_temp_images = photos
+		if listing_id?.length isnt 0
+			A2Cribs.UserCache.Set new A2Cribs.Image photos
+
 	###
 	Validate
 	Called before advancing steps
@@ -66,17 +87,30 @@ class SubletSave
 
 	###
 	Open
-	Opens up an existing sublet from a marker_id
+	Opens up an existing sublet from a marker_id if marker_id
+	is defined. Otherwise will start a new sublet
 	###
 	@Open: (marker_id = null) ->
 		if marker_id?
+			# Find all cached listings with marker_id
+			# Should only be users cached because it is only in the dashboard
 			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
+
+			# Set the hidden field for listing id
+			@div.find(".listing_id").val listings[0].listing_id
+
+			# Fetch the sublet object from the cache
 			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
 			.done (sublet) =>
+				# Populate the marker fields
 				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
+				# Populate based on the retrieved sublet
 				@Populate sublet
 		else
+			# Clear out the sublet_window if no marker defined
 			@Reset()
+
+		# Direct the dashboard to show sublets
 		A2Cribs.Dashboard.Direct 
 			"classname": "sublet"
 			"data": {}
@@ -96,6 +130,7 @@ class SubletSave
 				input_val = +input_val
 			$(value).val input_val
 
+		@div.find(".marker_id").val marker.marker_id
 		# Populate Marker Card
 		# Fill in the values of the marker fields
 		# TODO: Make marker card
@@ -142,6 +177,7 @@ class SubletSave
 				data: @GetSubletObject()
 				success: (response) =>
 					console.log response
+					#A2Cribs.UserCache.Set new Sublet(response)
 		else
 			return new $.Deferred().reject()
 
@@ -167,15 +203,14 @@ class SubletSave
 
 		# Return the object that is sent to backend
 		return {
-			# TODO: NEED TO CHECK IF LISTING ALREADY EXISTS
 			# listing_type is 1 for Sublets
 			'Listing': {
 				listing_type: 1
 				marker_id: @div.find(".marker_id").val()
+				listing_id: @div.find(".listing_id").val()
 			}
 			'Sublet': sublet_object
-			# TODO: NEED TO UPLOAD IMAGE ARRAY
-			'Image': [] 
+			'Image': @_temp_images
 		}
 
 	###
@@ -242,4 +277,5 @@ class SubletSave
 		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
 	$("#sublet_window").ready =>
+		@_temp_images = []
 		@SetupUI($("#sublet_window"))

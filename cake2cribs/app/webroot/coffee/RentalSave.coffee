@@ -342,13 +342,13 @@ class A2Cribs.RentalSave
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
 			"number of images": image_array?.length
-		A2Cribs.PhotoManager.LoadImages image_array, row, @SaveImages
+		A2Cribs.PhotoManager.LoadImages image_array, @SaveImages, row
 
 
 	###
 	Saves the images in either the cache or temp object in slickgrid
 	###
-	SaveImages: (row, images) =>
+	SaveImages: (images, row) =>
 		data = @GridMap[@VisibleGrid].getDataItem row
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images

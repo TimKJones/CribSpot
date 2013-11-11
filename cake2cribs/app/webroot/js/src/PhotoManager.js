@@ -2,7 +2,8 @@
 (function() {
 
   A2Cribs.PhotoManager = (function() {
-    var Photo;
+    var Photo,
+      _this = this;
 
     Photo = (function() {
 
@@ -282,9 +283,20 @@
       });
     };
 
-    PhotoManager.prototype.LoadImages = function(image_array, row, imageCallback) {
+    PhotoManager.prototype.Open = function(image_array, imageCallback, row) {
+      if (row == null) {
+        row = null;
+      }
+      this.LoadImages(image_array, imageCallback, row);
+      return this.div.modal('show');
+    };
+
+    PhotoManager.prototype.LoadImages = function(image_array, imageCallback, row) {
       var image, _i, _len,
         _this = this;
+      if (row == null) {
+        row = null;
+      }
       this.Reset();
       if ((image_array != null ? image_array.length : void 0) != null) {
         for (_i = 0, _len = image_array.length; _i < _len; _i++) {
@@ -302,7 +314,7 @@
 
         return $.when(_this.UploadCompletePromise).then(function(resolved) {
           if (resolved) {
-            return imageCallback(row, _this.GetPhotos());
+            return imageCallback(_this.GetPhotos(), row);
           }
         });
       });
@@ -419,6 +431,17 @@
         }
       });
     };
+
+    /*
+    	Picture Modal On Ready
+    	Waits for the picture modal element to be loaded
+    	before initializing the PhotoManager
+    */
+
+
+    $("#picture-modal").ready(function() {
+      return A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
+    });
 
     return PhotoManager;
 

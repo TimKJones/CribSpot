@@ -33,13 +33,39 @@
         return _this.FindAddress();
       });
       this.div.find('.date-field').datepicker();
-      return $(".create-listing").find("a").click(function(event) {
+      $(".create-listing").find("a").click(function(event) {
         var listing_type;
         listing_type = $(event.currentTarget).data("listing-type");
         if (listing_type === "sublet") {
           return _this.Open();
         }
       });
+      return this.div.find(".photo_adder").click(function() {
+        var image_array, listing_id, _ref;
+        listing_id = _this.div.find(".listing_id").val();
+        if ((listing_id != null ? listing_id.length : void 0) !== 0) {
+          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetObject() : void 0;
+        } else {
+          image_array = _this._temp_images;
+        }
+        return A2Cribs.PhotoManager.Open(image_array, _this.PhotoAddedCallback);
+      });
+    };
+
+    /*
+    	Photo Added
+    	When photos have been added, decides whether to cache if sublet
+    	has been saved and save in temp_images
+    */
+
+
+    SubletSave.PhotoAddedCallback = function(photos) {
+      var listing_id;
+      listing_id = SubletSave.div.find(".listing_id").val();
+      SubletSave._temp_images = photos;
+      if ((listing_id != null ? listing_id.length : void 0) !== 0) {
+        return A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+      }
     };
 
     /*
@@ -80,7 +106,8 @@
 
     /*
     	Open
-    	Opens up an existing sublet from a marker_id
+    	Opens up an existing sublet from a marker_id if marker_id
+    	is defined. Otherwise will start a new sublet
     */
 
 
@@ -92,6 +119,7 @@
       }
       if (marker_id != null) {
         listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker_id);
+        this.div.find(".listing_id").val(listings[0].listing_id);
         A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id).done(function(sublet) {
           _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
           return _this.Populate(sublet);
@@ -113,7 +141,7 @@
 
     SubletSave.PopulateMarker = function(marker) {
       var _this = this;
-      return $(".location_fields").each(function(index, value) {
+      $(".location_fields").each(function(index, value) {
         var input_val;
         input_val = marker[$(value).data("field-name")];
         if (typeof marker[$(value).data("field-name")] === "boolean") {
@@ -121,6 +149,7 @@
         }
         return $(value).val(input_val);
       });
+      return this.div.find(".marker_id").val(marker.marker_id);
     };
 
     /*
@@ -191,10 +220,11 @@
       return {
         'Listing': {
           listing_type: 1,
-          marker_id: this.div.find(".marker_id").val()
+          marker_id: this.div.find(".marker_id").val(),
+          listing_id: this.div.find(".listing_id").val()
         },
         'Sublet': sublet_object,
-        'Image': []
+        'Image': this._temp_images
       };
     };
 
@@ -276,6 +306,7 @@
     };
 
     $("#sublet_window").ready(function() {
+      SubletSave._temp_images = [];
       return SubletSave.SetupUI($("#sublet_window"));
     });
 

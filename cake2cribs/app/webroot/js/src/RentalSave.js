@@ -461,7 +461,7 @@
         "marker id": this.CurrentMarker,
         "number of images": image_array != null ? image_array.length : void 0
       });
-      return A2Cribs.PhotoManager.LoadImages(image_array, row, this.SaveImages);
+      return A2Cribs.PhotoManager.LoadImages(image_array, this.SaveImages, row);
     };
 
     /*
@@ -469,7 +469,7 @@
     */
 
 
-    RentalSave.prototype.SaveImages = function(row, images) {
+    RentalSave.prototype.SaveImages = function(images, row) {
       var data, image, _i, _len;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
       if (data.listing_id != null) {
