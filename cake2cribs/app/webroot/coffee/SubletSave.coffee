@@ -9,10 +9,6 @@ class SubletSave
 		# Set up Mini Map preview
 		@MiniMap = new A2Cribs.MiniMap @div.find(".mini_map")
 
-		# Open sublet on marker added event
-		$('#sublet_list_content').on "marker_added", (event, marker_id) =>
-			@Open marker_id
-
 		# Click on side bar sublet
 		$('#sublet_list_content').on 'click', '.sublet_list_item', (event) =>
 			@Open event.currentTarget.id
@@ -190,15 +186,21 @@ class SubletSave
 	###
 	@Save: ->
 		if @Validate()
+			sublet_object = @GetSubletObject()
 			return $.ajax
 				url: myBaseUrl + "listings/Save/"
 				type: "POST"
-				data: @GetSubletObject()
+				data: sublet_object
 				success: (response) =>
 					response = JSON.parse response
 					if response.error?
 						A2Cribs.UIManager.Error response.error
 					else
+						# Check to see if it is a new listing
+						# Trigger an event to notify the dashboard
+						if not sublet_object.Listing.listing_id?
+							$('#sublet_list_content').trigger "marker_added", [sublet_object.Listing.marker_id]
+
 						A2Cribs.UserCache.CacheData response.listing
 						A2Cribs.UIManager.Success "Your listing has been saved!"
 		else

@@ -68,7 +68,6 @@ class A2Cribs.Dashboard
 				}
 				$(event.currentTarget).append list_item
 				$(event.currentTarget).slideDown()
-			A2Cribs.Dashboard.Direct { classname: listing_type, data: true }
 
 	###
 

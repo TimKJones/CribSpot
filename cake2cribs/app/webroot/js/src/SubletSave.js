@@ -18,9 +18,6 @@
       var _this = this;
       this.div = div;
       this.MiniMap = new A2Cribs.MiniMap(this.div.find(".mini_map"));
-      $('#sublet_list_content').on("marker_added", function(event, marker_id) {
-        return _this.Open(marker_id);
-      });
       $('#sublet_list_content').on('click', '.sublet_list_item', function(event) {
         return _this.Open(event.currentTarget.id);
       });
@@ -198,17 +195,22 @@
 
 
     SubletSave.Save = function() {
-      var _this = this;
+      var sublet_object,
+        _this = this;
       if (this.Validate()) {
+        sublet_object = this.GetSubletObject();
         return $.ajax({
           url: myBaseUrl + "listings/Save/",
           type: "POST",
-          data: this.GetSubletObject(),
+          data: sublet_object,
           success: function(response) {
             response = JSON.parse(response);
             if (response.error != null) {
               return A2Cribs.UIManager.Error(response.error);
             } else {
+              if (!(sublet_object.Listing.listing_id != null)) {
+                $('#sublet_list_content').trigger("marker_added", [sublet_object.Listing.marker_id]);
+              }
               A2Cribs.UserCache.CacheData(response.listing);
               return A2Cribs.UIManager.Success("Your listing has been saved!");
             }

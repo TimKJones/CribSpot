@@ -84,12 +84,8 @@
             id: marker_id
           });
           $(event.currentTarget).append(list_item);
-          $(event.currentTarget).slideDown();
+          return $(event.currentTarget).slideDown();
         }
-        return A2Cribs.Dashboard.Direct({
-          classname: listing_type,
-          data: true
-        });
       });
     };
 
