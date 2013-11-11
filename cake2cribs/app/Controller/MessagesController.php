@@ -413,7 +413,7 @@
 
         if (array_key_exists('id', $recipient) && array_key_exists('login_code', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['login_code']))
-                $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                $reset_password_url = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
 
         /* 
