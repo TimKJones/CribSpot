@@ -439,9 +439,9 @@
         - log in and respond to message.
         - 1 button each for set as available, set as unavailable
         */
-        $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+        $reset_password_url = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
             "&code=".$recipient['login_code']['message'];
-        $availability_base_url = "www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
+        $availability_base_url = "https://www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
             "&code=".$recipient['login_code']['availability']."&l=".$conversation['Conversation']['listing_id']."&a=";
         $set_available_url = $availability_base_url.'1';
         $set_unavailable_url = $availability_base_url.'0';
@@ -456,7 +456,7 @@
         $this->set('set_unavailable_url', $set_unavailable_url);
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
-        $this->set('listing_url', 'www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
+        $this->set('listing_url', 'https://www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
         $year = null;
         if (array_key_exists('year', $from_user))
             $year = $from_user['year'];
@@ -474,7 +474,7 @@
         $this->set('img_url', $img_url);
 
         /* Set URL to open message */
-        $view_msg = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+        $view_msg = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code']['message'].'&convid='.$conversation['Conversation']['conversation_id'];
         $this->set('view_msg', $view_msg);
 
