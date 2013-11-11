@@ -15,7 +15,7 @@ class MapController extends AppController {
     $this->Auth->allow('LoadMarkers');
     $this->Auth->allow('index');
     $this->Auth->allow('sublet');
-    $this->Auth->allow('listing');
+    $this->Auth->allow('rental');
     $this->Auth->allow('ViewListing');
     $this->Auth->allow('LoadTypeTables');
     $this->Auth->allow('LoadHoverData');
@@ -40,50 +40,35 @@ class MapController extends AppController {
         return $this->redirect(array('action' => 'rental', $school_name));
     }
 
+    public function rental($school_name = null)
+    {
+        if ($school_name == null)
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+
+        $this->_setupMapPage('rental', $school_name);
+        
+    }
+
+    public function sublet($school_name = null)
+    {
+        if ($school_name == null)
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+
+        $this->_setupMapPage('sublet', $school_name);
+    }   
+
+    public function parking($school_name = null)
+    {       
+        $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+    }
+
     /*
     Action for main map page for rentals
     */
     public function listing($listing_type, $school_name = null)
     {
         if ($school_name == null)
-            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
-        
-        $marker_id_to_open = -1;
-        $subletData = -1;
-        
-        $listing_type = $this->Listing->listing_type_reverse($listing_type);
-        $this->set('active_listing_type', $listing_type);
-
-        if ($school_name != null)
-        {             
-            $this->Session->write("currentUniversity", $school_name);
-            $school_name = str_replace("_", " ", $school_name);
-            $id = $this->University->getIdfromName($school_name);
-            if ($id == null)
-                throw new NotFoundException();
-
-            /* store university id to enable 'back to map' button */
-            if ($this->Auth->User('id') != null)
-                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
-            else{
-                $this->Session->write('preferredUniversity', $id); 
-            } 
-            
-            $this->set('school_id', $id);
-            $university = $this->University->findById($id);
-            if ($university == null)
-                throw new NotFoundException();
-            $this->set('university', $university);
-        }
-        
-        $user = null;
-        if($this->Auth->User()){
-            $user = $this->User->getSafe($this->Auth->User('id'));
-        }
-        $this->set('school_name', $school_name);
-        $this->set('user', json_encode($user));
-        $this->set('locations', $this->University->getSchools());
-        $this->set('user_years', $this->User->GetYears());      
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));     
     }
 
     /*
@@ -159,5 +144,45 @@ CakeLog::write('debuggingit', '-1');
         
         $response = json_encode($basicData);
         return $response;
+    }
+
+    private function _setupMapPage($listing_type, $school_name)
+    {
+        $marker_id_to_open = -1;
+        $subletData = -1;
+        
+        $listing_type = $this->Listing->listing_type_reverse($listing_type);
+        $this->set('active_listing_type', $listing_type);
+
+        if ($school_name != null)
+        {             
+            $this->Session->write("currentUniversity", $school_name);
+            $school_name = str_replace("_", " ", $school_name);
+            $id = $this->University->getIdfromName($school_name);
+            if ($id == null)
+                throw new NotFoundException();
+
+            /* store university id to enable 'back to map' button */
+            if ($this->Auth->User('id') != null)
+                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
+            else{
+                $this->Session->write('preferredUniversity', $id); 
+            } 
+            
+            $this->set('school_id', $id);
+            $university = $this->University->findById($id);
+            if ($university == null)
+                throw new NotFoundException();
+            $this->set('university', $university);
+        }
+        
+        $user = null;
+        if($this->Auth->User()){
+            $user = $this->User->getSafe($this->Auth->User('id'));
+        }
+        $this->set('school_name', $school_name);
+        $this->set('user', json_encode($user));
+        $this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears()); 
     }
 }
