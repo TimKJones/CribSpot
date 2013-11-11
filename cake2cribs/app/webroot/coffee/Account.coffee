@@ -1,16 +1,17 @@
 class A2Cribs.Account
 	@setupUI:()->
-		my_verification_info = A2Cribs.VerifyManager.getMyVerification()
+		my_verification_info = A2Cribs.VerifyManager?.getMyVerification()
 		veripanel = $('#my-verification-panel')
 		
-		if my_verification_info.verified_email
-			veripanel.find('#veri-email i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-		if my_verification_info.verified_edu
-			veripanel.find('#veri-edu i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-		if my_verification_info.verified_fb
-			veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
-		else
-			$('#veri-fb').append("<a href = '#'>Verify?</a>").click @FacebookConnect
+		if my_verification_info?
+			if my_verification_info.verified_email
+				veripanel.find('#veri-email i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+			if my_verification_info.verified_edu
+				veripanel.find('#veri-edu i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+			if my_verification_info.verified_fb
+				veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign')
+			else
+				$('#veri-fb').append("<a href = '#'>Verify?</a>").click @FacebookConnect
 
 
 		$('.veridd').each (index, element)=>
@@ -18,7 +19,7 @@ class A2Cribs.Account
 
 		$('#changePasswordButton').click (event) =>
 			$(event.delegateTarget).button('loading')
-			@ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val())
+			@ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val(), $("#u_id").val(), $("#reset_token").val())
 			.always ->
 				$(event.delegateTarget).button('reset')
 		$('#VerifyUniversityButton').click (event) =>

@@ -112,6 +112,8 @@ class A2Cribs.VerifyManager
 
 
 	@getMyVerification: ()->
+		if not @me?
+			return null
 		my_verif_info = {
 			'user_id': parseInt(@me.id),
 			'fb_id': parseInt(@me.facebook_id),

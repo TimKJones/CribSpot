@@ -135,6 +135,9 @@ Manager class for all verify functionality
 
     VerifyManager.getMyVerification = function() {
       var my_verif_info;
+      if (!(this.me != null)) {
+        return null;
+      }
       my_verif_info = {
         'user_id': parseInt(this.me.id),
         'fb_id': parseInt(this.me.facebook_id),

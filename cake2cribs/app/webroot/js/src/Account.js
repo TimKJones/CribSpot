@@ -6,20 +6,22 @@
     function Account() {}
 
     Account.setupUI = function() {
-      var my_verification_info, veripanel,
+      var my_verification_info, veripanel, _ref,
         _this = this;
-      my_verification_info = A2Cribs.VerifyManager.getMyVerification();
+      my_verification_info = (_ref = A2Cribs.VerifyManager) != null ? _ref.getMyVerification() : void 0;
       veripanel = $('#my-verification-panel');
-      if (my_verification_info.verified_email) {
-        veripanel.find('#veri-email i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-      }
-      if (my_verification_info.verified_edu) {
-        veripanel.find('#veri-edu i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-      }
-      if (my_verification_info.verified_fb) {
-        veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
-      } else {
-        $('#veri-fb').append("<a href = '#'>Verify?</a>").click(this.FacebookConnect);
+      if (my_verification_info != null) {
+        if (my_verification_info.verified_email) {
+          veripanel.find('#veri-email i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
+        }
+        if (my_verification_info.verified_edu) {
+          veripanel.find('#veri-edu i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
+        }
+        if (my_verification_info.verified_fb) {
+          veripanel.find('#veri-fb  i:last-child').removeClass('unverified icon-remove-sign').addClass('verified icon-ok-sign');
+        } else {
+          $('#veri-fb').append("<a href = '#'>Verify?</a>").click(this.FacebookConnect);
+        }
       }
       $('.veridd').each(function(index, element) {
         return $(element).tooltip({
@@ -29,7 +31,7 @@
       });
       $('#changePasswordButton').click(function(event) {
         $(event.delegateTarget).button('loading');
-        return _this.ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val()).always(function() {
+        return _this.ChangePassword($('#changePasswordButton'), $('#new_password').val(), $('#confirm_password').val(), $("#u_id").val(), $("#reset_token").val()).always(function() {
           return $(event.delegateTarget).button('reset');
         });
       });
