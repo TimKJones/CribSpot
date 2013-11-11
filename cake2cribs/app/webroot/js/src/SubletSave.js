@@ -83,13 +83,15 @@
       var isValid;
       isValid = true;
       this.div.find(".btn-group").each(function(index, value) {
-        if ($(value).find(".active").size() === 0) {
-          return isValid = false;
+        if (isValid && $(value).find(".active").size() === 0) {
+          isValid = false;
+          return A2Cribs.UIManager.Error($(value).data("error-message"));
         }
       });
-      this.div.find(".date-field").each(function(index, value) {
-        if ($(value).val().length === 0) {
-          return isValid = false;
+      this.div.find(".text-field").each(function(index, value) {
+        if (isValid && $(value).val().length === 0) {
+          isValid = false;
+          return A2Cribs.UIManager.Error($(value).data("error-message"));
         }
       });
       return isValid;

@@ -73,11 +73,16 @@ class SubletSave
 
 		# Check each btn-group for a value
 		@div.find(".btn-group").each (index, value) ->
-			if $(value).find(".active").size() is 0 then isValid = no
+			if isValid and $(value).find(".active").size() is 0 
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
 
-		# Check each date-field for a value
-		@div.find(".date-field").each (index, value) ->
-			if $(value).val().length is 0 then isValid = no
+		# Check each text-field/date-fields for a value
+		@div.find(".text-field").each (index, value) ->
+			if isValid and $(value).val().length is 0
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
+
 		return isValid
 
 	###
