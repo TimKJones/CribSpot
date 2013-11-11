@@ -1,9 +1,9 @@
-<?= $this->Html->css('/less/Dashboard/sublets_window.less?','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div id="sublet_window" class="row-fluid">
 
 	<!-- SUBLET SECTION -->
-	<div class="span8 sublet_section">
+	<div class="span12 sublet_section">
 
 		<input type="hidden" class="marker_id">
 		<input type="hidden" class="listing_id">
@@ -199,10 +199,11 @@
 	</div>
 
 	<!-- SUBLET AWESOMENESS SECTION -->
+	<!--
 	<div class="span4 sublet_section">
 		<h3>Sublet Awesomeness</h3>
 		<button type="button" class="btn">SAVE</button>
-	</div>
+	</div>-->
 
 
 

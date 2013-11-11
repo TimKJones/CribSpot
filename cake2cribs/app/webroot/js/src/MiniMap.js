@@ -39,6 +39,12 @@
       this.Resize();
     }
 
+    MiniMap.prototype.Reset = function() {
+      this.SetZoom(2);
+      this.CenterMap(39.8282, -98.5795);
+      return this.SetMarkerVisible(false);
+    };
+
     MiniMap.prototype.CenterMap = function(latitude, longitude) {
       this.center = new google.maps.LatLng(latitude, longitude);
       return this.Resize();

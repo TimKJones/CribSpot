@@ -162,7 +162,7 @@
 
     PhotoManager.prototype.UploadImageDefer = function() {
       this.UploadCompleteDeferred = new $.Deferred();
-      return this.UploadCompletePromise = this.UploadCompleteDeferred.promise();
+      return this.UploadCompleteDeferred.promise();
     };
 
     PhotoManager.prototype.SetupUI = function() {
@@ -312,7 +312,7 @@
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
 
-        return $.when(_this.UploadCompletePromise).then(function(resolved) {
+        return $.when(_this.UploadCompleteDeferred).then(function(resolved) {
           if (resolved) {
             return imageCallback(_this.GetPhotos(), row);
           }
@@ -388,6 +388,7 @@
       this.div.find("#imageContent0").html('<div class="img-place-holder"></div>');
       this.div.find("#captionInput").val("");
       this.div.find("#charactersLeft").html(this.MAX_CAPTION_LENGTH);
+      this.UploadCompleteDeferred = new $.Deferred().resolve(true);
       _ref = this.Photos;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -439,8 +440,10 @@
     */
 
 
-    $("#picture-modal").load(function() {
-      return A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
+    $(document).ready(function() {
+      if ($("#picture-modal").length) {
+        return A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
+      }
     });
 
     return PhotoManager;

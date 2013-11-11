@@ -18,6 +18,9 @@
       var _this = this;
       this.div = div;
       this.MiniMap = new A2Cribs.MiniMap(this.div.find(".mini_map"));
+      $(".sublet-content").on("shown", function() {
+        return _this.MiniMap.Resize();
+      });
       $('#sublet_list_content').on('click', '.sublet_list_item', function(event) {
         return _this.Open(event.currentTarget.id);
       });
@@ -45,7 +48,7 @@
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
         if ((listing_id != null ? listing_id.length : void 0) !== 0) {
-          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetImages() : void 0;
+          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetObject() : void 0;
         } else {
           image_array = _this._temp_images;
         }
@@ -61,12 +64,17 @@
 
 
     SubletSave.PhotoAddedCallback = function(photos) {
-      var listing_id;
+      var image, listing_id, _i, _len;
       listing_id = SubletSave.div.find(".listing_id").val();
-      SubletSave._temp_images = photos;
       if ((listing_id != null ? listing_id.length : void 0) !== 0) {
-        return A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        for (_i = 0, _len = photos.length; _i < _len; _i++) {
+          image = photos[_i];
+          image.listing_id = listing_id;
+        }
+        A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        SubletSave.Save();
       }
+      return SubletSave._temp_images = photos;
     };
 
     /*
@@ -102,9 +110,11 @@
 
 
     SubletSave.Reset = function() {
-      return this.div.find(".btn-group").each(function(index, value) {
+      this.div.find(".btn-group").each(function(index, value) {
         return $(value).find(".active").removeClass("active");
       });
+      this.div.find("input").val("");
+      return this.div.find("textarea").val("");
     };
 
     /*
@@ -129,6 +139,11 @@
         });
       } else {
         this.Reset();
+        this.MiniMap.Reset();
+        this.div.find(".more_info").slideUp();
+        this.div.find(".marker_card").fadeOut('fast', function() {
+          return _this.div.find(".marker_searchbox").fadeIn();
+        });
       }
       return A2Cribs.Dashboard.Direct({
         "classname": "sublet",

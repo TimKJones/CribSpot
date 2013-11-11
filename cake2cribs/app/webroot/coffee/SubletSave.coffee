@@ -9,6 +9,9 @@ class SubletSave
 		# Set up Mini Map preview
 		@MiniMap = new A2Cribs.MiniMap @div.find(".mini_map")
 
+		$(".sublet-content").on "shown", =>
+			@MiniMap.Resize()
+
 		# Click on side bar sublet
 		$('#sublet_list_content').on 'click', '.sublet_list_item', (event) =>
 			@Open event.currentTarget.id
@@ -41,7 +44,7 @@ class SubletSave
 		@div.find(".photo_adder").click () =>
 			listing_id = @div.find(".listing_id").val()
 			if listing_id?.length isnt 0
-				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetImages()
+				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetObject()
 			else
 				image_array = @_temp_images
 
@@ -54,9 +57,13 @@ class SubletSave
 	###
 	@PhotoAddedCallback: (photos) =>
 		listing_id = @div.find(".listing_id").val()
-		@_temp_images = photos
 		if listing_id?.length isnt 0
+			for image in photos
+				image.listing_id = listing_id
 			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			@Save()
+		@_temp_images = photos
+
 
 	###
 	Validate
@@ -92,6 +99,12 @@ class SubletSave
 		@div.find(".btn-group").each (index, value) ->
 			$(value).find(".active").removeClass "active"
 
+		# Reset all input fields
+		@div.find("input").val ""
+
+		# Reset all textarea fields
+		@div.find("textarea").val ""
+
 	###
 	Open
 	Opens up an existing sublet from a marker_id if marker_id
@@ -116,6 +129,16 @@ class SubletSave
 		else
 			# Clear out the sublet_window if no marker defined
 			@Reset()
+	
+			# Reset mini map
+			@MiniMap.Reset()
+
+			# Slide up more info
+			@div.find(".more_info").slideUp()
+
+			# Add search box to get started
+			@div.find(".marker_card").fadeOut 'fast', () =>
+				@div.find(".marker_searchbox").fadeIn()
 
 		# Direct the dashboard to show sublets
 		A2Cribs.Dashboard.Direct 

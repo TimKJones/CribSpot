@@ -66,6 +66,8 @@ class A2Cribs.Dashboard
 					class: "#{listing_type}_list_item"
 					id: marker_id
 				}
+				count = $("##{listing_type}_count").text()
+				$("##{listing_type}_count").text count + 1
 				$(event.currentTarget).append list_item
 				$(event.currentTarget).slideDown()
 

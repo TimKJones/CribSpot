@@ -74,7 +74,7 @@
     Dashboard.AttachListeners = function() {
       var _this = this;
       return $(".list_content").on("marker_added", function(event, marker_id) {
-        var list_item, listing_type, name;
+        var count, list_item, listing_type, name;
         listing_type = $(event.currentTarget).data("listing-type");
         if ($(event.currentTarget).find("#" + marker_id).length === 0) {
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
@@ -83,6 +83,8 @@
             "class": "" + listing_type + "_list_item",
             id: marker_id
           });
+          count = $("#" + listing_type + "_count").text();
+          $("#" + listing_type + "_count").text(count + 1);
           $(event.currentTarget).append(list_item);
           return $(event.currentTarget).slideDown();
         }
