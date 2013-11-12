@@ -86,8 +86,8 @@ class Sublet extends AppModel {
     );
 
     /* ---------- unit_style_options ---------- */
-    const BATHROOM_TYPE_PRIVATE = 0;
-    const BATHROOM_TYPE_SHARED = 1;
+    const BATHROOM_TYPE_SHARED = 0;
+    const BATHROOM_TYPE_PRIVATE = 1;
 
     public static function bathroom_type($value = null) {
         $options = array(

@@ -4,7 +4,7 @@
 <?php if (array_key_exists('Rental', $listing)) { ?> 
 		<div class="span6 detail_table_cell first-child"><i class="rent"><?= $listing[$listing_type]["rent"] ?></i><br>Monthly Rent</div>
 <?php } else if (array_key_exists('Sublet', $listing)) { ?>
-		<div class="span12 detail_table_cell first-child"><i class="rent"><?= $listing[$listing_type]["rent"] ?></i><br>Monthly Rent</div>
+		<div class="span4 detail_table_cell pull-left first-child"><i class="rent"><?= $listing[$listing_type]["rent"] ?></i><br>Monthly Rent</div>
 <?php } ?>
 <?php if (array_key_exists('Rental', $listing)) { ?>
 		<div class="span6 detail_table_cell">
