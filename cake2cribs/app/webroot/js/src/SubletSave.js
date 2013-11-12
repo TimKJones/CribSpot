@@ -107,9 +107,11 @@
           image.listing_id = listing_id;
         }
         A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
-        SubletSave.Save();
+        SubletSave._temp_images = photos;
+        return SubletSave.Save();
+      } else {
+        return SubletSave._temp_images = photos;
       }
-      return SubletSave._temp_images = photos;
     };
 
     /*

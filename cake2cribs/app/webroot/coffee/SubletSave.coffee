@@ -88,8 +88,10 @@ class SubletSave
 			for image in photos
 				image.listing_id = listing_id
 			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			@_temp_images = photos
 			@Save()
-		@_temp_images = photos
+		else
+			@_temp_images = photos
 
 
 	###
