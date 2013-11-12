@@ -12,11 +12,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 }
 	echo $this->element('popups');
 	echo $this->element('Login/login');
-	if (isset($locations) && isset($user_years))
-	{
-		echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
-		echo $this->element('Invitations/email_invite');
-	}
+	echo $this->element('Login/signup');
+	echo $this->element('Invitations/email_invite');
 ?>
 
 <div id="header" class="navbar navbar-inverse navbar-fixed-top">

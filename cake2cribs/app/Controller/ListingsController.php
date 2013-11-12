@@ -61,16 +61,14 @@ class ListingsController extends AppController {
 		}
 		
 		$listing = $listing[0];
-		
+
 		$full_address = $listing["Marker"]["street_address"];
 		$full_address .= " " . $listing["Marker"]["city"];
 		$full_address .= " " . $listing["Marker"]["state"];
 		$full_address .= " " . $listing["Marker"]["zip"];
 		$full_address = str_replace(" ", "-", $full_address);
 
-		if ($address == null)
-			$this->redirect(array('action' => 'view', $listing_id, $full_address));
-
+		/* set whether or not this is a favorited property */
 		$listing['Favorite'] = false;
 		if ($this->_getUserId() !== null)
 		{
@@ -78,17 +76,22 @@ class ListingsController extends AppController {
 			$listing['Favorite'] = in_array($listing_id, $favorites);
 		}
 
+		/* Set the directive - i.e. go right to the contact owner text box being opened */
 		$directive = $this->Cookie->read('fullpage-directive');
  		$this->Cookie->delete('fullpage-directive');
  		if($directive == null){
  			$directive = array('contact_owner'=>null);
  		}
 
-		$this->_refactorMoneyFields($listing);
-		$this->_refactorTextFields($listing);
-		$this->_refactorOwnerFields($listing);
+ 		$listing_type = 'Rental';
+ 		if (array_key_exists('Sublet', $listing))
+ 			$listing_type = 'Sublet';
+
+ 		$this->_refactorMoneyFields($listing, $listing_type);
+		$this->_refactorTextFields($listing, $listing_type);
 		$this->_setPrimaryImage($listing);
-		$this->_refactorBooleanAmenities($listing['Rental']);
+		$this->_refactorBooleanAmenities($listing, $listing_type);
+		$this->_refactorDates($listing, $listing_type);
 		if (array_key_exists('Image', $listing)){
 			$this->_setImagePathsForFullPageView($listing['Image']);
 		}
@@ -96,16 +99,15 @@ class ListingsController extends AppController {
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
 		$this->set('listing', $listing);
-		/* use email_exists to determine whether or not to enable contacting the user */
-		$email_exists = !empty($listing['User']['email']);
-		$phone_exists = !empty($listing['Rental']['contact_phone']);
-		if (empty($listing['Rental']['contact_phone']) && !empty($listing['User']['phone']))
-			$listing['Rental']['contact_phone'] = $listing['User']['phone'];
-		
-		$this->set('email_exists', 1 * $email_exists);
-		$this->set('messaging_enabled', $email_exists || $phone_exists);
-		$this->set('locations', $this->University->getSchools());
-        $this->set('user_years', $this->User->GetYears());
+
+		if (array_key_exists('Sublet', $listing)){
+			$this->_viewSublet($listing);
+			$this->set('listing_type', 'Sublet');
+		}
+		else{
+			$this->_viewRental($listing);
+			$this->set('listing_type', 'Rental');
+		}
 	}
 
 	/*
@@ -442,6 +444,27 @@ Returns a list of marker_ids that will be visible based on the current filter se
 
 /* ----------------------------------- private ---------------------------------------- */
 
+	private function _viewRental(&$listing)
+	{
+		/* use email_exists to determine whether or not to enable contacting the user */
+		$email_exists = !empty($listing['User']['email']);
+		$phone_exists = !empty($listing['Rental']['contact_phone']);
+		if (empty($listing['Rental']['contact_phone']) && !empty($listing['User']['phone']))
+			$listing['Rental']['contact_phone'] = $listing['User']['phone'];
+
+		$this->_refactorOwnerFields($listing, 'Rental');		
+		$this->set('email_exists', 1 * $email_exists);
+		$this->set('messaging_enabled', $email_exists || $phone_exists);
+
+	}
+
+	private function _viewSublet($listing)
+	{
+		$email_exists = true;
+		$this->set('email_exists', 1 * $email_exists);
+		$this->set('messaging_enabled', true);
+	}
+
 	private function _setImagePathsForFullPageView(&$images)
 	{
 		foreach ($images as &$image){
@@ -510,30 +533,38 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
 	}
 
-	private function _refactorBooleanAmenities(&$rental)
+	private function _refactorBooleanAmenities(&$listing, $listing_type)
 	{
-		$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
+		$amenities = null;
+		if (!strcmp($listing_type, 'Rental'))
+			$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
+		else if (!strcmp($listing_type, 'Sublet'))
+			$amenities = array('air');
+
 		foreach ($amenities as $field){
-			if (array_key_exists($field, $rental)){
-				if ($rental[$field] === true)
-					$rental[$field] = 'Yes';
-				else if ($rental[$field] === false)
-					$rental[$field] = 'No';
+			if (array_key_exists($field, $listing[$listing_type])) {
+				if ($listing[$listing_type][$field] === true)
+					$listing[$listing_type][$field] = 'Yes';
+				else if ($listing[$listing_type][$field] === false)
+					$listing[$listing_type][$field] = 'No';
 				else
-					$rental[$field] = '-';
+					$listing[$listing_type][$field] = '-';
 			}
 		}
 	}
 
-	private function _refactorMoneyFields(&$listing)
+	private function _refactorMoneyFields(&$listing, $listing_type)
 	{
-		if (array_key_exists("Rental", $listing))
-		{
+		$money_fields = $monthly_fees = null;
+		if (!strcmp($listing_type, 'Rental')){
 			$money_fields = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
 				'amenity_amount', 'upper_floor_amount', 'deposit_amount', 'admin_amount');
 			$monthly_fees = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
 				'amenity_amount', 'upper_floor_amount');
-			$listing_type = "Rental";
+		}
+		else if (!strcmp($listing_type, 'Sublet')){
+			$money_fields = array('rent');
+			$monthly_fees = array('rent');
 		}
 
 		$listing[$listing_type]["total_fees"] = 0;
@@ -563,12 +594,14 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		}
 	}
 
-	private function _refactorTextFields(&$listing)
+	private function _refactorTextFields(&$listing, $listing_type)
 	{
-		if (array_key_exists("Rental", $listing))
-		{
+		$text_fields = null;
+		if (!strcmp($listing_type, 'Rental')){
 			$text_fields = array('description', 'highlights');
-			$listing_type = "Rental";
+		}
+		else if (!strcmp($listing_type, 'Sublet')){
+			$text_fields = array('description');
 		}
 
 		foreach ($text_fields as $field) {
@@ -589,6 +622,22 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		{
 			$phone = $listing["Rental"]["contact_phone"];
 			$listing["Rental"]["contact_phone"] = "(" . substr($phone, 0, 3) . ") " . substr($phone, 3, 3) . "-" . substr($phone, 6, 4);
+		}
+	}
+
+	private function _refactorDates(&$listing, $listing_type)
+	{
+		if (!strcmp('Sublet', $listing_type)){
+			$date_fields = array('start_date', 'end_date');
+			foreach ($date_fields as &$field){
+				$date = strtotime($listing[$listing_type][$field]);
+				$month = date('M', $date);
+		        $day = date('j', $date) - 1;
+		        $year = date('Y', $date);
+				$listing[$listing_type][$field] = $month . " " . intval($day) . ", " . $year;
+			}
+
+			$listing['Sublet']['formatted_date_range'] = $listing['Sublet']['start_date'].' - '.$listing['Sublet']['end_date'];
 		}
 	}
 

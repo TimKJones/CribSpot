@@ -56,7 +56,7 @@ class Sublet extends AppModel {
         'available_now' => 'boolean',
         'deposit' => 'numeric',
         'air' => 'boolean',
-        'furnished' => 'numeric',
+        'furnished_type' => 'numeric',
         'description' => array(
                 'between' => array(
                         'rule' => array('between',0,1000),
