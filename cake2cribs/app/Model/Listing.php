@@ -273,6 +273,11 @@ class Listing extends AppModel {
 		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Sublet") == 0) {
 			unset($listing['Rental']);
 			unset($listing['Parking']);
+			$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'bathroom_type');
+			foreach ($amenities as $field){
+				if (empty($listing['Sublet'][$field]))
+					$listing['Sublet'][$field] = '-';
+			}
 		}
 		// If the listing returned is Parking
 		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Parking") == 0) {
@@ -314,6 +319,18 @@ class Listing extends AppModel {
 			if (array_key_exists('unit_style_options', $listing['Rental']) &&
 				$listing['Rental']['unit_style_options'] !== null)
 					$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+		}
+
+		if (array_key_exists('Sublet', $listing)) {
+			if (array_key_exists('parking_type', $listing['Sublet']) &&
+				$listing['Sublet']['parking_type'] !== '-')
+					$listing['Sublet']['parking_type'] = Rental::parking($listing['Sublet']['parking_type']);
+			if (array_key_exists('furnished_type', $listing['Sublet']) &&
+				$listing['Sublet']['furnished_type'] !== '-')
+					$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
+			if (array_key_exists('bathroom_type', $listing['Sublet']) &&
+				$listing['Sublet']['bathroom_type'] !== '-')
+					$listing['Sublet']['bathroom_type'] = Sublet::bathroom_type($listing['Sublet']['bathroom_type']);
 		}
 	
 		return $listing;

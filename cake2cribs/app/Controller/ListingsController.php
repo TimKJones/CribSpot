@@ -96,10 +96,6 @@ class ListingsController extends AppController {
 			$this->_setImagePathsForFullPageView($listing['Image']);
 		}
 
-		$this->set('listing_json', json_encode($listing));
-		$this->set('directive', json_encode($directive));
-		$this->set('listing', $listing);
-
 		if (array_key_exists('Sublet', $listing)){
 			$this->_viewSublet($listing);
 			$this->set('listing_type', 'Sublet');
@@ -108,6 +104,10 @@ class ListingsController extends AppController {
 			$this->_viewRental($listing);
 			$this->set('listing_type', 'Rental');
 		}
+
+		$this->set('listing_json', json_encode($listing));
+		$this->set('directive', json_encode($directive));
+		$this->set('listing', $listing);
 	}
 
 	/*
@@ -458,11 +458,15 @@ Returns a list of marker_ids that will be visible based on the current filter se
 
 	}
 
-	private function _viewSublet($listing)
+	private function _viewSublet(&$listing)
 	{
 		$email_exists = true;
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', true);
+		if (!strcmp($listing['Sublet']['bathroom_type'], 'Shared'))
+			$listing['Sublet']['bathroom_type'] = 'No';
+		if (!strcmp($listing['Sublet']['bathroom_type'], 'Private'))
+			$listing['Sublet']['bathroom_type'] = 'Yes';
 	}
 
 	private function _setImagePathsForFullPageView(&$images)
@@ -543,7 +547,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 
 		foreach ($amenities as $field){
 			if (array_key_exists($field, $listing[$listing_type])) {
-				if ($listing[$listing_type][$field] === true)
+				if ($listing[$listing_type][$field] === true || intval($listing[$listing_type][$field]) > 0)
 					$listing[$listing_type][$field] = 'Yes';
 				else if ($listing[$listing_type][$field] === false)
 					$listing[$listing_type][$field] = 'No';
