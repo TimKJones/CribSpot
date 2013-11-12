@@ -167,7 +167,7 @@
 				<!-- WASHER/DRYER -->
 				<div class="span6">
 					<div><strong>Washer/Dryer:</strong></div>
-					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="washer" data-error-message="Please complete the washer and dryer field.">
+					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="washer_dryer" data-error-message="Please complete the washer and dryer field.">
 						<button type="button" class="btn" value="0">None</button>
 						<button type="button" class="btn" value="1">In-Unit</button>
 						<button type="button" class="btn" value="2">On-Site</button>

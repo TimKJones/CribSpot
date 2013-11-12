@@ -248,8 +248,8 @@ class SubletSave
 				data: sublet_object
 				success: (response) =>
 					response = JSON.parse response
-					if response.error?
-						A2Cribs.UIManager.Error response.error
+					if response.error?.message?
+						A2Cribs.UIManager.Error response.error.message
 					else
 						# Check to see if it is a new listing
 						# Trigger an event to notify the dashboard

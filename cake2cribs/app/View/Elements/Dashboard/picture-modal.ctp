@@ -1,8 +1,7 @@
 <?= $this->Html->css('/less/Dashboard/picture-modal.less?','stylesheet/less', array('inline' => false)); ?>
-<div id ="picture-modal" class="modal hide fade">
+<div id ="picture-modal" class="modal hide fade" data-backdrop="static">
 	<div class="modal-header">
 		<i class="title">Photo Picker</i>
-		<div id="modal-close-button" class="close" data-dismiss="modal"></div>
 	</div>
 	<div>
 		<div class="modal-body step">

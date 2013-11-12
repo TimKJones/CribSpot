@@ -254,7 +254,6 @@ class Listing extends AppModel {
 		));
 
 		/* Remove sensitive user data */
-		/* Convert type fields to their appropriate string values */
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
 		if (array_key_exists('User', $listing)){
 			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
@@ -269,22 +268,19 @@ class Listing extends AppModel {
 					$listing['Rental'][$field] = '-';
 			}
 		}
+
 		// If the listing returned is a Sublet
 		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Sublet") == 0) {
 			unset($listing['Rental']);
 			unset($listing['Parking']);
-			$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'bathroom_type');
-			foreach ($amenities as $field){
-				if (empty($listing['Sublet'][$field]))
-					$listing['Sublet'][$field] = '-';
-			}
 		}
 		// If the listing returned is Parking
 		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Parking") == 0) {
 			unset($listing['Rental']);
 			unset($listing['Sublet']);
 		}
-		$listing = $this->_convertTypesToStrings($listing);
+
+		//$listing = $this->_convertTypesToStrings($listing);
 
 		return array($listing);
 	}

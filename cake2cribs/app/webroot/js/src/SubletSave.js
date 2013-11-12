@@ -255,9 +255,10 @@
           type: "POST",
           data: sublet_object,
           success: function(response) {
+            var _ref;
             response = JSON.parse(response);
-            if (response.error != null) {
-              return A2Cribs.UIManager.Error(response.error);
+            if (((_ref = response.error) != null ? _ref.message : void 0) != null) {
+              return A2Cribs.UIManager.Error(response.error.message);
             } else {
               if (!(sublet_object.Listing.listing_id != null)) {
                 $('#sublet_list_content').trigger("marker_added", [sublet_object.Listing.marker_id]);
