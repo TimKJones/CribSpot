@@ -13,7 +13,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			$listing["Marker"]["alternate_name"] . ", " . $listing["Marker"]["street_address"] . ", off campus housing, student housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
 		);
 
-	$this->Html->meta('description', $listing["Rental"]["description"], array('inline' => false));
+	$this->Html->meta('description', $listing[$listing_type]["description"], array('inline' => false));
 
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $listing["Marker"]["latitude"], 'longitude' => $listing["Marker"]["longitude"]));
 
