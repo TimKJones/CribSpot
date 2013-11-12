@@ -67,6 +67,7 @@ class ListingsController extends AppController {
 		$full_address .= " " . $listing["Marker"]["state"];
 		$full_address .= " " . $listing["Marker"]["zip"];
 		$full_address = str_replace(" ", "-", $full_address);
+		$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
 
 		/* set whether or not this is a favorited property */
 		$listing['Favorite'] = false;
@@ -123,7 +124,6 @@ class ListingsController extends AppController {
 
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
-CakeLog::write('listingobject', print_r($listingObject, true));
 		$listing = $listingObject['Listing'];
 		$listing['Listing'] = $listing;
 		$images = null;
@@ -465,10 +465,14 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		$email_exists = true;
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', true);
-		if (!strcmp($listing['Sublet']['bathroom_type'], 'Shared'))
+		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_SHARED)
 			$listing['Sublet']['bathroom_type'] = 'No';
-		if (!strcmp($listing['Sublet']['bathroom_type'], 'Private'))
+		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_PRIVATE)
 			$listing['Sublet']['bathroom_type'] = 'Yes';
+
+		$fields = array('furnished_type', 'washer_dryer');
+		$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
+		$listing['Sublet']['washer_dryer'] = Rental::washer_dryer($listing['Sublet']['washer_dryer']);
 	}
 
 	private function _setImagePathsForFullPageView(&$images)
@@ -559,6 +563,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		}
 	}
 
+
 	private function _refactorMoneyFields(&$listing, $listing_type)
 	{
 		$money_fields = $monthly_fees = null;
@@ -638,7 +643,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			foreach ($date_fields as &$field){
 				$date = strtotime($listing[$listing_type][$field]);
 				$month = date('M', $date);
-		        $day = date('j', $date) - 1;
+		        $day = date('j', $date);
 		        $year = date('Y', $date);
 				$listing[$listing_type][$field] = $month . " " . intval($day) . ", " . $year;
 			}

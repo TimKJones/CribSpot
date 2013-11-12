@@ -294,14 +294,16 @@
       }
       this.div.find("#finish_photo").unbind('click');
       return this.div.find("#finish_photo").click(function() {
-        A2Cribs.UIManager.Success("Cribspot is still uploading your images. We'll be done in just a moment.");
+        if (_this.UploadCompleteDeferred.state() === 'pending') {
+          A2Cribs.UIManager.Success("Cribspot is still uploading your images. We'll be done in just a moment.");
+        }
         /*
         			FIXING GITHUB ISSUE 141
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
         return $.when(_this.UploadCompleteDeferred).then(function(resolved) {
-          if (resolved) imageCallback(_this.GetPhotos(), row);
-          return _this.div.modal('hide');
+          imageCallback(_this.GetPhotos(), row);
+          _this.div.modal('hide');
         });
       });
     };

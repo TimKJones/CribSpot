@@ -137,7 +137,6 @@ class Listing extends AppModel {
 	*/
 	public function SaveListing($listing, $user_id=null)
 	{
-		CakeLog::write('savelisting', print_r($listing, true));
 		if ($user_id != null)
 			$listing['Listing']['user_id'] = $user_id;
 
@@ -154,8 +153,11 @@ class Listing extends AppModel {
 			if (!array_key_exists('alternate_start_date', $listing['Rental']))
 				$listing['Rental']['alternate_start_date'] = '';
 		}
-		else if (array_key_exists('Sublet', $listing))
+		else if (array_key_exists('Sublet', $listing)){
+			$listing['Listing']['available'] = true;
+			$listing['Listing']['scheduling'] = false;
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
+		}
 		else if (array_key_exists('Parking', $listing))
 			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);	
 
