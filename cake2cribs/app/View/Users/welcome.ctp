@@ -3,7 +3,7 @@
 		<div class="row-fluid">
 			<div class="span7 text-center span">
 				<div class="slogan">
-					<span>A <span class="large"><strong>FREE</strong></span> Service for Property Managers to Reach <span class="blue large"><strong>15,558</strong></span> College Renters</span>
+					<span>A <span class="large"><strong>FREE</strong></span> Service for Property Managers to Reach <span class="blue large"><strong>17,558</strong></span> College Renters</span>
 				</div>
 			</div>
 			<div class="span5 span">

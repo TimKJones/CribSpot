@@ -46,9 +46,3 @@
 		</div>
 	</div>
 </div>
-
-<?php 
-    $this->Js->buffer('
-        A2Cribs.Login.SignupModalSetupUI();
-    ');
-?>

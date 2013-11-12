@@ -6,6 +6,15 @@ class A2Cribs.Login
 	$(document).ready =>
 		@CheckLoggedIn()
 
+		if $("#signup_modal").length
+			@SignupModalSetupUI()
+
+		if $("#login_modal").length
+			@LoginModalSetupUI()
+
+		if $("#login_signup").length
+			@LoginPageSetupUI()
+
 	###
 	Private function setup facebook signup modal
 	Given a user, hides the facebook signup button

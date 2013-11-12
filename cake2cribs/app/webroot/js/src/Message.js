@@ -295,7 +295,7 @@
 
     Messages.Direct = function(directive) {
       var conv_id, participant_id;
-      if (directive.data != null) {
+      if ((directive.data != null) && directive.classname === "messages") {
         conv_id = parseInt(directive.data.conversation_id);
         this.CurrentConversation = conv_id;
         participant_id = parseInt(directive.data.participant_id);
