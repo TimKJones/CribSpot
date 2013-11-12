@@ -167,9 +167,9 @@
       });
       if (marker_id != null) {
         listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker_id);
-        this.div.find(".listing_id").val(listings[0].listing_id);
         A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id).done(function(sublet) {
           _this.Reset();
+          _this.div.find(".listing_id").val(listings[0].listing_id);
           _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
           return _this.Populate(sublet);
         });

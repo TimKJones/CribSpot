@@ -145,14 +145,14 @@ class SubletSave
 			# Should only be users cached because it is only in the dashboard
 			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
 
-			# Set the hidden field for listing id
-			@div.find(".listing_id").val listings[0].listing_id
-
 			# Fetch the sublet object from the cache
 			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
 			.done (sublet) =>
 				# Reset the sublet form first
 				@Reset()
+
+				# Set the hidden field for listing id
+				@div.find(".listing_id").val listings[0].listing_id
 		
 				# Populate the marker fields
 				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
