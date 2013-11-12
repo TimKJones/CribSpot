@@ -86,7 +86,7 @@
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
-      this.ACTIVE_LISTING_TYPE = active_listing_type;
+      this.ACTIVE_LISTING_TYPE = 'rental';
       zoom = 14;
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
       this.MapOptions = {
@@ -143,7 +143,7 @@
         this.BasicDataDeferred = new $.Deferred();
       }
       $.ajax({
-        url: myBaseUrl + ("Map/GetBasicData/" + this.ACTIVE_LISTING_TYPE + "/" + this.CurentSchoolId),
+        url: myBaseUrl + ("Map/GetBasicData/0/" + this.CurentSchoolId),
         type: "POST",
         success: function(responses) {
           return _this.BasicDataDeferred.resolve(responses);

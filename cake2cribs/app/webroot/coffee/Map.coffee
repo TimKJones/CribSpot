@@ -59,7 +59,7 @@ class A2Cribs.Map
 		A2Cribs.FilterManager.CurrentCity = city
 		A2Cribs.FilterManager.CurrentState = state
 		A2Cribs.FilterManager.CurrentSchool = school_name
-		@ACTIVE_LISTING_TYPE = active_listing_type
+		@ACTIVE_LISTING_TYPE = 'rental'
 		zoom = 14
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
@@ -111,7 +111,7 @@ class A2Cribs.Map
 			@BasicDataDeferred = new $.Deferred()
 		
 		$.ajax 
-			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
+			url: myBaseUrl + "Map/GetBasicData/0/#{@CurentSchoolId}"
 
 			type: "POST"
 			success: (responses) =>
