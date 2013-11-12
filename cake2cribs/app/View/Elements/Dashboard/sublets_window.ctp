@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=3','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=4','stylesheet/less', array('inline' => false)); ?>
 
 <div id="sublet_window" class="row-fluid">
 
@@ -193,10 +193,32 @@
 			</div>
 
 			<div class="row-fluid">
-				<button id="sublet_save_button" type="button" class="btn btn-primary">Save</button>
+				<button id="sublet_save_button" type="button" class="btn btn-primary"  data-loading-text="Saving...">Save</button>
 			</div>
 
 		</div>
+	</div>
+
+	<!-- SUBLET COMPLETED/SHARE SECTION -->
+	<div class="span12 done_section hide">
+		<div class="row-fluid">
+			<i class="icon-ok-sign pull-left"></i>
+			<h1 class="pull-left">Almost Done...</h1>
+			<h3 class="pull-left">You sublet has been successfully posted. Share it with your peers.</h3>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span4">
+				<a href="#" class="twitter_sublet_share"><i class="icon-twitter-sign"></i></a>
+			</div>
+			<div class="span4">
+				<a href="#" class="fb_sublet_share"><i class="icon-facebook-sign"></i></a>
+			</div>
+			<div class="span4">
+				<a href="#" class="google_sublet_share"><i class="icon-google-plus-sign"></i></a>
+			</div>
+		</div>
+
 	</div>
 
 	<!-- SUBLET AWESOMENESS SECTION -->
