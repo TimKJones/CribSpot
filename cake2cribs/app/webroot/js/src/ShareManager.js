@@ -75,9 +75,6 @@
         promotion: "completed sublet"
       });
       primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
-      if (images != null) {
-        primary_image = images.GetPrimary();
-      }
       fbObj = {
         method: 'feed',
         link: url,

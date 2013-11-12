@@ -51,8 +51,8 @@ class A2Cribs.ShareManager
 			promotion: "completed sublet"
 
 		primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
-		if images?
-			primary_image = images.GetPrimary()
+		# if images?
+		# 	primary_image = images.GetPrimary()
 
 
 		fbObj = 
