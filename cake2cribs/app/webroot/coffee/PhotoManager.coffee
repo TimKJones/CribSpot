@@ -225,7 +225,7 @@ class A2Cribs.PhotoManager
 
 		@div.find("#finish_photo").unbind 'click'
 		@div.find("#finish_photo").click () =>
-			@div.modal('hide')
+			A2Cribs.UIManager.Success "Cribspot is still uploading your images. We'll be done in just a moment."
 			###
 			FIXING GITHUB ISSUE 141
 			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
@@ -233,6 +233,7 @@ class A2Cribs.PhotoManager
 			$.when(@UploadCompleteDeferred).then (resolved) =>
 				if resolved
 					imageCallback @GetPhotos(), row
+					@div.modal('hide')
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
