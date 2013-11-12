@@ -262,10 +262,10 @@
             } else {
               if (!(sublet_object.Listing.listing_id != null)) {
                 $('#sublet_list_content').trigger("marker_added", [sublet_object.Listing.marker_id]);
-                _this.div.find(".sublet_section").fadeOut('slow', function() {
-                  return _this.div.find(".done_section").fadeIn();
-                });
               }
+              _this.div.find(".sublet_section").fadeOut('slow', function() {
+                return _this.div.find(".done_section").fadeIn();
+              });
               A2Cribs.UserCache.CacheData(response.listing);
               _this.div.find(".listing_id").val(response.listing.Listing.listing_id);
               return A2Cribs.UIManager.Success("Your listing has been saved!");

@@ -255,8 +255,9 @@ class SubletSave
 						# Trigger an event to notify the dashboard
 						if not sublet_object.Listing.listing_id?
 							$('#sublet_list_content').trigger "marker_added", [sublet_object.Listing.marker_id]
-							@div.find(".sublet_section").fadeOut 'slow', () =>
-								@div.find(".done_section").fadeIn()
+						
+						@div.find(".sublet_section").fadeOut 'slow', () =>
+							@div.find(".done_section").fadeIn()
 
 						A2Cribs.UserCache.CacheData response.listing
 						@div.find(".listing_id").val response.listing.Listing.listing_id
