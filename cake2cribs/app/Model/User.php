@@ -189,6 +189,17 @@ class User extends AppModel {
 		return true;
 	}
 
+	public function findByNameFuzzy($name) {
+		CakeLog::write('HOTLIST', 'Name: ' . $name);
+		return $this->find('all', array(
+			'conditions' => array(
+				'User.email' => $name, 
+			),
+			'fields' => array('User.id', 'User.first_name', 'User.last_name', 'User.email'),
+			'contain' => array()
+		));
+	}
+
 	public function getHotlist($user_id)
 	{
     CakeLog::write('HOTLIST', 'Entered getHotlist(' . $user_id . ')');
@@ -210,7 +221,7 @@ class User extends AppModel {
 	  else {
 	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
 	  }
-	  
+
     return $this->getHotlist($user_id);
 	}
 

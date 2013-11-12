@@ -49,7 +49,36 @@
     };
 
     Hotlist.prototype.render = function(data) {
-      return this.DOMRoot.html(this.template(data));
+      this.DOMRoot.html(this.template(data));
+      return $('.friend-adder .typeahead').typeahead({
+        source: function(query, process) {
+          if (query.match(/^.+\@.+\..+$/)) {
+            console.log(encodeURIComponent(query));
+            return $.ajax({
+              type: 'get',
+              url: myBaseUrl + 'users/getbyname',
+              data: {
+                name: query
+              },
+              success: function(data) {
+                var namelist, response_data;
+                response_data = JSON.parse(data);
+                namelist = response_data.map(function(u) {
+                  return "" + u.User.email + " - <em>" + u.User.first_name + " " + u.User.last_name + "</em> <img src='http://placehold.it/20x20'/>";
+                });
+                process(namelist);
+                return console.log(namelist);
+              },
+              fail: function(data) {
+                return console.log(data);
+              }
+            });
+          }
+        },
+        updater: function(item) {
+          return item.split(' ')[0];
+        }
+      });
     };
 
     Hotlist.prototype.get = function() {
@@ -89,7 +118,7 @@
       }));
     };
 
-    Hotlist.templateHTML = "<div id='share-all'></div>\n<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <%=elem.first_name%> <%=elem.last_name%> <a href = '#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>x</a>\n    </li>\n  <% }); %>\n</ul>";
+    Hotlist.templateHTML = "<div id='share-all'></div>\n<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <%=elem.first_name%> <%=elem.last_name%> <a href = '#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>x</a>\n    </li>\n  <% }); %>\n</ul>\n<div class='friend-adder'>\n    <input class='typeahead' type='text' autocomplete='off'></input>\n</div>";
 
     return Hotlist;
 

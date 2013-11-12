@@ -25,6 +25,15 @@ class UsersController extends AppController {
         $this->Auth->allow('PMLogin');
     }
 
+    public function getAllForName()
+    {
+        $name = $this->request->query['name'];
+        $users = $this->User->findByNameFuzzy($name);
+        // CakeLog::write('HOTLIST', print_r($users));
+        $this->set('response', json_encode($users));
+        $this->render('json_response');
+    }
+
     public function hotlist()
     {
         $user_id = $this->Auth->User('id');
