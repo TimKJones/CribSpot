@@ -271,7 +271,7 @@
       }
       $("#loader").show();
       return $.ajax({
-        url: myBaseUrl + "Rentals/ApplyFilter",
+        url: myBaseUrl + "Listings/ApplyFilter/0",
         data: ajaxData,
         type: "GET",
         context: this,

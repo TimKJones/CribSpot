@@ -12,7 +12,16 @@
     Login.HTTP_PREFIX = "https://";
 
     $(document).ready(function() {
-      return Login.CheckLoggedIn();
+      Login.CheckLoggedIn();
+      if ($("#signup_modal").length) {
+        Login.SignupModalSetupUI();
+      }
+      if ($("#login_modal").length) {
+        Login.LoginModalSetupUI();
+      }
+      if ($("#login_signup").length) {
+        return Login.LoginPageSetupUI();
+      }
     });
 
     /*

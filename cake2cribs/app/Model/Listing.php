@@ -3,10 +3,14 @@
 class Listing extends AppModel {
 	public $name = 'Listing';
 	public $primaryKey = 'listing_id';
-	public $actsAs = array('Containable');
+	public $actsAs = array('Containable', 'ListingFilter');
 	public $hasOne = array(
 		'Rental' => array(
 			'className' => 'Rental',
+			'dependent' => true
+		),
+		'Sublet' => array(
+			'className' => 'Sublet',
 			'dependent' => true
 		)
 	);
@@ -74,6 +78,59 @@ class Listing extends AppModel {
 		return parent::enum($value, $options);
 	}
 
+	public static function listing_type_reverse($value = null) {
+		$options = array(
+			'rental' => self::LISTING_TYPE_RENTAL,
+			'sublet' => self::LISTING_TYPE_SUBLET,
+			'parking' => self::LISTING_TYPE_PARKING
+		);
+		return parent::StringToInteger($value, $options);
+	}
+
+	private $BASIC_DATA_FIELDS = array(
+        'Rental' => array(
+                'Rental.rent',
+                'Rental.listing_id',
+                'Rental.beds',
+                'Rental.start_date',
+                'Rental.lease_length',
+                'Listing.marker_id',
+                'Listing.listing_id',
+                'Listing.available',
+                'Listing.scheduling',
+                'Marker.marker_id',
+                'Marker.latitude',
+                'Marker.longitude',
+                'Marker.street_address',
+                'Marker.building_type_id',
+                'Marker.alternate_name',
+                'Marker.city',
+                'Marker.state',
+                'Marker.zip'
+        ),
+        'Sublet' => array(
+                'Sublet.rent',
+                'Sublet.listing_id',
+                'Sublet.beds',
+                'Sublet.start_date',
+                'Sublet.end_date',
+                'Sublet.available_now',
+                'Listing.marker_id',
+                'Listing.listing_id',
+                'Listing.available',
+                'Listing.scheduling',
+                'Marker.marker_id',
+                'Marker.latitude',
+                'Marker.longitude',
+                'Marker.street_address',
+                'Marker.building_type_id',
+                'Marker.alternate_name',
+                'Marker.city',
+                'Marker.state',
+                'Marker.zip'
+        )
+);
+
 	/*
 	Attempts to save $listing to the Listing table and any associated tables.
 	Returns listing_id of saved listing on success; validation errors on failure.
@@ -92,21 +149,26 @@ class Listing extends AppModel {
 				$rental_id = $this->Rental->GetRentalIdFromListingId($listing['Listing']['listing_id'], $user_id);
 				$listing['Rental']['rental_id'] = $rental_id;
 			}
+
+			/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
+			if (!array_key_exists('alternate_start_date', $listing['Rental']))
+				$listing['Rental']['alternate_start_date'] = '';
 		}
 		else if (array_key_exists('Sublet', $listing))
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
 		else if (array_key_exists('Parking', $listing))
-			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);
-
-		/* If alternate_start_date is not present, then set it to an empty string so it overwrites as null */	
-		if (!array_key_exists('alternate_start_date', $listing['Rental']))
-			$listing['Rental']['alternate_start_date'] = '';
-	
+			$listing['Parking'] = $this->_removeNullEntries($listing['Parking']);	
 
 		$this->_formatDates($listing);
+		
 		if ($this->saveAll($listing, array('deep' => true)))
 		{
-			return array('listing_id' => $this->id);
+			$savedListing = $this->Get($this->id, array('Image', 'Sublet'));
+
+			return array(
+				'listing_id' => $this->id,
+				'listing' => $savedListing
+			);
 		}
 
 		/* Listing failed to save - return error code */
@@ -121,11 +183,13 @@ class Listing extends AppModel {
 	}
 
 	/* returns listing with id = $listing_id */
-	public function Get($listing_id)
+	public function Get($listing_id, $contain=null)
 	{
-		$listing = $this->find('first', array(
-        	'conditions' => array('Listing.listing_id' => $listing_id)
-    	));
+		$findConditions = array('conditions' => array('Listing.listing_id' => $listing_id));
+    	if ($contain !== null)
+    		$findConditions['contain'] = $contain;
+
+		$listing = $this->find('first', $findConditions);
 
 		if (array_key_exists('User', $listing))
 			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
@@ -182,30 +246,43 @@ class Listing extends AppModel {
 	*/
 	public function GetListing($listing_id)
 	{
-		$listing = $this->find('all', array(
-			'contain' => array('Image', 'Rental', 'User', 'Marker'),
+		$listing = $this->find('first', array(
+			'contain' => array('Image', 'Rental', 'Sublet', 'User', 'Marker'),
 			'conditions' => array(
 				'Listing.listing_id' => $listing_id,
 				'Listing.visible' => 1)
 		));
 
 		/* Remove sensitive user data */
-		/* Convert type fields to their appropriate string values */
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
-		for ($i = 0; $i < count($listing); $i++){
-			if (array_key_exists('User', $listing[$i])){
-				$listing[$i]['User'] = $this->_removeSensitiveUserFields($listing[$i]['User']);
-			}
-			if (array_key_exists('Rental', $listing[$i])){
-				foreach ($amenities as $field){
-					if (empty($listing[$i]['Rental'][$field]))
-						$listing[$i]['Rental'][$field] = '-';
-				}
-			}
-			$listing[$i] = $this->_convertTypesToStrings($listing[$i]);
+		if (array_key_exists('User', $listing)){
+			$listing['User'] = $this->_removeSensitiveUserFields($listing['User']);
 		}
 
-		return $listing;
+		// If the listing to be returned is Rental
+		if (strcmp($this->listing_type($listing['Listing']['listing_type']), "Rental") == 0) {
+			unset($listing['Sublet']);
+			unset($listing['Parking']);
+			foreach ($amenities as $field){
+				if (empty($listing['Rental'][$field]))
+					$listing['Rental'][$field] = '-';
+			}
+		}
+
+		// If the listing returned is a Sublet
+		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Sublet") == 0) {
+			unset($listing['Rental']);
+			unset($listing['Parking']);
+		}
+		// If the listing returned is Parking
+		elseif (strcmp($this->listing_type($listing['Listing']['listing_type']), "Parking") == 0) {
+			unset($listing['Rental']);
+			unset($listing['Sublet']);
+		}
+
+		//$listing = $this->_convertTypesToStrings($listing);
+
+		return array($listing);
 	}
 
 	/*
@@ -238,6 +315,18 @@ class Listing extends AppModel {
 			if (array_key_exists('unit_style_options', $listing['Rental']) &&
 				$listing['Rental']['unit_style_options'] !== null)
 					$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+		}
+
+		if (array_key_exists('Sublet', $listing)) {
+			if (array_key_exists('parking_type', $listing['Sublet']) &&
+				$listing['Sublet']['parking_type'] !== '-')
+					$listing['Sublet']['parking_type'] = Rental::parking($listing['Sublet']['parking_type']);
+			if (array_key_exists('furnished_type', $listing['Sublet']) &&
+				$listing['Sublet']['furnished_type'] !== '-')
+					$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
+			if (array_key_exists('bathroom_type', $listing['Sublet']) &&
+				$listing['Sublet']['bathroom_type'] !== '-')
+					$listing['Sublet']['bathroom_type'] = Sublet::bathroom_type($listing['Sublet']['bathroom_type']);
 		}
 	
 		return $listing;
@@ -438,16 +527,55 @@ class Listing extends AppModel {
 	}
 
 	public function GetBasicData($listing_type, $target_lat_long, $radius)
-	{
-		if ($listing_type == Listing::LISTING_TYPE_RENTAL)
-			return $this->_getRentalBasicData($target_lat_long, $radius);
-		/* Coming soon! 
-		else if ($listing_type == Listing::LISTING_TYPE_SUBLET)
-			return $this->_loadSubletHoverData();
+    {
+        if (!array_key_exists('latitude', $target_lat_long) || !array_key_exists('longitude', $target_lat_long))
+                return null;
 
-		return $this->loadParkingHoverData();
-		*/
-	}
+        $latitude = $target_lat_long['latitude'];
+        $longitude = $target_lat_long['longitude'];
+        $lat1 = $latitude - $radius/69;
+        $lat2 = $latitude + $radius/69;
+        
+        $lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
+        $lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
+
+        $lat_long_pairs = array(
+                'lat1' => $lat1,
+                'lat2' => $lat2,
+                'lon1' => $lon1,
+                'lon2' => $lon2
+        );
+
+        $search_conditions = array(
+                'Listing.visible' => 1,
+                'Listing.listing_type' => $listing_type,
+                'Marker.latitude >' => $lat_long_pairs['lat1'],
+                'Marker.latitude <=' => $lat_long_pairs['lat2'],
+                'Marker.longitude >' => $lat_long_pairs['lon1'],
+                'Marker.longitude <=' => $lat_long_pairs['lon2']
+        );
+
+        $table = 'Rental';
+        if ($listing_type === self::LISTING_TYPE_SUBLET)
+        	$table = 'Sublet';
+
+        $this->contain($table, 'Marker');
+        $options = array();
+        $options['fields'] = $this->BASIC_DATA_FIELDS[$table];
+
+        $options['conditions'] = $search_conditions;
+
+        $this->virtualFields = array(
+            'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+        );
+
+        $basicData = $this->find('all', $options);
+        foreach ($basicData as &$listing) {
+                $listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
+        }
+
+        return $basicData;
+    }
 
 	/*
 	Returns true if the user with $user_id owns at least one listing at $marker_id

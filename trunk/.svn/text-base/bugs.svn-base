@@ -1,8 +1,0 @@
-- facebook
-		- login
-				- iframe logs in after one click on "log in", but frame doesn't close until second click
-		- page load
-				- Dynamic changes are visible on page load
-- Category Menu Bar
-		- doesn't align with container div (with logo)
-- *****index.html doesn't scale correctly when reducing window size

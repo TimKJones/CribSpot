@@ -1,42 +1,37 @@
 <?php
+
+/* ----------------------- BOTH ----------------------------------- */
 	echo $this->Html->script('src/VerifyManager');
+	echo $this->Html->script('src/Rental');
+	echo $this->Html->script('src/UserCache');
+	echo $this->Html->script('src/FeaturedListings');
+/* ------------------------ DIFFERENT --------------------------------------- */
+
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', 'Cribspot Sublet');
-	echo '<div id="container">';
-		echo $this->element('header');
-		echo $this->element('FeaturedListings/fl_sidebar');	
-		echo $this->element('map');
-		echo $this->element('login');
-		echo $this->element('register');
-		echo $this->element('post-sublet');
+	$this->set('title_for_layout', $university["name"] . ' Sublets');
 
-		
-		//echo $this->element('favorites');
+	$this->Html->meta('keywords', 
+		$university["name"] . " sublets, " . $university["name"] . " subleases, " . $university["name"] . " temporary housing, " .$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
+	);
 
-		/* Hidden Elements */
-		echo $this->element('tooltips');
-		echo $this->element('popups');
+	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many sublets Cribspot has to offer.", array('inline' => false));
+/* -------------------------- BOTH ------------------------------------ */
 
+	echo $this->element('header', 
+		array(
+			'show_filter' => false,
+			'show_user' => true,
+			'show_personal' => true,
+			'locations' => $locations,
+			'user_years' => $user_years
+	));
+	echo $this->element('map');
+	echo $this->element('FeaturedListings/fl_sidebar', $university);
+	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
 
-		if ($school_name == "University of Michigan-Ann Arbor")
-			echo '<a href="http://www.michigandaily.com/classifieds"><div id="DailyLogo"></div></a>';
-	echo '</div>';
-	$declare_marker_id_to_open =  'A2Cribs.marker_id_to_open = ' . $marker_id_to_open . ';';
-	$declare_sublet_data =  'A2Cribs.loaded_sublet_data = ' . json_encode($sublet_data_for_tooltip) . ';';
 	/* Create and initialize the map */
-	$this->Js->buffer(	
-		'A2Cribs.FBInitialized = false;' . 
-		'A2Cribs.VerifyManager.init('.$user.');' .
-		$declare_marker_id_to_open . 
-		$declare_sublet_data . 
-		'A2Cribs.Map.Init(' . $school_id . ',' . $school_lat . ',' . $school_lng . ',"' . $school_city . '","' . $school_state . '","' . $school_name . '");
-		$("#addressSearchBar").keyup(function(event){
-    		if(event.keyCode == 13){
-        		$("#addressSearchSubmit").click();
-    		}
-		});
-
-		
+	$this->Js->buffer(
+		'A2Cribs.Map.Init(' . $university["id"] . ',' . $university["latitude"] . ',' . $university["longitude"] . ',"' . $university["city"] . '","' . $university["state"] . '","' . $university["name"] . '","' . $active_listing_type . '");	
 	'
 
 	);

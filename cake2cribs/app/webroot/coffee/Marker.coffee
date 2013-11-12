@@ -1,5 +1,5 @@
 class A2Cribs.Marker extends  A2Cribs.Object
-	@BuildingType = ["House", "Apartment", "Duplex"]
+	@BuildingType = ['House','Apartment','Duplex','Condo','Townhouse','Co-Op','Dorm','Greek','Other']
 	@TYPE = 
 		UNKNOWN: 0
 		LEASED: 1
@@ -13,7 +13,9 @@ class A2Cribs.Marker extends  A2Cribs.Object
 		if @alternate_name? and @alternate_name.length then @alternate_name else @street_address
 
 	GetBuildingType: ->
-		return @building_type_id
+		if isNaN(parseInt(@building_type_id, 10))
+			return @building_type_id
+		return A2Cribs.Marker.BuildingType[@building_type_id]
 
 	GetType: ->
 		return @_type

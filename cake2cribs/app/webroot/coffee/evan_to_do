@@ -1,5 +1,0 @@
-FILTERING
-- Give parameters to FilterManager.ApplyFilter()
-	- including date, price values
-	- for dates, I'll work with you to figure out datatypes and how to compare them and sync with mysql dates
-	

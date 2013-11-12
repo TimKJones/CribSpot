@@ -22,6 +22,11 @@ class A2Cribs.MiniMap
 
 		@Resize()
 
+	Reset: ->
+		@SetZoom 2
+		@CenterMap 39.8282, -98.5795
+		@SetMarkerVisible false
+
 	CenterMap: (latitude, longitude) ->
 		@center = new google.maps.LatLng latitude, longitude
 		@Resize()

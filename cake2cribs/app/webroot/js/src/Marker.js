@@ -9,7 +9,7 @@
 
     __extends(Marker, _super);
 
-    Marker.BuildingType = ["House", "Apartment", "Duplex"];
+    Marker.BuildingType = ['House', 'Apartment', 'Duplex', 'Condo', 'Townhouse', 'Co-Op', 'Dorm', 'Greek', 'Other'];
 
     Marker.TYPE = {
       UNKNOWN: 0,
@@ -32,7 +32,10 @@
     };
 
     Marker.prototype.GetBuildingType = function() {
-      return this.building_type_id;
+      if (isNaN(parseInt(this.building_type_id, 10))) {
+        return this.building_type_id;
+      }
+      return A2Cribs.Marker.BuildingType[this.building_type_id];
     };
 
     Marker.prototype.GetType = function() {

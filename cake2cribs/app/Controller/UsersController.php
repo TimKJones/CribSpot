@@ -24,6 +24,7 @@ class UsersController extends AppController {
         $this->Auth->allow('IsLoggedIn');
         $this->Auth->allow('PMLogin');
         $this->Auth->allow('welcome');
+        $this->Auth->allow('sublet');
     }
 
     public function add()
@@ -66,6 +67,13 @@ class UsersController extends AppController {
 
         $this->set('id', $id);
         $this->set('reset_token', $reset_token);
+    }
+
+    public function sublet()
+    {
+        $user = $this->Auth->User();
+        if ($user !== null)
+            $this->redirect(array('controller' => 'sublets', 'action' => 'create'));
     }
 
     /*

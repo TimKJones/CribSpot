@@ -1,7 +1,7 @@
 <?php echo $this->Html->css('photomanager', null, array('inline' => false)); ?>
 <?php 
-    echo $this->Html->script('jquery.fileupload');
-    echo $this->Html->script('jquery.iframe-transport');
+    echo $this->Html->script('jquery.fileupload', array('inline' => false));
+    echo $this->Html->script('jquery.iframe-transport', array('inline' => false));
 ?>
 
 

@@ -2,7 +2,8 @@
 (function() {
 
   A2Cribs.UserCache = (function() {
-    var _get;
+    var _cache_object, _get,
+      _this = this;
 
     function UserCache() {}
 
@@ -24,6 +25,45 @@
           return callback != null ? callback.error() : void 0;
         }
       });
+    };
+
+    _cache_object = function(object) {
+      var a2_object, key, old_object, value, _results;
+      _results = [];
+      for (key in object) {
+        value = object[key];
+        if (A2Cribs[key] != null) {
+          a2_object = new A2Cribs[key](value);
+          old_object = UserCache.Get(key.toLowerCase(), a2_object.GetId());
+          if ((old_object != null) && !(old_object.length != null)) {
+            a2_object = old_object.Update(value);
+          }
+          _results.push(UserCache.Set(a2_object));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    /*
+    	Cache Data
+    	Caches an array of Listing objects
+    */
+
+
+    UserCache.CacheData = function(object) {
+      var item, _i, _len, _results;
+      if (object instanceof Array) {
+        _results = [];
+        for (_i = 0, _len = object.length; _i < _len; _i++) {
+          item = object[_i];
+          _results.push(_cache_object(item));
+        }
+        return _results;
+      } else {
+        return _cache_object(object);
+      }
     };
 
     /*
@@ -48,23 +88,10 @@
         url: myBaseUrl + "Listings/GetListing/" + listing_id,
         type: "GET",
         success: function(data) {
-          var a2_object, item, key, old_object, response_data, value, _i, _len;
+          var response_data;
           response_data = JSON.parse(data);
-          for (_i = 0, _len = response_data.length; _i < _len; _i++) {
-            item = response_data[_i];
-            for (key in item) {
-              value = item[key];
-              if (key !== "Marker" && (A2Cribs[key] != null)) {
-                a2_object = new A2Cribs[key](value);
-                old_object = _this.Get(key.toLowerCase(), a2_object.GetId());
-                if ((old_object != null) && !(old_object.length != null)) {
-                  a2_object = old_object.Update(value);
-                }
-                _this.Set(a2_object);
-              }
-            }
-          }
-          listing = _this.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id);
+          _this.CacheData(response_data);
+          listing = _this.Get(listing_type, listing_id);
           return deferred.resolve(listing);
         },
         error: function() {
@@ -170,6 +197,6 @@
 
     return UserCache;
 
-  })();
+  }).call(this);
 
 }).call(this);

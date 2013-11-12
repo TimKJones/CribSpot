@@ -1,6 +1,6 @@
 class A2Cribs.RentalSave
 	constructor: (dropdown_content, @user_email, @user_phone) ->
-		@div = $('.rentals-content')
+		@div = $('.rental-content')
 		@EditableRows = []
 		@Editable = false
 		@VisibleGrid = 'overview_grid'
@@ -8,37 +8,31 @@ class A2Cribs.RentalSave
 		@NextListing
 
 	SetupUI: (dropdown_content) ->
-		if not A2Cribs.Geocoder?
-			A2Cribs.Geocoder = new google.maps.Geocoder()
-
 		$('#middle_content').height()
-		@div.find("grid-pane").height 
+		@div.find("grid-pane").height
+
+		$(".create-listing").find("a").click (event) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if listing_type is "rental"
+				A2Cribs.MarkerModal.Open listing_type
+				 
 		@CreateCallbacks()
 		@CreateGrids dropdown_content
 
 	CreateCallbacks: () ->
-		$('body').on "Rental_marker_added", (event, marker_id) =>
-			if $("#rentals_list_content").find("##{marker_id}").length is 0
-				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
-				list_item = $ "<li />", {
-					text: name
-					class: "rentals_list_item"
-					id: marker_id
-				}
-				$("#rentals_list_content").append list_item
-				$("#rentals_list_content").slideDown()
-			A2Cribs.Dashboard.Direct { classname: 'rentals', data: true }
-			$.when(@Open(marker_id))
-			.then () => @AddNewUnit()
+		$('#rental_list_content').on "marker_added", (event, marker_id) =>
+			A2Cribs.Dashboard.Direct { classname: 'rental', data: true }
+			@Open(marker_id)
+			.done => @AddNewUnit()
 
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
-			if $("#rentals_list_content").find("##{marker_id}").length is 1
-				list_item = $("#rentals_list_content").find("##{marker_id}")
+			if $("#rental_list_content").find("##{marker_id}").length is 1
+				list_item = $("#rental_list_content").find("##{marker_id}")
 				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
 				list_item.text name
 				@CreateListingPreview marker_id
 
-		$("body").on 'click', '.rentals_list_item', (event) =>
+		$("body").on 'click', '.rental_list_item', (event) =>
 			if @Editable
 				A2Cribs.UIManager.ConfirmBox "By selecting a new address, all unsaved changes will be lost.",
 					{
@@ -53,7 +47,7 @@ class A2Cribs.RentalSave
 
 		@div.find(".edit_marker").click () =>
 			A2Cribs.MixPanel.PostListing "Started", {}
-			A2Cribs.MarkerModal.Open()
+			A2Cribs.MarkerModal.Open listing_type
 			A2Cribs.MarkerModal.LoadMarker @CurrentMarker
 
 		$("#rentals_edit").click (event) =>
@@ -98,7 +92,7 @@ class A2Cribs.RentalSave
 				$(event.target).removeClass "highlight-tab"
 				$(event.delegateTarget).tab 'show'
 
-		$(".rentals-content").on "shown", (event) =>
+		$(".rental-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
 			height = $('#add_new_unit').position().top - $("##{@VisibleGrid}").position().top
 			@Map?.Resize()
@@ -178,7 +172,7 @@ class A2Cribs.RentalSave
 				@CurrentMarker = marker_id
 				@CreateListingPreview marker_id
 				
-				A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+				A2Cribs.Dashboard.ShowContent $(".rental-content"), true
 
 				@PopulateGrid marker_id
 				deferred.resolve()
@@ -349,13 +343,13 @@ class A2Cribs.RentalSave
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
 			"number of images": image_array?.length
-		A2Cribs.PhotoManager.LoadImages image_array, row, @SaveImages
+		A2Cribs.PhotoManager.LoadImages image_array, @SaveImages, row
 
 
 	###
 	Saves the images in either the cache or temp object in slickgrid
 	###
-	SaveImages: (row, images) =>
+	SaveImages: (images, row) =>
 		data = @GridMap[@VisibleGrid].getDataItem row
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images

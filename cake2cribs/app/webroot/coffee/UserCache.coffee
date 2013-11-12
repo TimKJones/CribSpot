@@ -12,6 +12,26 @@ class A2Cribs.UserCache
 			error: =>
 				callback?.error()
 
+	_cache_object = (object) =>
+		for key, value of object
+			if A2Cribs[key]?
+				a2_object = new A2Cribs[key] value
+				old_object = @Get key.toLowerCase(), a2_object.GetId()
+				if old_object? and not old_object.length?
+					a2_object = old_object.Update value
+				@Set a2_object
+
+	###
+	Cache Data
+	Caches an array of Listing objects
+	###
+	@CacheData: (object) ->
+		if object instanceof Array
+			for item in object
+				_cache_object(item)
+		else
+			_cache_object(object)
+
 	###
 	Get Listing
 	Retrieves a listing_type (rental, sublet, parking) by a listing id
@@ -31,15 +51,8 @@ class A2Cribs.UserCache
 			type:"GET"
 			success: (data) =>
 				response_data = JSON.parse data
-				for item in response_data
-					for key, value of item
-						if key isnt "Marker" and A2Cribs[key]?
-							a2_object = new A2Cribs[key] value
-							old_object = @Get key.toLowerCase(), a2_object.GetId()
-							if old_object? and not old_object.length?
-								a2_object = old_object.Update value
-							@Set a2_object
-				listing = @Get A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id
+				@CacheData response_data
+				listing = @Get listing_type, listing_id
 				return deferred.resolve listing
 
 			error: ->

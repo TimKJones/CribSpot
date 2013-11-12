@@ -1,0 +1,231 @@
+#sublet_window
+{
+	.sublet_section
+	{
+		border-radius: 4px;
+		background-color: hsl(0, 100%, 100%);
+		position: relative;
+		margin-bottom: 15px;
+		box-shadow: 0 0 5px hsl(0, 0%, 50%);
+		padding: 10px 30px;
+		min-width: 730px;
+		max-width: 800px;
+	}
+
+	.mini_map
+	{
+		height: 100px;
+		width: 150px;
+
+		#correctLocationMap
+		{
+			height: 100%;
+			width: 100%;
+		}
+	}
+
+	.marker_info
+	{
+		position: absolute;
+		right: 0px;
+		left: 170px;
+	}
+
+	.photo_adder
+	{
+		background-color: hsl(114, 28%, 63%);
+		color: hsl(0, 100%, 100%);
+		font-size: 16px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;
+	}
+
+	#find_address
+	{
+		position: absolute;
+		right: 0;
+		width: 100px;
+		top: 20px;
+		background-color: hsl(218, 51%, 59%);
+		color: hsl(0, 100%, 100%);
+		font-size: 16px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;
+	}
+
+	.marker_search_inputs
+	{
+		position: absolute;
+		left: 0;
+		right: 130px;
+	}
+
+	.marker_card
+	{
+		.building_name
+		{
+			font-size: 20px;
+			font-weight: bold;
+		}
+		.full_address
+		{
+			margin-top: 20px;
+			color: hsl(0, 0%, 58%);
+			font-style: italic;
+		}
+		.rent_container
+		{
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 120px;
+			span
+			{
+				font-size: 20px;
+				margin-right: 2px;
+			}
+			input
+			{
+				width: 90px;
+				height: 40px;
+				font-size: 35px;
+				line-height: 40px;
+				text-align: right;
+			}
+		}
+	}
+
+	.date-field
+	{
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+
+	#sublet_save_button
+	{
+		background-color: hsl(218, 51%, 59%);
+		color: hsl(0, 100%, 100%);
+		font-size: 12px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;	
+	}
+
+	.sublet_row
+	{
+		margin: 20px 0;
+		position: relative;
+	}
+
+	.btn-group
+	{
+		.btn
+		{
+			background-image: none !important;
+			padding: 5px 9px;
+			background-color: hsl(0, 0%, 96%);
+
+			&.active
+			{
+				background-color: #6289cc;
+				border-bottom: solid 1px #6289cc;
+				color: white;
+				text-shadow: none;
+				box-shadow: inset 0 0 5px hsl(217, 57%, 35%);
+				z-index: 1;
+			}
+		}
+	}
+	.triangle-isosceles {
+		position:relative;
+		margin:1em 0 0;
+		color:#000;
+		background: hsl(218, 51%, 59%);
+		width: 218px;
+
+		/* css3 */
+		-moz-border-radius:10px;
+		-webkit-border-radius:10px;
+		border-radius:10px;
+
+		input
+		{
+			margin: 5px;
+			width: 193px;
+		}
+	}
+
+	/* creates triangle */
+	.triangle-isosceles:after {
+		content: "";
+		display: block;
+		position: absolute;
+		top: -15px;
+		left: 10px;
+		bottom: auto;
+		right: auto;
+		border-width: 0 15px 15px;
+		border-style: solid;
+		border-color: hsl(218, 51%, 59%) hsla(0, 0%, 0%, 0);
+	}
+
+	.photo_section
+	{
+		.add_photo
+		{
+			text-decoration: none;
+		}
+		.main_photo
+		{
+
+		}
+
+		.photo_footer
+		{
+
+		}
+	}
+
+	.done_section
+	{
+		min-width: 730px;
+		max-width: 800px;
+		.icon-ok-sign
+		{
+			font-size: 125px;
+			color: green;
+		}
+		i
+		{
+			font-size: 1500%
+		}
+
+		.icon-facebook-sign
+		{
+			color: blue;
+
+			&:hover
+			{
+				color: darkblue;
+			}
+		}
+		.icon-google-plus-sign
+		{
+			color: red;
+
+			&:hover
+			{
+				color: darkred;
+			}
+		}
+	}
+
+
+}

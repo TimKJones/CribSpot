@@ -9,7 +9,7 @@
       this.user_phone = user_phone;
       this.SaveImages = __bind(this.SaveImages, this);
 
-      this.div = $('.rentals-content');
+      this.div = $('.rental-content');
       this.EditableRows = [];
       this.Editable = false;
       this.VisibleGrid = 'overview_grid';
@@ -18,47 +18,41 @@
     }
 
     RentalSave.prototype.SetupUI = function(dropdown_content) {
-      if (!(A2Cribs.Geocoder != null)) {
-        A2Cribs.Geocoder = new google.maps.Geocoder();
-      }
+      var _this = this;
       $('#middle_content').height();
       this.div.find("grid-pane").height;
+      $(".create-listing").find("a").click(function(event) {
+        var listing_type;
+        listing_type = $(event.currentTarget).data("listing-type");
+        if (listing_type === "rental") {
+          return A2Cribs.MarkerModal.Open(listing_type);
+        }
+      });
       this.CreateCallbacks();
       return this.CreateGrids(dropdown_content);
     };
 
     RentalSave.prototype.CreateCallbacks = function() {
       var _this = this;
-      $('body').on("Rental_marker_added", function(event, marker_id) {
-        var list_item, name;
-        if ($("#rentals_list_content").find("#" + marker_id).length === 0) {
-          name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
-          list_item = $("<li />", {
-            text: name,
-            "class": "rentals_list_item",
-            id: marker_id
-          });
-          $("#rentals_list_content").append(list_item);
-          $("#rentals_list_content").slideDown();
-        }
+      $('#rental_list_content').on("marker_added", function(event, marker_id) {
         A2Cribs.Dashboard.Direct({
-          classname: 'rentals',
+          classname: 'rental',
           data: true
         });
-        return $.when(_this.Open(marker_id)).then(function() {
+        return _this.Open(marker_id).done(function() {
           return _this.AddNewUnit();
         });
       });
       $('body').on("Rental_marker_updated", function(event, marker_id) {
         var list_item, name;
-        if ($("#rentals_list_content").find("#" + marker_id).length === 1) {
-          list_item = $("#rentals_list_content").find("#" + marker_id);
+        if ($("#rental_list_content").find("#" + marker_id).length === 1) {
+          list_item = $("#rental_list_content").find("#" + marker_id);
           name = A2Cribs.UserCache.Get("marker", marker_id).GetName();
           list_item.text(name);
           return _this.CreateListingPreview(marker_id);
         }
       });
-      $("body").on('click', '.rentals_list_item', function(event) {
+      $("body").on('click', '.rental_list_item', function(event) {
         if (_this.Editable) {
           return A2Cribs.UIManager.ConfirmBox("By selecting a new address, all unsaved changes will be lost.", {
             "ok": "Abort Changes",
@@ -75,7 +69,7 @@
       });
       this.div.find(".edit_marker").click(function() {
         A2Cribs.MixPanel.PostListing("Started", {});
-        A2Cribs.MarkerModal.Open();
+        A2Cribs.MarkerModal.Open(listing_type);
         return A2Cribs.MarkerModal.LoadMarker(_this.CurrentMarker);
       });
       $("#rentals_edit").click(function(event) {
@@ -137,7 +131,7 @@
           return $(event.delegateTarget).tab('show');
         }
       });
-      return $(".rentals-content").on("shown", function(event) {
+      return $(".rental-content").on("shown", function(event) {
         var grid, height, width, _ref, _results;
         width = $("#" + _this.VisibleGrid).width();
         height = $('#add_new_unit').position().top - $("#" + _this.VisibleGrid).position().top;
@@ -252,7 +246,7 @@
           _this.ClearGrids();
           _this.CurrentMarker = marker_id;
           _this.CreateListingPreview(marker_id);
-          A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
+          A2Cribs.Dashboard.ShowContent($(".rental-content"), true);
           _this.PopulateGrid(marker_id);
           deferred.resolve();
           return $("#loader").hide();
@@ -471,7 +465,7 @@
         "marker id": this.CurrentMarker,
         "number of images": image_array != null ? image_array.length : void 0
       });
-      return A2Cribs.PhotoManager.LoadImages(image_array, row, this.SaveImages);
+      return A2Cribs.PhotoManager.LoadImages(image_array, this.SaveImages, row);
     };
 
     /*
@@ -479,7 +473,7 @@
     */
 
 
-    RentalSave.prototype.SaveImages = function(row, images) {
+    RentalSave.prototype.SaveImages = function(images, row) {
       var data, image, _i, _len;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
       if (data.listing_id != null) {
