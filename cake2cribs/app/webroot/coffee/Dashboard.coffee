@@ -67,7 +67,7 @@ class A2Cribs.Dashboard
 					id: marker_id
 				}
 				count = $("##{listing_type}_count").text()
-				$("##{listing_type}_count").text count + 1
+				$("##{listing_type}_count").text parseInt(count, 10) + 1
 				$(event.currentTarget).append list_item
 				$(event.currentTarget).slideDown()
 

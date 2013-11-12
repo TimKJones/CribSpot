@@ -47,7 +47,7 @@ class A2Cribs.RentalSave
 
 		@div.find(".edit_marker").click () =>
 			A2Cribs.MixPanel.PostListing "Started", {}
-			A2Cribs.MarkerModal.Open()
+			A2Cribs.MarkerModal.Open listing_type
 			A2Cribs.MarkerModal.LoadMarker @CurrentMarker
 
 		$("#rentals_edit").click (event) =>

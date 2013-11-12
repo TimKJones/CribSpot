@@ -69,7 +69,7 @@
       });
       this.div.find(".edit_marker").click(function() {
         A2Cribs.MixPanel.PostListing("Started", {});
-        A2Cribs.MarkerModal.Open();
+        A2Cribs.MarkerModal.Open(listing_type);
         return A2Cribs.MarkerModal.LoadMarker(_this.CurrentMarker);
       });
       $("#rentals_edit").click(function(event) {

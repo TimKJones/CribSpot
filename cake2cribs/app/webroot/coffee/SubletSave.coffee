@@ -18,7 +18,10 @@ class SubletSave
 
 		# Save Button Click Listener
 		@div.find("#sublet_save_button").click =>
+			@div.find("#sublet_save_button").button 'loading'
 			@Save()
+			.always =>
+				@div.find("#sublet_save_button").button 'reset'
 
 		# Listener for button groups
 		# Sets value depending on btn that is active
@@ -40,6 +43,8 @@ class SubletSave
 		$("#sublet_list_content").on "marker_updated", (event, marker_id) =>
 			@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
 
+		@SetupShareButtons()
+
 		# Popup add photo manager when clicked
 		@div.find(".photo_adder").click () =>
 			listing_id = @div.find(".listing_id").val()
@@ -49,6 +54,27 @@ class SubletSave
 				image_array = @_temp_images
 
 			A2Cribs.PhotoManager.Open image_array, @PhotoAddedCallback
+
+	###
+	Setup Share Buttons
+	Links share manager functions to the share buttons
+	when a sublet is posted
+	###
+	@SetupShareButtons: ->
+		@div.find('.fb_sublet_share').click =>
+			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
+			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
+			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
+
+		@div.find('.google_sublet_share').click =>
+			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
+			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
+			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
+
+		@div.find('.twitter_sublet_share').click =>
+			A2Cribs.ShareManager.ShareSubletOnTwitter(@div.find(".marker_id").val())
 
 	###
 	Photo Added
@@ -111,6 +137,9 @@ class SubletSave
 	is defined. Otherwise will start a new sublet
 	###
 	@Open: (marker_id = null) ->
+		@div.find(".done_section").fadeOut 'fast', () =>
+			@div.find(".sublet_section").fadeIn()
+
 		if marker_id?
 			# Find all cached listings with marker_id
 			# Should only be users cached because it is only in the dashboard
@@ -118,6 +147,9 @@ class SubletSave
 
 			# Set the hidden field for listing id
 			@div.find(".listing_id").val listings[0].listing_id
+
+			# Set the hidden field for marker id
+			@div.find(".marker_id").val marker_id
 
 			# Fetch the sublet object from the cache
 			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
@@ -223,8 +255,11 @@ class SubletSave
 						# Trigger an event to notify the dashboard
 						if not sublet_object.Listing.listing_id?
 							$('#sublet_list_content').trigger "marker_added", [sublet_object.Listing.marker_id]
+							@div.find(".sublet_section").fadeOut 'slow', () =>
+								@div.find(".done_section").fadeIn()
 
 						A2Cribs.UserCache.CacheData response.listing
+						@div.find(".listing_id").val response.listing.Listing.listing_id
 						A2Cribs.UIManager.Success "Your listing has been saved!"
 		else
 			return new $.Deferred().reject()

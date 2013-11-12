@@ -41,6 +41,39 @@ class A2Cribs.ShareManager
 		FB.ui fbObj
 
 	###
+	Shares the sublet on facebook
+	###
+	@ShareSubletOnFB: (marker, sublet, images) ->
+		url = 'https://cribspot.com/listing/' + sublet.listing_id
+		A2Cribs.MixPanel.Event "Social share",
+			type: "facebook"
+			element: "sublet"
+			promotion: "completed sublet"
+
+		primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
+		if images?
+			primary_image = images.GetPrimary()
+
+
+		fbObj = 
+			method: 'feed'
+			link: url
+			picture: primary_image
+			name: "#{marker.GetName()} - Check out my sublet on Cribspot!"
+			caption: "I am subletting my place on Cribspot. Message me if you are interested."
+			description: sublet.description
+
+
+		FB.ui fbObj, (response) ->
+			if response?.post_id
+				A2Cribs.MixPanel.Event "Social share complete",
+					type: "facebook"
+					element: "sublet"
+					promotion: "completed sublet"
+					post_id: response.post_id
+
+
+	###
 	Shares the school page on facebook
 	###
 	@ShareOnFacebook: ->
@@ -94,8 +127,20 @@ class A2Cribs.ShareManager
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
 		window.prompt "Copy to clipboard: Ctrl+C, Enter", url
 
+	@ShareSubletOnTwitter: (listing_id) ->
+		url = @GetTwitterShareUrl listing_id
+		A2Cribs.MixPanel.Event "Social share",
+			type: "twitter"
+			element: "sublet"
+			promotion: "completed sublet"
+
+		# Center popup based on the screen size
+		x = screen.width / 2 - 600 / 2
+		y = screen.height / 2 - 350 / 2
+		window.open url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=#{y},left=#{x}"
+
 	@ShareListingOnTwitter: (listing_id, street_address, city, state, zip) ->
-		url = @GetTwitterShareUrl listing_id, street_address, city, state, zip
+		url = @GetTwitterShareUrl listing_id
 		A2Cribs.MixPanel.Event "Share",
 			type: "listing on twitter"
 
@@ -104,10 +149,8 @@ class A2Cribs.ShareManager
 		y = screen.height / 2 - 350 / 2
 		window.open url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=#{y},left=#{x}"
 
-	@GetTwitterShareUrl: (listing_id, street_address, city, state, zip) ->
-		if listing_id == null or street_address == null or city == null or state == null or zip == null
-			return null
-		url = @GetShareUrl(listing_id, street_address, city, state, zip)
+	@GetTwitterShareUrl: (listing_id) ->
+		url = 'https://cribspot.com/listing/' + listing_id
 		return 'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot'
 
 

@@ -25,7 +25,10 @@
         return _this.Open(event.currentTarget.id);
       });
       this.div.find("#sublet_save_button").click(function() {
-        return _this.Save();
+        _this.div.find("#sublet_save_button").button('loading');
+        return _this.Save().always(function() {
+          return _this.div.find("#sublet_save_button").button('reset');
+        });
       });
       this.div.find(".btn-group.sublet_fields .btn").click(function(event) {
         return $(event.currentTarget).parent().val($(event.currentTarget).val());
@@ -44,6 +47,7 @@
       $("#sublet_list_content").on("marker_updated", function(event, marker_id) {
         return _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
       });
+      this.SetupShareButtons();
       return this.div.find(".photo_adder").click(function() {
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
@@ -53,6 +57,34 @@
           image_array = _this._temp_images;
         }
         return A2Cribs.PhotoManager.Open(image_array, _this.PhotoAddedCallback);
+      });
+    };
+
+    /*
+    	Setup Share Buttons
+    	Links share manager functions to the share buttons
+    	when a sublet is posted
+    */
+
+
+    SubletSave.SetupShareButtons = function() {
+      var _this = this;
+      this.div.find('.fb_sublet_share').click(function() {
+        var images, marker, sublet;
+        sublet = A2Cribs.UserCache.Get("sublet", _this.div.find(".listing_id").val());
+        images = A2Cribs.UserCache.Get("image", _this.div.find(".listing_id").val());
+        marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
+        return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
+      });
+      this.div.find('.google_sublet_share').click(function() {
+        var images, marker, sublet;
+        sublet = A2Cribs.UserCache.Get("sublet", _this.div.find(".listing_id").val());
+        images = A2Cribs.UserCache.Get("image", _this.div.find(".listing_id").val());
+        marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
+        return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
+      });
+      return this.div.find('.twitter_sublet_share').click(function() {
+        return A2Cribs.ShareManager.ShareSubletOnTwitter(_this.div.find(".marker_id").val());
       });
     };
 
@@ -130,9 +162,13 @@
       if (marker_id == null) {
         marker_id = null;
       }
+      this.div.find(".done_section").fadeOut('fast', function() {
+        return _this.div.find(".sublet_section").fadeIn();
+      });
       if (marker_id != null) {
         listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker_id);
         this.div.find(".listing_id").val(listings[0].listing_id);
+        this.div.find(".marker_id").val(marker_id);
         A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id).done(function(sublet) {
           _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
           return _this.Populate(sublet);
@@ -225,8 +261,12 @@
             } else {
               if (!(sublet_object.Listing.listing_id != null)) {
                 $('#sublet_list_content').trigger("marker_added", [sublet_object.Listing.marker_id]);
+                _this.div.find(".sublet_section").fadeOut('slow', function() {
+                  return _this.div.find(".done_section").fadeIn();
+                });
               }
               A2Cribs.UserCache.CacheData(response.listing);
+              _this.div.find(".listing_id").val(response.listing.Listing.listing_id);
               return A2Cribs.UIManager.Success("Your listing has been saved!");
             }
           }
