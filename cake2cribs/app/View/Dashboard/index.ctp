@@ -2,7 +2,7 @@
 <?php echo $this->element('Dashboard/marker-modal', $dropdowns);?>
 <?php echo $this->element('Dashboard/picture-modal');?>
 <?php echo $this->Html->css('messages'); ?>
-<?php echo $this->Html->css('account'); ?>
+<?php echo $this->Html->css('account.css?v=2'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
 
 <?php
