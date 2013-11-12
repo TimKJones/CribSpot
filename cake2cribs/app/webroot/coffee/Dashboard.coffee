@@ -66,9 +66,10 @@ class A2Cribs.Dashboard
 					class: "#{listing_type}_list_item"
 					id: marker_id
 				}
+				count = $("##{listing_type}_count").text()
+				$("##{listing_type}_count").text count + 1
 				$(event.currentTarget).append list_item
 				$(event.currentTarget).slideDown()
-			A2Cribs.Dashboard.Direct { classname: listing_type, data: true }
 
 	###
 
@@ -211,8 +212,8 @@ class A2Cribs.Dashboard
 			dropdown.slideUp 'fast'
 
 	@ShowContent:(content)->
-		content.siblings().addClass 'hidden'
-		content.removeClass 'hidden'
+		content.siblings().addClass('hidden').hide()
+		content.removeClass('hidden').hide().fadeIn()
 		content.trigger 'shown'
 
 	@HideContent: (classname)->

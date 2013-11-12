@@ -118,7 +118,7 @@ class A2Cribs.PhotoManager
 
 	UploadImageDefer: () ->
 		@UploadCompleteDeferred = new $.Deferred()
-		@UploadCompletePromise = @UploadCompleteDeferred.promise()
+		@UploadCompleteDeferred.promise()
 
 	SetupUI:() ->
 		that = @
@@ -230,7 +230,7 @@ class A2Cribs.PhotoManager
 			FIXING GITHUB ISSUE 141
 			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
 			###
-			$.when(@UploadCompletePromise).then (resolved) =>
+			$.when(@UploadCompleteDeferred).then (resolved) =>
 				if resolved
 					imageCallback @GetPhotos(), row
 
@@ -275,6 +275,7 @@ class A2Cribs.PhotoManager
 		@div.find("#imageContent0").html '<div class="img-place-holder"></div>'
 		@div.find("#captionInput").val ""
 		@div.find("#charactersLeft").html @MAX_CAPTION_LENGTH
+		@UploadCompleteDeferred = new $.Deferred().resolve true
 
 		for photo in @Photos
 			photo.Reset()
@@ -305,7 +306,8 @@ class A2Cribs.PhotoManager
 	Waits for the picture modal element to be loaded
 	before initializing the PhotoManager
 	###
-	$("#picture-modal").load =>
-		A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"))
+	$(document).ready =>
+		if $("#picture-modal").length
+			A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"))
 
 	

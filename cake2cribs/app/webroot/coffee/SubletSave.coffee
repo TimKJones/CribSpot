@@ -9,9 +9,8 @@ class SubletSave
 		# Set up Mini Map preview
 		@MiniMap = new A2Cribs.MiniMap @div.find(".mini_map")
 
-		# Open sublet on marker added event
-		$('#sublet_list_content').on "marker_added", (event, marker_id) =>
-			@Open marker_id
+		$(".sublet-content").on "shown", =>
+			@MiniMap.Resize()
 
 		# Click on side bar sublet
 		$('#sublet_list_content').on 'click', '.sublet_list_item', (event) =>
@@ -45,7 +44,7 @@ class SubletSave
 		@div.find(".photo_adder").click () =>
 			listing_id = @div.find(".listing_id").val()
 			if listing_id?.length isnt 0
-				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetImages()
+				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetObject()
 			else
 				image_array = @_temp_images
 
@@ -58,9 +57,13 @@ class SubletSave
 	###
 	@PhotoAddedCallback: (photos) =>
 		listing_id = @div.find(".listing_id").val()
-		@_temp_images = photos
 		if listing_id?.length isnt 0
+			for image in photos
+				image.listing_id = listing_id
 			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			@Save()
+		@_temp_images = photos
+
 
 	###
 	Validate
@@ -73,11 +76,16 @@ class SubletSave
 
 		# Check each btn-group for a value
 		@div.find(".btn-group").each (index, value) ->
-			if $(value).find(".active").size() is 0 then isValid = no
+			if isValid and $(value).find(".active").size() is 0 
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
 
-		# Check each date-field for a value
-		@div.find(".date-field").each (index, value) ->
-			if $(value).val().length is 0 then isValid = no
+		# Check each text-field/date-fields for a value
+		@div.find(".text-field").each (index, value) ->
+			if isValid and $(value).val().length is 0
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
+
 		return isValid
 
 	###
@@ -90,6 +98,12 @@ class SubletSave
 		# Unpress each btn-group
 		@div.find(".btn-group").each (index, value) ->
 			$(value).find(".active").removeClass "active"
+
+		# Reset all input fields
+		@div.find("input").val ""
+
+		# Reset all textarea fields
+		@div.find("textarea").val ""
 
 	###
 	Open
@@ -115,6 +129,16 @@ class SubletSave
 		else
 			# Clear out the sublet_window if no marker defined
 			@Reset()
+	
+			# Reset mini map
+			@MiniMap.Reset()
+
+			# Slide up more info
+			@div.find(".more_info").slideUp()
+
+			# Add search box to get started
+			@div.find(".marker_card").fadeOut 'fast', () =>
+				@div.find(".marker_searchbox").fadeIn()
 
 		# Direct the dashboard to show sublets
 		A2Cribs.Dashboard.Direct 
@@ -185,13 +209,23 @@ class SubletSave
 	###
 	@Save: ->
 		if @Validate()
+			sublet_object = @GetSubletObject()
 			return $.ajax
 				url: myBaseUrl + "listings/Save/"
 				type: "POST"
-				data: @GetSubletObject()
+				data: sublet_object
 				success: (response) =>
-					console.log response
-					#A2Cribs.UserCache.Set new Sublet(response)
+					response = JSON.parse response
+					if response.error?
+						A2Cribs.UIManager.Error response.error
+					else
+						# Check to see if it is a new listing
+						# Trigger an event to notify the dashboard
+						if not sublet_object.Listing.listing_id?
+							$('#sublet_list_content').trigger "marker_added", [sublet_object.Listing.marker_id]
+
+						A2Cribs.UserCache.CacheData response.listing
+						A2Cribs.UIManager.Success "Your listing has been saved!"
 		else
 			return new $.Deferred().reject()
 
@@ -300,7 +334,8 @@ class SubletSave
 	Returns date in readable front-end syntax
 	###
 	@GetFormattedDate: (dateString) ->
-		date_array = dateString.split "-"
+		date_array = dateString.split " " # Remove the 00:00:00 if necessary
+		date_array = date_array[0].split "-" # Split the date
 		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
 	$("#sublet_window").ready =>

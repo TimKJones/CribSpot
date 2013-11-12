@@ -18,8 +18,8 @@
       var _this = this;
       this.div = div;
       this.MiniMap = new A2Cribs.MiniMap(this.div.find(".mini_map"));
-      $('#sublet_list_content').on("marker_added", function(event, marker_id) {
-        return _this.Open(marker_id);
+      $(".sublet-content").on("shown", function() {
+        return _this.MiniMap.Resize();
       });
       $('#sublet_list_content').on('click', '.sublet_list_item', function(event) {
         return _this.Open(event.currentTarget.id);
@@ -48,7 +48,7 @@
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
         if ((listing_id != null ? listing_id.length : void 0) !== 0) {
-          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetImages() : void 0;
+          image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetObject() : void 0;
         } else {
           image_array = _this._temp_images;
         }
@@ -64,12 +64,17 @@
 
 
     SubletSave.PhotoAddedCallback = function(photos) {
-      var listing_id;
+      var image, listing_id, _i, _len;
       listing_id = SubletSave.div.find(".listing_id").val();
-      SubletSave._temp_images = photos;
       if ((listing_id != null ? listing_id.length : void 0) !== 0) {
-        return A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        for (_i = 0, _len = photos.length; _i < _len; _i++) {
+          image = photos[_i];
+          image.listing_id = listing_id;
+        }
+        A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        SubletSave.Save();
       }
+      return SubletSave._temp_images = photos;
     };
 
     /*
@@ -83,13 +88,15 @@
       var isValid;
       isValid = true;
       this.div.find(".btn-group").each(function(index, value) {
-        if ($(value).find(".active").size() === 0) {
-          return isValid = false;
+        if (isValid && $(value).find(".active").size() === 0) {
+          isValid = false;
+          return A2Cribs.UIManager.Error($(value).data("error-message"));
         }
       });
-      this.div.find(".date-field").each(function(index, value) {
-        if ($(value).val().length === 0) {
-          return isValid = false;
+      this.div.find(".text-field").each(function(index, value) {
+        if (isValid && $(value).val().length === 0) {
+          isValid = false;
+          return A2Cribs.UIManager.Error($(value).data("error-message"));
         }
       });
       return isValid;
@@ -103,9 +110,11 @@
 
 
     SubletSave.Reset = function() {
-      return this.div.find(".btn-group").each(function(index, value) {
+      this.div.find(".btn-group").each(function(index, value) {
         return $(value).find(".active").removeClass("active");
       });
+      this.div.find("input").val("");
+      return this.div.find("textarea").val("");
     };
 
     /*
@@ -130,6 +139,11 @@
         });
       } else {
         this.Reset();
+        this.MiniMap.Reset();
+        this.div.find(".more_info").slideUp();
+        this.div.find(".marker_card").fadeOut('fast', function() {
+          return _this.div.find(".marker_searchbox").fadeIn();
+        });
       }
       return A2Cribs.Dashboard.Direct({
         "classname": "sublet",
@@ -196,14 +210,25 @@
 
 
     SubletSave.Save = function() {
-      var _this = this;
+      var sublet_object,
+        _this = this;
       if (this.Validate()) {
+        sublet_object = this.GetSubletObject();
         return $.ajax({
           url: myBaseUrl + "listings/Save/",
           type: "POST",
-          data: this.GetSubletObject(),
+          data: sublet_object,
           success: function(response) {
-            return console.log(response);
+            response = JSON.parse(response);
+            if (response.error != null) {
+              return A2Cribs.UIManager.Error(response.error);
+            } else {
+              if (!(sublet_object.Listing.listing_id != null)) {
+                $('#sublet_list_content').trigger("marker_added", [sublet_object.Listing.marker_id]);
+              }
+              A2Cribs.UserCache.CacheData(response.listing);
+              return A2Cribs.UIManager.Success("Your listing has been saved!");
+            }
           }
         });
       } else {
@@ -328,7 +353,8 @@
 
     SubletSave.GetFormattedDate = function(dateString) {
       var date_array;
-      date_array = dateString.split("-");
+      date_array = dateString.split(" ");
+      date_array = date_array[0].split("-");
       return "" + date_array[1] + "/" + date_array[2] + "/" + date_array[0];
     };
 
