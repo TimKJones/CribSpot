@@ -3,14 +3,14 @@
 		<div class="row-fluid">
 			<div class="span7 text-center span">
 				<div class="slogan">
-					<span>A <span class="large"><strong>FREE</strong></span> Service for Property Managers to Reach <span class="blue large"><strong>27,265</strong></span> College Renters</span>
+					<span>A <span class="large"><strong>FREE</strong></span> Service for Property Managers to Reach <span class="blue large"><strong>15,558</strong></span> College Renters</span>
 				</div>
 			</div>
 			<div class="span5 span">
 				<div class="password_box">
 					<div class="welcome_box">
 						<div class="welcome_text">Welcome!</div>
-						<div class="message_block">Join the <span class="pm_count">365</span> Property Managers already using Cribspot by creating you password below:</div>
+						<div class="message_block">Join the <span class="pm_count">321</span> Property Managers already using Cribspot by creating you password below:</div>
 					</div>
 					<div class="user_form">
 						<input id="u_id" type="hidden" value="<?= $id ?>">
