@@ -148,12 +148,12 @@ class SubletSave
 			# Set the hidden field for listing id
 			@div.find(".listing_id").val listings[0].listing_id
 
-			# Set the hidden field for marker id
-			@div.find(".marker_id").val marker_id
-
 			# Fetch the sublet object from the cache
 			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
 			.done (sublet) =>
+				# Reset the sublet form first
+				@Reset()
+		
 				# Populate the marker fields
 				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
 				# Populate based on the retrieved sublet
@@ -212,9 +212,6 @@ class SubletSave
 	Populates the sublet fields in the dom
 	###
 	@Populate: (sublet_object) ->
-		# Reset the sublet form first
-		@Reset()
-		
 		# Get all fields from dom
 		# Loop through them and populate
 		$(".sublet_fields").each (index, value) =>
