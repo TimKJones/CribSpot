@@ -1,6 +1,6 @@
 class A2Cribs.RentalSave
 	constructor: (dropdown_content, @user_email, @user_phone) ->
-		@div = $('.rentals-content')
+		@div = $('.rental-content')
 		@EditableRows = []
 		@Editable = false
 		@VisibleGrid = 'overview_grid'
@@ -21,6 +21,7 @@ class A2Cribs.RentalSave
 
 	CreateCallbacks: () ->
 		$('#rental_list_content').on "marker_added", (event, marker_id) =>
+			A2Cribs.Dashboard.Direct { classname: 'rental', data: true }
 			@Open(marker_id)
 			.done => @AddNewUnit()
 
@@ -91,7 +92,7 @@ class A2Cribs.RentalSave
 				$(event.target).removeClass "highlight-tab"
 				$(event.delegateTarget).tab 'show'
 
-		$(".rentals-content").on "shown", (event) =>
+		$(".rental-content").on "shown", (event) =>
 			width = $("##{@VisibleGrid}").width()
 			height = $('#add_new_unit').position().top - $("##{@VisibleGrid}").position().top
 			@Map?.Resize()
@@ -171,7 +172,7 @@ class A2Cribs.RentalSave
 				@CurrentMarker = marker_id
 				@CreateListingPreview marker_id
 				
-				A2Cribs.Dashboard.ShowContent $(".rentals-content"), true
+				A2Cribs.Dashboard.ShowContent $(".rental-content"), true
 
 				@PopulateGrid marker_id
 				deferred.resolve()

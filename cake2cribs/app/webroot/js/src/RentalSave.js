@@ -9,7 +9,7 @@
       this.user_phone = user_phone;
       this.SaveImages = __bind(this.SaveImages, this);
 
-      this.div = $('.rentals-content');
+      this.div = $('.rental-content');
       this.EditableRows = [];
       this.Editable = false;
       this.VisibleGrid = 'overview_grid';
@@ -35,6 +35,10 @@
     RentalSave.prototype.CreateCallbacks = function() {
       var _this = this;
       $('#rental_list_content').on("marker_added", function(event, marker_id) {
+        A2Cribs.Dashboard.Direct({
+          classname: 'rental',
+          data: true
+        });
         return _this.Open(marker_id).done(function() {
           return _this.AddNewUnit();
         });
@@ -127,7 +131,7 @@
           return $(event.delegateTarget).tab('show');
         }
       });
-      return $(".rentals-content").on("shown", function(event) {
+      return $(".rental-content").on("shown", function(event) {
         var grid, height, width, _ref, _results;
         width = $("#" + _this.VisibleGrid).width();
         height = $('#add_new_unit').position().top - $("#" + _this.VisibleGrid).position().top;
@@ -242,7 +246,7 @@
           _this.ClearGrids();
           _this.CurrentMarker = marker_id;
           _this.CreateListingPreview(marker_id);
-          A2Cribs.Dashboard.ShowContent($(".rentals-content"), true);
+          A2Cribs.Dashboard.ShowContent($(".rental-content"), true);
           _this.PopulateGrid(marker_id);
           deferred.resolve();
           return $("#loader").hide();
