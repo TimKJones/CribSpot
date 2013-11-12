@@ -1,5 +1,6 @@
 <?php 
 echo $this->Html->css('/less/featured-listings.less?v=4','stylesheet/less', array('inline' => false));
+echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline' => false));
 ?>
 
 <div class = 'featured-listings-wrapper'>

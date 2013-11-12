@@ -21,6 +21,12 @@ class A2Cribs.Hotlist
 
   constructor: (@DOMRoot) ->
     @template = _.template(A2Cribs.Hotlist.templateHTML)
+
+    @usEngine = {
+      compile: (template) ->
+        { render: ((context) -> _.template(template)(context)) }
+    }
+
     @setup()
 
   setup: ->
@@ -39,32 +45,21 @@ class A2Cribs.Hotlist
 
   render: (data) ->
     @DOMRoot.html(@template(data))
-    $('.friend-adder .typeahead').typeahead({
-      source: (query, process) ->
-        if query.match(/^.+\@.+\..+$/)
-          console.log encodeURIComponent query
-          $.ajax
-            type: 'get'
-            url: myBaseUrl + 'users/getbyname'
-            data: 
-              name: query
-            success: (data) ->
-              response_data = JSON.parse data
-              namelist = response_data.map((u) -> "#{u.User.email} - <em>#{u.User.first_name} #{u.User.last_name}</em> <img src='http://placehold.it/20x20'/>")
-              process(namelist)
-              console.log(namelist)
-            fail: (data) ->
-              console.log(data)
-      updater: (item) ->
-        item.split(' ')[0]
-
-        # $.getJSON(myBaseUrl + 'users/getbyname', {name: query})
-        #   .done((data)->
-        #     process(data))
-        #   .always((data)->
-        #     console.log(data))
-        
-    })
+    $('.friend-adder .typeahead').typeahead([
+      {
+        name: 'accounts',
+        remote:
+          url: myBaseUrl + 'users/getbyname?name=%QUERY'
+          filter: (response) ->
+            console.log response
+            response.map (item) ->
+              datum = 
+                value: "#{item.User.email}" 
+                name: "#{item.User.first_name} #{item.User.last_name}"
+              console.log datum
+              return datum
+      }
+    ])
 
   get: ->
     deferred = new $.Deferred()
@@ -88,13 +83,16 @@ class A2Cribs.Hotlist
       ))
 
   add: (friend) ->
-    $.when(A2Cribs.Hotlist.call(friend, 'add')).then(
-      ((data, status, jqXHR) =>
-        data = {
-          friends: data
-        }
-        @render(data)
-      ))
+    $.when(A2Cribs.Hotlist.call(friend, 'add'))
+    .then((data, status, jqXHR) =>
+      data = {
+        friends: data
+      }
+      @render(data)
+    )
+    .fail((data, status, jqXHR) =>
+      console.log("ERROR: #{data}")
+    )
 
 
   @templateHTML: """
@@ -109,4 +107,5 @@ class A2Cribs.Hotlist
   <div class='friend-adder'>
       <input class='typeahead' type='text' autocomplete='off'></input>
   </div>
+  <a href= '#' onClick="A2Cribs.HotlistObj.add($('.typeahead').val())">Add</a>
   """

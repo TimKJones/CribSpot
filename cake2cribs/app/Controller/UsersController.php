@@ -44,8 +44,17 @@ class UsersController extends AppController {
     public function addToHotlist()
     {
         $user_id = $this->Auth->User('id');
-        $friend_id = $this->request->data['friend_id'];
-        $response = $this->User->addToHotlist($user_id, $friend_id);
+        $friend_email = $this->request->data['friend_id'];
+
+        if ($this->User->hasAny(array('User.email' => $friend_email))) {
+            $response = $this->User->addToHotlist($user_id, $friend_email);
+        }
+
+        else {
+            $response = array('error' => 'User does not exist for email');
+            $this->response->statusCode('404');
+        }
+
 
         $this->set('response', json_encode($response));
         $this->render('hotlist');

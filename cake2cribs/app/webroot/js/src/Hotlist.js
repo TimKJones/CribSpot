@@ -32,6 +32,15 @@
     function Hotlist(DOMRoot) {
       this.DOMRoot = DOMRoot;
       this.template = _.template(A2Cribs.Hotlist.templateHTML);
+      this.usEngine = {
+        compile: function(template) {
+          return {
+            render: (function(context) {
+              return _.template(template)(context);
+            })
+          };
+        }
+      };
       this.setup();
     }
 
@@ -50,35 +59,26 @@
 
     Hotlist.prototype.render = function(data) {
       this.DOMRoot.html(this.template(data));
-      return $('.friend-adder .typeahead').typeahead({
-        source: function(query, process) {
-          if (query.match(/^.+\@.+\..+$/)) {
-            console.log(encodeURIComponent(query));
-            return $.ajax({
-              type: 'get',
-              url: myBaseUrl + 'users/getbyname',
-              data: {
-                name: query
-              },
-              success: function(data) {
-                var namelist, response_data;
-                response_data = JSON.parse(data);
-                namelist = response_data.map(function(u) {
-                  return "" + u.User.email + " - <em>" + u.User.first_name + " " + u.User.last_name + "</em> <img src='http://placehold.it/20x20'/>";
-                });
-                process(namelist);
-                return console.log(namelist);
-              },
-              fail: function(data) {
-                return console.log(data);
-              }
-            });
+      return $('.friend-adder .typeahead').typeahead([
+        {
+          name: 'accounts',
+          remote: {
+            url: myBaseUrl + 'users/getbyname?name=%QUERY',
+            filter: function(response) {
+              console.log(response);
+              return response.map(function(item) {
+                var datum;
+                datum = {
+                  value: "" + item.User.email,
+                  name: "" + item.User.first_name + " " + item.User.last_name
+                };
+                console.log(datum);
+                return datum;
+              });
+            }
           }
-        },
-        updater: function(item) {
-          return item.split(' ')[0];
         }
-      });
+      ]);
     };
 
     Hotlist.prototype.get = function() {
@@ -110,15 +110,17 @@
 
     Hotlist.prototype.add = function(friend) {
       var _this = this;
-      return $.when(A2Cribs.Hotlist.call(friend, 'add')).then((function(data, status, jqXHR) {
+      return $.when(A2Cribs.Hotlist.call(friend, 'add')).then(function(data, status, jqXHR) {
         data = {
           friends: data
         };
         return _this.render(data);
-      }));
+      }).fail(function(data, status, jqXHR) {
+        return console.log("ERROR: " + data);
+      });
     };
 
-    Hotlist.templateHTML = "<div id='share-all'></div>\n<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <%=elem.first_name%> <%=elem.last_name%> <a href = '#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>x</a>\n    </li>\n  <% }); %>\n</ul>\n<div class='friend-adder'>\n    <input class='typeahead' type='text' autocomplete='off'></input>\n</div>";
+    Hotlist.templateHTML = "<div id='share-all'></div>\n<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <%=elem.first_name%> <%=elem.last_name%> <a href = '#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>x</a>\n    </li>\n  <% }); %>\n</ul>\n<div class='friend-adder'>\n    <input class='typeahead' type='text' autocomplete='off'></input>\n</div>\n<a href= '#' onClick=\"A2Cribs.HotlistObj.add($('.typeahead').val())\">Add</a>";
 
     return Hotlist;
 

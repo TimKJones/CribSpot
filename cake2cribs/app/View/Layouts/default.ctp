@@ -48,6 +48,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('restrict_browsers');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('custom-bootstrap');
+		echo $this->Html->script('typeahead');
 		echo $this->Html->script('markerclusterer_packed.js');
 		echo $this->Html->script('google_plus1');
 		echo $this->Html->script('google_analytics');

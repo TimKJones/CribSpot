@@ -213,8 +213,11 @@ class User extends AppModel {
     return $this->getHotlist($user_id);
 	}
 
-	public function addToHotlist($user_id, $friend_id) {
-    CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_id . ')');
+	public function addToHotlist($user_id, $friend_email) {
+    CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_email . ')');
+    $friend = $this->find('first', array('conditions' => array('User.email' => $friend_email)));
+
+    $friend_id = $friend['User']['id'];
     if ($user_id != $friend_id){
 	    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
 	  }
