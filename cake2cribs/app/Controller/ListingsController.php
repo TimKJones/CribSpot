@@ -542,13 +542,13 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			$amenities = array('air');
 
 		foreach ($amenities as $field){
-			if (array_key_exists($field, $listing)){
-				if ($listing[$field] === true)
-					$listing[$field] = 'Yes';
-				else if ($listing[$field] === false)
-					$listing[$field] = 'No';
+			if (array_key_exists($field, $listing[$listing_type])) {
+				if ($listing[$listing_type][$field] === true)
+					$listing[$listing_type][$field] = 'Yes';
+				else if ($listing[$listing_type][$field] === false)
+					$listing[$listing_type][$field] = 'No';
 				else
-					$listing[$field] = '-';
+					$listing[$listing_type][$field] = '-';
 			}
 		}
 	}
