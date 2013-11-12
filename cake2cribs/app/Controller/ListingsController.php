@@ -98,6 +98,7 @@ class ListingsController extends AppController {
 
 		if (array_key_exists('Sublet', $listing)){
 			$this->_viewSublet($listing);
+			CakeLog::write('subletview', print_r($listing, true));
 			$this->set('listing_type', 'Sublet');
 		}
 		else{
@@ -122,6 +123,7 @@ class ListingsController extends AppController {
 
 		$this->layout = 'ajax';
 		$listingObject = $this->params['data'];
+CakeLog::write('listingobject', print_r($listingObject, true));
 		$listing = $listingObject['Listing'];
 		$listing['Listing'] = $listing;
 		$images = null;
