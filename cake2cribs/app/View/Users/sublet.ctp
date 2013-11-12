@@ -65,7 +65,7 @@
 </div>
 
 <?= $this->element('header', array('show_filter' => false, 'show_user' => false)); ?>
-<?= $this->Html->css('/less/User/welcome.less?v=6','stylesheet/less', array('inline' => false));?>
+<?= $this->Html->css('/less/User/welcome.less?v=7','stylesheet/less', array('inline' => false));?>
 <?php
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	$this->Html->script('src/VerifyManager', array('inline' => false));
