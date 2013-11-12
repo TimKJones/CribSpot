@@ -219,6 +219,7 @@ class A2Cribs.MarkerModal
 				A2Cribs.UIManager.Alert "Entered street address is not valid."
 				$("#Marker_street_address").text ""
 
-	$('#marker-modal').ready () =>
-		@modal = $('#marker-modal')
-		@SetupUI()
+	$(document).ready () =>
+		if $("#marker-modal").length
+			@modal = $('#marker-modal')
+			@SetupUI()

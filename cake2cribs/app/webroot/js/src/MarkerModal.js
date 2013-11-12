@@ -283,9 +283,11 @@
       }
     };
 
-    $('#marker-modal').ready(function() {
-      MarkerModal.modal = $('#marker-modal');
-      return MarkerModal.SetupUI();
+    $(document).ready(function() {
+      if ($("#marker-modal").length) {
+        MarkerModal.modal = $('#marker-modal');
+        return MarkerModal.SetupUI();
+      }
     });
 
     return MarkerModal;

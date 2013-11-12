@@ -376,6 +376,7 @@ class SubletSave
 		date_array = date_array[0].split "-" # Split the date
 		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
-	$("#sublet_window").ready =>
-		@_temp_images = []
-		@SetupUI($("#sublet_window"))
+	$(document).ready =>
+		if $("#sublet_window").length
+			@_temp_images = []
+			@SetupUI($("#sublet_window"))

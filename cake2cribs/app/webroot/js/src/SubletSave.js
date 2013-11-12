@@ -406,9 +406,11 @@
       return "" + date_array[1] + "/" + date_array[2] + "/" + date_array[0];
     };
 
-    $("#sublet_window").ready(function() {
-      SubletSave._temp_images = [];
-      return SubletSave.SetupUI($("#sublet_window"));
+    $(document).ready(function() {
+      if ($("#sublet_window").length) {
+        SubletSave._temp_images = [];
+        return SubletSave.SetupUI($("#sublet_window"));
+      }
     });
 
     return SubletSave;
