@@ -100,7 +100,6 @@ class ListingsController extends AppController {
 
 		if (array_key_exists('Sublet', $listing)){
 			$this->_viewSublet($listing);
-			CakeLog::write('subletview', print_r($listing, true));
 			$this->set('listing_type', 'Sublet');
 		}
 		else{
@@ -301,11 +300,18 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		}
 		
 		/* Return the listing given by $listing_id */
-		$listing = $this->Listing->GetListing($listing_id);
-		if ($listing == null)
-			$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
+		$listings = $this->Listing->GetListing($listing_id);
+		if ($listings == null)
+			$listings['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
-		$this->set('response', json_encode($listing));
+		/* Convert unit_style_options to its string value */
+		foreach ($listings as &$listing){
+			if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']))
+			$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+		}
+		
+		CakeLog::write("gettinglisting", print_r($listings, true));
+		$this->set('response', json_encode($listings));
 	}
 
 	/*
