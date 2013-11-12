@@ -233,7 +233,8 @@ class A2Cribs.PhotoManager
 			$.when(@UploadCompleteDeferred).then (resolved) =>
 				if resolved
 					imageCallback @GetPhotos(), row
-					@div.modal('hide')
+				
+				@div.modal('hide')
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos

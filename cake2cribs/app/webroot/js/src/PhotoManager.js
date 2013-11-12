@@ -300,10 +300,8 @@
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
         return $.when(_this.UploadCompleteDeferred).then(function(resolved) {
-          if (resolved) {
-            imageCallback(_this.GetPhotos(), row);
-            return _this.div.modal('hide');
-          }
+          if (resolved) imageCallback(_this.GetPhotos(), row);
+          return _this.div.modal('hide');
         });
       });
     };
