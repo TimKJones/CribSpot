@@ -308,7 +308,7 @@ class A2Cribs.Messages
 
 	@Direct: (directive)->
 		
-		if directive.data?
+		if directive.data? and directive.classname is "messages"
 			conv_id = parseInt(directive.data.conversation_id)
 			@CurrentConversation = conv_id
 			participant_id = parseInt(directive.data.participant_id)

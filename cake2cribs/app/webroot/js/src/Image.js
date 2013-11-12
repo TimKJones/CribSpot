@@ -38,6 +38,8 @@
       }
       if (this.primary != null) {
         return this.image_array[this.primary][field];
+      } else if (this.image_array.length !== 0) {
+        return this.image_array[0][field];
       }
     };
 

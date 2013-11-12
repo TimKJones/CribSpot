@@ -13,11 +13,68 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
 
-	echo $this->element('Login/login');
-	echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
-	echo $this->element('Invitations/email_invite');
+	echo $this->Html->meta('canonical', 'https://cribspot.com/', array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 ?>
 
+
+<div id="landing_page">
+	<div class="fb-like" data-href="https://www.facebook.com/Cribspot" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
+	<div class="float" id="search-div">
+		<img src="/img/landing/logo.png" height="200px" width="400px">
+		<div id="slogan" class="text-center">
+			<i class="small_font">All the </i><i class="large_font">College Rentals.</i><br/>
+			<i class="small_font">All in </i><i class="large_font">One Spot.</i>
+		</div>
+		<div id="logo_zone">
+			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
+			<!-- School Logo's go here -->
+			<?php // will need to figure out how to redesign for sublets and parking! ?>
+			<?php
+			foreach ($locations as $university) {
+				$school_name = str_replace(" ", "_", $university['University']['name']);
+				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
+			}
+
+			?>
+
+		</div>
+	</div>
+</div>
+
+<div id="school_page">
+	<?php
+		foreach ($locations as $university) {
+			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
+		}
+	?>
+	<div>
+		<div class="school_logo"></div>
+		<div class="name">College Housing made easy.</div>
+		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
+	</div>
+	
+	<div class="school_info">
+		<div class="welcome_message">Welcome to Cribspot!</div>
+		<div class="description"></div>
+		<div class="separator"></div>
+		<div class="school_facts">
+			AVG RENT: $<div class="avg_rent">NA</div>
+			&nbsp;&nbsp;AVAILABLE UNITS (2014): <div class="available_units">NA</div>
+		</div>
+	</div>
+	<div class="getting_started">
+		<div class="banner">Let's Get You Started...</div>
+		<a href="#" id="map_link" class="btn"><i class="icon-search icon-large"></i> See all <i class="unit_count"></i> College Rentals</a>
+		<button id="friends_invite" class="btn">Invite Your Friends or Group</button>
+		<a href="/login" class="btn">Login or Sign Up</a>
+	</div>
+	<div id="founder_box">
+		<img class="founder_photo" src="/img/founders/michigan.png">
+		<p><i class="founder_name">Evan Dancer</i><br><i class="founder_title">University of Michigan Founder</i><br><i class="founder_description">Class of 2013</i><br>
+		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email">evan@cribspot.com</i></p>
+	</div>
+	<a href="#" class="background_source"></a>
+</div>
 
 <div id="header" class="navbar">
 	<div class="navbar-inner">
@@ -106,67 +163,13 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	</div>
 </div>
 
-<div id="landing_page">
-	<div class="fb-like" data-href="https://www.facebook.com/Cribspot" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
-	<div class="float" id="search-div">
-		<img src="/img/landing/logo.png" height="200px" width="400px">
-		<div id="slogan" class="text-center">
-			<i class="small_font">All the </i><i class="large_font">College Rentals.</i><br/>
-			<i class="small_font">All in </i><i class="large_font">One Spot.</i>
-		</div>
-		<div id="logo_zone">
-			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
-			<!-- School Logo's go here -->
-			<?php // will need to figure out how to redesign for sublets and parking! ?>
-			<?php
-			foreach ($locations as $university) {
-				$school_name = str_replace(" ", "_", $university['University']['name']);
-				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
-			}
-
-			?>
-
-		</div>
-	</div>
-</div>
-
-<div id="school_page">
-	<?php
-		foreach ($locations as $university) {
-			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
-		}
-	?>
-	<div>
-		<div class="school_logo"></div>
-		<div class="name">College Housing made easy.</div>
-		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
-	</div>
-	
-	<div class="school_info">
-		<div class="welcome_message">Welcome to Cribspot!</div>
-		<div class="description"></div>
-		<div class="separator"></div>
-		<div class="school_facts">
-			AVG RENT: $<div class="avg_rent">NA</div>
-			&nbsp;&nbsp;AVAILABLE UNITS (2014): <div class="available_units">NA</div>
-		</div>
-	</div>
-	<div class="getting_started">
-		<div class="banner">Let's Get You Started...</div>
-		<a href="#" id="map_link" class="btn"><i class="icon-search icon-large"></i> See all <i class="unit_count"></i> College Rentals</a>
-		<button id="friends_invite" class="btn">Invite Your Friends or Group</button>
-		<a href="/login" class="btn">Login or Sign Up</a>
-	</div>
-	<div id="founder_box">
-		<img class="founder_photo" src="/img/founders/michigan.png">
-		<p><i class="founder_name">Evan Dancer</i><br><i class="founder_title">University of Michigan Founder</i><br><i class="founder_description">Class of 2013</i><br>
-		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email">evan@cribspot.com</i></p>
-	</div>
-	<a href="#" class="background_source"></a>
-</div>
-
 <a href="https://mixpanel.com/f/partner" id="mixpanel_link"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
 <?php 
+
+	echo $this->element('Login/login');
+	echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
+	echo $this->element('Invitations/email_invite');
+
 	$this->Js->buffer('
 		A2Cribs.Landing.Init(' . json_encode($locations) . ');
 		$("#login_dropdown_content input, #login_dropdown_content label").click(function(e) {

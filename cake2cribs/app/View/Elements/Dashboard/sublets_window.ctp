@@ -1,9 +1,10 @@
-<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=2','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/Dashboard/sublets_window.less?v=3','stylesheet/less', array('inline' => false)); ?>
 
 <div id="sublet_window" class="row-fluid">
 
 	<!-- SUBLET SECTION -->
 	<div class="span12 sublet_section">
+		<h3>Post My Sublet</h3>
 
 		<input type="hidden" class="marker_id">
 		<input type="hidden" class="listing_id">
@@ -51,8 +52,8 @@
 					<div class="building_type">House</div>
 					<div class="full_address"><em><i class="icon-map-marker"></i> 722 Packard Ann Arbor, MI</em></div>
 					<div class="rent_container">
-						<input type="text" class="sublet_fields text-field" data-field-name="rent" data-error-message="Please provide the monthly rent">
-						<div><strong>Monthly Rent</strong></div>
+						<span>$</span><input type="text" class="sublet_fields text-field" data-field-name="rent" data-error-message="Please provide the monthly rent">
+						<div class="text-center"><strong>Monthly Rent</strong></div>
 					</div>
 				</div>
 			</div>
@@ -94,8 +95,8 @@
 					</div>
 					<!-- PRIVATE/SHARED BATHROOM -->
 					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="bathroom_type" data-error-message="Please describe the type of bathroom">
-						<button type="button" class="btn" value="1">Shared</button>
-						<button type="button" class="btn" value="0">Private</button>
+						<button type="button" class="btn" value="0">Shared</button>
+						<button type="button" class="btn" value="1">Private</button>
 					</div>
 				</div>
 			</div>
@@ -177,7 +178,7 @@
 				<!-- FURNITURE TYPE -->
 				<div class="span6">
 					<div><strong>Furnished?</strong></div>
-					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="furnished" data-error-message="Is the apartment furnished? Please complete the field.">
+					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="furnished_type" data-error-message="Is the apartment furnished? Please complete the field.">
 						<button type="button" class="btn" value="2">Fully</button>
 						<button type="button" class="btn" value="1">Partially</button>
 						<button type="button" class="btn" value="0">No</button>

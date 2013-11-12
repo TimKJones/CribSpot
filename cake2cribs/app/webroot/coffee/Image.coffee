@@ -18,6 +18,8 @@ class A2Cribs.Image extends A2Cribs.Object
 	GetPrimary: (field = 'image_path') ->
 		if @primary?
 			return @image_array[@primary][field]
+		else if @image_array.length isnt 0
+			@image_array[0][field]
 
 	GetImages: ->
 		return @image_array

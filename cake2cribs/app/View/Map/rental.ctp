@@ -15,6 +15,7 @@
 
 	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for off campus housing in " . $university["city"] . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
 
+	echo $this->Html->meta('canonical', 'https://cribspot.com/rental/' . str_replace(" ", "_", $school_name), array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
 	echo $this->element('header', 
 		array(

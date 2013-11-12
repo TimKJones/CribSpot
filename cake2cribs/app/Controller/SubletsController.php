@@ -2,11 +2,21 @@
 class SubletsController extends AppController {
 	public $helpers = array('Html', 'Js');
 	public $uses = array('Sublet', 'Marker', 'Housemate', 'University', 'Image');
-	public $components= array('RequestHandler', 'Auth', 'Session');
+	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 	}
+
+	public function Create()
+	{
+		$directive['classname'] = 'sublet';
+		$directive['data'] = 'create';
+		$json = json_encode($directive);
+		$this->Cookie->write('dashboard-directive', $json);
+		$this->redirect('/dashboard');
+	}
+
 
 	/*
 		Retrieves sublet_data for $sublet_id

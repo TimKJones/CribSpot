@@ -1,5 +1,5 @@
 <?php 
-echo $this->Html->css('/less/featured-listings.less?v=4','stylesheet/less', array('inline' => false));
+echo $this->Html->css('/less/featured-listings.less?v=5','stylesheet/less', array('inline' => false));
 ?>
 
 <div class = 'featured-listings-wrapper'>
@@ -21,11 +21,18 @@ echo $this->Html->css('/less/featured-listings.less?v=4','stylesheet/less', arra
             </div>
         <?php
         }
+        else if (strpos($university['name'], 'Bloom') !== false)
+        { ?>
+            <div class='featured_banner'>
+                <a href="http://iusa.indiana.edu/" target="_blank"><img src="/img/sidebar/IUSA_logo.jpg"></a>
+            </div>
+        <?php
+        }
         ?>
         <!--<div id = 'list-info'>
             <span>Listings: </span>
         </div> -->
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false) ? 'has_featured_pm' : '' ;?>'>
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
             <div id = 'featured-listings'></div>
             <div id = 'ran-listings'></div>
         </div>

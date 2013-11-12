@@ -8,7 +8,7 @@ class MapController extends AppController {
                 )
             )
         ));
-  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
+  public $uses = array('Marker', 'Listing', 'University', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
 
   public function beforeFilter() {
     parent::beforeFilter();
