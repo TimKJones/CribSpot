@@ -173,6 +173,11 @@ CakeLog::write('debuggingit', '-1');
             $university = $this->University->findById($id);
             if ($university == null)
                 throw new NotFoundException();
+
+            /* Sublets are only live at specific universities - redirect to rentals if not live yet */
+            if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET && !$university['sublets_live'])
+                $this->redirect('/rental/'.$school_name);
+
             $this->set('university', $university);
         }
         
