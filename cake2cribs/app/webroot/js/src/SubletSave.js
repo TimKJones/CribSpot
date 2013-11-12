@@ -84,7 +84,7 @@
         return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
       });
       return this.div.find('.twitter_sublet_share').click(function() {
-        return A2Cribs.ShareManager.ShareSubletOnTwitter(_this.div.find(".marker_id").val());
+        return A2Cribs.ShareManager.ShareSubletOnTwitter(_this.div.find(".listing_id").val());
       });
     };
 

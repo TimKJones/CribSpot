@@ -74,7 +74,7 @@ class SubletSave
 			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
 
 		@div.find('.twitter_sublet_share').click =>
-			A2Cribs.ShareManager.ShareSubletOnTwitter(@div.find(".marker_id").val())
+			A2Cribs.ShareManager.ShareSubletOnTwitter(@div.find(".listing_id").val())
 
 	###
 	Photo Added
