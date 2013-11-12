@@ -95,8 +95,8 @@
 					</div>
 					<!-- PRIVATE/SHARED BATHROOM -->
 					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="bathroom_type" data-error-message="Please describe the type of bathroom">
-						<button type="button" class="btn" value="1">Shared</button>
-						<button type="button" class="btn" value="0">Private</button>
+						<button type="button" class="btn" value="0">Shared</button>
+						<button type="button" class="btn" value="1">Private</button>
 					</div>
 				</div>
 			</div>
@@ -178,7 +178,7 @@
 				<!-- FURNITURE TYPE -->
 				<div class="span6">
 					<div><strong>Furnished?</strong></div>
-					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="furnished" data-error-message="Is the apartment furnished? Please complete the field.">
+					<div class="btn-group sublet_fields" data-toggle="buttons-radio" data-field-name="furnished_type" data-error-message="Is the apartment furnished? Please complete the field.">
 						<button type="button" class="btn" value="2">Fully</button>
 						<button type="button" class="btn" value="1">Partially</button>
 						<button type="button" class="btn" value="0">No</button>
