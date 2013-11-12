@@ -20,7 +20,8 @@
 				</div>
 				<div class="row-fluid hide" id="contact_message">	
 					<?php
-					if (array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null
+					if (array_key_exists('Rental', $listing) && 
+						array_key_exists('contact_phone', $listing['Rental']) && $listing["Rental"]["contact_phone"] != null
 						&& $messaging_enabled)
 					{ ?>
 						<div class="row-fluid phone">

@@ -11,22 +11,24 @@
 				<?php
 				if (array_key_exists("building_type_id", $listing["Marker"]))
 					echo $listing["Marker"]["building_type_id"];
-				if (array_key_exists("unit_style_description", $listing["Rental"]) && $listing["Rental"]["unit_style_description"])
+				if (array_key_exists('Rental', $listing) &&
+					array_key_exists("unit_style_description", $listing["Rental"]) && 
+					$listing["Rental"]["unit_style_description"])
 					echo " | " . $listing["Rental"]["unit_style_description"];
 				?>
 			</div>
 			<div class="row-fluid detail_table">
 				<div class="span4 detail_table_cell first-child">
 					<?php
-					echo "<i class='big'>" . $listing["Rental"]["beds"] . "</i>&nbsp;Bed";
-					if ($listing["Rental"]["beds"] > 1)
+					echo "<i class='big'>" . $listing[$listing_type]["beds"] . "</i>&nbsp;Bed";
+					if ($listing[$listing_type]["beds"] > 1)
 						echo "s";
 					?>
 				</div>
 				<div class="span4 detail_table_cell">
 					<?php
-					echo "<i class='big'>" . $listing["Rental"]["baths"] . "</i>&nbsp;Bath";
-					if ($listing["Rental"]["baths"] > 1)
+					echo "<i class='big'>" . $listing[$listing_type]["baths"] . "</i>&nbsp;Bath";
+					if ($listing[$listing_type]["baths"] > 1)
 						echo "s";
 					?>
 				</div>
