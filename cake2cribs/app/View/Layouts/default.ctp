@@ -103,7 +103,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=95');
+	echo $this->Html->script('src/program.js?v=96');
 }
 
 		echo $this->fetch('script');
@@ -143,7 +143,7 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 <?php
 
 	/* FB API for Like Button */
-	echo '<div id="fb-root"></div><script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/all.js#xfbml=1";fjs.parentNode.insertBefore(js,fjs);}(document,"script","facebook-jssdk"));</script>';
+	echo '<div id="fb-root"></div>';
 
 	echo '<div id="layoutsContainer">';
 		echo $this->Session->flash();
@@ -151,6 +151,8 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 	echo '</div>';
 ?>
 <script>
+  window.fbInit = new $.Deferred();
+  window.fbInit.promise();
   window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
@@ -163,7 +165,9 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
       frictionlessRequests : true
     });
 
-    // Additional initialization code such as adding Event Listeners goes here
+    FB.getLoginStatus(function (response) {
+    	window.fbInit.resolve();
+    } );
 
   };
 

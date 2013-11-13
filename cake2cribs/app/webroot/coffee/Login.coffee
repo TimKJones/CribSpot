@@ -4,7 +4,8 @@ class A2Cribs.Login
 	@HTTP_PREFIX = "https://"
 
 	$(document).ready =>
-		@CheckLoggedIn()
+		$.when(window.fbInit).then =>
+			@CheckLoggedIn()
 
 		if $("#signup_modal").length
 			@SignupModalSetupUI()
@@ -14,6 +15,10 @@ class A2Cribs.Login
 
 		if $("#login_signup").length
 			@LoginPageSetupUI()
+
+		if $("#user_welcome_page").length
+			$(document).on "logged_in", () ->
+				location.reload()
 
 	###
 	Private function setup facebook signup modal
@@ -113,6 +118,7 @@ class A2Cribs.Login
 						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
 						"after signup"
 						)
+					$(document).trigger("logged_in")
 
 			.always () =>
 				$(".fb-login").button('reset')
@@ -163,6 +169,7 @@ class A2Cribs.Login
 						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
 						"after signup"
 						)
+					$(document).trigger("logged_in")
 			.always () =>
 				$(".fb-login").button('reset')
 
@@ -226,6 +233,7 @@ class A2Cribs.Login
 					A2Cribs.MixPanel.Event "Logged In",
 						"name" : response.data?.name
 						"email" : response.data?.email
+					$(document).trigger("logged_in")
 					location.reload()
 			.always () =>
 				$(".fb-login").button('reset')
@@ -386,6 +394,7 @@ class A2Cribs.Login
 					A2Cribs.MixPanel.Event "Logged In",
 						"name" : data.data?.name
 						"email" : data.data?.email
+					$(document).trigger("logged_in")
 					return @_login_deferred.resolve()
 
 		return @_login_deferred.promise()

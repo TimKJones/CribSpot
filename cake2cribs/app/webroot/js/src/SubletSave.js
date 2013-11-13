@@ -51,7 +51,7 @@
         return _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
       });
       this.SetupShareButtons();
-      return this.div.find(".photo_adder").click(function() {
+      this.div.find(".photo_adder").click(function() {
         var image_array, listing_id, _ref;
         listing_id = _this.div.find(".listing_id").val();
         if ((listing_id != null ? listing_id.length : void 0) !== 0) {
@@ -60,6 +60,9 @@
           image_array = _this._temp_images;
         }
         return A2Cribs.PhotoManager.Open(image_array, _this.PhotoAddedCallback);
+      });
+      return this.div.find(".rent").keyup(function(event) {
+        return $(event.currentTarget).parent().removeClass("error");
       });
     };
 
@@ -122,8 +125,19 @@
 
 
     SubletSave.Validate = function() {
-      var isValid;
+      var isValid, rent;
       isValid = true;
+      rent = this.div.find(".rent").val();
+      if (rent != null ? rent.length : void 0) {
+        rent = rent.replace(/[$,]/g, "");
+        if (isNaN(rent)) {
+          isValid = false;
+          A2Cribs.UIManager.Error("Please only provide numbers for your rent.");
+          this.div.find(".rent").focus().parent().addClass("error");
+        } else {
+          this.div.find(".rent").val(rent);
+        }
+      }
       this.div.find(".btn-group").each(function(index, value) {
         if (isValid && $(value).find(".active").size() === 0) {
           isValid = false;
