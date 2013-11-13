@@ -59,8 +59,8 @@ class Sublet extends AppModel {
         'furnished_type' => 'numeric',
         'description' => array(
                 'between' => array(
-                        'rule' => array('between',0,1000),
-                        'message' => 'Must be less than 1000 characters'
+                        'rule' => array('between',0,10000),
+                        'message' => 'Must be less than 10000 characters'
                 )
         ),
         'shared_type' => array( /* Specifies whether or not this unit will be shared with other parties */
