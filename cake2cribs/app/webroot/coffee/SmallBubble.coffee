@@ -17,7 +17,7 @@ class SmallBubble
 	-creates infobubble object
 	###
 	@Init: (map) ->
-		@template = $(".hover-bubble:first").parent()
+		@template = $(".small-bubble:first").parent()
 		obj = 
 			map: map
 			arrowStyle: 0
@@ -37,7 +37,7 @@ class SmallBubble
 			@Open marker
 		$("#map_region").on 'close_bubbles', =>
 			@Close()
-		@template.find(".close_button").attr "onclick", "$(document).trigger('close_bubbles');"
+		@template.find(".close_button").attr "onclick", "$('#map_region').trigger('close_bubbles');"
 
 	###
 	Opens the tooltip given a marker, with popping animation

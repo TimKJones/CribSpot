@@ -33,7 +33,7 @@ Wrapper for google infobubble
     SmallBubble.Init = function(map) {
       var obj,
         _this = this;
-      this.template = $(".hover-bubble:first").parent();
+      this.template = $(".small-bubble:first").parent();
       obj = {
         map: map,
         arrowStyle: 0,
@@ -55,7 +55,7 @@ Wrapper for google infobubble
       $("#map_region").on('close_bubbles', function() {
         return _this.Close();
       });
-      return this.template.find(".close_button").attr("onclick", "$(document).trigger('close_bubbles');");
+      return this.template.find(".close_button").attr("onclick", "$('#map_region').trigger('close_bubbles');");
     };
 
     /*

@@ -77,7 +77,7 @@ LargeBubble class
     LargeBubble.Init = function(map) {
       var _this = this;
       this.map = map;
-      this.div = $(".click-bubble:first");
+      this.div = $(".large-bubble:first");
       google.maps.event.addListener(this.map, 'center_changed', function() {
         return _this.Close();
       });
@@ -378,8 +378,8 @@ LargeBubble class
     LargeBubble.GetAdjustedLargeBubblePosition = function(marker_x, marker_y) {
       var BOTTOM, RIGHT, TOP, filter_offset, offset, x_max, y_high, y_low;
       y_high = marker_y + this.OFFSET['TOP'];
-      y_low = marker_y + this.OFFSET['TOP'] + $(".click-bubble").height();
-      x_max = marker_x + this.OFFSET['LEFT'] + $(".click-bubble").width();
+      y_low = marker_y + this.OFFSET['TOP'] + $(".large-bubble").height();
+      x_max = marker_x + this.OFFSET['LEFT'] + $(".large-bubble").width();
       offset = {};
       offset.x = 0;
       offset.y = 0;

@@ -49,7 +49,7 @@ class LargeBubble
 	Constructor
 	###
 	@Init: (@map) ->
-		@div = $(".click-bubble:first")
+		@div = $(".large-bubble:first")
 		google.maps.event.addListener @map, 'center_changed', => 
 			@Close()
 		@div.find(".close_button").click =>
@@ -288,8 +288,8 @@ class LargeBubble
 	@GetAdjustedLargeBubblePosition: (marker_x, marker_y) ->
 		# for y, high and low refer to high and low on the page, not numerically, since it is opposite.
 		y_high = marker_y + @OFFSET['TOP']
-		y_low = marker_y + @OFFSET['TOP'] + $(".click-bubble").height()
-		x_max = marker_x + @OFFSET['LEFT'] + $(".click-bubble").width()
+		y_low = marker_y + @OFFSET['TOP'] + $(".large-bubble").height()
+		x_max = marker_x + @OFFSET['LEFT'] + $(".large-bubble").width()
 
 		# compare to map boundaries dimensions
 		offset = {}

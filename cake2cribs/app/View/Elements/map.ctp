@@ -36,6 +36,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 <!-- Popups important for the mapview -->
 <div class="hide">
-	<?php echo $this->element('hover-bubble'); ?>
+	<?php echo $this->element('small-bubble'); ?>
 </div>
-<?php echo $this->element('click-bubble'); ?>
+<?php echo $this->element('large-bubble'); ?>
