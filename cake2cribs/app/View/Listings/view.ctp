@@ -15,6 +15,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	$this->Html->meta('description', $listing[$listing_type]["description"], array('inline' => false));
 
+	echo $this->Html->meta('canonical', 'https://cribspot.com/listings/view/' . $listing["Listing"]["listing_id"] . '/' . $full_address, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $listing["Marker"]["latitude"], 'longitude' => $listing["Marker"]["longitude"]));
 
 ?>

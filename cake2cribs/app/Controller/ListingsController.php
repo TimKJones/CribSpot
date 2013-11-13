@@ -68,6 +68,15 @@ class ListingsController extends AppController {
 		$full_address .= " " . $listing["Marker"]["state"];
 		$full_address .= " " . $listing["Marker"]["zip"];
 		$full_address = str_replace(" ", "-", $full_address);
+
+		if ($address === null)
+		{
+			$this->redirect(array('action' => 'view', $listing_id, $full_address), 301);
+		}
+
+
+
+
 		$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
 
 		/* set whether or not this is a favorited property */
@@ -110,6 +119,7 @@ class ListingsController extends AppController {
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
 		$this->set('listing', $listing);
+		$this->set('full_address', $full_address);
 	}
 
 	/*
