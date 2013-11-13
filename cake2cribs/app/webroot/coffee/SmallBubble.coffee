@@ -1,9 +1,17 @@
 ###
-HoverBubble class
+SmallBubble class
 Wrapper for google infobubble
 ###
 
-class A2Cribs.HoverBubble
+class SmallBubble
+
+	###
+	When the map is initialized, call init for the map
+	###
+	$(document).ready =>
+		$("#map_region").on "map_initialized", (event, map) =>
+			@Init map
+
 	###
 	Constructor
 	-creates infobubble object
@@ -25,22 +33,21 @@ class A2Cribs.HoverBubble
 		@InfoBubble = new InfoBubble obj
 		@InfoBubble.hideCloseButton()
 		@InfoBubble.setBackgroundClassName "map_bubble"
-		@template.find(".close_button").attr "onclick", "A2Cribs.HoverBubble.Close();"
+		$("#map_region").on "marker_clicked", (event, marker) =>
+			@Open marker
+		$("#map_region").on 'close_bubbles', =>
+			@Close()
+		@template.find(".close_button").attr "onclick", "$(document).trigger('close_bubbles');"
 
 	###
 	Opens the tooltip given a marker, with popping animation
 	###
 	@Open: (marker) ->
-		@Close()
-		A2Cribs.ClickBubble?.Close()
+		$("#map_region").trigger 'close_bubbles'
+
 		if marker?
 			marker.IsVisible yes
 			@SetContent marker
-			# Pan map to leave enough room for click bubble
-			marker_pixel_position = A2Cribs.ClickBubble.ConvertLatLongToPixels marker.GMarker.getPosition()
-			pixels_to_pan = A2Cribs.ClickBubble.GetAdjustedClickBubblePosition marker_pixel_position.x, marker_pixel_position.y
-			A2Cribs.Map.GMap.panBy pixels_to_pan.x, pixels_to_pan.y
-
 			@InfoBubble.open A2Cribs.Map.GMap, marker.GMarker
 
 
@@ -101,7 +108,7 @@ class A2Cribs.HoverBubble
 
 				unit_template = $ "<div />",
 					class: "unit"
-				unit_template.attr "onclick", "A2Cribs.ClickBubble.Open(#{listing.GetId()})"
+				unit_template.attr "onclick", "$('#map_region').trigger('listing_click', [#{listing.GetId()}])"
 				$ "<div />",
 					class: "dot #{available_dot}"
 				.appendTo unit_template

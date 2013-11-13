@@ -1,13 +1,21 @@
 ###
-ClickBubble class
+LargeBubble class
 ###
 
-class A2Cribs.ClickBubble
+class LargeBubble
 	@OFFSET = 
 		TOP: -190
 		LEFT: 140
 	@PADDING = 50 #padding on sides of click bubble after panning to make click bubble fit on map
 	@IsOpen = false
+
+	###
+	When the map is initialized, call init for the map
+	###
+	$(document).ready =>
+		$("#map_region").on "map_initialized", (event, map) =>
+			@Init map
+
 	###
 	Private function that relocates the bubble near the marker
 	###
@@ -42,12 +50,25 @@ class A2Cribs.ClickBubble
 	###
 	@Init: (@map) ->
 		@div = $(".click-bubble:first")
-		@div.find(".close_button").click () =>
+		google.maps.event.addListener @map, 'center_changed', => 
 			@Close()
+		@div.find(".close_button").click =>
+			@Close()
+		$("#map_region").on 'close_bubbles', =>
+			@Close()
+
+		$("#map_region").on "marker_clicked", (event, marker) =>
+			# Pan map to leave enough room for click bubble
+			marker_pixel_position = @ConvertLatLongToPixels marker.GMarker.getPosition()
+			pixels_to_pan = @GetAdjustedLargeBubblePosition marker_pixel_position.x, marker_pixel_position.y
+			@map.panBy pixels_to_pan.x, pixels_to_pan.y
+
+		$('#map_region').on 'listing_click', (event, listing_id) =>
+			@Open listing_id
 
 	###
 	Opens the tooltip given a marker, with popping animation
-	Returns deferred object that gets resolved after clickbubble is loaded.
+	Returns deferred object that gets resolved after LargeBubble is loaded.
 	After it is loaded and visible, load its image.
 	###
 	@Open: (listing_id) ->
@@ -264,7 +285,7 @@ class A2Cribs.ClickBubble
 	takes as arguments the x and y position of the clicked marker
 	returns the x and y amounts to pan the map so that the click bubble fits on the screen
 	###
-	@GetAdjustedClickBubblePosition: (marker_x, marker_y) ->
+	@GetAdjustedLargeBubblePosition: (marker_x, marker_y) ->
 		# for y, high and low refer to high and low on the page, not numerically, since it is opposite.
 		y_high = marker_y + @OFFSET['TOP']
 		y_low = marker_y + @OFFSET['TOP'] + $(".click-bubble").height()

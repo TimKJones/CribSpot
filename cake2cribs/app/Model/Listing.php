@@ -558,7 +558,7 @@ class Listing extends AppModel {
         );
 
         $table = 'Rental';
-        if ($listing_type === self::LISTING_TYPE_SUBLET)
+        if (intval($listing_type) === self::LISTING_TYPE_SUBLET)
         	$table = 'Sublet';
 
         $this->contain($table, 'Marker');
