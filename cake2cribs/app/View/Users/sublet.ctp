@@ -1,3 +1,13 @@
+<?php
+
+	echo $this->Html->meta('canonical', 'https://cribspot.com/sublet/welcome', array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+
+	$this->set('title_for_layout', 'Post Your Off-Campus Sublet - Cribspot');
+
+	$this->Html->meta('description', "Posting your off-campus sublet has never been easier. Whether you are renting a college apartment or a large party house, Cribspot makes it simple to list your sublease. Posting only takes a few steps and takes less than a few minutes. First define your property. Search many of Cribspot's full year rentals to get advice on price, lease length, number of beds and baths that the college or off-campus apartment hunter would look for. Step two, add some pictures. Apartment hunters love photos! The more images your rental has the more likely you will find an ideal buyer. Step three, share it with everyone you know. Post your short-term lease on Facebook, Twitter and Google plus all in one click. The more shares the more eye-balls on the property. It's that easy!", array('inline' => false));
+?>
+
+
 <div id="user_welcome_page">
 	<div class="background">
 		<div class="row-fluid">
