@@ -105,7 +105,7 @@ class A2Cribs.Map
 			return
 		listings = JSON.parse response
 		#A2Cribs.Cache.CacheHoverData hdList
-		for listing in listings
+		for listing_id, listing of listings
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
 

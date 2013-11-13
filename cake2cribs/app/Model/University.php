@@ -11,10 +11,15 @@ class University extends AppModel {
 
 	public function getSchools()
 	{
-		return $this->find('all', array(
-			'contain' => false)
+		$universities = Cache::read('Universities', 'LongTerm');
+		if ($universities === false){
+			$universities = $this->find('all', array(
+				'contain' => false)
 			);
-
+			Cache::write('Universities', $universities, 'LongTerm');
+		}
+			
+		return $universities;
 	}
 
 	public function getTargetLatLong($school_id)
