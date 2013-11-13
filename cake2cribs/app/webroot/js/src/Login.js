@@ -20,7 +20,12 @@
         Login.LoginModalSetupUI();
       }
       if ($("#login_signup").length) {
-        return Login.LoginPageSetupUI();
+        Login.LoginPageSetupUI();
+      }
+      if ($("#user_welcome_page").length) {
+        return $(document).on("logged_in", function() {
+          return location.reload();
+        });
       }
     });
 
@@ -121,8 +126,9 @@
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref2 = response.data) != null ? _ref2.favorites : void 0);
             if (response.account_exists === false) {
-              return A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
+              A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
             }
+            return $(document).trigger("logged_in");
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -168,8 +174,9 @@
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref2 = response.data) != null ? _ref2.favorites : void 0);
             if (response.account_exists === false) {
-              return A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
+              A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
             }
+            return $(document).trigger("logged_in");
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -229,6 +236,7 @@
               "name": (_ref = response.data) != null ? _ref.name : void 0,
               "email": (_ref1 = response.data) != null ? _ref1.email : void 0
             });
+            $(document).trigger("logged_in");
             return location.reload();
           }
         }).always(function() {
@@ -404,6 +412,7 @@
               "name": (_ref1 = data.data) != null ? _ref1.name : void 0,
               "email": (_ref2 = data.data) != null ? _ref2.email : void 0
             });
+            $(document).trigger("logged_in");
             return _this._login_deferred.resolve();
           }
         });
