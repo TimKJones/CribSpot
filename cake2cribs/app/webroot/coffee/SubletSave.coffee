@@ -56,6 +56,10 @@ class SubletSave
 
 			A2Cribs.PhotoManager.Open image_array, @PhotoAddedCallback
 
+		# Remove error class when rent is typed in
+		@div.find(".rent").keyup (event) ->
+			$(event.currentTarget).parent().removeClass "error"
+
 	###
 	Setup Share Buttons
 	Links share manager functions to the share buttons
@@ -102,6 +106,17 @@ class SubletSave
 	@Validate: ->
 		# Starts as valid
 		isValid = yes
+
+		# Validate rent for the people who dont understand what numbers are
+		rent = @div.find(".rent").val()
+		if rent?.length
+			rent = rent.replace(/[$,]/g, "") # Replace the $ and commas
+			if isNaN rent
+				isValid = no
+				A2Cribs.UIManager.Error "Please only provide numbers for your rent."
+				@div.find(".rent").focus().parent().addClass("error")
+			else
+				@div.find(".rent").val rent
 
 		# Check each btn-group for a value
 		@div.find(".btn-group").each (index, value) ->
