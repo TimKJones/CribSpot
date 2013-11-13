@@ -18,15 +18,29 @@
 		<div class="available">Available</div>
 	</div>
 	<div class="additional_info">
-		<div class="date_range clear_field">Aug 23rd, 2013</div>&nbsp;&bull;&nbsp;<div class="lease_length clear_field"></div><div class="bubble_label">&nbsp;month(s)</div><br>
+		<div class="start_date date_range clear_field">Aug 23rd, 2013</div><span class="end_date_box hide">&nbsp;-&nbsp;<div class="end_date lease_length clear_field">Aug 23rd, 2013</div></span><span class="lease_box">&nbsp;&bull;&nbsp;<div class="lease_length clear_field"></div><div class="bubble_label">&nbsp;month(s)</div></span><br>
 		<div class="unit_type clear_field">Apartment</div>&nbsp;&bull;&nbsp;<div class="baths clear_field">2</div><div class="bubble_label">&nbsp;bath(s)</div>
 		<div class="property_manager clear_field">Investor's Property Management</div>
 		<div class="verified hide">VERIFIED</div>
 	</div>
 	<a href="#" class="schedule_tour"><div>Schedule a tour now</div></a>
-	<div class="action_buttons">
+	<?php
+	if (intval($active_listing_type) === 0)
+	{ ?>
+	<div class="action_buttons rental">
 		<a class="full_page_link" href="#">More Info <i class="icon-plus"></i></a>
 		<a class="full_page_contact" href="#">Contact <i class="icon-comment"></i></a>
 		<a href="#" class="website_link">Website <i class="icon-share-alt"></i></a>
 	</div>
+	<?php
+	}
+	elseif (intval($active_listing_type) === 1)
+	{
+	?>
+	<div class="action_buttons sublet">
+		<a class="full_page_link" href="#">More Info <i class="icon-plus"></i></a>
+		<a class="full_page_contact" href="#">Contact <i class="icon-comment"></i></a>
+	</div>
+	<?php } ?>
 </div>
+

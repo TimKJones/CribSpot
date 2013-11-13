@@ -120,7 +120,15 @@ class LargeBubble
 		@Clear()
 		for key,value of listing_object
 			@div.find(".#{key}").text value
-		@div.find(".date_range").text @resolveDateRange listing_object.start_date
+		@div.find(".start_date").text @resolveDateRange listing_object.start_date
+		if listing_object.end_date?
+			@div.find(".lease_length").text @resolveDateRange listing_object.end_date
+			@div.find(".lease_box").hide()
+			@div.find(".end_date_box").show()
+
+		else
+			@div.find(".end_date_box").hide()
+			@div.find(".lease_box").show()
 		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
@@ -131,7 +139,6 @@ class LargeBubble
 			unit_style_description = 'Entire House'
 
 		@div.find('.unit_style_description').text unit_style_description
-		@div.find('unit_style_description').text 
 		@setBeds listing_object.beds
 		@linkWebsite ".website_link", listing_object.website, listing_object.listing_id
 		@setRent listing_object.rent

@@ -25,7 +25,7 @@
 			'locations' => $locations,
 			'user_years' => $user_years
 	));
-	echo $this->element('map');
+	echo $this->element('map', array('active_listing_type' => $active_listing_type));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
 

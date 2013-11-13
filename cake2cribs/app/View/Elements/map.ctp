@@ -38,4 +38,4 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 <div class="hide">
 	<?php echo $this->element('small-bubble'); ?>
 </div>
-<?php echo $this->element('large-bubble'); ?>
+<?php echo $this->element('large-bubble', array('active_listing_type' => $active_listing_type)); ?>

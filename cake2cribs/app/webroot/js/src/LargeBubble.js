@@ -168,7 +168,15 @@ LargeBubble class
         value = listing_object[key];
         this.div.find("." + key).text(value);
       }
-      this.div.find(".date_range").text(this.resolveDateRange(listing_object.start_date));
+      this.div.find(".start_date").text(this.resolveDateRange(listing_object.start_date));
+      if (listing_object.end_date != null) {
+        this.div.find(".lease_length").text(this.resolveDateRange(listing_object.end_date));
+        this.div.find(".lease_box").hide();
+        this.div.find(".end_date_box").show();
+      } else {
+        this.div.find(".end_date_box").hide();
+        this.div.find(".lease_box").show();
+      }
       marker = A2Cribs.UserCache.Get("marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id);
       this.div.find(".building_name").text(marker.GetName());
       this.div.find(".unit_type").text(marker.GetBuildingType());
@@ -179,7 +187,6 @@ LargeBubble class
         unit_style_description = 'Entire House';
       }
       this.div.find('.unit_style_description').text(unit_style_description);
-      this.div.find('unit_style_description').text;
       this.setBeds(listing_object.beds);
       this.linkWebsite(".website_link", listing_object.website, listing_object.listing_id);
       this.setRent(listing_object.rent);
