@@ -517,8 +517,11 @@ return null on failure
 		    $dashPos = strrpos($file, '-');
 		    $dotPos = strrpos($file, '.');
 		    $address_length = $dotPos;
+		    $is_primary = false;
 		    if ($dashPos)
 		    	$address_length = min($dashPos, $dotPos);
+		    else
+		    	$is_primary = true;
 
 		    $address = substr($file, 0, $address_length);
 		    $full_address = array(
@@ -556,9 +559,9 @@ return null on failure
 		    	$listing_id = intval($listing['Listing']['listing_id']);
 			    $user_id = $listing['Listing']['user_id'];
 			    $path = $directory . $file;
-			    $is_primary = 0;
+			    //$is_primary = 0;
 			    if (!in_array($listing_id, $listing_ids_processed)){
-			    	$is_primary = 1;
+			    	//$is_primary = 1;
 			    	array_push($listing_ids_processed, $listing_id);
 			    }
 			    	

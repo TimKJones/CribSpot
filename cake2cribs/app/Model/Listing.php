@@ -770,8 +770,10 @@ class Listing extends AppModel {
 			'Marker.city' => $address['city'],
 			'Marker.state' => $address['state']
 		);
-		if ($similarMatches)	
-			$conditions['Marker.street_address LIKE'] = '%'.$address['street_address'].'%';
+		if ($similarMatches){	
+			$lowerCase = strtolower($address['street_address']);
+			$conditions['LOWER(Marker.street_address) LIKE'] = '%'.$lowerCase.'%';
+		}
 		else
 			$conditions['Marker.street_address'] = $address['street_address'];
 
