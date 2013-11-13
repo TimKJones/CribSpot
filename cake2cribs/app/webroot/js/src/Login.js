@@ -12,7 +12,9 @@
     Login.HTTP_PREFIX = "https://";
 
     $(document).ready(function() {
-      Login.CheckLoggedIn();
+      $.when(window.fbInit).then(function() {
+        return Login.CheckLoggedIn();
+      });
       if ($("#signup_modal").length) {
         Login.SignupModalSetupUI();
       }

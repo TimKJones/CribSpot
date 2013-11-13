@@ -4,7 +4,8 @@ class A2Cribs.Login
 	@HTTP_PREFIX = "https://"
 
 	$(document).ready =>
-		@CheckLoggedIn()
+		$.when(window.fbInit).then =>
+			@CheckLoggedIn()
 
 		if $("#signup_modal").length
 			@SignupModalSetupUI()
