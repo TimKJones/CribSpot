@@ -759,20 +759,25 @@ class Listing extends AppModel {
 		return $listing['Marker']['street_address'];
 	}
 
-	public function GetListingIdFromAddress($address)
+	public function GetListingIdFromAddress($address, $similarMatches = false)
 	{
 		if (!array_key_exists('street_address', $address) ||
 			!array_key_exists('city', $address) ||
 			!array_key_exists('state', $address))
 			return null;
 
+		$conditions = array(
+			'Marker.city' => $address['city'],
+			'Marker.state' => $address['state']
+		);
+		if ($similarMatches)	
+			$conditions['Marker.street_address LIKE'] = '%'.$address['street_address'].'%';
+		else
+			$conditions['Marker.street_address'] = $address['street_address'];
+
 		$listing = $this->find('all', array(
 			'fields' => array('Listing.marker_id', 'Listing.user_id'),
-			'conditions' => array(
-				'Marker.street_address' => $address['street_address'],
-				'Marker.city' => $address['city'],
-				'Marker.state' => $address['state']
-			)
+			'conditions' => $conditions
 		));
 
 		if ($listing === null)

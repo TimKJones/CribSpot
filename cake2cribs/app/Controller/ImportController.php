@@ -35,7 +35,7 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='wisconsin.csv')
+	public function GetListings($fileName='iowa.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
@@ -70,8 +70,17 @@ otherwise, processes only app/webroot/listings/$fileName
 /*
 Sets lat and long values for each address
 Then saves the array of listing objects.
+
+
+
+****** CHANGE STATE FROM IA TO WHATEVER FOR NEXT ONE *******
+
+****** NEED TO UPDATE SCHEDULING AND AVAILABLE IN LISTINGS *********
+
+
+
 */
-	public function SaveListings($geocoder_necessary=false)
+	public function SaveListings($geocoder_necessary=true)
 	{
 		App::Import('model', 'User');
 
@@ -119,7 +128,7 @@ Then saves the array of listing objects.
 			CakeLog::write("formatted_address", print_r($formatted_address, true));
 			$listing['Marker']['street_address'] = $formatted_address['street_address'];
 			$listing['Marker']['city'] = $formatted_address['city'];
-			$listing['Marker']['state'] = $formatted_address['state'];
+			$listing['Marker']['state'] = 'IA'; //$formatted_address['state'];
 			if (array_key_exists('zip', $formatted_address))
 				$listing['Marker']['zip'] = $formatted_address['zip'];
 
@@ -493,7 +502,7 @@ return null on failure
 		return null;
 	}
 
-	public function ImportImages($directory='img/temp/wisconsin/')
+	public function ImportImages($directory='img/temp/iowa/')
 	{
 		$path_to_directory = WWW_ROOT.$directory;
 		$counter = 0;
@@ -513,12 +522,12 @@ return null on failure
 
 		    $address = substr($file, 0, $address_length);
 		    $full_address = array(
-		    	'street_address' => $address, 
-		    	'city' => 'Madison',
-		    	'state' => 'WI'
+		    	'street_address' => trim($address), 
+		    	'city' => 'Iowa City',
+		    	'state' => 'IA'
 		    );
 		//CakeLog::write('full_address', print_r($full_address, true));
-		    $geocoded_address = $this->_geocoderProcessAddress($full_address);
+		    //$geocoded_address = $this->_geocoderProcessAddress($full_address);
 		    /*
 		    $geocoded_address = null;
 		    if (!array_key_exists($address, $filename_address_to_geocoded_address)) {
@@ -529,16 +538,17 @@ return null on failure
 		    	$geocoded_address = $filename_address_to_geocoded_address[$address];
 		    	*/
 		//CakeLog::write('geocoded_address', print_r($geocoded_address, true));
-		    $listings = $this->Listing->GetListingIdFromAddress($geocoded_address);
+		    $listings = $this->Listing->GetListingIdFromAddress($full_address, true);
 		//CakeLog::write('listings', print_r($listings, true));
-		    if (!array_key_exists('street_address', $geocoded_address))
+		    if (!array_key_exists('street_address', $full_address))
 		    {
-		    	CakeLog::write("IMAGE_UPLOAD_FAILED", print_r($geocoded_address, true));
+		    	CakeLog::write("IMAGE_UPLOAD_FAILED", print_r($full_address, true));
 		    	return;
 		    }
-		    $street_address = $geocoded_address['street_address'];
+		    $street_address = $full_address['street_address'];
 		    if ($listings === null) {
-		    	CakeLog::write('marker_doesnt_exist_yet', print_r($geocoded_address, true));
+		    	CakeLog::write('marker_doesnt_exist_yet', print_r($full_address, true));
+		    	copy($directory . $file, WWW_ROOT.'img/failed_import/');
 		    	continue;
 		    }
 
