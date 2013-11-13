@@ -961,6 +961,44 @@ class Listing extends AppModel {
 
 		return array('success' => '');
 	}
+
+	/*
+	Following save of a new listing, the cache for its universities needs to be updated.
+	Finds the universities within $RADIUS of this listing, and adds its reference to their cache.
+	*/
+	public function CacheListingBasicDataForClosestUniversities($universities, &$listingBasicData)
+	{
+		if (!array_key_exists('Listing', $listingBasicData) || !array_key_exists('Marker', $listingBasicData))
+			return;
+
+		foreach ($universities as $university){
+			if (!array_key_exists('University', $university))
+				continue;
+
+			$uni_lat = $university['latitude'];
+			$uni_lon = $university['longitude'];
+
+			$listing_lat = $listingBasicData['Marker']['latitude'];
+			$listing_lon = $listingBasicData['Marker']['longitude'];
+		
+			$distance = $this->distance($uni_lat, $uni_lon, $listing_lat, $listing_lon);
+			if ($distance <= $this->RADIUS){
+				/* Add to this universities basic data cache for this listing type */
+				$listing_type = $listingBasicData['Listing']['listing_type'];
+				$listing_id = $listingBasicData['Listing']['listing_id'];
+				$university_id = $university['University']['university_id'];
+				$basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
+				$basicData[$listing_id] = &$listingBasicData;
+				Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $listingBasicData, 'MapData');
+			}
+
+			$basicData = $this->find('all', $options);
+			//$locationFilteredBasicData = $this->_filterBasicDataByLocation($target_lat_long, $basicData);
+			foreach ($basicData as &$listing) {
+				$listing["Marker"]["building_type_id"] = Rental::building_type(intval($listing['Marker']['building_type_id']));
+			}
+		}
+	}
 /* ------------------------------------ private functions -------------------------------- */
 
 
