@@ -56,7 +56,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 
 	MarkerClicked: (event) =>
 		A2Cribs.MixPanel.Click this, 'small popup'
-		A2Cribs.HoverBubble.Open this
+		$("#map_region").trigger "marker_clicked", [this]
 
 
 	###

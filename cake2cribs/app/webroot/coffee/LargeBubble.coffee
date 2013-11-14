@@ -1,13 +1,21 @@
 ###
-ClickBubble class
+LargeBubble class
 ###
 
-class A2Cribs.ClickBubble
+class LargeBubble
 	@OFFSET = 
 		TOP: -190
 		LEFT: 140
 	@PADDING = 50 #padding on sides of click bubble after panning to make click bubble fit on map
 	@IsOpen = false
+
+	###
+	When the map is initialized, call init for the map
+	###
+	$(document).ready =>
+		$("#map_region").on "map_initialized", (event, map) =>
+			@Init map
+
 	###
 	Private function that relocates the bubble near the marker
 	###
@@ -41,13 +49,26 @@ class A2Cribs.ClickBubble
 	Constructor
 	###
 	@Init: (@map) ->
-		@div = $(".click-bubble:first")
-		@div.find(".close_button").click () =>
+		@div = $(".large-bubble:first")
+		google.maps.event.addListener @map, 'center_changed', => 
 			@Close()
+		@div.find(".close_button").click =>
+			@Close()
+		$("#map_region").on 'close_bubbles', =>
+			@Close()
+
+		$("#map_region").on "marker_clicked", (event, marker) =>
+			# Pan map to leave enough room for click bubble
+			marker_pixel_position = @ConvertLatLongToPixels marker.GMarker.getPosition()
+			pixels_to_pan = @GetAdjustedLargeBubblePosition marker_pixel_position.x, marker_pixel_position.y
+			@map.panBy pixels_to_pan.x, pixels_to_pan.y
+
+		$('#map_region').on 'listing_click', (event, listing_id) =>
+			@Open listing_id
 
 	###
 	Opens the tooltip given a marker, with popping animation
-	Returns deferred object that gets resolved after clickbubble is loaded.
+	Returns deferred object that gets resolved after LargeBubble is loaded.
 	After it is loaded and visible, load its image.
 	###
 	@Open: (listing_id) ->
@@ -99,7 +120,15 @@ class A2Cribs.ClickBubble
 		@Clear()
 		for key,value of listing_object
 			@div.find(".#{key}").text value
-		@div.find(".date_range").text @resolveDateRange listing_object.start_date
+		@div.find(".start_date").text @resolveDateRange listing_object.start_date
+		if listing_object.end_date?
+			@div.find(".lease_length").text @resolveDateRange listing_object.end_date
+			@div.find(".lease_box").hide()
+			@div.find(".end_date_box").show()
+
+		else
+			@div.find(".end_date_box").hide()
+			@div.find(".lease_box").show()
 		marker = A2Cribs.UserCache.Get "marker", A2Cribs.UserCache.Get("listing", listing_object.listing_id).marker_id
 		@div.find(".building_name").text marker.GetName()
 		@div.find(".unit_type").text marker.GetBuildingType()
@@ -110,7 +139,6 @@ class A2Cribs.ClickBubble
 			unit_style_description = 'Entire House'
 
 		@div.find('.unit_style_description').text unit_style_description
-		@div.find('unit_style_description').text 
 		@setBeds listing_object.beds
 		@linkWebsite ".website_link", listing_object.website, listing_object.listing_id
 		@setRent listing_object.rent
@@ -264,11 +292,11 @@ class A2Cribs.ClickBubble
 	takes as arguments the x and y position of the clicked marker
 	returns the x and y amounts to pan the map so that the click bubble fits on the screen
 	###
-	@GetAdjustedClickBubblePosition: (marker_x, marker_y) ->
+	@GetAdjustedLargeBubblePosition: (marker_x, marker_y) ->
 		# for y, high and low refer to high and low on the page, not numerically, since it is opposite.
 		y_high = marker_y + @OFFSET['TOP']
-		y_low = marker_y + @OFFSET['TOP'] + $(".click-bubble").height()
-		x_max = marker_x + @OFFSET['LEFT'] + $(".click-bubble").width()
+		y_low = marker_y + @OFFSET['TOP'] + $(".large-bubble").height()
+		x_max = marker_x + @OFFSET['LEFT'] + $(".large-bubble").width()
 
 		# compare to map boundaries dimensions
 		offset = {}

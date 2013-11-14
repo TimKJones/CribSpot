@@ -102,7 +102,7 @@
 
     Marker.prototype.MarkerClicked = function(event) {
       A2Cribs.MixPanel.Click(this, 'small popup');
-      return A2Cribs.HoverBubble.Open(this);
+      return $("#map_region").trigger("marker_clicked", [this]);
     };
 
     /*

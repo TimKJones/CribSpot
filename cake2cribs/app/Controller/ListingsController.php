@@ -157,6 +157,27 @@ class ListingsController extends AppController {
 				$response['error'] = $imageResponse['error'];
 		}
 
+		/* 
+		Overwrite basicdata in cache for this listing
+		*/
+		if (array_key_exists('listing', $response) && array_key_exists('Listing', $response['listing']) &&
+			array_key_exists('listing_id', $response['listing']['Listing'])){
+			$listing_id = $response['listing']['Listing']['listing_id'];
+			/* Determine if this listing is a new listing */
+			$newListing = (Cache::read('ListingBasicData-'.$listing_id) === false);
+			$listing = $response['listing'];
+			Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
+			if ($newListing){
+				/* 
+				this listing doesn't exist in cache yet.
+				need to add it, then find its closest universities add to their cache
+				*/
+				
+				$universities = $this->University->getSchools();
+				$this->Listing->CacheListingBasicDataForClosestUniversities($universities, &$listing);
+			}
+		}
+
 		$this->set('response', json_encode($response));
 		return;
 	}

@@ -66,8 +66,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/FacebookManager');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
-		echo $this->Html->script('src/HoverBubble');
-		echo $this->Html->script('src/ClickBubble');
+		echo $this->Html->script('src/SmallBubble');
+		echo $this->Html->script('src/LargeBubble');
 		echo $this->Html->script('src/UIManager');
 		echo $this->Html->script('src/Image');
 		echo $this->Html->script('src/Sublet');
