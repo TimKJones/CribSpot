@@ -163,13 +163,16 @@ class ListingsController extends AppController {
 		if (array_key_exists('listing', $response) && array_key_exists('Listing', $response['listing']) &&
 			array_key_exists('listing_id', $response['listing']['Listing'])){
 			$listing_id = $response['listing']['Listing']['listing_id'];
-			if (!Cache::read('ListingBasicData-'.$listing_id)){
+			/* Determine if this listing is a new listing */
+			$newListing = (Cache::read('ListingBasicData-'.$listing_id) === false);
+			$listing = $response['listing'];
+			Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
+			if ($newListing){
 				/* 
 				this listing doesn't exist in cache yet.
-				need to add it, then find its closest universities
+				need to add it, then find its closest universities add to their cache
 				*/
-				$listing = $response['listing'];
-				Cache::write('ListingBasicData-'.$listing_id, &$listing, 'MapData');
+				
 				$universities = $this->University->getSchools();
 				$this->Listing->CacheListingBasicDataForClosestUniversities($universities, &$listing);
 			}

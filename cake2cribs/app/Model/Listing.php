@@ -221,6 +221,10 @@ class Listing extends AppModel {
 				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
 					'at help@cribspot.com. Reference error code 2.'));
 			}
+			else {
+				/* Delete this listing from basic data cache */
+				Cache::delete('ListingBasicData-'.$id);
+			}
 		}
 
 		return array('success' => '');
@@ -964,22 +968,20 @@ class Listing extends AppModel {
 
 	/*
 	Following save of a new listing, the cache for its universities needs to be updated.
-	Finds the universities within $RADIUS of this listing, and adds its reference to their cache.
+	Finds the universities within $RADIUS of this listing, and adds its listing_id to their cache.
 	*/
 	public function CacheListingBasicDataForClosestUniversities($universities, &$listingBasicData)
 	{
 		if (!array_key_exists('Listing', $listingBasicData) || !array_key_exists('Marker', $listingBasicData))
 			return;
-
+		$listing_lat = $listingBasicData['Marker']['latitude'];
+		$listing_lon = $listingBasicData['Marker']['longitude'];
 		foreach ($universities as $university){
 			if (!array_key_exists('University', $university))
 				continue;
 
 			$uni_lat = $university['latitude'];
 			$uni_lon = $university['longitude'];
-
-			$listing_lat = $listingBasicData['Marker']['latitude'];
-			$listing_lon = $listingBasicData['Marker']['longitude'];
 		
 			$distance = $this->distance($uni_lat, $uni_lon, $listing_lat, $listing_lon);
 			if ($distance <= $this->RADIUS){
@@ -987,9 +989,9 @@ class Listing extends AppModel {
 				$listing_type = $listingBasicData['Listing']['listing_type'];
 				$listing_id = $listingBasicData['Listing']['listing_id'];
 				$university_id = $university['University']['university_id'];
-				$basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
-				$basicData[$listing_id] = &$listingBasicData;
-				Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $listingBasicData, 'MapData');
+				$uni_listing_ids = Cache::read('UniversityListingIds-'.$listing_type.'-'.$university_id, 'MapData');
+				array_push($uni_listing_ids, $listing_id);
+				Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $uni_listing_ids, 'MapData');
 			}
 
 			$basicData = $this->find('all', $options);

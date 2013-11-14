@@ -107,7 +107,7 @@ Only return */
         CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-CakeLog::write('debuggingit', '-1');
+
         $response = $this->_getBasicData($listing_type, $university_id);
         $this->set("response", $response);
     }
@@ -135,30 +135,57 @@ CakeLog::write('debuggingit', '-1');
             Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
-        $basicData = false;//Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
-        if ($basicData === false){  
+        $basicDataListingIds = Cache::read('UniversityListingIds-'.$listing_type.'-'.$university_id, 'MapData');
+        $basicData = null;
+        if ($basicDataListingIds === false){  
+            /* listing_ids aren't cached - get them from db */
             $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
-            $this->_cacheListingBasicData($basicData);
-            Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
+            $this->_cacheListingBasicData($basicData, $listing_type, $university_id);
         }
-        
+        else {
+            /* get listings from listing cache, using listing_ids for this university */
+            $basicData = $this->_getBasicDataFromCache($basicDataListingIds, $listing_type, $university_id);
+        }
+
         $response = json_encode($basicData);
         return $response;
     }
 
     /*
-    convert $basicData to map of listing_id => $basicData for that listing_id.
+    Returns an array of the cached listings with id in listing_ids
     */
-    private function _cacheListingBasicData(&$basicData)
+    private function _getBasicDataFromCache($listing_ids, $listing_type, $university_id)
     {
-        $map = array();
-        foreach ($basicData as &$listing){
-            if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
-                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing);
-                $map[$listing['Listing']['listing_id']] = &$listing;
+        $listings = array();
+        foreach ($listing_ids as $id){
+            $listing = Cache::read('ListingBasicData-'.$id, 'MapData');
+            if ($listing !== false)
+                array_push($listings, $listing);
+            else {
+                /* Remove from this university's cache */
+                $uni_listing_ids = Cache::read('UniversityListingIds-'.$listing_type.'-'.$university_id);
+                $index = array_search($id, $uni_listing_ids);
+                unset($uni_listing_ids[$index]);
+                Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $uni_listing_ids, 'MapData');
+            }
         }
 
-        return $map;
+        return $listings;
+    }
+
+    /*
+    convert $basicData to map of listing_id => $basicData for that listing_id.
+    */
+    private function _cacheListingBasicData(&$basicData, $listing_type, $university_id)
+    {
+        $listing_ids = array();
+        foreach ($basicData as &$listing){
+            if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
+                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing, 'MapData');
+                array_push($listing_ids, $listing['Listing']['listing_id']);
+        }
+
+        Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $listing_ids, 'MapData');
     }
 
     private function _setupMapPage($listing_type, $school_name)
