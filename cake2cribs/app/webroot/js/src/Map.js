@@ -60,6 +60,7 @@
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
+      A2Cribs.FilterManager.ActiveListingType = active_listing_type_id;
       this.ACTIVE_LISTING_TYPE_ID = active_listing_type_id;
       this.ACTIVE_LISTING_TYPE = this.LISTING_TYPES[active_listing_type_id];
       zoom = 14;

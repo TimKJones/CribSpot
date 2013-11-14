@@ -133,6 +133,10 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	@SetupUI: ->
 		@div = $("#map_filter")
 
+		#$("#start_date_filter_link").datepicker()
+
+		#$("#end_date_filter_link").datepicker()
+
 		$("#filter_search_btn").click =>
 			if $("#filter_search_content").is(":visible")
 				$("#filter_search_content").hide 'slide', {direction: 'left'}, 300
@@ -232,7 +236,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			ajaxData += key + "=" + JSON.stringify value
 		$("#loader").show()
 		$.ajax
-			url: myBaseUrl + "Listings/ApplyFilter/0"
+			url: myBaseUrl + "Listings/ApplyFilter/#{A2Cribs.FilterManager.ActiveListingType}"
 			data: ajaxData
 			type: "GET"
 			context: this

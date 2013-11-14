@@ -271,7 +271,7 @@
       }
       $("#loader").show();
       return $.ajax({
-        url: myBaseUrl + "Listings/ApplyFilter/0",
+        url: myBaseUrl + ("Listings/ApplyFilter/" + A2Cribs.FilterManager.ActiveListingType),
         data: ajaxData,
         type: "GET",
         context: this,
