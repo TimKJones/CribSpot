@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/landing.less?v=70','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/landing.less?v=72','stylesheet/less', array('inline' => false));
 	
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Login', array('inline' => false));

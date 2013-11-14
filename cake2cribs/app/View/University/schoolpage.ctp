@@ -35,11 +35,16 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<button id="friends_invite" class="btn">Invite Your Friends or Group</button>
 		<a href="/login" class="btn">Login or Sign Up</a>
 	</div>
+	<?php 
+	if (!empty($university['founder_image']) && strlen($university['founder_image']) !== 0)
+	{
+	?>
 	<div id="founder_box">
 		<img class="founder_photo" src="<?= $university['founder_image']; ?>">
 		<p><i class="founder_name"><?= $university['founder_name']; ?></i><br><i class="founder_title"><?= $university['name']; ?> Founder</i><br><i class="founder_description"><?= $university['founder_description']; ?></i><br>
 		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email"><?= $university['founder_email']; ?></i></p>
 	</div>
+	<? } ?>
 	<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
 	<a href="<?= $university['background_source']; ?>" class="background_source"><?= $university['background_source']; ?></a>
 </div>
