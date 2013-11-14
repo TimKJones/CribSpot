@@ -164,9 +164,11 @@ Only return */
             else {
                 /* Remove from this university's cache */
                 $uni_listing_ids = Cache::read('UniversityListingIds-'.$listing_type.'-'.$university_id);
-                $index = array_search($id, $uni_listing_ids);
-                unset($uni_listing_ids[$index]);
-                Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $uni_listing_ids, 'MapData');
+                if ($uni_listing_ids !== false){
+                    $index = array_search($id, $uni_listing_ids);
+                    unset($uni_listing_ids[$index]);
+                    Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $uni_listing_ids, 'MapData');
+                }
             }
         }
 
