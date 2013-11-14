@@ -163,25 +163,23 @@ Only return */
                 array_push($listings, $listing);
             else {
                 /* Remove from this university's cache */
-                $uni_listing_ids = Cache::read('UniversityListingIds-'.$listing_type.'-'.$university_id);
-                if ($uni_listing_ids !== false){
-                    $index = array_search($id, $uni_listing_ids);
-                    unset($uni_listing_ids[$index]);
-                    Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $uni_listing_ids, 'MapData');
-                }
+                $index = array_search($id, $listing_ids);
+                unset($listing_ids[$index]);
             }
         }
 
+        /* rewrite uni listing_ids after potentially removing invalid listings from the listing_id array */
+        Cache::write('UniversityListingIds-'.$listing_type.'-'.$university_id, $listing_ids, 'MapData');
         return $listings;
     }
 
     /*
     convert $basicData to map of listing_id => $basicData for that listing_id.
     */
-    private function _cacheListingBasicData(&$basicData, $listing_type, $university_id)
+    private function _cacheListingBasicData($basicData, $listing_type, $university_id)
     {
         $listing_ids = array();
-        foreach ($basicData as &$listing){
+        foreach ($basicData as $listing){
             if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
                 Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing, 'MapData');
                 array_push($listing_ids, $listing['Listing']['listing_id']);
