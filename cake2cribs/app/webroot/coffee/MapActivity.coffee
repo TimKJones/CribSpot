@@ -13,7 +13,7 @@ class MapActivity
 
 
 	$("#map_canvas").ready =>
-		@_increments = [3, 10, 15, 20, 25, 10000000]
+		@_increments = [10, 15, 20, 25, 10000000]
 		@_increment_index = 0
 		@_clickbubble_count = 0
 		$("#map_canvas").on "click_bubble_open", (event, listing_id) => 
