@@ -44,9 +44,6 @@ class AppController extends Controller {
 	var $_jsVars = array();
 	public $helpers = array(
 		'Session',
-		'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
-        'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
-        'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
     );
 
 	public function beforeFilter()

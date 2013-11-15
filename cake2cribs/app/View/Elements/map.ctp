@@ -28,7 +28,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	}
 </style>
 <div id="map_region">
-	<?php echo $this->element('filter'); ?>
+	<?php echo $this->element('filter', array('active_listing_type' => $active_listing_type)); ?>
 	<?php echo $this->element('legend'); ?>
 	<div id="map_canvas"> <!-- style="height:100%; width:100%;"> -->
 	</div>

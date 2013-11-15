@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Filter/filter.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Filter/filter.less?v=1','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
 
 <?php
@@ -6,6 +6,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/FilterManager', array('inline' => false));
 	echo $this->Html->script('src/RentalFilter', array('inline' => false));
 }
+
+$listing_types = array('Rental', 'Sublet', 'Parking');
+
 ?>
 
 <?php echo $this->Html->script('bootstrap-slider', array('inline' => false)); ?>
@@ -13,16 +16,33 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 <div id="map_filter">
 	<div id="filter_label_group">
 		<div class="btn-group filter_div">
-			<a class="btn listing_type" id='rentals-filter-label' href="#">Rentals</a>
+			<a class="btn listing_type" id='rentals-filter-label' href="#"><?= $listing_types[$active_listing_type] ?></a>
 			<a class="btn disabled filter_label" href="#">Searching for:</a>
 			<?php
-				$filters = array('Bedrooms', 'Budget', 'Starts In', 'Length', 'Type', 'More');
-				$filter_links = array('bed', 'rent', 'start', 'lease', 'building', 'more');
+				if (intval($active_listing_type) === 0)
+				{
+					$filters = array('Bedrooms', 'Budget', 'Starts In', 'Length', 'Type', 'More');
+					$filter_links = array('bed', 'rent', 'start', 'lease', 'building', 'more');
+				}
+				elseif (intval($active_listing_type) == 1)
+				{
+					$filters = array('Bedrooms', 'Budget', 'Starts On', 'Ends On', 'Type');
+					$filter_links = array('bed', 'rent', 'start_date', 'end_date', 'building');
+				}
+				
 				$length = count($filters);
 				for ($i = 0; $i < $length; $i++) {
-					echo '<a id="' . $filter_links[$i] . '_filter_link" class="btn filter_link" data-filter="#' . $filter_links[$i] . '_filter_content" href="#">
-						<div class="filter_title">' . $filters[$i] . '</div><div class="filter_preview hide"></div>
-					</a>';
+					echo '<div id="' . $filter_links[$i] . '_filter_link" class="btn filter_link" data-filter="#' . $filter_links[$i] . '_filter_content" href="#">
+						<div class="filter_title">' . $filters[$i] . '</div><div class="filter_preview hide"></div>';
+						if (strcmp($filter_links[$i], 'start_date') === 0)
+						{
+							echo "<input id='" . $filter_links[$i] . "_input' class='hidden_input hide' type='text' data-filter='StartDate' disabled>";
+						}
+						if (strcmp($filter_links[$i], 'end_date') === 0)
+						{
+							echo "<input id='" . $filter_links[$i] . "_input' class='hidden_input hide' type='text' data-filter='EndDate' disabled>";
+						}
+					echo '</div>';
 				}
 			?>
 		</div>

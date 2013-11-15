@@ -18,7 +18,7 @@ if (array_key_exists('Rental', $listing))
 			<div class="row-fluid info_label">About This Crib:</div>
 			<div class="row-fluid info_box">
 				<div class="span12">
-					<?= $listing[$listing_type]["description"] ?>
+					<?php echo stripcslashes(str_replace('\n',"<br />", $listing[$listing_type]["description"]));?>
 				</div>
 			</div>
 		</div>

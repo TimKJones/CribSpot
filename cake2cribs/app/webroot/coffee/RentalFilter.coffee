@@ -127,11 +127,22 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 				else
 					loadPreviewText event.delegateTarget, "<div class='filter_data'>#{selected_list.length}</div><div class='filter_label'>&nbsp;more</div>"
 
+		@div.find(".hidden_input").change (event) =>
+			console.log event.currentTarget.value
+			date = @GetBackendDateFormat event.currentTarget.value
+			@ApplyFilter $(event.currentTarget).data("filter"), date
+
 	###
 	Creates all listeners and jquery events for RentalFilter
 	###
 	@SetupUI: ->
 		@div = $("#map_filter")
+
+		$(".hidden_input").datepicker()
+
+		$("#start_date_filter_link, #end_date_filter_link").click (event) ->
+			$(event.currentTarget).find(".hidden_input").datepicker('show')
+
 
 		$("#filter_search_btn").click =>
 			if $("#filter_search_content").is(":visible")
@@ -232,7 +243,7 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 			ajaxData += key + "=" + JSON.stringify value
 		$("#loader").show()
 		$.ajax
-			url: myBaseUrl + "Listings/ApplyFilter/0"
+			url: myBaseUrl + "Listings/ApplyFilter/#{A2Cribs.FilterManager.ActiveListingType}"
 			data: ajaxData
 			type: "GET"
 			context: this
@@ -264,100 +275,17 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 
 		return visibile_listings
 
-	@GetBeds: () ->
-		beds = [3, 5, 6, 10]
-		return JSON.stringify beds
-
-	@GetRent: () ->
-		return @
-		rent =
-			"min" : 100
-			"max" : 5000
-		return JSON.stringify rent
-
-	@GetMonths: () ->
-		dates = 
-			"months" :
-				"1" : 1
-				"2" : 0
-				"3" : 1
-				"4" : 0
-				"5" : 1
-				"6" : 0
-				"7" : 1
-				"8" : 0
-				"9" : 1
-				"10": 0
-				"11": 1
-				"12": 0
-			"curYear" : [13, 14]
-			"leaseLength" :
-				'min' : 2
-				'max' : 4	
-		return dates
-
-	@GetUnitTypes: () ->
-		unit_types = 
-			"house" : 0
-			"apartment" : 1
-			"duplex" : 1
-			"other" : 0
-
-	@GetAmenities: () ->
-		amenities =
-			'elevator' : 1
-
-	FilterRent: (listing) ->
-		return true
-
-	FilterBeds: (listing) ->
-		return true
-
-	FilterBaths: (listing) ->
-		return true
-
-	FilterBuildingType: (listing) ->
-		return true
-
-	FilterDates: (listing) ->
-		return true
-
-	FilterUnitFeatures: (listing) ->
-		#a/c, furnished_type
-		return true
-
-	FilterParking: (listing) ->
-		# parking type
-		# parking spots
-		# street_parking
-		return true
-
-	FilterPets: (listing) ->
-		return true
-
-	FilterAmenities: (listing) ->
-		# smoking
-		# tv
-		# balcony
-		# fridge
-		# storage
-		# pool
-		# hot_tub
-		# fitness_center
-		# game_room
-		# security_system
-		# tanning_beds
-		# study_lounge
-		# patio_deck
-		# yard_space
-		# elevator
-		return true
-
-	FilterSquareFeet: (listing) ->
-		return true
-
-	FilterYearBuilt: (listing) ->
-		return true
-
-	FilterUtilities: (listing) ->
-		return true
+	###
+	Get Backend Date Format
+	Replaces '/' with '-' to make convertible to db format
+	###
+	@GetBackendDateFormat: (dateString) ->
+		date = new Date(dateString)
+		month = date.getMonth() + 1
+		if month < 10
+			month = "0" + month
+		day = date.getDate()
+		if day < 10
+			day = "0" + day
+		year = date.getUTCFullYear()
+		beginDateFormatted = year + "-" + month + "-" + day
