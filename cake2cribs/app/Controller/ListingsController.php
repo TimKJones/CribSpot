@@ -166,7 +166,7 @@ class ListingsController extends AppController {
 			/* Determine if this listing is a new listing */
 			$newListing = (Cache::read('ListingBasicData-'.$listing_id) === false);
 			$listing = $response['listing'];
-			Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
+			//Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
 			if ($newListing){
 				/* 
 				this listing doesn't exist in cache yet.

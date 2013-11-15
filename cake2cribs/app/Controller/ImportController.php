@@ -23,6 +23,7 @@ class ImportController extends AppController {
 		$this->Auth->allow('TestGeocoderFunctionality');
 		$this->Auth->allow('index');
 		$this->Auth->allow('ImportImages');
+		$this->Auth->allow('ResizeAllImages');
   	}
 
   	public function index()
