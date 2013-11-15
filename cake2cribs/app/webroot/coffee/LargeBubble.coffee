@@ -222,7 +222,7 @@ class LargeBubble
 		if user?.company_name?
 			$(".#{div_name}").show().text user.company_name
 		else if user?.first_name? and user.last_name
-			$(".#{div_name}").show().text "#{user.first_name} #{user.last_name}"
+			$(".#{div_name}").show().text "#{user.first_name}"
 		else
 			$(".#{div_name}").hide()
 		if user?.verified
