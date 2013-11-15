@@ -19,6 +19,9 @@
 
 	echo $this->element('header', 
 		array(
+			'page' => 'sublet',
+			'school_name' => str_replace(" ", "_", $school_name),
+			'sublets_live' => $university['sublets_live'],
 			'show_filter' => false,
 			'show_user' => true,
 			'show_personal' => true,
