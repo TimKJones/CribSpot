@@ -156,10 +156,17 @@
         }
       });
       return this.div.find(".hidden_input").change(function(event) {
-        var date;
+        var date, date_split, filter;
         console.log(event.currentTarget.value);
         date = _this.GetBackendDateFormat(event.currentTarget.value);
-        return _this.ApplyFilter($(event.currentTarget).data("filter"), date);
+        filter = $(event.currentTarget).data("filter");
+        _this.ApplyFilter(filter, date);
+        date_split = event.currentTarget.value.split("/");
+        if (filter.indexOf("Start") !== -1) {
+          return $(event.currentTarget).parent().find(".filter_title").text("Starts: " + date_split[0] + "/" + date_split[1]);
+        } else if (filter.indexOf("End") !== -1) {
+          return $(event.currentTarget).parent().find(".filter_title").text("Ends: " + date_split[0] + "/" + date_split[1]);
+        }
       });
     };
 
@@ -171,7 +178,11 @@
     RentalFilter.SetupUI = function() {
       var _this = this;
       this.div = $("#map_filter");
-      $(".hidden_input").datepicker();
+      $(".hidden_input").datepicker({
+        onClose: function(date) {
+          return $(".filter_link").removeClass("active");
+        }
+      });
       $("#start_date_filter_link, #end_date_filter_link").click(function(event) {
         return $(event.currentTarget).find(".hidden_input").datepicker('show');
       });

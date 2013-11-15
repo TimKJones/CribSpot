@@ -169,9 +169,9 @@ class ListingsController extends AppController {
 				need to add it, then find its closest universities
 				*/
 				$listing = $response['listing'];
-				Cache::write('ListingBasicData-'.$listing_id, &$listing, 'MapData');
+				Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
 				$universities = $this->University->getSchools();
-				$this->Listing->CacheListingBasicDataForClosestUniversities($universities, &$listing);
+				$this->Listing->CacheListingBasicDataForClosestUniversities($universities, $listing);
 			}
 		}
 

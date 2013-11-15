@@ -100,7 +100,7 @@
       getFlIdsDeferred = this.GetFlIds(university_id);
       this.GetSidebarImagePathsDeferred = new $.Deferred();
       $.when(getFlIdsDeferred, basicDataCachedDeferred).then(function(flIds) {
-        var all_listing_ids, id, listing, listingObject, listings, marker, randomIds, rental, sidebar_listing_ids, _i, _j, _k, _l, _len, _len1, _len2, _len3;
+        var all_listing_ids, id, listing, listingObject, listing_object, listings, marker, randomIds, sidebar_listing_ids, _i, _j, _k, _l, _len, _len1, _len2, _len3;
         listings = A2Cribs.UserCache.Get('listing');
         all_listing_ids = [];
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
@@ -134,24 +134,24 @@
           id = sidebar_listing_ids[_l];
           listingObject = {};
           listing = A2Cribs.UserCache.Get('listing', id);
-          marker = rental = null;
+          marker = listing_object = null;
           if (listing != null) {
             listing.InSidebar(true);
             marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
-            rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id);
-            if (rental[0] != null) {
-              rental = rental[0];
+            listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id);
+            if (listing_object[0] != null) {
+              listing_object = listing_object[0];
             }
           }
-          if ((listing != null) && (marker != null) && (rental != null)) {
+          if ((listing != null) && (marker != null) && (listing_object != null)) {
             listingObject.Listing = listing;
             listingObject.Marker = marker;
-            listingObject.Rental = rental;
+            listingObject.ListingObject = listing_object;
             listings.push(listingObject);
           } else {
             console.log(listing);
             console.log(marker);
-            console.log(rental);
+            console.log(listing_object);
           }
         }
         sidebar.addListings(listings, 'ran');
@@ -163,7 +163,7 @@
           marker = A2Cribs.UserCache.Get('marker', marker_id);
           listing = A2Cribs.UserCache.Get('listing', listing_id);
           A2Cribs.Map.GMap.setZoom(16);
-          A2Cribs.HoverBubble.Open(marker);
+          $("#map_region").trigger("marker_clicked", [marker]);
           A2Cribs.MixPanel.Click(listing, 'sidebar listing');
           markerPosition = marker.GMarker.getPosition();
           return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
@@ -262,13 +262,14 @@
       };
 
       Sidebar.prototype.getListHtml = function(listings) {
-        var beds, data, image, lease_length, list, listing, listing_item, name, primary_image_path, rent, start_date, _i, _j, _len, _len1, _ref;
+        var beds, data, end_date, image, lease_length, list, listing, listing_item, name, primary_image_path, rent, start_date, _i, _j, _len, _len1, _ref, _results;
         list = $("<div />");
+        _results = [];
         for (_i = 0, _len = listings.length; _i < _len; _i++) {
           listing = listings[_i];
           rent = name = beds = lease_length = start_date = null;
-          if (listing.Rental.rent != null) {
-            rent = parseFloat(listing.Rental.rent).toFixed(0);
+          if (listing.ListingObject.rent != null) {
+            rent = parseFloat(listing.ListingObject.rent).toFixed(0);
           } else {
             rent = ' --';
           }
@@ -277,23 +278,27 @@
           } else {
             name = listing.Marker.street_address;
           }
-          if (listing.Rental.lease_length != null) {
-            lease_length = listing.Rental.lease_length;
+          if (listing.ListingObject.lease_length != null) {
+            lease_length = listing.ListingObject.lease_length;
           } else {
             lease_length = '-- ';
           }
-          if (listing.Rental.beds > 1) {
-            beds = "" + listing.Rental.beds + " beds";
-          } else if (listing.Rental.beds != null) {
-            beds = "" + listing.Rental.beds + " bed";
+          if (listing.ListingObject.beds > 1) {
+            beds = "" + listing.ListingObject.beds + " beds";
+          } else if (listing.ListingObject.beds != null) {
+            beds = "" + listing.ListingObject.beds + " bed";
           } else {
             beds = "?? beds";
           }
-          if (listing.Rental.start_date != null) {
-            start_date = listing.Rental.start_date.toString().replace(' ', 'T');
+          if (listing.ListingObject.start_date != null) {
+            start_date = listing.ListingObject.start_date.toString().replace(' ', 'T');
             start_date = this.getDateString(new Date(start_date));
           } else {
             start_date = 'Start Date --';
+          }
+          if (listing.ListingObject.end_date != null) {
+            end_date = listing.ListingObject.end_date.toString().replace(' ', 'T');
+            end_date = this.getDateString(new Date(end_date));
           }
           primary_image_path = '/img/sidebar/no_photo_small.jpg';
           if (listing.Image != null) {
@@ -310,6 +315,7 @@
             beds: beds,
             building_type: listing.Marker.building_type_id,
             start_date: start_date,
+            end_date: end_date,
             lease_length: lease_length,
             name: name,
             img: primary_image_path,
@@ -318,16 +324,16 @@
           };
           listing_item = $(this.ListItemTemplate(data));
           A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
-          list.append(listing_item);
+          _results.push(list.append(listing_item));
         }
-        return list;
+        return _results;
       };
 
       return Sidebar;
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <% if (typeof(end_date) != \"undefined\") { %>\n            <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n            <% } else { %>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n            <% } %>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 

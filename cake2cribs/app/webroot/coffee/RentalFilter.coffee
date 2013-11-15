@@ -130,7 +130,13 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 		@div.find(".hidden_input").change (event) =>
 			console.log event.currentTarget.value
 			date = @GetBackendDateFormat event.currentTarget.value
-			@ApplyFilter $(event.currentTarget).data("filter"), date
+			filter = $(event.currentTarget).data("filter")
+			@ApplyFilter filter, date
+			date_split = event.currentTarget.value.split("/")
+			if filter.indexOf("Start") isnt -1
+				$(event.currentTarget).parent().find(".filter_title").text "Starts: #{date_split[0]}/#{date_split[1]}"
+			else if filter.indexOf("End") isnt -1
+				$(event.currentTarget).parent().find(".filter_title").text "Ends: #{date_split[0]}/#{date_split[1]}"
 
 	###
 	Creates all listeners and jquery events for RentalFilter
@@ -138,7 +144,10 @@ class A2Cribs.RentalFilter extends A2Cribs.FilterManager
 	@SetupUI: ->
 		@div = $("#map_filter")
 
-		$(".hidden_input").datepicker()
+		$(".hidden_input").datepicker
+			onClose: (date) ->
+				$(".filter_link").removeClass "active"
+
 
 		$("#start_date_filter_link, #end_date_filter_link").click (event) ->
 			$(event.currentTarget).find(".hidden_input").datepicker('show')
