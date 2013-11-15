@@ -31,7 +31,8 @@
 				!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
 				header('Access-Control-Allow-Origin: *');
 				$universities = $this->University->getSchools();
-				$universities = json_encode($universities);
+				$universities_wrapped = array('Universities' => $universities);
+				$universities = json_encode($universities_wrapped);
 			}
 		
 			$this->set('response', $universities);
