@@ -78,8 +78,8 @@ class Sublet extends AppModel {
         'ParkingAvailable' => array('Boolean' => array('parking_type', 0, 'Sublet')),
         'Beds' => array('MultipleOption'=>array('beds', 7, 'Sublet')), /* 7 is MAX_BEDS */
         'Rent' => array('Range' => array('rent', 1000, 'Sublet')), /* 1000 is MAX_RENT */
-        'StartDate' => array('DatePicker' => array('start_date', '>', 'Sublet')), 
-        'EndDate' => array('DatePicker' => array('end_date', '<', 'Sublet')),
+        'StartDate' => array('DatePicker' => array('start_date', '<=', 'Sublet')), 
+        'EndDate' => array('DatePicker' => array('end_date', '>=', 'Sublet')),
         'SharedUnit' => array('MultipleOption'=>array('shared_type', 1, 'Sublet')),
         'SharedBath' => array('MultipleOption'=>array('bathroom_type', 1, 'Sublet')),
         'UnitTypes' => array('MultipleOption' => array('building_type_id', 3 /* Rental::BUILDING_TYPE_CONDO */, 'Marker')),
