@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Filter/filter.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Filter/filter.less?v=1','stylesheet/less', array('inline' => false)); ?>
 <?php echo $this->Html->css('/less/slider.less?','stylesheet/less', array('inline' => false)); ?>
 
 <?php
@@ -26,15 +26,23 @@ $listing_types = array('Rental', 'Sublet', 'Parking');
 				}
 				elseif (intval($active_listing_type) == 1)
 				{
-					$filters = array('Bedrooms', 'Budget', 'Starts In', 'Ends In', 'Type');
+					$filters = array('Bedrooms', 'Budget', 'Starts On', 'Ends On', 'Type');
 					$filter_links = array('bed', 'rent', 'start_date', 'end_date', 'building');
 				}
 				
 				$length = count($filters);
 				for ($i = 0; $i < $length; $i++) {
 					echo '<div id="' . $filter_links[$i] . '_filter_link" class="btn filter_link" data-filter="#' . $filter_links[$i] . '_filter_content" href="#">
-						<div class="filter_title">' . $filters[$i] . '</div><div class="filter_preview hide"></div>
-					</div>';
+						<div class="filter_title">' . $filters[$i] . '</div><div class="filter_preview hide"></div>';
+						if (strcmp($filter_links[$i], 'start_date') === 0)
+						{
+							echo "<input id='" . $filter_links[$i] . "_input' class='hidden_input hide' type='text' data-filter='StartDate' disabled>";
+						}
+						if (strcmp($filter_links[$i], 'end_date') === 0)
+						{
+							echo "<input id='" . $filter_links[$i] . "_input' class='hidden_input hide' type='text' data-filter='EndDate' disabled>";
+						}
+					echo '</div>';
 				}
 			?>
 		</div>
