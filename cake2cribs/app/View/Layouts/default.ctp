@@ -66,8 +66,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/FacebookManager');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
-		echo $this->Html->script('src/HoverBubble');
-		echo $this->Html->script('src/ClickBubble');
+		echo $this->Html->script('src/SmallBubble');
+		echo $this->Html->script('src/LargeBubble');
 		echo $this->Html->script('src/UIManager');
 		echo $this->Html->script('src/Image');
 		echo $this->Html->script('src/Sublet');
@@ -75,17 +75,18 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('knockout.js');
 	echo $this->Html->script('alertify.min.js');
 	echo $this->Html->script('underscore');
+	echo $this->Html->script('jquery-ui.multidatespicker'); 
+
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.core.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
+		echo $this->Html->css('/js/slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css');
+		echo $this->Html->css('multi-date-picker');
 		echo $this->Html->css('basic');
 		echo $this->Html->css('/font/stylesheet.css?v=1');
-
-
-
 
 
 		echo '<title>' . $title_for_layout . '</title>';

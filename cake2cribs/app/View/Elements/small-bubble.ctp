@@ -1,7 +1,7 @@
-<?= $this->Html->css('/less/hover-bubble.less?v=2','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/small-bubble.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div>
-	<div class="hover-bubble">
+	<div class="small-bubble">
 		<div class="hover_header"><div class="building_type">Apartment</div><div class="close_button">&times;</div></div>
 		<div class="unit_div">
 			<div class="unit">

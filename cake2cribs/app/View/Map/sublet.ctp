@@ -19,13 +19,16 @@
 
 	echo $this->element('header', 
 		array(
+			'page' => 'sublet',
+			'school_name' => str_replace(" ", "_", $school_name),
+			'sublets_live' => $university['sublets_live'],
 			'show_filter' => false,
 			'show_user' => true,
 			'show_personal' => true,
 			'locations' => $locations,
 			'user_years' => $user_years
 	));
-	echo $this->element('map');
+	echo $this->element('map', array('active_listing_type' => $active_listing_type));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
 

@@ -28,7 +28,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	}
 </style>
 <div id="map_region">
-	<?php echo $this->element('filter'); ?>
+	<?php echo $this->element('filter', array('active_listing_type' => $active_listing_type)); ?>
 	<?php echo $this->element('legend'); ?>
 	<div id="map_canvas"> <!-- style="height:100%; width:100%;"> -->
 	</div>
@@ -36,6 +36,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 <!-- Popups important for the mapview -->
 <div class="hide">
-	<?php echo $this->element('hover-bubble'); ?>
+	<?php echo $this->element('small-bubble'); ?>
 </div>
-<?php echo $this->element('click-bubble'); ?>
+<?php echo $this->element('large-bubble', array('active_listing_type' => $active_listing_type)); ?>

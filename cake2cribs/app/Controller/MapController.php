@@ -135,15 +135,30 @@ CakeLog::write('debuggingit', '-1');
             Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
-        $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
-        if ($basicData === false){
+        $basicData = false;//Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
+        if ($basicData === false){  
             $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
-            CakeLog::write("fetchedbasicdata", print_r($basicData, true));
+            $this->_cacheListingBasicData($basicData);
             Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
         }
         
         $response = json_encode($basicData);
         return $response;
+    }
+
+    /*
+    convert $basicData to map of listing_id => $basicData for that listing_id.
+    */
+    private function _cacheListingBasicData(&$basicData)
+    {
+        $map = array();
+        foreach ($basicData as &$listing){
+            if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
+                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing);
+                $map[$listing['Listing']['listing_id']] = &$listing;
+        }
+
+        return $map;
     }
 
     private function _setupMapPage($listing_type, $school_name)

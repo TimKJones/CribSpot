@@ -27,7 +27,8 @@ Parameters needed:
 			$findConditions['conditions'] = $conditions;
 
 		$markerIdList = $model->find('all', $findConditions);
-
+		$log = $model->getDataSource()->getLog(false, false); 
+	  	CakeLog::write("lastQuery", print_r($log, true));
 		$formattedIdList = array();
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
@@ -68,9 +69,9 @@ Parameters needed:
 							$next_conditions = $this->_getBooleanFilterConditions($filterParams[0], $filterParams[1], $filterParams[2]);
 					}
 					else if ($filterType === 'DatePicker'){
-						$decoded = json_decode($params[$field]);
-						$date = $decoded->date;
-						$next_conditions = $this->_getDatePickerConditions($field_name, $filterParams[0], $date, $filterParams[1]);
+						$date = json_decode($params[$field]);
+						CakeLog::write('date', $date);
+						$next_conditions = $this->_getDatePickerConditions($filterParams[0], $filterParams[1], $date, $filterParams[2]);
 					}
 			
 					if ($next_conditions !== null)
@@ -93,7 +94,14 @@ Parameters needed:
 	*/
 	private function _getDatePickerConditions($field_name, $compareOperator, $date, $table_name='Rental')
 	{
-		return array($table_name.'.'.$field_name.' '.$compareOperator.' '.$date);
+		if (!strcmp('start_date', $field_name))
+			$date = "'".$date." 11:59:59'";
+		else
+			$date = "'".$date." 00:00:00'";	
+
+		$conditions = array($table_name.'.'.$field_name.' '.$compareOperator.' '.$date);
+		CakeLog::write('conditions', print_r($conditions, true));
+		return $conditions;
 	}
 
 	/*
