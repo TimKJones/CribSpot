@@ -135,7 +135,7 @@ CakeLog::write('debuggingit', '-1');
             Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
-        $basicData = false;//Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
+        $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
         if ($basicData === false){  
             $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
             $this->_cacheListingBasicData($basicData);
@@ -154,7 +154,7 @@ CakeLog::write('debuggingit', '-1');
         $map = array();
         foreach ($basicData as &$listing){
             if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
-                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing);
+                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing, 'MapData');
                 $map[$listing['Listing']['listing_id']] = &$listing;
         }
 
