@@ -37,7 +37,7 @@
 						array_push($formatted_universities, $university['University']);
 				}
 
-				$universities = json_encode($formatted_universities);
+				$universities = json_encode(array('Universities' => $formatted_universities));
 			}
 		
 			$this->set('response', $universities);
