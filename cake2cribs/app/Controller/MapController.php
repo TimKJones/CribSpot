@@ -121,7 +121,6 @@ CakeLog::write('debuggingit', '-1');
             !strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
             header('Access-Control-Allow-Origin: *');
             $basicData = $this->_getBasicData($listing_type, $university_id);
-            $basicData = json_encode($basicData);
         }
     
         $this->set('response', $basicData);   
