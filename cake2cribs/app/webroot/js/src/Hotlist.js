@@ -3,7 +3,7 @@
   A2Cribs.Hotlist = (function() {
     Hotlist.Initialize = function() {
       var el;
-      el = $('#friends-list');
+      el = $('#hotlist');
       return A2Cribs.HotlistObj = new A2Cribs.Hotlist(el);
     };
 
@@ -13,7 +13,7 @@
       url = myBaseUrl + ("friends/hotlist/" + action);
       deferred = new $.Deferred();
       data = {
-        friend_id: friend
+        friend: friend
       };
       $.ajax({
         url: url,
@@ -29,18 +29,31 @@
       return deferred.promise();
     };
 
+    Hotlist.share = function(listing, friend) {
+      var deferred,
+        _this = this;
+      deferred = new $.Deferred();
+      return $.ajax({
+        url: myBaseUrl + "friends/share",
+        data: {
+          friend: friend,
+          listing: listing
+        },
+        type: "POST",
+        success: function(data) {
+          return deferred.resolve(JSON.parse(data));
+        },
+        error: function(response) {
+          return deferred.reject(response);
+        }
+      });
+    };
+
     function Hotlist(DOMRoot) {
       this.DOMRoot = DOMRoot;
-      this.template = _.template(A2Cribs.Hotlist.templateHTML);
-      this.usEngine = {
-        compile: function(template) {
-          return {
-            render: (function(context) {
-              return _.template(template)(context);
-            })
-          };
-        }
-      };
+      this.topSection = _.template(A2Cribs.Hotlist.topSectionTemplate);
+      this.friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate);
+      this.expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate);
       this.setup();
     }
 
@@ -58,27 +71,35 @@
     };
 
     Hotlist.prototype.render = function(data) {
-      this.DOMRoot.html(this.template(data));
-      return $('.friend-adder .typeahead').typeahead([
+      this.DOMRoot.find('#top-section').html(this.topSection(data));
+      this.DOMRoot.find('#friends').html(this.friendsList(data));
+      this.DOMRoot.find('#bottom-section').html(this.expandButton(data));
+      $('#add-field').typeahead([
         {
           name: 'accounts',
           remote: {
             url: myBaseUrl + 'users/getbyname?name=%QUERY',
             filter: function(response) {
-              console.log(response);
               return response.map(function(item) {
                 var datum;
                 datum = {
                   value: "" + item.User.email,
                   name: "" + item.User.first_name + " " + item.User.last_name
                 };
-                console.log(datum);
                 return datum;
               });
             }
           }
         }
       ]);
+      $('.hotlist-remove-button').toggle();
+      $('li.friend span').tooltip();
+      this.DOMRoot.find('#title').show();
+      this.DOMRoot.find('#add-field').hide();
+      this.DOMRoot.find('.twitter-typeahead').hide();
+      this.DOMRoot.find('#btn-add').hide();
+      this.DOMRoot.find('.friend-name').hide();
+      return A2Cribs.FeaturedListings.resizeHandler();
     };
 
     Hotlist.prototype.get = function() {
@@ -120,7 +141,64 @@
       });
     };
 
-    Hotlist.templateHTML = "<div id='share-all'></div>\n<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <%=elem.first_name%> <%=elem.last_name%> <a href = '#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>x</a>\n    </li>\n  <% }); %>\n</ul>\n<div class='friend-adder'>\n    <input class='typeahead' type='text' autocomplete='off'></input>\n</div>\n<a href= '#' onClick=\"A2Cribs.HotlistObj.add($('.typeahead').val())\">Add</a>";
+    Hotlist.prototype.share = function(listing, friend) {
+      return $.when(A2Cribs.Hotlist.share(listing, friend)).always(function(data, status, jqXHR) {
+        return console.log(data);
+      });
+    };
+
+    Hotlist.prototype.retract = function() {
+      $('#btn-edit').removeClass('editing');
+      $('.hotlist-remove-button').hide();
+      $('#hotlist').removeClass('expanded').removeClass('detailed');
+      $('#hotlist i').removeClass('icon-caret-up').addClass('icon-caret-down');
+      this.DOMRoot.find('.friend-name').hide();
+      return this.DOMRoot.find('.friend-abbr').show();
+    };
+
+    Hotlist.prototype.expand = function(detail) {
+      $('#hotlist').addClass('expanded');
+      if (detail) {
+        $('#hotlist').addClass('detailed');
+      }
+      return $('#hotlist i').removeClass('icon-caret-down').addClass('icon-caret-up');
+    };
+
+    Hotlist.prototype.toggleEdit = function() {
+      if ($('#btn-edit').hasClass('editing')) {
+        this.DOMRoot.find('#title').show();
+        this.DOMRoot.find('#add-field').hide();
+        this.DOMRoot.find('.twitter-typeahead').hide();
+        this.DOMRoot.find('#btn-add').hide();
+        this.DOMRoot.find('#btn-edit').html('Edit');
+        return this.retract();
+      } else {
+        this.DOMRoot.find('#btn-edit').addClass('editing');
+        this.DOMRoot.find('.hotlist-remove-button').show();
+        this.DOMRoot.find('.friend-name').show();
+        this.DOMRoot.find('.friend-abbr').hide();
+        this.DOMRoot.find('#title').hide();
+        this.DOMRoot.find('#add-field').show();
+        this.DOMRoot.find('.twitter-typeahead').show();
+        this.DOMRoot.find('#btn-add').show();
+        this.DOMRoot.find('#btn-edit').html('Cancel');
+        return this.expand(true);
+      }
+    };
+
+    Hotlist.prototype.toggleExpand = function() {
+      if ($('#hotlist').hasClass('expanded')) {
+        return this.retract();
+      } else {
+        return this.expand(false);
+      }
+    };
+
+    Hotlist.topSectionTemplate = "<div id='title'>Hotlist</div>\n<div id='share-all'></div>\n<input class='typeahead' type='text' autocomplete='off' id='add-field'></input>\n<div id='buttons' class='pull-right'>\n  <a href='#' data-toggle='popover' id='btn-add' class='btn btn-success' onClick=\"A2Cribs.HotlistObj.add($('#add-field').val())\">+</a>\n  <a href='#' id='btn-edit' class='btn btn-primary' onClick='A2Cribs.HotlistObj.toggleEdit()'>Edit</a>\n</div>";
+
+    Hotlist.friendsListTemplate = "<ul class='friends'>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li class='friend'>\n      <span class='friend-abbr' data-toggle='tooltip' title='<%=elem.first_name%> <%=elem.last_name%>'>\n        <%=elem.first_name[0].toUpperCase()%><%=elem.last_name[0].toUpperCase()%> \n      </span>\n      <span class='friend-name'>\n        <%=elem.first_name%> <%=elem.last_name%> \n      </span>\n      <a class='hotlist-remove-button btn btn-danger pull-right' href='#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'>Remove</a>\n    </li>\n  <% }); %>\n</ul>";
+
+    Hotlist.expandButtonTemplate = "<a href='#' onclick='A2Cribs.HotlistObj.toggleExpand()' id='expand-button'><i class='icon icon-caret-down'></i></a>";
 
     return Hotlist;
 

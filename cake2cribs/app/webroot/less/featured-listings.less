@@ -208,11 +208,14 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 
     @FEATURED_PM_HEIGHT: 60px;
 
+    box-sizing: border-box;
+    overflow: hidden;
 
-    position: absolute;
-    top: 46px;
+    position: relative;
+    float: right;
+    padding-top: 46px;
+    height: 100%;
     width: 348px;
-    right: 0px;
     bottom: 0px;
 
     border-left: 2px solid #c2c2c2;
@@ -310,19 +313,17 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     }
 
 
+    #listings-list-container {
+        position: relative;
+        // top: 0;
+        // bottom: 25px;
+    }
 
     #listings-list{
-        position: absolute;
-        top: 113px;
-        left: 0px;
-        right: 0px;
-        // width: 100%;
-        bottom: 25px;
         overflow-y: scroll;
         overflow-x: hidden;
-        // /bottom: 0;
-        // width: 100%;
         background: #f2f3f4;
+        height: 100%;
         &.has_featured_pm
         {
             bottom: 28px + @FEATURED_PM_HEIGHT;

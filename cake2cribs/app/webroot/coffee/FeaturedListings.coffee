@@ -2,6 +2,15 @@ class A2Cribs.FeaturedListings
     @FeaturedPMIdToListingIdsMap = []
     @FeaturedPMListingsVisible = false
 
+    @resizeHandler: ->
+        h = $(window).height() - $('#listings-list').offset().top - $('.legal-bar').height()
+        console.log $(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h
+        $('#listings-list').height(h)
+
+    @SetupResizing: ->
+        @resizeHandler()
+        $(window).on('resize', @resizeHandler)
+
     @GetFlIds:(university_id)->
         deferred = new $.Deferred()
         $.get "/featuredListings/cycleIds/#{university_id}/#{@FL_LIMIT}", (response)=>
@@ -76,6 +85,8 @@ class A2Cribs.FeaturedListings
 
         # resolved after image paths have been loaded
         @GetSidebarImagePathsDeferred = new $.Deferred()
+
+        @SetupResizing()
 
         # We have the featured listing listing ids for the sidebar
         # Now get random listing ids from the basic data (already loaded) to fill out the sidebar
@@ -271,10 +282,6 @@ class A2Cribs.FeaturedListings
             return list
 
         
-                
-
-
-
     @ListItemHTML: """
     <div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
         <span class = 'img-wrapper'>

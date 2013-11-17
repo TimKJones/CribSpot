@@ -189,6 +189,11 @@ class User extends AppModel {
 		return true;
 	}
 
+	public function shareListing($friend_id, $listing_id) {
+		CakeLog::write('HOTLIST', "Sharing Listing: $friend_id, $listing_id");
+		return array('success' => 'yep');
+	}
+
 	public function findByNameFuzzy($name) {
 		CakeLog::write('HOTLIST', 'Name: ' . $name);
 		return $this->find('all', array(

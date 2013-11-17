@@ -25,6 +25,31 @@ class UsersController extends AppController {
         $this->Auth->allow('PMLogin');
     }
 
+    public function share()
+    {
+        $friend_id = $this->request->data['friend'];
+        $listing_id = $this->request->data['listing'];
+
+        // $response = $this->User->shareListing($friend_id, $listing_id);
+
+        $friend = $this->User->find('first', array('conditions' => array('User.id' => $friend_id)));
+        if (empty($friend)) {
+            $this->response->statusCode('404');
+            $this->set('response', json_encode(array('success' => false)));
+        }
+        else {
+            // $this->set('user', $friend);
+            $this->set('first_name', $this->Auth->User('first_name'));
+            $this->set('last_name', $this->Auth->User('last_name'));
+            $this->set('listing', $listing_id);
+            $this->_sendShareEmail($friend['User']);
+
+            $this->set('response', json_encode(array('success' => true)));
+        }
+
+        $this->render('json_response');
+    }
+
     public function getAllForName()
     {
         $name = $this->request->query['name'];
@@ -44,7 +69,7 @@ class UsersController extends AppController {
     public function addToHotlist()
     {
         $user_id = $this->Auth->User('id');
-        $friend_email = $this->request->data['friend_id'];
+        $friend_email = $this->request->data['friend'];
 
         if ($this->User->hasAny(array('User.email' => $friend_email))) {
             $response = $this->User->addToHotlist($user_id, $friend_email);
@@ -63,7 +88,7 @@ class UsersController extends AppController {
     public function removeFromHotlist() 
     {
         $user_id = $this->Auth->User('id');
-        $friend_id = $this->request->data['friend_id'];
+        $friend_id = $this->request->data['friend'];
         $response = $this->User->removeFromHotlist($user_id, $friend_id);
 
         $this->set('response', json_encode($response));
@@ -968,6 +993,16 @@ CakeLog::write('twiliodebug', print_r($response, true));
     Generates a new vericode and sends an email to the currently logged-in user.
     Email allows user to verify email address.
     */
+    private function _sendShareEmail($user)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $user['email'];
+        $subject = $user['first_name'] . ' ' . $user['last_name'] . ' has shared a listing with you';
+        $template = 'share_listing';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
     private function _sendVerificationEmail($user)
     {
         $from = 'The Cribspot Team<info@cribspot.com>';
