@@ -115,6 +115,7 @@ CakeLog::write('debuggingit', '-1');
     /* ----------------------------------- iPhone API ------------------------------------- */
     public function APIGetBasicData($listing_type, $university_id)
     {
+        $this->layout = 'ajax';
         $basicData = null;
         if (array_key_exists('token', $this->request->query) &&
             !strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {

@@ -468,6 +468,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 /* ----------------------------------- iPhone API ------------------------------------- */
 	public function APIGetListing($listing_id)
 	{
+		$this->layout = 'ajax';
 		$listing = null;
 		if (array_key_exists('token', $this->request->query) &&
 			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
@@ -481,6 +482,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 
 	public function APIGetListingsByMarkerId($marker_id)
 	{
+		$this->layout = 'ajax';
 		$listings = null;
 		if (array_key_exists('token', $this->request->query) &&
 			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {

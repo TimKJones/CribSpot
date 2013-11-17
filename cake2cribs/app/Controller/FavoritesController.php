@@ -57,6 +57,7 @@ class FavoritesController extends AppController {
 /* --------------------------------- API ------------------------------------------------- */
 	public function GetFavoritesListingIds($user_id)
 	{
+		$this->layout = 'ajax';
 		$listing_ids = null;
 		if (array_key_exists('token', $this->request->query) &&
 			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
