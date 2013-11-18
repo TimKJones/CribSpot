@@ -22,6 +22,16 @@
 				<td>Private Bathroom</td>
 				<td><?= $listing["Sublet"]["bathroom_type"] ?></td>
 			</tr>
+			<tr><td><br></td></tr>
+			<tr>
+				<td>Parking</td>
+				<td><?= $listing["Sublet"]["parking_description"] ?></td>
+			</tr>
+			<tr><td><br></td></tr>
+			<tr>
+				<td>Utilities Included</td>
+				<td><?= $listing["Sublet"]["utilities_description"] ?></td>
+			</tr>
 		</table>
 	</div>
 </div>

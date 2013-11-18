@@ -523,6 +523,25 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		$fields = array('furnished_type', 'washer_dryer');
 		$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
 		$listing['Sublet']['washer_dryer'] = Rental::washer_dryer($listing['Sublet']['washer_dryer']);
+
+		/* Format the parking and utilities descriptions */
+		$fields_to_descriptions_map = array(
+			array(
+				'included' => 'parking_available',
+				'description' => 'parking_description'
+			),
+			array(
+				'included' => 'utilities_included',
+				'description' => 'utilities_description'
+			)
+		);
+
+		foreach($fields_to_descriptions_map as $map){
+			if (!empty($listing['Sublet'][$map['included']]) && $listing['Sublet'][$map['included']] === true)
+				$listing['Sublet'][$map['description']] = 'Yes - '.$listing['Sublet'][$map['description']];
+			else
+				$listing['Sublet'][$map['description']] = 'No';
+		}
 	}
 
 	private function _setImagePathsForFullPageView(&$images)
