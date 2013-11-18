@@ -1,229 +1,377 @@
-class A2Cribs.SubletSave
+class SubletSave
 
-	setupUI: (div) ->
-		if not A2Cribs.Geocoder?
-			A2Cribs.Geocoder = new google.maps.Geocoder()
-		@div = div
+	###
+	Setup UI
+	Creates the listeners and all the UI for the
+	Sublet window
+	###
+	@SetupUI: (@div) ->
+		# Set up Mini Map preview
+		@MiniMap = new A2Cribs.MiniMap @div.find(".mini_map")
 
-		div.find("#Sublet_short_description").keyup ()->
-			if $(@).val().length >= 160
-				$(@).val($(@).val().substr(0, 160))
-			div.find("#desc-char-left").text(160 - $(@).val().length)
+		$(".sublet-content").on "shown", =>
+			@MiniMap.Resize()
 
-		div.find("#Sublet_utility_type_id").change =>
-			if +div.find("#Sublet_utility_type_id").val() is 1 # if utilities are included
-				div.find("#Sublet_utility_cost").val "0"
+		# Click on side bar sublet
+		$('#sublet_list_content').on 'click', '.sublet_list_item', (event) =>
+			@Open event.currentTarget.id
 
-		div.find("#Housemate_student_type_id").change =>
-			if +div.find("#Housemate_student_type_id").val() is 1 # if Graduate
-				@div.find("#Housemate_year").val 0
+		# Save Button Click Listener
+		@div.find("#sublet_save_button").click =>
+			@div.find("#sublet_save_button").button 'loading'
+			@Save()
+			.always =>
+				@div.find("#sublet_save_button").button 'reset'
 
-		div.find(".required").keydown ->
-			$(this).parent().removeClass "error"
+		# Listener for button groups
+		# Sets value depending on btn that is active
+		@div.find(".btn-group.sublet_fields .btn").click (event) =>
+			$(event.currentTarget).parent().val($(event.currentTarget).val())
 
-		div.find(".date_field").datepicker();
+		@div.find("#find_address").click =>
+			@FindAddress()
 
-		@MiniMap = new A2Cribs.MiniMap div
+		# Date Picker Init
+		@div.find('.date-field').datepicker()
 
-		@PhotoManager = new A2Cribs.PhotoManager div
+		# Create new sublet button clicked
+		$(".create-listing").find("a").click (event) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if listing_type is "sublet"
+				A2Cribs.MixPanel.Event "Sublet Post", { 'stage': 'started'}
+				@Open()
 
+		$("#sublet_list_content").on "marker_updated", (event, marker_id) =>
+			@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
 
-		# A2Cribs.Map.LoadTypeTables()
+		@SetupShareButtons()
 
+		# Popup add photo manager when clicked
+		@div.find(".photo_adder").click () =>
+			listing_id = @div.find(".listing_id").val()
+			if listing_id?.length isnt 0
+				image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetObject()
+			else
+				image_array = @_temp_images
+
+			A2Cribs.PhotoManager.Open image_array, @PhotoAddedCallback
+
+		# Remove error class when rent is typed in
+		@div.find(".rent").keyup (event) ->
+			$(event.currentTarget).parent().removeClass "error"
+
+	###
+	Setup Share Buttons
+	Links share manager functions to the share buttons
+	when a sublet is posted
+	###
+	@SetupShareButtons: ->
+		@div.find('.fb_sublet_share').click =>
+			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
+			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
+			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
+
+		@div.find('.google_sublet_share').click =>
+			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
+			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
+			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
+
+		@div.find('.twitter_sublet_share').click =>
+			A2Cribs.ShareManager.ShareSubletOnTwitter(@div.find(".listing_id").val())
+
+	###
+	Photo Added
+	When photos have been added, decides whether to cache if sublet
+	has been saved and save in temp_images
+	###
+	@PhotoAddedCallback: (photos) =>
+		listing_id = @div.find(".listing_id").val()
+		if listing_id?.length isnt 0
+			for image in photos
+				image.listing_id = listing_id
+			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			@_temp_images = photos
+			@Save()
+		else
+			@_temp_images = photos
 
 
 	###
+	Validate
 	Called before advancing steps
 	Returns true if validations pass; false otherwise
 	###
-	Validate: (step_) ->
-		if step_ >= 1
-			if not @ValidateStep1()
-				return false
-		if step_ >= 2
-			if not @ValidateStep2()
-				return false
-		if step_ >= 3
-			if not @ValidateStep3()
-				return false
-
-		return true
-
-	ValidateStep1: () ->
+	@Validate: ->
+		# Starts as valid
 		isValid = yes
-		A2Cribs.UIManager.CloseLogs()
-		if not @div.find('#Marker_street_address').val()
-			A2Cribs.UIManager.Error "Please place your street address on the map using the Place On Map button."
-			@div.find('#Marker_street_address').parent().addClass "error"
-			isValid = no
-		if not @div.find('#University_name').val()
-			A2Cribs.UIManager.Error "You need to select a university."
-			@div.find('#University_name').parent().addClass "error"
-			isValid = no
-		if @div.find('#Marker_building_type_id').val().length is 0
-			A2Cribs.UIManager.Error "You need to select a building type."
-			@div.find('#Marker_building_type_id').parent().addClass "error"
-			isValid = no
-		if @div.find('#Sublet_unit_number').val().length >= 249
-			A2Cribs.UIManager.Error "Your unit number is too long."
-			@div.find('#Sublet_unit_number').parent().addClass "error"
-			isValid = no
-		if @div.find('#Marker_alternate_name').val().length >= 249
-			A2Cribs.UIManager.Error "Your alternate name is too long."
-			@div.find('#Marker_alternate_name').parent().addClass "error"
-			isValid = no
-		
-		return isValid
 
-	ValidateStep2: () ->
-		#begin the validations
-		isValid = yes
-		A2Cribs.UIManager.CloseLogs()
-		parsedBeginDate = new Date Date.parse @div.find('#Sublet_date_begin').val()
-		parsedEndDate = new Date Date.parse @div.find('#Sublet_date_end').val()
-		todayDate = new Date();
-		if parsedBeginDate.toString() == "Invalid Date" or parsedEndDate.toString() == "Invalid Date"
-			A2Cribs.UIManager.Error "Please enter a valid date."
-			@div.find('#Sublet_date_begin').parent().addClass "error"
-			@div.find('#Sublet_date_end').parent().addClass "error"
-			isValid = no
-		else if parsedEndDate.valueOf() <= parsedBeginDate.valueOf() #or parsedBeginDate.valueOf() <= todayDate.valueOf()
-			A2Cribs.UIManager.Error "Please enter a valid date."
-			@div.find('#Sublet_date_begin').parent().addClass "error"
-			@div.find('#Sublet_date_end').parent().addClass "error"
-			isValid = no
-		if (!@div.find('#Sublet_number_bedrooms').val() || isNaN(parseInt(@div.find("#Sublet_number_bedrooms").val())) || @div.find('#Sublet_number_bedrooms').val() <=0 || @div.find('#Sublet_number_bedrooms').val() >=30)
-			A2Cribs.UIManager.Error "Please enter a valid number of bedrooms."
-			@div.find('#Sublet_number_bedrooms').parent().addClass "error"
-			isValid = no
-		if (!@div.find('#Sublet_price_per_bedroom').val() || isNaN(parseInt(@div.find("#Sublet_price_per_bedroom").val())) || @div.find('#Sublet_price_per_bedroom').val() < 1 || @div.find('#Sublet_price_per_bedroom').val() >=20000)
-			A2Cribs.UIManager.Error "Please enter a valid price per bedroom."
-			@div.find('#Sublet_price_per_bedroom').parent().parent().addClass "error"
-			isValid = no
-		if @div.find('#Sublet_short_description').val().length is 0 
-			A2Cribs.UIManager.Error "Please enter a description."
-			@div.find('#Sublet_short_description').parent().addClass "error"
-			isValid = no
-		if (!@div.find('#Sublet_utility_cost').val()|| isNaN(parseInt(@div.find("#Sublet_utility_cost").val())) || @div.find('#Sublet_utility_cost').val()<0 || @div.find('#Sublet_utility_cost').val() >=50000)
-			A2Cribs.UIManager.Error "Please enter a valid utility cost."
-			@div.find('#Sublet_utility_cost').parent().addClass "error"
-			isValid = no
-		if (!@div.find('#Sublet_deposit_amount').val() || isNaN(parseInt(@div.find("#Sublet_deposit_amount").val())) || @div.find('#Sublet_deposit_amount').val()<0 || @div.find('#Sublet_deposit_amount').val() >=50000)
-			A2Cribs.UIManager.Error "Please enter a valid deposit amount."
-			@div.find('#Sublet_deposit_amount').parent().parent().addClass "error"
-			isValid = no
-		descLength = @div.find('#Sublet_additional_fees_description').val().length
-		if (descLength >=161)
-			A2Cribs.UIManager.Error "Please keep the additional fees description under 160 characters."
-			@div.find('#Sublet_additional_fees_description').parent().addClass "error"
-			isValid = no
-		if descLength > 0 
-			if (!@div.find('#Sublet_additional_fees_amount').val() || isNaN(parseInt(@div.find("#Sublet_additional_fees_amount").val())) || @div.find('#Sublet_additional_fees_amount').val()<0 || @div.find('#Sublet_additional_fees_amount').val() >=50000)
-				A2Cribs.UIManager.Error "Please enter a valid additional fees amount."
-				@div.find('#Sublet_additional_fees_amount').parent().addClass "error"
+		# Validate rent for the people who dont understand what numbers are
+		rent = @div.find(".rent").val()
+		if rent?.length
+			rent = rent.replace(/[$,]/g, "") # Replace the $ and commas
+			if isNaN rent
 				isValid = no
-		if @div.find("#Sublet_furnished_type_id").val().length is 0
-			A2Cribs.UIManager.Error "Please describe the situation with the furniture."
-			@div.find('#Sublet_furnished_type_id').parent().addClass "error"
-			isValid = no
-		if @div.find("#Sublet_utility_type_id").val().length is 0
-			A2Cribs.UIManager.Error "Please describe the situation with the utilities."
-			@div.find('#Sublet_utility_type_id').parent().addClass "error"
-			isValid = no
-		if @div.find("#Sublet_parking").val().length is 0
-			A2Cribs.UIManager.Error "Please describe the situation with parking."
-			@div.find('#Sublet_parking').parent().addClass "error"
-			isValid = no
-		if @div.find("#Sublet_ac").val().length is 0
-			A2Cribs.UIManager.Error "Please describe the situation with parking."
-			@div.find('#Sublet_ac').parent().addClass "error"
-			isValid = no
-		if @div.find("#Sublet_bathroom_type_id").val().length is 0
-			A2Cribs.UIManager.Error "Please describe the situation with your bathroom."
-			@div.find('#Sublet_bathroom_type_id').parent().addClass "error"
-			isValid = no
+				A2Cribs.UIManager.Error "Please only provide numbers for your rent."
+				@div.find(".rent").focus().parent().addClass("error")
+			else
+				@div.find(".rent").val rent
+
+		# Check each btn-group for a value
+		@div.find(".btn-group").each (index, value) ->
+			if isValid and $(value).find(".active").size() is 0 
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
+
+		# Check each text-field/date-fields for a value
+		@div.find(".text-field").each (index, value) ->
+			if isValid and $(value).val().length is 0
+				isValid = no
+				A2Cribs.UIManager.Error $(value).data("error-message")
+
 		return isValid
 
-	ValidateStep3: () ->
-		isValid = yes
-		if @div.find('#Housemate_quantity').val().length is 0 # Housemates quantity is empty
-			isValid = no
-		else
-			if +@div.find('#Housemate_quantity').val() isnt 0 # More than 1 Housemate
-				if @div.find('#Housemate_enrolled option:selected').text().length is 0 # Check if enrolled is selected
-					isValid = no
-				else if +@div.find('#Housemate_enrolled').val() is 1 # If the students are enrolled
-					if +@div.find('#Housemate_student_type_id').val() is 0 # Check if student type selected
-						isValid = no
-					else if +@div.find('#Housemate_student_type_id').val() isnt 1 # Is not Graduate
-						if +@div.find('#Housemate_year').val() is 0 # Make sure year is selected
-							isValid = no
-					if +@div.find('#Housemate_gender_type_id').val() is 0 # Gender of housemate(s)
-						isValid = no
-					if @div.find('#Housemate_major').val().length >= 255 # Major of housemate(s)
-						isValid = no
+	###
+	Reset
+	Erases all the fields and resets
+	the Sublet window and sublet object
+	###
+	@Reset: ->
+
+		# Unpress each btn-group
+		@div.find(".btn-group").each (index, value) ->
+			$(value).find(".active").removeClass "active"
+
+		# Reset all input fields
+		@div.find("input").val ""
+
+		# Reset all textarea fields
+		@div.find("textarea").val ""
+
+	###
+	Open
+	Opens up an existing sublet from a marker_id if marker_id
+	is defined. Otherwise will start a new sublet
+	###
+	@Open: (marker_id = null) ->
+		@div.find(".done_section").fadeOut 'fast', () =>
+			@div.find(".sublet_section").fadeIn()
+
+		if marker_id?
+			# Find all cached listings with marker_id
+			# Should only be users cached because it is only in the dashboard
+			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
+
+			# Fetch the sublet object from the cache
+			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
+			.done (sublet) =>
+				# Reset the sublet form first
+				@Reset()
+
+				# Set the hidden field for listing id
+				@div.find(".listing_id").val listings[0].listing_id
 		
-		return isValid
+				# Populate the marker fields
+				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
+				# Populate based on the retrieved sublet
+				@Populate sublet
+		else
+			# Clear out the sublet_window if no marker defined
+			@Reset()
+	
+			# Reset mini map
+			@MiniMap.Reset()
 
-	Reset: () ->
-		@ResetAllInputFields()
-		@PhotoManager.Reset()
+			# Slide up more info
+			@div.find(".more_info").slideUp()
+
+			# Add search box to get started
+			@div.find(".marker_card").fadeOut 'fast', () =>
+				@div.find(".marker_searchbox").fadeIn()
+
+		# Direct the dashboard to show sublets
+		A2Cribs.Dashboard.Direct 
+			"classname": "sublet"
+			"data": {}
 
 	###
-	Reset all input fields for a new sublet posting process
+	Populate Marker
+	Populates the fields based on the marker
 	###
-	ResetAllInputFields: () ->
-		@div.find('input:text').val '' # Erase all inputs
-		@div.find('input:hidden').val '' # Erase all inputs
-		@div.find('select option:first-child').attr "selected", "selected" # all dropdowns to first option
+	@PopulateMarker: (marker) ->
+		# Loop through all the location fields
+		# These fields are used to find address
+		$(".location_fields").each (index, value) =>
 
-		# Need to input payment type since field is hidden
-		@div.find("#Sublet_payment_type_id").val "1"
+			# Set value equal to marker attribute
+			input_val = marker[$(value).data("field-name")]
+			if typeof marker[$(value).data("field-name")] is "boolean"
+				input_val = +input_val
+			$(value).val input_val
+
+		@div.find(".marker_id").val marker.GetId()
+
+		# Populate Marker Card
+		# Fill in the values of the marker fields
+		@MiniMap.SetMarkerPosition new google.maps.LatLng(marker.latitude, marker.longitude)
+		@div.find(".building_name").text marker.GetName()
+		@div.find(".building_type").text marker.GetBuildingType()
+		@div.find(".full_address").html "<i class='icon-map-marker'></i> #{marker.street_address}, #{marker.city}, #{marker.state}"
+
+		@div.find(".marker_searchbox").fadeOut 'fast', () =>
+			@div.find(".marker_card").fadeIn()
+			@div.find(".more_info").slideDown()
+
+
 
 	###
+	Populate
+	Populates the sublet fields in the dom
+	###
+	@Populate: (sublet_object) ->
+		# Get all fields from dom
+		# Loop through them and populate
+		$(".sublet_fields").each (index, value) =>
+
+			# Set value equal to sublet_object attribute
+			input_val = sublet_object[$(value).data("field-name")]
+			if typeof sublet_object[$(value).data("field-name")] is "boolean"
+				input_val = +input_val
+			$(value).val input_val
+
+			# If the sublet_field is a btn-group
+			if $(value).hasClass "btn-group"
+				$(value).find("button[value='#{input_val}']")
+				.addClass "active"
+
+			# Format to more readable date
+			else if $(value).hasClass "date-field"
+				$(value).val @GetFormattedDate sublet_object[$(value).data("field-name")]
+
+	###
+	Save
 	Submits sublet to backend to save
 	Assumes all front-end validations have been passed.
 	###
-	Save: (subletObject, success = null) ->
-		url = "/sublets/ajax_submit_sublet"
-		$.post url, subletObject, (response) =>
-			data = JSON.parse response
-			console.log data.status
-			if data.redirect?
-				window.location = data.redirect
-			if data.status?
-				A2Cribs.UIManager.Success data.status
-				A2Cribs.ShareManager.SavedListing = data.newid
-				if success?
-					success data.newid
-			else
-				A2Cribs.UIManager.Alert data.error
+	@Save: ->
+		if @Validate()
+			sublet_object = @GetSubletObject()
+			return $.ajax
+				url: myBaseUrl + "listings/Save/"
+				type: "POST"
+				data: sublet_object
+				success: (response) =>
+					response = JSON.parse response
+					if response.error?.message?
+						A2Cribs.UIManager.Error response.error.message
+					else
+						# Check to see if it is a new listing
+						# Trigger an event to notify the dashboard
+						if not sublet_object.Listing.listing_id?
+							$('#sublet_list_content').trigger "marker_added", [sublet_object.Listing.marker_id]
+						
+						@div.find(".sublet_section").fadeOut 'slow', () =>
+							@div.find(".done_section").fadeIn()
+
+						A2Cribs.MixPanel.Event "Sublet Post", { 'stage': 'finish' }
+
+						A2Cribs.UserCache.CacheData response.listing
+						@div.find(".listing_id").val response.listing.Listing.listing_id
+						A2Cribs.UIManager.Success "Your listing has been saved!"
+		else
+			return new $.Deferred().reject()
 
 	###
+	GetSubletObject
 	Returns an object containing all sublet data from all 4 steps.
 	###
-	GetSubletObject: () ->
-		for k,v of A2Cribs.SubletObject
-			for p,q of v
-				console.log k + "_" + p
-				A2Cribs.SubletObject[k][p] = 0
-				input = @div.find("#" + k + "_" + p)
-				if input?
-					if "checkbox" is input.attr "type" 
-						A2Cribs.SubletObject[k][p] = input.prop "checked"
-					else if input.hasClass "date_field"
-						A2Cribs.SubletObject[k][p] = @GetMysqlDateFormat input.val()
-					else
-						A2Cribs.SubletObject[k][p] = input.val()
+	@GetSubletObject: ->
+		sublet_object = {}
 
-		A2Cribs.SubletObject.Image = @PhotoManager.GetPhotos()
+		# Loop through each sublet field
+		@div.find(".sublet_fields").each (index, value) =>
 
-		return A2Cribs.SubletObject
+			# Find the value associated with each field
+			field_value = $(value).val()
+
+			# If the field is a date format for backend
+			if $(value).hasClass "date-field"
+				field_value = @GetBackendDateFormat field_value
+
+			# Add the field to the sublet_object
+			sublet_object[$(value).data("field-name")] = field_value
+
+		listing_id = if @div.find(".listing_id").val().length isnt 0 then @div.find(".listing_id").val()
+		sublet_object.listing_id = listing_id
+
+		# Return the object that is sent to backend
+		return {
+			# listing_type is 1 for Sublets
+			'Listing': {
+				listing_type: 1
+				marker_id: @div.find(".marker_id").val()
+				listing_id: listing_id
+			}
+			'Sublet': sublet_object
+			'Image': @_temp_images
+		}
 
 	###
-	Replaces '/' with '-' to make convertible to mysql datetime format
+	Find Address
+	Finds the geocode address and searches the backend
+	for the correct address
 	###
-	GetMysqlDateFormat: (dateString) ->
+	@FindAddress: ->
+		location_object = {}
+		isValid = yes
+		$(".location_fields").each (index, value) =>
+
+			# Checks if the field is completed
+			if $(value).val().length is 0 then isValid = no
+
+			# Set location object attribute to the value of the div
+			location_object[$(value).data("field-name")] = $(value).val()
+
+		# Error message displayed if not validated and returns
+		if not isValid
+			A2Cribs.UIManager.Error "Please complete all fields to find address"
+			return
+
+		# Find the formatted address from google geocoder
+		A2Cribs.Geocoder.FindAddress(location_object.street_address, location_object.city, location_object.state)
+		.done (response) =>
+			[street_address, city, state, zip, location] = response
+			@FindMarkerByAddress(street_address, city, state)
+			.done (marker) =>
+				@PopulateMarker(marker)
+			.fail =>
+				A2Cribs.MarkerModal.OpenLocation('sublet', street_address, city, state)
+		.fail =>
+			A2Cribs.MarkerModal.OpenLocation('sublet', location_object.street_address, location_object.city, location_object.state)
+
+	@FindMarkerByAddress: (street_address, city, state) ->
+		deferred = new $.Deferred()
+		$.ajax
+			url: myBaseUrl + "Markers/FindMarkerByAddress/"+street_address+"/"+city+"/"+state
+			type: "GET"
+			success: (response) =>
+				response = JSON.parse response
+				if response?
+					marker = new A2Cribs.Marker(response)
+					A2Cribs.UserCache.Set marker
+					return deferred.resolve marker
+				else
+					return deferred.reject()
+
+		return deferred.promise()
+
+
+	###
+	Get Backend Date Format
+	Replaces '/' with '-' to make convertible to db format
+	###
+	@GetBackendDateFormat: (dateString) ->
 		date = new Date(dateString)
 		month = date.getMonth() + 1
 		if month < 10
@@ -234,26 +382,16 @@ class A2Cribs.SubletSave
 		year = date.getUTCFullYear()
 		beginDateFormatted = year + "-" + month + "-" + day
 
-	GetTodaysDate: () ->
-		today = new Date()
-		dd = today.getDate()
-		mm = today.getMonth()+1
-		yyyy = today.getFullYear()
-		if(dd<10)
-			dd='0'+dd
-		if(mm<10)
-			mm='0'+mm
-		today = mm+'/'+dd+'/'+yyyy
-		return today
+	###
+	Get Formatted Date
+	Returns date in readable front-end syntax
+	###
+	@GetFormattedDate: (dateString) ->
+		date_array = dateString.split " " # Remove the 00:00:00 if necessary
+		date_array = date_array[0].split "-" # Split the date
+		return "#{date_array[1]}/#{date_array[2]}/#{date_array[0]}"
 
-	GetFormattedDate:(date) ->
-		month = date.getMonth() + 1
-		if month < 10
-			month = "0" + month
-		day = date.getDate()
-		if day < 10
-			day = "0" + day
-		year = date.getUTCFullYear()
-		beginDateFormatted = month + "/" + day + "/" + year
-
-
+	$(document).ready =>
+		if $("#sublet_window").length
+			@_temp_images = []
+			@SetupUI($("#sublet_window"))

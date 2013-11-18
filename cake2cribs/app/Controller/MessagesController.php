@@ -2,7 +2,8 @@
 
  class MessagesController extends AppController {
     public $helpers = array('Html');
-    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental', 'LoginCode');
+    public $uses = array('Message', 'Conversation', 'User', 'UnreadMessage', 'University', 'Listing', 'Rental', 'LoginCode',
+        'CribspotAdmin');
     public $components= array('Session','Auth','Email', 'Cookie');
 
     function beforeFilter(){
@@ -17,6 +18,39 @@
         $json = json_encode($directive);
         $this->Cookie->write('dashboard-directive', $json);
         $this->redirect('/dashboard');
+    }
+
+    /*
+    Returns all data for PM dashboard used by Cribspot admins
+    */
+    public function GetPMAdminDashboard()
+    {
+        if ($this->CribspotAdmin->GetByUserId($this->Auth->User('id')) === null)
+            return;
+
+        $response = array(
+            'pm_name' => '',
+            'pm_email' => '',
+            'pm_phone' => '',
+            'unit_description',
+            'student_name' => '',
+            'student_email' => '',
+            'date_sent_by_student' => '', /* sorted by default */
+            'pm_response_date' => '',
+            'pm_verified' => ''
+        );
+
+        $conversations = $this->Conversation->getAllConversations();
+        $response_dates = $this->Message->getConversationIdToPMResponseDateMap($conversations);
+        foreach ($conversations as $conversation){
+            
+        }
+
+        /* Get all listing data */
+        //$listings = $this->Listing->
+
+        CakeLog::write("allmessages", print_r($messages, true));
+        $this->set('response', json_encode($messages));
     }
 
     //Redirects to the dashboard automatically opening the specified
@@ -379,7 +413,7 @@
 
         if (array_key_exists('id', $recipient) && array_key_exists('login_code', $recipient) &&
             !empty($recipient['id']) && !empty($recipient['login_code']))
-                $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+                $reset_password_url = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code'];
 
         /* 
@@ -405,9 +439,9 @@
         - log in and respond to message.
         - 1 button each for set as available, set as unavailable
         */
-        $reset_password_url = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+        $reset_password_url = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
             "&code=".$recipient['login_code']['message'];
-        $availability_base_url = "www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
+        $availability_base_url = "https://www.cribspot.com/Listings/SetAvailabilityFromEmail?id=".$recipient['id'].
             "&code=".$recipient['login_code']['availability']."&l=".$conversation['Conversation']['listing_id']."&a=";
         $set_available_url = $availability_base_url.'1';
         $set_unavailable_url = $availability_base_url.'0';
@@ -422,7 +456,7 @@
         $this->set('set_unavailable_url', $set_unavailable_url);
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
-        $this->set('listing_url', 'www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
+        $this->set('listing_url', 'https://www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
         $year = null;
         if (array_key_exists('year', $from_user))
             $year = $from_user['year'];
@@ -440,7 +474,7 @@
         $this->set('img_url', $img_url);
 
         /* Set URL to open message */
-        $view_msg = "www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
+        $view_msg = "https://www.cribspot.com/users/PMLogin?id=".$recipient['id'] . 
                 "&code=".$recipient['login_code']['message'].'&convid='.$conversation['Conversation']['conversation_id'];
         $this->set('view_msg', $view_msg);
 

@@ -1,7 +1,0 @@
-- look at https://developers.facebook.com/docs/authentication/client-side/
-		-need to do something with channelURL
-- *need to find a way to load facebook code ONCE - and then use that static copy for all other pages
-		- this affects the page header - I won't add the profile pic to every page until I figure out how to load this code once
-- news feed on landing page for friends' recent activity on UBid
-
-- 

@@ -2,7 +2,8 @@
 (function() {
 
   A2Cribs.PhotoManager = (function() {
-    var Photo;
+    var Photo,
+      _this = this;
 
     Photo = (function() {
 
@@ -161,7 +162,7 @@
 
     PhotoManager.prototype.UploadImageDefer = function() {
       this.UploadCompleteDeferred = new $.Deferred();
-      return this.UploadCompletePromise = this.UploadCompleteDeferred.promise();
+      return this.UploadCompleteDeferred.promise();
     };
 
     PhotoManager.prototype.SetupUI = function() {
@@ -282,9 +283,20 @@
       });
     };
 
-    PhotoManager.prototype.LoadImages = function(image_array, row, imageCallback) {
+    PhotoManager.prototype.Open = function(image_array, imageCallback, row) {
+      if (row == null) {
+        row = null;
+      }
+      this.LoadImages(image_array, imageCallback, row);
+      return this.div.modal('show');
+    };
+
+    PhotoManager.prototype.LoadImages = function(image_array, imageCallback, row) {
       var image, _i, _len,
         _this = this;
+      if (row == null) {
+        row = null;
+      }
       this.Reset();
       if ((image_array != null ? image_array.length : void 0) != null) {
         for (_i = 0, _len = image_array.length; _i < _len; _i++) {
@@ -294,16 +306,17 @@
       }
       this.div.find("#finish_photo").unbind('click');
       return this.div.find("#finish_photo").click(function() {
-        _this.div.modal('hide');
+        if (_this.UploadCompleteDeferred.state() === 'pending') {
+          A2Cribs.UIManager.Success("Cribspot is still uploading your images. We'll be done in just a moment.");
+        }
         /*
         			FIXING GITHUB ISSUE 141
         			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
         */
 
-        return $.when(_this.UploadCompletePromise).then(function(resolved) {
-          if (resolved) {
-            return imageCallback(row, _this.GetPhotos());
-          }
+        return $.when(_this.UploadCompleteDeferred).then(function(resolved) {
+          imageCallback(_this.GetPhotos(), row);
+          _this.div.modal('hide');
         });
       });
     };
@@ -376,6 +389,7 @@
       this.div.find("#imageContent0").html('<div class="img-place-holder"></div>');
       this.div.find("#captionInput").val("");
       this.div.find("#charactersLeft").html(this.MAX_CAPTION_LENGTH);
+      this.UploadCompleteDeferred = new $.Deferred().resolve(true);
       _ref = this.Photos;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -419,6 +433,19 @@
         }
       });
     };
+
+    /*
+    	Picture Modal On Ready
+    	Waits for the picture modal element to be loaded
+    	before initializing the PhotoManager
+    */
+
+
+    $(document).ready(function() {
+      if ($("#picture-modal").length) {
+        return A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"));
+      }
+    });
 
     return PhotoManager;
 

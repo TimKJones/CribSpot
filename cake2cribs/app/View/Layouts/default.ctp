@@ -58,34 +58,36 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/A2Cribs');	
 		echo $this->Html->script('src/Object');
 		echo $this->Html->script('src/MixPanel');
+		echo $this->Html->script('src/Geocoder');
 		echo $this->Html->script('src/User');
 		echo $this->Html->script('src/Listing');
 		echo $this->Html->script('src/Marker');
 		echo $this->Html->script('src/MapActivity');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
-		echo $this->Html->script('src/CorrectMarker');
 		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
-		echo $this->Html->script('src/HoverBubble');
-		echo $this->Html->script('src/ClickBubble');
+		echo $this->Html->script('src/SmallBubble');
+		echo $this->Html->script('src/LargeBubble');
 		echo $this->Html->script('src/UIManager');
 		echo $this->Html->script('src/Image');
+		echo $this->Html->script('src/Sublet');
 }
 	echo $this->Html->script('knockout.js');
 	echo $this->Html->script('alertify.min.js');
 	echo $this->Html->script('underscore');
+	echo $this->Html->script('jquery-ui.multidatespicker'); 
+
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.core.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
+		echo $this->Html->css('/js/slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css');
+		echo $this->Html->css('multi-date-picker');
 		echo $this->Html->css('basic');
 		echo $this->Html->css('/font/stylesheet.css?v=1');
-
-
-
 
 
 		echo '<title>' . $title_for_layout . '</title>';
@@ -103,7 +105,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=88');
+	echo $this->Html->script('src/program.js?v=99');
 }
 
 		echo $this->fetch('script');
@@ -143,7 +145,7 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 <?php
 
 	/* FB API for Like Button */
-	echo '<div id="fb-root"></div><script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/all.js#xfbml=1";fjs.parentNode.insertBefore(js,fjs);}(document,"script","facebook-jssdk"));</script>';
+	echo '<div id="fb-root"></div>';
 
 	echo '<div id="layoutsContainer">';
 		echo $this->Session->flash();
@@ -151,6 +153,8 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 	echo '</div>';
 ?>
 <script>
+  window.fbInit = new $.Deferred();
+  window.fbInit.promise();
   window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
@@ -163,7 +167,9 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
       frictionlessRequests : true
     });
 
-    // Additional initialization code such as adding Event Listeners goes here
+    FB.getLoginStatus(function (response) {
+    	window.fbInit.resolve();
+    } );
 
   };
 

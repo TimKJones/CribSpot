@@ -133,8 +133,3 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		</div>
 	</div>
 </div>
-<?php 
-	$this->Js->buffer('
-		A2Cribs.MarkerModal = new A2Cribs.MarkerModal();
-	');
-?>

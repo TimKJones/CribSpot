@@ -118,7 +118,7 @@ class A2Cribs.PhotoManager
 
 	UploadImageDefer: () ->
 		@UploadCompleteDeferred = new $.Deferred()
-		@UploadCompletePromise = @UploadCompleteDeferred.promise()
+		@UploadCompleteDeferred.promise()
 
 	SetupUI:() ->
 		that = @
@@ -213,7 +213,11 @@ class A2Cribs.PhotoManager
 				@div.find("#upload_image").button 'reset'
 				@Photos[@CurrentImageLoading].Reset()
 
-	LoadImages: (image_array, row, imageCallback) ->
+	Open: (image_array, imageCallback, row = null) ->
+		@LoadImages(image_array, imageCallback, row)
+		@div.modal('show')
+
+	LoadImages: (image_array, imageCallback, row = null) ->
 		@Reset()
 		if image_array?.length?
 			for image in image_array
@@ -221,14 +225,16 @@ class A2Cribs.PhotoManager
 
 		@div.find("#finish_photo").unbind 'click'
 		@div.find("#finish_photo").click () =>
-			@div.modal('hide')
+			if @UploadCompleteDeferred.state() is 'pending'
+				A2Cribs.UIManager.Success "Cribspot is still uploading your images. We'll be done in just a moment."	
 			###
 			FIXING GITHUB ISSUE 141
 			Need to wait until image save is complete before attempting to save row, or data isn't in cache yet
 			###
-			$.when(@UploadCompletePromise).then (resolved) =>
-				if resolved
-					imageCallback row, @GetPhotos()
+			$.when(@UploadCompleteDeferred).then (resolved) =>
+				imageCallback @GetPhotos(), row
+				@div.modal('hide')
+				return
 
 	NextAvailablePhoto: ->
 		for photo, i in @Photos
@@ -271,6 +277,7 @@ class A2Cribs.PhotoManager
 		@div.find("#imageContent0").html '<div class="img-place-holder"></div>'
 		@div.find("#captionInput").val ""
 		@div.find("#charactersLeft").html @MAX_CAPTION_LENGTH
+		@UploadCompleteDeferred = new $.Deferred().resolve true
 
 		for photo in @Photos
 			photo.Reset()
@@ -294,5 +301,15 @@ class A2Cribs.PhotoManager
 			success: (response) =>
 				response = JSON.parse response
 				console.log response
+
+
+	###
+	Picture Modal On Ready
+	Waits for the picture modal element to be loaded
+	before initializing the PhotoManager
+	###
+	$(document).ready =>
+		if $("#picture-modal").length
+			A2Cribs.PhotoManager = new A2Cribs.PhotoManager($("#picture-modal"))
 
 	

@@ -1,4 +1,5 @@
 class A2Cribs.Map
+	@LISTING_TYPES = ['rental', 'sublet', 'parking']
 
 	@CLUSTER_SIZE = 2
 
@@ -13,29 +14,6 @@ class A2Cribs.Map
 				marker.Init()
 				A2Cribs.UserCache.Set marker
 				@GMarkerClusterer.addMarker marker.GMarker
-		
-
-	###
-	Load all markers from Markers table
-	###
-	@LoadMarkers: ->
-		if not @MarkerDeferred
-			@MarkerDeferred = new $.Deferred()
-
-		if A2Cribs.Map.CurentSchoolId == undefined
-			@MarkerDeferred.resolve(null)
-			return
-
-		$.ajax 
-			url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0
-			type:"GET"
-			context: this
-			success: (response) ->
-				@MarkerDeferred.resolve(response, this)
-			error: () ->
-				@MarkerDeferred.resolve(null)
-
-		return @MarkerDeferred.promise()
 
 	###
 	Used to only show markers that are within a certain bounds based on the user's current viewport.
@@ -52,14 +30,16 @@ class A2Cribs.Map
 			TOP: 0
 			CONTROL_BOX_LEFT: 95
 
-	@Init: (school_id, latitude, longitude, city, state, school_name, active_listing_type) ->
+	@Init: (school_id, latitude, longitude, city, state, school_name, active_listing_type_id) ->
 		@CurentSchoolId = school_id
 		mixpanel.register
 			'preferred_university': school_id
 		A2Cribs.FilterManager.CurrentCity = city
 		A2Cribs.FilterManager.CurrentState = state
 		A2Cribs.FilterManager.CurrentSchool = school_name
-		@ACTIVE_LISTING_TYPE = active_listing_type
+		A2Cribs.FilterManager.ActiveListingType = active_listing_type_id
+		@ACTIVE_LISTING_TYPE_ID = active_listing_type_id
+		@ACTIVE_LISTING_TYPE = @LISTING_TYPES[active_listing_type_id]
 		zoom = 14
 		@MapCenter = new google.maps.LatLng(latitude, longitude);
 
@@ -77,7 +57,7 @@ class A2Cribs.Map
 
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
-		google.maps.event.addListener A2Cribs.Map.GMap, 'center_changed', () => A2Cribs.ClickBubble.Close()
+
 		###imageStyles = [
 			{
 				"url": "/img/dots/group_dot.png",
@@ -98,8 +78,7 @@ class A2Cribs.Map
 			styles: imageStyles
 		@GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions)
 		@GMarkerClusterer.setIgnoreHidden true
-		A2Cribs.ClickBubble.Init @GMap
-		A2Cribs.HoverBubble.Init @GMap
+		$("#map_region").trigger "map_initialized", [@GMap]
 		
 		A2Cribs.Map.InitBoundaries()
 		@LoadAllMapData()
@@ -111,7 +90,7 @@ class A2Cribs.Map
 			@BasicDataDeferred = new $.Deferred()
 		
 		$.ajax 
-			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE}/#{@CurentSchoolId}"
+			url: myBaseUrl + "Map/GetBasicData/#{@ACTIVE_LISTING_TYPE_ID}/#{@CurentSchoolId}"
 
 			type: "POST"
 			success: (responses) =>
@@ -127,7 +106,7 @@ class A2Cribs.Map
 			return
 		listings = JSON.parse response
 		#A2Cribs.Cache.CacheHoverData hdList
-		for listing in listings
+		for listing_id, listing of listings
 			for key,value of listing
 				A2Cribs.UserCache.Set new A2Cribs[key] value
 
@@ -215,8 +194,7 @@ class A2Cribs.Map
 		$(".favorite_button").removeClass "active"
 		$(".featured_pm").removeClass "active"
 
-		A2Cribs.HoverBubble?.Close()
-		A2Cribs.ClickBubble?.Close()
+		$(document).trigger "close_bubbles"
 
 		all_markers = A2Cribs.UserCache.Get 'marker'
 		all_listings = A2Cribs.UserCache.Get 'listing'

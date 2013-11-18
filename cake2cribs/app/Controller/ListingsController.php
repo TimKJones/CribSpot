@@ -19,6 +19,8 @@ class ListingsController extends AppController {
 		$this->Auth->allow('GetFeaturedPMListings');
 		$this->Auth->allow('SetAvailabilityFromEmail');
 		$this->Auth->allow('APIGetListing');
+		$this->Auth->allow('APIGetListingsByMarkerId');
+		$this->Auth->allow('ApplyFilter');
 	}
 
 	/*					
@@ -60,16 +62,24 @@ class ListingsController extends AppController {
 		}
 		
 		$listing = $listing[0];
-		
+
 		$full_address = $listing["Marker"]["street_address"];
 		$full_address .= " " . $listing["Marker"]["city"];
 		$full_address .= " " . $listing["Marker"]["state"];
 		$full_address .= " " . $listing["Marker"]["zip"];
 		$full_address = str_replace(" ", "-", $full_address);
 
-		if ($address == null)
-			$this->redirect(array('action' => 'view', $listing_id, $full_address));
+		if ($address === null)
+		{
+			$this->redirect(array('action' => 'view', $listing_id, $full_address), 301);
+		}
 
+
+
+
+		$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
+
+		/* set whether or not this is a favorited property */
 		$listing['Favorite'] = false;
 		if ($this->_getUserId() !== null)
 		{
@@ -77,34 +87,39 @@ class ListingsController extends AppController {
 			$listing['Favorite'] = in_array($listing_id, $favorites);
 		}
 
+		/* Set the directive - i.e. go right to the contact owner text box being opened */
 		$directive = $this->Cookie->read('fullpage-directive');
  		$this->Cookie->delete('fullpage-directive');
  		if($directive == null){
  			$directive = array('contact_owner'=>null);
  		}
 
-		$this->_refactorMoneyFields($listing);
-		$this->_refactorTextFields($listing);
-		$this->_refactorOwnerFields($listing);
+ 		$listing_type = 'Rental';
+ 		if (array_key_exists('Sublet', $listing))
+ 			$listing_type = 'Sublet';
+
+ 		$this->_refactorMoneyFields($listing, $listing_type);
+		$this->_refactorTextFields($listing, $listing_type);
 		$this->_setPrimaryImage($listing);
-		$this->_refactorBooleanAmenities($listing['Rental']);
+		$this->_refactorBooleanAmenities($listing, $listing_type);
+		$this->_refactorDates($listing, $listing_type);
 		if (array_key_exists('Image', $listing)){
 			$this->_setImagePathsForFullPageView($listing['Image']);
+		}
+
+		if (array_key_exists('Sublet', $listing)){
+			$this->_viewSublet($listing);
+			$this->set('listing_type', 'Sublet');
+		}
+		else{
+			$this->_viewRental($listing);
+			$this->set('listing_type', 'Rental');
 		}
 
 		$this->set('listing_json', json_encode($listing));
 		$this->set('directive', json_encode($directive));
 		$this->set('listing', $listing);
-		/* use email_exists to determine whether or not to enable contacting the user */
-		$email_exists = !empty($listing['User']['email']);
-		$phone_exists = !empty($listing['Rental']['contact_phone']);
-		if (empty($listing['Rental']['contact_phone']) && !empty($listing['User']['phone']))
-			$listing['Rental']['contact_phone'] = $listing['User']['phone'];
-		
-		$this->set('email_exists', 1 * $email_exists);
-		$this->set('messaging_enabled', $email_exists || $phone_exists);
-		$this->set('locations', $this->University->getSchools());
-        $this->set('user_years', $this->User->GetYears());
+		$this->set('full_address', $full_address);
 	}
 
 	/*
@@ -142,6 +157,24 @@ class ListingsController extends AppController {
 				$response['error'] = $imageResponse['error'];
 		}
 
+		/* 
+		Overwrite basicdata in cache for this listing
+		*/
+		if (array_key_exists('listing', $response) && array_key_exists('Listing', $response['listing']) &&
+			array_key_exists('listing_id', $response['listing']['Listing'])){
+			$listing_id = $response['listing']['Listing']['listing_id'];
+			if (!Cache::read('ListingBasicData-'.$listing_id)){
+				/* 
+				this listing doesn't exist in cache yet.
+				need to add it, then find its closest universities
+				*/
+				$listing = $response['listing'];
+				Cache::write('ListingBasicData-'.$listing_id, $listing, 'MapData');
+				$universities = $this->University->getSchools();
+				$this->Listing->CacheListingBasicDataForClosestUniversities($universities, $listing);
+			}
+		}
+
 		$this->set('response', json_encode($response));
 		return;
 	}
@@ -173,9 +206,27 @@ class ListingsController extends AppController {
 		return;
 	}
 
+/*
+Returns a list of marker_ids that will be visible based on the current filter settings.
+*/
+	public function ApplyFilter($listing_type)
+	{
+		if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
+			return;
+
+		if ($this->params == null || !array_key_exists('url', $this->params))
+			return;
+
+		$this->layout = 'ajax';
+		$filterSettings = $this->params['url'];
+		$listing_type = $this->Listing->listing_type($listing_type);
+		$response = $this->Listing->GetMarkerIdList($listing_type, $filterSettings);
+		$this->set('response', $response);
+	}
+
 	/*
 	Returns all marker data by the logged in user
-	If this user is a university admin, returns all listings close to tha tuniversity
+	If this user is a university admin, returns all listings close to that university
 	*/
 	public function GetMarkerDataByLoggedInUser()
 	{
@@ -277,11 +328,18 @@ class ListingsController extends AppController {
 		}
 		
 		/* Return the listing given by $listing_id */
-		$listing = $this->Listing->GetListing($listing_id);
-		if ($listing == null)
-			$listing['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
+		$listings = $this->Listing->GetListing($listing_id);
+		if ($listings == null)
+			$listings['error'] = array('message' => 'LISTING_ID_NOT_FOUND', 'code' => 5);
 
-		$this->set('response', json_encode($listing));
+		/* Convert unit_style_options to its string value */
+		foreach ($listings as &$listing){
+			if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']))
+			$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+		}
+		
+		CakeLog::write("gettinglisting", print_r($listings, true));
+		$this->set('response', json_encode($listings));
 	}
 
 	/*
@@ -376,7 +434,7 @@ class ListingsController extends AppController {
 		if (array_key_exists('error', $valid)){
             $errorMessage = "That link is invalid. Let us know in the chat along the bottom of the screen if you think we messed up!";
             if (!strcmp($valid['error'], 'LOGIN_CODE_EXPIRED'))
-                $errorMessage = "That link is over 3 days old and has expired. Log in to update availabilities from your dashboard.";
+                $errorMessage = "That link is over 2 weeks old and has expired. Log in to update availabilities from your dashboard.";
         } 
         else if (!$this->Listing->UserOwnsListing($listing_id, $user_id)){
         	/* Make sure user owns this listing */
@@ -410,6 +468,7 @@ class ListingsController extends AppController {
 /* ----------------------------------- iPhone API ------------------------------------- */
 	public function APIGetListing($listing_id)
 	{
+		$this->layout = 'ajax';
 		$listing = null;
 		if (array_key_exists('token', $this->request->query) &&
 			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
@@ -421,7 +480,69 @@ class ListingsController extends AppController {
 		$this->set('response', $listing);
 	}
 
+	public function APIGetListingsByMarkerId($marker_id)
+	{
+		$this->layout = 'ajax';
+		$listings = null;
+		if (array_key_exists('token', $this->request->query) &&
+			!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
+			header('Access-Control-Allow-Origin: *');
+			$listings = $this->Listing->GetListingsByMarkerId($marker_id);
+			$listings = json_encode($listings);
+		}
+
+		$this->set('response', $listings);
+	}
+
 /* ----------------------------------- private ---------------------------------------- */
+
+	private function _viewRental(&$listing)
+	{
+		/* use email_exists to determine whether or not to enable contacting the user */
+		$email_exists = !empty($listing['User']['email']);
+		$phone_exists = !empty($listing['Rental']['contact_phone']);
+		if (empty($listing['Rental']['contact_phone']) && !empty($listing['User']['phone']))
+			$listing['Rental']['contact_phone'] = $listing['User']['phone'];
+
+		$this->_refactorOwnerFields($listing, 'Rental');		
+		$this->set('email_exists', 1 * $email_exists);
+		$this->set('messaging_enabled', $email_exists || $phone_exists);
+
+	}
+
+	private function _viewSublet(&$listing)
+	{
+		$email_exists = true;
+		$this->set('email_exists', 1 * $email_exists);
+		$this->set('messaging_enabled', true);
+		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_SHARED)
+			$listing['Sublet']['bathroom_type'] = 'No';
+		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_PRIVATE)
+			$listing['Sublet']['bathroom_type'] = 'Yes';
+
+		$fields = array('furnished_type', 'washer_dryer');
+		$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
+		$listing['Sublet']['washer_dryer'] = Rental::washer_dryer($listing['Sublet']['washer_dryer']);
+
+		/* Format the parking and utilities descriptions */
+		$fields_to_descriptions_map = array(
+			array(
+				'included' => 'parking_available',
+				'description' => 'parking_description'
+			),
+			array(
+				'included' => 'utilities_included',
+				'description' => 'utilities_description'
+			)
+		);
+
+		foreach($fields_to_descriptions_map as $map){
+			if (!empty($listing['Sublet'][$map['included']]) && $listing['Sublet'][$map['included']] === true)
+				$listing['Sublet'][$map['description']] = 'Yes - '.$listing['Sublet'][$map['description']];
+			else
+				$listing['Sublet'][$map['description']] = 'No';
+		}
+	}
 
 	private function _setImagePathsForFullPageView(&$images)
 	{
@@ -491,30 +612,39 @@ class ListingsController extends AppController {
 			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
 	}
 
-	private function _refactorBooleanAmenities(&$rental)
+	private function _refactorBooleanAmenities(&$listing, $listing_type)
 	{
-		$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
+		$amenities = null;
+		if (!strcmp($listing_type, 'Rental'))
+			$amenities = array('air', 'tv', 'balcony', 'fridge', 'storage', 'street_parking', 'smoking');
+		else if (!strcmp($listing_type, 'Sublet'))
+			$amenities = array('air');
+
 		foreach ($amenities as $field){
-			if (array_key_exists($field, $rental)){
-				if ($rental[$field] === true)
-					$rental[$field] = 'Yes';
-				else if ($rental[$field] === false)
-					$rental[$field] = 'No';
+			if (array_key_exists($field, $listing[$listing_type])) {
+				if ($listing[$listing_type][$field] === true || intval($listing[$listing_type][$field]) > 0)
+					$listing[$listing_type][$field] = 'Yes';
+				else if ($listing[$listing_type][$field] === false)
+					$listing[$listing_type][$field] = 'No';
 				else
-					$rental[$field] = '-';
+					$listing[$listing_type][$field] = '-';
 			}
 		}
 	}
 
-	private function _refactorMoneyFields(&$listing)
+
+	private function _refactorMoneyFields(&$listing, $listing_type)
 	{
-		if (array_key_exists("Rental", $listing))
-		{
+		$money_fields = $monthly_fees = null;
+		if (!strcmp($listing_type, 'Rental')){
 			$money_fields = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
 				'amenity_amount', 'upper_floor_amount', 'deposit_amount', 'admin_amount');
 			$monthly_fees = array('rent', 'extra_occupant_amount', 'parking_amount', 'furniture_amount', 
 				'amenity_amount', 'upper_floor_amount');
-			$listing_type = "Rental";
+		}
+		else if (!strcmp($listing_type, 'Sublet')){
+			$money_fields = array('rent');
+			$monthly_fees = array('rent');
 		}
 
 		$listing[$listing_type]["total_fees"] = 0;
@@ -544,12 +674,14 @@ class ListingsController extends AppController {
 		}
 	}
 
-	private function _refactorTextFields(&$listing)
+	private function _refactorTextFields(&$listing, $listing_type)
 	{
-		if (array_key_exists("Rental", $listing))
-		{
+		$text_fields = null;
+		if (!strcmp($listing_type, 'Rental')){
 			$text_fields = array('description', 'highlights');
-			$listing_type = "Rental";
+		}
+		else if (!strcmp($listing_type, 'Sublet')){
+			$text_fields = array('description');
 		}
 
 		foreach ($text_fields as $field) {
@@ -573,9 +705,29 @@ class ListingsController extends AppController {
 		}
 	}
 
+	private function _refactorDates(&$listing, $listing_type)
+	{
+		if (!strcmp('Sublet', $listing_type)){
+			$date_fields = array('start_date', 'end_date');
+			foreach ($date_fields as &$field){
+				$date = strtotime($listing[$listing_type][$field]);
+				$month = date('M', $date);
+		        $day = date('j', $date);
+		        $year = date('Y', $date);
+				$listing[$listing_type][$field] = $month . " " . intval($day) . ", " . $year;
+			}
+
+			$listing['Sublet']['formatted_date_range'] = $listing['Sublet']['start_date'].' - '.$listing['Sublet']['end_date'];
+		}
+	}
+
 	private function _setPrimaryImage(&$listing)
 	{
 		$length = count($listing["Image"]);
+		// Default to the first image if there is no primary image set
+		if ($length > 0)
+			$listing["primary_image"] = 0;
+
 		for ($i=0; $i < $length; $i++)
 		{
 			if ($listing["Image"][$i]["is_primary"])

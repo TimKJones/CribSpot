@@ -1,14 +1,25 @@
-<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=1','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <ul id="navigation-bar" class="nav nav-list">
 	<?php
 	if (intval($AuthUser['user_type']) == 1)
 	{
 	?>
-	<li id="create-listing">
-		<a href="#">
+	<li class="create-listing">
+		<a href="#" data-listing-type="rental">
 			<i class="icon-plus-sign icon-large"></i>
-			CREATE A NEW LISTING
+			CREATE A NEW RENTAL
+		</a>
+	</li>
+	<li class="spacer"></li>
+	<?php }
+	if (intval($AuthUser['user_type']) == 0)
+	{
+	?>
+	<li class="create-listing">
+		<a href="#" data-listing-type="sublet">
+			<i class="icon-plus-sign icon-large"></i>
+			CREATE A NEW SUBLET
 		</a>
 	</li>
 	<li class="spacer"></li>
@@ -51,10 +62,23 @@
 	{
 	?>
 	<li>
-		<a id='rental-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'rentals'>
+		<a id='rental-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'rental'>
 			<i class="icon-home icon-large"></i>
 			Rentals
-			<div id="rentals_count" class="notification_count pull-right">0</div>
+			<div id="rental_count" class="notification_count pull-right">0</div>
+		</a>
+	</li>
+
+	<?php } ?>
+	<?php 
+	if (intval($AuthUser['user_type']) === 0)
+	{
+	?>
+	<li>
+		<a id='sublet-content-header' href="#" class = 'content-header list-dropdown-header' classname = 'sublet'>
+			<i class="icon-home icon-large"></i>
+			Sublets
+			<div id="sublet_count" class="notification_count pull-right">0</div>
 		</a>
 	</li>
 
@@ -91,7 +115,7 @@
 		</ul>
 	</ul>
 	<?php } ?>
-	<ul class="nav nav-list hide list-dropdown span12" id = "rentals_list">
+	<ul class="nav nav-list hide list-dropdown span12" id = "rental_list">
 		<li class="row-fluid">
 			<div class="span12 nav-label">
 				RENTALS
@@ -99,10 +123,24 @@
 		</li>
 		<li class="row-fluid">
 			<div class="span12">
-				<input class="dropdown-search span9" type="text" data-filter-list="#rentals_list_content"><i class="icon-search icon-large"></i>
+				<input class="dropdown-search span9" type="text" data-filter-list="#rental_list_content"><i class="icon-search icon-large"></i>
 			</div>
 		</li>
-		<ul id = "rentals_list_content" class="list_content">
+		<ul id = "rental_list_content" class="list_content" data-listing-type="rental">
+		</ul>
+	</ul>
+		<ul class="nav nav-list hide list-dropdown span12" id = "sublet_list">
+		<li class="row-fluid">
+			<div class="span12 nav-label">
+				SUBLETS
+			</div>
+		</li>
+		<li class="row-fluid">
+			<div class="span12">
+				<input class="dropdown-search span9" type="text" data-filter-list="#sublet_list_content"><i class="icon-search icon-large"></i>
+			</div>
+		</li>
+		<ul id = "sublet_list_content" class="list_content" data-listing-type="sublet">
 		</ul>
 	</ul>
 </div>

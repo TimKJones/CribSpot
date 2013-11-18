@@ -19,6 +19,9 @@
       street_address = street_address.split(' ').join('-');
       city = city.split(' ').join('-');
       url = 'https://cribspot.com/listing/' + listing_id;
+      A2Cribs.MixPanel.Event("Share", {
+        type: "copy listing url"
+      });
       return url;
     };
 
@@ -42,6 +45,9 @@
       } else {
         caption = street_address;
       }
+      A2Cribs.MixPanel.Event("Share", {
+        type: "listing on fb"
+      });
       fbObj = {
         method: 'feed',
         link: url,
@@ -53,6 +59,40 @@
         fbObj['description'] = description;
       }
       return FB.ui(fbObj);
+    };
+
+    /*
+    	Shares the sublet on facebook
+    */
+
+
+    ShareManager.ShareSubletOnFB = function(marker, sublet, images) {
+      var fbObj, primary_image, url;
+      url = 'https://cribspot.com/listing/' + sublet.listing_id;
+      A2Cribs.MixPanel.Event("Social share", {
+        type: "facebook",
+        element: "sublet",
+        promotion: "completed sublet"
+      });
+      primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
+      fbObj = {
+        method: 'feed',
+        link: url,
+        picture: primary_image,
+        name: "" + (marker.GetName()) + " - Check out my sublet on Cribspot!",
+        caption: "I am subletting my place on Cribspot. Message me if you are interested.",
+        description: sublet.description
+      };
+      return FB.ui(fbObj, function(response) {
+        if (response != null ? response.post_id : void 0) {
+          return A2Cribs.MixPanel.Event("Social share complete", {
+            type: "facebook",
+            element: "sublet",
+            promotion: "completed sublet",
+            post_id: response.post_id
+          });
+        }
+      });
     };
 
     /*
@@ -120,20 +160,33 @@
       return window.prompt("Copy to clipboard: Ctrl+C, Enter", url);
     };
 
-    ShareManager.ShareListingOnTwitter = function(listing_id, street_address, city, state, zip) {
+    ShareManager.ShareSubletOnTwitter = function(listing_id) {
       var url, x, y;
-      url = this.GetTwitterShareUrl(listing_id, street_address, city, state, zip);
+      url = this.GetTwitterShareUrl(listing_id);
+      A2Cribs.MixPanel.Event("Social share", {
+        type: "twitter",
+        element: "sublet",
+        promotion: "completed sublet"
+      });
       x = screen.width / 2 - 600 / 2;
       y = screen.height / 2 - 350 / 2;
       return window.open(url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=" + y + ",left=" + x);
     };
 
-    ShareManager.GetTwitterShareUrl = function(listing_id, street_address, city, state, zip) {
+    ShareManager.ShareListingOnTwitter = function(listing_id, street_address, city, state, zip) {
+      var url, x, y;
+      url = this.GetTwitterShareUrl(listing_id);
+      A2Cribs.MixPanel.Event("Share", {
+        type: "listing on twitter"
+      });
+      x = screen.width / 2 - 600 / 2;
+      y = screen.height / 2 - 350 / 2;
+      return window.open(url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=" + y + ",left=" + x);
+    };
+
+    ShareManager.GetTwitterShareUrl = function(listing_id) {
       var url;
-      if (listing_id === null || street_address === null || city === null || state === null || zip === null) {
-        return null;
-      }
-      url = this.GetShareUrl(listing_id, street_address, city, state, zip);
+      url = 'https://cribspot.com/listing/' + listing_id;
       return 'https://twitter.com/share?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Check out this listing on Cribspot!') + '&via=TheCribspot';
     };
 

@@ -31,10 +31,6 @@ class A2Cribs.Dashboard
 		$("#feature-btn").click (event)=>
 			@Direct({'classname' : 'featured-listing'})
 
-		$("#create-listing").find("a").click (event) =>
-			A2Cribs.MarkerModal.NewMarker()
-			A2Cribs.MarkerModal.Open()
-
 		$("body").on 'click', '.messages_list_item', (event) =>
 			@ShowContent $('.messages-content')
 
@@ -52,9 +48,28 @@ class A2Cribs.Dashboard
 				return false
 			.hide()
 
+		@AttachListeners()
 		#@GetListings()
 		@GetUserMarkerData()
 
+	###
+	Attach Listeners
+	Attaches events listeners to objects
+	###
+	@AttachListeners: ->
+		$(".list_content").on "marker_added", (event, marker_id) =>
+			listing_type = $(event.currentTarget).data "listing-type"
+			if $(event.currentTarget).find("##{marker_id}").length is 0
+				name = A2Cribs.UserCache.Get("marker", marker_id).GetName()
+				list_item = $ "<li />", {
+					text: name
+					class: "#{listing_type}_list_item"
+					id: marker_id
+				}
+				count = $("##{listing_type}_count").text()
+				$("##{listing_type}_count").text parseInt(count, 10) + 1
+				$(event.currentTarget).append list_item
+				$(event.currentTarget).slideDown()
 
 	###
 
@@ -63,13 +78,18 @@ class A2Cribs.Dashboard
 		content_header = $(event.delegateTarget)
 		class_name = content_header.attr 'classname'
 		content = $('.' + class_name + '-content')
-		$(".list-dropdown").slideUp()
 		$('.content-header.active').removeClass "active"
 		$(event.delegateTarget).addClass "active"
+
 		if content_header.hasClass "list-dropdown-header"
-			#Toggle Drop down
-			$("##{class_name}_list").slideDown()
+			if not $("##{class_name}_list").is(":visible")
+				if $(".list-dropdown.active").size() isnt 0
+					$(".list-dropdown.active").removeClass("active").slideUp 'fast', () ->
+						$("##{class_name}_list").addClass("active").slideDown()
+				else
+					$("##{class_name}_list").addClass("active").slideDown()
 		else
+			$(".list-dropdown").slideUp()
 			@ShowContent content, true
 
 	
@@ -84,33 +104,27 @@ class A2Cribs.Dashboard
             success: @GetUserMarkerDataCallback
 
 	@GetUserMarkerDataCallback: (data) =>
-		markers = JSON.parse data
 
 		# Counts listings and adds them to the dropdown list
 		listings_count = [0, 0, 0]
-		listing_types = ["rentals", "sublet", "parking"]
-		$("#rentals_count").text markers.length
-		marker_ids_processed = []
+		listing_types = ["rental", "sublet", "parking"]
 
-		for marker in markers
-			if marker.Marker?
-				marker = marker.Marker
-			else
-				continue
+		A2Cribs.UserCache.CacheData JSON.parse data
 
-			if marker.marker_id? and marker.marker_id in marker_ids_processed
-				continue
+		listings = A2Cribs.UserCache.Get "listing"
 
-			name = marker.alternate_name
-			if !marker.alternate_name || !marker.alternate_name.length
-				name = marker.street_address
-			list_item = $ "<li />", {
-				text: name
-				class: "rentals_list_item"
-				id: marker.marker_id
-			}
-			$("#rentals_list_content").append list_item
-			marker_ids_processed.push marker.marker_id
+		for listing in listings
+			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
+			if $("##{listing_types[listing.listing_type]}_list_content").find("##{marker.GetId()}").length is 0
+				list_item = $ "<li />", {
+					text: marker.GetName()
+					class: "#{listing_types[listing.listing_type]}_list_item"
+					id: marker.GetId()
+				}
+			$("##{listing_types[listing.listing_type]}_list_content").append list_item
+			listings_count[listing.listing_type] += 1
+		for listing_type, i in listing_types	
+			$("##{listing_type}_count").text listings_count[i]
 
 	###
 	Retrieves all listings for logged-in user and adds them to the cache.
@@ -198,15 +212,15 @@ class A2Cribs.Dashboard
 			dropdown.slideUp 'fast'
 
 	@ShowContent:(content)->
-		content.siblings().addClass 'hidden'
-		content.removeClass 'hidden'
+		content.siblings().addClass('hidden').hide()
+		content.removeClass('hidden').hide().fadeIn()
 		content.trigger 'shown'
 
 	@HideContent: (classname)->
 		$(".#{ classname }-content").addClass 'hidden'
 
 	@Direct: (directive)->
-		content_header = $('#' + directive.classname + "-content-header")
+		content_header = $("##{directive.classname}-content-header")
 		content_header.trigger 'click'
 		if directive.data?
-			@ShowContent($('.' + directive.classname + "-content"))
+			@ShowContent($(".#{directive.classname}-content"))

@@ -8,7 +8,7 @@ class MapController extends AppController {
                 )
             )
         ));
-  public $uses = array('Marker', 'Listing', 'University', 'Sublet', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
+  public $uses = array('Marker', 'Listing', 'University', 'BuildingType', 'BathroomType', 'GenderType', 'StudentType', 'User');
 
   public function beforeFilter() {
     parent::beforeFilter();
@@ -40,54 +40,41 @@ class MapController extends AppController {
         return $this->redirect(array('action' => 'rental', $school_name));
     }
 
-    /*
-    Action for main map page for rentals
-    */
     public function rental($school_name = null)
     {
         if ($school_name == null)
             $this->redirect(array('controller' => 'landing', 'action' => 'index'));
-        
-        $marker_id_to_open = -1;
-        $subletData = -1;
-        
-        $this->set('active_listing_type', 'rental');
 
-        if ($school_name != null)
-        {             
-            $this->Session->write("currentUniversity", $school_name);
-            $school_name = str_replace("_", " ", $school_name);
-            $id = $this->University->getIdfromName($school_name);
-            if ($id == null)
-                throw new NotFoundException();
-
-            /* store university id to enable 'back to map' button */
-            if ($this->Auth->User('id') != null)
-                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
-            else{
-                $this->Session->write('preferredUniversity', $id); 
-                CakeLog::write('writing session', $id);
-            } 
-            
-            $this->set('school_id', $id);
-            $university = $this->University->findById($id);
-            if ($university == null)
-                throw new NotFoundException();
-            $this->set('university', $university);
-        }
-        
-        $user = null;
-        if($this->Auth->User()){
-            $user = $this->User->getSafe($this->Auth->User('id'));
-        }
-        $this->set('school_name', $school_name);
-        $this->set('user', json_encode($user));
-        $this->set('locations', $this->University->getSchools());
-        $this->set('user_years', $this->User->GetYears());
-        $this->InitFilterValues();
-
+        $this->_setupMapPage('rental', $school_name);
         
     }
+
+    public function sublet($school_name = null)
+    {
+        if ($school_name == null)
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+
+        $this->_setupMapPage('sublet', $school_name);
+    }   
+
+    public function parking($school_name = null)
+    {       
+        $this->redirect(array('controller' => 'landing', 'action' => 'index'));
+    }
+
+    /*
+    Action for main map page for rentals
+    */
+    public function listing($listing_type, $school_name = null)
+    {
+        if ($school_name == null)
+            $this->redirect(array('controller' => 'landing', 'action' => 'index'));     
+    }
+
+    /*
+    Action for main map page for sublets
+    */
+    
 
     public function ViewListing($listing_id = null)
     {
@@ -117,9 +104,10 @@ Only return */
     */
     public function GetBasicData($listing_type, $university_id)
     {
+        CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-
+CakeLog::write('debuggingit', '-1');
         $response = $this->_getBasicData($listing_type, $university_id);
         $this->set("response", $response);
     }
@@ -127,12 +115,12 @@ Only return */
     /* ----------------------------------- iPhone API ------------------------------------- */
     public function APIGetBasicData($listing_type, $university_id)
     {
+        $this->layout = 'ajax';
         $basicData = null;
         if (array_key_exists('token', $this->request->query) &&
             !strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {
             header('Access-Control-Allow-Origin: *');
             $basicData = $this->_getBasicData($listing_type, $university_id);
-            $basicData = json_encode($basicData);
         }
     
         $this->set('response', $basicData);   
@@ -147,13 +135,74 @@ Only return */
             Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
-        $basicData = Cache::read('mapBasicData-'.$university_id, 'MapData');
-        if ($basicData === false){
+        $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
+        if ($basicData === false){  
             $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
-            Cache::write('mapBasicData-'.$university_id, $basicData, 'MapData');
+            $this->_cacheListingBasicData($basicData);
+            Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
         }
         
         $response = json_encode($basicData);
         return $response;
+    }
+
+    /*
+    convert $basicData to map of listing_id => $basicData for that listing_id.
+    */
+    private function _cacheListingBasicData(&$basicData)
+    {
+        $map = array();
+        foreach ($basicData as &$listing){
+            if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
+                Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing, 'MapData');
+                $map[$listing['Listing']['listing_id']] = &$listing;
+        }
+
+        return $map;
+    }
+
+    private function _setupMapPage($listing_type, $school_name)
+    {
+        $marker_id_to_open = -1;
+        $subletData = -1;
+        
+        $listing_type = $this->Listing->listing_type_reverse($listing_type);
+        $this->set('active_listing_type', $listing_type);
+
+        if ($school_name != null)
+        {             
+            $this->Session->write("currentUniversity", $school_name);
+            $school_name = str_replace("_", " ", $school_name);
+            $id = $this->University->getIdfromName($school_name);
+            if ($id == null)
+                throw new NotFoundException();
+
+            /* store university id to enable 'back to map' button */
+            if ($this->Auth->User('id') != null)
+                $this->User->SavePreferredUniversity($this->Auth->User('id'), $id);
+            else{
+                $this->Session->write('preferredUniversity', $id); 
+            } 
+            
+            $this->set('school_id', $id);
+            $university = $this->University->findById($id);
+            if ($university == null)
+                throw new NotFoundException();
+
+            /* Sublets are only live at specific universities - redirect to rentals if not live yet */
+            if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET && !$university['sublets_live'])
+                $this->redirect('/rental/'.$school_name);
+
+            $this->set('university', $university);
+        }
+        
+        $user = null;
+        if($this->Auth->User()){
+            $user = $this->User->getSafe($this->Auth->User('id'));
+        }
+        $this->set('school_name', $school_name);
+        $this->set('user', json_encode($user));
+        $this->set('locations', $this->University->getSchools());
+        $this->set('user_years', $this->User->GetYears()); 
     }
 }

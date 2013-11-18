@@ -11,7 +11,7 @@ echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline'
             <div id='bottom-section'></div>
         </div>
         <div id='listings-list-container'>
-            <div id='listings-list' class='<?= (strpos($university['name'], 'Ann') !== false) ? 'has_featured_pm' : '' ;?>'>
+        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
                 <div id='featured-listings'></div>
                 <div id='ran-listings'></div>
             </div>
@@ -22,7 +22,11 @@ echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline'
                 <p>Most Awarded Property Manager in A2!</p>
                 <button>Click to View 20+ Locations</button>
             </div>
-        <?php } ?>
+        <? } else if (strpos($university['name'], 'Bloom') !== false) { ?>
+            <div class='featured_banner'>
+                <a href="http://iusa.indiana.edu/" target="_blank"><img src="/img/sidebar/IUSA_logo.jpg"></a>
+            </div>
+        <? } ?>
         <div class='legal-bar'>
             <span>Cribspot, LLC. | <a href='/TermsOfUse'>Terms</a> | <a href='/PrivacyPolicy'>Privacy</a> | <a href='/Disclaimer'>Disclaimer</a></span>
         </div>

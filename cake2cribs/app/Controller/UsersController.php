@@ -23,6 +23,8 @@ class UsersController extends AppController {
         $this->Auth->allow('PropertyManagerSignup');
         $this->Auth->allow('IsLoggedIn');
         $this->Auth->allow('PMLogin');
+        $this->Auth->allow('welcome');
+        $this->Auth->allow('sublet');
     }
 
     public function share()
@@ -116,6 +118,35 @@ class UsersController extends AppController {
     }
 
     /*
+    */
+    public function welcome($user_type = "student")
+    {
+        if (!array_key_exists('id', $this->request->query) || !array_key_exists('reset_token', $this->request->query))
+            $this->redirect('/');
+
+        $id = $this->request->query['id'];
+        $reset_token = $this->request->query['reset_token'];
+        if (!$this->User->IsValidResetToken($id, $reset_token)){
+            CakeLog::write("ErrorResetPasswordRedirect", $id . "; " . $reset_token);
+            $flash_message['method'] = "Error";
+            $flash_message['message'] = "That reset password link does not seem to be legitimate!";
+            $json = json_encode($flash_message);
+            $this->Cookie->write('flash-message', $json);
+            $this->redirect('/users/login?invalid_link=true');
+        }
+
+        $this->set('id', $id);
+        $this->set('reset_token', $reset_token);
+    }
+
+    public function sublet()
+    {
+        $user = $this->Auth->User();
+        if ($user !== null)
+            $this->redirect(array('controller' => 'sublets', 'action' => 'create'));
+    }
+
+    /*
     Given facebook access_token, which we use to get facebook id.
     Attempts to log in the current user by checking for a local user with the returned facebook id.
     If user exists, log in the user and return 'LOGGED_IN'.
@@ -155,6 +186,25 @@ class UsersController extends AppController {
 
         /* 
         User has not yet created an account with this facebook id.
+        Check to see if email has been returned to facebook.
+        */
+        if (empty($fb_user->email)){
+            $response = array(
+                'success' => 'NOT_LOGGED_IN',
+                'account_exists' => false,
+                'data' => array(
+                    'first_name' => $fb_user->first_name,
+                    'last_name' => $fb_user->last_name,
+                    'img_url' => 'https://graph.facebook.com/'.$fb_id.'/picture?width=80&height=80'
+                )
+            );
+
+            $this->set('response', json_encode($response));
+            return;
+        }
+
+        /*
+        facebook email exists.
         Give them a random password and log them in.
         */
         $user['user_type'] = 0;
@@ -709,7 +759,7 @@ class UsersController extends AppController {
         if (array_key_exists('error', $response)){
             $message = "That reset password link does not seem to be legitimate!";
             if (!strcmp($response['error'], 'LOGIN_CODE_EXPIRED'))
-                $message = "That link is over 3 days old and has expired. You can still login here with your email and password!";
+                $message = "That link is over 2 weeks old and has expired. You can still login here with your email and password!";
         
             $flash_message['method'] = "Error";
             $flash_message['message'] = $message;

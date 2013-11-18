@@ -1,9 +1,11 @@
 <?php
+
 	echo $this->Html->script('src/VerifyManager');
 	echo $this->Html->script('src/Rental');
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->script('src/Hotlist');
+
 	echo $this->Html->css('DailyLogo');
 	$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');
 
@@ -12,25 +14,24 @@
 	);
 
 	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for off campus housing in " . $university["city"] . "? Browse the many full year listings Cribspot has to offer.", array('inline' => false));
-	
+
+	echo $this->Html->meta('canonical', 'https://cribspot.com/rental/' . str_replace(" ", "_", $school_name), array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
 	echo $this->element('header', 
 		array(
+			'page' => 'rental',
+			'school_name' => str_replace(" ", "_", $school_name),
+			'sublets_live' => $university['sublets_live'],
 			'show_filter' => false,
 			'show_user' => true,
 			'show_personal' => true,
 			'locations' => $locations,
 			'user_years' => $user_years
 		));
-	echo $this->element('map');
+	echo $this->element('map', array('active_listing_type' => $active_listing_type));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
-	//echo $this->element('login');
-	//echo $this->element('register');
-	/*
-	$declare_marker_id_to_open =  'A2Cribs.marker_id_to_open = ' . $marker_id_to_open . ';';
-	$declare_sublet_data =  'A2Cribs.loaded_sublet_data = ' . json_encode($sublet_data_for_tooltip) . ';';
-	*/
+
 	/* Create and initialize the map */
 	$this->Js->buffer(
 		'A2Cribs.Map.Init(' . $university["id"] . ',' . $university["latitude"] . ',' . $university["longitude"] . ',"' . $university["city"] . '","' . $university["state"] . '","' . $university["name"] . '","' . $active_listing_type . '");	

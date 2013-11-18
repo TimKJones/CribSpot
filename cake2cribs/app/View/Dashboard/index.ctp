@@ -2,7 +2,7 @@
 <?php echo $this->element('Dashboard/marker-modal', $dropdowns);?>
 <?php echo $this->element('Dashboard/picture-modal');?>
 <?php echo $this->Html->css('messages'); ?>
-<?php echo $this->Html->css('account'); ?>
+<?php echo $this->Html->css('account.css?v=2'); ?>
 <?php echo $this->Html->css('dashboard'); ?>
 
 <?php
@@ -23,11 +23,11 @@ echo $this->Html->script('underscore');
 
 <div class='container-fluid' id = 'main_content'>
 	<div class = 'row-fluid'>
-		<div id = 'left_content' class = 'span2'>
+		<div id = 'left_content' class = 'span3'>
 			<?php echo $this->element('Dashboard/navigation-bar'); ?>			
 		</div>
 
-		<div id = 'middle_content' class = 'span10'>
+		<div id = 'middle_content' class = 'span9'>
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>
 					<?php echo $this->element('Account/edit_account_window', $user) ?>
@@ -47,8 +47,12 @@ echo $this->Html->script('underscore');
 				</div>
 			</div>
 
-			<div class = 'rentals-content hidden'>
+			<div class = 'rental-content hidden'>
 				<?php echo $this->element('Dashboard/rentals_window', $user) ?>
+			</div>
+
+			<div class = 'sublet-content hidden'>
+				<?php echo $this->element('Dashboard/sublets_window', $user) ?>
 			</div>
 
 			<div class = 'row-fluid featuredlisting-content hidden'>
@@ -61,42 +65,6 @@ echo $this->Html->script('underscore');
 
 <script>
 
-
-	// // A2Cribs.Messages.init();
-
-	// window.fbAsyncInit = function() {
- //    // init the FB JS SDK
- //    FB.init({
- //      appId      : '148187588666959', // App ID from the App Dashboard
- //      channelUrl : 'http://localhost/channel.html', // Channel File for x-domain communication
- //      status     : true, // check the login status upon init?
- //      cookie     : true, // set sessions cookies to allow your server to access the session?
- //      xfbml      : true  // parse XFBML tags on this page?
- //    });
-
- //    // Additional initialization code such as adding Event Listeners goes here
-
- //  };
-
- //  // Load the SDK's source Asynchronously
- //  // Note that the debug version is being actively developed and might 
- //  // contain some type checks that are overly strict. 
- //  // Please report such bugs using the bugs tool.
- //  (function(d, debug){
- //     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
- //     if (d.getElementById(id)) {return;}
- //     js = d.createElement('script'); js.id = id; js.async = true;
- //     js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
- //     ref.parentNode.insertBefore(js, ref);
- //   }(document, /*debug*/ false));
-
- //  function onLinkedInLoad() {
- //    IN.Event.on(IN, "auth", onLinkedInAuth);
- //  }
-
- //  function onLinkedInAuth() {
- //     IN.API.Profile("me").result(A2Cribs.FacebookManager.UpdateLinkedinLogin);
- //  }
  	A2Cribs.VerifyManager.init(<?php echo $user_json;?>);
 	A2Cribs.Dashboard.SetupUI();
 	A2Cribs.Account.setupUI();

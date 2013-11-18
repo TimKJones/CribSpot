@@ -1,2 +1,0 @@
-- use containable to filter which data is retrieved on find('all') call
-		- http://book.cakephp.org/1.3/en/The-Manual/Core-Behaviors/Containable.html

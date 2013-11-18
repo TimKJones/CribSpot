@@ -120,22 +120,22 @@ class A2Cribs.FeaturedListings
             for id in sidebar_listing_ids
                 listingObject = {}
                 listing = A2Cribs.UserCache.Get('listing', id)
-                marker = rental = null
+                marker = listing_object = null
                 if listing?
                     listing.InSidebar yes
                     marker = A2Cribs.UserCache.Get('marker', listing.marker_id)
-                    rental = A2Cribs.UserCache.GetAllAssociatedObjects('rental', 'listing', id)
-                    if rental[0]?
-                        rental = rental[0]
-                if listing? and marker? and rental?
+                    listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id)
+                    if listing_object[0]?
+                        listing_object = listing_object[0]
+                if listing? and marker? and listing_object?
                     listingObject.Listing = listing
                     listingObject.Marker = marker
-                    listingObject.Rental = rental
+                    listingObject.ListingObject = listing_object
                     listings.push listingObject
                 else
                     console.log listing
                     console.log marker
-                    console.log rental
+                    console.log listing_object
 
             sidebar.addListings listings, 'ran'
 
@@ -152,7 +152,7 @@ class A2Cribs.FeaturedListings
                 marker = A2Cribs.UserCache.Get('marker', marker_id)
                 listing = A2Cribs.UserCache.Get('listing', listing_id)  
                 A2Cribs.Map.GMap.setZoom 16
-                A2Cribs.HoverBubble.Open marker
+                $("#map_region").trigger "marker_clicked", [marker]
                 A2Cribs.MixPanel.Click listing, 'sidebar listing'
                 markerPosition = marker.GMarker.getPosition()
                 A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
@@ -219,14 +219,13 @@ class A2Cribs.FeaturedListings
             year = date.getFullYear()
             return "#{month} #{year}"
 
-        
-        getListHtml:(listings)->
+        getListHtml: (listings) ->
             list = $("<div />")
             for listing in listings
                 rent = name = beds = lease_length = start_date = null
 
-                if listing.Rental.rent? 
-                    rent = parseFloat(listing.Rental.rent).toFixed(0)
+                if listing.ListingObject.rent? 
+                    rent = parseFloat(listing.ListingObject.rent).toFixed(0)
                 else
                     rent = ' --'
 
@@ -235,24 +234,29 @@ class A2Cribs.FeaturedListings
                 else
                     name = listing.Marker.street_address
 
-                if listing.Rental.lease_length? 
-                    lease_length = listing.Rental.lease_length
+                if listing.ListingObject.lease_length? 
+                    lease_length = listing.ListingObject.lease_length
                 else
                     lease_length = '-- '
                 
-                if listing.Rental.beds > 1
-                    beds = "#{listing.Rental.beds} beds"
-                else if listing.Rental.beds?
-                    beds = "#{listing.Rental.beds} bed"
+                if listing.ListingObject.beds > 1
+                    beds = "#{listing.ListingObject.beds} beds"
+                else if listing.ListingObject.beds?
+                    beds = "#{listing.ListingObject.beds} bed"
                 else
                     beds = "?? beds"
 
-                if listing.Rental.start_date?
+                if listing.ListingObject.start_date?
                     # Fix date bug in firefox
-                    start_date = listing.Rental.start_date.toString().replace(' ', 'T')
+                    start_date = listing.ListingObject.start_date.toString().replace(' ', 'T')
                     start_date = @getDateString(new Date(start_date))
                 else
                     start_date = 'Start Date --'
+
+                if listing.ListingObject.end_date?
+                    # Fix date bug in firefox
+                    end_date = listing.ListingObject.end_date.toString().replace(' ', 'T')
+                    end_date = @getDateString(new Date(end_date))
 
                 #Process images
                 primary_image_path = '/img/sidebar/no_photo_small.jpg'
@@ -267,6 +271,7 @@ class A2Cribs.FeaturedListings
                     beds: beds
                     building_type: listing.Marker.building_type_id
                     start_date: start_date
+                    end_date: end_date
                     lease_length: lease_length
                     name: name
                     img: primary_image_path
@@ -276,12 +281,8 @@ class A2Cribs.FeaturedListings
 
                 listing_item = $(@ListItemTemplate data)
                 A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds)
-
                 list.append listing_item
 
-            return list
-
-        
     @ListItemHTML: """
     <div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
         <span class = 'img-wrapper'>
@@ -299,7 +300,11 @@ class A2Cribs.FeaturedListings
             <div class = 'info-row'>
                 <span class = 'building-type'><%= building_type %></span>
                 <span class = 'divider'>|</span>
+                <% if (typeof(end_date) != "undefined") { %>
+                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>
+                <% } else { %>
                 <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>
+                <% } %>
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

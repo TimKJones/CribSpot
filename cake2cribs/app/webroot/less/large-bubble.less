@@ -1,0 +1,254 @@
+.large-bubble
+{
+	padding: 0;
+	width: 260px;
+	background-color: #f9f9f9;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	position: absolute;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: 0 0 5px #888888;
+	.click_header
+	{
+		width: 100%;
+		color: #454545;
+		font-weight: bold;
+		font-size: 14px;
+		padding: 8px 0;
+		position: relative;
+		box-shadow: 0 1px 3px #D8D8D8;
+		.building_name
+		{
+			margin-left: 10px;
+		}
+	}
+	.close_button
+	{
+		height: 20px;
+		width: 20px;
+		color: #9a9a9a;
+		font-size: 18px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		font-weight: lighter;
+		line-height: 21px;
+		text-align: center;
+		-moz-border-radius: 18px;
+		border-radius: 18px;
+		border: solid 1px #dedbdb;
+		margin: 8px;
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+	.property_image
+	{
+		width: 100%;
+		height: 155px;
+		background-size: cover;
+		background-position: center;
+	}
+	.share_section
+	{
+		width: 100%;
+		border-bottom: solid 1px #d9d9d9;
+		padding: 2px 0;
+		.unit_style_description
+		{
+			font-size: 11px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-left: 10px;
+			max-width: 170px;
+			display: inline;
+			color: #454545;
+		}
+		.share_button
+		{
+			display: inline-block;
+			float: right;
+			margin-right: 5px;
+			a
+			{
+				text-decoration: none;
+				color: #bfbfbf;
+				margin-left: 2px;
+			}
+			.link_share:hover
+			{
+				color: #4d4d4d;
+			}
+			.facebook_share:hover
+			{
+				color: #3b5a9b;
+			}
+			.twitter_share:hover
+			{
+				color: #31bbee;
+			}
+			.favorite_listing:hover
+			{
+				color: #f47878;
+			}
+			.favorite_listing.active
+			{
+				color: #f47878;
+			}
+		}
+	}
+	.general_info
+	{
+		width: 100%;
+		font-size: 14px;
+		text-align: left;
+		padding: 10px 0;
+		border-bottom: solid 1px #d9d9d9;
+		.bubble_label
+		{
+			font-weight: bold;
+			display: inline-block;
+			margin-left: 10px;
+			color: #454545;
+		}
+		.rent, .beds
+		{
+			font-weight: bold;
+			display: inline-block;
+			color: #454545;
+		}
+		.beds
+		{
+			margin-left: 10px;
+		}
+		.per_month, .bed_desc
+		{
+			display: inline-block;
+			margin-left: 2px;
+			color:  #a3a0a0;
+			font-size: 13px;
+		}
+		.available
+		{
+			background-color: #7bb660;
+			color: #F0F0F0;
+			display: inline-block;
+			font-size: 11px;
+			text-transform: uppercase;
+			padding: 0 5px;
+			border-radius: 2px;
+			font-weight: bold;
+			float: right;
+			box-shadow: inset 0 0 5px #72ae57;
+			margin-right: 10px;
+
+			&.leased
+			{
+				background-color: #cf5e5e;
+				box-shadow: inset 0 0 5px #c73d3d;
+			}
+		}
+	}
+	.additional_info
+	{
+		width: 100%;
+		text-align: left;
+		font-size: 11px;
+		border-bottom: solid 1px #d9d9d9;
+		line-height: 16px;
+		padding: 5px 0;
+		background-color: #f2efef;
+		border-top: solid 1px white;
+		position: relative;
+		.bubble_label
+		{
+			display: inline-block;
+		}
+		.date_range
+		{
+			font-size: 12px;
+			margin-left: 10px;
+			line-height: 18px;
+			display: inline-block;
+		}
+		.unit_type, .baths, .lease_length
+		{
+			display: inline-block;
+		}
+		.unit_type
+		{
+			margin-left: 10px;
+		}
+		.property_manager
+		{
+			margin-left: 10px;
+		}
+		.verified
+		{
+			font-size: 9px;
+			background-color: #ccdbb9;
+			color: #35881b;
+			border-radius: 6px;
+			display: inline;
+			padding: 0 2px;
+			position: absolute;
+			bottom: 5px;
+			right: 3px;
+		}
+	}
+	.schedule_tour
+	{
+		width: 100%;
+		font-size: 11px;
+		display: inline-block;
+		background-color: hsl(222, 76%, 93%);
+		padding: 6.5px 0;
+		border-bottom: solid 1px hsl(0, 0%, 85%);
+		color: hsl(216, 57%, 50%);
+		font-weight: bold;
+		text-decoration: none;
+		text-align: center;
+		text-transform: uppercase;
+	}
+	.action_buttons
+	{
+		&.rental
+		{
+			a
+			{
+				width: 68px;
+			}
+		}
+		&.sublet
+		{
+			a
+			{
+				width: 112px;
+			}
+		}
+		a
+		{
+			font-size: 11px;
+			display: inline-block;
+			padding: 6.5px 9px;
+			border-right: solid 1px #d9d9d9;
+			color: #3772c9;
+			font-weight: bold;
+			text-decoration: none;
+			float: left;
+			margin-right: -1px;
+			text-align: center;
+			&:last-child
+			{
+				border: none;
+			}
+			i
+			{
+				color: #bfbfbf;
+				font-size: 15px;
+			}
+		}
+
+	}
+}

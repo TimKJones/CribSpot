@@ -1,0 +1,183 @@
+#user_welcome_page
+{
+	height: 100%;
+	width: 100%;
+
+	.background
+	{
+		height: 100%;
+		background-image: url(/img/landing/background_linden.jpg);
+		background-size: cover;
+		background-position: center center;
+
+		.row-fluid
+		{
+			height: 100%;
+			.span 
+			{
+				position: relative;
+				height: 100%;
+			}
+		}
+	}
+
+	.slogan
+	{
+		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+		font-weight: bold;
+		font-size: 35px;
+		color: hsl(0, 100%, 100%);
+		text-shadow: 0 0 10px hsl(0, 0%, 0%);
+		line-height: 35px;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		margin: auto;
+		height: 35px;
+
+		.large
+		{
+			font-size: 40px;
+		}
+
+		.blue
+		{
+			color: #8bb0f3;
+		}
+	}
+
+	.pm_display_header
+	{
+		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+		font-size: 30px;
+		line-height: 30px;
+		padding: 15px 50px;
+		box-shadow: 0 0 3px hsl(0, 0%, 50%);
+	}
+	.pm_card
+	{
+		height: 100px;
+		width: 100px;
+		box-shadow: 0 0 3px hsl(0, 0%, 50%);
+		.pm_name
+		{
+			width: 100%;
+			height: 20px;
+			font-size: 14px;
+			line-height: 20px;
+		}
+	}
+
+	.password_box
+	{
+		height: 270px;
+	}
+
+	.login_box
+	{
+		height: 440px;
+	}
+
+	.password_box, .login_box
+	{
+		width: 270px;
+		box-shadow: 0 0 10px black;
+		border-radius: 2px;
+		margin: auto;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		margin: auto;
+		background-color: white;
+		.welcome_box
+		{
+			padding: 15px;
+			border-bottom: 1px solid lightgray;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			.welcome_text
+			{
+				font-size: 30px;
+				font-family: 'ReklameScriptMediumRegular',"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+				line-height: 40px;
+				text-align: center;
+			}
+			.message_block
+			{
+				font-size: 13px;
+				text-align: center;
+				line-height: 16px;
+
+				.pm_count
+				{
+					font-weight: bold;
+					font-size: 16px;
+					color: #1059c6;
+				}
+			}
+		}
+		.user_form
+		{
+			padding: 15px;
+			background-color: hsl(0, 0%, 95%);
+			border-bottom-right-radius: 3px;
+			border-bottom-left-radius: 3px;
+
+			input
+			{
+				width: 227px;
+			}
+
+			#student_first_name, #student_last_name
+			{
+				width: 112px;
+			}
+
+			.fb-row
+			{
+				padding-bottom: 20px;
+				border-bottom: 1px solid lightgray;
+			}
+
+			.fb-divider
+			{
+				margin-top: -12px;
+				margin-bottom: 10px;
+
+				em
+				{
+					background-color: hsl(0, 0%, 95%);
+					color: gray;
+				}
+			}
+
+			p
+			{
+				font-size: 11px;
+				line-height: 11px;
+			}
+
+			.welcome_footer
+			{
+				font-size: 13px;
+				margin-top: 10px;
+			}
+
+			.btn
+			{
+				width: 100%;
+				margin-top: 5px;
+				background-image: none;
+				background-color: hsl(216, 52%, 38%);
+				color: hsl(0, 100%, 100%);
+				font-weight: bold;
+				font-size: 14px;
+				text-shadow: 0 0 1px hsl(220, 56%, 16%);
+				box-shadow: none;
+				border: 1px solid hsl(220, 56%, 16%);
+				padding: 7px;
+			}
+		}
+	}
+}

@@ -1,0 +1,170 @@
+@vib-green: #00BB00;
+@blue: #4673b2;
+
+.map_bubble
+{
+	box-shadow: 0px 0px 5px grey;
+}
+
+.small-bubble
+{
+	padding: 0;
+	width: 122px;
+	max-height: 155px;
+	background-color: white;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+
+	font-weight: 300;
+
+	::-webkit-scrollbar
+	{
+		width: 3px;
+		height: 3px;
+	}
+	::-webkit-scrollbar-button:start:decrement,
+	::-webkit-scrollbar-button:end:increment 
+	{
+		height: 3px;
+		display: block;
+		background-color: transparent;
+	}
+
+	::-webkit-scrollbar-track-piece
+	{
+		//background-color: #3b3b3b;
+		//-webkit-border-radius: 6px;
+	}
+
+	::-webkit-scrollbar-thumb:vertical
+	{
+		height: 50px;
+		background-color: hsla(0, 0%, 31%, 0.5);
+		-webkit-border-radius: 2px;
+	}
+
+	div
+	{
+		
+	}
+	.unit_div
+	{
+		width: 100%;
+		max-height: 124px;
+		font-size: 13px;
+		overflow: auto;
+	}
+
+	.unit
+	{
+		padding: 5px 0;
+		color: #4e4e4e;
+		border: none;
+		border-top: solid 1px #e1e1e1;
+		overflow: auto;
+		text-align: left;
+		position: relative;
+
+		&:first-child
+		{
+			border-top: none;
+		}
+
+		&:hover
+		{
+			background-color: #f5eed4;
+			cursor: pointer;
+			div
+			{
+				color: #393939;
+			}
+		}
+
+		.dot
+		{
+			background-image: url(/img/dots/dot_sprite.png);
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			margin: auto 5px;
+			height: 10px;
+			width: 10px;
+
+			&.available
+			{
+				background-position: 0 0;
+			}
+
+			&.leased
+			{
+				background-position: 0 -30px;
+			}
+
+			&.schedule
+			{
+				background-position: 0 -60px; 
+			}
+
+			&.unknown
+			{
+				background-position: 0 -90px; 
+			}
+		}
+
+		.beds
+		{
+			display: inline-block;
+			font-weight: bold;
+			margin-left: 20px;
+		}
+		.bed_desc
+		{
+			color: #a3a0a0;
+			display: inline-block;
+			font-weight: normal;
+			margin-left: 3px;
+		}
+		.rent
+		{
+			float: right;
+			font-weight: bold;
+			margin-right: 10px;
+		}
+	}
+
+	.hover_header
+	{
+		width: 100%;
+		color: #d65157;
+		border-bottom: solid 1px #e1e1e1;
+		font-size: 13px;
+		padding: 5px 0;
+		position: relative;
+	}
+	.building_type
+	{
+		margin: 0 10px;
+		font-weight: bold;
+	}
+	.close_button
+	{
+		height: 15px;
+		width: 15px;
+		color: #9a9a9a;
+		font-size: 15px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		font-weight: lighter;
+		line-height: 15px;
+		text-align: center;
+		-moz-border-radius: 15px;
+		border-radius: 15px;
+		border: solid 1px #d9d9d9;
+		margin: 7px;
+		&:hover
+		{
+			cursor: pointer;
+		}
+	}
+}

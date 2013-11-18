@@ -26,6 +26,7 @@
 /* ----------------------------------- API --------------------------------------------- */
 		public function GetUniversities()
 		{
+			$this->layout = 'ajax';
 			$universities = null;
 			if (array_key_exists('token', $this->request->query) &&
 				!strcmp($this->request->query['token'], Configure::read('IPHONE_API_TOKEN'))) {

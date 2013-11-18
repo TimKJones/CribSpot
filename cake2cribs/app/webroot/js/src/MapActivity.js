@@ -24,7 +24,7 @@
     };
 
     $("#map_canvas").ready(function() {
-      MapActivity._increments = [3, 10, 15, 20, 25, 10000000];
+      MapActivity._increments = [10, 15, 20, 25, 10000000];
       MapActivity._increment_index = 0;
       MapActivity._clickbubble_count = 0;
       return $("#map_canvas").on("click_bubble_open", function(event, listing_id) {

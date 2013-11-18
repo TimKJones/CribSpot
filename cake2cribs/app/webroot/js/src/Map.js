@@ -3,6 +3,8 @@
   A2Cribs.Map = (function() {
     function Map() {}
 
+    Map.LISTING_TYPES = ['rental', 'sublet', 'parking'];
+
     Map.CLUSTER_SIZE = 2;
 
     /*
@@ -27,33 +29,6 @@
     };
 
     /*
-    	Load all markers from Markers table
-    */
-
-
-    Map.LoadMarkers = function() {
-      if (!this.MarkerDeferred) {
-        this.MarkerDeferred = new $.Deferred();
-      }
-      if (A2Cribs.Map.CurentSchoolId === void 0) {
-        this.MarkerDeferred.resolve(null);
-        return;
-      }
-      $.ajax({
-        url: myBaseUrl + "Map/LoadMarkers/" + A2Cribs.Map.CurentSchoolId + "/" + 0,
-        type: "GET",
-        context: this,
-        success: function(response) {
-          return this.MarkerDeferred.resolve(response, this);
-        },
-        error: function() {
-          return this.MarkerDeferred.resolve(null);
-        }
-      });
-      return this.MarkerDeferred.promise();
-    };
-
-    /*
     	Used to only show markers that are within a certain bounds based on the user's current viewport.
     	https://developers.google.com/maps/articles/toomanymarkers#viewportmarkermanagement
     */
@@ -74,9 +49,8 @@
       };
     };
 
-    Map.Init = function(school_id, latitude, longitude, city, state, school_name, active_listing_type) {
-      var imageStyles, mcOptions, zoom,
-        _this = this;
+    Map.Init = function(school_id, latitude, longitude, city, state, school_name, active_listing_type_id) {
+      var imageStyles, mcOptions, zoom;
       this.CurentSchoolId = school_id;
       mixpanel.register({
         'preferred_university': school_id
@@ -84,7 +58,9 @@
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;
-      this.ACTIVE_LISTING_TYPE = active_listing_type;
+      A2Cribs.FilterManager.ActiveListingType = active_listing_type_id;
+      this.ACTIVE_LISTING_TYPE_ID = active_listing_type_id;
+      this.ACTIVE_LISTING_TYPE = this.LISTING_TYPES[active_listing_type_id];
       zoom = 14;
       this.MapCenter = new google.maps.LatLng(latitude, longitude);
       this.MapOptions = {
@@ -102,9 +78,6 @@
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);
       google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);
-      google.maps.event.addListener(A2Cribs.Map.GMap, 'center_changed', function() {
-        return A2Cribs.ClickBubble.Close();
-      });
       /*imageStyles = [
       			{
       				"url": "/img/dots/group_dot.png",
@@ -128,8 +101,7 @@
       };
       this.GMarkerClusterer = new MarkerClusterer(A2Cribs.Map.GMap, [], mcOptions);
       this.GMarkerClusterer.setIgnoreHidden(true);
-      A2Cribs.ClickBubble.Init(this.GMap);
-      A2Cribs.HoverBubble.Init(this.GMap);
+      $("#map_region").trigger("map_initialized", [this.GMap]);
       A2Cribs.Map.InitBoundaries();
       this.LoadAllMapData();
       return A2Cribs.FilterManager.InitAddressSearch();
@@ -141,7 +113,7 @@
         this.BasicDataDeferred = new $.Deferred();
       }
       $.ajax({
-        url: myBaseUrl + ("Map/GetBasicData/" + this.ACTIVE_LISTING_TYPE + "/" + this.CurentSchoolId),
+        url: myBaseUrl + ("Map/GetBasicData/" + this.ACTIVE_LISTING_TYPE_ID + "/" + this.CurentSchoolId),
         type: "POST",
         success: function(responses) {
           return _this.BasicDataDeferred.resolve(responses);
@@ -155,13 +127,13 @@
     };
 
     Map.LoadBasicDataCallback = function(response) {
-      var all_listings, all_markers, key, listing, listings, marker, value, _i, _j, _k, _len, _len1, _len2;
+      var all_listings, all_markers, key, listing, listing_id, listings, marker, value, _i, _j, _len, _len1;
       if (response === null || response === void 0) {
         return;
       }
       listings = JSON.parse(response);
-      for (_i = 0, _len = listings.length; _i < _len; _i++) {
-        listing = listings[_i];
+      for (listing_id in listings) {
+        listing = listings[listing_id];
         for (key in listing) {
           value = listing[key];
           A2Cribs.UserCache.Set(new A2Cribs[key](value));
@@ -169,14 +141,14 @@
       }
       Map.BasicDataCached.resolve();
       all_markers = A2Cribs.UserCache.Get("marker");
-      for (_j = 0, _len1 = all_markers.length; _j < _len1; _j++) {
-        marker = all_markers[_j];
+      for (_i = 0, _len = all_markers.length; _i < _len; _i++) {
+        marker = all_markers[_i];
         marker.Init();
         Map.GMarkerClusterer.addMarker(marker.GMarker);
       }
       all_listings = A2Cribs.UserCache.Get("listing");
-      for (_k = 0, _len2 = all_listings.length; _k < _len2; _k++) {
-        listing = all_listings[_k];
+      for (_j = 0, _len1 = all_listings.length; _j < _len1; _j++) {
+        listing = all_listings[_j];
         listing.visible = true;
       }
       return Map.Repaint();
@@ -271,15 +243,10 @@
 
 
     Map.ToggleListingVisibility = function(listing_ids, toggle_type) {
-      var all_listings, all_markers, is_current_toggle, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1;
+      var all_listings, all_markers, is_current_toggle, listing, listing_id, marker, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m;
       $(".favorite_button").removeClass("active");
       $(".featured_pm").removeClass("active");
-      if ((_ref = A2Cribs.HoverBubble) != null) {
-        _ref.Close();
-      }
-      if ((_ref1 = A2Cribs.ClickBubble) != null) {
-        _ref1.Close();
-      }
+      $(document).trigger("close_bubbles");
       all_markers = A2Cribs.UserCache.Get('marker');
       all_listings = A2Cribs.UserCache.Get('listing');
       is_current_toggle = this.CurrentToggle === toggle_type;

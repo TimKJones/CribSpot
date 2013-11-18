@@ -126,7 +126,7 @@
           }
         }
       });
-      return this.div.find("input[type='checkbox']").change(function(event) {
+      this.div.find("input[type='checkbox']").change(function(event) {
         var filterType, group, selected_list;
         group = $(event.target).closest(".filter_content");
         filterType = $(event.delegateTarget).attr("data-filter");
@@ -155,6 +155,19 @@
           }
         }
       });
+      return this.div.find(".hidden_input").change(function(event) {
+        var date, date_split, filter;
+        console.log(event.currentTarget.value);
+        date = _this.GetBackendDateFormat(event.currentTarget.value);
+        filter = $(event.currentTarget).data("filter");
+        _this.ApplyFilter(filter, date);
+        date_split = event.currentTarget.value.split("/");
+        if (filter.indexOf("Start") !== -1) {
+          return $(event.currentTarget).parent().find(".filter_title").text("Starts: " + date_split[0] + "/" + date_split[1]);
+        } else if (filter.indexOf("End") !== -1) {
+          return $(event.currentTarget).parent().find(".filter_title").text("Ends: " + date_split[0] + "/" + date_split[1]);
+        }
+      });
     };
 
     /*
@@ -165,6 +178,14 @@
     RentalFilter.SetupUI = function() {
       var _this = this;
       this.div = $("#map_filter");
+      $(".hidden_input").datepicker({
+        onClose: function(date) {
+          return $(".filter_link").removeClass("active");
+        }
+      });
+      $("#start_date_filter_link, #end_date_filter_link").click(function(event) {
+        return $(event.currentTarget).find(".hidden_input").datepicker('show');
+      });
       $("#filter_search_btn").click(function() {
         if ($("#filter_search_content").is(":visible")) {
           return $("#filter_search_content").hide('slide', {
@@ -271,7 +292,7 @@
       }
       $("#loader").show();
       return $.ajax({
-        url: myBaseUrl + "Rentals/ApplyFilter",
+        url: myBaseUrl + ("Listings/ApplyFilter/" + A2Cribs.FilterManager.ActiveListingType),
         data: ajaxData,
         type: "GET",
         context: this,
@@ -312,111 +333,25 @@
       return visibile_listings;
     };
 
-    RentalFilter.GetBeds = function() {
-      var beds;
-      beds = [3, 5, 6, 10];
-      return JSON.stringify(beds);
-    };
+    /*
+    	Get Backend Date Format
+    	Replaces '/' with '-' to make convertible to db format
+    */
 
-    RentalFilter.GetRent = function() {
-      var rent;
-      return this;
-      rent = {
-        "min": 100,
-        "max": 5000
-      };
-      return JSON.stringify(rent);
-    };
 
-    RentalFilter.GetMonths = function() {
-      var dates;
-      dates = {
-        "months": {
-          "1": 1,
-          "2": 0,
-          "3": 1,
-          "4": 0,
-          "5": 1,
-          "6": 0,
-          "7": 1,
-          "8": 0,
-          "9": 1,
-          "10": 0,
-          "11": 1,
-          "12": 0
-        },
-        "curYear": [13, 14],
-        "leaseLength": {
-          'min': 2,
-          'max': 4
-        }
-      };
-      return dates;
-    };
-
-    RentalFilter.GetUnitTypes = function() {
-      var unit_types;
-      return unit_types = {
-        "house": 0,
-        "apartment": 1,
-        "duplex": 1,
-        "other": 0
-      };
-    };
-
-    RentalFilter.GetAmenities = function() {
-      var amenities;
-      return amenities = {
-        'elevator': 1
-      };
-    };
-
-    RentalFilter.prototype.FilterRent = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterBeds = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterBaths = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterBuildingType = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterDates = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterUnitFeatures = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterParking = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterPets = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterAmenities = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterSquareFeet = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterYearBuilt = function(listing) {
-      return true;
-    };
-
-    RentalFilter.prototype.FilterUtilities = function(listing) {
-      return true;
+    RentalFilter.GetBackendDateFormat = function(dateString) {
+      var beginDateFormatted, date, day, month, year;
+      date = new Date(dateString);
+      month = date.getMonth() + 1;
+      if (month < 10) {
+        month = "0" + month;
+      }
+      day = date.getDate();
+      if (day < 10) {
+        day = "0" + day;
+      }
+      year = date.getUTCFullYear();
+      return beginDateFormatted = year + "-" + month + "-" + day;
     };
 
     return RentalFilter;
