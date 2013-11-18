@@ -25,9 +25,12 @@ class A2Cribs.Landing
 
 		$(".school_logo").css "background-image", "url(#{university['University']['logo_path']})"
 
-		$(".founder_photo").attr "src", university.University.founder_image
-
-		$(".founder_title").text "#{university['University']['name']} Founder"
+		if university.University.founder_image?.length
+			$(".founder_photo").attr "src", university.University.founder_image
+			$(".founder_title").text "#{university['University']['name']} Founder"
+			$("#founder_box").fadeIn()
+		else
+			$("#founder_box").hide()
 
 
 	@Init: (@locations) ->
