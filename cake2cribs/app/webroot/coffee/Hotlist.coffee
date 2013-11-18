@@ -2,165 +2,171 @@ class A2Cribs.Hotlist
   @Initialize: ->
     el = $('#hotlist')
     A2Cribs.HotlistObj = new A2Cribs.Hotlist(el)
+    A2Cribs.HotlistObj.setup()
 
-  @call: (friend, action) ->
-    url = myBaseUrl + "friends/hotlist/#{action}"
+  call: (action, method, data) ->
     deferred = new $.Deferred()
-    data = {
-      friend: friend
-    }
+    url = myBaseUrl + action
+
     $.ajax
       url: url
       data: data
-      type: "POST"
+      type: method
       success: (response) =>
         deferred.resolve(JSON.parse response)
       error: =>
         deferred.reject()
     return deferred.promise()
 
-  @share: (listing, friend) ->
-    deferred = new $.Deferred()
-    $.ajax
-      url: myBaseUrl + "friends/share"
-      data: {
-        friend: friend
-        listing: listing
-      }
-      type: "POST"
-      success: (data) =>
-        deferred.resolve(JSON.parse data)
-      error: (response) =>
-        deferred.reject(response)
-
   constructor: (@DOMRoot) ->
     @topSection = _.template(A2Cribs.Hotlist.topSectionTemplate)
     @friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate)
     @expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate)
 
-    @setup()
+    @sources = [{
+      name: 'accounts'
+      remote:
+        url: myBaseUrl + 'users/getbyname?name=%QUERY'
+        filter: (response) ->
+          response.map (item) ->
+            datum = 
+              value: "#{item.User.email}" 
+              name: "#{item.User.first_name} #{item.User.last_name}"
+            return datum
+    }]
+
+    @setEditing false
 
   setup: ->
-    $.when(@get()).then(
-      ((data, status, jqXHR) =>
-        data = {
-          friends: data
-        }
-        @render(data)
-      ), 
-      ((data, status, jqXHR) =>
-        alert data
-      ))
-    return this
-
-  render: (data) ->
-    @DOMRoot.find('#top-section').html(@topSection(data))
-    @DOMRoot.find('#friends').html(@friendsList(data))
-    @DOMRoot.find('#bottom-section').html(@expandButton(data))
-
-    $('#add-field').typeahead([
-      {
-        name: 'accounts',
-        remote:
-          url: myBaseUrl + 'users/getbyname?name=%QUERY'
-          filter: (response) ->
-            response.map (item) ->
-              datum = 
-                value: "#{item.User.email}" 
-                name: "#{item.User.first_name} #{item.User.last_name}"
-              return datum
-      }
-    ])
-
-    $('.hotlist-remove-button').toggle()
-    $('li.friend span').tooltip()
-
-    @DOMRoot.find('#title').show()
-    @DOMRoot.find('#add-field').hide()
-    @DOMRoot.find('.twitter-typeahead').hide()
-    @DOMRoot.find('#btn-add').hide()
-    @DOMRoot.find('.friend-name').hide()
-
+    @renderTopSection()
+    @show()
+    @renderBottomSection()
     A2Cribs.FeaturedListings.resizeHandler()
 
-  get: ->
-    deferred = new $.Deferred()
-    $.ajax 
-      url: myBaseUrl + "friends/hotlist/"
-      type: "GET"
-      success: (data) =>
-        deferred.resolve(JSON.parse data)
-      error: =>
-        deferred.reject()
+  #Initializer Functions
 
-    return deferred.promise()
+  renderTopSection: ->
+    @DOMRoot.find('#top-section').html(@topSection())
+    @DOMRoot.find('#title').show()
+    @DOMRoot.find('#add-field').hide()
+    @DOMRoot.find('#btn-add').hide()
 
-  remove: (friend) ->
-    $.when(A2Cribs.Hotlist.call(friend, 'remove')).then(
-      ((data, status, jqXHR) =>
-        data = {
-          friends: data
-        }
-        @render(data)
-      ))
+    @DOMRoot.find('#add-field').typeahead(@sources)
+    @DOMRoot.find('.twitter-typeahead').hide()
+
+  renderFriendsList: (data) ->
+    @DOMRoot.find('#friends').html(@friendsList data)
+    @DOMRoot.find('#add-field').val("")
+    @DOMRoot.find('.hotlist-remove-button').hide()
+    @DOMRoot.find('li.friend span').tooltip()
+    @DOMRoot.find('.friend-name').hide()
+
+  renderBottomSection: ->
+    @DOMRoot.find('#bottom-section').html(@expandButton())
+
+  #Action functions
+  show: ->
+    $.when(@call('friends/hotlist', 'GET', null))
+    .then (data) =>
+      @renderFriendsList { friends: data }
+    .fail (data) =>
+      alert data
 
   add: (friend) ->
-    $.when(A2Cribs.Hotlist.call(friend, 'add'))
-    .then((data, status, jqXHR) =>
-      data = {
-        friends: data
-      }
-      @render(data)
-    )
-    .fail((data, status, jqXHR) =>
-      console.log("ERROR: #{data}")
-    )
+    $.when @call('friends/hotlist/add', 'POST', { friend: friend })
+    .then (data) =>
+      @renderFriendsList { friends: data } 
+      @expandForEdit()
+    .fail (data) =>
+      console.log "ERROR: #{data}"
+
+  remove: (friend) ->
+    $.when @call('friends/hotlist/remove', 'POST', { friend: friend })
+    .then (data) =>
+      @renderFriendsList { friends: data } 
+      @expandForEdit()
+    .fail (data) =>
+      console.log "ERROR: #{data}"
 
   share: (listing, friend) ->
-    $.when(A2Cribs.Hotlist.share(listing, friend))
-    .always((data, status, jqXHR) ->
-      console.log data )
+    $.when @call('friends/share', 'POST', {friend: friend, listing: listing})
+    .always (data, status, jqXHR) ->
+      console.log data 
+
+  #State functions
 
   retract: ->
-    $('#btn-edit').removeClass('editing')
-    $('.hotlist-remove-button').hide()
-    $('#hotlist').removeClass('expanded').removeClass('detailed')
-    $('#hotlist i').removeClass('icon-caret-up').addClass('icon-caret-down')
+    shows = [
+      '.friend-abbr'
+      '#title'
+    ]
 
-    @DOMRoot.find('.friend-name').hide()
-    @DOMRoot.find('.friend-abbr').show()
+    hides = [
+      '.hotlist-remove-button'
+      '.friend-name'
+      '#add-field'
+      '.twitter-typeahead'
+      '#btn-add'
+    ]
 
-  expand: (detail) ->
-    $('#hotlist').addClass('expanded')
-    $('#hotlist').addClass('detailed') if detail
-    $('#hotlist i').removeClass('icon-caret-down').addClass('icon-caret-up')
+    @DOMRoot.removeClass('expanded').removeClass('detailed')
+    @DOMRoot.find('i').removeClass('icon-caret-up').addClass('icon-caret-down')
+
+    @DOMRoot.find(shows.join(',')).show()
+    @DOMRoot.find(hides.join(',')).hide()
+
+    @DOMRoot.find('#btn-edit').removeClass('editing').html('Edit')
+
+  expand: ->
+    @DOMRoot.addClass('expanded')
+    @DOMRoot.find('i').removeClass('icon-caret-down').addClass('icon-caret-up')
+
+  expandForEdit: ->
+    @expand()
+    @DOMRoot.addClass('detailed')
+
+    shows = [
+      '.hotlist-remove-button'
+      '.twitter-typeahead'
+      '.friend-name'
+      '#add-field'
+      '#btn-add'
+    ]
+
+    hides = [
+      '.friend-abbr'
+      '#title'
+    ]
+
+    @DOMRoot.find(shows.join(',')).show()
+    @DOMRoot.find(hides.join(',')).hide()
+
+    @DOMRoot.find('#btn-edit').addClass('editing').html('Done')
 
   toggleEdit: ->
-    if $('#btn-edit').hasClass('editing')
-      @DOMRoot.find('#title').show()
-      @DOMRoot.find('#add-field').hide()
-      @DOMRoot.find('.twitter-typeahead').hide()
-      @DOMRoot.find('#btn-add').hide()
-      @DOMRoot.find('#btn-edit').html('Edit')
+    if @isEditing()
+      @setEditing false
       @retract()
-
     else
-      @DOMRoot.find('#btn-edit').addClass('editing')
-      @DOMRoot.find('.hotlist-remove-button').show()
-      @DOMRoot.find('.friend-name').show()
-      @DOMRoot.find('.friend-abbr').hide()
-      @DOMRoot.find('#title').hide()
-      @DOMRoot.find('#add-field').show()
-      @DOMRoot.find('.twitter-typeahead').show()
-      @DOMRoot.find('#btn-add').show()
-      @DOMRoot.find('#btn-edit').html('Cancel')
-      @expand(true)
+      @setEditing true
+      @expandForEdit()
 
   toggleExpand: ->
     if $('#hotlist').hasClass('expanded')
       @retract()
     else
       @expand(false)
+
+  isEditing: ->
+    @DOMRoot.hasClass('editing')
+
+  setEditing: (state) ->
+    if state 
+      @DOMRoot.addClass('editing')
+    else
+      @DOMRoot.removeClass('editing')
+
+  # Templates
 
   @topSectionTemplate: """
   <div id='title'>Hotlist</div>

@@ -4,21 +4,19 @@
     Hotlist.Initialize = function() {
       var el;
       el = $('#hotlist');
-      return A2Cribs.HotlistObj = new A2Cribs.Hotlist(el);
+      A2Cribs.HotlistObj = new A2Cribs.Hotlist(el);
+      return A2Cribs.HotlistObj.setup();
     };
 
-    Hotlist.call = function(friend, action) {
-      var data, deferred, url,
+    Hotlist.prototype.call = function(action, method, data) {
+      var deferred, url,
         _this = this;
-      url = myBaseUrl + ("friends/hotlist/" + action);
       deferred = new $.Deferred();
-      data = {
-        friend: friend
-      };
+      url = myBaseUrl + action;
       $.ajax({
         url: url,
         data: data,
-        type: "POST",
+        type: method,
         success: function(response) {
           return deferred.resolve(JSON.parse(response));
         },
@@ -29,52 +27,12 @@
       return deferred.promise();
     };
 
-    Hotlist.share = function(listing, friend) {
-      var deferred,
-        _this = this;
-      deferred = new $.Deferred();
-      return $.ajax({
-        url: myBaseUrl + "friends/share",
-        data: {
-          friend: friend,
-          listing: listing
-        },
-        type: "POST",
-        success: function(data) {
-          return deferred.resolve(JSON.parse(data));
-        },
-        error: function(response) {
-          return deferred.reject(response);
-        }
-      });
-    };
-
     function Hotlist(DOMRoot) {
       this.DOMRoot = DOMRoot;
       this.topSection = _.template(A2Cribs.Hotlist.topSectionTemplate);
       this.friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate);
       this.expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate);
-      this.setup();
-    }
-
-    Hotlist.prototype.setup = function() {
-      var _this = this;
-      $.when(this.get()).then((function(data, status, jqXHR) {
-        data = {
-          friends: data
-        };
-        return _this.render(data);
-      }), (function(data, status, jqXHR) {
-        return alert(data);
-      }));
-      return this;
-    };
-
-    Hotlist.prototype.render = function(data) {
-      this.DOMRoot.find('#top-section').html(this.topSection(data));
-      this.DOMRoot.find('#friends').html(this.friendsList(data));
-      this.DOMRoot.find('#bottom-section').html(this.expandButton(data));
-      $('#add-field').typeahead([
+      this.sources = [
         {
           name: 'accounts',
           remote: {
@@ -91,98 +49,120 @@
             }
           }
         }
-      ]);
-      $('.hotlist-remove-button').toggle();
-      $('li.friend span').tooltip();
-      this.DOMRoot.find('#title').show();
-      this.DOMRoot.find('#add-field').hide();
-      this.DOMRoot.find('.twitter-typeahead').hide();
-      this.DOMRoot.find('#btn-add').hide();
-      this.DOMRoot.find('.friend-name').hide();
+      ];
+      this.setEditing(false);
+    }
+
+    Hotlist.prototype.setup = function() {
+      this.renderTopSection();
+      this.show();
+      this.renderBottomSection();
       return A2Cribs.FeaturedListings.resizeHandler();
     };
 
-    Hotlist.prototype.get = function() {
-      var deferred,
-        _this = this;
-      deferred = new $.Deferred();
-      $.ajax({
-        url: myBaseUrl + "friends/hotlist/",
-        type: "GET",
-        success: function(data) {
-          return deferred.resolve(JSON.parse(data));
-        },
-        error: function() {
-          return deferred.reject();
-        }
-      });
-      return deferred.promise();
+    Hotlist.prototype.renderTopSection = function() {
+      this.DOMRoot.find('#top-section').html(this.topSection());
+      this.DOMRoot.find('#title').show();
+      this.DOMRoot.find('#add-field').hide();
+      this.DOMRoot.find('#btn-add').hide();
+      this.DOMRoot.find('#add-field').typeahead(this.sources);
+      return this.DOMRoot.find('.twitter-typeahead').hide();
     };
 
-    Hotlist.prototype.remove = function(friend) {
+    Hotlist.prototype.renderFriendsList = function(data) {
+      this.DOMRoot.find('#friends').html(this.friendsList(data));
+      this.DOMRoot.find('#add-field').val("");
+      this.DOMRoot.find('.hotlist-remove-button').hide();
+      this.DOMRoot.find('li.friend span').tooltip();
+      return this.DOMRoot.find('.friend-name').hide();
+    };
+
+    Hotlist.prototype.renderBottomSection = function() {
+      return this.DOMRoot.find('#bottom-section').html(this.expandButton());
+    };
+
+    Hotlist.prototype.show = function() {
       var _this = this;
-      return $.when(A2Cribs.Hotlist.call(friend, 'remove')).then((function(data, status, jqXHR) {
-        data = {
+      return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
+        return _this.renderFriendsList({
           friends: data
-        };
-        return _this.render(data);
-      }));
+        });
+      }).fail(function(data) {
+        return alert(data);
+      });
     };
 
     Hotlist.prototype.add = function(friend) {
       var _this = this;
-      return $.when(A2Cribs.Hotlist.call(friend, 'add')).then(function(data, status, jqXHR) {
-        data = {
+      return $.when(this.call('friends/hotlist/add', 'POST', {
+        friend: friend
+      }).then(function(data) {
+        _this.renderFriendsList({
           friends: data
-        };
-        return _this.render(data);
-      }).fail(function(data, status, jqXHR) {
+        });
+        return _this.expandForEdit();
+      }).fail(function(data) {
         return console.log("ERROR: " + data);
-      });
+      }));
+    };
+
+    Hotlist.prototype.remove = function(friend) {
+      var _this = this;
+      return $.when(this.call('friends/hotlist/remove', 'POST', {
+        friend: friend
+      }).then(function(data) {
+        _this.renderFriendsList({
+          friends: data
+        });
+        return _this.expandForEdit();
+      }).fail(function(data) {
+        return console.log("ERROR: " + data);
+      }));
     };
 
     Hotlist.prototype.share = function(listing, friend) {
-      return $.when(A2Cribs.Hotlist.share(listing, friend)).always(function(data, status, jqXHR) {
+      return $.when(this.call('friends/share', 'POST', {
+        friend: friend,
+        listing: listing
+      }).always(function(data, status, jqXHR) {
         return console.log(data);
-      });
+      }));
     };
 
     Hotlist.prototype.retract = function() {
-      $('#btn-edit').removeClass('editing');
-      $('.hotlist-remove-button').hide();
-      $('#hotlist').removeClass('expanded').removeClass('detailed');
-      $('#hotlist i').removeClass('icon-caret-up').addClass('icon-caret-down');
-      this.DOMRoot.find('.friend-name').hide();
-      return this.DOMRoot.find('.friend-abbr').show();
+      var hides, shows;
+      shows = ['.friend-abbr', '#title'];
+      hides = ['.hotlist-remove-button', '.friend-name', '#add-field', '.twitter-typeahead', '#btn-add'];
+      this.DOMRoot.removeClass('expanded').removeClass('detailed');
+      this.DOMRoot.find('i').removeClass('icon-caret-up').addClass('icon-caret-down');
+      this.DOMRoot.find(shows.join(',')).show();
+      this.DOMRoot.find(hides.join(',')).hide();
+      return this.DOMRoot.find('#btn-edit').removeClass('editing').html('Edit');
     };
 
-    Hotlist.prototype.expand = function(detail) {
-      $('#hotlist').addClass('expanded');
-      if (detail) {
-        $('#hotlist').addClass('detailed');
-      }
-      return $('#hotlist i').removeClass('icon-caret-down').addClass('icon-caret-up');
+    Hotlist.prototype.expand = function() {
+      this.DOMRoot.addClass('expanded');
+      return this.DOMRoot.find('i').removeClass('icon-caret-down').addClass('icon-caret-up');
+    };
+
+    Hotlist.prototype.expandForEdit = function() {
+      var hides, shows;
+      this.expand();
+      this.DOMRoot.addClass('detailed');
+      shows = ['.hotlist-remove-button', '.twitter-typeahead', '.friend-name', '#add-field', '#btn-add'];
+      hides = ['.friend-abbr', '#title'];
+      this.DOMRoot.find(shows.join(',')).show();
+      this.DOMRoot.find(hides.join(',')).hide();
+      return this.DOMRoot.find('#btn-edit').addClass('editing').html('Done');
     };
 
     Hotlist.prototype.toggleEdit = function() {
-      if ($('#btn-edit').hasClass('editing')) {
-        this.DOMRoot.find('#title').show();
-        this.DOMRoot.find('#add-field').hide();
-        this.DOMRoot.find('.twitter-typeahead').hide();
-        this.DOMRoot.find('#btn-add').hide();
-        this.DOMRoot.find('#btn-edit').html('Edit');
+      if (this.isEditing()) {
+        this.setEditing(false);
         return this.retract();
       } else {
-        this.DOMRoot.find('#btn-edit').addClass('editing');
-        this.DOMRoot.find('.hotlist-remove-button').show();
-        this.DOMRoot.find('.friend-name').show();
-        this.DOMRoot.find('.friend-abbr').hide();
-        this.DOMRoot.find('#title').hide();
-        this.DOMRoot.find('#add-field').show();
-        this.DOMRoot.find('.twitter-typeahead').show();
-        this.DOMRoot.find('#btn-add').show();
-        this.DOMRoot.find('#btn-edit').html('Cancel');
-        return this.expand(true);
+        this.setEditing(true);
+        return this.expandForEdit();
       }
     };
 
@@ -191,6 +171,18 @@
         return this.retract();
       } else {
         return this.expand(false);
+      }
+    };
+
+    Hotlist.prototype.isEditing = function() {
+      return this.DOMRoot.hasClass('editing');
+    };
+
+    Hotlist.prototype.setEditing = function(state) {
+      if (state) {
+        return this.DOMRoot.addClass('editing');
+      } else {
+        return this.DOMRoot.removeClass('editing');
       }
     };
 
