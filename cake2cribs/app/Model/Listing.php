@@ -249,12 +249,16 @@ class Listing extends AppModel {
 	*/
 	public function GetListing($listing_id)
 	{
-		$listing = $this->find('first', array(
-			'contain' => array('Image', 'Rental', 'Sublet', 'User', 'Marker'),
-			'conditions' => array(
-				'Listing.listing_id' => $listing_id,
-				'Listing.visible' => 1)
-		));
+		$listing = Cache::read('listing-'.$listing_id);
+		if ($listing === false){
+			$listing = $this->find('first', array(
+				'contain' => array('Image', 'Rental', 'Sublet', 'User', 'Marker'),
+				'conditions' => array(
+					'Listing.listing_id' => $listing_id,
+					'Listing.visible' => 1)
+			));
+			Cache::write('listing-'.$listing_id, $listing, 'MapData');
+		}
 
 		/* Remove sensitive user data */
 		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
