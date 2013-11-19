@@ -177,12 +177,9 @@
         if (listing.InSidebar() || listing.IsVisible()) {
           marker = A2Cribs.UserCache.Get("marker", listing.marker_id);
           if (!(listing.available != null) && marker.GetType() === A2Cribs.Marker.TYPE.LEASED) {
-            marker.SetType(A2Cribs.Marker.TYPE.UNKNOWN);
+            _results.push(marker.SetType(A2Cribs.Marker.TYPE.UNKNOWN));
           } else if ((listing.available != null) && listing.available === true) {
-            marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE);
-          }
-          if (listing.scheduling === true && marker.GetType() !== A2Cribs.Marker.TYPE.LEASED) {
-            _results.push(marker.SetType(A2Cribs.Marker.TYPE.SCHEDULING));
+            _results.push(marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE));
           } else {
             _results.push(void 0);
           }

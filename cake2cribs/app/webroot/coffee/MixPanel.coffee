@@ -48,7 +48,6 @@ class A2Cribs.MixPanel
 			'is featured': is_featured # needs to be figured out
 			'listing_id': listing?.GetId()
 			'marker_id': marker?.GetId()
-			'schedule': marker?.HasScheduling()
 			'available' : available
 			'university_id': A2Cribs.Map?.CurentSchoolId
 			'filter minimum beds' : array_min A2Cribs.RentalFilter.FilterData?.Beds

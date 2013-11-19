@@ -264,7 +264,7 @@ class LargeBubble
 
 	@setFullPageSchedule: (div_name, listing_id) ->
 		listing = A2Cribs.UserCache.Get("listing", listing_id)
-		if listing?.scheduling is yes and listing.available is yes
+		if listing?.available is yes
 			$(".#{div_name}").show()
 		else
 			$(".#{div_name}").hide()

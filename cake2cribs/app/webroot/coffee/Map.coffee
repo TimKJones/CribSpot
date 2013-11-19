@@ -145,10 +145,6 @@ class A2Cribs.Map
 				else if listing.available? and listing.available is yes
 					marker.SetType A2Cribs.Marker.TYPE.AVAILABLE # Set to true
 
-				if listing.scheduling is yes and marker.GetType() isnt A2Cribs.Marker.TYPE.LEASED
-					marker.SetType A2Cribs.Marker.TYPE.SCHEDULING
-
-
 
 	###
 	EVAN:

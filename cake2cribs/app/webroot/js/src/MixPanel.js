@@ -66,7 +66,6 @@
         'is featured': is_featured,
         'listing_id': listing != null ? listing.GetId() : void 0,
         'marker_id': marker != null ? marker.GetId() : void 0,
-        'schedule': marker != null ? marker.HasScheduling() : void 0,
         'available': available,
         'university_id': (_ref3 = A2Cribs.Map) != null ? _ref3.CurentSchoolId : void 0,
         'filter minimum beds': array_min((_ref4 = A2Cribs.RentalFilter.FilterData) != null ? _ref4.Beds : void 0),

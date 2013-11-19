@@ -3,8 +3,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	@TYPE = 
 		UNKNOWN: 0
 		LEASED: 1
-		SCHEDULING: 2
-		AVAILABLE: 3
+		AVAILABLE: 2
 
 	constructor: (marker) ->
 		super "marker", marker
@@ -23,7 +22,6 @@ class A2Cribs.Marker extends  A2Cribs.Object
 	SetType: (@_type) ->
 		switch @_type
 			when A2Cribs.Marker.TYPE.UNKNOWN then marker_dot = "unknown"
-			when A2Cribs.Marker.TYPE.SCHEDULING then marker_dot = "schedule"
 			when A2Cribs.Marker.TYPE.LEASED then marker_dot = "leased"
 			when A2Cribs.Marker.TYPE.AVAILABLE then marker_dot = "available"
 		@GMarker?.setIcon "/img/dots/dot_#{marker_dot}.png"
@@ -35,11 +33,6 @@ class A2Cribs.Marker extends  A2Cribs.Object
 			return no
 
 		return @GMarker?.getVisible()
-
-	HasScheduling: ->
-		if @scheduling?
-			return @scheduling
-		return false
 
 	Init: ->
 		@GMarker = new google.maps.Marker

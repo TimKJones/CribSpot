@@ -39,10 +39,6 @@
 	{
 		background-position: 0 -90px;
 	}
-	#legend .legend_dot.schedule
-	{
-		background-position: 0 -60px;
-	}
 </style>
 
 <div id="legend">
@@ -51,9 +47,6 @@
 	<br>
 	<div class="legend_dot leased"></div>
 	<div class="legend_text">Leased</div>
-	<br>
-	<div class="legend_dot schedule"></div>
-	<div class="legend_text">Schedule Now</div>
 	<br>
 	<div class="legend_dot unknown"></div>
 	<div class="legend_text">Unknown</div>

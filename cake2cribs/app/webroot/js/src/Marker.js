@@ -14,8 +14,7 @@
     Marker.TYPE = {
       UNKNOWN: 0,
       LEASED: 1,
-      SCHEDULING: 2,
-      AVAILABLE: 3
+      AVAILABLE: 2
     };
 
     function Marker(marker) {
@@ -49,9 +48,6 @@
         case A2Cribs.Marker.TYPE.UNKNOWN:
           marker_dot = "unknown";
           break;
-        case A2Cribs.Marker.TYPE.SCHEDULING:
-          marker_dot = "schedule";
-          break;
         case A2Cribs.Marker.TYPE.LEASED:
           marker_dot = "leased";
           break;
@@ -75,13 +71,6 @@
         return false;
       }
       return (_ref1 = this.GMarker) != null ? _ref1.getVisible() : void 0;
-    };
-
-    Marker.prototype.HasScheduling = function() {
-      if (this.scheduling != null) {
-        return this.scheduling;
-      }
-      return false;
     };
 
     Marker.prototype.Init = function() {
