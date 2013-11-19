@@ -35,7 +35,7 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='iowa.csv')
+	public function GetListings($fileName='detroit.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
@@ -71,13 +71,7 @@ otherwise, processes only app/webroot/listings/$fileName
 Sets lat and long values for each address
 Then saves the array of listing objects.
 
-
-
-****** CHANGE STATE FROM IA TO WHATEVER FOR NEXT ONE *******
-
 ****** NEED TO UPDATE SCHEDULING AND AVAILABLE IN LISTINGS *********
-
-
 
 */
 	public function SaveListings($geocoder_necessary=true)
@@ -109,6 +103,7 @@ Then saves the array of listing objects.
 				'city' => $listing['Marker']['city'],
 				'state' => $listing['Marker']['state'],
 			);
+	CakeLog::write('input_street_address', $listing['Marker']['street_address']);
 			$formatted_address = array();
 			if ($geocoder_necessary)
 				$formatted_address = $this->_geocoderProcessAddress($address);
@@ -128,7 +123,7 @@ Then saves the array of listing objects.
 			CakeLog::write("formatted_address", print_r($formatted_address, true));
 			$listing['Marker']['street_address'] = $formatted_address['street_address'];
 			$listing['Marker']['city'] = $formatted_address['city'];
-			$listing['Marker']['state'] = 'IA'; //$formatted_address['state'];
+			$listing['Marker']['state'] = $formatted_address['state'];
 			if (array_key_exists('zip', $formatted_address))
 				$listing['Marker']['zip'] = $formatted_address['zip'];
 

@@ -23,7 +23,7 @@ class LoginCode extends AppModel {
 		));
 	}
 
-	public function InvalidateCode($user_id, $code)
+	public function InvalidateCode($user_id)
 	{
 		$this->id = $user_id;
 		$this->code = uniqid();

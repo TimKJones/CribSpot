@@ -94,6 +94,7 @@ class Listing extends AppModel {
                 'Rental.beds',
                 'Rental.start_date',
                 'Rental.lease_length',
+                'Listing.available',
                 'Listing.marker_id',
                 'Listing.listing_id',
                 'Listing.available',
@@ -129,7 +130,7 @@ class Listing extends AppModel {
                 'Marker.state',
                 'Marker.zip'
         )
-);
+	);
 
 	/*
 	Attempts to save $listing to the Listing table and any associated tables.
