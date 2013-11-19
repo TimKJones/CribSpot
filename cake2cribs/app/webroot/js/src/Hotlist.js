@@ -31,7 +31,9 @@
       this.DOMRoot = DOMRoot;
       this.topSection = _.template(A2Cribs.Hotlist.topSectionTemplate);
       this.friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate);
+      this.friendsListPopup = _.template(A2Cribs.Hotlist.friendsListPopupTemplate);
       this.expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate);
+      this.currentHotlist = this.get();
       this.sources = [
         {
           name: 'accounts',
@@ -81,6 +83,22 @@
       return this.DOMRoot.find('#bottom-section').html(this.expandButton());
     };
 
+    Hotlist.prototype.getHotlistForPopup = function(listing_id) {
+      return this.friendsListPopup({
+        friends: this.currentHotlist,
+        listing_id: listing_id
+      });
+    };
+
+    Hotlist.prototype.get = function() {
+      var _this = this;
+      return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
+        return _this.currentHotlist = data;
+      }).fail(function(data) {
+        return console.log("ERROR in A2Cribs.HotlistObj.get(): ", data);
+      });
+    };
+
     Hotlist.prototype.show = function() {
       var _this = this;
       return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
@@ -88,7 +106,7 @@
           friends: data
         });
       }).fail(function(data) {
-        return alert(data);
+        return console.log("ERROR in A2Cribs.HotlistObj.show(): ", data);
       });
     };
 
@@ -100,7 +118,8 @@
         _this.renderFriendsList({
           friends: data
         });
-        return _this.expandForEdit();
+        _this.expandForEdit();
+        return _this.currentHotlist = data;
       }).fail(function(data) {
         return console.log("ERROR: " + data);
       }));
@@ -114,16 +133,27 @@
         _this.renderFriendsList({
           friends: data
         });
-        return _this.expandForEdit();
+        _this.expandForEdit();
+        return _this.currentHotlist = data;
       }).fail(function(data) {
         return console.log("ERROR: " + data);
       }));
     };
 
     Hotlist.prototype.share = function(listing, friend) {
+      var _this = this;
+      console.log("sharing", listing, friend);
       return $.when(this.call('friends/share', 'POST', {
         friend: friend,
         listing: listing
+      }).then(function(data) {
+        if (data.success === true) {
+          return A2Cribs.UIManager.Success();
+        } else {
+          return A2Cribs.UIManager.Error();
+        }
+      }).fail(function(data) {
+        return A2Cribs.UIManager.Error();
       }).always(function(data, status, jqXHR) {
         return console.log(data);
       }));
@@ -185,6 +215,8 @@
         return this.DOMRoot.removeClass('editing');
       }
     };
+
+    Hotlist.friendsListPopupTemplate = "<ul class=\"friends-popup\">\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li>\n      <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=elem.first_name%> <%=elem.last_name%></a>\n    </li>\n  <% }) %>\n</ul>";
 
     Hotlist.topSectionTemplate = "<div id='title'>Hotlist</div>\n<div id='share-all'></div>\n<input class='typeahead' type='text' autocomplete='off' id='add-field'></input>\n<div id='buttons' class='pull-right'>\n  <a href='#' data-toggle='popover' id='btn-add' class='btn btn-success' onClick=\"A2Cribs.HotlistObj.add($('#add-field').val())\">+</a>\n  <a href='#' id='btn-edit' class='btn btn-primary' onClick='A2Cribs.HotlistObj.toggleEdit()'>Edit</a>\n</div>";
 

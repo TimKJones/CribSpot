@@ -335,6 +335,23 @@
           };
           listing_item = $(this.ListItemTemplate(data));
           A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
+          listing_item.find(".hotlist_share a").popover({
+            content: function() {
+              return A2Cribs.HotlistObj.getHotlistForPopup($(this).data('listing'));
+            },
+            html: true,
+            trigger: 'manual',
+            placement: 'left'
+          }).click(function(e) {
+            var _this = this;
+            e.preventDefault();
+            console.log('listing_item share click!');
+            $(this).popover('show');
+            return $('.popover').on('click', function() {
+              $(_this).popover('hide');
+              return $('.popover').off('click');
+            });
+          });
           _results.push(list.append(listing_item));
         }
         return _results;
@@ -344,7 +361,7 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <% if (typeof(end_date) != \"undefined\") { %>\n            <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n            <% } else { %>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n            <% } %>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n            <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='icon-user'></i></a></span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <% if (typeof(end_date) != \"undefined\") { %>\n            <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n            <% } else { %>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n            <% } %>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
 
     return FeaturedListings;
 

@@ -281,6 +281,20 @@ class A2Cribs.FeaturedListings
 
                 listing_item = $(@ListItemTemplate data)
                 A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds)
+                listing_item.find(".hotlist_share a").popover
+                    content: ->
+                        A2Cribs.HotlistObj.getHotlistForPopup($(this).data('listing'))
+                    html: true
+                    trigger: 'manual'
+                    placement: 'left'
+                .click (e) -> 
+                    e.preventDefault()
+                    console.log('listing_item share click!')
+                    $(this).popover('show')
+                    $('.popover').on 'click', =>
+                        $(this).popover('hide')
+                        $('.popover').off('click')
+
                 list.append listing_item
 
     @ListItemHTML: """
@@ -295,6 +309,7 @@ class A2Cribs.FeaturedListings
                 <span class = 'divider'>|</span>
                 <span class = 'beds'><%= beds %> </span>
                 <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
+                <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='icon-user'></i></a></span>
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

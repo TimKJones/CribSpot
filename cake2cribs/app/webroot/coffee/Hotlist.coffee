@@ -21,7 +21,9 @@ class A2Cribs.Hotlist
   constructor: (@DOMRoot) ->
     @topSection = _.template(A2Cribs.Hotlist.topSectionTemplate)
     @friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate)
+    @friendsListPopup = _.template(A2Cribs.Hotlist.friendsListPopupTemplate)
     @expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate)
+    @currentHotlist = @get()
 
     @sources = [{
       name: 'accounts'
@@ -65,18 +67,30 @@ class A2Cribs.Hotlist
     @DOMRoot.find('#bottom-section').html(@expandButton())
 
   #Action functions
+
+  getHotlistForPopup: (listing_id) ->
+    @friendsListPopup { friends: @currentHotlist, listing_id: listing_id }
+
+  get: ->
+    $.when(@call('friends/hotlist', 'GET', null))
+    .then (data) =>
+      @currentHotlist = data
+    .fail (data) =>
+      console.log "ERROR in A2Cribs.HotlistObj.get(): ", data
+
   show: ->
     $.when(@call('friends/hotlist', 'GET', null))
     .then (data) =>
       @renderFriendsList { friends: data }
     .fail (data) =>
-      alert data
+      console.log "ERROR in A2Cribs.HotlistObj.show(): ", data
 
   add: (friend) ->
     $.when @call('friends/hotlist/add', 'POST', { friend: friend })
     .then (data) =>
       @renderFriendsList { friends: data } 
       @expandForEdit()
+      @currentHotlist = data
     .fail (data) =>
       console.log "ERROR: #{data}"
 
@@ -85,11 +99,20 @@ class A2Cribs.Hotlist
     .then (data) =>
       @renderFriendsList { friends: data } 
       @expandForEdit()
+      @currentHotlist = data
     .fail (data) =>
       console.log "ERROR: #{data}"
 
   share: (listing, friend) ->
+    console.log("sharing", listing, friend)
     $.when @call('friends/share', 'POST', {friend: friend, listing: listing})
+    .then (data) =>
+      if data.success is true
+        A2Cribs.UIManager.Success()
+      else
+        A2Cribs.UIManager.Error()
+    .fail (data) =>
+        A2Cribs.UIManager.Error()
     .always (data, status, jqXHR) ->
       console.log data 
 
@@ -167,6 +190,16 @@ class A2Cribs.Hotlist
       @DOMRoot.removeClass('editing')
 
   # Templates
+
+  @friendsListPopupTemplate: """
+  <ul class="friends-popup">
+    <% _.each(friends, function(elem, idx, list) { %>
+      <li>
+        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=elem.first_name%> <%=elem.last_name%></a>
+      </li>
+    <% }) %>
+  </ul>
+  """
 
   @topSectionTemplate: """
   <div id='title'>Hotlist</div>

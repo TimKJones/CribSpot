@@ -159,6 +159,21 @@ class LargeBubble
 		@div.find(".twitter_share").click ()->
 			A2Cribs.ShareManager.ShareListingOnTwitter(listing_object.listing_id,
 				marker.street_address, marker.city, marker.state, marker.zip)
+		@div.find(".hotlist_share").popover
+			content: ->
+				# console.log('init popover', listing_object.listing_id)
+				A2Cribs.HotlistObj.getHotlistForPopup(listing_object.listing_id)
+				# "Hello<a href='#'>hello</a>"
+			html: true
+			trigger: 'manual'
+		# # .popover('toggle')
+		.click (e) -> 
+			e.preventDefault()
+			$(this).popover('show')
+			$('.popover').on 'click', =>
+				$(this).popover('hide')
+				$('.popover').off('click')
+
 
 		@div.find(".favorite_listing").data "listing-id", listing_object.listing_id
 		A2Cribs.FavoritesManager.setFavoriteButton @div.find(".favorite_listing"), listing_object.listing_id

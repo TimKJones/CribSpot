@@ -7,6 +7,7 @@
 		<div class="unit_style_description clear_field">Style - Bi-level 3 beds</div>
 		<div class="share_button">
 			<a class="link_share share_btn" href="#"><i class="icon-link"></i></a>
+			<a class="share_btn hotlist_share" href="#"><i class="icon-user"></i></a>
 			<a class="facebook_share share_btn" href="#"><i class="icon-facebook"></i></a>
 			<a class="twitter_share share_btn" href="#"><i class="icon-twitter"></i></a>
 			<a class="favorite_listing share_btn" href="#"><i class="icon-heart"></i></a>

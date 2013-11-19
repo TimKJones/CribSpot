@@ -3,6 +3,21 @@
 @dropdownLinkBackgroundHover: #88f;
 @dropdownLinkColorHover: #88f;
 
+.popover {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      padding: 10px;
+      &:hover {
+        a { color: white; }
+        background-color: @dropdownLinkBackgroundHover
+      }
+    }
+  }
+}
+
 #hotlist * {
   box-sizing: border-box;
 }

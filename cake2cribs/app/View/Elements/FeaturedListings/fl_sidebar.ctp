@@ -11,7 +11,7 @@ echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline'
             <div id='bottom-section'></div>
         </div>
         <div id='listings-list-container'>
-        <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
+            <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
                 <div id='featured-listings'></div>
                 <div id='ran-listings'></div>
             </div>
