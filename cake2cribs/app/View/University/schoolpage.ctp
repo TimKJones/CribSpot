@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/University/schoolpage.less?v=70','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/University/schoolpage.less?v=71','stylesheet/less', array('inline' => false));
 	
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Login', array('inline' => false));
@@ -7,7 +7,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 	echo $this->Html->meta('canonical', 'https://cribspot.com/university/' . str_replace(" ", "_", $school_name), array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
-	$this->set('title_for_layout', $school_name . ' Off-Campus Housing - Cribspot');
+	if (strpos($university["name"], 'Detroit') === false)
+		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing - Cribspot');
+	else
+		$this->set('title_for_layout', 'Detroit Rentals Presented by Quicken Loans');
+
 
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
 ?>
@@ -17,9 +21,20 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<div class="school_logo">
 			<img src="<?= $university['logo_path']; ?>">
 		</div>
+		<?php
+		if (strpos($university["name"], 'Detroit') === false)
+		{ ?>
 		<div class="name"><?= $university['name']; ?></div>
+		<?php
+		} else {
+		?>
+		<div class="name detroit"><?= $university['name']; ?></div>
+		<?php } ?>
 	</div>
 	
+	<?php
+	if (strpos($university["name"], 'Detroit') === false)
+	{ ?>
 	<div class="school_info">
 		<div class="welcome_message"><?= $university['welcome_message']; ?></div>
 		<div class="description"><?= $university['description']; ?></div>
@@ -29,9 +44,24 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			&nbsp;&nbsp;AVAILABLE UNITS (2014): <div class="available_units"><?= $university['available_units']; ?></div>
 		</div>
 	</div>
+	<? }
+	else
+	{
+		echo "<br><br><br><br><br><br><br><br>";
+	}
+	 ?>
 	<div class="getting_started">
 		<div class="banner">Let's Get You Started...</div>
+		<?php
+		if (strpos($university["name"], 'Detroit') === false)
+		{
+		?>
 		<a href="/rental/<?= str_replace(" ", "_", $school_name); ?>" id="map_link" class="btn"><i class="icon-search icon-large"></i> See all <i class="unit_count"><?= $university['available_units']; ?></i> College Rentals</a>
+
+		<?php } else { ?>
+		<a href="/rental/<?= str_replace(" ", "_", $school_name); ?>" id="map_link" class="btn"><i class="icon-search icon-large"></i> See All Rentals</a>
+		<?php } ?>
+
 		<button id="friends_invite" class="btn">Invite Your Friends or Group</button>
 		<a href="/login" class="btn">Login or Sign Up</a>
 	</div>
@@ -45,7 +75,16 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email"><?= $university['founder_email']; ?></i></p>
 	</div>
 	<? } ?>
-	<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
+	<?php
+	if (strpos($university["name"], 'Detroit') === false)
+	{
+		echo '<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">';
+	}
+	else
+	{
+		echo '<img class="cribspot_logo" src="/img/landing/quicken_logo.png" height="50px" width="300px">';
+	}
+	?>
 	<a href="<?= $university['background_source']; ?>" class="background_source"><?= $university['background_source']; ?></a>
 </div>
 

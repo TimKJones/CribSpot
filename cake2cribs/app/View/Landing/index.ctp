@@ -31,8 +31,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
 			<?php
 			foreach ($locations as $university) {
-				$school_name = str_replace(" ", "_", $university['University']['name']);
-				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
+				if (strpos($university['University']["name"], 'Detroit') === false)
+				{
+					$school_name = str_replace(" ", "_", $university['University']['name']);
+					echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
+				}
 			}
 
 			?>
@@ -44,7 +47,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 <div id="school_page">
 	<?php
 		foreach ($locations as $university) {
-			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
+			if (strpos($university['University']['name'], 'Detroit') === false)
+				echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
 	<div>

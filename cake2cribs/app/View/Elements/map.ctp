@@ -70,6 +70,11 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	<div id="map_canvas"> <!-- style="height:100%; width:100%;"> -->
 	</div>
 
+	<?php
+	if (strpos($university["name"], 'Detroit') === false)
+	{
+	?>
+
 
 		<div id="sublet_introduction">
 			<button type="button" class="close" onclick="$('#sublet_introduction').fadeOut()">&times;</button>
@@ -86,7 +91,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			</div>
 			<a href="/sublet/welcome" target="_blank" class="btn">Post my sublet today</a>
 		</div>
-
+	<?php
+	}
+	?>
 
 </div>
 

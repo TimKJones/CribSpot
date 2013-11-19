@@ -7,7 +7,11 @@
 
 
 	echo $this->Html->css('DailyLogo');
-	$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');
+
+	if (strpos($university["name"], 'Detroit') === false)
+		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');
+	else
+		$this->set('title_for_layout', 'Detroit Rentals Presented by Quicken Loans');
 
 	$this->Html->meta('keywords', 
 		$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
