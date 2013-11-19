@@ -54,6 +54,11 @@ class MapController extends AppController {
         if ($school_name == null)
             $this->redirect(array('controller' => 'landing', 'action' => 'index'));
 
+        /* Sublets are only live at specific universities - redirect to rentals if not live yet */
+        $today = date('Y-m-d');
+        if (empty($university['sublets_launch_date']) || $university['sublets_launch_date'] > $today)
+            $this->redirect('/rental/'.$school_name);
+        
         $this->_setupMapPage('sublet', $school_name);
     }   
 
@@ -188,10 +193,6 @@ CakeLog::write('debuggingit', '-1');
             $university = $this->University->findById($id);
             if ($university == null)
                 throw new NotFoundException();
-
-            /* Sublets are only live at specific universities - redirect to rentals if not live yet */
-            if (intval($listing_type) === Listing::LISTING_TYPE_SUBLET && !$university['sublets_live'])
-                $this->redirect('/rental/'.$school_name);
 
             $this->set('university', $university);
         }
