@@ -22,7 +22,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
 
 		<?php
-		if (strpos($university["name"], 'Detroit') === false)
+		if (empty($university) || strpos($university["name"], 'Detroit') === false)
 		{
 			if (!isset($page) || !isset($sublets_launch_date) || $sublets_launch_date > date('Y-m-d')) {
 			?>
@@ -40,7 +40,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		?>
 			<ul class="nav pull-right">
 		<?php
-		if (strpos($university["name"], 'Detroit') === false)
+		if (empty($university) || strpos($university["name"], 'Detroit') === false)
 		{
 			?>
 				<li>
