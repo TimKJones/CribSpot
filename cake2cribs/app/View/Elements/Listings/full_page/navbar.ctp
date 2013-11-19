@@ -8,7 +8,7 @@
 			<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
 <?php } ?>
 			<?php if ($listing['Listing']['available'] === true){ ?>
-				<li><a id="scheduling_tour_tab" class="show_scheduling" href="#schedule_tour">Schedule My Tour</a></li>
+				<li><a id="scheduling_tour_tab" class="show_scheduling" href="#schedule_tour">Request My Tour</a></li>
 			<?php } ?>
 		</ul>
 		<ul class="nav pull-right share_buttons">
