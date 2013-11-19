@@ -69,7 +69,7 @@ class Sublet extends AppModel {
                 'required' => false
             )
         ),
-        'washer_dryer' => 'numeric', 
+        'washer_dryer' => 'numeric'
     );
 
     public $MAX_BEDS = 4;

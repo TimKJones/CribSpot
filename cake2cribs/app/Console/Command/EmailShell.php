@@ -1,7 +1,7 @@
 <?php 
 
 class EmailShell extends AppShell{
-    public $uses = array('Error', 'User', 'University', 'LoginCode');
+    public $uses = array('Error', 'User', 'University', 'LoginCode', 'Listing');
 
     /*
     Sends welcome email to all property managers with pm_associated_university set as a school in $university_ids
@@ -121,6 +121,30 @@ class EmailShell extends AppShell{
         $recipients = Configure::read('USER_REPORT_RECIPIENTS');
         foreach ($recipients as $recipient){
             $this->_emailUser($recipient, $subject, "users", $template_data);  
+        }
+    }
+
+    public function email_daily_sublet_report(){
+        // Set timezone
+        date_default_timezone_set('UTC');
+        // Start date
+        $today = date('Y-m-d');
+        $yesterday = date('Y-m-d', strtotime('-1 day', strtotime($today)));
+        $sublets = $this->Listing->find('all', array(
+            'conditions' => array(
+                'Listing.created >=' => $yesterday,
+                'Listing.listing_type' => 1
+            )
+        ));
+
+        $template_data = array("sublets"=>$sublets);
+        $month = date('F');
+        $day = date('j') - 1;
+        $year = date('Y');
+        $subject = "New Sublet Report for " . $month.' '.$day.', '.$year;
+        $recipients = Configure::read('SUBLET_REPORT_RECIPIENTS');
+        foreach ($recipients as $recipient){
+            $this->_emailUser($recipient, $subject, "sublets", $template_data);  
         }
     }
 
