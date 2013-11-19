@@ -1,7 +1,21 @@
+<?php
+$to_property_manager = true;
+$from_university = "University of Michigan";
+$from_name = "Evan";
+$street_address = "12180 Peninsula Drive";
+$message_text = "Hello, I found this listing on cribspot!";
+$img_url = "";
+$view_msg = "";
+$listing_url = "";
+$set_available_url = "";
+$set_unavailable_url = "";
+?>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <!-- NAME: RIGHT SIDEBAR -->
+        <!-- NAME: 2:1 COLUMN -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>*|MC:SUBJECT|*</title>
@@ -62,7 +76,6 @@
         }
         #bodyCell{
             padding:20px;
-            border-top:0;
         }
         .mcnImage{
             vertical-align:bottom;
@@ -71,7 +84,7 @@
             height:auto !important;
         }
         body,#bodyTable{
-            background-color:#4f9cd8;
+            background-color:#5781c2;
         }
         #bodyCell{
             border-top:0;
@@ -161,13 +174,42 @@
             font-weight:normal;
             text-decoration:underline;
         }
-        #templateBody{
+        .templateColumn{
+            width:293px;
+        }
+        #templateColumns{
             background-color:#FFFFFF;
             border-top:0;
             border-bottom:0;
         }
-        #templateSidebar{
-            border-left:0;
+        .leftColumnContainer .mcnTextContent,.leftColumnContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:15px;
+            line-height:150%;
+            text-align:left;
+        }
+        .leftColumnContainer .mcnTextContent a{
+            color:#6DC6DD;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        .rightColumnContainer .mcnTextContent,.rightColumnContainer .mcnTextContent p{
+            color:#606060;
+            font-family:Helvetica;
+            font-size:15px;
+            line-height:150%;
+            text-align:left;
+        }
+        .rightColumnContainer .mcnTextContent a{
+            color:#6DC6DD;
+            font-weight:normal;
+            text-decoration:underline;
+        }
+        #templateBody{
+            background-color:#FFFFFF;
+            border-top:0;
+            border-bottom:0;
         }
         .bodyContainer .mcnTextContent,.bodyContainer .mcnTextContent p{
             color:#606060;
@@ -177,24 +219,6 @@
             text-align:left;
         }
         .bodyContainer .mcnTextContent a{
-            color:#6DC6DD;
-            font-weight:normal;
-            text-decoration:underline;
-        }
-        #templateSidebar{
-            background-color:#FFFFFF;
-        }
-        #templateSidebarInner{
-            border-left:0;
-        }
-        .sidebarContainer .mcnTextContent,.sidebarContainer .mcnTextContent p{
-            color:#606060;
-            font-family:Helvetica;
-            font-size:13px;
-            line-height:125%;
-            text-align:left;
-        }
-        .sidebarContainer .mcnTextContent a{
             color:#6DC6DD;
             font-weight:normal;
             text-decoration:underline;
@@ -319,14 +343,14 @@
         }
 
 }   @media only screen and (max-width: 480px){
-        td[class=sectionContainer]{
+        td[class=columnsContainer]{
             display:block !important;
             max-width:600px !important;
             width:100% !important;
         }
 
 }   @media only screen and (max-width: 480px){
-        table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateBody],table[id=templateBodyInner],table[id=templateSidebar],table[id=templateSidebarInner],table[id=templateFooter]{
+        table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateColumns],table[class=templateColumn],table[id=templateBody],table[id=templateFooter]{
             max-width:600px !important;
             width:100% !important;
         }
@@ -383,31 +407,27 @@
         }
 
 }   @media only screen and (max-width: 480px){
+        td[class=leftColumnContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
+        td[class=rightColumnContainer] td[class=mcnTextContent]{
+            font-size:18px !important;
+            line-height:125% !important;
+            padding-right:18px !important;
+            padding-left:18px !important;
+        }
+
+}   @media only screen and (max-width: 480px){
         td[class=bodyContainer] td[class=mcnTextContent]{
             font-size:18px !important;
             line-height:125% !important;
             padding-right:18px !important;
             padding-left:18px !important;
-        }
-
-}   @media only screen and (max-width: 480px){
-        td[class=sidebarContainer] td[class=mcnTextContent]{
-            font-size:18px !important;
-            line-height:125% !important;
-            padding-right:18px !important;
-            padding-left:18px !important;
-        }
-
-}   @media only screen and (max-width: 480px){
-        table[id=templateSidebar]{
-            border-left:0 !important;
-            border-right:0 !important;
-        }
-
-}   @media only screen and (max-width: 480px){
-        table[id=templateSidebarInner]{
-            border-left:0 !important;
-            border-right:0 !important;
         }
 
 }   @media only screen and (max-width: 480px){
@@ -424,9 +444,9 @@
         }
 
 }</style></head>
-    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #4f9cd8;height: 100% !important;width: 100% !important;">
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="margin: 0;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #5781c2;height: 100% !important;width: 100% !important;">
         <center>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;margin: 0;padding: 0;background-color: #4f9cd8;height: 100% !important;width: 100% !important;">
+            <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;margin: 0;padding: 0;background-color: #5781c2;height: 100% !important;width: 100% !important;">
                 <tr>
                     <td align="center" valign="top" id="bodyCell" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;margin: 0;padding: 20px;border-top: 0;height: 100% !important;width: 100% !important;">
                         <!-- BEGIN TEMPLATE // -->
@@ -447,126 +467,64 @@
                                     <!-- BEGIN HEADER // -->
                                     <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
                                         <tr>
-                                            <td valign="top" class="headerContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
-                                        </tr>
-                                    </table>
-                                    <!-- // END HEADER -->
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                    <!-- BEGIN BODY // -->
-                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
-                                        <tr>
-                                            <td align="center" valign="top" width="390" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBodyInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                    <tr>
-                                                        <td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-    <tbody class="mcnTextBlockOuter">
-        <tr>
-            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                
-                <table align="left" border="0" cellpadding="0" cellspacing="0" width="396" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                    <tbody><tr>
-                        
-                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px;font-size: 12px;line-height: 150%;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;text-align: left;">
-                        
-                            <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
-    <span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
-
-        <?php if ($to_property_manager == true) { ?>
-
-        <?= $from_name ?> <?= (isset($from_university)) ? "from " . $from_university : "" ; ?> is interested in </span>
-
-        <?php } else { ?>
-
-        <?= $from_name ?> responded about </span>
-
-        <?php } ?>
-
-    </span>
-    <a href='<?= $listing_url; ?>'><span style="color:#3366cc;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
-
-        <?= $street_address ?></span></a></span><span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">.</span></span></h3>
-<br>
-
-<br>
-<strong><span style="font-size:14px;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;"><em><?= $message_text ?></em></span></span></strong></span><br>
-<br>
-
-                        </td>
-                    </tr>
-                </tbody></table>
-                
-            </td>
-        </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnButtonBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-    <tbody class="mcnButtonBlockOuter">
-        <tr>
-            <td style="padding-top: 0;padding-right: 18px;padding-bottom: 18px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="top" align="center" class="mcnButtonBlockInner">
-                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #457FC6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                    <tbody>
-                        <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Message <?= $from_name ?>" href="<?= $view_msg ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Click to reply to <?= $from_name ?></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-    <tbody class="mcnTextBlockOuter">
-        <tr>
-            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                
-                
-                
-            </td>
-        </tr>
-    </tbody>
-</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-    <tbody class="mcnTextBlockOuter">
-        <tr>
-            <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                
-            </td>
-        </tr>
-    </tbody>
-</table></td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td align="center" valign="top" width="200" class="sectionContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebar" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;background-color: #FFFFFF;">
-                                                    <tr>
-                                                        <td align="right" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateSidebarInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;border-left: 0;">
-                                                                <tr>
-                                                                    <td valign="top" class="sidebarContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                            <td valign="top" class="headerContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnCaptionBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
     <tbody class="mcnCaptionBlockOuter">
         <tr>
             <td class="mcnCaptionBlockInner" valign="top" style="padding: 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                 
 
-<table align="left" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionBottomContent" width="false" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" class="mcnCaptionLeftContentOuter" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
     <tbody><tr>
-        <td class="mcnCaptionBottomImageContent" align="right" valign="top" style="padding: 0 9px 9px 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-        
-  
-            <?php if (!empty($img_url)) { ?>
-                <img alt="" src="<?= $img_url ?>" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
-            <? } else { ?>
-                <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
-            <?php } ?>
-        
-        </td>
-    </tr>
-    <tr>
-        <td class="mcnTextContent" valign="top" style="padding: 0px 9px;text-align: right;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 13px;line-height: 125%;" width="168">
-            
+        <td valign="top" class="mcnCaptionLeftContentInner" style="padding: 0 9px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+            <table align="right" border="0" cellpadding="0" cellspacing="0" class="mcnCaptionLeftImageContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                <tbody><tr>
+                    <td class="mcnCaptionLeftImageContent" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    
+
+                    <?php if (!empty($img_url)) { ?>
+                        <img alt="" src="<?= $img_url ?>" width="148" style="max-width: 148px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+                    <? } else { ?>
+                        <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="148" style="max-width: 148px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+                        
+                    <?php } ?>
+                    
+                    </td>
+                </tr>
+            </tbody></table>
+            <table class="mcnCaptionLeftTextContentContainer" align="left" border="0" cellpadding="0" cellspacing="0" width="352" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                <tbody><tr>
+                    <td valign="top" class="mcnTextContent" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;">
+                        <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
+    <span style="color: #000000;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;">
+        <?php if ($to_property_manager == true) { ?>
+
+        <?= $from_name ?> <?= (isset($from_university)) ? "from " . $from_university : "" ; ?> is interested in&nbsp;
+
+        <?php } else { ?>
+
+        <?= $from_name ?> responded about&nbsp;
+
+        <?php } ?>
+
+    </span></span><br>
+    <span style="color:#3366cc;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;">
+
+        <?php
+            echo $street_address;
+            if (!empty($unit_description))
+                echo " - " . $unit_description;
+        ?>
+
+    </span></span></h3>
+<br>
+<span style="color: #000000;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;"><strong><?= $from_name ?>:&nbsp;</strong></span><br>
+<br>
+<span style="font-size: 14px;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;"><em><?= $message_text ?></em></span></span></span><br>
+<br>
+
+                    </td>
+                </tr>
+            </tbody></table>
         </td>
     </tr>
 </tbody></table>
@@ -579,12 +537,81 @@
         </tr>
     </tbody>
 </table></td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
+                                        </tr>
+                                    </table>
+                                    <!-- // END HEADER -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN COLUMNS // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateColumns" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td align="left" valign="top" class="columnsContainer" width="50%" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" class="templateColumn" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;width: 293px;">
+                                                    <tr>
+                                                        <td valign="top" class="leftColumnContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnButtonBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnButtonBlockOuter">
+        <tr>
+            <td style="padding-top: 0;padding-right: 18px;padding-bottom: 18px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="top" align="center" class="mcnButtonBlockInner">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #63AA63;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody>
+                        <tr>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                <a class="mcnButton " title="Respond to <?= $from_name ?>" href="<?= $set_available_url ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Respond to <?= $from_name ?></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table></td>
                                                     </tr>
                                                 </table>
                                             </td>
+
+        <?php
+        if ($to_property_manager == true)
+        {
+        ?>
+                                            <td align="left" valign="top" class="columnsContainer" width="50%" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" class="templateColumn" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;width: 293px;">
+                                                    <tr>
+                                                        <td valign="top" class="rightColumnContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnButtonBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+    <tbody class="mcnButtonBlockOuter">
+        <tr>
+            <td style="padding-top: 0;padding-right: 18px;padding-bottom: 18px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="top" align="center" class="mcnButtonBlockInner">
+                <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #C25959;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody>
+                        <tr>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                <a class="mcnButton " title="Mark as Leased and Respond" href="<?= $set_unavailable_url ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Mark as Leased and Respond</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+
+    <?php } ?>
+
+                                        </tr>
+                                    </table>
+                                    <!-- // END COLUMNS -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" valign="top" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                    <!-- BEGIN BODY // -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
+                                        <tr>
+                                            <td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"></td>
                                         </tr>
                                     </table>
                                     <!-- // END BODY -->
@@ -638,7 +665,7 @@
                     <td valign="top" class="mcnTextContent" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%;text-align: left;">
                         <strong>CRIBSPOT, BUILT AND UPDATED BY STUDENTS</strong><br>
 <span style="color: #A9A9A9;">We're students trying to make the housing search a little less stressful.<br>
-808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;&nbsp;</span>
+808 Brown Street, Ann Arbor, MI 48104 &nbsp;&nbsp;<a href="http://www.cribspot.com/unsubscribe" target="_self" style="word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-weight: normal;text-decoration: underline;">Unsubscribe from Cribspot</a>&nbsp;</span>
                     </td>
                 </tr>
             </tbody></table>
@@ -671,11 +698,5 @@
                 <br />
                 <br />
                 <br />
-                <style type="text/css">
-                    @media only screen and (max-width: 480px){
-                        table[id="canspamBar"] td{font-size:14px !important;}
-                        table[id="canspamBar"] td a{display:block !important; margin-top:10px !important;}
-                    }
-                </style>
             </center></body>
 </html>
