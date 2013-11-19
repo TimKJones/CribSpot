@@ -2,12 +2,19 @@
 (function() {
 
   A2Cribs.Map = (function() {
+    var _this = this;
 
     function Map() {}
 
     Map.LISTING_TYPES = ['rental', 'sublet', 'parking'];
 
     Map.CLUSTER_SIZE = 2;
+
+    $(document).ready(function() {
+      if ($("#map_region").length) {
+        return Map.Init($("#map_region").data("university-id"), $("#map_region").data("latitude"), $("#map_region").data("longitude"), $("#map_region").data("city"), $("#map_region").data("state"), $("#map_region").data("university-name"), $("#map_region").data("listing-type"));
+      }
+    });
 
     /*
     	Add all markers in markerList to map
@@ -75,7 +82,7 @@
         mapTypeControl: false,
         zoomControlOptions: {
           style: google.maps.ZoomControlStyle.SMALL,
-          position: google.maps.ControlPosition.TOP_RIGHT
+          position: google.maps.ControlPosition.LEFT_CENTER
         }
       };
       A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions);

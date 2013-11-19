@@ -3,6 +3,18 @@ class A2Cribs.Map
 
 	@CLUSTER_SIZE = 2
 
+
+	$(document).ready =>
+		if $("#map_region").length
+			@Init $("#map_region").data("university-id"),
+				$("#map_region").data("latitude"),
+				$("#map_region").data("longitude"),
+				$("#map_region").data("city"),
+				$("#map_region").data("state"),
+				$("#map_region").data("university-name"),
+				$("#map_region").data("listing-type")
+
+
 	###
 	Add all markers in markerList to map
 	###
@@ -53,7 +65,7 @@ class A2Cribs.Map
 			mapTypeControl: false
 			zoomControlOptions:
 				style: google.maps.ZoomControlStyle.SMALL
-				position: google.maps.ControlPosition.TOP_RIGHT
+				position: google.maps.ControlPosition.LEFT_CENTER
 
 		A2Cribs.Map.GMap = new google.maps.Map(document.getElementById('map_canvas'), A2Cribs.Map.MapOptions)
 		google.maps.event.addListener(A2Cribs.Map.GMap, 'idle', A2Cribs.Map.ShowMarkers);

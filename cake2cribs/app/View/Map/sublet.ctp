@@ -21,21 +21,14 @@
 		array(
 			'page' => 'sublet',
 			'school_name' => str_replace(" ", "_", $school_name),
-			'sublets_live' => $university['sublets_live'],
+			'sublets_launch_date' => $university['sublets_launch_date'],
 			'show_filter' => false,
 			'show_user' => true,
 			'show_personal' => true,
 			'locations' => $locations,
 			'user_years' => $user_years
 	));
-	echo $this->element('map', array('active_listing_type' => $active_listing_type));
+	echo $this->element('map', array('active_listing_type' => $active_listing_type, 'university' => $university));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
-
-	/* Create and initialize the map */
-	$this->Js->buffer(
-		'A2Cribs.Map.Init(' . $university["id"] . ',' . $university["latitude"] . ',' . $university["longitude"] . ',"' . $university["city"] . '","' . $university["state"] . '","' . $university["name"] . '","' . $active_listing_type . '");	
-	'
-
-	);
 ?>

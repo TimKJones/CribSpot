@@ -22,7 +22,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<a class="header_logo" href="/"><img src="/img/header/header_logo.png"></a>
 
 			<?php 
-			if (!isset($page) || !isset($sublets_live) || !$sublets_live) {
+			if (!isset($page) || !isset($sublets_launch_date) || $sublets_launch_date > date('Y-m-d')) {
 			?>
 				<a class="review_btn btn" href="/sublet/welcome" target="_blank">Post My Sublet</a>
 			<?php
@@ -36,7 +36,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<ul class="nav pull-right">
 				<li>
 					<?php 
-					if (isset($page) && isset($sublets_live) && $sublets_live) { ?>
+					if (isset($page) && isset($sublets_launch_date) && $sublets_launch_date < date('Y-m-d')) { ?>
 					<a class="review_btn btn" href="/sublet/welcome" target="_blank">Post My Sublet</a>
 					<?php } else { ?>
 					<a class="review_btn btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom">Review my rental or dorm</a>
