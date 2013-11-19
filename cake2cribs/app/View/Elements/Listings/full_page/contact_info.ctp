@@ -62,7 +62,7 @@
 		<?php if ($listing['Listing']['available'] === true){ ?>
 		<div class="row-fluid">
 			<div class="span12">
-				<button class="btn show_scheduling" >SCHEDULE TOUR NOW</button>
+				<button class="btn show_scheduling" >REQUEST TOUR NOW</button>
 			</div>
 		</div>
 		<?php } ?>
