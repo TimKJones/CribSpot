@@ -544,7 +544,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Respond to <?= $from_name ?>" href="<?= $set_available_url ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Respond to <?= $from_name ?></a>
+                                <a class="mcnButton " title="Respond to <?= $from_name ?>" href="<?= $view_msg ?>" target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Respond to <?= $from_name ?></a>
                             </td>
                         </tr>
                     </tbody>

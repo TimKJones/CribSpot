@@ -35,7 +35,7 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='detroit.csv')
+	public function GetListings($fileName='cinci.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
