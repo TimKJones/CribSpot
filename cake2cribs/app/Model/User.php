@@ -36,7 +36,7 @@ class User extends AppModel {
 				'rule' => array('between',1,50),
 				'message' => 'Must be between 1 and 50 characters'
 				),
-			'rule' => array('custom', '/^[a-z\- ]*$/i') 
+			'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i') 
 			),
 		'last_name' => array(
 			'required' => array(
@@ -47,7 +47,7 @@ class User extends AppModel {
 				'rule' => array('between',1,50),
 				'message' => 'Must be between 1 and 50 characters'
 				),
-			'rule' => array('custom', "/^[a-z\-\ \']*$/i") 
+			'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i') 
 		),
 		'company_name' => array(
 			'between' => array(
@@ -130,6 +130,19 @@ class User extends AppModel {
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
 		'password_reset_date' => 'datetime'
+	);
+
+	private $_fields_to_strings = array(
+		'first_name' => 'First Name',
+		'last_name' => 'Last Name',
+		'email' => 'Email',
+		'company_name' => 'Company Name',
+		'phone' => 'Phone Number',
+		'password' => 'Password',
+		'website' => 'Website',
+		'street_address' => 'Street Address',
+		'city' => 'City',
+		'state' => 'State'
 	);
 
 	/* ---------- user_type ---------- */
@@ -489,9 +502,7 @@ class User extends AppModel {
 	public function RegisterUser($user)
 	{
 		$error = null;
-		$validation = $this->_validateUserRegister($user);
 		if (!$this->_validateUserRegister($user)){
-			//$errorMessage = $this->_GetErrorMessageFromValidationErrors($this->validationErrors);
 			$error = null;
 			$error['user'] = $user;
 			$this->LogError(null, 36, $error);
@@ -519,13 +530,12 @@ class User extends AppModel {
 
 		if (!$this->save(array('User'=>$user))) {
 			$error = null;
+			$errorMessage = $this->_getErrorMessageFromValidationErrors($this->validationErrors);
 			$error['user'] = $user;
 			$error['validationErrors'] = $this->validationErrors;
+			$error['errorMessage'] = $errorMessage;
 			$this->LogError(null, 37, $error);
-			return array('error' => 	
-					'Looks like we had some issues creating your account...but we want to help! If the problem continues, ' .
-				'chat with us directly by clicking the tab along the bottom of the screen or send us an email ' . 
-					'at help@cribspot.com. Reference error code 37.');
+			return array('error' => $errorMessage);
 		}
 
 		return array('success'=>$this->get($this->id));
@@ -779,6 +789,27 @@ CakeLog::write("userlist", print_r($users, true));
 		else{
 			return array('error' => "Hmmm...that code doesn't seem right. Try and re-send the message if you think we messed up!");
 		}
+	}
+
+/* -------------------------------------- private functions --------------------------------------- */
+
+	private function _getErrorMessageFromValidationErrors($validationErrors)
+	{
+		$failed_fields = array();
+		foreach ($validationErrors as $field => $message){
+			if (array_key_exists($field, $this->_fields_to_strings)) {
+				array_push($failed_fields, $this->_fields_to_strings[$field]);
+			}
+		}
+
+		$message = 'We had some trouble signing you up. We found problems with the following fields:';
+		foreach ($failed_fields as $field){
+			$message .= ' '.$field.',';
+		}
+
+		/* remove the last two characters from the message (comma and a trailing space) */
+		$message = substr($message, 0, strlen($message) - 1);
+		return $message;
 	}
 	
 	/*

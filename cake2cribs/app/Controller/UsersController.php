@@ -878,8 +878,9 @@ CakeLog::write('twiliodebug', print_r($response, true));
         if (array_key_exists('email', $user))
             $user_email = $user["email"];
 
+
         $data = array(
-            'name' => $name,
+            'name' => preg_replace_callback('/\\\\u([0-9a-f]{4})/i', array($this, 'replace_unicode_escape_sequence'), $name),
             'email' => $user_email,
             'num_messages' => $num_messages,
             'favorites' => $favorites,

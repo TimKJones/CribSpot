@@ -70,6 +70,7 @@ class AppController extends Controller {
 		if($this->Auth->User()){
 			$Users = ClassRegistry::init('User');
 			$safe_user = $Users->getSafe($this->Auth->User('id'));
+			$safe_user['User']['first_name'] = preg_replace_callback('/\\\\u([0-9a-f]{4})/i', array($this, 'replace_unicode_escape_sequence'), $safe_user['User']['first_name']);
 			$this->set('AuthUser', $safe_user['User']);
 		}
 
@@ -81,6 +82,10 @@ class AppController extends Controller {
 			'title' => $title,
 			'description' => $description
 		));
+	}
+
+	protected function replace_unicode_escape_sequence($match) {
+    	return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
 	}
 
 	/* 
