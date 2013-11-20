@@ -109,3 +109,8 @@ class A2Cribs.MixPanel
 			$(event.currentTarget).button "loading"
 			@Event "marked leased", 
 				"listing_id": listing_id
+
+	$(document).on "logged_in", (event, user) =>
+		@Event "Logged In",
+			"name" : user?.name
+			"email" : user?.email

@@ -35,10 +35,17 @@ class Tour
 	Will not fire if schedule_tour div is
 	not contained on the page
 	###
-	$("#schedule_tour").ready =>
-		@SetupCalendarUI()
-		@SetDates @current_offset
-		@SetupInfoUI()
+	$(document).ready =>
+		if $("#schedule_tour").length
+			@SetupCalendarUI()
+			@SetDates @current_offset
+			@SetupInfoUI()
+
+			$(document).on "is_logged_in logged_in", (event, user) ->
+				if user?.phone?
+					$("#phone_verified").val user.phone
+					$("#verify_phone_number").val user.phone
+					$("#verify_phone_btn").addClass("verified").text("Verified").prop "disabled", true
 
 	###
 	SetupCalendarUI

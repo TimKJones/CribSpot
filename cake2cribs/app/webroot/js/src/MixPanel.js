@@ -147,6 +147,13 @@
       });
     });
 
+    $(document).on("logged_in", function(event, user) {
+      return MixPanel.Event("Logged In", {
+        "name": user != null ? user.name : void 0,
+        "email": user != null ? user.email : void 0
+      });
+    });
+
     return MixPanel;
 
   }).call(this);

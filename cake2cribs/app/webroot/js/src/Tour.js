@@ -61,10 +61,19 @@ Class is for scheduling and picking a time to tour
     */
 
 
-    $("#schedule_tour").ready(function() {
-      Tour.SetupCalendarUI();
-      Tour.SetDates(Tour.current_offset);
-      return Tour.SetupInfoUI();
+    $(document).ready(function() {
+      if ($("#schedule_tour").length) {
+        Tour.SetupCalendarUI();
+        Tour.SetDates(Tour.current_offset);
+        Tour.SetupInfoUI();
+        return $(document).on("is_logged_in logged_in", function(event, user) {
+          if ((user != null ? user.phone : void 0) != null) {
+            $("#phone_verified").val(user.phone);
+            $("#verify_phone_number").val(user.phone);
+            return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
+          }
+        });
+      }
     });
 
     /*

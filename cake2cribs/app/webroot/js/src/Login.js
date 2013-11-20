@@ -76,6 +76,7 @@
             _this.logged_in = true;
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
+            $(document).trigger("is_logged_in", [response.data]);
           } else if (response.success === "NOT_LOGGED_IN") {
             _this.logged_in = false;
             _this.ResetHeader();
@@ -115,22 +116,18 @@
       return $("#signup_modal").find(".fb-login").click(function() {
         $(".fb-login").button('loading');
         return _this.FacebookJSLogin().done(function(response) {
-          var _ref, _ref1, _ref2;
+          var _ref;
           if (response.success === "NOT_LOGGED_IN") {
             return setup_facebook_signup_modal(response.data);
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
-            A2Cribs.MixPanel.Event("Logged In", {
-              "name": (_ref = response.data) != null ? _ref.name : void 0,
-              "email": (_ref1 = response.data) != null ? _ref1.email : void 0
-            });
             _this.PopulateHeader(response.data);
-            _this.PopulateFavorites((_ref2 = response.data) != null ? _ref2.favorites : void 0);
+            _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
             if (response.account_exists === false) {
               A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
             }
-            return $(document).trigger("logged_in");
+            return $(document).trigger("logged_in", [response.data]);
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -161,7 +158,7 @@
       return $("#login_modal").find(".fb-login").click(function() {
         $(".fb-login").button('loading');
         return _this.FacebookJSLogin().done(function(response) {
-          var _ref, _ref1, _ref2;
+          var _ref;
           if (response.success === "NOT_LOGGED_IN") {
             $("#login_modal").modal('hide');
             $("#signup_modal").modal('show');
@@ -169,16 +166,12 @@
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
-            A2Cribs.MixPanel.Event("Logged In", {
-              "name": (_ref = response.data) != null ? _ref.name : void 0,
-              "email": (_ref1 = response.data) != null ? _ref1.email : void 0
-            });
             _this.PopulateHeader(response.data);
-            _this.PopulateFavorites((_ref2 = response.data) != null ? _ref2.favorites : void 0);
+            _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
             if (response.account_exists === false) {
               A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
             }
-            return $(document).trigger("logged_in");
+            return $(document).trigger("logged_in", [response.data]);
           }
         }).always(function() {
           return $(".fb-login").button('reset');
@@ -220,7 +213,6 @@
       this.div.find(".fb_login_btn").click(function() {
         $(".fb-login").button('loading');
         return _this.FacebookJSLogin().done(function(response) {
-          var _ref, _ref1;
           if (response.success === "NOT_LOGGED_IN") {
             _this.div.find("#student_first_name").val(response.data.first_name);
             _this.div.find("#student_last_name").val(response.data.last_name);
@@ -234,11 +226,7 @@
             return _this.div.find("#student_email").focus();
           } else if (response.success === "LOGGED_IN") {
             _this.logged_in = true;
-            A2Cribs.MixPanel.Event("Logged In", {
-              "name": (_ref = response.data) != null ? _ref.name : void 0,
-              "email": (_ref1 = response.data) != null ? _ref1.email : void 0
-            });
-            $(document).trigger("logged_in");
+            $(document).trigger("logged_in", [response.data]);
             return location.reload();
           }
         }).always(function() {
@@ -387,7 +375,7 @@
       };
       if ((request_data.User.email != null) && (request_data.User.password != null)) {
         $.post(url, request_data, function(response) {
-          var data, _ref, _ref1, _ref2;
+          var data, _ref;
           data = JSON.parse(response);
           console.log(data);
           if (data.error != null) {
@@ -410,11 +398,7 @@
             _this.PopulateHeader(data.data);
             _this.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
             _this.logged_in = true;
-            A2Cribs.MixPanel.Event("Logged In", {
-              "name": (_ref1 = data.data) != null ? _ref1.name : void 0,
-              "email": (_ref2 = data.data) != null ? _ref2.email : void 0
-            });
-            $(document).trigger("logged_in");
+            $(document).trigger("logged_in", [data.data]);
             return _this._login_deferred.resolve();
           }
         });
@@ -494,7 +478,7 @@
           }
         }
         $.post("/users/AjaxRegister", request_data, function(response) {
-          var data, email, _ref, _ref1, _ref2;
+          var data, email, _ref;
           data = JSON.parse(response);
           if (data.error != null) {
             A2Cribs.UIManager.CloseLogs();
@@ -523,10 +507,7 @@
             Login.PopulateHeader(data.data);
             Login.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
             Login.logged_in = true;
-            A2Cribs.MixPanel.Event("Logged In", {
-              "name": (_ref1 = data.data) != null ? _ref1.name : void 0,
-              "email": (_ref2 = data.data) != null ? _ref2.email : void 0
-            });
+            $(document).trigger("logged_in", [data.data]);
             $(".modal").modal('hide');
             return Login._create_user_deferred.resolve();
           }

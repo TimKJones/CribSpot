@@ -59,6 +59,7 @@ class A2Cribs.Login
 					@logged_in = true
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
+					$(document).trigger("is_logged_in", [response.data])
 
 				else if response.success is "NOT_LOGGED_IN"
 					@logged_in = false
@@ -107,9 +108,7 @@ class A2Cribs.Login
 				else if response.success is "LOGGED_IN"
 					$(".modal").modal('hide')
 					@logged_in = true
-					A2Cribs.MixPanel.Event "Logged In",
-						"name" : response.data?.name
-						"email" : response.data?.email
+
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
@@ -118,7 +117,7 @@ class A2Cribs.Login
 						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
 						"after signup"
 						)
-					$(document).trigger("logged_in")
+					$(document).trigger("logged_in", [response.data])
 
 			.always () =>
 				$(".fb-login").button('reset')
@@ -158,9 +157,7 @@ class A2Cribs.Login
 				else if response.success is "LOGGED_IN"
 					$(".modal").modal('hide')
 					@logged_in = true
-					A2Cribs.MixPanel.Event "Logged In",
-						"name" : response.data?.name
-						"email" : response.data?.email
+
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
@@ -169,7 +166,7 @@ class A2Cribs.Login
 						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
 						"after signup"
 						)
-					$(document).trigger("logged_in")
+					$(document).trigger("logged_in", [response.data])
 			.always () =>
 				$(".fb-login").button('reset')
 
@@ -230,10 +227,8 @@ class A2Cribs.Login
 
 				else if response.success is "LOGGED_IN"
 					@logged_in = true
-					A2Cribs.MixPanel.Event "Logged In",
-						"name" : response.data?.name
-						"email" : response.data?.email
-					$(document).trigger("logged_in")
+
+					$(document).trigger("logged_in", [response.data])
 					location.reload()
 			.always () =>
 				$(".fb-login").button('reset')
@@ -391,10 +386,8 @@ class A2Cribs.Login
 					@PopulateHeader data.data
 					@PopulateFavorites data.data?.favorites
 					@logged_in = yes
-					A2Cribs.MixPanel.Event "Logged In",
-						"name" : data.data?.name
-						"email" : data.data?.email
-					$(document).trigger("logged_in")
+
+					$(document).trigger("logged_in", [data.data])
 					return @_login_deferred.resolve()
 
 		return @_login_deferred.promise()
@@ -484,9 +477,7 @@ class A2Cribs.Login
 					@PopulateHeader data.data
 					@PopulateFavorites data.data?.favorites
 					@logged_in = yes
-					A2Cribs.MixPanel.Event "Logged In",
-						"name" : data.data?.name
-						"email" : data.data?.email
+					$(document).trigger("logged_in", [data.data])
 					$(".modal").modal('hide')
 
 					return @_create_user_deferred.resolve()
