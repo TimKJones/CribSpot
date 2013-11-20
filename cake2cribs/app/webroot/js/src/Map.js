@@ -160,6 +160,9 @@
         listing = all_listings[_j];
         listing.visible = true;
       }
+      if (Map.ACTIVE_LISTING_TYPE === 'sublet') {
+        Map.IsCluster(false);
+      }
       return Map.Repaint();
     };
 
@@ -293,6 +296,7 @@
 
     /*
     	Checks/Sets if the map is in clusters
+    	Never cluster if it is sublets!
     */
 
 
@@ -301,7 +305,7 @@
         is_clustered = null;
       }
       if (typeof is_clustered === "boolean") {
-        if (is_clustered === true) {
+        if (is_clustered === true && this.ACTIVE_LISTING_TYPE !== 'sublet') {
           this.GMarkerClusterer.setMinimumClusterSize(this.CLUSTER_SIZE);
         } else {
           this.GMarkerClusterer.setMinimumClusterSize(Number.MAX_VALUE);
