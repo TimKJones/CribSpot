@@ -1,17 +1,3 @@
-<?php
-$to_property_manager = true;
-$from_university = "University of Michigan";
-$from_name = "Evan";
-$street_address = "12180 Peninsula Drive";
-$message_text = "Hello, I found this listing on cribspot!";
-$img_url = "";
-$view_msg = "";
-$listing_url = "";
-$set_available_url = "";
-$set_unavailable_url = "";
-?>
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>

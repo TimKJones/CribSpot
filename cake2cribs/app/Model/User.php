@@ -489,7 +489,9 @@ class User extends AppModel {
 	public function RegisterUser($user)
 	{
 		$error = null;
+		$validation = $this->_validateUserRegister($user);
 		if (!$this->_validateUserRegister($user)){
+			//$errorMessage = $this->_GetErrorMessageFromValidationErrors($this->validationErrors);
 			$error = null;
 			$error['user'] = $user;
 			$this->LogError(null, 36, $error);
