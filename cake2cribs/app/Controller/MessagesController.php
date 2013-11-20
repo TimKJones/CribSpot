@@ -398,7 +398,12 @@
             )
         );
         /* Get the data we need to fill in fields in the email */
-        $street_address = $this->Listing->GetStreetAddressFromListingId($conversation['Conversation']['listing_id']);
+        $listing = $this->Listing->findByListingId($conversation['Conversation']['listing_id']);
+        if ($listing === null || !array_key_exists('Listing', $listing) || !array_key_exists('Marker', $listing) || 
+            !array_key_exists('street_address', $listing['Marker']))
+            return;
+
+        $street_address = $listing['Marker']['street_address'];
         $is_property_manager = (intval($recipient['user_type']) === 1);
 
         if ($street_address !== null){
@@ -457,6 +462,15 @@
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
         $this->set('listing_url', 'https://www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
+        $unit_description = null;
+        if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']) && 
+            array_key_exists('unit_style_description', $listing['Rental']) && !empty($listing['Rental']['unit_style_options']) &&
+            !empty($listing['Rental']['unit_style_description']))
+                $unit_description = Rental::unit_style_options($listing['Rental']['unit_style_options']).
+                    ' - '.$listing['Rental']['unit_style_description'];
+
+        $this->set('unit_description', $unit_description);
+
         $year = null;
         if (array_key_exists('year', $from_user))
             $year = $from_user['year'];
