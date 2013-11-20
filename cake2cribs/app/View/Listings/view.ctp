@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Listing/full_page.less?v=4','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Listing/full_page.less?v=5','stylesheet/less', array('inline' => false)); ?>
 <?php 
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/FullListing.js', array('inline' => false));
@@ -29,6 +29,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		<?= $this->element('Listings/full_page/basic_info'); ?>
 		<?= $this->element('Listings/full_page/more_info'); ?>
 		<?= $this->element('Listings/full_page/contact_info'); ?>
+		<?= $this->element('Listings/full_page/listing_correction', array('listing_id' => $listing["Listing"]["listing_id"])); ?>
 	</div>
 	<?= $this->element('Listings/full_page/main_content', array('listing' => $listing)); ?>
 	

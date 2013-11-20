@@ -3,7 +3,8 @@
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   A2Cribs.MixPanel = (function() {
-    var array_max, array_min, month_max, month_min;
+    var array_max, array_min, month_max, month_min,
+      _this = this;
 
     function MixPanel() {}
 
@@ -135,8 +136,26 @@
       return mixpanel.track(action, data);
     };
 
+    $(document).ready(function() {
+      return $(".mark_leased").click(function(event) {
+        var listing_id;
+        listing_id = $(event.currentTarget).data("listing-id");
+        $(event.currentTarget).button("loading");
+        return MixPanel.Event("marked leased", {
+          "listing_id": listing_id
+        });
+      });
+    });
+
+    $(document).on("logged_in", function(event, user) {
+      return MixPanel.Event("Logged In", {
+        "name": user != null ? user.name : void 0,
+        "email": user != null ? user.email : void 0
+      });
+    });
+
     return MixPanel;
 
-  })();
+  }).call(this);
 
 }).call(this);

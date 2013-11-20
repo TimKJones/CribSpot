@@ -877,6 +877,9 @@ CakeLog::write('twiliodebug', print_r($response, true));
         $user_email = "";
         if (array_key_exists('email', $user))
             $user_email = $user["email"];
+        $user_phone = "";
+        if (array_key_exists('phone_verified', $user) && $user['phone_verified'] && array_key_exists('phone', $user))
+            $user_phone = $user['phone'];
 
 
         $data = array(
@@ -885,7 +888,8 @@ CakeLog::write('twiliodebug', print_r($response, true));
             'num_messages' => $num_messages,
             'favorites' => $favorites,
             'user_type' => $user_type,
-            'img_url' => $img_url
+            'img_url' => $img_url,
+            'phone' => $user_phone
         );
 
         return $data;

@@ -136,6 +136,9 @@ class A2Cribs.Map
 		for listing in all_listings
 			listing.visible = true
 
+		if @ACTIVE_LISTING_TYPE is 'sublet'
+			@IsCluster false
+
 		@Repaint()
 
 	###
@@ -242,10 +245,11 @@ class A2Cribs.Map
 
 	###
 	Checks/Sets if the map is in clusters
+	Never cluster if it is sublets!
 	###
 	@IsCluster: (is_clustered = null) ->
 		if typeof(is_clustered) is "boolean"
-			if is_clustered is yes
+			if is_clustered is yes and @ACTIVE_LISTING_TYPE isnt 'sublet'
 				@GMarkerClusterer.setMinimumClusterSize @CLUSTER_SIZE
 			else
 				@GMarkerClusterer.setMinimumClusterSize Number.MAX_VALUE
