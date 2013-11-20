@@ -102,3 +102,10 @@ class A2Cribs.MixPanel
 		mixpanel.track action, data
 
 
+
+	$(document).ready =>
+		$(".mark_leased").click (event) =>
+			listing_id = $(event.currentTarget).data("listing-id")
+			$(event.currentTarget).button "loading"
+			@Event "marked leased", 
+				"listing_id": listing_id
