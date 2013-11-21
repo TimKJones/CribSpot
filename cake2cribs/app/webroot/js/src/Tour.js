@@ -366,9 +366,11 @@ Class is for scheduling and picking a time to tour
       _ref = this.selected_timeslots;
       for (key in _ref) {
         time = _ref[key];
-        times.push({
-          date: time.toLocaleString()
-        });
+        if (time.date != null) {
+          times.push({
+            date: time.date.toJSON()
+          });
+        }
       }
       return $.ajax({
         url: myBaseUrl + 'Tours/RequestTourTimes',

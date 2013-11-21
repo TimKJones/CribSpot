@@ -299,8 +299,9 @@ class Tour
 
 			# To fix windows bug with (Eastern Standard Time) vs (EST)
 
-			times.push
-				date: time.toLocaleString()
+			if time.date?
+				times.push
+					date: time.date.toJSON()
 		return $.ajax
 			url: myBaseUrl + 'Tours/RequestTourTimes'
 			type: 'POST'
