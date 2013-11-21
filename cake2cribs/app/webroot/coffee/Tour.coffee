@@ -296,7 +296,11 @@ class Tour
 	@RequestTourTimes: (listing_id, note = "", housemates) ->
 		times = []
 		for key, time of @selected_timeslots
-			times.push time
+
+			# To fix windows bug with (Eastern Standard Time) vs (EST)
+
+			times.push
+				date: time.toLocaleString()
 		return $.ajax
 			url: myBaseUrl + 'Tours/RequestTourTimes'
 			type: 'POST'
