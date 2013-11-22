@@ -56,9 +56,6 @@
       });
       if (((_ref = this.locations) != null ? _ref.length : void 0) != null) {
         random_school = Math.floor(Math.random() * this.locations.length);
-        if (this.locations[random_school].University.name.indexOf("Detroit") !== -1) {
-          random_school = 0;
-        }
         set_school(this.locations[random_school]);
       }
       return $(".university_link").click(function(event) {
