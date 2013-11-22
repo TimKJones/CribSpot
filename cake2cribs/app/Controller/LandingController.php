@@ -12,7 +12,7 @@ class LandingController extends AppController {
 	{
 		$locations = array();
 		foreach ($this->University->getSchools() as $school) {
-			if (!empty($school['University']['visible'])) {
+			if ($school['University']['visible'] === false) {
 				array_push($locations, $school);
 			}
 		}
