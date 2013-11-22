@@ -11,7 +11,9 @@ class LandingController extends AppController {
 	function index()
 	{
 		$locations = array();
-		foreach ($this->University->getSchools() as $school) {
+		$schools = $this->University->getSchools();
+		CakeLog::write('schools', print_r($schools, true));
+		foreach ($schools as $school) {
 			if (!empty($school['University']['visible'])) {
 				array_push($locations, $school);
 			}
