@@ -146,7 +146,8 @@ class A2Cribs.FeaturedListings
             #for listing in listings
             #    if listing.Listing?
             #        A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds
-            $(".fl-sb-item").click (event) =>
+            $(".fl-sb-item")
+            .click (event) =>
                 marker_id = parseInt($(event.currentTarget).attr('marker_id'))
                 listing_id = parseInt($(event.currentTarget).attr('listing_id'))
                 marker = A2Cribs.UserCache.Get('marker', marker_id)
@@ -156,6 +157,16 @@ class A2Cribs.FeaturedListings
                 A2Cribs.MixPanel.Click listing, 'sidebar listing'
                 markerPosition = marker.GMarker.getPosition()
                 A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
+            .draggable
+              revert: true
+              opacity: 0.7
+              cursorAt:
+                top: -12
+                left: -20
+              helper: (event) ->
+                $( "<div class='ui-widget-header'>Share this listing</div>" )
+              zIndex: 999
+              stack: '#layoutsContainer'
             
         $.when(@GetSidebarImagePathsDeferred).then (images) =>
             images = JSON.parse images

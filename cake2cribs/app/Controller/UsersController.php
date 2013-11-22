@@ -44,7 +44,7 @@ class UsersController extends AppController {
             $this->set('first_name', $this->Auth->User('first_name'));
             $this->set('last_name', $this->Auth->User('last_name'));
             $this->set('listing', $listing_id);
-            $this->_sendShareEmail($friend['User']);
+            $this->_sendShareEmail($this->Auth->User(), $friend['User']['email']);
 
             $this->set('response', json_encode(array('success' => true)));
         }
@@ -1043,10 +1043,10 @@ CakeLog::write('twiliodebug', print_r($response, true));
     Generates a new vericode and sends an email to the currently logged-in user.
     Email allows user to verify email address.
     */
-    private function _sendShareEmail($user)
+    private function _sendShareEmail($user, $friend_email)
     {
         $from = 'The Cribspot Team<info@cribspot.com>';
-        $to = $user['email'];
+        $to = $friend_email;
         $subject = $user['first_name'] . ' ' . $user['last_name'] . ' has shared a listing with you';
         $template = 'share_listing';
         $sendAs = 'both';

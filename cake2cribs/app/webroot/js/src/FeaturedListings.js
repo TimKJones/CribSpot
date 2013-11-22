@@ -179,6 +179,18 @@
           A2Cribs.MixPanel.Click(listing, 'sidebar listing');
           markerPosition = marker.GMarker.getPosition();
           return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
+        }).draggable({
+          revert: true,
+          opacity: 0.7,
+          cursorAt: {
+            top: -12,
+            left: -20
+          },
+          helper: function(event) {
+            return $("<div class='ui-widget-header'>Share this listing</div>");
+          },
+          zIndex: 999,
+          stack: '#layoutsContainer'
         });
       });
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {

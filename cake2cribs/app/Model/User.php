@@ -20,6 +20,7 @@ class User extends AppModel {
 				'Hotlist.id', 
 				'Hotlist.first_name', 
 				'Hotlist.last_name', 
+				'Hotlist.email',
 				'Hotlist.profile_img'
 			)
 		)
@@ -546,10 +547,10 @@ class User extends AppModel {
 	Ensure that all necessary fields are present based on user type.
 	Then saves user object
 	*/
-	public function RegisterUser($user)
+	public function RegisterUser($user, $validate = true)
 	{
 		$error = null;
-		if (!$this->_validateUserRegister($user)){
+		if ($validate == true and !$this->_validateUserRegister($user)){
 			$error = null;
 			$error['user'] = $user;
 			$this->LogError(null, 36, $error);

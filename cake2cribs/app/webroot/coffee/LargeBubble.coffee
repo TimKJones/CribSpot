@@ -66,6 +66,17 @@ class LargeBubble
 		$('#map_region').on 'listing_click', (event, listing_id) =>
 			@Open listing_id
 
+		@div.draggable({
+      revert: true
+      opacity: 0.7
+      cursorAt: {
+        top: -12
+        left: -20
+      }
+      helper: (event) ->
+        $( "<div class='ui-widget-header'>Share this listing</div>" )
+     })
+
 	###
 	Opens the tooltip given a marker, with popping animation
 	Returns deferred object that gets resolved after LargeBubble is loaded.
@@ -118,6 +129,7 @@ class LargeBubble
 	###
 	@SetContent: (listing_object) ->
 		@Clear()
+		@div.data('listing_id', listing_object.listing_id)
 		for key,value of listing_object
 			@div.find(".#{key}").text value
 		@div.find(".start_date").text @resolveDateRange listing_object.start_date

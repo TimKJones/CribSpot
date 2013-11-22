@@ -92,8 +92,19 @@ LargeBubble class
         pixels_to_pan = _this.GetAdjustedLargeBubblePosition(marker_pixel_position.x, marker_pixel_position.y);
         return _this.map.panBy(pixels_to_pan.x, pixels_to_pan.y);
       });
-      return $('#map_region').on('listing_click', function(event, listing_id) {
+      $('#map_region').on('listing_click', function(event, listing_id) {
         return _this.Open(listing_id);
+      });
+      return this.div.draggable({
+        revert: true,
+        opacity: 0.7,
+        cursorAt: {
+          top: -12,
+          left: -20
+        },
+        helper: function(event) {
+          return $("<div class='ui-widget-header'>Share this listing</div>");
+        }
       });
     };
 
@@ -163,6 +174,7 @@ LargeBubble class
     LargeBubble.SetContent = function(listing_object) {
       var key, marker, unit_style_description, value;
       this.Clear();
+      this.div.data('listing_id', listing_object.listing_id);
       for (key in listing_object) {
         value = listing_object[key];
         this.div.find("." + key).text(value);
