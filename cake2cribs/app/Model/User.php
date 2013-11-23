@@ -34,10 +34,13 @@ class User extends AppModel {
 				),
 			'between' => array(
 				'rule' => array('between',1,50),
-				'message' => 'Must be between 1 and 50 characters'
+				'message' => 'Your first name be between 1 and 50 characters'
 				),
-			'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i') 
-			),
+			'valid_characters' => array(
+				'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i'),
+				'message' => 'Your first name has some invalid characters.'
+			)
+		),
 		'last_name' => array(
 			'required' => array(
 				'rule' => 'notEmpty',
@@ -45,16 +48,22 @@ class User extends AppModel {
 				),
 			'between' => array(
 				'rule' => array('between',1,50),
-				'message' => 'Must be between 1 and 50 characters'
+				'message' => 'Your last name be between 1 and 50 characters'
 				),
-			'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i') 
+			'valid_characters' => array(
+				'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i'),
+				'message' => 'Your last name has some invalid characters.'
+			)
 		),
 		'company_name' => array(
 			'between' => array(
 				'rule' => array('between',0,50),
 				'message' => 'Must be between 0 and 50 characters'
 				),
-			'rule' => array('custom', "/^[a-z0-9 \.&\'\/\_\-]*+/i")
+			'valid_characters' => array(
+				'rule' => array('custom', "/^[a-z0-9 \.&\'\/\_\-]*$/i"),
+				'message' => 'Your company name has some invalid characters'
+			)
 		),
 		'street_address' => array(
 			'between' => array(
@@ -80,30 +89,14 @@ class User extends AppModel {
 			'email' => array(
         		'rule'    => array('email', true),
         		'message' => 'Please supply a valid email address.'
-    			)/*,
-			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'An email is required.'
-				),
-			'unique' => array(
-				'rule' => 'isUnique',
-				'message' => 'Someone already registered with that email.'
-				)*/
-			),
+    		)
+		),
 		'phone' => array(
 			'phone' => array(
         		'rule' => array('phone', null, 'us'),
         		'message' => 'Please enter a valid phone number'
-   				)/*,
-   			'required' => array(
-				'rule' => 'notEmpty',
-				'message' => 'A phone number is required.'
-				),
-   			'unique' => array(
-				'rule' => 'isUnique',
-				'message' => 'Someone already registered with that phone number. Try again.'
-				)*/
-			),
+   			)
+		),
 		'phone_verified' => 'boolean',
 		'phone_confirmation_code' => 'alphaNumeric',
 		'group_id' => 'alphaNumeric', 
@@ -130,19 +123,6 @@ class User extends AppModel {
 		'modified' => 'datetime',
 		'password_reset_token' => 'alphaNumeric',
 		'password_reset_date' => 'datetime'
-	);
-
-	private $_fields_to_strings = array(
-		'first_name' => 'First Name',
-		'last_name' => 'Last Name',
-		'email' => 'Email',
-		'company_name' => 'Company Name',
-		'phone' => 'Phone Number',
-		'password' => 'Password',
-		'website' => 'Website',
-		'street_address' => 'Street Address',
-		'city' => 'City',
-		'state' => 'State'
 	);
 
 	/* ---------- user_type ---------- */
@@ -793,23 +773,19 @@ CakeLog::write("userlist", print_r($users, true));
 
 /* -------------------------------------- private functions --------------------------------------- */
 
+	/*
+	Takes as input the validation errors array returned by an unsuccessful save() call.
+	Returns the error message given in this array.
+	If there are multiple validation errors, returns the first error in the array.
+	*/
 	private function _getErrorMessageFromValidationErrors($validationErrors)
 	{
-		$failed_fields = array();
 		foreach ($validationErrors as $field => $message){
-			if (array_key_exists($field, $this->_fields_to_strings)) {
-				array_push($failed_fields, $this->_fields_to_strings[$field]);
-			}
+			if (!empty($message))
+				return $message;
 		}
 
-		$message = 'We had some trouble signing you up. We found problems with the following fields:';
-		foreach ($failed_fields as $field){
-			$message .= ' '.$field.',';
-		}
-
-		/* remove the last two characters from the message (comma and a trailing space) */
-		$message = substr($message, 0, strlen($message) - 1);
-		return $message;
+		return 'We had some trouble signing you up. Contact help@cribspot.com if the issue continues.';
 	}
 	
 	/*
