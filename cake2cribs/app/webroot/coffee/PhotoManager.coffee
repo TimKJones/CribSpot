@@ -167,7 +167,7 @@ class A2Cribs.PhotoManager
 		max_file_size = 5000000 # 5 MB
 
 		@div.find('#ImageAddForm').fileupload
-			url: myBaseUrl + 'images/AddImage'
+			url: myBaseUrl + 'images/Add'
 			dataType: 'json'
 			acceptFileTypes: /(\.|\/)(jpeg|jpg|png)$/i
 			singleFileUploads: true
@@ -296,7 +296,7 @@ class A2Cribs.PhotoManager
 	###
 	@SubmitPhoto: (row_id, photo) -> 
 		$.ajax
-			url: myBaseUrl + "images/AddImage/" + row_id + "/" + photo
+			url: myBaseUrl + "images/Add/" + row_id + "/" + photo
 			type: "POST"
 			success: (response) =>
 				response = JSON.parse response

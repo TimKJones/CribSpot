@@ -8,27 +8,17 @@ class ImagesController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index');
-		$this->Auth->allow('add');
-		$this->Auth->allow('AddImage');
+		$this->Auth->allow('add');	
 		$this->Auth->allow('LoadImages');
-		$this->Auth->allow('DeleteImage');
-		$this->Auth->allow('MakePrimary');
-		$this->Auth->allow('SubmitCaption');
 		$this->Auth->allow('GetPrimaryImages');
-
-		$this->Auth->allow('add_test');
 	}
-
-	public function add_test(){}
 
 	/*
 	AJAX
-	If SESSION[row_id] != $num_images, cleans up images left over from uploading in a previous tab (same session).
 	Pass image data to Image model to create table entries and move the file.
-	Appends image_id of new Image entry to SESSION[row_id]
 	Returns: SUCCESS: image_id of new image entry; FAILURE: error message
 	*/
-	function AddImage()
+	function Add()
 	{
 		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
       		return;
@@ -49,34 +39,6 @@ class ImagesController extends AppController {
 		$imageResponse = $this->Image->SaveImage($image, $this->_getUserId(), $listing_id);
 		CakeLog::write('imagesuccess', print_r($imageResponse, true));
 		$this->set('response', json_encode($imageResponse));
-	}
-
-	function add($data = null)
-	{
-		if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-			return;
-		
-		$this->set('errors', null);
-		$from_add_page = false;
-		if (!$data)
-		{ // function is being called from a form submit (rather than from the edit function)
-			if (array_key_exists('form', $this->request->params) && array_key_exists('files', $this->request->params['form']))
-			{
-				$data = $this->request->params['form']['files'];
-				$from_add_page = true;
-			}
-		}
-
-		$response = $this->Image->AddImage($data, $this->Auth->User('id'));
-		$errors = $response['errors'];
-
-		if (count($errors) == 0 && $this->request && $this->request->data && $this->request->data['imageSlot'])
-		{
-			$imageSlot = $this->request->data['imageSlot'];
-			$this->Session->write("image" . $imageSlot, $filePath); 
-		}
-		$this->layout = 'ajax';
-		$this->set('response', json_encode($response));
 	}
 
 	function delete($photo_id)
