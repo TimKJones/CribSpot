@@ -97,11 +97,19 @@ class A2Cribs.Dashboard
 	Retrieves all basic marker_data for the logged in user and updates nav bar in dashboard
 	###
 	@GetUserMarkerData: () ->
+		if @MarkerDataDeferred?
+			return @MarkerDataDeferred
 		url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser"
 		$.ajax 
-            url: url
-            type:"GET"
-            success: @GetUserMarkerDataCallback
+			url: url
+			type:"GET"
+			success: (data) =>
+				@GetUserMarkerDataCallback data
+				return @MarkerDataDeferred.resolve data
+
+		@MarkerDataDeferred = new $.Deferred()
+		return @MarkerDataDeferred.promise()
+
 
 	@GetUserMarkerDataCallback: (data) =>
 

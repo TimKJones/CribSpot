@@ -58,7 +58,7 @@
 	</ul>
 <?php } ?>
 	<?php 
-	if (intval($AuthUser['user_type']) === 1 || intval($AuthUser['user_type']) === 3)
+	if (intval($AuthUser['user_type']) === 3)
 	{
 	?>
 	<li>
