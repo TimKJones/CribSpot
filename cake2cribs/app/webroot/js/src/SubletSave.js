@@ -59,7 +59,7 @@
         } else {
           image_array = _this._temp_images;
         }
-        return A2Cribs.PhotoManager.Open(image_array, _this.PhotoAddedCallback);
+        return A2Cribs.PhotoPicker.Open(image_array).done(_this.PhotoAddedCallback);
       });
       return this.div.find(".rent").keyup(function(event) {
         return $(event.currentTarget).parent().removeClass("error");
