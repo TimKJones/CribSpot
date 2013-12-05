@@ -487,7 +487,7 @@
           image = images[_i];
           image.listing_id = data.listing_id;
         }
-        A2Cribs.UserCache.Set(new A2Cribs.Image(images));
+        A2Cribs.UserCache.Set(new A2Cribs.Image(images, data.listing_id));
       } else {
         data.Image = images;
       }

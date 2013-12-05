@@ -2,7 +2,11 @@ class A2Cribs.Image extends A2Cribs.Object
 	###
 	Image is an array of all the images associated with a listing
 	###
-	constructor: (image) ->
+	constructor: (image, listing_id = null) ->
+		if listing_id?
+			@listing_id = listing_id
+			@class_name = "image"
+			@image_array = image
 		if image.length isnt 0
 			@class_name = "image"
 			@image_array = image

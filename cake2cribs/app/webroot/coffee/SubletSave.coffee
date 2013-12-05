@@ -92,7 +92,7 @@ class SubletSave
 		if listing_id?.length isnt 0
 			for image in photos
 				image.listing_id = listing_id
-			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			A2Cribs.UserCache.Set new A2Cribs.Image photos, listing_id
 			@_temp_images = photos
 			@Save()
 		else

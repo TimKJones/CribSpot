@@ -62,12 +62,13 @@ class A2Cribs.PhotoPicker
 		Triggers a delete on the index
 		###
 		Delete: ->
-			$(".image-row").trigger "delete_image", [@index]
 			@DeleteDeferred = null
 			if @_image_id?
 				@DeleteDeferred = $.ajax
 					url: myBaseUrl + "images/delete/" + @_image_id
 					type: "GET"
+
+			$(".image-row").trigger "delete_image", [@index]
 
 		###
 		Make Primary

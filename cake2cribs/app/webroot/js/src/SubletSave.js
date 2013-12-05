@@ -109,7 +109,7 @@
           image = photos[_i];
           image.listing_id = listing_id;
         }
-        A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        A2Cribs.UserCache.Set(new A2Cribs.Image(photos, listing_id));
         SubletSave._temp_images = photos;
         return SubletSave.Save();
       } else {

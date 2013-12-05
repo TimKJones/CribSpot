@@ -359,7 +359,7 @@ class A2Cribs.RentalSave
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images
 				image.listing_id = data.listing_id
-			A2Cribs.UserCache.Set new A2Cribs.Image images
+			A2Cribs.UserCache.Set new A2Cribs.Image images, data.listing_id
 		else
 			data.Image = images
 

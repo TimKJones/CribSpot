@@ -95,14 +95,14 @@
 
 
       Photo.prototype.Delete = function() {
-        $(".image-row").trigger("delete_image", [this.index]);
         this.DeleteDeferred = null;
         if (this._image_id != null) {
-          return this.DeleteDeferred = $.ajax({
+          this.DeleteDeferred = $.ajax({
             url: myBaseUrl + "images/delete/" + this._image_id,
             type: "GET"
           });
         }
+        return $(".image-row").trigger("delete_image", [this.index]);
       };
 
       /*
