@@ -3,6 +3,8 @@
     width: 100%;
 }
 
+.hotlist
+
 #FLDash{
     position: relative;
     overflow: auto;
@@ -644,10 +646,31 @@ table.ui-datepicker-calendar {border-collapse: separate;}
             color: #dc4444;
         }
     }
+    .hotlist-share-grab {
+        i {
+            font-size: 14px;
+            color: #bfbfbf;
+            &:last-child {
+                padding-right: 8px;
+            }
+        }
+    }
     &:hover{
         background-color: #f5eed4;
         cursor:pointer;
     }   
+}
+
+.grab {
+    cursor: hand;
+    cursor: grab;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+.grabbing {
+    cursor: grabbing;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
 }
 
 .favorite.active{

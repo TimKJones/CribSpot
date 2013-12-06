@@ -950,6 +950,7 @@
                     beginsWithQuery = new RegExp("^(?:" + escapedQuery + ")(.*$)", "i");
                     match = beginsWithQuery.exec(hint);
                     this.inputView.setHintValue(inputValue + (match ? match[1] : ""));
+                    this.eventBus.trigger('hinted', suggestion.datum, suggestion.dataset);
                 }
             },
             _clearHint: function() {

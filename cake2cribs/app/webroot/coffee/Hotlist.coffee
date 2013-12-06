@@ -4,6 +4,20 @@
     @each ->
       $(this).attr 'style', (i, style) ->
         style.replace(search, '') if style
+
+  $.fn.animateHighlight = (highlightColor, duration) ->
+    highlightBg = highlightColor || "#FFFFFF"
+    animateMs = duration || 500
+    originalBg = this.css("backgroundColor")
+    originalColor = this.css('color')
+    this.stop()
+      .css("background-color", highlightBg)
+      .css('color', highlightBg)
+      .animate({
+        backgroundColor: originalBg
+        color: originalColor
+      }, animateMs)
+
 )(jQuery)
 
 class A2Cribs.Hotlist
@@ -44,15 +58,57 @@ class A2Cribs.Hotlist
           url: myBaseUrl + 'users/getbyname?name=%QUERY'
           filter: (response) ->
             response.map (item) ->
-              datum = 
-                value: "#{item.User.email}" 
+              return {
+                value: item.User.email 
                 name: "#{item.User.first_name} #{item.User.last_name}"
-              return datum
+              }
       }
     ]
 
     @setEditing false
     @isExpanded = false
+
+  handleFBLoad: ->
+    @sources.push
+      name: 'facebook-friends'
+      prefetch: 
+        url: "https://graph.facebook.com/me/friends?access_token=#{FB.getAccessToken()}&fields=id,name,picture,first_name,last_name"
+        ttl: 0
+        filter: (response) ->
+          console.log(response)
+          response.data.map (item) ->
+            return {
+              value: item.name
+              tokens: item.name.split(' ')
+              facebook_id: item.id
+              picture: item.picture.data.url
+              first_name: item.first_name
+              last_name: item.last_name
+            }
+
+    @DOMRoot.find('#add-field')
+      .typeahead(@sources)
+      .on('typeahead:selected', (e, d, ds) => 
+        @setAddIdField e, d, ds
+      )
+      .on('typeahead:autocompleted', (e, d, ds) => 
+        @setAddIdField e, d, ds
+      )
+      .on('typeahead:hinted', (e, d, ds) => 
+        @setAddIdField e, d, ds
+      )
+      .bind('change cut paste keyup', ->
+        $(this).removeData('friend') if $(this).val() is '' 
+      )
+
+  setAddIdField: (event, datum, dataset) ->
+    # console.log( @DOMRoot.find('#friend-add-id').val() )
+    name = datum.value.replace(/^\s+|\s+$/g, "").toLowerCase()
+    val = $('#add-field').val().replace(/^\s+|\s+$/g, "").toLowerCase()
+    if name is val
+      @DOMRoot.find('#add-field').data('friend', datum)
+    else
+      @DOMRoot.find('#add-field').removeData('friend')
 
   setup: ->
     @renderTopSection()
@@ -68,38 +124,104 @@ class A2Cribs.Hotlist
     @DOMRoot.find('#add-field').hide()
     @DOMRoot.find('#btn-add').hide()
 
-    @DOMRoot.find('#add-field').typeahead(@sources)
+    # @DOMRoot.find('#add-field').typeahead(@sources)
+
+    if (typeof FB is not 'undefined')
+      @handleFBLoad()
+    else 
+      $.when(window.fbInit).then( => 
+        @handleFBLoad()
+      )
+
     @DOMRoot.find('.twitter-typeahead').hide()
+
+    @DOMRoot.find('#link-info').popover
+      title: 'What is this?'
+      content: "you can share with your friends, either by clicking the 'share' button on a listing, or by dragging the listing to one of your friends on the hotlist."
+      placement: 'bottom'
+
+    $("#add-field").keyup (event) ->
+      $("#btn-add").click() if event.keyCode is 13
 
   renderFriendsList: (data) ->
     @DOMRoot.find('#friends').html(@friendsList data)
     @DOMRoot.find('#add-field').val("")
+    @DOMRoot.find('.tt-hint').val("")
     @DOMRoot.find('.btn-hotlist-remove').hide()
-    @DOMRoot.find('li.friend span').tooltip()
     @DOMRoot.find('.friend-name').hide()
+
+    $(document).on 'mousedown mouseup','.grab, .grabbing', (event) ->
+      $(this).toggleClass('grab').toggleClass('grabbing')
+
+    @DOMRoot.find('ul.friends.no-friends').droppable
+      accept: '.fl-sb-item, .large-bubble'
+      hoverClass: 'drop-hover'
+      tolerance: 'pointer'
+      drop: (event, ui) ->
+        listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
+        ui.helper.hide()
+
+        FB.ui({
+          method: 'send'
+          link: "http://www.cribspot.com/listing/#{listing_id}"
+          name: "Share this listing"
+        },(response)->
+          console.log response
+        )
 
     @DOMRoot.find('li.friend').droppable
       accept: '.fl-sb-item, .large-bubble'
       hoverClass: 'drop-hover'
       tolerance: 'pointer'
       drop: (event, ui) ->
-        console.log "shared", $(this).data('id'), ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
+        listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
+        if $(this).data('facebook_id')
+          A2Cribs.HotlistObj.shareToFB(listing_id, $(this).data('facebook_id'))
+        else
+          A2Cribs.HotlistObj.shareToEmail(listing_id, $(this).data('email'))
+        $(this).find('.friend-abbr').animateHighlight()
         ui.helper.hide()
 
-    @DOMRoot.find('#share-all').droppable
-      accept: '.fl-sb-item, .large-bubble'
-      activeClass: 'drop-active'
-      hoverClass: 'drop-hover'
-      tolerance: 'pointer'
-      drop: (event, ui) ->
-        console.log "shared to all", ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
-        ui.helper.hide()
+    # @DOMRoot.find('#share-all').droppable
+    #   accept: '.fl-sb-item, .large-bubble'
+    #   activeClass: 'drop-active'
+    #   hoverClass: 'drop-hover'
+    #   tolerance: 'pointer'
+    #   drop: (event, ui) =>
+    #     @shareToAll(event, ui)
+    #     ui.helper.hide()
 
+    @DOMRoot.find('li.friend').tooltip({
+      animated : 'fade',
+      container: 'body'
+    });
 
     # @DOMRoot.droppable
     #   accept: '.fl-sb-item, .large-bubble'
     #   activeClass: 'expanded'
+
     @showOrHideExpandArrow()
+    @setHeight(true)
+
+  startedDragging: ->
+    @expand()
+
+  stoppedDragging: ->
+    @retract()
+
+  shareToAll: (event, ui) ->
+    listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
+    fb_ids = $('ul.friends li').map (i) ->
+      a = $(this).data('facebook_id')
+      return a
+
+    console.log fb_ids, fb_ids.length
+
+    # FB.ui({
+    #   method: 'send'
+    #   link: "http://www.cribspot.com/listing/#{listing_id}"
+    #   to: fb_ids
+    # })
 
   showOrHideExpandArrow: ->
     el = @DOMRoot.find('#bottom-section a')
@@ -133,7 +255,16 @@ class A2Cribs.Hotlist
       console.log "ERROR in A2Cribs.HotlistObj.show(): ", data
 
   add: (friend) ->
-    $.when @call('invitations/invitefriends', 'POST', { emails: [friend] })
+    if typeof $('#add-field').data('friend').facebook_id != 'undefined'
+      route = 'invitations/invitefbfriend'
+      postdata = { friend: $('#add-field').data('friend') }
+
+      @showFBAddMessageModal($('#add-field').data('friend').facebook_id)
+    else
+      route = 'invitations/invitefriends'
+      postdata = { emails: [$('#add-field').val()] }
+
+    $.when @call(route, 'POST', postdata)
     .then (data) =>
       @call('friends/hotlist', 'GET', null)
     .then (data) =>
@@ -142,6 +273,13 @@ class A2Cribs.Hotlist
       @expandForEdit()
     .fail (data) =>
       console.log "ERROR: #{data}"
+
+  showFBAddMessageModal: (friend) ->
+    FB.ui({
+      method: 'send'
+      link: 'http://www.cribspot.com'
+      to: friend
+    })
 
   remove: (friend) ->
     $.when @call('friends/hotlist/remove', 'POST', { friend: friend })
@@ -157,16 +295,37 @@ class A2Cribs.Hotlist
     $.when @call('friends/share', 'POST', {friend: friend, listing: listing})
     .then (data) =>
       if data.success is true
+        A2Cribs.UIManager.Success("Successfully Shared Listing")
+      else
+        A2Cribs.UIManager.Error("There was a problem sharing the listing.")
+    .fail (data) =>
+        A2Cribs.UIManager.Error("There was a problem sharing the listing.")
+    .always (data, status, jqXHR) ->
+      console.log data 
+
+  shareToEmail: (listing, friend) ->
+    console.log("sharing", listing, friend)
+    $.when @call('invitations/inviteFriends', 'POST', {emails: [friend], listing: listing})
+    .then (data) =>
+      if data.success is true
         A2Cribs.UIManager.Success()
       else
         A2Cribs.UIManager.Error()
     .fail (data) =>
         A2Cribs.UIManager.Error()
     .always (data, status, jqXHR) ->
+      $('#share-to-email').val("")
       console.log data 
 
-  #State functions
+  shareToFB: (listing, facebook_id) ->
+    FB.ui({
+      method: 'send'
+      link: "http://www.cribspot.com/listing/#{listing}"
+      to: facebook_id 
+      name: "Share this listing"
+    })
 
+  #State functions
   retract: ->
     shows = [
       '.friend-abbr'
@@ -178,6 +337,7 @@ class A2Cribs.Hotlist
       '.friend-name'
       '#add-field'
       '.twitter-typeahead'
+      '.tt-hint'
       '#btn-add'
     ]
 
@@ -193,6 +353,12 @@ class A2Cribs.Hotlist
 
     @isExpanded = false
     @showOrHideExpandArrow()
+    @setHeight(true)
+
+    @DOMRoot.find('li.friend').tooltip({
+      animated : 'fade',
+      container: 'body'
+    });
 
   expand: ->
     @DOMRoot.addClass('expanded')
@@ -212,11 +378,11 @@ class A2Cribs.Hotlist
 
     @DOMRoot.addClass('detailed')
 
-    @setHeight()
 
     shows = [
       '.btn-hotlist-remove'
       '.twitter-typeahead'
+      '.tt-hint'
       '.friend-name'
       '#add-field'
       '#btn-add'
@@ -232,10 +398,30 @@ class A2Cribs.Hotlist
 
     @DOMRoot.find('#btn-edit').addClass('editing').html('Done')
 
-  setHeight: ->
-    a = @DOMRoot.find('ul.friends li:last-child')
-    height = a.offset().top + a.height() - $('ul.friends').offset().top + 30
-    @DOMRoot.find('ul.friends').height(height) if height < 300
+    @DOMRoot.find('li.friend').tooltip("destroy");
+
+    @setHeight(false, true)
+
+  setHeight: (retract = false, max = false) ->
+    if retract
+      a = @DOMRoot.find('ul.friends li:first-child')
+    else
+      a = @DOMRoot.find('ul.friends li:last-child') 
+
+    height = a.offset().top + a.height() - $('ul.friends').offset().top
+
+    if height <= 10
+      height = 70
+    else
+      height = height + 30
+
+    if $('#bottom-section a').is(":visible")
+      height = height + $('#bottom-section a').height()
+
+    if height < 300 or not max
+      @DOMRoot.find('ul.friends').height(height)
+    else
+      @DOMRoot.find('ul.friends').height(300)
 
   toggleEdit: ->
     if @isEditing()
@@ -264,9 +450,11 @@ class A2Cribs.Hotlist
 
   @friendsListPopupTemplate: """
   <ul class="friends-popup">
+    <li><input type='email' id='share-to-email' placeholder='to email'></input><a class='share-to-email-btn' href='#' onClick='A2Cribs.HotlistObj.shareToEmail(<%=listing_id%>, $("#share-to-email").val());'><i class="icon-share"></i></a></li>
     <% _.each(friends, function(elem, idx, list) { %>
       <li>
-        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=elem.first_name%> <%=elem.last_name%></a>
+        <% name = elem.first_name ? elem.first_name + ' ' + elem.last_name : elem.email %>
+        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=name%></a>
       </li>
     <% }) %>
   </ul>
@@ -274,7 +462,7 @@ class A2Cribs.Hotlist
 
   @topSectionTemplate: """
   <div id='share-all'>
-    <span class='title'>Hotlist</span>
+    <span class='title'>Share with your Friends <a title='What is this?' href='#' id='link-info' class='icon icon-info-sign'></a></span>
     <span class='share-text'>Share to All</span>
   </div>
   <input class='typeahead' type='text' autocomplete='off' id='add-field'></input>
@@ -282,18 +470,30 @@ class A2Cribs.Hotlist
     <a href='#' data-toggle='popover' id='btn-add' class='btn-hotlist btn-hotlist-add' onClick="A2Cribs.HotlistObj.add($('#add-field').val())">+</a>
     <a href='#' id='btn-edit' class='btn-hotlist btn-hotlist-edit' onClick='A2Cribs.HotlistObj.toggleEdit()'><i class='icon-edit'></i></a>
   </div>
+  <div style='clear: both;'></div>
   """
 
   @friendsListTemplate: """
-  <ul class='friends'>
+  <ul class='friends <%=friends.length ? "has-friends" : "no-friends"%>'>
+    <% if(friends.length) { %>
     <% _.each(friends, function(elem, idx, list) { %>
-      <li class='friend' data-id='<%=elem.id%>'>
-        <% if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>
-          <span class='friend-abbr' data-toggle='tooltip' title='<%=elem.first_name%> <%=elem.last_name%>'>
+      <% 
+        var tooltitle = elem.email 
+        if (elem.first_name) {
+          tooltitle = elem.first_name + ' ' + elem.last_name
+        }
+      %> 
+      <li class='friend' data-id='<%=elem.id%>' data-toggle='tooltip' title='<%=tooltitle%>'' data-facebook_id='<%=elem.facebook_id || null%>' data-email='<%=elem.email%>'>
+        <% if (elem.facebook_id){ %>
+          <img class='friend-abbr hotlist-profile-img' src='https://graph.facebook.com/<%=elem.facebook_id%>/picture?width=80&height=80'></img>
+        <% } else if (elem.profile_img) { %>
+          <img class='friend-abbr otlist-profile-img' src='<%=elem.profile_img%>'></img>
+        <% } else if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>
+          <span class='friend-abbr'>
             <%=elem.first_name[0].toUpperCase()%><%=elem.last_name[0].toUpperCase()%> 
           </span>
         <% } else { %>
-          <span class='friend-abbr' data-toggle='tooltip' title='<%=elem.email%>'>
+          <span class='friend-abbr'>
             <%=elem.email[0]%>@<%=elem.email.split('@')[1][0]%>
           </span>
         <% } %>
@@ -301,12 +501,17 @@ class A2Cribs.Hotlist
           <% if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>
             <%=elem.first_name%> <%=elem.last_name%> 
           <% } else { %>
-            <%=elem.email%> 
+            <%=elem.email%>
           <% } %>
         </span>
         <a class='btn-hotlist-remove btn-hotlist pull-right' href='#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'><i class='icon icon-remove-circle'></i></a>
       </li>
     <% }); %>
+    <% } else { %>
+      <li class='add-friends-notice'>No friends added yet.</li>
+      <li class='no-friends-notice'>Add friends by clicking here <i class='icon-reply icon-rotate'></i></li>
+      <li class='share-to-fb-notice'><i class='icon-facebook-sign'></i> Drag to Share</li>
+    <% } %>
   </ul>
   """
 

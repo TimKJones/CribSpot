@@ -462,6 +462,7 @@
                                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBodyInner" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                                                     <tr>
                                                         <td valign="top" class="bodyContainer" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner" style="mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
@@ -474,7 +475,11 @@
                             <h3 class="null" style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.5px;text-align: left;color: #606060 !important;">
     <span style="color:#000000;"><span style="font-family:arial,helvetica neue,helvetica,sans-serif;">
 
+    <? if(isset($listing)) { ?>
+        <?= $inviter_first_name ?>&nbsp;<?= $inviter_last_name ?>&nbsp;Has shared a listing with you on <a href='https://www.cribspot.com'>Cribspot</a>!</span>
+    <? } else { ?>
         <?= $inviter_first_name ?>&nbsp;<?= $inviter_last_name ?>&nbsp;wants you to join your group's off-campus housing search on <a href='https://www.cribspot.com'>Cribspot</a>!</span>
+    <? } ?>
 
     </span>
 <br><br>
@@ -491,7 +496,10 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Reset Your Password" href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&amp;reset_token=<?php echo $password_reset_token; ?>" target="_self" style="background-color: #6d91e0 font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Search</a>
+                                <a class="mcnButton " title="Sign up" href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&amp;reset_token=<?php echo $password_reset_token; ?>" target="_self" style="background-color: #6d91e0 font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Search</a>
+                            <? if (isset($listing)) { ?>
+                                <a href="http://www.cribspot.com/listing/<?=$listing?>">Go directly to listing</a>
+                            <? } ?>
                             </td>
                         </tr>
                     </tbody>

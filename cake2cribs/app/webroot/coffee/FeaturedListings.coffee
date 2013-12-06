@@ -162,11 +162,18 @@ class A2Cribs.FeaturedListings
               opacity: 0.7
               cursorAt:
                 top: -12
-                left: -20
+                right: -20
               helper: (event) ->
-                $( "<div class='ui-widget-header'>Share this listing</div>" )
-              zIndex: 999
-              stack: '#layoutsContainer'
+                name = $(this).find('.name').html() || "this listing"
+                $( "<div class='listing-drag-helper'>Share #{name}</div>" )
+              start: (event) ->
+                console.log('start')
+                $('ul.friends, #hotlist').addClass('dragging')
+                A2Cribs.HotlistObj.startedDragging()
+              stop: (event) ->
+                $('ul.friends, #hotlist').removeClass('dragging')
+                A2Cribs.HotlistObj.stoppedDragging()
+              appendTo: 'body'
             
         $.when(@GetSidebarImagePathsDeferred).then (images) =>
             images = JSON.parse images
@@ -298,13 +305,18 @@ class A2Cribs.FeaturedListings
                     html: true
                     trigger: 'manual'
                     placement: 'left'
+                    container: 'body'
+                    title: 'Share this listing'
                 .click (e) -> 
                     e.preventDefault()
                     console.log('listing_item share click!')
                     $(this).popover('show')
-                    $('.popover').on 'click', =>
-                        $(this).popover('hide')
-                        $('.popover').off('click')
+                    # $('.popover').on 'click', =>
+                    #     $(this).popover('hide')
+                    #     $('.popover').off('click')
+
+                listing_item.find("#share-to-email").keyup (event) ->
+                  $(".share-to-email-btn").click() if event.keyCode is 13
 
                 list.append listing_item
 
@@ -320,7 +332,8 @@ class A2Cribs.FeaturedListings
                 <span class = 'divider'>|</span>
                 <span class = 'beds'><%= beds %> </span>
                 <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
-                <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='icon-user'></i></a></span>
+                <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='fav-icon icon-user'></i></a></span>
+                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i></span>
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>

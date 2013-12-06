@@ -71,10 +71,19 @@ class LargeBubble
       opacity: 0.7
       cursorAt: {
         top: -12
-        left: -20
+        right: -20
       }
       helper: (event) ->
-        $( "<div class='ui-widget-header'>Share this listing</div>" )
+        name = $(this).find('.building_name').html() || "this listing"
+        $( "<div class='listing-drag-helper'>Share #{name}</div>" )
+      start: (event) ->
+      	console.log('start')
+      	$('ul.friends, #hotlist').addClass('dragging')
+      	A2Cribs.HotlistObj.startedDragging()
+      stop: (event) ->
+      	$('ul.friends, #hotlist').removeClass('dragging')
+      	A2Cribs.HotlistObj.stoppedDragging()
+      appendTo: 'body'
      })
 
 	###
@@ -178,13 +187,16 @@ class LargeBubble
 				# "Hello<a href='#'>hello</a>"
 			html: true
 			trigger: 'manual'
-		# # .popover('toggle')
+			container: 'body'
+			title: 'Share this listing'
 		.click (e) -> 
 			e.preventDefault()
 			$(this).popover('show')
-			$('.popover').on 'click', =>
-				$(this).popover('hide')
-				$('.popover').off('click')
+			# $('.popover').on 'click', =>
+				# $(this).popover('hide')
+				# $('.popover').off('click')
+    .find("#share-to-email").keyup (event) ->
+      $(".share-to-email-btn").click() if event.keyCode is 13
 
 
 		@div.find(".favorite_listing").data "listing-id", listing_object.listing_id

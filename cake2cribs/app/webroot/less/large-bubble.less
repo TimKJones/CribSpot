@@ -22,6 +22,15 @@
 			margin-left: 10px;
 		}
 	}
+	.share-handle
+	{
+		color: #bfbfbf;
+		font-size: 16px;
+		position: absolute;
+		right: 40px;
+		line-height: 21px;
+		top: 8px;
+	}
 	.close_button
 	{
 		height: 20px;
@@ -32,7 +41,7 @@
 		right: 0;
 		top: 0;
 		font-weight: lighter;
-		line-height: 21px;
+		line-height: 18px;
 		text-align: center;
 		-moz-border-radius: 18px;
 		border-radius: 18px;
@@ -41,6 +50,12 @@
 		&:hover
 		{
 			cursor: pointer;
+			background-color: #B35F5C;
+			color: #EFECEC;
+
+			transition-property: color, background-color;
+			transition-duration: 0.2s;
+			transition-timing-function: ease-in-out;
 		}
 	}
 	.property_image

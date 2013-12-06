@@ -21,7 +21,8 @@ class User extends AppModel {
 				'Hotlist.first_name', 
 				'Hotlist.last_name', 
 				'Hotlist.email',
-				'Hotlist.profile_img'
+				'Hotlist.profile_img',
+				'Hotlist.facebook_id'
 			)
 		)
 	);
@@ -195,6 +196,19 @@ class User extends AppModel {
 		return array('success' => 'yep');
 	}
 
+	public function findOrCreate($email) {
+    if ($this->hasAny(array('User.email' => $email))) {
+    	return $this->find('first', array('User.email' => $email));
+    }
+    else {
+      $new_user = $this->User->RegisterUser(array('email' => $email), false);
+      $new_user_id = $friend['success']['User']['id'];
+      $token = $this->User->setPasswordResetToken($new_user_id);
+
+      return $new_user['success'];
+    }
+	}
+
 	public function findByNameFuzzy($name) {
 		CakeLog::write('HOTLIST', 'Name: ' . $name);
 		return $this->find('all', array(
@@ -230,6 +244,24 @@ class User extends AppModel {
 	  else {
 	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
 	  }
+
+    return $this->getHotlist($user_id);
+	}
+
+	public function addToHotlistFB($user_id, $friend_fb_id) {
+    CakeLog::write('HOTLIST', 'Entered addToHotlistFB(' . $user_id . ',' . $friend_fb_id . ')');
+		$friend = $this->GetUserFromFacebookId($friend_fb_id);
+  	CakeLog::write('HOTLIST', print_r($friend, true));
+
+    if(!is_null($friend) && !empty($friend)) {
+    	$friend_id = $friend['User']['id'];
+	    if ($user_id != $friend_id){
+		    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+		  }
+		  else {
+		  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+		  }
+		}
 
     return $this->getHotlist($user_id);
 	}
@@ -628,6 +660,7 @@ class User extends AppModel {
 	*/
 	public function SaveFacebookUser($user)
 	{
+		CakeLog::write('HOTLIST', print_r($user, true));
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;

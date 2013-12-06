@@ -100,11 +100,23 @@ LargeBubble class
         opacity: 0.7,
         cursorAt: {
           top: -12,
-          left: -20
+          right: -20
         },
         helper: function(event) {
-          return $("<div class='ui-widget-header'>Share this listing</div>");
-        }
+          var name;
+          name = $(this).find('.building_name').html() || "this listing";
+          return $("<div class='listing-drag-helper'>Share " + name + "</div>");
+        },
+        start: function(event) {
+          console.log('start');
+          $('ul.friends, #hotlist').addClass('dragging');
+          return A2Cribs.HotlistObj.startedDragging();
+        },
+        stop: function(event) {
+          $('ul.friends, #hotlist').removeClass('dragging');
+          return A2Cribs.HotlistObj.stoppedDragging();
+        },
+        appendTo: 'body'
       });
     };
 
@@ -222,14 +234,15 @@ LargeBubble class
           return A2Cribs.HotlistObj.getHotlistForPopup(listing_object.listing_id);
         },
         html: true,
-        trigger: 'manual'
+        trigger: 'manual',
+        container: 'body',
+        title: 'Share this listing'
       }).click(function(e) {
-        var _this = this;
         e.preventDefault();
-        $(this).popover('show');
-        return $('.popover').on('click', function() {
-          $(_this).popover('hide');
-          return $('.popover').off('click');
+        return $(this).popover('show').find("#share-to-email").keyup(function(event) {
+          if (event.keyCode === 13) {
+            return $(".share-to-email-btn").click();
+          }
         });
       });
       this.div.find(".favorite_listing").data("listing-id", listing_object.listing_id);
