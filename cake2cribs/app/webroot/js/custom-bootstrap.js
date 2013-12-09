@@ -1186,10 +1186,10 @@
         , title = this.getTitle()
         , content = this.getContent()
 
-      //$tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+      $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
       $tip.find('.popover-content').empty()
       if (this.options.html)
-        $tip.find('.popover-content').append($('#' + div))
+        $tip.find('.popover-content').html(content)
       else
         $tip.find('.popover-content').text(content)
 

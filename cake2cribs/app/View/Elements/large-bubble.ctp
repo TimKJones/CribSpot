@@ -1,12 +1,13 @@
 <?= $this->Html->css('/less/large-bubble.less?v=3','stylesheet/less', array('inline' => false)); ?>
 
 <div class="large-bubble hide">
-	<div class="click_header"><div class="building_name clear_field">10202  West Chester Rd.</div><div class="close_button">&times;</div></div>
+	<div class="click_header"><div class="building_name clear_field">10202  West Chester Rd.</div><div class='share-handle grab'><i class='icon-reorder'></i></div><div class="close_button">&times;</div></div>
 	<div class="property_image"></div>
 	<div class="share_section">
 		<div class="unit_style_description clear_field">Style - Bi-level 3 beds</div>
 		<div class="share_button">
 			<a class="link_share share_btn" href="#"><i class="icon-link"></i></a>
+			<a class="share_btn hotlist_share" href="#"><i class="icon-user"></i></a>
 			<a class="facebook_share share_btn" href="#"><i class="icon-facebook"></i></a>
 			<a class="twitter_share share_btn" href="#"><i class="icon-twitter"></i></a>
 			<a class="favorite_listing share_btn" href="#"><i class="icon-heart"></i></a>

@@ -27,6 +27,76 @@ class UsersController extends AppController {
         $this->Auth->allow('sublet');
     }
 
+    public function share()
+    {
+        $friend_id = $this->request->data['friend'];
+        $listing_id = $this->request->data['listing'];
+
+        // $response = $this->User->shareListing($friend_id, $listing_id);
+
+        $friend = $this->User->find('first', array('conditions' => array('User.id' => $friend_id)));
+        if (empty($friend)) {
+            $this->response->statusCode('404');
+            $this->set('response', json_encode(array('success' => false)));
+        }
+        else {
+            // $this->set('user', $friend);
+            $this->set('first_name', $this->Auth->User('first_name'));
+            $this->set('last_name', $this->Auth->User('last_name'));
+            $this->set('listing', $listing_id);
+            $this->_sendShareEmail($this->Auth->User(), $friend['User']['email']);
+
+            $this->set('response', json_encode(array('success' => true)));
+        }
+
+        $this->render('json_response');
+    }
+
+    public function getAllForName()
+    {
+        $name = $this->request->query['name'];
+        $users = $this->User->findByNameFuzzy($name);
+        // CakeLog::write('HOTLIST', print_r($users));
+        $this->set('response', json_encode($users));
+        $this->render('json_response');
+    }
+
+    public function hotlist()
+    {
+        $user_id = $this->Auth->User('id');
+        $response = $this->User->getHotlist($user_id);
+        $this->set('response', json_encode($response));
+    }
+
+    public function addToHotlist()
+    {
+        $user_id = $this->Auth->User('id');
+        $friend_email = $this->request->data['friend'];
+
+        if ($this->User->hasAny(array('User.email' => $friend_email))) {
+            $response = $this->User->addToHotlist($user_id, $friend_email);
+        }
+
+        else {
+            $response = array('error' => 'User does not exist for email');
+            $this->response->statusCode('404');
+        }
+
+
+        $this->set('response', json_encode($response));
+        $this->render('hotlist');
+    }
+
+    public function removeFromHotlist() 
+    {
+        $user_id = $this->Auth->User('id');
+        $friend_id = $this->request->data['friend'];
+        $response = $this->User->removeFromHotlist($user_id, $friend_id);
+
+        $this->set('response', json_encode($response));
+        $this->render('hotlist');
+    }
+
     public function add()
     {
         $this->redirect(array('action' => 'login', "signup"));
@@ -978,6 +1048,16 @@ CakeLog::write('twiliodebug', print_r($response, true));
     Generates a new vericode and sends an email to the currently logged-in user.
     Email allows user to verify email address.
     */
+    private function _sendShareEmail($user, $friend_email)
+    {
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $friend_email;
+        $subject = $user['first_name'] . ' ' . $user['last_name'] . ' has shared a listing with you';
+        $template = 'share_listing';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
     private function _sendVerificationEmail($user)
     {
         $from = 'The Cribspot Team<info@cribspot.com>';

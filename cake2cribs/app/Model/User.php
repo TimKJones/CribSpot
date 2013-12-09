@@ -8,6 +8,24 @@ class User extends AppModel {
 		)
 	);
 	public $belongsTo = array('University');
+	public $hasAndBelongsToMany = array(
+		'Hotlist' => array(
+			'className' => 'User',
+			'joinTable' => 'users_friends',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'friend_id',
+			'conditions' => array('UsersFriend.hotlist' => '1'),
+			'unique' => true,
+			'fields' => array(
+				'Hotlist.id', 
+				'Hotlist.first_name', 
+				'Hotlist.last_name', 
+				'Hotlist.email',
+				'Hotlist.profile_img',
+				'Hotlist.facebook_id'
+			)
+		)
+	);
 	public $actsAs = array('Containable');
 	public $primaryKey = 'id';
 	public $helpers = array('Html');
@@ -164,6 +182,88 @@ class User extends AppModel {
 		}
 
 		return true;
+	}
+
+	public function shareListing($friend_id, $listing_id) {
+		CakeLog::write('HOTLIST', "Sharing Listing: $friend_id, $listing_id");
+		return array('success' => 'yep');
+	}
+
+	public function findOrCreate($email) {
+    if ($this->hasAny(array('User.email' => $email))) {
+    	return $this->find('first', array('User.email' => $email));
+    }
+    else {
+      $new_user = $this->User->RegisterUser(array('email' => $email), false);
+      $new_user_id = $friend['success']['User']['id'];
+      $token = $this->User->setPasswordResetToken($new_user_id);
+
+      return $new_user['success'];
+    }
+	}
+
+	public function findByNameFuzzy($name) {
+		CakeLog::write('HOTLIST', 'Name: ' . $name);
+		return $this->find('all', array(
+			'conditions' => array(
+				'User.email' => $name, 
+			),
+			'fields' => array('User.id', 'User.first_name', 'User.last_name', 'User.email'),
+			'contain' => array()
+		));
+	}
+
+	public function getHotlist($user_id)
+	{
+    CakeLog::write('HOTLIST', 'Entered getHotlist(' . $user_id . ')');
+		$user = $this->find('first', array('conditions' => array('User.id' => $user_id)));
+		return $user['Hotlist'];
+	}
+
+	public function inHotlist($user_id, $friend_id)
+	{
+		CakeLog::write('HOTLIST', "Entered inHotlist($user_id, $friend_id)");
+		$q = $this->query("SELECT COUNT(*) AS cnt FROM users_friends WHERE user_id = $user_id AND friend_id = $friend_id AND hotlist = '1'");
+		CakeLog::write('HOTLIST', print_r($q, true));
+	}
+
+	public function removeFromHotlist($user_id, $friend_id) {
+    CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
+    $this->query("UPDATE users_friends SET hotlist = '0' WHERE user_id = $user_id AND friend_id = $friend_id");
+    return $this->getHotlist($user_id);
+	}
+
+	public function addToHotlist($user_id, $friend_email) {
+    CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_email . ')');
+    $friend = $this->find('first', array('conditions' => array('User.email' => $friend_email)));
+
+    $friend_id = $friend['User']['id'];
+    if ($user_id != $friend_id){
+	    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+	  }
+	  else {
+	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+	  }
+
+    return $this->getHotlist($user_id);
+	}
+
+	public function addToHotlistFB($user_id, $friend_fb_id) {
+    CakeLog::write('HOTLIST', 'Entered addToHotlistFB(' . $user_id . ',' . $friend_fb_id . ')');
+		$friend = $this->GetUserFromFacebookId($friend_fb_id);
+  	CakeLog::write('HOTLIST', print_r($friend, true));
+
+    if(!is_null($friend) && !empty($friend)) {
+    	$friend_id = $friend['User']['id'];
+	    if ($user_id != $friend_id){
+		    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+		  }
+		  else {
+		  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+		  }
+		}
+
+    return $this->getHotlist($user_id);
 	}
 
 	public function FacebookVerify($user_id)
@@ -479,10 +579,10 @@ class User extends AppModel {
 	Ensure that all necessary fields are present based on user type.
 	Then saves user object
 	*/
-	public function RegisterUser($user)
+	public function RegisterUser($user, $validate = true)
 	{
 		$error = null;
-		if (!$this->_validateUserRegister($user)){
+		if ($validate == true and !$this->_validateUserRegister($user)){
 			$error = null;
 			$error['user'] = $user;
 			$this->LogError(null, 36, $error);
@@ -559,6 +659,7 @@ class User extends AppModel {
 	*/
 	public function SaveFacebookUser($user)
 	{
+		CakeLog::write('HOTLIST', print_r($user, true));
 		if (!$this->save($user)){
 			$error = null;
 			$error['user'] = $user;
