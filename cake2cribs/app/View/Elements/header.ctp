@@ -48,7 +48,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 					if (isset($page) && isset($sublets_launch_date) && $sublets_launch_date < date('Y-m-d')) { ?>
 					<a class="review_btn btn" href="/sublet/welcome" target="_blank">Post My Sublet</a>
 					<?php } else { ?>
-					<a class="review_btn btn" href="http://freeonlinesurveys.com/app/rendersurvey.asp?sid=fznns9v2mw1kd33346886&amp;refer=www%2Egoogle%2Ecom">Review my rental or dorm</a>
+					<a class="review_btn btn" href="https://docs.google.com/forms/d/1tEBIhIiZXEMfORfHAiM1rDlQhvpdMeEUoOG6jzt-0J0/viewform" target="_blank">Review my rental or dorm</a>
 					<?php } ?>
 				</li>
 		<?php

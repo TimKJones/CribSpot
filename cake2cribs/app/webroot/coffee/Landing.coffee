@@ -46,8 +46,6 @@ class A2Cribs.Landing
 			
 		if @locations?.length?
 			random_school = Math.floor((Math.random() * @locations.length))
-			if @locations[random_school].University.name.indexOf("Detroit") isnt -1
-				random_school = 0
 			set_school @locations[random_school]
 
 		$(".university_link").click (event) =>

@@ -14,6 +14,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
 
 	echo $this->Html->meta('canonical', 'https://cribspot.com/', array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+
+	echo $this->element('SEO/facebook_meta_tag', array('title' => 'Cribspot - College Off-Campus Housing & Apartments.', 'url' => 'https://cribspot.com/', 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => 'Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying'));
 ?>
 
 
@@ -31,11 +33,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
 			<?php
 			foreach ($locations as $university) {
-				if (strpos($university['University']["name"], 'Detroit') === false)
-				{
-					$school_name = str_replace(" ", "_", $university['University']['name']);
-					echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
-				}
+				$school_name = str_replace(" ", "_", $university['University']['name']);
+				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
 			}
 
 			?>
@@ -47,8 +46,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 <div id="school_page">
 	<?php
 		foreach ($locations as $university) {
-			if (strpos($university['University']['name'], 'Detroit') === false)
-				echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
+			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
 	<div>
@@ -171,7 +169,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 <?php 
 
 	echo $this->element('Login/login');
-	echo $this->element('Login/signup', array('locations' => $locations, 'user_years' => $user_years));
+	echo $this->element('Login/signup');
 	echo $this->element('Invitations/email_invite');
 
 	$this->Js->buffer('

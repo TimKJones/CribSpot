@@ -12,8 +12,16 @@
     */
 
 
-    function Image(image) {
+    function Image(image, listing_id) {
       var i, image_object, _i, _len, _ref;
+      if (listing_id == null) {
+        listing_id = null;
+      }
+      if (listing_id != null) {
+        this.listing_id = listing_id;
+        this.class_name = "image";
+        this.image_array = image;
+      }
       if (image.length !== 0) {
         this.class_name = "image";
         this.image_array = image;
