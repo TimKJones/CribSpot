@@ -14,6 +14,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
 
 	echo $this->Html->meta('canonical', 'https://cribspot.com/', array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+
+	echo $this->element('SEO/facebook_meta_tag', array('title' => 'Cribspot - College Off-Campus Housing & Apartments.', 'url' => 'https://cribspot.com/', 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => 'Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying'));
 ?>
 
 
