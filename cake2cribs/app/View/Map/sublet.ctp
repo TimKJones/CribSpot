@@ -14,7 +14,11 @@
 		$university["name"] . " sublets, " . $university["name"] . " subleases, " . $university["name"] . " temporary housing, " .$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
 	);
 
-	$this->Html->meta('description', "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many sublets Cribspot has to offer.", array('inline' => false));
+	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "_", $school_name);
+	$description = "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many subleases Cribspot has to offer.";
+
+	echo $this->Html->meta('description', $description, array('inline' => false));
+	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 /* -------------------------- BOTH ------------------------------------ */
 
 	echo $this->element('header', 
@@ -31,4 +35,5 @@
 	echo $this->element('map', array('active_listing_type' => $active_listing_type, 'university' => $university));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
+	echo $this->element('SEO/facebook_meta_tag', array('title' => $university["name"] . ' Sublets', 'url' => $url, 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => $description));
 ?>
