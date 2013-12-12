@@ -41,11 +41,9 @@ set rent price
         }
       });
       return this.div.on('save_rental', '.rental_edit', function(event, input) {
-        var a2_object, field, listing_id, value;
-        field = input.data("field");
-        value = input.data("value");
+        var a2_object, listing_id;
         listing_id = $(event.currentTarget).data("listing-id");
-        a2_object = A2Cribs.Get(input.data("object"), listing_id);
+        a2_object = A2Cribs.UserCache.Get(input.data("object"), listing_id);
         a2_object[input.data("field")] = input.data("value");
         return _this.Save(listing_id);
       });
@@ -242,7 +240,7 @@ set rent price
     QuickRental.AddRental = function(listing, container) {
       var listing_row, rental;
       rental = A2Cribs.UserCache.Get("rental", listing.GetId());
-      listing_row = "<div class=\"rental_edit\" data-listing-id=\"" + (listing.GetId()) + "\">\n	<span class=\"unit_description pull-left\">" + (rental.GetUnitStyle()) + " " + rental.unit_style_description + " - " + rental.beds + "Br</span>\n	<div class=\"btn-group pull-left\" data-toggle=\"buttons-radio\" data-object=\"listing\" data-value=\"" + (listing.available ? "1" : "0") + "\">\n		<button type=\"button\" class=\"btn btn-available " + (listing.available ? "active" : "") + "\" data-value=\"1\">Available</button>\n		<button type=\"button\" class=\"btn btn-leased " + (!listing.available ? "active" : "") + "\" data-value=\"0\">Leased</button>\n	</div>\n	<input type=\"text\" class=\"rent\" placeholder=\"Rent\" value=\"" + rental.rent + "\" data-object=\"rental\">\n	<input type=\"text\" class=\"start_date\" placeholder=\"Lease Start Date\" value=\"" + rental.start_date + "\" data-object=\"rental\">\n	<span class=\"not-saved save-note hide\"><i class='icon-spinner icon-spin'></i> Saving...</span>\n	<span class=\"saved save-note hide\"><i class='icon-ok-sign'></i> Saved</span>\n	<button class=\"edit_rental pull-right btn btn-primary\">Edit</button>\n</div>";
+      listing_row = "<div class=\"rental_edit\" data-listing-id=\"" + (listing.GetId()) + "\">\n	<span class=\"unit_description pull-left\">" + (rental.GetUnitStyle()) + " " + rental.unit_style_description + " - " + rental.beds + "Br</span>\n	<div class=\"btn-group pull-left\" data-toggle=\"buttons-radio\" data-object=\"listing\" data-field=\"available\" data-value=\"" + (listing.available ? "1" : "0") + "\">\n		<button type=\"button\" class=\"btn btn-available " + (listing.available ? "active" : "") + "\" data-value=\"1\">Available</button>\n		<button type=\"button\" class=\"btn btn-leased " + (!listing.available ? "active" : "") + "\" data-value=\"0\">Leased</button>\n	</div>\n	<input type=\"text\" class=\"rent\" placeholder=\"Rent\" value=\"" + rental.rent + "\" data-object=\"rental\">\n	<input type=\"text\" class=\"start_date\" placeholder=\"Lease Start Date\" value=\"" + rental.start_date + "\" data-object=\"rental\">\n	<span class=\"not-saved save-note hide\"><i class='icon-spinner icon-spin'></i> Saving...</span>\n	<span class=\"saved save-note hide\"><i class='icon-ok-sign'></i> Saved</span>\n	<button class=\"edit_rental pull-right btn btn-primary\">Edit</button>\n</div>";
       return container.find(".unit_list").append($(listing_row));
     };
 

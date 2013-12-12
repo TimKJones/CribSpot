@@ -34,7 +34,7 @@ class A2Cribs.QuickRental
 			# Get the listing id from the element 
 			listing_id = $(event.currentTarget).data("listing-id")
 			# Retrieve object from the cache
-			a2_object = A2Cribs.Get input.data("object"), listing_id
+			a2_object = A2Cribs.UserCache.Get input.data("object"), listing_id
 			# Updates the cached object
 			a2_object[input.data("field")] = input.data("value")
 			@Save listing_id
@@ -242,7 +242,7 @@ class A2Cribs.QuickRental
 		listing_row = """
 			<div class="rental_edit" data-listing-id="#{listing.GetId()}">
 				<span class="unit_description pull-left">#{rental.GetUnitStyle()} #{rental.unit_style_description} - #{rental.beds}Br</span>
-				<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-value="#{if listing.available then "1" else "0"}">
+				<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-field="available" data-value="#{if listing.available then "1" else "0"}">
 					<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
 					<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
 				</div>
