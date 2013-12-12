@@ -13,7 +13,7 @@
 
 	$this->set('title_for_layout', $name . $listing["Marker"]["street_address"] . ", " . $listing["Marker"]["city"] . ", " .$listing["Marker"]["state"] . " " . $listing["Marker"]["zip"] . " - Cribspot");
 	$this->set('meta_image', $image_url);
-	$this->set('url', $url);
+	$this->set('canonical_url', $url);
 	$this->set('meta_description', $listing[$listing_type]['description']);
 
 	$this->Html->meta('keywords', 

@@ -108,7 +108,7 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 }
 
 		if (!isset($canonical_url))
-			$canonical_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			$canonical_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		if (!isset($meta_image))
 			$meta_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
 		if (!isset($meta_description))
