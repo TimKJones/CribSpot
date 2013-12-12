@@ -107,10 +107,19 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 	echo $this->Html->script('src/program.js?v=106');
 }
 
+		if (!isset($canonical_url))
+			$canonical_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		if (!isset($meta_image))
+			$meta_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
+		if (!isset($meta_description))
+			$meta_description = "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.";
+
 		echo $this->fetch('script');
 		echo $this->Html->script('less');
 
 		echo $this->Html->scriptBlock('var jsVars = '.$this->Js->object($jsVars).';');
+
+		echo $this->element('SEO/facebook_meta_tag', array('title' => $title_for_layout, 'url' => $canonical_url, 'image_path' => $meta_image, 'description' => $meta_description));
 
 		/* Write buffer for JS in various element views */
 		echo $this->Js->writeBuffer();
