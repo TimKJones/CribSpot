@@ -1,4 +1,5 @@
 class A2Cribs.Listing extends A2Cribs.Object
+	@LISTING_TYPES = ['Rental', 'Sublet']
 	constructor: (listing) ->
 		super "listing", listing
 
@@ -36,4 +37,17 @@ class A2Cribs.Listing extends A2Cribs.Object
 			return yes
 		return no
 
-        
+	###
+	Gets all objects connected to the listing
+	###
+	GetConnectedObject: ->
+		listing_string = A2Cribs.Listing.LISTING_TYPES[parseInt(@listing_type, 10)]
+		a2objects = ['Listing', 'Image', listing_string]
+		ret_object = {}
+		for a2object in a2objects
+			obj = A2Cribs.UserCache.Get a2object.toLowerCase(), @GetId()
+			if obj?
+				ret_object[a2object] = obj.GetObject()
+				
+		return ret_object
+

@@ -7,6 +7,8 @@
 
     __extends(Listing, _super);
 
+    Listing.LISTING_TYPES = ['Rental', 'Sublet'];
+
     function Listing(listing) {
       Listing.__super__.constructor.call(this, "listing", listing);
     }
@@ -67,6 +69,26 @@
         return true;
       }
       return false;
+    };
+
+    /*
+    	Gets all objects connected to the listing
+    */
+
+
+    Listing.prototype.GetConnectedObject = function() {
+      var a2object, a2objects, listing_string, obj, ret_object, _i, _len;
+      listing_string = A2Cribs.Listing.LISTING_TYPES[parseInt(this.listing_type, 10)];
+      a2objects = ['Listing', 'Image', listing_string];
+      ret_object = {};
+      for (_i = 0, _len = a2objects.length; _i < _len; _i++) {
+        a2object = a2objects[_i];
+        obj = A2Cribs.UserCache.Get(a2object.toLowerCase(), this.GetId());
+        if (obj != null) {
+          ret_object[a2object] = obj.GetObject();
+        }
+      }
+      return ret_object;
     };
 
     return Listing;
