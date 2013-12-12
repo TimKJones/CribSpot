@@ -110,7 +110,7 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 		if (!isset($canonical_url))
 			$canonical_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		if (!isset($meta_image))
-			$meta_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
+			$meta_image = 'https://cribspot.com/img/upright_logo.png';
 		if (!isset($meta_description))
 			$meta_description = "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.";
 
