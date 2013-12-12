@@ -5,7 +5,9 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/Login', array('inline' => false));
 }
 
-	echo $this->Html->meta('canonical', 'https://cribspot.com/university/' . str_replace(" ", "_", $school_name), array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+	$url = 'https://cribspot.com/university/' . str_replace(" ", "_", $school_name);
+
+	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
 	if (strpos($university["name"], 'Detroit') === false)
 		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing - Cribspot');
@@ -14,6 +16,8 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 
 	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
+
+	echo $this->element('SEO/facebook_meta_tag', array('title' => $university["name"] . ' Off-Campus Housing - Cribspot', 'url' => $url, 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => 'Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying'));
 ?>
 
 <div id="school_page" style="background-image:url(<?= $university['background_image']; ?>)">
