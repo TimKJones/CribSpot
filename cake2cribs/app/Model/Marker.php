@@ -105,15 +105,34 @@ class Marker extends AppModel {
 		$lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
 		$lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
 
-
-		
-
 		$this->virtualFields = array(
-    		'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
+    		'distance' => "(GLength(
+			LineStringFromWKB(
+			  LineString(
+			    geoPoint, 
+			    GeomFromText('POINT(".$latitude." ".$longitude.")')
+			  )
+			 )
+			))"
 		);
 
+		$data = $this->query("
+			SELECT
+			marker_id,
+			(GLength(
+			LineStringFromWKB(
+			  LineString(
+			    coordinates, 
+			    GeomFromText('POINT(".$latitude." ".$longitude.")')
+			  )
+			 )
+			))
+			AS distance
+			FROM markers
+			WHERE distance < " . $radius
+		);
 		
-		if(array_key_exists("conditions", $options)){
+		/*if(array_key_exists("conditions", $options)){
 			// array_push($options['conditions'], array('distance <' => $radius));
 			array_push($options['conditions'], array('Marker.latitude >' => $lat1));
 			array_push($options['conditions'], array('Marker.latitude <=' => $lat2));
@@ -123,7 +142,7 @@ class Marker extends AppModel {
 
 		}else{
 			$options['conditions'] = array('distance <' => $radius);
-		}
+		} */
 
 		$data = $this->find('all', $options);
 		return $data;

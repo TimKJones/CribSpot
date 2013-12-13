@@ -556,10 +556,11 @@ class Listing extends AppModel {
         $search_conditions = array(
                 'Listing.visible' => 1,
                 'Listing.listing_type' => $listing_type,
-                'Marker.latitude >' => $lat_long_pairs['lat1'],
+                /*'Marker.latitude >' => $lat_long_pairs['lat1'],
                 'Marker.latitude <=' => $lat_long_pairs['lat2'],
                 'Marker.longitude >' => $lat_long_pairs['lon1'],
-                'Marker.longitude <=' => $lat_long_pairs['lon2']
+                'Marker.longitude <=' => $lat_long_pairs['lon2']*/
+                'distance' < $radius
         );
 
         $table = 'Rental';
@@ -572,16 +573,68 @@ class Listing extends AppModel {
 
         $options['conditions'] = $search_conditions;
 
-        $this->virtualFields = array(
+        /*$this->virtualFields = array(
             'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
-        );
+        );*/
 
-        $basicData = $this->find('all', $options);
+        $this->virtualFields = array(
+    		'distance' => "(GLength(
+			LineStringFromWKB(
+			  LineString(
+			    geoPoint, 
+			    GeomFromText('POINT(".$latitude." ".$longitude.")')
+			  )
+			 )
+			))"
+		);
+
+        //$basicData = $this->find('all', $options);
+        $basicData = $this->query("
+			SELECT
+				Rental.rent,
+                Rental.listing_id,
+                Rental.beds,
+                Rental.start_date,
+                Rental.lease_length,
+                Listing.available,
+                Listing.marker_id,
+                Listing.listing_id,
+                Listing.available,
+                Listing.scheduling,
+                Marker.marker_id,
+                Marker.latitude,
+                Marker.longitude,
+                Marker.street_address,
+                Marker.building_type_id,
+                Marker.alternate_name,
+                Marker.city,
+                Marker.state,
+                Marker.zip,
+			(GLength(
+			LineStringFromWKB(
+			  LineString(
+			    coordinates, 
+			    GeomFromText('POINT(".$latitude." ".$longitude.")')
+			  )
+			 )
+			))
+			AS distance
+			FROM markers Marker
+			inner join listings Listing on Listing.marker_id = Marker.marker_id
+			inner join rentals Rental on Rental.listing_id = Listing.listing_id
+			order by distance"
+        );
+       // CakeLog::write('basicdata', print_r($basicData, true));
+        $matchedBasicData = array();
         foreach ($basicData as &$listing) {
-                $listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
+        		if ($listing[0]['distance'] * 69 < $radius){
+                	$listing["Marker"]["building_type_id"] = $this->Rental->building_type(intval($listing['Marker']['building_type_id']));
+                	unset($listing[0]);
+                	array_push($matchedBasicData, $listing);
+        		}
         }
 
-        return $basicData;
+        return $matchedBasicData;
     }
 
 	/*
