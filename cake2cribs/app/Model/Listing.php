@@ -540,76 +540,18 @@ class Listing extends AppModel {
 
         $latitude = $target_lat_long['latitude'];
         $longitude = $target_lat_long['longitude'];
-        $lat1 = $latitude - $radius/69;
-        $lat2 = $latitude + $radius/69;
-        
-        $lon1 = $longitude - $radius/abs(cos(deg2rad($latitude))*69);
-        $lon2 = $longitude + $radius/abs(cos(deg2rad($latitude))*69);
-
-        $lat_long_pairs = array(
-                'lat1' => $lat1,
-                'lat2' => $lat2,
-                'lon1' => $lon1,
-                'lon2' => $lon2
-        );
-
-        $search_conditions = array(
-                'Listing.visible' => 1,
-                'Listing.listing_type' => $listing_type,
-                /*'Marker.latitude >' => $lat_long_pairs['lat1'],
-                'Marker.latitude <=' => $lat_long_pairs['lat2'],
-                'Marker.longitude >' => $lat_long_pairs['lon1'],
-                'Marker.longitude <=' => $lat_long_pairs['lon2']*/
-                'distance' < $radius
-        );
 
         $table = 'Rental';
-        if (intval($listing_type) === self::LISTING_TYPE_SUBLET)
+        $rentals_sublet_inner_join = "inner join rentals Rental on Rental.listing_id = Listing.listing_id";
+        if (intval($listing_type) === self::LISTING_TYPE_SUBLET){
         	$table = 'Sublet';
+        	$rentals_sublet_inner_join = "inner join sublets Sublet on Sublet.listing_id = Listing.listing_id";
+        }
 
-        $this->contain($table, 'Marker');
-        $options = array();
-        $options['fields'] = $this->BASIC_DATA_FIELDS[$table];
+        $fields = implode(',', $this->BASIC_DATA_FIELDS[$table]);
 
-        $options['conditions'] = $search_conditions;
-
-        /*$this->virtualFields = array(
-            'distance' => "( 3959 * acos( cos( radians($latitude) ) * cos( radians( Marker.latitude ) ) * cos( radians( Marker.longitude ) - radians($longitude) ) + sin( radians($latitude) ) * sin( radians( Marker.latitude ) ) ) )"
-        );*/
-
-        $this->virtualFields = array(
-    		'distance' => "(GLength(
-			LineStringFromWKB(
-			  LineString(
-			    geoPoint, 
-			    GeomFromText('POINT(".$latitude." ".$longitude.")')
-			  )
-			 )
-			))"
-		);
-
-        //$basicData = $this->find('all', $options);
-        $basicData = $this->query("
-			SELECT
-				Rental.rent,
-                Rental.listing_id,
-                Rental.beds,
-                Rental.start_date,
-                Rental.lease_length,
-                Listing.available,
-                Listing.marker_id,
-                Listing.listing_id,
-                Listing.available,
-                Listing.scheduling,
-                Marker.marker_id,
-                Marker.latitude,
-                Marker.longitude,
-                Marker.street_address,
-                Marker.building_type_id,
-                Marker.alternate_name,
-                Marker.city,
-                Marker.state,
-                Marker.zip,
+        $queryString = "SELECT " . $fields . 
+				",
 			(GLength(
 			LineStringFromWKB(
 			  LineString(
@@ -620,10 +562,12 @@ class Listing extends AppModel {
 			))
 			AS distance
 			FROM markers Marker
-			inner join listings Listing on Listing.marker_id = Marker.marker_id
-			inner join rentals Rental on Rental.listing_id = Listing.listing_id
-			order by distance"
-        );
+			inner join listings Listing on Listing.marker_id = Marker.marker_id ".
+			$rentals_sublet_inner_join .
+			" order by distance";
+
+		CakeLog::write('querystring', $queryString);
+        $basicData = $this->query($queryString);
        // CakeLog::write('basicdata', print_r($basicData, true));
         $matchedBasicData = array();
         foreach ($basicData as &$listing) {
@@ -659,8 +603,8 @@ class Listing extends AppModel {
 		returns an array of Listings, you can provide an optional options
 		parameter if you want to further refine the search.
 	*/
-	public function GetListingsNear($latitude, $longitude, $radius, $options=null){
-		
+	public function GetListingsNear($latitude, $longitude, $radius, $options=null)
+	{	
 		if($options==null){
 			$options = array();
 		}

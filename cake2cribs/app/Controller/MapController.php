@@ -107,7 +107,7 @@ Only return */
         CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-CakeLog::write('debuggingit', '-1');
+
         $response = $this->_getBasicData($listing_type, $university_id);
         $this->set("response", $response);
     }
