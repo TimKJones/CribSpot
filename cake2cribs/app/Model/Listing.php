@@ -632,6 +632,8 @@ class Listing extends AppModel {
                 	unset($listing[0]);
                 	array_push($matchedBasicData, $listing);
         		}
+        		else
+        			break;
         }
 
         return $matchedBasicData;
