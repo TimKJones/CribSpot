@@ -62,14 +62,11 @@
       this.DOMRoot = DOMRoot;
       this.topSection = _.template(A2Cribs.Hotlist.topSectionTemplate);
       this.friendsList = _.template(A2Cribs.Hotlist.friendsListTemplate);
+      this.notLoggedIn = _.template(A2Cribs.Hotlist.notLoggedInTemplate);
       this.friendsListPopup = _.template(A2Cribs.Hotlist.friendsListPopupTemplate);
       this.expandButton = _.template(A2Cribs.Hotlist.expandButtonTemplate);
-      this.currentHotlist = this.get();
       this.sources = [
         {
-          name: 'test',
-          local: ['hello', 'hellotest', 'hellotest2', 'hellotest3', 'hellotest4']
-        }, {
           name: 'accounts',
           remote: {
             url: myBaseUrl + 'users/getbyname?name=%QUERY',
@@ -135,64 +132,17 @@
     };
 
     Hotlist.prototype.setup = function() {
-      this.renderTopSection();
-      this.show();
-      this.renderBottomSection();
-      return A2Cribs.FeaturedListings.resizeHandler();
-    };
-
-    Hotlist.prototype.renderTopSection = function() {
       var _this = this;
-      this.DOMRoot.find('#top-section').html(this.topSection());
-      this.DOMRoot.find('#title').show();
-      this.DOMRoot.find('#add-field').hide();
-      this.DOMRoot.find('#btn-add').hide();
-      if (typeof FB === !'undefined') {
-        this.handleFBLoad();
-      } else {
-        $.when(window.fbInit).then(function() {
-          return _this.handleFBLoad();
-        });
-      }
-      this.DOMRoot.find('.twitter-typeahead').hide();
-      this.DOMRoot.find('#link-info').popover({
-        title: 'What is this?',
-        content: "you can share with your friends, either by clicking the 'share' button on a listing, or by dragging the listing to one of your friends on the hotlist.",
-        placement: 'bottom'
-      });
-      return $("#add-field").keyup(function(event) {
-        if (event.keyCode === 13) {
-          return $("#btn-add").click();
-        }
+      return $.when(A2Cribs.Login.CheckLoggedIn()).always(function() {
+        _this.renderTopSection();
+        _this.show();
+        _this.renderBottomSection();
+        _this.currentHotlist = _this.get();
+        return A2Cribs.FeaturedListings.resizeHandler();
       });
     };
 
-    Hotlist.prototype.renderFriendsList = function(data) {
-      this.DOMRoot.find('#friends').html(this.friendsList(data));
-      this.DOMRoot.find('#add-field').val("");
-      this.DOMRoot.find('.tt-hint').val("");
-      this.DOMRoot.find('.btn-hotlist-remove').hide();
-      this.DOMRoot.find('.friend-name').hide();
-      $(document).on('mousedown mouseup', '.grab, .grabbing', function(event) {
-        return $(this).toggleClass('grab').toggleClass('grabbing');
-      });
-      this.DOMRoot.find('ul.friends.no-friends').droppable({
-        accept: '.fl-sb-item, .large-bubble',
-        hoverClass: 'drop-hover',
-        tolerance: 'pointer',
-        drop: function(event, ui) {
-          var listing_id;
-          listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id');
-          ui.helper.hide();
-          return FB.ui({
-            method: 'send',
-            link: "http://www.cribspot.com/listing/" + listing_id,
-            name: "Share this listing"
-          }, function(response) {
-            return console.log(response);
-          });
-        }
-      });
+    Hotlist.prototype.setupDroppables = function() {
       this.DOMRoot.find('li.friend').droppable({
         accept: '.fl-sb-item, .large-bubble',
         hoverClass: 'drop-hover',
@@ -209,12 +159,77 @@
           return ui.helper.hide();
         }
       });
-      this.DOMRoot.find('li.friend').tooltip({
-        animated: 'fade',
-        container: 'body'
+      return this.DOMRoot.find('ul.friends.no-friends').droppable({
+        accept: '.fl-sb-item, .large-bubble',
+        hoverClass: 'drop-hover',
+        tolerance: 'pointer',
+        drop: function(event, ui) {
+          var listing_id;
+          listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id');
+          ui.helper.hide();
+          return FB.ui({
+            method: 'send',
+            link: "http://www.cribspot.com/listing/" + listing_id,
+            name: "Share this listing"
+          }, function(response) {
+            return console.log(response);
+          });
+        }
       });
-      this.showOrHideExpandArrow();
-      return this.setHeight(true);
+    };
+
+    Hotlist.prototype.destroyDroppables = function() {
+      this.DOMRoot.find('li.friend').droppable("destroy");
+      return this.DOMRoot.find('ul.friends.no-friends').droppable("destroy");
+    };
+
+    Hotlist.prototype.renderTopSection = function() {
+      var _this = this;
+      this.DOMRoot.find('#top-section').html(this.topSection());
+      this.DOMRoot.find('#title').show();
+      this.DOMRoot.find('#add-field').hide();
+      this.DOMRoot.find('#btn-add').hide();
+      if (typeof FB !== "undefined" && FB !== null) {
+        this.handleFBLoad();
+      } else {
+        $.when(window.fbInit).then(function() {
+          return _this.handleFBLoad();
+        });
+      }
+      this.DOMRoot.find('.twitter-typeahead').hide();
+      this.DOMRoot.find('#link-info').popover({
+        title: 'What is this?',
+        content: "You can share listings with your friends!<br/>Either click the <i class='icon-user'></i> icon on a listing or drag the listing to one of your friends on the hotlist.",
+        html: true,
+        placement: 'bottom'
+      });
+      return $("#add-field").keyup(function(event) {
+        if (event.keyCode === 13) {
+          return $("#btn-add").click();
+        }
+      });
+    };
+
+    Hotlist.prototype.renderFriendsList = function(data) {
+      if (A2Cribs.Login.logged_in) {
+        this.DOMRoot.find('#friends').html(this.friendsList(data));
+        this.DOMRoot.find('#add-field').val("");
+        this.DOMRoot.find('.tt-hint').val("");
+        this.DOMRoot.find('.btn-hotlist-remove').hide();
+        this.DOMRoot.find('.friend-name').hide();
+        $(document).on('mousedown mouseup', '.grab, .grabbing', function(event) {
+          return $(this).toggleClass('grab').toggleClass('grabbing');
+        });
+        this.setupDroppables();
+        this.DOMRoot.find('li.friend').tooltip({
+          animated: 'fade',
+          container: 'body'
+        });
+        return this.showOrHideExpandArrow();
+      } else {
+        this.DOMRoot.find("#friends").html(this.notLoggedIn());
+        return this.setHeight(true);
+      }
     };
 
     Hotlist.prototype.startedDragging = function() {
@@ -260,50 +275,58 @@
 
     Hotlist.prototype.get = function() {
       var _this = this;
-      return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
-        return _this.currentHotlist = data;
-      }).fail(function(data) {
-        return console.log("ERROR in A2Cribs.HotlistObj.get(): ", data);
-      });
+      if (A2Cribs.Login.logged_in) {
+        return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
+          return _this.currentHotlist = data;
+        }).fail(function(data) {
+          return console.log("ERROR in A2Cribs.HotlistObj.get(): ", data);
+        });
+      }
     };
 
     Hotlist.prototype.show = function() {
       var _this = this;
-      return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
-        return _this.renderFriendsList({
-          friends: data
+      if (A2Cribs.Login.logged_in) {
+        return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
+          return _this.renderFriendsList({
+            friends: data
+          });
+        }).fail(function(data) {
+          return console.log("ERROR in A2Cribs.HotlistObj.show(): ", data);
         });
-      }).fail(function(data) {
-        return console.log("ERROR in A2Cribs.HotlistObj.show(): ", data);
-      });
+      } else {
+        return this.renderFriendsList(null);
+      }
     };
 
     Hotlist.prototype.add = function(friend) {
-      var postdata, route,
+      var postdata, route, _ref,
         _this = this;
-      if (typeof $('#add-field').data('friend').facebook_id !== 'undefined') {
-        route = 'invitations/invitefbfriend';
-        postdata = {
-          friend: $('#add-field').data('friend')
-        };
-        this.showFBAddMessageModal($('#add-field').data('friend').facebook_id);
-      } else {
-        route = 'invitations/invitefriends';
-        postdata = {
-          emails: [$('#add-field').val()]
-        };
+      if (A2Cribs.Login.logged_in) {
+        if (((_ref = $('#add-field').data('friend')) != null ? _ref.facebook_id : void 0) != null) {
+          route = 'invitations/invitefbfriend';
+          postdata = {
+            friend: $('#add-field').data('friend')
+          };
+          this.showFBAddMessageModal($('#add-field').data('friend').facebook_id);
+        } else {
+          route = 'invitations/invitefriends';
+          postdata = {
+            emails: [$('#add-field').val()]
+          };
+        }
+        return $.when(this.call(route, 'POST', postdata).then(function(data) {
+          return _this.call('friends/hotlist', 'GET', null);
+        }).then(function(data) {
+          _this.currentHotlist = data;
+          _this.renderFriendsList({
+            friends: data
+          });
+          return _this.expandForEdit();
+        }).fail(function(data) {
+          return console.log("ERROR: " + data);
+        }));
       }
-      return $.when(this.call(route, 'POST', postdata).then(function(data) {
-        return _this.call('friends/hotlist', 'GET', null);
-      }).then(function(data) {
-        _this.currentHotlist = data;
-        _this.renderFriendsList({
-          friends: data
-        });
-        return _this.expandForEdit();
-      }).fail(function(data) {
-        return console.log("ERROR: " + data);
-      }));
     };
 
     Hotlist.prototype.showFBAddMessageModal = function(friend) {
@@ -316,36 +339,40 @@
 
     Hotlist.prototype.remove = function(friend) {
       var _this = this;
-      return $.when(this.call('friends/hotlist/remove', 'POST', {
-        friend: friend
-      }).then(function(data) {
-        _this.renderFriendsList({
-          friends: data
-        });
-        _this.expandForEdit();
-        return _this.currentHotlist = data;
-      }).fail(function(data) {
-        return console.log("ERROR: " + data);
-      }));
+      if (A2Cribs.Login.logged_in) {
+        return $.when(this.call('friends/hotlist/remove', 'POST', {
+          friend: friend
+        }).then(function(data) {
+          _this.renderFriendsList({
+            friends: data
+          });
+          _this.expandForEdit();
+          return _this.currentHotlist = data;
+        }).fail(function(data) {
+          return console.log("ERROR: " + data);
+        }));
+      }
     };
 
     Hotlist.prototype.share = function(listing, friend) {
       var _this = this;
-      console.log("sharing", listing, friend);
-      return $.when(this.call('friends/share', 'POST', {
-        friend: friend,
-        listing: listing
-      }).then(function(data) {
-        if (data.success === true) {
-          return A2Cribs.UIManager.Success("Successfully Shared Listing");
-        } else {
+      if (A2Cribs.Login.logged_in) {
+        console.log("sharing", listing, friend);
+        return $.when(this.call('friends/share', 'POST', {
+          friend: friend,
+          listing: listing
+        }).then(function(data) {
+          if (data.success === true) {
+            return A2Cribs.UIManager.Success("Successfully Shared Listing");
+          } else {
+            return A2Cribs.UIManager.Error("There was a problem sharing the listing.");
+          }
+        }).fail(function(data) {
           return A2Cribs.UIManager.Error("There was a problem sharing the listing.");
-        }
-      }).fail(function(data) {
-        return A2Cribs.UIManager.Error("There was a problem sharing the listing.");
-      }).always(function(data, status, jqXHR) {
-        return console.log(data);
-      }));
+        }).always(function(data, status, jqXHR) {
+          return console.log(data);
+        }));
+      }
     };
 
     Hotlist.prototype.shareToEmail = function(listing, friend) {
@@ -391,6 +418,7 @@
       this.isExpanded = false;
       this.showOrHideExpandArrow();
       this.setHeight(true);
+      this.setupDroppables();
       return this.DOMRoot.find('li.friend').tooltip({
         animated: 'fade',
         container: 'body'
@@ -418,6 +446,7 @@
       this.DOMRoot.find(hides.join(',')).hide();
       this.DOMRoot.find('#btn-edit').addClass('editing').html('Done');
       this.DOMRoot.find('li.friend').tooltip("destroy");
+      this.destroyDroppables();
       return this.setHeight(false, true);
     };
 
@@ -480,11 +509,13 @@
       }
     };
 
-    Hotlist.friendsListPopupTemplate = "<ul class=\"friends-popup\">\n  <li><input type='email' id='share-to-email' placeholder='to email'></input><a class='share-to-email-btn' href='#' onClick='A2Cribs.HotlistObj.shareToEmail(<%=listing_id%>, $(\"#share-to-email\").val());'><i class=\"icon-share\"></i></a></li>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li>\n      <% name = elem.first_name ? elem.first_name + ' ' + elem.last_name : elem.email %>\n      <% if(elem.facebook_id) { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.shareToFB(<%=listing_id%>, <%=elem.facebook_id%>)'><%=name%></a>\n      <% } else { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=name%></a>\n      <% } %>\n    </li>\n  <% }) %>\n</ul>";
+    Hotlist.friendsListPopupTemplate = "<div id='shareto'>\n  <input type='email' id='share-to-email' placeholder='to email'></input>\n  <a class='share-to-email-btn' href='#' onClick='A2Cribs.HotlistObj.shareToEmail(<%=listing_id%>, $(\"#share-to-email\").val());'>\n    <i class=\"icon-share\"></i>\n  </a>\n</div>\n<ul class=\"friends-popup\">\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li>\n      <% name = elem.first_name ? elem.first_name + ' ' + elem.last_name : elem.email %>\n      <% if(elem.facebook_id) { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.shareToFB(<%=listing_id%>, <%=elem.facebook_id%>)'><%=name%></a>\n      <% } else { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=name%></a>\n      <% } %>\n    </li>\n  <% }) %>\n</ul>";
 
     Hotlist.topSectionTemplate = "<div id='share-all'>\n  <span class='title'>Share with your Friends <a title='What is this?' href='#' id='link-info' class='icon icon-info-sign'></a></span>\n  <span class='share-text'>Share to All</span>\n</div>\n<input class='typeahead' type='text' autocomplete='off' id='add-field'></input>\n<div id='buttons' class='pull-right'>\n  <a href='#' data-toggle='popover' id='btn-add' class='btn-hotlist btn-hotlist-add' onClick=\"A2Cribs.HotlistObj.add($('#add-field').val())\">+</a>\n  <a href='#' id='btn-edit' class='btn-hotlist btn-hotlist-edit' onClick='A2Cribs.HotlistObj.toggleEdit()'><i class='icon-edit'></i></a>\n</div>\n<div style='clear: both;'></div>";
 
     Hotlist.friendsListTemplate = "<ul class='friends <%=friends.length ? \"has-friends\" : \"no-friends\"%>'>\n  <% if(friends.length) { %>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <% \n      var tooltitle = elem.email \n      if (elem.first_name) {\n        tooltitle = elem.first_name + ' ' + elem.last_name\n      }\n    %> \n    <li class='friend' data-id='<%=elem.id%>' data-toggle='tooltip' title='<%=tooltitle%>'' data-facebook_id='<%=elem.facebook_id || null%>' data-email='<%=elem.email%>'>\n      <% if (elem.facebook_id){ %>\n        <img class='friend-abbr hotlist-profile-img' src='https://graph.facebook.com/<%=elem.facebook_id%>/picture?width=80&height=80'></img>\n      <% } else if (elem.profile_img) { %>\n        <img class='friend-abbr otlist-profile-img' src='<%=elem.profile_img%>'></img>\n      <% } else if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n        <span class='friend-abbr'>\n          <%=elem.first_name[0].toUpperCase()%><%=elem.last_name[0].toUpperCase()%> \n        </span>\n      <% } else { %>\n        <span class='friend-abbr'>\n          <%=elem.email[0]%>@<%=elem.email.split('@')[1][0]%>\n        </span>\n      <% } %>\n      <span class='friend-name'>\n        <% if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n          <%=elem.first_name%> <%=elem.last_name%> \n        <% } else { %>\n          <%=elem.email%>\n        <% } %>\n      </span>\n      <a class='btn-hotlist-remove btn-hotlist pull-right' href='#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'><i class='icon icon-remove-circle'></i></a>\n    </li>\n  <% }); %>\n  <% } else { %>\n    <li class='add-friends-notice'>No friends added yet.</li>\n    <li class='no-friends-notice'>Add friends by clicking here <i class='icon-reply icon-rotate'></i></li>\n    <li class='share-to-fb-notice'><i class='icon-facebook-sign'></i> Drag to Share</li>\n  <% } %>\n</ul>";
+
+    Hotlist.notLoggedInTemplate = "<ul class='friends no-friends'>\n  <li class='not-logged-in-notice'>Log In to share</li>\n</ul>";
 
     Hotlist.expandButtonTemplate = "<a href='#' onclick='A2Cribs.HotlistObj.toggleExpand()' id='expand-button'><i class='icon icon-caret-down'></i></a>";
 

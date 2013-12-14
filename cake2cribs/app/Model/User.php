@@ -223,7 +223,7 @@ class User extends AppModel {
 	public function inHotlist($user_id, $friend_id)
 	{
 		CakeLog::write('HOTLIST', "Entered inHotlist($user_id, $friend_id)");
-		$q = $this->query("SELECT COUNT(*) AS cnt FROM users_friends WHERE user_id = $user_id AND friend_id = $friend_id AND hotlist = '1'");
+		$q = $this->query("SELECT COUNT(*) AS cnt FROM users_friends WHERE user_id = $user_id AND friend_id = $friend_id AND hotlist = 1");
 		CakeLog::write('HOTLIST', print_r($q, true));
 	}
 

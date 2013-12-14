@@ -238,8 +238,13 @@ LargeBubble class
         container: 'body',
         title: 'Share this listing'
       }).click(function(e) {
+        var _this = this;
         e.preventDefault();
-        return $(this).popover('show').find("#share-to-email").keyup(function(event) {
+        $(this).popover('show');
+        return $('.popover a').on('click', function() {
+          $('.popover').popover('hide').hide();
+          return $('.popover').off('click');
+        }).find("#share-to-email").keyup(function(event) {
           if (event.keyCode === 13) {
             return $(".share-to-email-btn").click();
           }

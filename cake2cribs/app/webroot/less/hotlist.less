@@ -135,9 +135,46 @@
 
 // styles for the sharing tooltip
 .popover {
+  width: 300px;
   * {
     .box-sizing(border-box);
   }
+
+  #shareto {
+    padding: 10px;
+    padding-bottom: 0;
+
+    input {
+      height: 30px;
+    }
+
+    &:after {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
+
+    .share-to-email-btn {
+      .rounded-corners(3px);
+      display: inline;
+      float: right;
+      margin-left: 5px;
+      padding: 4px 10px;
+      width: auto;
+      border: 1px solid #777;
+      background-color: @dropdownLinkBackgroundHover;
+      color: white;
+
+      &:hover {
+        background-color: white;
+        color: @dropdownLinkBackgroundHover;
+      }
+    }
+  }
+
   ul {
     margin: 0;
     padding: 0;
@@ -148,9 +185,6 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      &:first-child {
-        padding: 10px;
-      }
 
       input {
         margin-bottom: 0;
@@ -159,27 +193,10 @@
 
       a {
         display: block;
-        padding: 10px;
+        padding: 5px;
         padding-left: 15px;
         width: 100%;
         color: @dropdownLinkBackgroundHover;
-
-        &.share-to-email-btn {
-          .rounded-corners(3px);
-          display: inline;
-          float: right;
-          margin-left: 5px;
-          padding: 4px 10px;
-          width: auto;
-          border: 1px solid #777;
-          background-color: @dropdownLinkBackgroundHover;
-          color: white;
-
-          &:hover {
-            background-color: white;
-            color: @dropdownLinkBackgroundHover;
-          }
-        }
       }
       &:hover {
         a {
@@ -277,11 +294,12 @@ a#link-info {
   margin: 0;
 }
 
-#hotlist.dragging {
+#hotlist:not(.editing).dragging {
   ul.friends li {
     .drag-popzoom;
   }
 }
+
 
 #hotlist.editing {
   #top-section, #bottom-section a {
@@ -291,6 +309,16 @@ a#link-info {
 
 #top-section, #bottom-section {
   z-index: 2;
+}
+
+.hotlist-share-grab {
+  padding: 0 5px;
+}
+
+.hotlist-share-grab i {
+  color: rgba(220,220,220,0.6) !important;
+  // text-shadow: 0 1px 0 rgba(200,200,200,0.4);
+  letter-spacing:0px;
 }
 
 #share-all {
@@ -413,11 +441,16 @@ a#link-info {
         }
       }
 
-      &.no-friends-notice, &.share-to-fb-notice, &.add-friends-notice {
+      &.not-logged-in-notice, &.no-friends-notice, &.share-to-fb-notice, &.add-friends-notice {
         width: 100%;
         font-size: 19px;
         text-align: center;
         // text-shadow: 0px 1px 0 #bbb;
+      }
+
+      &.not-logged-in-notice {
+        color: #999;
+        font-family: 'ReklameScriptRegularRegular';
       }
 
       &.no-friends-notice {
@@ -506,7 +539,7 @@ a#link-info {
   &.editing {
     #top-section, #bottom-section a {
       box-shadow: 0 0 5px rgba(20,20,20,0.6);
-      z-index: 2;
+      // z-index: 2;
     }
   }
 

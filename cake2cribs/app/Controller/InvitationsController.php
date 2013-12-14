@@ -2,7 +2,7 @@
 class InvitationsController extends AppController {
     public $helpers = array('Html');
     public $components = array('Auth');
-    public $uses = array('EmailInvitation', 'User');
+    public $uses = array('EmailInvitation', 'User', 'Listing');
     public function beforeFilter()
     {
         parent::beforeFilter();
@@ -144,12 +144,25 @@ class InvitationsController extends AppController {
 
             CakeLog::write("HOTLIST", print_r($friend, true));
 
-            if (!is_null($listing) && $this->User->inHotlist($loggedInUser['id'], $friend['User']['id'])) {
-                $subject = $first_name . ' ' . $last_name . ' has shared a listing with you.';
-                $template = 'email_invitation';
+            if (!is_null($listing)) {
+                $listing_obj = $this->Listing->GetListing($listing);
+                if(isset($listing_obj[0]['Image'][0]['image_path'])) {
+                    $img_url = 'http://www.cribspot.com/' . $listing_obj[0]['Image'][0]['image_path'];
+                }
+                if(!is_null($listing_obj)) {
+                    $listing_name = $listing_obj[0]['Marker']['street_address'];
+                    $subject = "$first_name  $last_name wants you to check out $listing_name on Cribspot!";
+                }
+                else {
+                    $subject = "$first_name  $last_name wants you to check out a property on Cribspot!";
+                }
+                CakeLog::write("HOTLIST", print_r($listing_obj, true));
+                $template = 'share_listing';
+
+                $this->set('listing_name', $listing_name);
+                $this->set('listing', $listing);
             }
 
-            $this->set('listing', $listing);
             $this->set('inviter_first_name', $first_name);
             $this->set('inviter_last_name', $last_name);
             $this->set('img_url', $img_url);

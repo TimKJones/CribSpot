@@ -192,9 +192,9 @@ class LargeBubble
 		.click (e) -> 
 			e.preventDefault()
 			$(this).popover('show')
-			# $('.popover').on 'click', =>
-				# $(this).popover('hide')
-				# $('.popover').off('click')
+			$('.popover a').on 'click', =>
+        $('.popover').popover('hide').hide()
+        $('.popover').off('click')
     .find("#share-to-email").keyup (event) ->
       $(".share-to-email-btn").click() if event.keyCode is 13
 
