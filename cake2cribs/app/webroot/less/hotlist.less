@@ -400,16 +400,22 @@ a#link-info {
 
       position: relative;
       float: left;
-      padding: 8px;
+      padding: 3px;
       width: (100% / 6);
+      text-align: center;
 
       span,img {
         .rounded-corners(3px);
       }
 
+      img {
+        height: 46px;
+        margin: 0 auto;
+      }
+
       span {
         display: block;
-        padding: 8px 0;
+        padding: 12px 0;
         width: 100%;
         border: 1px solid #c7c7c7;
         border-bottom-color: #adadad;
@@ -434,6 +440,7 @@ a#link-info {
       }
 
       &.friend.drop-hover {
+        z-index:20;
         .zoom(1.4);
         .smooth-transforms(0.05s);
         img, span {

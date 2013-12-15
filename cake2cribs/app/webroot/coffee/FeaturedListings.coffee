@@ -167,9 +167,9 @@ class A2Cribs.FeaturedListings
                 name = $(this).find('.name').html() || "this listing"
                 $( "<div class='listing-drag-helper'>Share #{name}</div>" )
               start: (event) ->
-                console.log('start')
-                $('ul.friends, #hotlist').addClass('dragging')
-                A2Cribs.HotlistObj.startedDragging()
+                if A2Cribs.Login?.logged_in
+                    $('ul.friends, #hotlist').addClass('dragging')
+                    A2Cribs.HotlistObj.startedDragging()
               stop: (event) ->
                 $('ul.friends, #hotlist').removeClass('dragging')
                 A2Cribs.HotlistObj.stoppedDragging()

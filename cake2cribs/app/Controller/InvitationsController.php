@@ -107,6 +107,10 @@ class InvitationsController extends AppController {
             $template = 'email_invitation';
             CakeLog::write('invitations', 'inviting ' . $email);
 
+            if ($email == $loggedInUser['email']) {
+                continue;
+            }
+
             if ($this->User->hasAny(array('User.email' => $email))) {
                 $friend = $this->User->find('first', array('User.email' => $email));
 

@@ -184,8 +184,11 @@
     };
 
     Hotlist.prototype.renderTopSection = function() {
-      var _this = this;
-      this.DOMRoot.find('#top-section').html(this.topSection());
+      var _ref,
+        _this = this;
+      this.DOMRoot.find('#top-section').html(this.topSection({
+        loggedIn: (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0
+      }));
       this.DOMRoot.find('#title').show();
       this.DOMRoot.find('#add-field').hide();
       this.DOMRoot.find('#btn-add').hide();
@@ -229,11 +232,17 @@
     };
 
     Hotlist.prototype.startedDragging = function() {
-      return this.expand();
+      var _ref;
+      if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+        return this.expand();
+      }
     };
 
     Hotlist.prototype.stoppedDragging = function() {
-      return this.retract();
+      var _ref;
+      if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+        return this.retract();
+      }
     };
 
     Hotlist.prototype.shareToAll = function(event, ui) {
@@ -507,7 +516,7 @@
 
     Hotlist.friendsListPopupTemplate = "<div id='shareto'>\n  <input type='email' id='share-to-email' placeholder='to email'></input>\n  <a class='share-to-email-btn' href='#' onClick='A2Cribs.HotlistObj.shareToEmail(<%=listing_id%>, $(\"#share-to-email\").val());'>\n    <i class=\"icon-share\"></i>\n  </a>\n</div>\n<ul class=\"friends-popup\">\n  <% _.each(friends, function(elem, idx, list) { %>\n    <li>\n      <% name = elem.first_name ? elem.first_name + ' ' + elem.last_name : elem.email %>\n      <% if(elem.facebook_id) { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.shareToFB(<%=listing_id%>, <%=elem.facebook_id%>)'><%=name%></a>\n      <% } else { %>\n        <a href='#' onclick='A2Cribs.HotlistObj.share(<%=listing_id%>, <%=elem.id%>)'><%=name%></a>\n      <% } %>\n    </li>\n  <% }) %>\n</ul>";
 
-    Hotlist.topSectionTemplate = "<div id='share-all'>\n  <span class='title'>Share with your Friends <a title='What is this?' href='#' id='link-info' class='icon icon-info-sign'></a></span>\n  <span class='share-text'>Share to All</span>\n</div>\n<input class='typeahead' type='text' autocomplete='off' id='add-field'></input>\n<div id='buttons' class='pull-right'>\n  <a href='#' data-toggle='popover' id='btn-add' class='btn-hotlist btn-hotlist-add' onClick=\"A2Cribs.HotlistObj.add($('#add-field').val())\">+</a>\n  <a href='#' id='btn-edit' class='btn-hotlist btn-hotlist-edit' onClick='A2Cribs.HotlistObj.toggleEdit()'><i class='icon-edit'></i></a>\n</div>\n<div style='clear: both;'></div>";
+    Hotlist.topSectionTemplate = "<div id='share-all'>\n  <span class='title'>Share with your Friends <a title='What is this?' href='#' id='link-info' class='icon icon-info-sign'></a></span>\n  <span class='share-text'>Share to All</span>\n</div>\n<input class='typeahead' type='text' autocomplete='off' id='add-field'></input>\n<div id='buttons' class='pull-right <%=loggedIn ? \"\" : \"hide\"%>'>\n  <a href='#' data-toggle='popover' id='btn-add' class='btn-hotlist btn-hotlist-add' onClick=\"A2Cribs.HotlistObj.add($('#add-field').val())\">+</a>\n  <a href='#' id='btn-edit' class='btn-hotlist btn-hotlist-edit' onClick='A2Cribs.HotlistObj.toggleEdit()'><i class='icon-edit'></i></a>\n</div>\n<div style='clear: both;'></div>";
 
     Hotlist.friendsListTemplate = "<ul class='friends <%=friends.length ? \"has-friends\" : \"no-friends\"%>'>\n  <% if(friends.length) { %>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <% \n      var tooltitle = elem.email \n      if (elem.first_name) {\n        tooltitle = elem.first_name + ' ' + elem.last_name\n      }\n    %> \n    <li class='friend' data-id='<%=elem.id%>' data-toggle='tooltip' title='<%=tooltitle%>'' data-facebook_id='<%=elem.facebook_id || null%>' data-email='<%=elem.email%>'>\n      <% if (elem.facebook_id){ %>\n        <img class='friend-abbr hotlist-profile-img' src='https://graph.facebook.com/<%=elem.facebook_id%>/picture?width=80&height=80'></img>\n      <% } else if (elem.profile_img) { %>\n        <img class='friend-abbr otlist-profile-img' src='<%=elem.profile_img%>'></img>\n      <% } else if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n        <span class='friend-abbr'>\n          <%=elem.first_name[0].toUpperCase()%><%=elem.last_name[0].toUpperCase()%> \n        </span>\n      <% } else { %>\n        <span class='friend-abbr'>\n          <%=elem.email[0]%>@<%=elem.email.split('@')[1][0]%>\n        </span>\n      <% } %>\n      <span class='friend-name'>\n        <% if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n          <%=elem.first_name%> <%=elem.last_name%> \n        <% } else { %>\n          <%=elem.email%>\n        <% } %>\n      </span>\n      <a class='btn-hotlist-remove btn-hotlist pull-right' href='#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'><i class='icon icon-remove-circle'></i></a>\n    </li>\n  <% }); %>\n  <% } else { %>\n    <li class='add-friends-notice'>No friends added yet.</li>\n    <li class='no-friends-notice'>Add friends by clicking here <i class='icon-reply icon-rotate'></i></li>\n    <li class='share-to-fb-notice'><i class='icon-facebook-sign'></i> Drag to Share</li>\n  <% } %>\n</ul>";
 

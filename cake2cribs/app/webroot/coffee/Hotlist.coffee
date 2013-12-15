@@ -163,7 +163,7 @@ class A2Cribs.Hotlist
     @DOMRoot.find('ul.friends.no-friends').droppable("destroy")
 
   renderTopSection: ->
-    @DOMRoot.find('#top-section').html(@topSection())
+    @DOMRoot.find('#top-section').html(@topSection({loggedIn: A2Cribs.Login?.logged_in}))
     @DOMRoot.find('#title').show()
     @DOMRoot.find('#add-field').hide()
     @DOMRoot.find('#btn-add').hide()
@@ -213,10 +213,12 @@ class A2Cribs.Hotlist
       @setHeight(true)
 
   startedDragging: ->
-    @expand()
+    if A2Cribs.Login?.logged_in
+      @expand()
 
   stoppedDragging: ->
-    @retract()
+    if A2Cribs.Login?.logged_in
+      @retract()
 
   shareToAll: (event, ui) ->
     listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id')
@@ -495,7 +497,7 @@ class A2Cribs.Hotlist
     <span class='share-text'>Share to All</span>
   </div>
   <input class='typeahead' type='text' autocomplete='off' id='add-field'></input>
-  <div id='buttons' class='pull-right'>
+  <div id='buttons' class='pull-right <%=loggedIn ? "" : "hide"%>'>
     <a href='#' data-toggle='popover' id='btn-add' class='btn-hotlist btn-hotlist-add' onClick="A2Cribs.HotlistObj.add($('#add-field').val())">+</a>
     <a href='#' id='btn-edit' class='btn-hotlist btn-hotlist-edit' onClick='A2Cribs.HotlistObj.toggleEdit()'><i class='icon-edit'></i></a>
   </div>
