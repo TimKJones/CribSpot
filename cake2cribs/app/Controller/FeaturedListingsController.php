@@ -108,24 +108,24 @@ class FeaturedListingsController extends AppController {
   Returns an array of featured listings, that get cycled
   each time this function is invoked
   */
-  private function cycleFeaturedListings($limit, $university_id){
+  private function cycleFeaturedListings($limit, $university_id) {
     $day = time();
     $date = date("Y-m-d", $day);
 
     $conditions = $this->FeaturedListing->getSideBarConditions($date, $university_id);
-    
+
     /* Get all featured listings for today */
     $target_lat_long = Cache::read('University-getTargetLatLong-'.$university_id, 'MapData');
-        if ($target_lat_long === false){
-            $target_lat_long = $this->University->getTargetLatLong($university_id);
-            Cache::write('University-getTargetLatLong-'.$university_id, $target_lat_long, 'MapData');
-        }
+    if ($target_lat_long === false){
+      $target_lat_long = $this->University->getTargetLatLong($university_id);
+      Cache::write('University-getTargetLatLong-'.$university_id, $target_lat_long, 'MapData');
+    }
 
     $listings_data = Cache::read('featuredListingIds-'.$university_id, 'Daily');
     if ($listings_data === false){
       $listings_data = $this->FeaturedListing->find('all', array(
-        'conditions' => $conditions,
-        'fields' => 'Listing.listing_id'
+      'conditions' => $conditions,
+      'fields' => 'Listing.listing_id'
       ));
       Cache::write('featuredListingIds-'.$university_id, $listings_data, 'Daily');
     }    
@@ -133,12 +133,12 @@ class FeaturedListingsController extends AppController {
     /* increment the seed */
     $seed = Cache::read('featured_listings_seed');
     if ($seed === null)
-      $seed = 0;
+    $seed = 0;
 
     if (count($listings_data) !== 0)
       $seed = ($seed+1)%count($listings_data);
     else
-      $seed = 0;
+      $seed = 0;  
     Cache::write('featured_listings_seed', $seed);
 
 
