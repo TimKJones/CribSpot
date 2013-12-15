@@ -139,10 +139,10 @@ class Listing extends AppModel {
         )
 	);
 
-	/*
-	Attempts to save $listing to the Listing table and any associated tables.
-	Returns listing_id of saved listing on success; validation errors on failure.
-	*/
+/*
+Attempts to save $listing to the Listing table and any associated tables.
+Returns listing_id of saved listing on success; validation errors on failure.
+*/
 	public function SaveListing($listing, $user_id=null)
 	{
 		if ($user_id != null)

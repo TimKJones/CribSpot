@@ -1,15 +1,12 @@
 <?php
 
+/*
+Behavior handling all functionality related to location-based data retrieval.
+*/
+
 class LocationBasedRetrievalBehavior extends ModelBehavior {
 
 	public $ONE_DEGREE_IN_MILES = 69; // One degree is approximately 69 miles
-
-/*
-Sets up the configuration for the model
-*/
-	public function setup(Model $model, $config = array()) {
-
-	}
 
 /*
 Fetches marker_ids for all markers within $radius of ($latitude, $longitude)

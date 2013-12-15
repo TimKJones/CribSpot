@@ -248,6 +248,13 @@ class Marker extends AppModel {
 				$marker['Marker']['visible'] = 1;
 		}
 
+		/* Convert latitude and longitude to a mysql point datatype */
+		$db = ConnectionManager::getDataSource('default');
+		$marker['Marker']['coordinates'] = (object) $db->expression("GeomFromText('POINT(" .
+     		$marker['Marker']['latitude'] . " " . $marker['Marker']['longitude'] . ")')");
+		unset($marker['Marker']['latitude']);
+		unset($marker['Marker']['longitude']);
+
   		if(!$this->save($marker)){
   			$error = null;
 			$error['marker'] = $marker;
