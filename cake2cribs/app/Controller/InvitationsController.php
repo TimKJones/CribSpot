@@ -115,7 +115,7 @@ class InvitationsController extends AppController {
                 $this->User->addToHotlist($loggedInUser['id'], $email);
 
                 // set email template to one explaining the addition
-                $subject = 'Join my group at Cribspot!';
+                $subject = 'Join my housing group at Cribspot!';
                 $template = 'email_invitation';
             }
             else {
@@ -134,7 +134,7 @@ class InvitationsController extends AppController {
                     if (isset($token)) {
                         CakeLog::write('invitations', 'set password reset token: ' . $token['password_reset_token']);
                     }
-                    $subject = 'Join my group on Cribspot! Off-campus housing made simple';
+                    $subject = 'Join my housing group on Cribspot! Off-campus housing made simple';
                     $template = 'email_invitation';
                 }
                 else {
