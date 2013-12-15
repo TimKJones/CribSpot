@@ -96,12 +96,6 @@ class Rental extends RentalPrototype {
 				'required' => false
 			)
 		),
-		'available' => array(
-			'boolean' => array(
-				'rule' => 'boolean',
-				'required' => false
-			)
-		), 
 		'baths' => 'decimal',
 		'air' => 'boolean',
 		'parking_type' => 'numeric',

@@ -13,7 +13,93 @@ class A2Cribs.QuickRental
 	Filters out the quick rentals based
 	on the search bar
 	###
-	@Filter: ->
+	@Filter: (event) =>
+		@div.find(".rental_preview").each (index, value) ->
+			# Find if searched by building name
+			if $(value).find(".building_name").text().toLowerCase().indexOf($(event.currentTarget).val().toLowerCase()) isnt -1
+				if not $(value).is(":visible")
+					$(value).fadeIn()
+				return
+			# Find text in street address
+			if $(value).find(".street_address").text().toLowerCase().indexOf($(event.currentTarget).val().toLowerCase()) isnt -1
+				if not $(value).is(":visible")
+					$(value).fadeIn()
+				return
+			# Hide if no string match
+			$(value).fadeOut()
+			return
+
+	###
+	Format Rent
+	Private method to update the rent value and
+	format the rent correctly and cleanly
+	###
+	format_rent = (rent_div) ->
+		rent_amount = rent_div.val()?.replace(/\D/g, '')
+		rent_div.data "value", rent_amount
+		j = if (j = rent_amount.length) > 3 then j % 3 else 0
+		rent_string = "$" + if j then rent_amount.substr(0, j) + "," else ""
+		rent_string += rent_amount.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + ",")
+		rent_div.val if rent_amount isnt 0 and rent_amount.length isnt 0 then rent_string else ""
+
+	###
+	Validate Date
+	Private method to update the date value and
+	validate
+	###
+	validate_date = (date_div) ->
+		# Highlight the input as red to start
+		date_div.addClass "error"
+		# Get the date string
+		date = date_div.val()
+		date_split = date.split("-")
+		# Check if there is mm-dd-yyyy
+		if date_split.length isnt 3
+			# Show the error condition
+			return false
+		# Check to make sure they are all numbers
+		for date_val in date_split
+			if isNaN(date_val)
+				# Show the error condition
+				return false
+		# Check month
+		if date_split[0] < 1 or date_split[0] > 12
+			# Show the error condition
+			return false
+		# Check date
+		if date_split[1] < 1 or date_split[1] > 31
+			return false
+		# Check year
+		if date_split[2] < 2013
+			return false
+
+		if date_split[0].length is 1
+			date_split[0] = "0#{date_split[0]}"
+		if date_split[1].length is 1
+			date_split[1] = "0#{date_split[1]}"
+
+		date_div.data("value", "#{date_split[2]}-#{date_split[0]}-#{date_split[1]}")
+		date_div.removeClass "error"
+		return true
+
+	###
+	Check Marker Availabilty
+	Takes a rental_preview div and finds the availablity
+	of each listing attached to the marker and updates
+	the UI to show the count
+	###
+	@CheckMarkerAvailabilty: (rental_preview) ->
+		# Find all listings associated with this marker_id
+		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", 
+			rental_preview.data("marker-id")
+		available_count = 0
+		for listing in listings
+			if listing.available
+				available_count++
+		if available_count is 0
+			rental_preview.find(".available_listing_count").text("Leased").addClass "leased"
+		else
+			rental_preview.find(".available_listing_count").text("#{available_count} of #{listings.length} Available").removeClass "leased"
 
 	###
 	Create Listeners
@@ -21,6 +107,7 @@ class A2Cribs.QuickRental
 	listing
 	###
 	@CreateListeners: ->
+		@rent_timeouts = {}
 
 		@div.on 'click', ".btn-group .btn", (event) =>
 			# Check if the listing available value was changed
@@ -29,6 +116,29 @@ class A2Cribs.QuickRental
 				$(event.currentTarget).parent().data('value', $(event.currentTarget).data('value'))
 				# Trigger the save rental event
 				$(event.currentTarget).closest(".rental_edit").trigger "save_rental", [$(event.currentTarget).parent()]
+				
+				# Check availablity of all listings for the marker
+				@CheckMarkerAvailabilty $(event.currentTarget).closest(".rental_preview")
+
+		@div.on 'keyup', ".rent", (event) =>
+			# Format rent
+			format_rent $(event.currentTarget)
+			listing_id = $(event.currentTarget).parent().data("listing-id")
+			clearTimeout @rent_timeouts[listing_id]
+			$(event.currentTarget).parent().find(".save-note").hide()
+			$(event.currentTarget).parent().find(".not-saved").show()
+			@rent_timeouts[listing_id] = setTimeout () =>
+				$(event.currentTarget).closest(".rental_edit").trigger "save_rental", [$(event.currentTarget)]
+			, 1000
+			# Set timeout for one second to minimize saves
+		
+		@div.on 'keyup', ".start_date", (event) =>
+			date = $(event.currentTarget).data("value")
+			# Checks if valid and updates value
+			if validate_date $(event.currentTarget)
+				# If the date has been changed
+				if date isnt $(event.currentTarget).data("value")
+					$(event.currentTarget).closest(".rental_edit").trigger "save_rental", [$(event.currentTarget)]
 
 		@div.on 'save_rental', '.rental_edit', (event, input) =>
 			# Get the listing id from the element 
@@ -37,8 +147,15 @@ class A2Cribs.QuickRental
 			a2_object = A2Cribs.UserCache.Get input.data("object"), listing_id
 			# Updates the cached object
 			a2_object[input.data("field")] = input.data("value")
-			@Save listing_id
+			$(event.currentTarget).find(".save-note").hide()
+			$(event.currentTarget).find(".not-saved").show()
+			@Save(listing_id)
+			.always () =>
+				$(event.currentTarget).find(".save-note").hide()
+				$(event.currentTarget).find(".saved").show()
 
+		@div.on 'keyup', '.search_rentals', @Filter
+				
 
 	###
 	Save
@@ -50,7 +167,7 @@ class A2Cribs.QuickRental
 	@Save: (listing_id) ->
 		listing = A2Cribs.UserCache.Get "listing", listing_id
 		listing_object = listing.GetConnectedObject()
-		$.ajax
+		return $.ajax
 			url: myBaseUrl + "listings/Save/"
 			type: "POST"
 			data: listing_object
@@ -64,10 +181,10 @@ class A2Cribs.QuickRental
 	@ToggleCollapse: ->
 		# Show the loader
 		A2Cribs.UIManager.ShowLoader()
-		@BackgroundLoadRentals()
+		$.when(@BackgroundLoadRentals())
 		.done =>
-			# Check if they are all closed
-			if no # TODO: KEEP IT AS FALSE FOR NOW
+			# Check if they are all closed or all open
+			if @div.find(".unit_list:visible").length is @div.find(".rental_preview").length
 				# Slide all the unit_lists up
 				@div.find(".unit_list").slideUp()
 				# Hide the text at the bottom and show the text to show listings
@@ -125,7 +242,7 @@ class A2Cribs.QuickRental
 		# Otherwise request the listings with that marker
 		else
 			# Load listing from backend
-			### GETTING CLOSER 
+			# GETTING CLOSER 
 			marker_id = $(event.currentTarget).parent().data("marker-id")
 			url = "#{myBaseUrl}Listings/GetOwnedListingsByMarkerId/#{marker_id}" 
 			$.ajax 
@@ -134,13 +251,8 @@ class A2Cribs.QuickRental
 				success: (data) =>
 					# Load all of the data into the user cache
 					A2Cribs.UserCache.CacheData JSON.parse data
-					listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker_id
-					for listing in listings
-						@AddRental listing, $(event.currentTarget).parent()
+					A2Cribs.UserCache.Get("marker", marker_id)?.listings_loaded.resolve(marker_id, $(event.currentTarget).parent())
 					deferred.resolve $(event.currentTarget).parent()
-				error: =>
-					deferred.reject()
-			###
 
 	###
 	Load All Markers
@@ -165,10 +277,8 @@ class A2Cribs.QuickRental
 	@LoadAllRentals: ->
 		@div.find(".rental_preview").each (index, value) =>
 			marker_id = $(value).data "marker-id"
-			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker_id
-			for listing in listings
-				@AddRental listing, $(value)
-
+			A2Cribs.UserCache.Get("marker", marker_id)?.listings_loaded.resolve(marker_id, value)
+			
 	###
 	Background Load Rentals
 	Loads all the rentals in the background to appear
@@ -180,6 +290,8 @@ class A2Cribs.QuickRental
 		# has already been called
 		if @LoadRentalsDeferred?
 			return @LoadRentalsDeferred
+
+		@LoadRentalsDeferred = $.Deferred()
 
 		# Get listing with no listing id gets all
 		# listings owned by the property manager
@@ -194,7 +306,6 @@ class A2Cribs.QuickRental
 			error: =>
 				@LoadRentalsDeferred.reject()
 				
-		@LoadRentalsDeferred = new $.Deferred()
 		return @LoadRentalsDeferred.promise()
 
 	###
@@ -207,15 +318,22 @@ class A2Cribs.QuickRental
 			<div class='rental_preview' data-marker-id='#{marker.GetId()}' data-visible-state="hidden">
 				<div class='rental_title'>
 					<span>
-						<div class='marker_box pull-left'><i class='icon-map-marker'></i></div>&nbsp;
 						<span class='building_name'>#{marker.GetName()}</span>
 					</span>
 					<span class='separator'>|</span>
 					<span class='street_address'>#{marker.street_address}</span>
 					<span class='separator'>|</span>
 					<span class='building_type'>#{marker.GetBuildingType()}</span>
+					<span class='pull-right available_listing_count'></span>
 				</div>
 				<div class='unit_list hide'>
+					<div class='fields_label'>
+						<div class='pull-left text-center listing_label'>Listing</div>
+						<div class='pull-left text-center available_label'>Availablity</div>
+						<div class='pull-left text-center rent_label'>Rent</div>
+						<div class='pull-left text-center start_date_label'>Start Date</div>
+						<div class='pull-right label_explained'>Where's the rest? <i class='icon-info-sign'></i></div>
+					</div>
 				</div>
 				<div class='rental_expand_toggle'>
 					<div class='show_listings toggle_text'>
@@ -232,6 +350,15 @@ class A2Cribs.QuickRental
 		marker_row_div = $(marker_row)
 		marker_row_div.find(".rental_expand_toggle").one 'click', @ToggleShowListings
 		@div.find("#rental_preview_list").append marker_row_div
+		# Set deferred callback for when listings are loaded
+		# for the marker
+		marker.listings_loaded = $.Deferred()
+		marker.listings_loaded.promise()
+		marker.listings_loaded.done (marker_id, value) =>
+			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker_id
+			for listing in listings
+				@AddRental listing, $(value)
+			@CheckMarkerAvailabilty marker_row_div
 
 	###
 	Add Rental
@@ -239,21 +366,27 @@ class A2Cribs.QuickRental
 	###
 	@AddRental: (listing, container) ->
 		rental = A2Cribs.UserCache.Get "rental", listing.GetId()
-		listing_row = """
-			<div class="rental_edit" data-listing-id="#{listing.GetId()}">
-				<span class="unit_description pull-left">#{rental.GetUnitStyle()} #{rental.unit_style_description} - #{rental.beds}Br</span>
-				<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-field="available" data-value="#{if listing.available then "1" else "0"}">
-					<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
-					<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
+		if rental?
+			date_split = rental.start_date?.split("-")
+			date_string = if date_split?.length is 3 then "#{date_split[1]}-#{date_split[2]}-#{date_split[0]}" else ""
+			listing_row = """
+				<div class="rental_edit" data-listing-id="#{listing.GetId()}">
+					<span class="unit_description pull-left">#{rental.GetUnitStyle()} #{rental.unit_style_description} - #{rental.beds}Br</span>
+					<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-field="available" data-value="#{if listing.available then "1" else "0"}">
+						<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
+						<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
+					</div>
+					<input type="text" class="rent" placeholder="Rent" data-object="rental" data-field="rent" data-value="#{rental.rent}" value="#{rental.rent}">
+					<input type="text" class="start_date" maxlength="10" value="#{date_string}" data-object="rental" data-field="start_date" data-value="#{rental.start_date}" placeholder="MM-DD-YYYY">
+					<span class="not-saved save-note hide"><i class='icon-spinner icon-spin'></i> Saving...</span>
+					<span class="saved save-note hide"><i class='icon-ok-sign'></i> Saved</span>
 				</div>
-				<input type="text" class="rent" placeholder="Rent" value="#{rental.rent}" data-object="rental">
-				<input type="text" class="start_date" placeholder="Lease Start Date" value="#{rental.start_date}" data-object="rental">
-				<span class="not-saved save-note hide"><i class='icon-spinner icon-spin'></i> Saving...</span>
-				<span class="saved save-note hide"><i class='icon-ok-sign'></i> Saved</span>
-				<button class="edit_rental pull-right btn btn-primary">Edit</button>
-			</div>
-			"""
-		container.find(".unit_list").append $(listing_row)
+				"""
+			div = $(listing_row)
+			# Format the rent correctly
+			format_rent div.find(".rent")
+			# Append the newly created div the marker div
+			container.find(".unit_list").append div
 
 	###
 	On Ready
@@ -261,7 +394,7 @@ class A2Cribs.QuickRental
 	$(document).ready =>
 		if $("#rental_quickedit").length
 			@div = $("#rental_quickedit")
-			@_markers_loaded = new $.Deferred()
+			@_markers_loaded = $.Deferred()
 			@_markers_loaded.promise()
 			@BackgroundLoadRentals()
 			A2Cribs.Dashboard.GetUserMarkerData()
@@ -271,3 +404,4 @@ class A2Cribs.QuickRental
 			$.when(@_markers_loaded, @BackgroundLoadRentals())
 			.done =>
 				@LoadAllRentals()
+			@CreateListeners()

@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/Dashboard/rental_quickedit.less?v=2','stylesheet/less', array('inline' => false)) ?>
+<?= $this->Html->css('/less/Dashboard/rental_quickedit.less?v=3','stylesheet/less', array('inline' => false)) ?>
 
 <div id="rental_quickedit">
 	<h2>Search My Rentals</h2>
