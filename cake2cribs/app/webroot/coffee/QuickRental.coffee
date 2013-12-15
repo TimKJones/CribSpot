@@ -35,12 +35,15 @@ class A2Cribs.QuickRental
 	format the rent correctly and cleanly
 	###
 	format_rent = (rent_div) ->
-		rent_amount = rent_div.val()?.replace(/\D/g, '')
+		rent_amount = parseInt(rent_div.val()?.replace(/\D/g, ''), 10)
+		if isNaN rent_amount
+			rent_amount = 0
+		rent_amount = rent_amount.toString()
 		rent_div.data "value", rent_amount
 		j = if (j = rent_amount.length) > 3 then j % 3 else 0
 		rent_string = "$" + if j then rent_amount.substr(0, j) + "," else ""
 		rent_string += rent_amount.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + ",")
-		rent_div.val if rent_amount isnt 0 and rent_amount.length isnt 0 then rent_string else ""
+		rent_div.val if rent_amount isnt "0" and rent_amount.length isnt 0 then rent_string else ""
 
 	###
 	Validate Date
@@ -90,7 +93,7 @@ class A2Cribs.QuickRental
 	###
 	@CheckMarkerAvailabilty: (rental_preview) ->
 		# Find all listings associated with this marker_id
-		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", 
+		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",
 			rental_preview.data("marker-id")
 		available_count = 0
 		for listing in listings
@@ -296,7 +299,7 @@ class A2Cribs.QuickRental
 		# Get listing with no listing id gets all
 		# listings owned by the property manager
 		url = myBaseUrl + "Listings/GetListing"
-		$.ajax 
+		$.ajax
 			url: url
 			type:"GET"
 			success: (data) =>

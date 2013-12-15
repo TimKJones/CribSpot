@@ -51,12 +51,16 @@ set rent price
 
     format_rent = function(rent_div) {
       var j, rent_amount, rent_string, _ref;
-      rent_amount = (_ref = rent_div.val()) != null ? _ref.replace(/\D/g, '') : void 0;
+      rent_amount = parseInt((_ref = rent_div.val()) != null ? _ref.replace(/\D/g, '') : void 0, 10);
+      if (isNaN(rent_amount)) {
+        rent_amount = 0;
+      }
+      rent_amount = rent_amount.toString();
       rent_div.data("value", rent_amount);
       j = (j = rent_amount.length) > 3 ? j % 3 : 0;
       rent_string = "$" + (j ? rent_amount.substr(0, j) + "," : "");
       rent_string += rent_amount.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + ",");
-      return rent_div.val(rent_amount !== 0 && rent_amount.length !== 0 ? rent_string : "");
+      return rent_div.val(rent_amount !== "0" && rent_amount.length !== 0 ? rent_string : "");
     };
 
     /*
