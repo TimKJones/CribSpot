@@ -249,11 +249,7 @@ class Marker extends AppModel {
 		}
 
 		/* Convert latitude and longitude to a mysql point datatype */
-		$db = ConnectionManager::getDataSource('default');
-		$marker['Marker']['coordinates'] = (object) $db->expression("GeomFromText('POINT(" .
-     		$marker['Marker']['latitude'] . " " . $marker['Marker']['longitude'] . ")')");
-		unset($marker['Marker']['latitude']);
-		unset($marker['Marker']['longitude']);
+		$this->ConvertLatLongToSpatialPoint($marker);
 
   		if(!$this->save($marker)){
   			$error = null;
@@ -318,6 +314,18 @@ class Marker extends AppModel {
 		return null;	
 	}
 
+	/*
+	Takes a marker object as input.
+	Creates a new field called 'coordinates' that is a mysql point datatype.
+	Deletes the latitude and longitude fields from the array.
+	*/
+	public function ConvertLatLongToSpatialPoint(&$marker)
+	{
+		$db = ConnectionManager::getDataSource('default');
+		$marker['Marker']['coordinates'] = (object) $db->expression("GeomFromText('POINT(" .
+     		$marker['Marker']['latitude'] . " " . $marker['Marker']['longitude'] . ")')");
+	}
+
 	private function _getMarkerByStreetAddress($street_address, $city, $state)
 	{
 		$conditions = array('Marker.street_address' => $street_address,
@@ -330,7 +338,6 @@ class Marker extends AppModel {
 
 	  	return $markerMatch;
 	}
-
 }
 
 ?>

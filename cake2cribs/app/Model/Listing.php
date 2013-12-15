@@ -128,8 +128,8 @@ class Listing extends AppModel {
                 'Listing.scheduling',
                 'Listing.listing_type',
                 'Marker.marker_id',
-                'X(Marker.coordinates) as latitude',
-				'Y(Marker.coordinates) as longitude',
+                'Marker.latitude',
+				'Marker.longitude',
                 'Marker.street_address',
                 'Marker.building_type_id',
                 'Marker.alternate_name',
@@ -139,10 +139,10 @@ class Listing extends AppModel {
         )
 	);
 
-/*
-Attempts to save $listing to the Listing table and any associated tables.
-Returns listing_id of saved listing on success; validation errors on failure.
-*/
+	/*
+	Attempts to save $listing to the Listing table and any associated tables.
+	Returns listing_id of saved listing on success; validation errors on failure.
+	*/
 	public function SaveListing($listing, $user_id=null)
 	{
 		if ($user_id != null)
