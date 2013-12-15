@@ -189,13 +189,9 @@
       this.DOMRoot.find('#title').show();
       this.DOMRoot.find('#add-field').hide();
       this.DOMRoot.find('#btn-add').hide();
-      if (typeof FB !== "undefined" && FB !== null) {
-        this.handleFBLoad();
-      } else {
-        $.when(window.fbInit).then(function() {
-          return _this.handleFBLoad();
-        });
-      }
+      $.when(window.fbInit).then(function() {
+        return _this.handleFBLoad();
+      });
       this.DOMRoot.find('.twitter-typeahead').hide();
       this.DOMRoot.find('#link-info').popover({
         title: 'What is this?',

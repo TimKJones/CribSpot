@@ -170,12 +170,9 @@ class A2Cribs.Hotlist
 
     # @DOMRoot.find('#add-field').typeahead(@sources)
 
-    if FB?
+    $.when(window.fbInit).then( => 
       @handleFBLoad()
-    else 
-      $.when(window.fbInit).then( => 
-        @handleFBLoad()
-      )
+    )
 
     @DOMRoot.find('.twitter-typeahead').hide()
 
