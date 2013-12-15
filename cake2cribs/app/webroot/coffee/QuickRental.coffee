@@ -157,7 +157,15 @@ class A2Cribs.QuickRental
 				$(event.currentTarget).find(".save-note").hide()
 				$(event.currentTarget).find(".saved").show()
 
+		# Key up on the filter text enter
 		@div.on 'keyup', '.search_rentals', @Filter
+
+		# Fixed scroll to top when clicking on the label
+		# explained link
+		@div.on 'click', '.label_explained', (event) ->
+			event.preventDefault()
+			event.stopPropagation()
+			return false
 				
 
 	###
@@ -247,8 +255,8 @@ class A2Cribs.QuickRental
 			# Load listing from backend
 			# GETTING CLOSER 
 			marker_id = $(event.currentTarget).parent().data("marker-id")
-			url = "#{myBaseUrl}Listings/GetOwnedListingsByMarkerId/#{marker_id}" 
-			$.ajax 
+			url = "#{myBaseUrl}Listings/GetOwnedListingsByMarkerId/#{marker_id}"
+			$.ajax
 				url: url
 				type:"GET"
 				success: (data) =>
@@ -335,7 +343,7 @@ class A2Cribs.QuickRental
 						<div class='pull-left text-center available_label'>Availablity</div>
 						<div class='pull-left text-center rent_label'>Rent</div>
 						<div class='pull-left text-center start_date_label'>Start Date</div>
-						<div class='pull-right label_explained'>Where's the rest? <i class='icon-info-sign'></i></div>
+						<a href="#" class='pull-right label_explained' data-toggle='popover' data-content="We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com">Where's the rest? <i class='icon-info-sign'></i></a>
 					</div>
 				</div>
 				<div class='rental_expand_toggle'>
@@ -352,6 +360,7 @@ class A2Cribs.QuickRental
 			"""
 		marker_row_div = $(marker_row)
 		marker_row_div.find(".rental_expand_toggle").one 'click', @ToggleShowListings
+		marker_row_div.find(".label_explained").popover()
 		@div.find("#rental_preview_list").append marker_row_div
 		# Set deferred callback for when listings are loaded
 		# for the marker

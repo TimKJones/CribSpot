@@ -178,7 +178,12 @@ set rent price
           return $(event.currentTarget).find(".saved").show();
         });
       });
-      return this.div.on('keyup', '.search_rentals', this.Filter);
+      this.div.on('keyup', '.search_rentals', this.Filter);
+      return this.div.on('click', '.label_explained', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      });
     };
 
     /*
@@ -349,9 +354,10 @@ set rent price
       var listings, marker_row, marker_row_div,
         _this = this;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
-      marker_row = "<div class='rental_preview' data-marker-id='" + (marker.GetId()) + "' data-visible-state=\"hidden\">\n	<div class='rental_title'>\n		<span>\n			<span class='building_name'>" + (marker.GetName()) + "</span>\n		</span>\n		<span class='separator'>|</span>\n		<span class='street_address'>" + marker.street_address + "</span>\n		<span class='separator'>|</span>\n		<span class='building_type'>" + (marker.GetBuildingType()) + "</span>\n		<span class='pull-right available_listing_count'></span>\n	</div>\n	<div class='unit_list hide'>\n		<div class='fields_label'>\n			<div class='pull-left text-center listing_label'>Listing</div>\n			<div class='pull-left text-center available_label'>Availablity</div>\n			<div class='pull-left text-center rent_label'>Rent</div>\n			<div class='pull-left text-center start_date_label'>Start Date</div>\n			<div class='pull-right label_explained'>Where's the rest? <i class='icon-info-sign'></i></div>\n		</div>\n	</div>\n	<div class='rental_expand_toggle'>\n		<div class='show_listings toggle_text'>\n			<span><i class='icon-chevron-sign-down'></i> Click to view</span>\n			<span class='unit_count'>" + listings.length + "</span>\n			<span> Listings</span>\n		</div>\n		<div class='hide_listings hide toggle_text'>\n			<span><i class='icon-chevron-sign-up'></i> Hide these Listings</span>\n		</div>\n	</div>\n</div>";
+      marker_row = "<div class='rental_preview' data-marker-id='" + (marker.GetId()) + "' data-visible-state=\"hidden\">\n	<div class='rental_title'>\n		<span>\n			<span class='building_name'>" + (marker.GetName()) + "</span>\n		</span>\n		<span class='separator'>|</span>\n		<span class='street_address'>" + marker.street_address + "</span>\n		<span class='separator'>|</span>\n		<span class='building_type'>" + (marker.GetBuildingType()) + "</span>\n		<span class='pull-right available_listing_count'></span>\n	</div>\n	<div class='unit_list hide'>\n		<div class='fields_label'>\n			<div class='pull-left text-center listing_label'>Listing</div>\n			<div class='pull-left text-center available_label'>Availablity</div>\n			<div class='pull-left text-center rent_label'>Rent</div>\n			<div class='pull-left text-center start_date_label'>Start Date</div>\n			<a href=\"#\" class='pull-right label_explained' data-toggle='popover' data-content=\"We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com\">Where's the rest? <i class='icon-info-sign'></i></a>\n		</div>\n	</div>\n	<div class='rental_expand_toggle'>\n		<div class='show_listings toggle_text'>\n			<span><i class='icon-chevron-sign-down'></i> Click to view</span>\n			<span class='unit_count'>" + listings.length + "</span>\n			<span> Listings</span>\n		</div>\n		<div class='hide_listings hide toggle_text'>\n			<span><i class='icon-chevron-sign-up'></i> Hide these Listings</span>\n		</div>\n	</div>\n</div>";
       marker_row_div = $(marker_row);
       marker_row_div.find(".rental_expand_toggle").one('click', this.ToggleShowListings);
+      marker_row_div.find(".label_explained").popover();
       this.div.find("#rental_preview_list").append(marker_row_div);
       marker.listings_loaded = $.Deferred();
       marker.listings_loaded.promise();
