@@ -6,7 +6,7 @@ Makes it easy to toggle availablity, pick start dates,
 set rent price
 ###
 
-class A2Cribs.QuickRental
+class QuickRental
 
 	###
 	Filter
@@ -28,6 +28,19 @@ class A2Cribs.QuickRental
 			# Hide if no string match
 			$(value).fadeOut()
 			return
+	###
+	Sort Availability
+	Sorts the listings by availability 
+	###
+	@SortAvailability: (show_available) ->
+		@div.find(".rental_preview").each (index, value) ->
+			# Show all if show_available is null
+			if not show_available?
+				$(value).fadeIn()
+			else if $(value).find(".available_listing_count").hasClass("leased")
+				if show_available then $(value).fadeOut() else $(value).fadeIn()
+			else
+				if show_available then $(value).fadeIn() else $(value).fadeOut()
 
 	###
 	Format Rent
@@ -73,7 +86,7 @@ class A2Cribs.QuickRental
 		if date_split[1] < 1 or date_split[1] > 31
 			return false
 		# Check year
-		if date_split[2] < 2013
+		if date_split[2] < 2000
 			return false
 
 		if date_split[0].length is 1
@@ -166,7 +179,33 @@ class A2Cribs.QuickRental
 			event.preventDefault()
 			event.stopPropagation()
 			return false
-				
+
+		# Opens the photopicker with the images	
+		@div.on 'click', '.open_photos', (event) =>
+			listing_id = $(event.currentTarget).parent().data("listing-id")
+			image_array = A2Cribs.UserCache.Get("image", listing_id)?.GetObject()
+			A2Cribs.PhotoPicker.Open(image_array)
+			.done (photos) =>
+				for image in photos
+					image.listing_id = listing_id
+				A2Cribs.UserCache.Set new A2Cribs.Image photos, listing_id
+				$(event.currentTarget).parent().find(".save-note").hide()
+				$(event.currentTarget).parent().find(".not-saved").show()
+				# Save the photos
+				@Save(listing_id)
+				.done ->
+					$(event.currentTarget).parent().find(".save-note").hide()
+					$(event.currentTarget).parent().find(".saved").show()
+
+		# Listener for the link on the Toggle show all listings
+		@div.find(".toggle_all_listings").click @ToggleCollapse
+
+		# Change listener for availability toggle
+		@div.find("#sort_availablity").change (event) =>
+			value = parseInt $(event.currentTarget).val(), 10
+			if isNaN value
+				value = null
+			@SortAvailability value
 
 	###
 	Save
@@ -189,7 +228,7 @@ class A2Cribs.QuickRental
 	Toggle Collapse
 	Collapses all or expands all rental divs
 	###
-	@ToggleCollapse: ->
+	@ToggleCollapse: =>
 		# Show the loader
 		A2Cribs.UIManager.ShowLoader()
 		$.when(@BackgroundLoadRentals())
@@ -201,12 +240,16 @@ class A2Cribs.QuickRental
 				# Hide the text at the bottom and show the text to show listings
 				@div.find(".toggle_text").hide()
 				@div.find(".show_listings").show()
+				# All listings are closed change toggle text
+				@div.find(".toggle_all_listings").text "Open all listings"
 			else
 				# Slide all the unit_lists down
 				@div.find(".unit_list").slideDown()
 				# Hide the text at the bottom and show the text to hide listings
 				@div.find(".toggle_text").hide()
 				@div.find(".hide_listings").show()
+				# All listings are shown change toggle text
+				@div.find(".toggle_all_listings").text "Collapse all listings"
 
 			# Open all of them
 		.always =>
@@ -228,6 +271,8 @@ class A2Cribs.QuickRental
 			$(event.currentTarget).parent().find(".show_listings").show()
 			# Reattach listener to the toggle
 			$(event.currentTarget).one('click', @ToggleShowListings)
+			# Change text of toggle to open all listings
+			@div.find(".toggle_all_listings").text "Open all listings"
 			# exit the function
 			return
 
@@ -245,6 +290,10 @@ class A2Cribs.QuickRental
 			$(event.currentTarget).parent().find(".hide_listings").show()
 			# Reattach listener to the toggle
 			element.find(".rental_expand_toggle").one('click', @ToggleShowListings)
+			# Check if all listings are open
+			if @div.find(".unit_list:visible").length is @div.find(".rental_preview").length
+				# Change text to collapse all listings for toggle listings
+				@div.find(".toggle_all_listings").text "Collapse all listings"
 
 		# Check if all rentals are loaded
 		if @BackgroundLoadRentals().state() is "resolved"
@@ -327,7 +376,7 @@ class A2Cribs.QuickRental
 		listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker", marker.GetId()
 		marker_row = """
 			<div class='rental_preview' data-marker-id='#{marker.GetId()}' data-visible-state="hidden">
-				<div class='rental_title'>
+				<div class='rental_title rental_expand_toggle'>
 					<span>
 						<span class='building_name'>#{marker.GetName()}</span>
 					</span>
@@ -346,7 +395,7 @@ class A2Cribs.QuickRental
 						<a href="#" class='pull-right label_explained' data-toggle='popover' data-content="We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com">Where's the rest? <i class='icon-info-sign'></i></a>
 					</div>
 				</div>
-				<div class='rental_expand_toggle'>
+				<div class='rental_expand_toggle rental_expand_toggle_div'>
 					<div class='show_listings toggle_text'>
 						<span><i class='icon-chevron-sign-down'></i> Click to view</span>
 						<span class='unit_count'>#{listings.length}</span>
@@ -388,8 +437,9 @@ class A2Cribs.QuickRental
 						<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
 						<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
 					</div>
-					<input type="text" class="rent" placeholder="Rent" data-object="rental" data-field="rent" data-value="#{rental.rent}" value="#{rental.rent}">
-					<input type="text" class="start_date" maxlength="10" value="#{date_string}" data-object="rental" data-field="start_date" data-value="#{rental.start_date}" placeholder="MM-DD-YYYY">
+					<input type="text" class="rent pull-left" placeholder="Rent" data-object="rental" data-field="rent" data-value="#{rental.rent}" value="#{rental.rent}">
+					<input type="text" class="start_date pull-left" maxlength="10" value="#{date_string}" data-object="rental" data-field="start_date" data-value="#{rental.start_date}" placeholder="MM-DD-YYYY">
+					<button type="button pull-left" class="open_photos btn btn-primary">Add Photos</button>
 					<span class="not-saved save-note hide"><i class='icon-spinner icon-spin'></i> Saving...</span>
 					<span class="saved save-note hide"><i class='icon-ok-sign'></i> Saved</span>
 				</div>

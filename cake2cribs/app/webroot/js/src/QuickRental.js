@@ -10,8 +10,9 @@ set rent price
 
 
 (function() {
+  var QuickRental;
 
-  A2Cribs.QuickRental = (function() {
+  QuickRental = (function() {
     var format_rent, validate_date,
       _this = this;
 
@@ -39,6 +40,32 @@ set rent price
           return;
         }
         $(value).fadeOut();
+      });
+    };
+
+    /*
+    	Sort Availability
+    	Sorts the listings by availability
+    */
+
+
+    QuickRental.SortAvailability = function(show_available) {
+      return this.div.find(".rental_preview").each(function(index, value) {
+        if (!(show_available != null)) {
+          return $(value).fadeIn();
+        } else if ($(value).find(".available_listing_count").hasClass("leased")) {
+          if (show_available) {
+            return $(value).fadeOut();
+          } else {
+            return $(value).fadeIn();
+          }
+        } else {
+          if (show_available) {
+            return $(value).fadeIn();
+          } else {
+            return $(value).fadeOut();
+          }
+        }
       });
     };
 
@@ -90,7 +117,7 @@ set rent price
       if (date_split[1] < 1 || date_split[1] > 31) {
         return false;
       }
-      if (date_split[2] < 2013) {
+      if (date_split[2] < 2000) {
         return false;
       }
       if (date_split[0].length === 1) {
@@ -179,10 +206,38 @@ set rent price
         });
       });
       this.div.on('keyup', '.search_rentals', this.Filter);
-      return this.div.on('click', '.label_explained', function(event) {
+      this.div.on('click', '.label_explained', function(event) {
         event.preventDefault();
         event.stopPropagation();
         return false;
+      });
+      this.div.on('click', '.open_photos', function(event) {
+        var image_array, listing_id, _ref;
+        listing_id = $(event.currentTarget).parent().data("listing-id");
+        image_array = (_ref = A2Cribs.UserCache.Get("image", listing_id)) != null ? _ref.GetObject() : void 0;
+        return A2Cribs.PhotoPicker.Open(image_array).done(function(photos) {
+          var image, _i, _len;
+          for (_i = 0, _len = photos.length; _i < _len; _i++) {
+            image = photos[_i];
+            image.listing_id = listing_id;
+          }
+          A2Cribs.UserCache.Set(new A2Cribs.Image(photos, listing_id));
+          $(event.currentTarget).parent().find(".save-note").hide();
+          $(event.currentTarget).parent().find(".not-saved").show();
+          return _this.Save(listing_id).done(function() {
+            $(event.currentTarget).parent().find(".save-note").hide();
+            return $(event.currentTarget).parent().find(".saved").show();
+          });
+        });
+      });
+      this.div.find(".toggle_all_listings").click(this.ToggleCollapse);
+      return this.div.find("#sort_availablity").change(function(event) {
+        var value;
+        value = parseInt($(event.currentTarget).val(), 10);
+        if (isNaN(value)) {
+          value = null;
+        }
+        return _this.SortAvailability(value);
       });
     };
 
@@ -217,17 +272,18 @@ set rent price
 
 
     QuickRental.ToggleCollapse = function() {
-      var _this = this;
       A2Cribs.UIManager.ShowLoader();
-      return $.when(this.BackgroundLoadRentals()).done(function() {
-        if (_this.div.find(".unit_list:visible").length === _this.div.find(".rental_preview").length) {
-          _this.div.find(".unit_list").slideUp();
-          _this.div.find(".toggle_text").hide();
-          return _this.div.find(".show_listings").show();
+      return $.when(QuickRental.BackgroundLoadRentals()).done(function() {
+        if (QuickRental.div.find(".unit_list:visible").length === QuickRental.div.find(".rental_preview").length) {
+          QuickRental.div.find(".unit_list").slideUp();
+          QuickRental.div.find(".toggle_text").hide();
+          QuickRental.div.find(".show_listings").show();
+          return QuickRental.div.find(".toggle_all_listings").text("Open all listings");
         } else {
-          _this.div.find(".unit_list").slideDown();
-          _this.div.find(".toggle_text").hide();
-          return _this.div.find(".hide_listings").show();
+          QuickRental.div.find(".unit_list").slideDown();
+          QuickRental.div.find(".toggle_text").hide();
+          QuickRental.div.find(".hide_listings").show();
+          return QuickRental.div.find(".toggle_all_listings").text("Collapse all listings");
         }
       }).always(function() {
         return A2Cribs.UIManager.HideLoader();
@@ -247,6 +303,7 @@ set rent price
         $(event.currentTarget).parent().find(".toggle_text").hide();
         $(event.currentTarget).parent().find(".show_listings").show();
         $(event.currentTarget).one('click', QuickRental.ToggleShowListings);
+        QuickRental.div.find(".toggle_all_listings").text("Open all listings");
         return;
       }
       A2Cribs.UIManager.ShowLoader();
@@ -256,7 +313,10 @@ set rent price
         element.find(".unit_list").slideDown();
         $(event.currentTarget).parent().find(".toggle_text").hide();
         $(event.currentTarget).parent().find(".hide_listings").show();
-        return element.find(".rental_expand_toggle").one('click', QuickRental.ToggleShowListings);
+        element.find(".rental_expand_toggle").one('click', QuickRental.ToggleShowListings);
+        if (QuickRental.div.find(".unit_list:visible").length === QuickRental.div.find(".rental_preview").length) {
+          return QuickRental.div.find(".toggle_all_listings").text("Collapse all listings");
+        }
       });
       if (QuickRental.BackgroundLoadRentals().state() === "resolved") {
         return deferred.resolve($(event.currentTarget).parent());
@@ -354,7 +414,7 @@ set rent price
       var listings, marker_row, marker_row_div,
         _this = this;
       listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker.GetId());
-      marker_row = "<div class='rental_preview' data-marker-id='" + (marker.GetId()) + "' data-visible-state=\"hidden\">\n	<div class='rental_title'>\n		<span>\n			<span class='building_name'>" + (marker.GetName()) + "</span>\n		</span>\n		<span class='separator'>|</span>\n		<span class='street_address'>" + marker.street_address + "</span>\n		<span class='separator'>|</span>\n		<span class='building_type'>" + (marker.GetBuildingType()) + "</span>\n		<span class='pull-right available_listing_count'></span>\n	</div>\n	<div class='unit_list hide'>\n		<div class='fields_label'>\n			<div class='pull-left text-center listing_label'>Listing</div>\n			<div class='pull-left text-center available_label'>Availablity</div>\n			<div class='pull-left text-center rent_label'>Rent</div>\n			<div class='pull-left text-center start_date_label'>Start Date</div>\n			<a href=\"#\" class='pull-right label_explained' data-toggle='popover' data-content=\"We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com\">Where's the rest? <i class='icon-info-sign'></i></a>\n		</div>\n	</div>\n	<div class='rental_expand_toggle'>\n		<div class='show_listings toggle_text'>\n			<span><i class='icon-chevron-sign-down'></i> Click to view</span>\n			<span class='unit_count'>" + listings.length + "</span>\n			<span> Listings</span>\n		</div>\n		<div class='hide_listings hide toggle_text'>\n			<span><i class='icon-chevron-sign-up'></i> Hide these Listings</span>\n		</div>\n	</div>\n</div>";
+      marker_row = "<div class='rental_preview' data-marker-id='" + (marker.GetId()) + "' data-visible-state=\"hidden\">\n	<div class='rental_title rental_expand_toggle'>\n		<span>\n			<span class='building_name'>" + (marker.GetName()) + "</span>\n		</span>\n		<span class='separator'>|</span>\n		<span class='street_address'>" + marker.street_address + "</span>\n		<span class='separator'>|</span>\n		<span class='building_type'>" + (marker.GetBuildingType()) + "</span>\n		<span class='pull-right available_listing_count'></span>\n	</div>\n	<div class='unit_list hide'>\n		<div class='fields_label'>\n			<div class='pull-left text-center listing_label'>Listing</div>\n			<div class='pull-left text-center available_label'>Availablity</div>\n			<div class='pull-left text-center rent_label'>Rent</div>\n			<div class='pull-left text-center start_date_label'>Start Date</div>\n			<a href=\"#\" class='pull-right label_explained' data-toggle='popover' data-content=\"We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com\">Where's the rest? <i class='icon-info-sign'></i></a>\n		</div>\n	</div>\n	<div class='rental_expand_toggle rental_expand_toggle_div'>\n		<div class='show_listings toggle_text'>\n			<span><i class='icon-chevron-sign-down'></i> Click to view</span>\n			<span class='unit_count'>" + listings.length + "</span>\n			<span> Listings</span>\n		</div>\n		<div class='hide_listings hide toggle_text'>\n			<span><i class='icon-chevron-sign-up'></i> Hide these Listings</span>\n		</div>\n	</div>\n</div>";
       marker_row_div = $(marker_row);
       marker_row_div.find(".rental_expand_toggle").one('click', this.ToggleShowListings);
       marker_row_div.find(".label_explained").popover();
@@ -384,7 +444,7 @@ set rent price
       if (rental != null) {
         date_split = (_ref = rental.start_date) != null ? _ref.split("-") : void 0;
         date_string = (date_split != null ? date_split.length : void 0) === 3 ? "" + date_split[1] + "-" + date_split[2] + "-" + date_split[0] : "";
-        listing_row = "<div class=\"rental_edit\" data-listing-id=\"" + (listing.GetId()) + "\">\n	<span class=\"unit_description pull-left\">" + (rental.GetUnitStyle()) + " " + rental.unit_style_description + " - " + rental.beds + "Br</span>\n	<div class=\"btn-group pull-left\" data-toggle=\"buttons-radio\" data-object=\"listing\" data-field=\"available\" data-value=\"" + (listing.available ? "1" : "0") + "\">\n		<button type=\"button\" class=\"btn btn-available " + (listing.available ? "active" : "") + "\" data-value=\"1\">Available</button>\n		<button type=\"button\" class=\"btn btn-leased " + (!listing.available ? "active" : "") + "\" data-value=\"0\">Leased</button>\n	</div>\n	<input type=\"text\" class=\"rent\" placeholder=\"Rent\" data-object=\"rental\" data-field=\"rent\" data-value=\"" + rental.rent + "\" value=\"" + rental.rent + "\">\n	<input type=\"text\" class=\"start_date\" maxlength=\"10\" value=\"" + date_string + "\" data-object=\"rental\" data-field=\"start_date\" data-value=\"" + rental.start_date + "\" placeholder=\"MM-DD-YYYY\">\n	<span class=\"not-saved save-note hide\"><i class='icon-spinner icon-spin'></i> Saving...</span>\n	<span class=\"saved save-note hide\"><i class='icon-ok-sign'></i> Saved</span>\n</div>";
+        listing_row = "<div class=\"rental_edit\" data-listing-id=\"" + (listing.GetId()) + "\">\n	<span class=\"unit_description pull-left\">" + (rental.GetUnitStyle()) + " " + rental.unit_style_description + " - " + rental.beds + "Br</span>\n	<div class=\"btn-group pull-left\" data-toggle=\"buttons-radio\" data-object=\"listing\" data-field=\"available\" data-value=\"" + (listing.available ? "1" : "0") + "\">\n		<button type=\"button\" class=\"btn btn-available " + (listing.available ? "active" : "") + "\" data-value=\"1\">Available</button>\n		<button type=\"button\" class=\"btn btn-leased " + (!listing.available ? "active" : "") + "\" data-value=\"0\">Leased</button>\n	</div>\n	<input type=\"text\" class=\"rent pull-left\" placeholder=\"Rent\" data-object=\"rental\" data-field=\"rent\" data-value=\"" + rental.rent + "\" value=\"" + rental.rent + "\">\n	<input type=\"text\" class=\"start_date pull-left\" maxlength=\"10\" value=\"" + date_string + "\" data-object=\"rental\" data-field=\"start_date\" data-value=\"" + rental.start_date + "\" placeholder=\"MM-DD-YYYY\">\n	<button type=\"button pull-left\" class=\"open_photos btn btn-primary\">Add Photos</button>\n	<span class=\"not-saved save-note hide\"><i class='icon-spinner icon-spin'></i> Saving...</span>\n	<span class=\"saved save-note hide\"><i class='icon-ok-sign'></i> Saved</span>\n</div>";
         div = $(listing_row);
         format_rent(div.find(".rent"));
         return container.find(".unit_list").append(div);

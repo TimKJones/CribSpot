@@ -33,6 +33,15 @@
 		}
 	}
 
+	#sort_availablity
+	{
+		margin: 20px;
+	}
+
+	.toggle_all_listings
+	{
+		line-height: 70px;
+	}
 
 	.rental_preview
 	{
@@ -175,13 +184,19 @@
 				.btn
 				{
 					padding: 2px 5px;
-					&.btn-available
+					background-color: white;
+					color: #999;
+					&.btn-available.active
 					{
 						background-color: #8abb85;
 					}
-					&.btn-leased
+					&.btn-leased.active
 					{
 						background-color: #FF6666;
+					}
+					&.active
+					{
+						color: white;
 					}
 				}
 			}
@@ -202,15 +217,23 @@
 			{
 				border-color: red;
 			}
+			.open_photos
+			{
+				padding: 2px 12px;
+				margin-right: 5px;
+			}
 		}
-		.rental_expand_toggle
+		.rental_expand_toggle_div
 		{
 			background-color: hsl(0, 0%, 98%);
 			padding: 0px 15px;
-			cursor: pointer;
 			font-size: 12px;
 			font-weight: bold;
 			text-transform: uppercase;
+		}
+		.rental_expand_toggle
+		{
+			cursor: pointer;
 		}
 	}
 }
