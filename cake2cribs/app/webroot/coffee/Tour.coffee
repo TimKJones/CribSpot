@@ -41,7 +41,7 @@ class Tour
 			@SetDates @current_offset
 			@SetupInfoUI()
 
-			$(document).on "is_logged_in logged_in", (event, user) ->
+			$(document).on "logged_in", (event, user) ->
 				if user?.phone?
 					$("#phone_verified").val user.phone
 					$("#verify_phone_number").val user.phone

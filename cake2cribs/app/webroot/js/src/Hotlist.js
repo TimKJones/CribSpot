@@ -133,8 +133,10 @@
 
     Hotlist.prototype.setup = function() {
       var _this = this;
-      return $.when(A2Cribs.Login.CheckLoggedIn()).always(function() {
-        _this.renderTopSection();
+      return $(document).on("checked_logged_in logged_in", function(event) {
+        var logged_in, _ref;
+        logged_in = (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0;
+        _this.renderTopSection(logged_in);
         _this.show();
         _this.renderBottomSection();
         _this.currentHotlist = _this.get();
@@ -183,11 +185,10 @@
       return this.DOMRoot.find('ul.friends.no-friends').droppable("destroy");
     };
 
-    Hotlist.prototype.renderTopSection = function() {
-      var _ref,
-        _this = this;
+    Hotlist.prototype.renderTopSection = function(logged_in) {
+      var _this = this;
       this.DOMRoot.find('#top-section').html(this.topSection({
-        loggedIn: (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0
+        loggedIn: logged_in
       }));
       this.DOMRoot.find('#title').show();
       this.DOMRoot.find('#add-field').hide();
@@ -224,16 +225,17 @@
           animated: 'fade',
           container: 'body'
         });
-        return this.showOrHideExpandArrow();
+        this.showOrHideExpandArrow();
       } else {
         this.DOMRoot.find("#friends").html(this.notLoggedIn());
-        return this.setHeight(true);
       }
+      return this.setHeight(true);
     };
 
     Hotlist.prototype.startedDragging = function() {
       var _ref;
       if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+        this.retract();
         return this.expand();
       }
     };
@@ -471,11 +473,9 @@
       height = a.offset().top + a.height() - $('ul.friends').offset().top;
       if (height <= 10) {
         height = 70;
-      } else {
-        height = height + 30;
       }
       if ($('#bottom-section a').is(":visible")) {
-        height = height + $('#bottom-section a').height();
+        height = height + $('#bottom-section a').height() + 20;
       }
       if (height < 300 || !max) {
         return this.DOMRoot.find('ul.friends').height(height);

@@ -110,8 +110,9 @@ class A2Cribs.Hotlist
       @DOMRoot.find('#add-field').removeData('friend')
 
   setup: ->
-    $.when(A2Cribs.Login.CheckLoggedIn()).always =>
-      @renderTopSection()
+    $(document).on "checked_logged_in logged_in", (event) =>
+      logged_in = A2Cribs.Login?.logged_in
+      @renderTopSection(logged_in)
       @show()
       @renderBottomSection()
       @currentHotlist = @get()
@@ -162,8 +163,8 @@ class A2Cribs.Hotlist
     @DOMRoot.find('li.friend').droppable("destroy")
     @DOMRoot.find('ul.friends.no-friends').droppable("destroy")
 
-  renderTopSection: ->
-    @DOMRoot.find('#top-section').html(@topSection({loggedIn: A2Cribs.Login?.logged_in}))
+  renderTopSection: (logged_in) ->
+    @DOMRoot.find('#top-section').html(@topSection({loggedIn: logged_in}))
     @DOMRoot.find('#title').show()
     @DOMRoot.find('#add-field').hide()
     @DOMRoot.find('#btn-add').hide()
@@ -210,10 +211,12 @@ class A2Cribs.Hotlist
       @showOrHideExpandArrow()
     else
       @DOMRoot.find("#friends").html(@notLoggedIn())
-      @setHeight(true)
+
+    @setHeight(true)
 
   startedDragging: ->
     if A2Cribs.Login?.logged_in
+      @retract()
       @expand()
 
   stoppedDragging: ->
@@ -435,11 +438,11 @@ class A2Cribs.Hotlist
 
     if height <= 10
       height = 70
-    else
-      height = height + 30
+    # else
+    #   height = height + 30
 
     if $('#bottom-section a').is(":visible")
-      height = height + $('#bottom-section a').height()
+      height = height + $('#bottom-section a').height() + 20
 
     if height < 300 or not max
       @DOMRoot.find('ul.friends').height(height)

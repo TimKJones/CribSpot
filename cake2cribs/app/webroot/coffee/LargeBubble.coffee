@@ -78,8 +78,8 @@ class LargeBubble
         $( "<div class='listing-drag-helper'>Share #{name}</div>" )
       start: (event) ->
         if A2Cribs.Login?.logged_in
-            $('ul.friends, #hotlist').addClass('dragging')
-            A2Cribs.HotlistObj.startedDragging()
+          $('ul.friends, #hotlist').addClass('dragging')
+          A2Cribs.HotlistObj.startedDragging()
       stop: (event) ->
       	$('ul.friends, #hotlist').removeClass('dragging')
       	A2Cribs.HotlistObj.stoppedDragging()

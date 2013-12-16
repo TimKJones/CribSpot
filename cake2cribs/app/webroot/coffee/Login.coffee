@@ -59,12 +59,13 @@ class A2Cribs.Login
 					@logged_in = true
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
-					$(document).trigger("is_logged_in", [response.data])
+					$(document).trigger("logged_in", [response.data])
 
 				else if response.success is "NOT_LOGGED_IN"
 					@logged_in = false
 					@ResetHeader()
 					
+				$(document).trigger("checked_logged_in", [@logged_in])
 				return deferred.resolve response
 			error: (response) =>
 				console.log response
