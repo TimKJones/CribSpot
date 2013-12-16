@@ -140,7 +140,7 @@
         _this.show();
         _this.renderBottomSection();
         _this.currentHotlist = _this.get();
-        return A2Cribs.FeaturedListings.resizeHandler();
+        return _this.setHeight(true);
       });
     };
 
@@ -225,7 +225,6 @@
           animated: 'fade',
           container: 'body'
         });
-        this.showOrHideExpandArrow();
       } else {
         this.DOMRoot.find("#friends").html(this.notLoggedIn());
       }
@@ -256,17 +255,6 @@
         return a;
       });
       return console.log(fb_ids, fb_ids.length);
-    };
-
-    Hotlist.prototype.showOrHideExpandArrow = function() {
-      var el, hotlistOnOneLine;
-      el = this.DOMRoot.find('#bottom-section a');
-      hotlistOnOneLine = this.DOMRoot.find('ul.friends li:first').offset().top === this.DOMRoot.find('ul.friends li:last').offset().top;
-      if (this.isExpanded || !hotlistOnOneLine) {
-        return el.show();
-      } else {
-        return el.hide();
-      }
     };
 
     Hotlist.prototype.renderBottomSection = function() {
@@ -423,7 +411,6 @@
       this.DOMRoot.find('ul.friends').removeStyle('height');
       this.setEditing(false);
       this.isExpanded = false;
-      this.showOrHideExpandArrow();
       this.setHeight(true);
       this.setupDroppables();
       return this.DOMRoot.find('li.friend').tooltip({
@@ -436,7 +423,6 @@
       this.DOMRoot.addClass('expanded');
       this.DOMRoot.find('#expand-button i').removeClass('icon-caret-down').addClass('icon-caret-up');
       this.isExpanded = true;
-      this.showOrHideExpandArrow();
       return this.setHeight();
     };
 
@@ -445,7 +431,6 @@
       this.DOMRoot.addClass('expanded');
       this.DOMRoot.find('#expand-button i').removeClass('icon-caret-down').addClass('icon-caret-up');
       this.isExpanded = true;
-      this.showOrHideExpandArrow();
       this.DOMRoot.addClass('detailed');
       shows = ['.btn-hotlist-remove', '.twitter-typeahead', '.tt-hint', '.friend-name', '#add-field', '#btn-add'];
       hides = ['.friend-abbr', '#title'];
@@ -457,14 +442,31 @@
       return this.setHeight(false, true);
     };
 
+    Hotlist.prototype.showOrHideExpandArrow = function() {
+      var el, hotlistOnOneLine, _ref;
+      el = this.DOMRoot.find('#bottom-section a');
+      hotlistOnOneLine = this.DOMRoot.find('ul.friends li:first').offset().top === this.DOMRoot.find('ul.friends li:last').offset().top;
+      if (!((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0)) {
+        el.hide();
+        return;
+      }
+      if (this.isExpanded || !hotlistOnOneLine) {
+        return el.show();
+      } else {
+        return el.hide();
+      }
+    };
+
     Hotlist.prototype.setHeight = function(retract, max) {
-      var a, height;
+      var a, height, _ref,
+        _this = this;
       if (retract == null) {
         retract = false;
       }
       if (max == null) {
         max = false;
       }
+      this.showOrHideExpandArrow();
       if (retract) {
         a = this.DOMRoot.find('ul.friends li:first-child');
       } else {
@@ -477,11 +479,17 @@
       if ($('#bottom-section a').is(":visible")) {
         height = height + $('#bottom-section a').height() + 20;
       }
-      if (height < 300 || !max) {
-        return this.DOMRoot.find('ul.friends').height(height);
-      } else {
-        return this.DOMRoot.find('ul.friends').height(300);
+      if (!((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0)) {
+        height = height + 25;
       }
+      if (height < 300 || !max) {
+        this.DOMRoot.find('ul.friends').height(height);
+      } else {
+        this.DOMRoot.find('ul.friends').height(300);
+      }
+      return this.DOMRoot.find('ul.friends').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+        return A2Cribs.FeaturedListings.resizeHandler();
+      });
     };
 
     Hotlist.prototype.toggleEdit = function() {
@@ -520,7 +528,7 @@
 
     Hotlist.friendsListTemplate = "<ul class='friends <%=friends.length ? \"has-friends\" : \"no-friends\"%>'>\n  <% if(friends.length) { %>\n  <% _.each(friends, function(elem, idx, list) { %>\n    <% \n      var tooltitle = elem.email \n      if (elem.first_name) {\n        tooltitle = elem.first_name + ' ' + elem.last_name\n      }\n    %> \n    <li class='friend' data-id='<%=elem.id%>' data-toggle='tooltip' title='<%=tooltitle%>'' data-facebook_id='<%=elem.facebook_id || null%>' data-email='<%=elem.email%>'>\n      <% if (elem.facebook_id){ %>\n        <img class='friend-abbr hotlist-profile-img' src='https://graph.facebook.com/<%=elem.facebook_id%>/picture?width=80&height=80'></img>\n      <% } else if (elem.profile_img) { %>\n        <img class='friend-abbr otlist-profile-img' src='<%=elem.profile_img%>'></img>\n      <% } else if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n        <span class='friend-abbr'>\n          <%=elem.first_name[0].toUpperCase()%><%=elem.last_name[0].toUpperCase()%> \n        </span>\n      <% } else { %>\n        <span class='friend-abbr'>\n          <%=elem.email[0]%>@<%=elem.email.split('@')[1][0]%>\n        </span>\n      <% } %>\n      <span class='friend-name'>\n        <% if (typeof elem.first_name !== 'undefined' && elem.first_name !== null) { %>\n          <%=elem.first_name%> <%=elem.last_name%> \n        <% } else { %>\n          <%=elem.email%>\n        <% } %>\n      </span>\n      <a class='btn-hotlist-remove btn-hotlist pull-right' href='#' onClick='A2Cribs.HotlistObj.remove(<%=elem.id%>)'><i class='icon icon-remove-circle'></i></a>\n    </li>\n  <% }); %>\n  <% } else { %>\n    <li class='add-friends-notice'>No friends added yet.</li>\n    <li class='no-friends-notice'>Add friends by clicking here <i class='icon-reply icon-rotate'></i></li>\n    <li class='share-to-fb-notice'><i class='icon-facebook-sign'></i> Drag to Share</li>\n  <% } %>\n</ul>";
 
-    Hotlist.notLoggedInTemplate = "<ul class='friends no-friends'>\n  <li class='not-logged-in-notice'>Log In to share</li>\n</ul>";
+    Hotlist.notLoggedInTemplate = "<ul class='friends no-friends not-logged-in'>\n  <li class='not-logged-in-notice'>Log In to share</li>\n</ul>";
 
     Hotlist.expandButtonTemplate = "<a href='#' onclick='A2Cribs.HotlistObj.toggleExpand()' id='expand-button'><i class='icon icon-caret-down'></i></a>";
 

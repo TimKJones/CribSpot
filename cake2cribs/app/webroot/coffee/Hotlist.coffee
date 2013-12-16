@@ -116,7 +116,7 @@ class A2Cribs.Hotlist
       @show()
       @renderBottomSection()
       @currentHotlist = @get()
-      A2Cribs.FeaturedListings.resizeHandler()
+      @setHeight(true)
 
   #Initializer Functions
 
@@ -207,8 +207,6 @@ class A2Cribs.Hotlist
       # @DOMRoot.droppable
       #   accept: '.fl-sb-item, .large-bubble'
       #   activeClass: 'expanded'
-
-      @showOrHideExpandArrow()
     else
       @DOMRoot.find("#friends").html(@notLoggedIn())
 
@@ -237,14 +235,6 @@ class A2Cribs.Hotlist
     #   to: fb_ids
     # })
 
-  showOrHideExpandArrow: ->
-    el = @DOMRoot.find('#bottom-section a')
-    hotlistOnOneLine = @DOMRoot.find('ul.friends li:first').offset().top is @DOMRoot.find('ul.friends li:last').offset().top
-
-    if @isExpanded or not hotlistOnOneLine
-      el.show()
-    else
-      el.hide()
 
   renderBottomSection: ->
     @DOMRoot.find('#bottom-section').html(@expandButton())
@@ -375,7 +365,6 @@ class A2Cribs.Hotlist
     @setEditing false
 
     @isExpanded = false
-    @showOrHideExpandArrow()
     @setHeight(true)
 
     @setupDroppables()
@@ -390,7 +379,6 @@ class A2Cribs.Hotlist
     @DOMRoot.find('#expand-button i').removeClass('icon-caret-down').addClass('icon-caret-up')
 
     @isExpanded = true
-    @showOrHideExpandArrow()
 
     @setHeight()
 
@@ -399,7 +387,6 @@ class A2Cribs.Hotlist
     @DOMRoot.find('#expand-button i').removeClass('icon-caret-down').addClass('icon-caret-up')
 
     @isExpanded = true
-    @showOrHideExpandArrow()
 
     @DOMRoot.addClass('detailed')
 
@@ -428,7 +415,22 @@ class A2Cribs.Hotlist
 
     @setHeight(false, true)
 
+  showOrHideExpandArrow: ->
+    el = @DOMRoot.find('#bottom-section a')
+    hotlistOnOneLine = @DOMRoot.find('ul.friends li:first').offset().top is @DOMRoot.find('ul.friends li:last').offset().top
+
+    if not A2Cribs.Login?.logged_in
+      el.hide()
+      return
+
+    if @isExpanded or not hotlistOnOneLine
+      el.show()
+    else
+      el.hide()
+
   setHeight: (retract = false, max = false) ->
+    @showOrHideExpandArrow()
+
     if retract
       a = @DOMRoot.find('ul.friends li:first-child')
     else
@@ -444,10 +446,16 @@ class A2Cribs.Hotlist
     if $('#bottom-section a').is(":visible")
       height = height + $('#bottom-section a').height() + 20
 
+    if not A2Cribs.Login?.logged_in
+      height = height + 25
+
     if height < 300 or not max
       @DOMRoot.find('ul.friends').height(height)
     else
       @DOMRoot.find('ul.friends').height(300)
+
+    @DOMRoot.find('ul.friends').on 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', =>
+      A2Cribs.FeaturedListings.resizeHandler()
 
   toggleEdit: ->
     if @isEditing()
@@ -550,7 +558,7 @@ class A2Cribs.Hotlist
   """
 
   @notLoggedInTemplate:"""
-    <ul class='friends no-friends'>
+    <ul class='friends no-friends not-logged-in'>
       <li class='not-logged-in-notice'>Log In to share</li>
     </ul>
   """
