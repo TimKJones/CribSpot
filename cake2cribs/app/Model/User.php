@@ -51,7 +51,7 @@ class User extends AppModel {
 				'message' => 'Your last name be between 1 and 50 characters'
 				),
 			'valid_characters' => array(
-				'rule' => array('custom', '/^[a-z0-9\-\.\\\ ]*$/i'),
+				'rule' => array('custom', '/^[a-z0-9\-\.\\\ \']*$/i'),
 				'message' => 'Your last name has some invalid characters.'
 			)
 		),
