@@ -64,11 +64,10 @@ Basic data fields are defined in the listing model as BASIC_DATA_FIELDS, and var
 			inner join listings Listing on Listing.marker_id = Marker.marker_id ".
 			$listing_type_inner_join .
 			" order by distance";
-
         $basicData = $model->query($queryString);
-
         /* Filter for only the listings within $radius of the $target_lat_long */
         $filteredBasicData = $this->_filterQueryResultsByDistance($basicData, $radius);
+CakeLog::write('filtered', print_r($filteredBasicData, true));
         return $filteredBasicData;
 	}
 
@@ -121,18 +120,13 @@ Fetches all listings with listing_type = $listing_type within $radius of ($latit
 		App::import('model', 'Rental');
 		$Rental = new Rental();
         foreach ($listings as &$listing) {
-    		if (!array_key_exists(0, $listing) || !array_key_exists('distance', $listing[0]) || 
-    			!array_key_exists('latitude', $listing[0]) || !array_key_exists('longitude', $listing[0]))
+    		if (!array_key_exists(0, $listing) || !array_key_exists('distance', $listing[0]))
     			continue;
     			
     		if ($listing[0]['distance'] * $this->ONE_DEGREE_IN_MILES < $radius){
             	/* TODO: THIS SHOULDN'T BE IN THIS SPOT */
             	if (array_key_exists('Marker', $listing) && array_key_exists('building_type_id', $listing['Marker']))
             		$listing["Marker"]["building_type_id"] = $Rental->building_type(intval($listing['Marker']['building_type_id']));
-
-            	/* Move latitude and longitude aliases into Marker object */
-            	$listing['Marker']['latitude'] = $listing[0]['latitude'];
-            	$listing['Marker']['longitude'] = $listing[0]['longitude'];
 
             	/* Remove the distance index...having this there will mess up client-side caching process */
             	unset($listing[0]);
