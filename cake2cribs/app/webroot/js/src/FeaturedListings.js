@@ -374,7 +374,7 @@
             console.log('listing_item share click!');
             $(this).popover('show');
             return $('.popover a').on('click', function() {
-              $('.popover').popover('hide');
+              $('.popover').popover('hide').hide();
               return $('.popover').off('click');
             });
           });

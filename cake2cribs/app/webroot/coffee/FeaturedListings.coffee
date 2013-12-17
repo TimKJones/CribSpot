@@ -313,7 +313,7 @@ class A2Cribs.FeaturedListings
                     $(this).popover('show')
                     # $('.popover input').typeahead(A2Cribs.HotlistObj.sources)
                     $('.popover a').on 'click', =>
-                        $('.popover').popover('hide')
+                        $('.popover').popover('hide').hide()
                         $('.popover').off('click')
 
                 listing_item.find("#share-to-email").keyup (event) ->

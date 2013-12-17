@@ -1286,28 +1286,28 @@
         })
       }
 
-      $.support.transition && this.$tip.hasClass('fade') ?
-        removeWithAnimation() :
-        this.detachContent()
+      $.support.transition && this.$tip.hasClass('fade') ? removeWithAnimation() : this.detachContent();
 
-      this.$element.trigger('hidden')
+      this.$element.trigger('hidden');
 
-      return this
+      return this;
     }
 
   , detachContent: function () {
       var that = this
        , $tip = this.tip()
 
-      if (this.options.html)
-      {
-        var div = $('<div/>')
-          .append($('#' + this.$element.attr('data-content')))
-          .hide()
-        $('body').append(div)
-      }
-      else
-        $tip.detach()
+      // if (this.options.html)
+      // {
+      //   var div = $('<div/>')
+      //     .append($('#' + this.$element.attr('data-content')))
+      //     .hide()
+      //   $('body').append(div)
+      // }
+      // else
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
   }
 
   , getContent: function () {
