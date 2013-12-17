@@ -155,3 +155,5 @@
 - EmailInvitation->InviteFriends
 74
 - Listing->SetAvailable
+75
+- BlacklistedIp->Add()
