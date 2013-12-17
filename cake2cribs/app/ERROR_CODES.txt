@@ -155,3 +155,15 @@
 - EmailInvitation->InviteFriends
 74
 - Listing->SetAvailable
+
+
+201
+- User->AddToHotlist (did not add friend)
+202
+- User->RemoveFromHotlist (did not remove friend)
+203
+- User->AddToHotlist (Attempted to friend self)
+204
+- User->AddToHotlistFB (did not add friend)
+205
+- User->AddToHotlistFB (Attempted to friend self)

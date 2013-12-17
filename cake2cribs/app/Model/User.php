@@ -225,11 +225,17 @@ class User extends AppModel {
 		CakeLog::write('HOTLIST', "Entered inHotlist($user_id, $friend_id)");
 		$q = $this->query("SELECT COUNT(*) AS cnt FROM users_friends WHERE user_id = $user_id AND friend_id = $friend_id AND hotlist = 1");
 		CakeLog::write('HOTLIST', print_r($q, true));
+
+		return (bool) $q[0][0]['cnt'];
 	}
 
 	public function removeFromHotlist($user_id, $friend_id) {
     CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
     $this->query("UPDATE users_friends SET hotlist = '0' WHERE user_id = $user_id AND friend_id = $friend_id");
+
+    if ($this->inHotlist($user_id, $friend_id)) {
+    	$this->logError($user_id, 202, array('friend' => $friend_id));
+    }
     return $this->getHotlist($user_id);
 	}
 
@@ -240,10 +246,16 @@ class User extends AppModel {
     $friend_id = $friend['User']['id'];
     if ($user_id != $friend_id){
 	    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+
+	    if (!($this->inHotlist($user_id, $friend_id))) {
+	    	$this->logError($user_id, 201, array('friend' => $friend_id)); // the previous command failed, log error
+	    }
 	  }
 	  else {
 	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+	  	$this->logError($user_id, 203, array());
 	  }
+
 
     return $this->getHotlist($user_id);
 	}
@@ -257,9 +269,13 @@ class User extends AppModel {
     	$friend_id = $friend['User']['id'];
 	    if ($user_id != $friend_id){
 		    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+		    if (!($this->inHotlist($user_id, $friend_id))) {
+		    	$this->logError($user_id, 204, array('friend' => $friend_fb_id)); // the previous command failed, log error
+		    }
 		  }
 		  else {
 		  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+		  	$this->logError($user_id, 205, array('friend' => $friend_fb_id));
 		  }
 		}
 
