@@ -104,7 +104,6 @@ Only return */
     */
     public function GetBasicData($listing_type, $university_id)
     {
-        CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
 
@@ -132,14 +131,14 @@ Only return */
         $target_lat_long = Cache::read('universityTargetLatLong-'.$university_id, 'LongTerm');
         if ($target_lat_long === false){
             $target_lat_long = $this->University->getTargetLatLong($university_id);
-            //Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
+            Cache::write('universityTargetLatLong-'.$university_id, $target_lat_long, 'LongTerm');
         }
 
         $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
         if ($basicData === false){  
             $basicData = $this->Listing->GetBasicDataCloseToPoint($listing_type, $target_lat_long, $this->Marker->RADIUS);
             $this->_cacheListingBasicData($basicData);
-            //Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
+            Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
         }
         
         $response = json_encode($basicData);
@@ -152,7 +151,6 @@ Only return */
     private function _cacheListingBasicData(&$basicData)
     {
         $map = array();
-    CakeLog::write('wegot', print_r($basicData, true));
         foreach ($basicData as &$listing){
             if (array_key_exists('Listing', $listing) && array_key_exists('listing_id', $listing['Listing']))
                 Cache::write('ListingBasicData-'.$listing['Listing']['listing_id'], $listing, 'MapData');
