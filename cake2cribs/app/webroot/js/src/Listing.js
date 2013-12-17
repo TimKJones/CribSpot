@@ -72,6 +72,15 @@
     };
 
     /*
+    	Returns the string of the listing type
+    */
+
+
+    Listing.prototype.GetListingType = function() {
+      return A2Cribs.Listing.LISTING_TYPES[parseInt(this.listing_type, 10)];
+    };
+
+    /*
     	Gets all objects connected to the listing
     */
 

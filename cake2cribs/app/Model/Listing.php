@@ -155,7 +155,9 @@ class Listing extends AppModel {
 				$listing['Rental']['alternate_start_date'] = '';
 		}
 		else if (array_key_exists('Sublet', $listing)){
-			$listing['Listing']['available'] = true;
+			if (!array_key_exists('available', $listing['Listing']))
+				$listing['Listing']['available']	= true;
+
 			$listing['Listing']['scheduling'] = false;
 			$listing['Sublet'] = $this->_removeNullEntries($listing['Sublet']);
 		}
@@ -356,8 +358,10 @@ class Listing extends AppModel {
 	*/
 	public function GetListingsByUserId($user_id)
 	{
+		$contain_array = array('Image', 'Rental', 'User', 'Marker', 'Sublet');
+
 		$listings = $this->find('all', array(
-			'contain' => array('Image', 'Rental', 'User', 'Marker'),
+			'contain' => $contain_array,
 			'conditions' => array(
 				'Listing.user_id' => $user_id,
 				'Listing.visible' => 1)
@@ -377,6 +381,8 @@ class Listing extends AppModel {
 				$listings[$i]['Image'] = $this->_removeNullEntries($listings[$i]['Image']);
 			if (array_key_exists('Marker', $listings[$i]))
 				$listings[$i]['Marker'] = $this->_removeNullEntries($listings[$i]['Marker']);
+			if (array_key_exists('Sublet', $listings[$i]))
+				$listings[$i]['Sublet'] = $this->_removeNullEntries($listings[$i]['Sublet']);
 		}	
 
 		return $listings;

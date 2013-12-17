@@ -29,6 +29,10 @@ echo $this->Html->script('underscore');
 		</div>
 
 		<div id = 'middle_content' class = 'span9'>
+			<div class = 'overview-content'>
+				<?php echo $this->element('Dashboard/rental_quickedit', $user) ?>
+			</div>
+
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>
 					<?php echo $this->element('Account/edit_account_window', $user) ?>
@@ -46,10 +50,6 @@ echo $this->Html->script('underscore');
 				<div class = 'span3'>
 					<?php echo $this->element('Messages/participant_info') ?>
 				</div>
-			</div>
-
-			<div class="rentalquick-content">
-				<?= $this->element('Dashboard/rental_quickedit') ?>
 			</div>
 
 			<div class = 'rental-content hidden'>

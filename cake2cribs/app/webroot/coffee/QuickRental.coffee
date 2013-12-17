@@ -392,7 +392,7 @@ class QuickRental
 						<div class='pull-left text-center available_label'>Availablity</div>
 						<div class='pull-left text-center rent_label'>Rent</div>
 						<div class='pull-left text-center start_date_label'>Start Date</div>
-						<a href="#" class='pull-right label_explained' data-toggle='popover' data-content="We have simplified things a bit. If you would like to update a field that is not listed below, please contact jason@cribspot.com">Where's the rest? <i class='icon-info-sign'></i></a>
+						<a href="#" class='pull-right label_explained' data-toggle='popover' data-content="We have simplified things a bit. If you would like to update a field that is not listed below, please click on the rentals or sublet tab on the left.">Where's the rest? <i class='icon-info-sign'></i></a>
 					</div>
 				</div>
 				<div class='rental_expand_toggle rental_expand_toggle_div'>
@@ -426,19 +426,24 @@ class QuickRental
 	Adds rental to the rental preview div
 	###
 	@AddRental: (listing, container) ->
-		rental = A2Cribs.UserCache.Get "rental", listing.GetId()
+		listing_type = listing.GetListingType()
+		rental = A2Cribs.UserCache.Get listing_type.toLowerCase(), listing.GetId()
 		if rental?
 			date_split = rental.start_date?.split("-")
 			date_string = if date_split?.length is 3 then "#{date_split[1]}-#{date_split[2]}-#{date_split[0]}" else ""
+			if rental.GetUnitStyle?
+				unit_description = "#{rental.GetUnitStyle()} #{rental.unit_style_description} - #{rental.beds}Br"
+			else
+				unit_description = "#{rental.beds}Br - #{rental.baths}Bath"
 			listing_row = """
 				<div class="rental_edit" data-listing-id="#{listing.GetId()}">
-					<span class="unit_description pull-left">#{rental.GetUnitStyle()} #{rental.unit_style_description} - #{rental.beds}Br</span>
+					<span class="unit_description pull-left">#{unit_description}</span>
 					<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-field="available" data-value="#{if listing.available then "1" else "0"}">
 						<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
 						<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
 					</div>
-					<input type="text" class="rent pull-left" placeholder="Rent" data-object="rental" data-field="rent" data-value="#{rental.rent}" value="#{rental.rent}">
-					<input type="text" class="start_date pull-left" maxlength="10" value="#{date_string}" data-object="rental" data-field="start_date" data-value="#{rental.start_date}" placeholder="MM-DD-YYYY">
+					<input type="text" class="rent pull-left" placeholder="Rent" data-object="#{rental.class_name}" data-field="rent" data-value="#{rental.rent}" value="#{rental.rent}">
+					<input type="text" class="start_date pull-left" maxlength="10" value="#{date_string}" data-object="#{rental.class_name}" data-field="start_date" data-value="#{rental.start_date}" placeholder="MM-DD-YYYY">
 					<button type="button pull-left" class="open_photos btn btn-primary">Add Photos</button>
 					<span class="not-saved save-note hide"><i class='icon-spinner icon-spin'></i> Saving...</span>
 					<span class="saved save-note hide"><i class='icon-ok-sign'></i> Saved</span>

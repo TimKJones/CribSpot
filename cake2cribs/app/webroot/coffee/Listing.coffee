@@ -38,6 +38,12 @@ class A2Cribs.Listing extends A2Cribs.Object
 		return no
 
 	###
+	Returns the string of the listing type
+	###
+	GetListingType: ->
+		return A2Cribs.Listing.LISTING_TYPES[parseInt(@listing_type, 10)]
+
+	###
 	Gets all objects connected to the listing
 	###
 	GetConnectedObject: ->
