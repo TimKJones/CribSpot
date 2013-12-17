@@ -104,10 +104,9 @@ Only return */
     */
     public function GetBasicData($listing_type, $university_id)
     {
-        CakeLog::write('listing_type', 'getbasicdata:'.$listing_type);
         if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;
-CakeLog::write('debuggingit', '-1');
+
         $response = $this->_getBasicData($listing_type, $university_id);
         $this->set("response", $response);
     }
@@ -137,7 +136,7 @@ CakeLog::write('debuggingit', '-1');
 
         $basicData = Cache::read('mapBasicData-'.$listing_type.'-'.$university_id, 'MapData');
         if ($basicData === false){  
-            $basicData = $this->Listing->GetBasicData($listing_type, $target_lat_long, $this->Marker->RADIUS);
+            $basicData = $this->Listing->GetBasicDataCloseToPoint($listing_type, $target_lat_long, $this->Marker->RADIUS);
             $this->_cacheListingBasicData($basicData);
             Cache::write('mapBasicData-'.$listing_type.'-'.$university_id, $basicData, 'MapData');
         }

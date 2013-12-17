@@ -245,6 +245,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		$markers = null;
 		/* If this user is a university admin, return all listings for their university */
 		App::Import('model', 'User');	
+		App::Import('model', 'Listing');
 		if ($this->Auth->User('user_type') == User::USER_TYPE_UNIVERSITY_ADMIN){
 			$admin = $this->UniversityAdmin->GetByUserId($user_id);
 			if (!array_key_exists('UniversityAdmin', $admin) || !array_key_exists('university_id', $admin['UniversityAdmin'])) {
@@ -256,7 +257,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			}
 
 			$lat_long = $this->University->getTargetLatLong($admin['UniversityAdmin']['university_id']);
-			$markers = $this->Listing->GetBasicDataNear($lat_long['latitude'], $lat_long['longitude'], $this->Listing->RADIUS);
+			$markers = $this->Listing->GetBasicDataCloseToPoint(Listing::LISTING_TYPE_RENTAL, $lat_long, $this->Listing->RADIUS);
 		} else {
 			$markers = $this->Listing->GetBasicMarkerDataByUser($user_id);
 		}
@@ -308,6 +309,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			return;
 
 		$this->layout = 'ajax';
+		$listings = null;
 		if ($listing_id == null){
 			
 			$newspaper_admin = $this->NewspaperAdmin->getByUserId($this->_getUserId());
@@ -316,7 +318,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 				$tll = $this->University->getTargetLatLong($newspaper_admin['NewspaperAdmin']['university_id']);
 				$options['fields'] = array("Listing.listing_id, Listing.marker_id, Marker.marker_id, Marker.street_address, Marker.alternate_name, Listing.user_id, Listing.listing_type, Rental.unit_style_type, Rental.unit_style_description" );
 				$this->Listing->contain("Marker", "Rental");
-				$listings = $this->Listing->GetListingsNear($tll['latitude'], $tll['longitude'], $this->Listing->RADIUS, $options);
+				$listings = $this->Listing->GetListingsCloseToPoint($tll['latitude'], $tll['longitude'], $this->Listing->RADIUS, Listing::LISTING_TYPE_RENTAL);
 			}else{
 				/* Return all listings owned by this user. */
 				$listings = $this->_getListingsByLoggedInUser();

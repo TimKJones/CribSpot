@@ -1,21 +1,25 @@
 <?php
 	echo $this->Html->css('/less/landing.less?v=73','stylesheet/less', array('inline' => false));
 	
-if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
-	echo $this->Html->script('src/Login', array('inline' => false));
-	echo $this->Html->script('src/Landing', array('inline' => false));
-}
+	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+		echo $this->Html->script('src/Login', array('inline' => false));
+		echo $this->Html->script('src/Landing', array('inline' => false));
+	}
 	$this->set('title_for_layout', 'Cribspot - College Off-Campus Housing & Apartments.');
+	$url = "https://cribspot.com";
+	$description = "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.";
+	$this->set('meta_description', $description);
+	$this->set('canonical_url', $url);
+
 
 	$this->Html->meta('keywords', 
 			"off campus housing, student housing, campus apartments, college apartments, college housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
 		);
 
-	$this->Html->meta('description', "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.", array('inline' => false));
+	$this->Html->meta('description', $description, array('inline' => false));
 
-	echo $this->Html->meta('canonical', 'https://cribspot.com/', array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
+	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
-	echo $this->element('SEO/facebook_meta_tag', array('title' => 'Cribspot - College Off-Campus Housing & Apartments.', 'url' => 'https://cribspot.com/', 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => 'Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying'));
 ?>
 
 

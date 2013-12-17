@@ -1,24 +1,26 @@
 <?php echo $this->Html->css('/less/Listing/full_page.less?v=5','stylesheet/less', array('inline' => false)); ?>
 <?php 
-if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
-	echo $this->Html->script('src/FullListing.js', array('inline' => false));
-}
+	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+		echo $this->Html->script('src/FullListing.js', array('inline' => false));
+	}
+	$url = 'https://cribspot.com/listings/view/' . $listing["Listing"]["listing_id"] . '/' . $full_address;
 	$name = "";
 	if (strlen($listing["Marker"]["alternate_name"]) != 0)
 		$name = $listing["Marker"]["alternate_name"] . " - ";
+	$image_url = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
+	if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing))
+		$image_url = 'https://cribspot.com/' . $listing["Image"][$listing["primary_image"]]["image_path"];
 
 	$this->set('title_for_layout', $name . $listing["Marker"]["street_address"] . ", " . $listing["Marker"]["city"] . ", " .$listing["Marker"]["state"] . " " . $listing["Marker"]["zip"] . " - Cribspot");
+	$this->set('meta_image', $image_url);
+	$this->set('canonical_url', $url);
+	$this->set('meta_description', $listing[$listing_type]['description']);
 
 	$this->Html->meta('keywords', 
 			$listing["Marker"]["alternate_name"] . ", " . $listing["Marker"]["street_address"] . ", off campus housing, student housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
 		);
 
 	$this->Html->meta('description', $listing[$listing_type]["description"], array('inline' => false));
-
-	$url = 'https://cribspot.com/listings/view/' . $listing["Listing"]["listing_id"] . '/' . $full_address;
-	$image_url = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
-	if (array_key_exists('primary_image', $listing) && array_key_exists('Image', $listing))
-		$image_url = 'https://cribspot.com/' . $listing["Image"][$listing["primary_image"]]["image_path"];
 
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
