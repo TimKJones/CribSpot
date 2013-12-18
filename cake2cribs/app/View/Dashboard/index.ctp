@@ -3,7 +3,7 @@
 <?php echo $this->element('Dashboard/picture-modal');?>
 <?php echo $this->Html->css('messages'); ?>
 <?php echo $this->Html->css('account.css?v=2'); ?>
-<?php echo $this->Html->css('dashboard'); ?>
+<?php echo $this->Html->css('dashboard.css?v=2'); ?>
 
 <?php
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){

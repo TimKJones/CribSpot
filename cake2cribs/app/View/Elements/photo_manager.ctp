@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('photomanager', null, array('inline' => false)); ?>
+<?php echo $this->Html->css('photomanager.css?v=2', null, array('inline' => false)); ?>
 <?php 
 	echo $this->Html->script('http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js', array('inline' => false));
 	echo $this->Html->script('fileupload/jquery.iframe-transport', array('inline' => false));
