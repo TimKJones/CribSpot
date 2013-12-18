@@ -18,7 +18,7 @@
 	$this->set('meta_description', $description);
 
 	$this->Html->meta('description', $description, array('inline' => false));
-
+?>
 
 <div id="school_page" style="background-image:url(<?= $university['background_image']; ?>)">
 	<div>
