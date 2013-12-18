@@ -59,7 +59,7 @@
         } else {
           image_array = _this._temp_images;
         }
-        return A2Cribs.PhotoManager.Open(image_array, _this.PhotoAddedCallback);
+        return A2Cribs.PhotoPicker.Open(image_array).done(_this.PhotoAddedCallback);
       });
       return this.div.find(".rent").keyup(function(event) {
         return $(event.currentTarget).parent().removeClass("error");
@@ -109,7 +109,7 @@
           image = photos[_i];
           image.listing_id = listing_id;
         }
-        A2Cribs.UserCache.Set(new A2Cribs.Image(photos));
+        A2Cribs.UserCache.Set(new A2Cribs.Image(photos, listing_id));
         SubletSave._temp_images = photos;
         return SubletSave.Save();
       } else {

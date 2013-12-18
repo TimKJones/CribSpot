@@ -41,4 +41,5 @@
 	echo $this->element('map', array('active_listing_type' => $active_listing_type, 'university' => $university));
 	echo $this->element('FeaturedListings/fl_sidebar', $university);
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $university["latitude"], 'longitude' => $university["longitude"]));
+	echo $this->element('SEO/facebook_meta_tag', array('title' => $university["name"] . ' Sublets', 'url' => $url, 'image_path' => 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png', 'description' => $description));
 ?>

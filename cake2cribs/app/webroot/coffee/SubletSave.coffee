@@ -54,7 +54,8 @@ class SubletSave
 			else
 				image_array = @_temp_images
 
-			A2Cribs.PhotoManager.Open image_array, @PhotoAddedCallback
+			A2Cribs.PhotoPicker.Open(image_array)
+			.done @PhotoAddedCallback
 
 		# Remove error class when rent is typed in
 		@div.find(".rent").keyup (event) ->
@@ -91,7 +92,7 @@ class SubletSave
 		if listing_id?.length isnt 0
 			for image in photos
 				image.listing_id = listing_id
-			A2Cribs.UserCache.Set new A2Cribs.Image photos
+			A2Cribs.UserCache.Set new A2Cribs.Image photos, listing_id
 			@_temp_images = photos
 			@Save()
 		else

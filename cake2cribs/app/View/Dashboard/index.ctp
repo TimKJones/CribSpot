@@ -13,6 +13,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/PropertyManagement');
 	echo $this->Html->script('src/VerifyManager');
 	echo $this->Html->script('src/SubletSave');
+	echo $this->Html->script('src/QuickRental');
 	echo $this->Html->script('src/UserCache', array('inline' => false));
 }
 
@@ -28,6 +29,10 @@ echo $this->Html->script('underscore');
 		</div>
 
 		<div id = 'middle_content' class = 'span9'>
+			<div class = 'overview-content'>
+				<?php echo $this->element('Dashboard/rental_quickedit', $user) ?>
+			</div>
+
 			<div class = 'row-fluid account-content hidden'>
 				<div class = 'span9'>
 					<?php echo $this->element('Account/edit_account_window', $user) ?>

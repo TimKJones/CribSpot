@@ -7,6 +7,8 @@
 
     __extends(Rental, _super);
 
+    Rental.UNIT_STYLE = ["Unit", "Layout", "Entire House"];
+
     function Rental(rental) {
       var date, dates, index, _i, _len;
       Rental.__super__.constructor.call(this, "rental", rental);
@@ -21,7 +23,11 @@
       }
     }
 
-    Rental.prototype.GetId = function(id) {
+    Rental.prototype.GetUnitStyle = function() {
+      return A2Cribs.Rental.UNIT_STYLE[this.unit_style_options];
+    };
+
+    Rental.prototype.GetId = function() {
       return parseInt(this["listing_id"], 10);
     };
 

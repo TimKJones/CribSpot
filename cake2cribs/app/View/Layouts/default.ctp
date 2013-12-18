@@ -64,7 +64,6 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/MapActivity');
 		echo $this->Html->script('src/FavoritesManager');
 		echo $this->Html->script('src/FacebookManager');
-		echo $this->Html->script('src/PhotoManager');
 		echo $this->Html->script('src/ShareManager');
 		echo $this->Html->script('src/SmallBubble');
 		echo $this->Html->script('src/LargeBubble');
@@ -104,7 +103,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=106');
+	echo $this->Html->script('src/program.js?v=107');
 }
 
 		if (!isset($canonical_url))

@@ -81,6 +81,12 @@ fieldset
 
 }
 
+.imageContent canvas
+{
+    height: 100%;
+    width: 100%;   
+}
+
 .img-place-holder{
     height: 100%;
     width: 100%;
@@ -117,12 +123,15 @@ fieldset
     width:150px;
     height:120px;
     box-shadow: 0px 0px 4px 1px #cdcdcd;
-    /*margin-left:10px;*/
+    margin-left: 0 !important;
     /*margin-top:2px;*/
 }
 
+.tooltip {
+    position: fixed;
+}
+
 .image-actions-container{
-    display: none;
     position: absolute;
     bottom: 0;
     right: 5px;
@@ -184,6 +193,11 @@ fieldset
     max-width: 100%;
 }
 
+#imageContent0 canvas{
+    height: 100%;
+    width: 100%;
+}
+
 #captionInput
 {
     width:158px;
@@ -196,6 +210,8 @@ fieldset
 
 .image-row{
     padding-top: 5px;
+    height: 375px;
+    overflow: auto;
 }
 
 .cur-primary{

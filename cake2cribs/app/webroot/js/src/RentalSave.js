@@ -43,6 +43,9 @@
           return _this.AddNewUnit();
         });
       });
+      $('body').on('click', '.show_photo_picker', function(event) {
+        return _this.LoadImages($(event.currentTarget).data("row"));
+      });
       $('body').on("Rental_marker_updated", function(event, marker_id) {
         var list_item, name;
         if ($("#rental_list_content").find("#" + marker_id).length === 1) {
@@ -454,7 +457,8 @@
 
 
     RentalSave.prototype.LoadImages = function(row) {
-      var data, image_array, _ref;
+      var data, image_array, _ref,
+        _this = this;
       data = this.GridMap[this.VisibleGrid].getDataItem(row);
       if (data.listing_id != null) {
         image_array = (_ref = A2Cribs.UserCache.Get("image", data.listing_id)) != null ? _ref.GetImages() : void 0;
@@ -465,7 +469,9 @@
         "marker id": this.CurrentMarker,
         "number of images": image_array != null ? image_array.length : void 0
       });
-      return A2Cribs.PhotoManager.LoadImages(image_array, this.SaveImages, row);
+      return A2Cribs.PhotoPicker.Open(image_array).done(function(photos) {
+        return _this.SaveImages(photos, row);
+      });
     };
 
     /*
@@ -481,7 +487,7 @@
           image = images[_i];
           image.listing_id = data.listing_id;
         }
-        A2Cribs.UserCache.Set(new A2Cribs.Image(images));
+        A2Cribs.UserCache.Set(new A2Cribs.Image(images, data.listing_id));
       } else {
         data.Image = images;
       }
