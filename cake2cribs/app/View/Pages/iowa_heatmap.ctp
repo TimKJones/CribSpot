@@ -1,11 +1,11 @@
     <?php
 
-	$this->set('title_for_layout', "Ann Arbor Rent Price Heat Map - Cribspot");
+	$this->set('title_for_layout', "University of Iowa Rent Price Heat Map - Cribspot");
 
-	$this->Html->meta('keywords', 'Ann arbor heat map, rental heatmap, rental heat map, umich heat map', array('inline' => false)
+	$this->Html->meta('keywords', 'University of Iowa heat map, rental heatmap, rental heat map, ui heat map', array('inline' => false)
 	);
 
-	$this->Html->meta('description', "Check out this heat map of Ann Arbor's rent prices. Is your place the most expensive in University of Michigan? Look on the map.", array('inline' => false));
+	$this->Html->meta('description', "Check out this heat map of Iowa City's rent prices. Is your apartment or house the most pricy in University of Iowa? Check it out on the map. Hawkeyes don't like to overpay. Find your perfect home on Cribspot. Search all the listings and rentals in one place.", array('inline' => false));
 
 	echo $this->element('header', 
 		array(
