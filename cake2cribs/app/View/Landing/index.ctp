@@ -35,14 +35,17 @@
 			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
 			<!-- School Logo's go here -->
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
+			<select id="school_selector" name="">
+				<option value="">Select your University</option>
 			<?php
 			foreach ($locations as $university) {
 				$school_name = str_replace(" ", "_", $university['University']['name']);
-				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
+				echo "<option value='" . $university['University']['id'] . "'>" . $university['University']['name'] . "</option>";
 			}
 
 			?>
 
+			</select>
 		</div>
 	</div>
 </div>

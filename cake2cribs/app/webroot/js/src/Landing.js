@@ -58,9 +58,9 @@
         random_school = Math.floor(Math.random() * this.locations.length);
         set_school(this.locations[random_school]);
       }
-      return $(".university_link").click(function(event) {
+      return $("#school_selector").change(function(event) {
         var university, university_id, _i, _len, _ref1;
-        university_id = $(event.delegateTarget).attr("data-university");
+        university_id = $(event.currentTarget).val();
         _ref1 = _this.locations;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           university = _ref1[_i];

@@ -36,7 +36,7 @@ class A2Cribs.Landing
 	@Init: (@locations) ->
 		$(window).scroll () ->
 			scrolled = $(window).scrollTop()
-			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px');
+			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px')
 
 		$("#friends_invite").click () ->
 			A2Cribs.ShareManager.ShowShareModal("",
@@ -48,8 +48,8 @@ class A2Cribs.Landing
 			random_school = Math.floor((Math.random() * @locations.length))
 			set_school @locations[random_school]
 
-		$(".university_link").click (event) =>
-			university_id = $(event.delegateTarget).attr "data-university"
+		$("#school_selector").change (event) =>
+			university_id = $(event.currentTarget).val()
 			for university in @locations
 				if university['University']['id'] is university_id
 					@Current_University = university
