@@ -387,6 +387,7 @@
             $from_full_name .= ' '.$from_user['last_name'];
         $this->Email->from = $from_full_name.'<info@cribspot.com>';
         $this->Email->to = $recipient['email'];
+        $this->Email->bcc = 'jason@cribspot.com';
         
         $this->Email->subject = "You've received a new message from " . $from_name . " on Cribspot!";
         $this->Email->template = 'unread_message';

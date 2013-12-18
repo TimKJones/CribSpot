@@ -108,9 +108,11 @@ LargeBubble class
           return $("<div class='listing-drag-helper'>Share " + name + "</div>");
         },
         start: function(event) {
-          console.log('start');
-          $('ul.friends, #hotlist').addClass('dragging');
-          return A2Cribs.HotlistObj.startedDragging();
+          var _ref;
+          if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+            $('ul.friends, #hotlist').addClass('dragging');
+            return A2Cribs.HotlistObj.startedDragging();
+          }
         },
         stop: function(event) {
           $('ul.friends, #hotlist').removeClass('dragging');
@@ -238,8 +240,13 @@ LargeBubble class
         container: 'body',
         title: 'Share this listing'
       }).click(function(e) {
+        var _this = this;
         e.preventDefault();
-        return $(this).popover('show').find("#share-to-email").keyup(function(event) {
+        $(this).popover('show');
+        return $('.popover a').on('click', function() {
+          $('.popover').popover('hide').hide();
+          return $('.popover').off('click');
+        }).find("#share-to-email").keyup(function(event) {
           if (event.keyCode === 13) {
             return $(".share-to-email-btn").click();
           }

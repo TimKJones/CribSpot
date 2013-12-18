@@ -496,7 +496,7 @@
                     <tbody>
                         <tr>
                             <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Sign up" href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&amp;reset_token=<?php echo $password_reset_token; ?>" target="_self" style="background-color: #6d91e0 font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Search</a>
+                                <a class="mcnButton" title="Sign up" href="https://www.cribspot.com/users/ResetPasswordRedirect?id=<?php echo $id; ?>&amp;reset_token=<?php echo $password_reset_token; ?>" target="_self" style="background-color: #6d91e0 font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Join the Search</a>
                             <? if (isset($listing)) { ?>
                                 <a href="http://www.cribspot.com/listing/<?=$listing?>">Go directly to listing</a>
                             <? } ?>
@@ -536,8 +536,8 @@
                 <table border="0" cellpadding="0" cellspacing="0" class="mcnButtonContentContainer" style="border-top-left-radius: 4px;border-top-right-radius: 4px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;background-color: #457FC6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
                     <tbody>
                         <tr>
-                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <a class="mcnButton " title="Check out Cribspot" href='https://www.cribspot.com' target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Check out Cribspot</a>
+                            <td align="center" valign="middle" class="mcnButtonContent" style="font-family: Arial;font-size: 14px;padding: 12px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;padding: 5px;">
+                                <a class="mcnButton" title="Check out Cribspot" href='https://www.cribspot.com' target="_self" style="font-weight: bold;letter-spacing: -0.5px;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Check out Cribspot</a>
                             </td>
                         </tr>
                     </tbody>

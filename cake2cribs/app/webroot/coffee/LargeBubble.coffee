@@ -77,9 +77,9 @@ class LargeBubble
         name = $(this).find('.building_name').html() || "this listing"
         $( "<div class='listing-drag-helper'>Share #{name}</div>" )
       start: (event) ->
-      	console.log('start')
-      	$('ul.friends, #hotlist').addClass('dragging')
-      	A2Cribs.HotlistObj.startedDragging()
+        if A2Cribs.Login?.logged_in
+          $('ul.friends, #hotlist').addClass('dragging')
+          A2Cribs.HotlistObj.startedDragging()
       stop: (event) ->
       	$('ul.friends, #hotlist').removeClass('dragging')
       	A2Cribs.HotlistObj.stoppedDragging()
@@ -192,9 +192,9 @@ class LargeBubble
 		.click (e) -> 
 			e.preventDefault()
 			$(this).popover('show')
-			# $('.popover').on 'click', =>
-				# $(this).popover('hide')
-				# $('.popover').off('click')
+			$('.popover a').on 'click', =>
+        $('.popover').popover('hide').hide()
+        $('.popover').off('click')
     .find("#share-to-email").keyup (event) ->
       $(".share-to-email-btn").click() if event.keyCode is 13
 

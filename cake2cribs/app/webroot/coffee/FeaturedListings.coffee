@@ -167,9 +167,9 @@ class A2Cribs.FeaturedListings
                 name = $(this).find('.name').html() || "this listing"
                 $( "<div class='listing-drag-helper'>Share #{name}</div>" )
               start: (event) ->
-                console.log('start')
-                $('ul.friends, #hotlist').addClass('dragging')
-                A2Cribs.HotlistObj.startedDragging()
+                if A2Cribs.Login?.logged_in
+                    $('ul.friends, #hotlist').addClass('dragging')
+                    A2Cribs.HotlistObj.startedDragging()
               stop: (event) ->
                 $('ul.friends, #hotlist').removeClass('dragging')
                 A2Cribs.HotlistObj.stoppedDragging()
@@ -311,9 +311,10 @@ class A2Cribs.FeaturedListings
                     e.preventDefault()
                     console.log('listing_item share click!')
                     $(this).popover('show')
-                    # $('.popover').on 'click', =>
-                    #     $(this).popover('hide')
-                    #     $('.popover').off('click')
+                    # $('.popover input').typeahead(A2Cribs.HotlistObj.sources)
+                    $('.popover a').on 'click', =>
+                        $('.popover').popover('hide').hide()
+                        $('.popover').off('click')
 
                 listing_item.find("#share-to-email").keyup (event) ->
                   $(".share-to-email-btn").click() if event.keyCode is 13
@@ -333,7 +334,7 @@ class A2Cribs.FeaturedListings
                 <span class = 'beds'><%= beds %> </span>
                 <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
                 <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='fav-icon icon-user'></i></a></span>
-                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i></span>
+                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class="icon-reorder"></i></span>
             </div>
             <div class = 'row-div'></div>
             <div class = 'info-row'>
@@ -352,10 +353,3 @@ class A2Cribs.FeaturedListings
         </span>   
     </div>
     """
-
-
-
-
-
-
-

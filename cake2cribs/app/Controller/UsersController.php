@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
-    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite', 'LoginCode');
+    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite', 'LoginCode', 'Listing');
     public $components= array('Email', 'RequestHandler', 'Cookie', 'Twilio.Twilio');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
@@ -40,11 +40,39 @@ class UsersController extends AppController {
             $this->set('response', json_encode(array('success' => false)));
         }
         else {
-            // $this->set('user', $friend);
-            $this->set('first_name', $this->Auth->User('first_name'));
-            $this->set('last_name', $this->Auth->User('last_name'));
+            $first_name = $this->Auth->User('first_name');
+            $last_name = $this->Auth->User('last_name');
+
+            $this->set('first_name', $first_name);
+            $this->set('last_name', $last_name);
+            $this->set('inviter_first_name', $first_name);
+            $this->set('inviter_last_name', $last_name);
+
             $this->set('listing', $listing_id);
-            $this->_sendShareEmail($this->Auth->User(), $friend['User']['email']);
+
+            $subject = "Check out this property on Cribspot!";
+
+            if (!is_null($listing_id)) {
+                $listing_obj = $this->Listing->GetListing($listing_id);
+                if(isset($listing_obj[0]['Image'][0]['image_path'])) {
+                    $img_url = 'http://www.cribspot.com/' . $listing_obj[0]['Image'][0]['image_path'];
+                }
+                if(!is_null($listing_obj)) {
+                    $listing_name = $listing_obj[0]['Marker']['street_address'];
+                    $subject = "$first_name  $last_name wants you to check out $listing_name on Cribspot!";
+                }
+                else {
+                    $subject = "$first_name  $last_name wants you to check out a property on Cribspot!";
+                }
+                $this->set('listing_name', $listing_name);
+                $this->set('listing', $listing_id);
+            }
+            else {
+                $this->set('listing_name', 'check out this listing!');
+                $this->set('listing', $listing_id);
+            }
+
+            $this->_sendShareEmail($this->Auth->User(), $friend['User']['email'], $subject);
 
             $this->set('response', json_encode(array('success' => true)));
         }
@@ -1048,11 +1076,10 @@ CakeLog::write('twiliodebug', print_r($response, true));
     Generates a new vericode and sends an email to the currently logged-in user.
     Email allows user to verify email address.
     */
-    private function _sendShareEmail($user, $friend_email)
+    private function _sendShareEmail($user, $friend_email, $subject)
     {
-        $from = 'The Cribspot Team<info@cribspot.com>';
+        $from = $user['first_name'] . ' ' . $user['last_name'] . ' <info@cribspot.com>';
         $to = $friend_email;
-        $subject = $user['first_name'] . ' ' . $user['last_name'] . ' has shared a listing with you';
         $template = 'share_listing';
         $sendAs = 'both';
         $this->SendEmail($from, $to, $subject, $template, $sendAs);
