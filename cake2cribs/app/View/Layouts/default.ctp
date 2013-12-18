@@ -96,6 +96,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
+    echo('<link href="/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.core.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
