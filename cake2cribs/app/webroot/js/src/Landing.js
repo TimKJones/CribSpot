@@ -22,7 +22,7 @@
     };
 
     set_school = function(university) {
-      var key, url_name, val, _ref, _ref1;
+      var key, url_name, val, _ref, _ref1, _ref2;
       _ref = university['University'];
       for (key in _ref) {
         val = _ref[key];
@@ -32,8 +32,12 @@
       url_name = university['University']['name'].split(" ").join("_");
       $("#map_link").attr("href", "/rental/" + url_name);
       $(".background_source").attr("href", university['University']['background_source']);
-      $(".school_logo").css("background-image", "url(" + university['University']['logo_path'] + ")");
-      if ((_ref1 = university.University.founder_image) != null ? _ref1.length : void 0) {
+      if ((_ref1 = university['University']['logo_path']) != null ? _ref1.length : void 0) {
+        $(".school_logo").show().css("background-image", "url(" + university['University']['logo_path'] + ")");
+      } else {
+        $(".school_logo").hide();
+      }
+      if ((_ref2 = university.University.founder_image) != null ? _ref2.length : void 0) {
         $(".founder_photo").attr("src", university.University.founder_image);
         $(".founder_title").text("" + university['University']['name'] + " Founder");
         return $("#founder_box").fadeIn();

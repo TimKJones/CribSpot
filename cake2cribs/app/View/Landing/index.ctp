@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/landing.less?v=74','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/landing.less?v=75','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -56,7 +56,7 @@
 			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
-	<div>
+	<div class="school_header">
 		<div class="school_logo"></div>
 		<div class="name">College Housing made easy.</div>
 		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">

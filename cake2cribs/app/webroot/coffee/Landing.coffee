@@ -23,7 +23,10 @@ class A2Cribs.Landing
 
 		$(".background_source").attr "href", university['University']['background_source']
 
-		$(".school_logo").css "background-image", "url(#{university['University']['logo_path']})"
+		if university['University']['logo_path']?.length
+			$(".school_logo").show().css "background-image", "url(#{university['University']['logo_path']})"
+		else
+			$(".school_logo").hide()
 
 		if university.University.founder_image?.length
 			$(".founder_photo").attr "src", university.University.founder_image
