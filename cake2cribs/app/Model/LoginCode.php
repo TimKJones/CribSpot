@@ -40,14 +40,18 @@ class LoginCode extends AppModel {
 		if ($result === null || !array_key_exists('LoginCode', $result) || !array_key_exists('code', $result['LoginCode']))
 			return array('error' => '');
 
-		$now = date('Y-m-d G:i:s');
-		$created = strtotime($result['LoginCode']['created']);
-		$diff = abs(strtotime($now) - $created);
+		/* If this code is not permanent, make sure its created date is within 2 weeks of today */
+		if (!array_key_exists('is_permanent', $result['LoginCode']) || intval($result['LoginCode']['is_permanent']) !== 1){
+			/* login_code is date sensitive */
+			$now = date('Y-m-d G:i:s');
+			$created = strtotime($result['LoginCode']['created']);
+			$diff = abs(strtotime($now) - $created);
 
-		/* Invalidate code if older than 2 weeks */
-		if ($diff > (2 * 7 * 24 * 60 * 60)) {
-			$this->set('code', uniqid());
-			return array('error' => 'LOGIN_CODE_EXPIRED');
+			/* Invalidate code if older than 2 weeks */
+			if ($diff > (2 * 7 * 24 * 60 * 60)) {
+				$this->set('code', uniqid());
+				return array('error' => 'LOGIN_CODE_EXPIRED');
+			}
 		}
 
 		/* It's valid.*/
