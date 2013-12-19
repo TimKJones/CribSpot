@@ -5,16 +5,23 @@ class LoginCode extends AppModel {
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
 
+	public $belongsTo = array(
+		'User' => array(
+            'className'    => 'User',
+            'foreignKey'   => 'user_id',
+            'dependent'    => true
+    ));
+
 	public $validate = array(
 		'id' => 'numeric',
 		'user_id' => 'numeric',
 		'code' => 'alphaNumeric',
+		'is_permanent' => 'boolean',
 		'created' => 'datetime',
 	);
 
 	public function Add($user_id, $code)
 	{
-		CakeLog::write('addingcode', $user_id.' '.$code);
 		$this->save(array(
 			'LoginCode' => array(
 				'user_id' => $user_id,

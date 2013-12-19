@@ -5,6 +5,10 @@ class User extends AppModel {
 		'Listing' => array(
 			'className' => 'Listing',
 			'foreignKey' => 'user_id'
+		),
+		'LoginCode' => array(
+			'className' => 'LoginCode',
+			'foreignKey' => 'user_id'
 		)
 	);
 	public $belongsTo = array('University');
@@ -130,11 +134,13 @@ class User extends AppModel {
 	const USER_TYPE_PROPERTY_MANAGER = 1; /* NOTE: messages/emailUserAboutMessage uses a hard-coded '1' for this */
 	const USER_TYPE_NEWSPAPER_ADMIN = 2;
 	const USER_TYPE_UNIVERSITY_ADMIN = 3;
+	const USER_TYPE_PM_ADMIN = 4;
 	public static function user_type($value = null) {
 		$options = array(
 		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
 		    self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
-		    self::USER_TYPE_UNIVERSITY_ADMIN => __('University Admin',true)
+		    self::USER_TYPE_UNIVERSITY_ADMIN => __('University Admin',true),
+		    self::USER_TYPE_PM_ADMIN => __('PM Admin',true)
 		);
 		return parent::enum($value, $options);
 	}
@@ -550,7 +556,7 @@ class User extends AppModel {
 		$local_user = $this->find('first', array(
 			'conditions' => array('facebook_id' => $fb_id)
         ));
-
+CakeLog::write('fbuser', print_r($local_user, true));
 		return $local_user;
 	}
 
