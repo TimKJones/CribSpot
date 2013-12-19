@@ -100,20 +100,20 @@ class User extends AppModel {
 			)
 		),
 		'zipcode' => array(
-        	'rule' => array('postal', null, 'us')
-    	),
-    	'website' => 'url',
+					'rule' => array('postal', null, 'us')
+			),
+			'website' => 'url',
 		'email' => array(
 			'email' => array(
-        		'rule'    => array('email', true),
-        		'message' => 'Please supply a valid email address.'
-    		)
+						'rule'    => array('email', true),
+						'message' => 'Please supply a valid email address.'
+				)
 		),
 		'phone' => array(
 			'phone' => array(
-        		'rule' => array('phone', null, 'us'),
-        		'message' => 'Please enter a valid phone number'
-   			)
+						'rule' => array('phone', null, 'us'),
+						'message' => 'Please enter a valid phone number'
+				)
 		),
 		'phone_verified' => 'boolean',
 		'phone_confirmation_code' => 'alphaNumeric',
@@ -150,9 +150,9 @@ class User extends AppModel {
 	const USER_TYPE_UNIVERSITY_ADMIN = 3;
 	public static function user_type($value = null) {
 		$options = array(
-		    self::USER_TYPE_SUBLETTER => __('Subletter',true),
-		    self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
-		    self::USER_TYPE_UNIVERSITY_ADMIN => __('University Admin',true)
+				self::USER_TYPE_SUBLETTER => __('Subletter',true),
+				self::USER_TYPE_PROPERTY_MANAGER => __('Property Manager',true),
+				self::USER_TYPE_UNIVERSITY_ADMIN => __('University Admin',true)
 		);
 		return parent::enum($value, $options);
 	}
@@ -166,12 +166,12 @@ class User extends AppModel {
 	const USER_STUDENT_YEAR_OTHER = 5;
 	public static function year($value = null) {
 		$options = array(
-		    self::USER_STUDENT_YEAR_FRESHMAN => __('Freshman',true),
-		    self::USER_STUDENT_YEAR_SOPHOMORE => __('Sophomore',true),
-		    self::USER_STUDENT_YEAR_JUNIOR => __('Junior',true),
-		    self::USER_STUDENT_YEAR_SENIOR => __('Senior',true),
-		    self::USER_STUDENT_YEAR_GRADUATE_STUDENT => __('Graduate Student',true),
-		    self::USER_STUDENT_YEAR_OTHER => __('Other',true)
+				self::USER_STUDENT_YEAR_FRESHMAN => __('Freshman',true),
+				self::USER_STUDENT_YEAR_SOPHOMORE => __('Sophomore',true),
+				self::USER_STUDENT_YEAR_JUNIOR => __('Junior',true),
+				self::USER_STUDENT_YEAR_SENIOR => __('Senior',true),
+				self::USER_STUDENT_YEAR_GRADUATE_STUDENT => __('Graduate Student',true),
+				self::USER_STUDENT_YEAR_OTHER => __('Other',true)
 		);
 		return parent::enum($value, $options);
 	}
@@ -184,24 +184,10 @@ class User extends AppModel {
 		return true;
 	}
 
-	public function shareListing($friend_id, $listing_id) {
-		CakeLog::write('HOTLIST', "Sharing Listing: $friend_id, $listing_id");
-		return array('success' => 'yep');
-	}
-
-	public function findOrCreate($email) {
-    if ($this->hasAny(array('User.email' => $email))) {
-    	return $this->find('first', array('User.email' => $email));
-    }
-    else {
-      $new_user = $this->User->RegisterUser(array('email' => $email), false);
-      $new_user_id = $friend['success']['User']['id'];
-      $token = $this->User->setPasswordResetToken($new_user_id);
-
-      return $new_user['success'];
-    }
-	}
-
+	/*
+	Fuzzy search for users by name.
+	Called by UsersController->getAllForName().
+	*/
 	public function findByNameFuzzy($name) {
 		CakeLog::write('HOTLIST', 'Name: ' . $name);
 		return $this->find('all', array(
@@ -213,13 +199,20 @@ class User extends AppModel {
 		));
 	}
 
+	/*
+	Get a user's current hotlist.
+	*/
 	public function getHotlist($user_id)
 	{
-    CakeLog::write('HOTLIST', 'Entered getHotlist(' . $user_id . ')');
+		CakeLog::write('HOTLIST', 'Entered getHotlist(' . $user_id . ')');
 		$user = $this->find('first', array('conditions' => array('User.id' => $user_id)));
 		return $user['Hotlist'];
 	}
 
+	/*
+	Checks to see if a user is currently in another user's hotlist.
+	Returns true or false.
+	*/
 	public function inHotlist($user_id, $friend_id)
 	{
 		CakeLog::write('HOTLIST', "Entered inHotlist($user_id, $friend_id)");
@@ -229,57 +222,76 @@ class User extends AppModel {
 		return (bool) $q[0][0]['cnt'];
 	}
 
+	/*
+	Removes a user from the hotlist.
+	Does not remove the record, instead it sets the 'hotlist' flag to 0.
+	*/
 	public function removeFromHotlist($user_id, $friend_id) {
-    CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
-    $this->query("UPDATE users_friends SET hotlist = '0' WHERE user_id = $user_id AND friend_id = $friend_id");
+		CakeLog::write('HOTLIST', 'Entered removeFromHotlist(' . $user_id . ',' . $friend_id . ')');
+		$this->query("UPDATE users_friends SET hotlist = '0' WHERE user_id = $user_id AND friend_id = $friend_id");
 
-    if ($this->inHotlist($user_id, $friend_id)) {
-    	$this->logError($user_id, 202, array('friend' => $friend_id));
-    }
-    return $this->getHotlist($user_id);
+		if ($this->inHotlist($user_id, $friend_id)) {
+			$this->logError($user_id, 202, array('friend' => $friend_id));
+		}
+		return $this->getHotlist($user_id);
 	}
 
+	/*
+	Adds a user to the current user's hotlist.
+	Requires the friend to already be a user.
+	*/
 	public function addToHotlist($user_id, $friend_email) {
-    CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_email . ')');
-    $friend = $this->find('first', array('conditions' => array('User.email' => $friend_email)));
+		CakeLog::write('HOTLIST', 'Entered addToHotlist(' . $user_id . ',' . $friend_email . ')');
+		$friend = $this->find('first', array('conditions' => array('User.email' => $friend_email)));
 
-    $friend_id = $friend['User']['id'];
-    if ($user_id != $friend_id){
-	    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+		if(!is_null($friend) && !empty($friend)) {
+			$friend_id = $friend['User']['id'];
+			if ($user_id != $friend_id){
+				$this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
 
-	    if (!($this->inHotlist($user_id, $friend_id))) {
-	    	$this->logError($user_id, 201, array('friend' => $friend_id)); // the previous command failed, log error
-	    }
-	  }
-	  else {
-	  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
-	  	$this->logError($user_id, 203, array());
-	  }
-
-
-    return $this->getHotlist($user_id);
-	}
-
-	public function addToHotlistFB($user_id, $friend_fb_id) {
-    CakeLog::write('HOTLIST', 'Entered addToHotlistFB(' . $user_id . ',' . $friend_fb_id . ')');
-		$friend = $this->GetUserFromFacebookId($friend_fb_id);
-  	CakeLog::write('HOTLIST', print_r($friend, true));
-
-    if(!is_null($friend) && !empty($friend)) {
-    	$friend_id = $friend['User']['id'];
-	    if ($user_id != $friend_id){
-		    $this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
-		    if (!($this->inHotlist($user_id, $friend_id))) {
-		    	$this->logError($user_id, 204, array('friend' => $friend_fb_id)); // the previous command failed, log error
-		    }
-		  }
-		  else {
-		  	CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
-		  	$this->logError($user_id, 205, array('friend' => $friend_fb_id));
-		  }
+				if (!($this->inHotlist($user_id, $friend_id))) {
+					$this->logError($user_id, 201, array('friend' => $friend_id)); // the previous command failed, log error
+				}
+			}
+			else {
+				CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+				$this->logError($user_id, 203, array());
+			}
+		}
+		else {
+			$this->logError($user_id, 206, array('email' => $friend_email, 'called_from' => 'addToHotlist'));
 		}
 
-    return $this->getHotlist($user_id);
+		return $this->getHotlist($user_id);
+	}
+
+	/*
+	Adds a user to the current user's hotlist, but finds by facebook id.
+	Requires the friend to already be a user.
+	*/
+	public function addToHotlistFB($user_id, $friend_fb_id) {
+		CakeLog::write('HOTLIST', 'Entered addToHotlistFB(' . $user_id . ',' . $friend_fb_id . ')');
+		$friend = $this->GetUserFromFacebookId($friend_fb_id);
+		CakeLog::write('HOTLIST', print_r($friend, true));
+
+		if(!is_null($friend) && !empty($friend)) {
+			$friend_id = $friend['User']['id'];
+			if ($user_id != $friend_id){
+				$this->query("INSERT INTO users_friends (user_id, friend_id, hotlist) VALUES ($user_id, $friend_id, '1') ON DUPLICATE KEY UPDATE hotlist = '1'");
+				if (!($this->inHotlist($user_id, $friend_id))) {
+					$this->logError($user_id, 204, array('friend' => $friend_fb_id)); // the previous command failed, log error
+				}
+			}
+			else {
+				CakeLog::write('HOTLIST', "user $user_id attempted to friend self.");
+				$this->logError($user_id, 205, array('friend' => $friend_fb_id));
+			}
+		}
+		else {
+			$this->logError($user_id, 206, array('email' => $friend_email, 'called_from' => 'addToHotlistFB'));
+		}
+
+		return $this->getHotlist($user_id);
 	}
 
 	public function FacebookVerify($user_id)
@@ -293,7 +305,7 @@ class User extends AppModel {
 		if (!$this->hasAny($conditions)){
 			/*$user_id_query = $this->find('first', array(
 			'conditions' => array('Favorite.listing_id' => $listing_id,
-								  'Favorite.user_id'	=> $user_id),
+									'Favorite.user_id'	=> $user_id),
 			'fields' => 	array('favorite_id')));*/
 		}
 		else
@@ -303,8 +315,8 @@ class User extends AppModel {
 	public function TwitterVerify($user_id, $auth_token, $auth_token_secret, $twitter_userid)
 	{
 		$fields = array('User.twitter_userid' => $twitter_userid,
-				  'User.twitter_auth_token' => $auth_token,
-				  'User.twitter_auth_token_secret' => $auth_token_secret
+					'User.twitter_auth_token' => $auth_token,
+					'User.twitter_auth_token_secret' => $auth_token_secret
 				 );
 
 		// $conditions = array('User.id' => $user_id);
@@ -665,7 +677,7 @@ class User extends AppModel {
 
 		$local_user = $this->find('first', array(
 			'conditions' => array('facebook_id' => $fb_id)
-        ));
+				));
 
 		return $local_user;
 	}

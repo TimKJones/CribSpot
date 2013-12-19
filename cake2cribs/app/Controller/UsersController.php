@@ -27,6 +27,11 @@ class UsersController extends AppController {
         $this->Auth->allow('sublet');
     }
 
+    /* 
+    Share a listing with another user.
+    this function is called by dragging a listing to the user's hotlist.
+    it is different from InvitationsController, but has similar logic.
+    */ 
     public function share()
     {
         $friend_id = $this->request->data['friend'];
@@ -45,6 +50,8 @@ class UsersController extends AppController {
 
             $this->set('first_name', $first_name);
             $this->set('last_name', $last_name);
+
+            // the template wants these variables named so
             $this->set('inviter_first_name', $first_name);
             $this->set('inviter_last_name', $last_name);
 
@@ -52,6 +59,8 @@ class UsersController extends AppController {
 
             $subject = "Check out this property on Cribspot!";
 
+            // checking for this might not be necessary, 
+            // since GetListing() will log an error if it cannot find the listing.
             if (!is_null($listing_id)) {
                 $listing_obj = $this->Listing->GetListing($listing_id);
                 if(isset($listing_obj[0]['Image'][0]['image_path'])) {
@@ -72,6 +81,7 @@ class UsersController extends AppController {
                 $this->set('listing', $listing_id);
             }
 
+            // template name and a few other things are defined in here
             $this->_sendShareEmail($this->Auth->User(), $friend['User']['email'], $subject);
 
             $this->set('response', json_encode(array('success' => true)));
@@ -80,6 +90,10 @@ class UsersController extends AppController {
         $this->render('json_response');
     }
 
+    /*
+    Get all users that match a given name, provided by query string
+    called for the typeahead when adding users to hotlist.
+    */
     public function getAllForName()
     {
         $name = $this->request->query['name'];
@@ -89,6 +103,9 @@ class UsersController extends AppController {
         $this->render('json_response');
     }
 
+    /*
+    Get Hotlist for current user
+    */
     public function hotlist()
     {
         $user_id = $this->Auth->User('id');
@@ -96,25 +113,10 @@ class UsersController extends AppController {
         $this->set('response', json_encode($response));
     }
 
-    public function addToHotlist()
-    {
-        $user_id = $this->Auth->User('id');
-        $friend_email = $this->request->data['friend'];
-
-        if ($this->User->hasAny(array('User.email' => $friend_email))) {
-            $response = $this->User->addToHotlist($user_id, $friend_email);
-        }
-
-        else {
-            $response = array('error' => 'User does not exist for email');
-            $this->response->statusCode('404');
-        }
-
-
-        $this->set('response', json_encode($response));
-        $this->render('hotlist');
-    }
-
+    /*
+    Remove a user from the hotlist.
+    The record in users_friends is kept, but the 'friend' flag is set to 0
+    */
     public function removeFromHotlist() 
     {
         $user_id = $this->Auth->User('id');
@@ -1072,10 +1074,6 @@ CakeLog::write('twiliodebug', print_r($response, true));
         }
     }
 
-    /*
-    Generates a new vericode and sends an email to the currently logged-in user.
-    Email allows user to verify email address.
-    */
     private function _sendShareEmail($user, $friend_email, $subject)
     {
         $from = $user['first_name'] . ' ' . $user['last_name'] . ' <info@cribspot.com>';
@@ -1085,6 +1083,10 @@ CakeLog::write('twiliodebug', print_r($response, true));
         $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 
+    /*
+    Generates a new vericode and sends an email to the currently logged-in user.
+    Email allows user to verify email address.
+    */
     private function _sendVerificationEmail($user)
     {
         $from = 'The Cribspot Team<info@cribspot.com>';

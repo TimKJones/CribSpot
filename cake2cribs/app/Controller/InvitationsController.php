@@ -43,6 +43,12 @@ class InvitationsController extends AppController {
         $this->set('response', json_encode(array('success'=>true)));
     }
 
+    /*
+    Invites a friend from facebook.
+    The inviting does not happen directly (so no emails are sent), rather through the frontend FB API.
+    This method simply adds the user associated with this facebook ID to the current user's hotlist,
+    and creates a pre-registered user if it does not exist already.
+    */
     public function InviteFBFriend()
     {
         $this->layout = 'ajax';
@@ -102,7 +108,6 @@ class InvitationsController extends AppController {
             $img_url = "https://graph.facebook.com/".$loggedInUser['facebook_id']."/picture?width=140&height=140";
 
         foreach ($emails as $email){
-            // if email exists already
             $subject = '';
             $template = 'email_invitation';
             CakeLog::write('invitations', 'inviting ' . $email);
@@ -112,6 +117,8 @@ class InvitationsController extends AppController {
             }
 
             if ($this->User->hasAny(array('User.email' => $email))) {
+                // email exists already. Add the user to the logged-in user's hotlist
+
                 $friend = $this->User->find('first', array('User.email' => $email));
 
                 CakeLog::write('invitations', 'user exists');
@@ -123,14 +130,19 @@ class InvitationsController extends AppController {
                 $template = 'email_invitation';
             }
             else {
-                // create pre-registered user
+                // Email does not exist. Create pre-registered user that we can add to the hotlist
+                // do not use validations here, because we cannot provide a name yet.
                 $friend = $this->User->RegisterUser(array('email' => $email), false);
+
                 CakeLog::write('invitations', print_r($friend, true));
+
                 if ($friend['success']) {
-                    // add new user to hotlist
+                    // add the newly created user to hotlist
                     $this->User->addToHotlist($loggedInUser['id'], $email);
 
-                    // send invitation with crafted invite link
+                    // craft an invite link to display in the email.
+                    // We are repurposing the 'forgot password' mechanism here to keep from writing new code.
+                    // This is a bit of a hack.
                     $friend_id = $friend['success']['User']['id'];
                     $token = $this->User->setPasswordResetToken($friend_id);
                     $this->set('password_reset_token', $token['password_reset_token']);
@@ -138,6 +150,8 @@ class InvitationsController extends AppController {
                     if (isset($token)) {
                         CakeLog::write('invitations', 'set password reset token: ' . $token['password_reset_token']);
                     }
+
+                    // subject has text more conducive to onboarding new users
                     $subject = 'Join my housing group on Cribspot! Off-campus housing made simple';
                     $template = 'email_invitation';
                 }
@@ -148,9 +162,12 @@ class InvitationsController extends AppController {
 
             CakeLog::write("HOTLIST", print_r($friend, true));
 
+            // if a listing is provided, then we are sharing a listing instead of just inviting a user.
             if (!is_null($listing)) {
                 $listing_obj = $this->Listing->GetListing($listing);
                 if(isset($listing_obj[0]['Image'][0]['image_path'])) {
+                    // make the image in the email that of the listing, if it has one. 
+                    // Otherwise it will be the user's profile image that was set at the beginning of the function.
                     $img_url = 'http://www.cribspot.com/' . $listing_obj[0]['Image'][0]['image_path'];
                 }
                 if(!is_null($listing_obj)) {
