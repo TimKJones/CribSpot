@@ -1,7 +1,7 @@
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <?php echo $this->element('Dashboard/marker-modal', $dropdowns);?>
 <?php echo $this->element('Dashboard/picture-modal');?>
-<?php echo $this->Html->css('messages'); ?>
+<?php echo $this->Html->css('messages.css?v=2'); ?>
 <?php echo $this->Html->css('account.css?v=2'); ?>
 <?php echo $this->Html->css('dashboard.css?v=2'); ?>
 
