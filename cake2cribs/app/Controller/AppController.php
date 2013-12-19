@@ -37,8 +37,7 @@ class AppController extends Controller {
             'Form' => array(
                 'fields' => array('username' => 'email')
             )
-        ),
-        'authorize' => array('Controller')
+        )
     ));
 
 	var $facebook;
