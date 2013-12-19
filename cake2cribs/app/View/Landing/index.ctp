@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/landing.less?v=73','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/landing.less?v=74','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -31,7 +31,7 @@
 			<i class="small_font">All the </i><i class="large_font">College Rentals.</i><br/>
 			<i class="small_font">All in </i><i class="large_font">One Spot.</i>
 		</div>
-		<div id="logo_zone">
+		<div id="logo_zone" class="text-center">
 			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
 			<!-- School Logo's go here -->
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
