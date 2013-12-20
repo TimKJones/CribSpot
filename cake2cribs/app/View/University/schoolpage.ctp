@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/University/schoolpage.less?v=71','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/University/schoolpage.less?v=76','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -21,11 +21,16 @@
 ?>
 
 <div id="school_page" style="background-image:url(<?= $university['background_image']; ?>)">
-	<div>
+	<div class="school_header">
+		<?php
+		if (!empty($university['logo_path']))
+		{
+		?>
 		<div class="school_logo">
 			<img src="<?= $university['logo_path']; ?>">
 		</div>
 		<?php
+		}
 		if (strpos($university["name"], 'Detroit') === false)
 		{ ?>
 		<div class="name"><?= $university['name']; ?></div>
