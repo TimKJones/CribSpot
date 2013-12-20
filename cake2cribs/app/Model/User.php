@@ -483,7 +483,8 @@ class User extends AppModel {
 
 	/*
 	Ensure that all necessary fields are present based on user type.
-	Then saves user object
+	Then saves user object.
+	If the user is a PM, adds a permanent login code for use with the PM Admin.
 	*/
 	public function RegisterUser($user)
 	{
@@ -522,6 +523,15 @@ class User extends AppModel {
 			$error['errorMessage'] = $errorMessage;
 			$this->LogError(null, 37, $error);
 			return array('error' => $errorMessage);
+		}
+
+		/* If this is a PM, add a permanent login_code for use with the PM Admin */
+		if (array_key_exists('user_type', $user) && intval($user['user_type']) === User::USER_TYPE_PROPERTY_MANAGER){
+			App::import('model', 'LoginCode');
+			$LoginCode = new LoginCode();
+			$code = uniqid().''.uniqid();
+			CakeLog::write('code', $code);
+			$LoginCode->Add($this->id, $code, 1);
 		}
 
 		return array('success'=>$this->get($this->id));

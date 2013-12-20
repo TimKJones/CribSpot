@@ -20,12 +20,13 @@ class LoginCode extends AppModel {
 		'created' => 'datetime',
 	);
 
-	public function Add($user_id, $code)
+	public function Add($user_id, $code, $is_permanent = 0)
 	{
 		$this->save(array(
 			'LoginCode' => array(
 				'user_id' => $user_id,
-				'code' => $code
+				'code' => $code,
+				'is_permanent' => $is_permanent
 			)
 		));
 	}
