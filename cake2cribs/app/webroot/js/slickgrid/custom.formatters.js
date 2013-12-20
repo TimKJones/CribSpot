@@ -100,7 +100,7 @@
     return text;
   }
   function ButtonFormatter (row, cell, value, columnDef, dataContext) {
-    var button = '<a class="btn btn-primary btn-mini" href="#picture-modal" onclick="A2Cribs.RentalSave.LoadImages(' + row + ')" data-toggle="modal">Add/Edit Images</a>';
+    var button = '<a class="btn btn-primary btn-mini show_photo_picker" data-row="' + row + '">Add/Edit Images</a>';
     return button;
   }
   function TextFormatter (row, cell, value, columnDef, dataContext) {

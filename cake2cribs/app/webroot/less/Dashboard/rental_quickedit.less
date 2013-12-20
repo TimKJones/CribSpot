@@ -1,0 +1,240 @@
+#rental_quickedit
+{
+	margin-bottom: 70px;
+
+	.btn
+	{
+		color: white;
+		font-size: 12px;
+		font-weight: bold;
+		text-shadow: none;
+		background-image: none;
+		text-transform: uppercase;
+
+		&.btn-primary
+		{
+			background-color: #6289cc;
+		}
+	}
+
+	.searchbox
+	{
+		position: relative;
+		margin: 20px 0px;
+		.search_rentals
+		{
+			padding-left: 25px;
+		}
+		.icon-search
+		{
+			position: absolute;
+			top: .5ex;
+			left: .5ex;
+			font-size: 18px;
+		}
+	}
+
+	#sort_availablity
+	{
+		margin: 20px;
+	}
+
+	.toggle_all_listings
+	{
+		line-height: 70px;
+	}
+
+	.rental_preview
+	{
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+		-webkit-box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
+		-moz-box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
+		box-shadow: 0 2px 2px hsla(0, 0%, 0%, 0.1);
+		border: 1px solid hsl(0, 0%, 84%);
+		color: hsl(0, 0%, 60%);
+		margin-bottom: 10px;
+		width: 800px;
+
+		.rental_title
+		{
+			-webkit-border-radius: 4px 4px 0 0;
+			-moz-border-radius: 4px 4px 0 0;
+			border-radius: 4px 4px 0 0;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			background-color: hsl(0, 0%, 98%);
+			border-bottom: 1px solid hsl(0, 0%, 90%);
+			color: hsl(0, 0%, 60%);
+			padding: 4px 15px;
+			position: relative;
+
+
+			.marker_box
+			{
+				border: 1px solid hsl(0, 0%, 84%);
+				height: 30px;
+				width: 30px;
+				font-size: 25px;
+				line-height: 30px;
+				text-align: center;
+				background-color: hsla(0, 0%, 0%, 0.2);
+			}
+
+			.building_name
+			{
+				color: hsl(0, 0%, 20%);
+				font-size: 14px;
+				font-weight: bold;
+				line-height: 30px;
+			}
+
+			.separator
+			{
+				margin: 0 10px;
+			}
+			.street_address, .building_type
+			{
+				font-size: 13px;
+				font-weight: bold;
+			}
+			.available_listing_count
+			{
+				background-color: #7BB660;
+				color: #ECECEC;
+				display: inline-block;
+				font-size: 11px;
+				text-transform: uppercase;
+				padding: 0 5px;
+				border-radius: 2px;
+				font-weight: bold;
+				box-shadow: inset 0 0 5px #72AE57;
+				line-height: 22px;
+				margin-top: 5px;
+
+				&.leased
+				{
+					background-color: #CF5E5E;
+					box-shadow: inset 0 0 5px #C73D3D;
+				}
+			}
+		}
+		.fields_label
+		{
+			width: 100%;
+			height: 20px;
+			font-size: 12px;
+			text-transform: uppercase;
+			font-weight: bold;
+			background-color: white;
+			border-bottom: 1px solid #E6E6E6;
+
+			.listing_label
+			{
+				width: 110px;
+			}
+			.available_label
+			{
+				width: 148px;
+			}
+			.rent_label
+			{
+				width: 105px;
+			}
+			.start_date_label
+			{
+				width: 125px;
+			}
+			.label_explained
+			{
+				margin-right: 10px;
+			}
+
+		}
+
+		.rental_edit
+		{
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			color: hsl(0, 0%, 60%);
+			height: 50px;
+			padding: 10px 15px;
+			position: relative;
+			line-height: 30px;
+			border-bottom: 1px solid hsl(0, 0%, 90%);
+
+			.unit_description
+			{
+				height: 30px;
+				white-space: inherit;
+				text-overflow: ellipsis;
+				width: 80px;
+				display: block;
+				overflow: hidden;
+				margin-right: 15px;
+				font-weight: bold;
+				font-size: 13px;
+			}
+
+			.btn-group
+			{
+				margin: 0 15px 0 0;
+				.btn
+				{
+					padding: 2px 5px;
+					background-color: white;
+					color: #999;
+					&.btn-available.active
+					{
+						background-color: #8abb85;
+					}
+					&.btn-leased.active
+					{
+						background-color: #FF6666;
+					}
+					&.active
+					{
+						color: white;
+					}
+				}
+			}
+			.rent,.start_date
+			{
+				margin-right: 15px;
+				text-align: center;
+			}
+			.rent
+			{
+				width: 80px;
+			}
+			.start_date
+			{
+				width: 80px;
+			}
+			input + .error
+			{
+				border-color: red;
+			}
+			.open_photos
+			{
+				padding: 2px 12px;
+				margin-right: 5px;
+			}
+		}
+		.rental_expand_toggle_div
+		{
+			background-color: hsl(0, 0%, 98%);
+			padding: 0px 15px;
+			font-size: 12px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+		.rental_expand_toggle
+		{
+			cursor: pointer;
+		}
+	}
+}

@@ -23,7 +23,10 @@ class A2Cribs.Landing
 
 		$(".background_source").attr "href", university['University']['background_source']
 
-		$(".school_logo").css "background-image", "url(#{university['University']['logo_path']})"
+		if university['University']['logo_path']?.length
+			$(".school_logo").show().css "background-image", "url(#{university['University']['logo_path']})"
+		else
+			$(".school_logo").hide()
 
 		if university.University.founder_image?.length
 			$(".founder_photo").attr "src", university.University.founder_image
@@ -36,7 +39,7 @@ class A2Cribs.Landing
 	@Init: (@locations) ->
 		$(window).scroll () ->
 			scrolled = $(window).scrollTop()
-			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px');
+			$('.current_background').css('top',(0 - (scrolled * .25)) + 'px')
 
 		$("#friends_invite").click () ->
 			A2Cribs.ShareManager.ShowShareModal("",
@@ -48,8 +51,8 @@ class A2Cribs.Landing
 			random_school = Math.floor((Math.random() * @locations.length))
 			set_school @locations[random_school]
 
-		$(".university_link").click (event) =>
-			university_id = $(event.delegateTarget).attr "data-university"
+		$("#school_selector").change (event) =>
+			university_id = $(event.currentTarget).val()
 			for university in @locations
 				if university['University']['id'] is university_id
 					@Current_University = university

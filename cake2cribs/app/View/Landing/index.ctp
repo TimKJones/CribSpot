@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/landing.less?v=73','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/landing.less?v=75','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -31,18 +31,21 @@
 			<i class="small_font">All the </i><i class="large_font">College Rentals.</i><br/>
 			<i class="small_font">All in </i><i class="large_font">One Spot.</i>
 		</div>
-		<div id="logo_zone">
+		<div id="logo_zone" class="text-center">
 			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
 			<!-- School Logo's go here -->
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
+			<select id="school_selector" name="">
+				<option value="">Select your University</option>
 			<?php
 			foreach ($locations as $university) {
 				$school_name = str_replace(" ", "_", $university['University']['name']);
-				echo $this->Html->link("<img class='unselected_university' src='" . $university['University']['logo_unselected_path'] . "''><img class='university_icon' src='" . $university['University']['logo_path'] . "''>", "#", array('escape' => false, 'data-university' => $university['University']['id'], "class" => "university_link"));
+				echo "<option value='" . $university['University']['id'] . "'>" . $university['University']['name'] . "</option>";
 			}
 
 			?>
 
+			</select>
 		</div>
 	</div>
 </div>
@@ -53,7 +56,7 @@
 			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
-	<div>
+	<div class="school_header">
 		<div class="school_logo"></div>
 		<div class="name">College Housing made easy.</div>
 		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">

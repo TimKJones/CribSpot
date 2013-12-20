@@ -30,6 +30,12 @@
 			Return to Map
 		</a>
 	</li>
+	<li>
+		<a id = 'overview-content-header' href="#" class = 'content-header active' classname = 'overview'>
+			<i class="icon-bar-chart icon-large"></i>
+			Overview
+		</a>
+</li>
 	<?php
 	if (intval($AuthUser['user_type']) < 2)
 	{
@@ -58,7 +64,7 @@
 	</ul>
 <?php } ?>
 	<?php 
-	if (intval($AuthUser['user_type']) === 1 || intval($AuthUser['user_type']) === 3)
+	if ($user_type === 1 || $user_type === 3)
 	{
 	?>
 	<li>

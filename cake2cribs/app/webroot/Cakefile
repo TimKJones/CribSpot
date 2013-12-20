@@ -1,0 +1,22 @@
+fs = require 'fs'
+
+{print} = require 'util'
+{exec} = require 'child_process'
+
+task 'build', 'Build js/src from coffee/', ->
+	childWatch = exec 'coffee -c -o js/src coffee'
+	childWatch.stderr.on 'data', (data) ->
+		process.stderr.write data
+	childWatch.stdout.on 'data', (data) ->
+		process.stdout.write data
+
+task 'watch', 'watch coffee/ for changes', ->
+	childWatch = exec 'coffee -w -c -o js/src coffee'
+	childWatch.stderr.on 'data', (data) ->
+		process.stderr.write data
+	childWatch.stdout.on 'data', (data) ->
+		process.stdout.write data
+
+task 'uglify', 'minimize coffee into js', ->
+	# TODO
+	process.stderr.write "Not yet completed!\n"

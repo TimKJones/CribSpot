@@ -1,4 +1,7 @@
-
+.messages-content
+{
+	position: absolute;
+}
 .message-display
 {
 	height: 100%;

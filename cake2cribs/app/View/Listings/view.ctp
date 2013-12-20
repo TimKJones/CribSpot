@@ -22,10 +22,10 @@
 
 	$this->Html->meta('description', $listing[$listing_type]["description"], array('inline' => false));
 
-
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
 	echo $this->element('SEO/places_rich_snippet', array('latitude' => $listing["Marker"]["latitude"], 'longitude' => $listing["Marker"]["longitude"]));
+	echo $this->element('SEO/facebook_meta_tag', array('title' => 'Check out ' . $name . $listing['Marker']['street_address'] . ' on Cribspot!', 'url' => $url, 'image_path' => $image_url, 'description' => $listing[$listing_type]["description"]));
 
 ?>
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>

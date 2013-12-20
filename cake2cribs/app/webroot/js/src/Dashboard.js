@@ -124,13 +124,22 @@
 
 
     Dashboard.GetUserMarkerData = function() {
-      var url;
+      var url,
+        _this = this;
+      if (this.MarkerDataDeferred != null) {
+        return this.MarkerDataDeferred;
+      }
       url = myBaseUrl + "listings/GetMarkerDataByLoggedInUser";
-      return $.ajax({
+      $.ajax({
         url: url,
         type: "GET",
-        success: this.GetUserMarkerDataCallback
+        success: function(data) {
+          _this.GetUserMarkerDataCallback(data);
+          return _this.MarkerDataDeferred.resolve(data);
+        }
       });
+      this.MarkerDataDeferred = new $.Deferred();
+      return this.MarkerDataDeferred.promise();
     };
 
     Dashboard.GetUserMarkerDataCallback = function(data) {

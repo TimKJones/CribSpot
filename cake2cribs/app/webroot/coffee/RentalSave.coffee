@@ -25,6 +25,9 @@ class A2Cribs.RentalSave
 			@Open(marker_id)
 			.done => @AddNewUnit()
 
+		$('body').on 'click', '.show_photo_picker', (event) =>
+			@LoadImages $(event.currentTarget).data("row")
+
 		$('body').on "Rental_marker_updated", (event, marker_id) =>
 			if $("#rental_list_content").find("##{marker_id}").length is 1
 				list_item = $("#rental_list_content").find("##{marker_id}")
@@ -343,8 +346,10 @@ class A2Cribs.RentalSave
 		A2Cribs.MixPanel.PostListing "Start Photo Editing",
 			"marker id": @CurrentMarker
 			"number of images": image_array?.length
-		A2Cribs.PhotoManager.LoadImages image_array, @SaveImages, row
 
+		A2Cribs.PhotoPicker.Open(image_array)
+		.done (photos) =>
+			@SaveImages photos, row
 
 	###
 	Saves the images in either the cache or temp object in slickgrid
@@ -354,7 +359,7 @@ class A2Cribs.RentalSave
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images
 				image.listing_id = data.listing_id
-			A2Cribs.UserCache.Set new A2Cribs.Image images
+			A2Cribs.UserCache.Set new A2Cribs.Image images, data.listing_id
 		else
 			data.Image = images
 
