@@ -51,11 +51,6 @@ class AppController extends Controller {
 		$this->Auth->authError = "You need to login to do that.";
 		$this->Auth->allow('beforeRender','__initLogin');
 		App::import('WideImage', 'WideImage');
-		/*App::import('Lib', 'Facebook.FB');   
-    	$this->facebook = new Facebook(array(
-      		'appId'  => Configure::read("FB_APP_ID"),
-      		'secret' => Configure::read("FB_APP_SECRET"),
-    	));*/
 	}
 
 	public function beforeRender()
