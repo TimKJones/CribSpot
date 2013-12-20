@@ -173,6 +173,7 @@ class UsersController extends AppController {
             'account_exists' => false
         );
 
+        $this->_sendWelcomeEmail($user);
         $this->set('response', json_encode($response));
     }
 
@@ -235,6 +236,8 @@ class UsersController extends AppController {
             'success' => 'LOGGED_IN',
             'data' => $data
         );
+
+        $this->_sendWelcomeEmail($user);
         $this->set('response', json_encode($response));
         $this->_savePreferredUniversity($this->User->id);
     }
@@ -837,8 +840,6 @@ CakeLog::write('twiliodebug', print_r($response, true));
 
 /* ------------------------------------ private functions -------------------------------------- */
 
-
-
     /*
     Gets the user data necessary to set up the UI following a successful ajax login from the map page.
     Data:
@@ -1005,5 +1006,22 @@ CakeLog::write('twiliodebug', print_r($response, true));
     {
         return $this->User->EmailExists($email);
     }
+
+    /*
+    Send welcome email to student after successful signup
+    */
+    private function _sendWelcomeEmail($user)
+    {
+        if (!array_key_exists('user_type', $user) || $user['user_type'] !== User::USER_TYPE_SUBLETTER)
+            return;
+        
+        $from = 'The Cribspot Team<info@cribspot.com>';
+        $to = $user['email'];
+        $subject = 'Welcome to Cribspot!';
+        $template = 'welcome_student';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
+    }
+
 }
 ?>
