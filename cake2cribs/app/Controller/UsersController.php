@@ -1012,14 +1012,17 @@ CakeLog::write('twiliodebug', print_r($response, true));
     */
     private function _sendWelcomeEmail($user)
     {
-        if (!array_key_exists('user_type', $user) || $user['user_type'] !== User::USER_TYPE_SUBLETTER)
+        CakeLog::write('userobj', print_r($user, true));
+        if (!array_key_exists('user_type', $user) || intval($user['user_type']) !== User::USER_TYPE_SUBLETTER)
             return;
         
+        $this->set('first_name', $user['first_name']);
         $from = 'The Cribspot Team<info@cribspot.com>';
         $to = $user['email'];
         $subject = 'Welcome to Cribspot!';
         $template = 'welcome_student';
         $sendAs = 'both';
+        CakeLog::write('sending', $to);
         $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 

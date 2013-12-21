@@ -55,6 +55,7 @@ class PagesController extends AppController {
 	public function beforeFilter(){
 	parent::beforeFilter();
      $this->Auth->allow('display');
+     $this->Auth->allow('WelcomeEmail');
      $this->Auth->allow('TermsOfUse');
      $this->Auth->allow('PrivacyPolicy');
      $this->Auth->allow('Disclaimer');
@@ -97,6 +98,11 @@ class PagesController extends AppController {
   	{
 
   	}
+
+    public function WelcomeEmail()
+    {
+
+    }
 
 	public function display() {
 		$path = func_get_args();
