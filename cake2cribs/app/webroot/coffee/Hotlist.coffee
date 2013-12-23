@@ -172,7 +172,9 @@ class A2Cribs.Hotlist
     # @DOMRoot.find('#add-field').typeahead(@sources)
 
     $.when(window.fbInit).then( => 
-      @handleFBLoad()
+      FB.getLoginStatus (response) =>
+        if response.status is 'connected'
+          @handleFBLoad()
     )
 
     @DOMRoot.find('.twitter-typeahead').hide()
