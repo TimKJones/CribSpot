@@ -194,7 +194,11 @@
       this.DOMRoot.find('#add-field').hide();
       this.DOMRoot.find('#btn-add').hide();
       $.when(window.fbInit).then(function() {
-        return _this.handleFBLoad();
+        return FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            return _this.handleFBLoad();
+          }
+        });
       });
       this.DOMRoot.find('.twitter-typeahead').hide();
       this.DOMRoot.find('#link-info').popover({
