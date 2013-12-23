@@ -31,7 +31,7 @@ class EmailInvitation extends AppModel {
 				)
 			);
 
-			$nextRow['TourRequest'] = $tourRequest;
+			// $nextRow['TourRequest'] = $tourRequest;
 			array_push($invitations, $nextRow);
 		}
 

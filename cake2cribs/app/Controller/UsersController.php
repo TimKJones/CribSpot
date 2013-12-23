@@ -1,7 +1,7 @@
 <?php
 class UsersController extends AppController {
     public $helpers = array('Html', 'Js');
-    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite', 'LoginCode');
+    public $uses = array('User', 'University', 'UnreadMessage', 'Favorite', 'LoginCode', 'Listing');
     public $components= array('Email', 'RequestHandler', 'Cookie', 'Twilio.Twilio');
     private $MAX_NUMBER_EMAIL_CONFIRMATIONS_SENT = 3; /* max # of email confirmations to send */
 
@@ -25,6 +25,106 @@ class UsersController extends AppController {
         $this->Auth->allow('PMLogin');
         $this->Auth->allow('welcome');
         $this->Auth->allow('sublet');
+    }
+
+    /* 
+    Share a listing with another user.
+    this function is called by dragging a listing to the user's hotlist.
+    it is different from InvitationsController, but has similar logic.
+    */ 
+    public function share()
+    {
+        $friend_id = $this->request->data['friend'];
+        $listing_id = $this->request->data['listing'];
+
+        // $response = $this->User->shareListing($friend_id, $listing_id);
+
+        $friend = $this->User->find('first', array('conditions' => array('User.id' => $friend_id)));
+        if (empty($friend)) {
+            $this->response->statusCode('404');
+            $this->set('response', json_encode(array('success' => false)));
+        }
+        else {
+            $first_name = $this->Auth->User('first_name');
+            $last_name = $this->Auth->User('last_name');
+
+            $this->set('first_name', $first_name);
+            $this->set('last_name', $last_name);
+
+            // the template wants these variables named so
+            $this->set('inviter_first_name', $first_name);
+            $this->set('inviter_last_name', $last_name);
+
+            $this->set('listing', $listing_id);
+
+            $subject = "Check out this property on Cribspot!";
+
+            // checking for this might not be necessary, 
+            // since GetListing() will log an error if it cannot find the listing.
+            if (!is_null($listing_id)) {
+                $listing_obj = $this->Listing->GetListing($listing_id);
+                if(isset($listing_obj[0]['Image'][0]['image_path'])) {
+                    $img_url = 'http://www.cribspot.com/' . $listing_obj[0]['Image'][0]['image_path'];
+                }
+                if(!is_null($listing_obj)) {
+                    $listing_name = $listing_obj[0]['Marker']['street_address'];
+                    $subject = "$first_name  $last_name wants you to check out $listing_name on Cribspot!";
+                }
+                else {
+                    $subject = "$first_name  $last_name wants you to check out a property on Cribspot!";
+                }
+                $this->set('listing_name', $listing_name);
+                $this->set('listing', $listing_id);
+            }
+            else {
+                $this->set('listing_name', 'check out this listing!');
+                $this->set('listing', $listing_id);
+            }
+
+            // template name and a few other things are defined in here
+            $this->_sendShareEmail($this->Auth->User(), $friend['User']['email'], $subject);
+
+            $this->set('response', json_encode(array('success' => true)));
+        }
+
+        $this->render('json_response');
+    }
+
+    /*
+    Get all users that match a given name, provided by query string
+    called for the typeahead when adding users to hotlist.
+    */
+    public function getAllForName()
+    {
+        $name = $this->request->query['name'];
+        $users = $this->User->findByNameFuzzy($name);
+        // CakeLog::write('HOTLIST', print_r($users));
+        $this->set('response', json_encode($users));
+        $this->render('json_response');
+    }
+
+    /*
+    Get Hotlist for current user
+    */
+    public function hotlist()
+    {
+        $user_id = $this->Auth->User('id');
+        $response = $this->User->getHotlist($user_id);
+        $this->set('response', json_encode($response));
+    }
+
+    /*
+    Remove a user from the hotlist.
+    The record in users_friends is kept, but the 'friend' flag is set to 0
+    */
+    public function removeFromHotlist() 
+    {
+        $user_id = $this->Auth->User('id');
+        $friend_id = $this->request->data['friend'];
+        $response = $this->User->removeFromHotlist($user_id, $friend_id);
+
+        $this->set('response', json_encode($response));
+        $this->render('hotlist');
     }
 
     public function add()
@@ -973,6 +1073,15 @@ CakeLog::write('twiliodebug', print_r($response, true));
         else{
             
         }
+    }
+
+    private function _sendShareEmail($user, $friend_email, $subject)
+    {
+        $from = $user['first_name'] . ' ' . $user['last_name'] . ' <info@cribspot.com>';
+        $to = $friend_email;
+        $template = 'share_listing';
+        $sendAs = 'both';
+        $this->SendEmail($from, $to, $subject, $template, $sendAs);
     }
 
     /*

@@ -34,6 +34,39 @@ class AppModel extends Model {
 
 	const GET_ALL_OF_THIS_TYPE = -1;
 
+	// public function saveAssociated($data = null, $options = array()) {
+
+	//     foreach ($data as $alias => $modelData) {
+
+	//         if (!empty($this->hasAndBelongsToMany[$alias])) {
+
+	//             $habtm = array();
+
+	//             $Model = ClassRegistry::init($this->hasAndBelongsToMany[$alias]['className']);
+
+	//             foreach ($modelData as $modelDatum) {
+
+	//                 if (empty($modelDatum['id'])) {
+
+	//                     $Model->create();
+
+	//                 }
+
+	//                 $Model->save($modelDatum);
+
+	//                 $habtm[] = empty($modelDatum['id']) ? $Model->getInsertID() : $modelDatum['id'];                    
+
+	//             }
+
+	//             $data[$alias] = array($alias => $habtm);
+
+	//         }
+
+	//     }
+
+	//     return parent::saveAssociated($data, $options);
+
+	// }
 	/**
 	 * static enums
 	 * @access static

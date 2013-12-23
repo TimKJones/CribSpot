@@ -38,6 +38,22 @@ if ($this->Session->read('Auth.User.id') != 0) {
 ?>
 <!-- end Mixpanel -->
 
+<script>
+// polyfill for IE 9 and 10 custom events
+(function () {
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   };
+
+  CustomEvent.prototype = window.CustomEvent.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
+</script>
+
 		<script type="text/javascript">var myBaseUrl = '<?php echo $this->Html->url('/'); ?>';</script> 
 		<script type="text/javascript">var flash_message = <?php echo $flash_message; ?></script>
 <?php
@@ -48,6 +64,7 @@ if ($this->Session->read('Auth.User.id') != 0) {
 		echo $this->Html->script('restrict_browsers');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('custom-bootstrap');
+		echo $this->Html->script('typeahead');
 		echo $this->Html->script('markerclusterer_packed.js');
 		echo $this->Html->script('google_plus1');
 		echo $this->Html->script('google_analytics');
@@ -176,6 +193,7 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 
     FB.getLoginStatus(function (response) {
     	window.fbInit.resolve();
+	    // window.dispatchEvent(new CustomEvent("fbDidFinishLoading", FB));
     } );
 
   };

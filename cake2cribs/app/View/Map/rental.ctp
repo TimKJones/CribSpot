@@ -4,7 +4,7 @@
 	echo $this->Html->script('src/Rental');
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
-
+	echo $this->Html->script('src/Hotlist');
 
 	echo $this->Html->css('DailyLogo');
 

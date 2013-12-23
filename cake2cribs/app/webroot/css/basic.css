@@ -4,6 +4,10 @@ html,body,#layoutsContainer
 	width: 100%;
 }
 
+#layoutsContainer {
+	/*overflow: hidden;*/
+}
+
 ::-webkit-scrollbar
 {
 	width: 3px;
