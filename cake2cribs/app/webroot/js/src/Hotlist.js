@@ -93,7 +93,6 @@
           url: "https://graph.facebook.com/me/friends?access_token=" + (FB.getAccessToken()) + "&fields=id,name,picture,first_name,last_name",
           ttl: 0,
           filter: function(response) {
-            console.log(response);
             return response.data.map(function(item) {
               return {
                 value: item.name,

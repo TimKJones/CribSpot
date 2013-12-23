@@ -74,7 +74,7 @@ class A2Cribs.Hotlist
         url: "https://graph.facebook.com/me/friends?access_token=#{FB.getAccessToken()}&fields=id,name,picture,first_name,last_name"
         ttl: 0
         filter: (response) ->
-          console.log(response)
+          # console.log(response)
           response.data.map (item) ->
             return {
               value: item.name
