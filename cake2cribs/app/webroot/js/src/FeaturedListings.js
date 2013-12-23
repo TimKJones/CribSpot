@@ -12,7 +12,6 @@
     FeaturedListings.resizeHandler = function() {
       var h;
       h = $(window).height() - $('#listings-list').offset().top - $('.legal-bar').height();
-      console.log($(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h);
       return $('#listings-list').height(h);
     };
 

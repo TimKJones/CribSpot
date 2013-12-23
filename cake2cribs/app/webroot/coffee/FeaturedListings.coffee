@@ -4,7 +4,7 @@ class A2Cribs.FeaturedListings
 
     @resizeHandler: ->
         h = $(window).height() - $('#listings-list').offset().top - $('.legal-bar').height()
-        console.log $(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h
+        # console.log $(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h
         $('#listings-list').height(h)
 
     @SetupResizing: ->
