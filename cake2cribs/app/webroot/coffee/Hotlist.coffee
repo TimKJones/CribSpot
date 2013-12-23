@@ -441,7 +441,10 @@ class A2Cribs.Hotlist
     else
       a = @DOMRoot.find('ul.friends li:last-child') 
 
-    height = a.offset().top + a.height() - $('ul.friends').offset().top
+    if a.length
+      height = a.offset().top + a.height() - $('ul.friends').offset().top
+    else
+      height = 0
 
     if height <= 10
       height = 70
