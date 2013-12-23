@@ -449,7 +449,11 @@
     Hotlist.prototype.showOrHideExpandArrow = function() {
       var el, hotlistOnOneLine, _ref;
       el = this.DOMRoot.find('#bottom-section a');
-      hotlistOnOneLine = this.DOMRoot.find('ul.friends li:first').offset().top === this.DOMRoot.find('ul.friends li:last').offset().top;
+      if (this.DOMRoot.find('ul.friends li').length) {
+        hotlistOnOneLine = this.DOMRoot.find('ul.friends li:first').offset().top === this.DOMRoot.find('ul.friends li:last').offset().top;
+      } else {
+        hotlistOnOneLine = true;
+      }
       if (!((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0)) {
         el.hide();
         return;
