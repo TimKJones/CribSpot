@@ -172,9 +172,7 @@
             method: 'send',
             link: "http://www.cribspot.com/listing/" + listing_id,
             name: "Share this listing"
-          }, function(response) {
-            return console.log(response);
-          });
+          }, function(response) {});
         }
       });
     };
@@ -355,7 +353,6 @@
     Hotlist.prototype.share = function(listing, friend) {
       var _this = this;
       if (A2Cribs.Login.logged_in) {
-        console.log("sharing", listing, friend);
         return $.when(this.call('friends/share', 'POST', {
           friend: friend,
           listing: listing
@@ -367,8 +364,6 @@
           }
         }).fail(function(data) {
           return A2Cribs.UIManager.Error("There was a problem sharing the listing.");
-        }).always(function(data, status, jqXHR) {
-          return console.log(data);
         }));
       }
     };
@@ -388,8 +383,7 @@
       }).fail(function(data) {
         return A2Cribs.UIManager.Error("There was a problem sharing the listing.");
       }).always(function(data, status, jqXHR) {
-        $('#share-to-email').val("");
-        return console.log(data);
+        return $('#share-to-email').val("");
       }));
     };
 

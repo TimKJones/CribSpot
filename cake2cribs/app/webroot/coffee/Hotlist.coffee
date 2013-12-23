@@ -147,7 +147,7 @@ class A2Cribs.Hotlist
           link: "http://www.cribspot.com/listing/#{listing_id}"
           name: "Share this listing"
         },(response)->
-          console.log response
+          # console.log response
         )
 
     # @DOMRoot.find('#share-all').droppable
@@ -304,7 +304,7 @@ class A2Cribs.Hotlist
 
   share: (listing, friend) ->
     if A2Cribs.Login.logged_in
-      console.log("sharing", listing, friend)
+      # console.log("sharing", listing, friend)
       $.when @call('friends/share', 'POST', {friend: friend, listing: listing})
       .then (data) =>
         if data.success is true
@@ -313,8 +313,8 @@ class A2Cribs.Hotlist
           A2Cribs.UIManager.Error("There was a problem sharing the listing.")
       .fail (data) =>
           A2Cribs.UIManager.Error("There was a problem sharing the listing.")
-      .always (data, status, jqXHR) ->
-        console.log data 
+      # .always (data, status, jqXHR) ->
+      #   console.log data 
 
   shareToEmail: (listing, friend) ->
     console.log("sharing", listing, friend)
@@ -328,7 +328,7 @@ class A2Cribs.Hotlist
         A2Cribs.UIManager.Error("There was a problem sharing the listing.")
     .always (data, status, jqXHR) ->
       $('#share-to-email').val("")
-      console.log data 
+      # console.log data 
 
   shareToFB: (listing, facebook_id) ->
     FB.ui({
