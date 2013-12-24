@@ -229,7 +229,7 @@ class A2Cribs.Hotlist
       a = $(this).data('facebook_id')
       return a
 
-    console.log fb_ids, fb_ids.length
+    # console.log fb_ids, fb_ids.length
 
     # FB.ui({
     #   method: 'send'
@@ -252,7 +252,7 @@ class A2Cribs.Hotlist
       .then (data) =>
         @currentHotlist = data
       .fail (data) =>
-        console.log "ERROR in A2Cribs.HotlistObj.get(): ", data
+        # console.log "ERROR in A2Cribs.HotlistObj.get(): ", data
 
   show: ->
     if A2Cribs.Login.logged_in
@@ -260,7 +260,7 @@ class A2Cribs.Hotlist
       .then (data) =>
         @renderFriendsList { friends: data }
       .fail (data) =>
-        console.log "ERROR in A2Cribs.HotlistObj.show(): ", data
+        # console.log "ERROR in A2Cribs.HotlistObj.show(): ", data
     else
       @renderFriendsList null
 
@@ -283,7 +283,7 @@ class A2Cribs.Hotlist
         @renderFriendsList { friends: data }
         @expandForEdit()
       .fail (data) =>
-        console.log "ERROR: #{data}"
+        # console.log "ERROR: #{data}"
 
   showFBAddMessageModal: (friend) ->
     FB.ui({
@@ -300,7 +300,7 @@ class A2Cribs.Hotlist
         @expandForEdit()
         @currentHotlist = data
       .fail (data) =>
-        console.log "ERROR: #{data}"
+        # console.log "ERROR: #{data}"
 
   share: (listing, friend) ->
     if A2Cribs.Login.logged_in
@@ -317,7 +317,7 @@ class A2Cribs.Hotlist
       #   console.log data 
 
   shareToEmail: (listing, friend) ->
-    console.log("sharing", listing, friend)
+    # console.log("sharing", listing, friend)
     $.when @call('invitations/inviteFriends', 'POST', {emails: [friend], listing: listing})
     .then (data) =>
       if data.success is true

@@ -250,12 +250,11 @@
     Hotlist.prototype.shareToAll = function(event, ui) {
       var fb_ids, listing_id;
       listing_id = ui.draggable.attr('listing_id') || ui.draggable.data('listing_id');
-      fb_ids = $('ul.friends li').map(function(i) {
+      return fb_ids = $('ul.friends li').map(function(i) {
         var a;
         a = $(this).data('facebook_id');
         return a;
       });
-      return console.log(fb_ids, fb_ids.length);
     };
 
     Hotlist.prototype.renderBottomSection = function() {
@@ -274,9 +273,7 @@
       if (A2Cribs.Login.logged_in) {
         return $.when(this.call('friends/hotlist', 'GET', null)).then(function(data) {
           return _this.currentHotlist = data;
-        }).fail(function(data) {
-          return console.log("ERROR in A2Cribs.HotlistObj.get(): ", data);
-        });
+        }).fail(function(data) {});
       }
     };
 
@@ -287,9 +284,7 @@
           return _this.renderFriendsList({
             friends: data
           });
-        }).fail(function(data) {
-          return console.log("ERROR in A2Cribs.HotlistObj.show(): ", data);
-        });
+        }).fail(function(data) {});
       } else {
         return this.renderFriendsList(null);
       }
@@ -319,9 +314,7 @@
             friends: data
           });
           return _this.expandForEdit();
-        }).fail(function(data) {
-          return console.log("ERROR: " + data);
-        }));
+        }).fail(function(data) {}));
       }
     };
 
@@ -344,9 +337,7 @@
           });
           _this.expandForEdit();
           return _this.currentHotlist = data;
-        }).fail(function(data) {
-          return console.log("ERROR: " + data);
-        }));
+        }).fail(function(data) {}));
       }
     };
 
@@ -370,7 +361,6 @@
 
     Hotlist.prototype.shareToEmail = function(listing, friend) {
       var _this = this;
-      console.log("sharing", listing, friend);
       return $.when(this.call('invitations/inviteFriends', 'POST', {
         emails: [friend],
         listing: listing
