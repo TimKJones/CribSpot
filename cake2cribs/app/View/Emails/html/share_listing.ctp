@@ -575,7 +575,7 @@
         
   
             <?php if (!empty($img_url)) { ?>
-                <img alt="" src="med_<?= $img_url ?>" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
+                <img alt="" src="<?= $img_url ?>" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
             <? } else { ?>
                 <img alt="" src="https://gallery.mailchimp.com/891f23f7d9abb3d02a5ab7558/images/stamp2.png" width="137" style="max-width: 137px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;" class="mcnImage">
             <?php } ?>
