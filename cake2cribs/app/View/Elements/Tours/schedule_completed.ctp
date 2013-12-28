@@ -4,7 +4,7 @@
 	<div class="row-fluid">
 		<div class="span8">
 			<h2>Thanks.</h2>
-			<h3>We're building your schedule, and we'll be with you shortly!</h3>
+			<h3>We've forwarded your request on to the property manager.</h3>
 		</div>
 		<div id="schedule_completed_icon" class="span4">
 			<i class="icon-ok-sign"></i>
@@ -12,7 +12,7 @@
 	</div>
 	<div class="row-fluid">
 		<h4>Next Steps</h4>
-		<p>You will receive an email from the Cribspot team with your confirmed showing time. If you have any issues please email help@cribspot.com</p>
+		<p>You should receive a response from the property manager within 24-48 hours.  If you don't hear from them, call them directly or let us know at help@cribspot.com.</p>
 	</div>
 	<br>
 	<br>
