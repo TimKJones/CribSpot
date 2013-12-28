@@ -7,6 +7,12 @@ class A2Cribs.FeaturedListings
         console.log $(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h
         $('#listings-list').height(h)
 
+        w = $(window).width()
+        if w < 900
+            $('.fl-sb-item').draggable('disable')
+        else
+            $('.fl-sb-item').draggable('enable')
+
     @SetupResizing: ->
         @resizeHandler()
         $(window).on('resize', @resizeHandler)
@@ -68,6 +74,111 @@ class A2Cribs.FeaturedListings
         sliced = shuf.slice 0, num
         return sliced       
 
+    @SetupListingItemEvents: ->
+        $el = $('.fl-sb-item')
+        $el.click (event) =>
+            marker_id = parseInt($(event.currentTarget).attr('marker_id'))
+            listing_id = parseInt($(event.currentTarget).attr('listing_id'))
+            marker = A2Cribs.UserCache.Get('marker', marker_id)
+            listing = A2Cribs.UserCache.Get('listing', listing_id)  
+            A2Cribs.Map.GMap.setZoom 16
+            $("#map_region").trigger "marker_clicked", [marker]
+            A2Cribs.MixPanel.Click listing, 'sidebar listing'
+            markerPosition = marker.GMarker.getPosition()
+            A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
+            $(event.currentTarget).toggleClass('expanded')
+
+        $el.draggable
+          revert: true
+          opacity: 0.7
+          cursorAt:
+            top: -12
+            right: -20
+          helper: (event) ->
+            name = $(this).find('.name').html() || "this listing"
+            $( "<div class='listing-drag-helper'>Share #{name}</div>" )
+          start: (event) ->
+            if A2Cribs.Login?.logged_in
+                $('ul.friends, #hotlist').addClass('dragging')
+                A2Cribs.HotlistObj.startedDragging()
+          stop: (event) ->
+            $('ul.friends, #hotlist').removeClass('dragging')
+            A2Cribs.HotlistObj.stoppedDragging()
+          appendTo: 'body'
+
+    @GetListingObjects: (listing_ids) ->
+        listings = []
+        for id in listing_ids
+            listingObject = {}
+            listing = A2Cribs.UserCache.Get('listing', id)
+            marker = listing_object = null
+            if listing?
+                listing.InSidebar yes
+                marker = A2Cribs.UserCache.Get('marker', listing.marker_id)
+                listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id)
+                if listing_object[0]?
+                    listing_object = listing_object[0]
+            if listing? and marker? and listing_object?
+                listingObject.Listing = listing
+                listingObject.Marker = marker
+                listingObject.ListingObject = listing_object
+                listings.push listingObject
+            else
+                console.log listing
+                console.log marker
+                console.log listing_object
+        return listings
+
+    @BuildListingIds: (flIds) ->
+        NUM_RANDOM_LISTINGS = 25
+
+        listings = A2Cribs.UserCache.Get('listing')
+        # get list of all listing_ids loaded...then get random set for sidebar
+        all_listing_ids = []
+        for listing in listings
+            if listing? and listing.listing_id
+                all_listing_ids.push parseInt listing.listing_id
+        randomIds = null
+        if all_listing_ids.length > 0
+            randomIds = @GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids)
+
+        if not flIds? and not randomIds?
+            return null
+
+        # combine featured listings and random listings to get list of all sidebar listing ids
+        sidebar_listing_ids = []
+        for id in flIds
+            id = parseInt id
+            @FLListingIds.push id
+            sidebar_listing_ids.push id
+        if randomIds?
+            for id in randomIds
+                sidebar_listing_ids.push id
+
+        return sidebar_listing_ids
+
+    @UpdateSidebar: (listing_ids) ->
+        # resolved after image paths have been loaded
+        @GetSidebarImagePathsDeferred = new $.Deferred()
+
+        if listing_ids?
+            #fetch listing data for these listing_ids from the cache
+            @listingObjects = @GetListingObjects(listing_ids[0..24])
+            @sidebar.addListings @listingObjects, 'ran', true
+
+            # Fetch primary image paths for all listings in sidebar
+            @GetSidebarImagePaths(listing_ids)
+
+            # Setup events related to individual listing items
+            @SetupListingItemEvents()
+
+        $.when(@GetSidebarImagePathsDeferred).then (images) =>
+            images = JSON.parse images
+            for image in images
+                if image? and image.Image?
+                    img_element = $("#sb-img" + image.Image.listing_id)
+                    img_element.attr('src', '/' + image.Image.image_path)
+
 
     @InitializeSidebar:(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred)->
         alt = active_listing_type
@@ -76,9 +187,8 @@ class A2Cribs.FeaturedListings
         if not @FLListingIds?
             @FLListingIds = []
 
-        NUM_RANDOM_LISTINGS = 25
         
-        sidebar = new Sidebar($('#fl-side-bar'))
+        @sidebar = new Sidebar($('#fl-side-bar'))
     
         # get listing_ids for featured listings for today
         getFlIdsDeferred = @GetFlIds(university_id)
@@ -91,89 +201,18 @@ class A2Cribs.FeaturedListings
         # We have the featured listing listing ids for the sidebar
         # Now get random listing ids from the basic data (already loaded) to fill out the sidebar
         $.when(getFlIdsDeferred, basicDataCachedDeferred).then (flIds) =>
-            listings = A2Cribs.UserCache.Get('listing')
-            # get list of all listing_ids loaded...then get random set for sidebar
-            all_listing_ids = []
-            for listing in listings
-                if listing? and listing.listing_id
-                    all_listing_ids.push parseInt listing.listing_id
-            randomIds = null
-            if all_listing_ids.length > 0
-                randomIds = @GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids)
+            #build list of listing ids for sidebar
+            sidebar_listing_ids = @BuildListingIds(flIds)
 
-            if not flIds? and not randomIds?
-                return
+            if sidebar_listing_ids?
+                #fetch listing data for these listing_ids from the cache
+                @sidebar.addListings @GetListingObjects(sidebar_listing_ids), 'ran'
 
-            # combine featured listings and random listings to get list of all sidebar listing ids
-            sidebar_listing_ids = []
-            for id in flIds
-                id = parseInt id
-                @FLListingIds.push id
-                sidebar_listing_ids.push id
-            if randomIds?
-                for id in randomIds
-                    sidebar_listing_ids.push id
+                # Fetch primary image paths for all listings in sidebar
+                @GetSidebarImagePaths(sidebar_listing_ids)
 
-            listings = []
-
-            #fetch listing data for these listing_ids from the cache
-            for id in sidebar_listing_ids
-                listingObject = {}
-                listing = A2Cribs.UserCache.Get('listing', id)
-                marker = listing_object = null
-                if listing?
-                    listing.InSidebar yes
-                    marker = A2Cribs.UserCache.Get('marker', listing.marker_id)
-                    listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id)
-                    if listing_object[0]?
-                        listing_object = listing_object[0]
-                if listing? and marker? and listing_object?
-                    listingObject.Listing = listing
-                    listingObject.Marker = marker
-                    listingObject.ListingObject = listing_object
-                    listings.push listingObject
-                else
-                    console.log listing
-                    console.log marker
-                    console.log listing_object
-
-            sidebar.addListings listings, 'ran'
-
-            # Fetch primary image paths for all listings in sidebar
-            @GetSidebarImagePaths(sidebar_listing_ids)
-
-            # Set favorite add/delete event handlers for sidebar
-            #for listing in listings
-            #    if listing.Listing?
-            #        A2Cribs.FavoritesManager.setFavoriteButton listing.Listing.listing_id.toString(), null, A2Cribs.FavoritesManager.FavoritesListingIds
-            $(".fl-sb-item")
-            .click (event) =>
-                marker_id = parseInt($(event.currentTarget).attr('marker_id'))
-                listing_id = parseInt($(event.currentTarget).attr('listing_id'))
-                marker = A2Cribs.UserCache.Get('marker', marker_id)
-                listing = A2Cribs.UserCache.Get('listing', listing_id)  
-                A2Cribs.Map.GMap.setZoom 16
-                $("#map_region").trigger "marker_clicked", [marker]
-                A2Cribs.MixPanel.Click listing, 'sidebar listing'
-                markerPosition = marker.GMarker.getPosition()
-                A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
-            .draggable
-              revert: true
-              opacity: 0.7
-              cursorAt:
-                top: -12
-                right: -20
-              helper: (event) ->
-                name = $(this).find('.name').html() || "this listing"
-                $( "<div class='listing-drag-helper'>Share #{name}</div>" )
-              start: (event) ->
-                if A2Cribs.Login?.logged_in
-                    $('ul.friends, #hotlist').addClass('dragging')
-                    A2Cribs.HotlistObj.startedDragging()
-              stop: (event) ->
-                $('ul.friends, #hotlist').removeClass('dragging')
-                A2Cribs.HotlistObj.stoppedDragging()
-              appendTo: 'body'
+                # Setup events related to individual listing items
+                @SetupListingItemEvents()
             
         $.when(@GetSidebarImagePathsDeferred).then (images) =>
             images = JSON.parse images
@@ -218,11 +257,11 @@ class A2Cribs.FeaturedListings
         constructor:(@SidebarUI)->
             @ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML)
 
-        addListings:(listings, list, clear=true)->
+        addListings:(listings, list, clear=false)->
             if listings is null then return
             list_html = @getListHtml(listings)
             if clear
-                @SidebarUI.find("##{list}-listings").append list_html
+                @SidebarUI.find("##{list}-listings").html list_html
             else
                 @SidebarUI.find("##{list}-listings").append list_html
 
@@ -323,33 +362,36 @@ class A2Cribs.FeaturedListings
 
     @ListItemHTML: """
     <div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>
-        <span class = 'img-wrapper'>
-            <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>
-        </span>
-        <span class = 'vert-line'></span>
-        <span class = 'info-wrapper'>
-            <div class = 'info-row'>
-                <span class = 'rent price-text'><%= "$" + rent %></span>
-                <span class = 'divider'>|</span>
-                <span class = 'beds'><%= beds %> </span>
-                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
-                <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='fav-icon icon-user'></i></a></span>
-                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class="icon-reorder"></i></span>
-            </div>
-            <div class = 'row-div'></div>
-            <div class = 'info-row'>
-                <span class = 'building-type'><%= building_type %></span>
-                <span class = 'divider'>|</span>
-                <% if (typeof(end_date) != "undefined") { %>
-                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>
-                <% } else { %>
-                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>
-                <% } %>
-            </div>
-            <div class = 'row-div'></div>
-            <div class = 'info-row'>
-                <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>
-            </div>
-        </span>   
+        <div class='listing-content'>
+            <div class = 'img-wrapper' style='background-image:url("<%=img%>")'> </div>
+            <div class = 'info-wrapper'>
+                <div class = 'info-row'>
+                    <span class = 'rent price-text'><%= "$" + rent %></span>
+                    <span class = 'divider'>|</span>
+                    <span class = 'beds'><%= beds %> </span>
+                    <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    
+                    <span class = 'hotlist_share pull-right'><a href='#' data-listing="<%=listing_id%>"><i class='fav-icon icon-user'></i></a></span>
+                    <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class="icon-reorder"></i></span>
+                </div>
+                <div class = 'info-row'>
+                    <span class = 'building-type'><%= building_type %></span>
+                    <span class = 'divider'>|</span>
+                    <% if (typeof(end_date) != "undefined") { %>
+                    <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>
+                    <% } else { %>
+                    <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>
+                    <% } %>
+                </div>
+                <div class = 'info-row'>
+                    <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>
+                </div>
+            </div>   
+        </div>
+        <div class='listing-actions'>
+            <ul class='action-row'>
+                <li class='hotlist-share'><a href='#'><i class="action-icon icon-heart favorite_listing" data-listing-id='<%=listing_id%>'></i></a></li>
+                <li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class="action-icon icon-share"></i></a></li>
+            </ul>
+        </div>
     </div>
     """

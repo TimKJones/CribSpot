@@ -7,6 +7,7 @@
 	echo $this->Html->script('src/Hotlist');
 
 	echo $this->Html->css('DailyLogo');
+	echo $this->Html->css('/less/mobile_map_hacks.less?v=4','stylesheet/less', array('inline' => false));
 
 	if (strpos($university["name"], 'Detroit') === false)
 		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');

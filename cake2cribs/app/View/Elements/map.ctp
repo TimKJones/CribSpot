@@ -4,6 +4,7 @@
 
 <?=$this->Html->css('/less/map.less?','stylesheet/less', array('inline' => false))?>
 
+<?= $this->element('mobile_filter', array('active_listing_type' => $active_listing_type, 'university_name' => $university["name"])) ?>
 <div id="map_region" data-listing-type="<?= $active_listing_type ?>" data-university-name="<?= $university["name"] ?>" data-university-id="<?= $university["id"] ?>" data-latitude="<?= $university["latitude"] ?>" data-longitude="<?= $university["longitude"] ?>" data-city="<?= $university["city"] ?>" data-state="<?= $university["state"] ?>">
 	<?= $this->element('filter', array('active_listing_type' => $active_listing_type)) ?>
 	<?= $this->element('legend') ?>

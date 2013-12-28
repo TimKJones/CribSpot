@@ -1,6 +1,13 @@
-@media (max-width: 979px) {
+@media (max-width: 899px) {
   #map_region {
     display: none;
+  }
+
+  #mobile_filter {
+    display: block;
+    position: fixed;
+    padding-top: 55px;
+    z-index:99;
   }
 
   #layoutsContainer {
@@ -17,7 +24,7 @@
 
   .featured-listings-wrapper {
     width: 100% !important;
-    overflow: visible;
+    overflow: scroll;
     position: static !important;
     height: auto !important;
     border: none !important;
@@ -31,7 +38,9 @@
       overflow-y: visible !important;
       background: white !important;
       height: auto !important;
-      margin-top: 90px;
+      margin-top: 110px;
+      position: relative;
+      display: block;
     }
   }
 
@@ -41,7 +50,7 @@
   }
 
   #uni-name {
-    display: block;
+    display: none;
     position: fixed;
     margin-top: -37px;
     z-index: 40;
@@ -53,6 +62,10 @@
     position: fixed !important;
   }
 
+  .fl-sb-item .pull-right {
+    display: none;
+  }
+
 }
 
 @media (max-width: 767px) {
@@ -62,8 +75,12 @@
   }
 }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   #uni-name {
+    display: none;
+  }
+
+  #mobile_filter {
     display: none;
   }
 }

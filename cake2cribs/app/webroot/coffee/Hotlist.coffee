@@ -417,7 +417,10 @@ class A2Cribs.Hotlist
 
   showOrHideExpandArrow: ->
     el = @DOMRoot.find('#bottom-section a')
-    hotlistOnOneLine = @DOMRoot.find('ul.friends li:first').offset().top is @DOMRoot.find('ul.friends li:last').offset().top
+    if @DOMRoot.find('ul.friends li').length
+      hotlistOnOneLine = @DOMRoot.find('ul.friends li:first').offset().top is @DOMRoot.find('ul.friends li:last').offset().top
+    else
+      hotlistOnOneLine = true
 
     if not A2Cribs.Login?.logged_in
       el.hide()

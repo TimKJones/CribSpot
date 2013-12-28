@@ -1,20 +1,22 @@
-#layoutsContainer
+// #layoutsContainer
+body
 {
-	background-color: #b6cfe8;	
+	background-color: #efefef;	
 }
 
 .full_page
 {
-	padding-top: 60px;
-	background-color: #b6cfe8;
+	padding-top: 20px;
+	// background-color: #b6cfe8;
 
-	.basic_info, .more_info, .contact_info
+	.info_card
 	{
-		border-radius: 4px;
+		border-radius: 2px;
 		background-color: white;
 		position: relative;
 		margin-bottom: 15px;
-		box-shadow: 0 0 5px gray;
+		box-shadow: 0 0 5px rgba(100,100,100, 0.5);
+		padding: 5px;
 	}
 	.basic_info
 	{
@@ -23,7 +25,6 @@
 			color: #2a2a2a;
 			font-weight: bold;
 			font-size: 15px;
-			margin: 10px 40px 0px 10px;
 		}
 		.favorite_listing
 		{
@@ -44,7 +45,7 @@
 		}
 		.building_type
 		{
-			margin: 0 10px 5px 10px;
+			// margin: 0 10px 5px 10px;
 			font-size: 12px;
 		}
 		.detail_table
@@ -56,7 +57,7 @@
 			font-size: 12px;
 			text-align: center;
 			line-height: 30px;
-			border-left: solid 1px #d2d2d2;
+			// border-left: solid 1px #d2d2d2;
 			color: #939393;
 			&.first-child
 			{
@@ -113,10 +114,10 @@
 				padding: 5px 15px;
 			}
 		}
-		.detail_table
-		{
-			border-bottom: solid 1px #d2d2d2;
-		}
+		// .detail_table
+		// {
+		// 	border-bottom: solid 1px #d2d2d2;
+		// }
 		.detail_table_cell
 		{
 			font-size: 12px;
@@ -155,7 +156,7 @@
 		}
 	}
 
-	.contact_info
+	.contact_info, .listing_correction
 	{
 		.span12
 		{
@@ -234,8 +235,8 @@
 
 	.middle_content
 	{
-		border-radius: 4px;
-		box-shadow: 0 0 5px gray;
+		border-radius: 2px;
+		box-shadow: 0 0 5px rgba(100,100,100, 0.5);
 	}
 	.option_panel
 	{
@@ -248,8 +249,8 @@
 			border: none;
 			border-bottom: 1px solid gray;
 			min-height: 32px;
-			border-top-left-radius: 4px;
-			border-top-right-radius: 4px;
+			border-top-left-radius: 2px;
+			border-top-right-radius: 2px;
 			border-bottom-right-radius: 0;
 			border-bottom-left-radius: 0;
 			li
@@ -315,8 +316,8 @@
 		width: 100%;
 		background-color: #fcfcfc;
 		position: relative;
-		border-bottom-right-radius: 4px;
-		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 2px;
+		border-bottom-left-radius: 2px;
 
 		.page_left, .page_right
 		{
@@ -391,7 +392,7 @@
 		.amenities_table
 		{
 			background-color: white;
-			border-radius: 4px;
+			border-radius: 2px;
 			margin-bottom: 10px;
 			color: #5c5c5c;
 			font-size: 12px;
@@ -436,7 +437,7 @@
 				padding: 2px 5px;
 			}
 			background-color: white;
-			border-radius: 4px;
+			border-radius: 2px;
 			box-shadow: 0 0 3px gray;
 			margin-bottom: 10px;
 			color: #5c5c5c;
@@ -447,7 +448,7 @@
 	{
 		list-style-type: none;
 		display: inline-block;
-		border-radius: 4px;
+		border-radius: 2px;
 		box-shadow: 0 0 3px gray;
 		.disabled
 		{

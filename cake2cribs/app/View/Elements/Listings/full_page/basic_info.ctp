@@ -1,4 +1,4 @@
-<div class="row-fluid basic_info">
+<div class="info_card basic_info">
 	<div class="name">
 		<?php
 		if (strlen($listing["Marker"]["alternate_name"]) != 0)
@@ -18,21 +18,23 @@
 		?>
 	</div>
 	<div class="row-fluid detail_table">
-		<div class="span4 detail_table_cell first-child">
+		<div class="span6 detail_table_cell first-child">
 			<?php
 			echo "<i class='big'>" . $listing[$listing_type]["beds"] . "</i>&nbsp;Bed";
 			if ($listing[$listing_type]["beds"] > 1)
 				echo "s";
 			?>
 		</div>
-		<div class="span4 detail_table_cell">
+		<div class="span6 detail_table_cell">
 			<?php
 			echo "<i class='big'>" . $listing[$listing_type]["baths"] . "</i>&nbsp;Bath";
 			if ($listing[$listing_type]["baths"] > 1)
 				echo "s";
 			?>
 		</div>
-		<div class="span4 detail_table_cell">
+	</div>
+	<div class="row-fluid detail_table">
+		<div class="span12 detail_table_cell">
 			<?php
 			echo "<div class='available ";
 			if (!array_key_exists("available", $listing["Listing"]) || $listing["Listing"]["available"] === null)

@@ -4,8 +4,9 @@
     function FilterManager() {}
 
     FilterManager.UpdateListings = function(visibleListingIds) {
-      var all_listings, all_markers, listing, listing_id, marker, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2;
+      var all_listings, all_markers, listing, listing_id, marker, sidebar_visible_listings, visible_listings, visible_markers, _i, _j, _k, _len, _len1, _len2;
       visible_listings = JSON.parse(visibleListingIds);
+      sidebar_visible_listings = [];
       $("#map_region").trigger('close_bubbles');
       all_listings = A2Cribs.UserCache.Get("listing");
       for (_i = 0, _len = all_listings.length; _i < _len; _i++) {
@@ -18,6 +19,7 @@
         listing = A2Cribs.UserCache.Get("listing", listing_id);
         if (listing != null) {
           listing.visible = true;
+          sidebar_visible_listings.push(listing.listing_id);
           visible_markers[+listing.marker_id] = true;
         }
       }
@@ -30,6 +32,7 @@
           marker.GMarker.setVisible(false);
         }
       }
+      A2Cribs.FeaturedListings.UpdateSidebar(sidebar_visible_listings);
       return A2Cribs.Map.Repaint();
     };
 
