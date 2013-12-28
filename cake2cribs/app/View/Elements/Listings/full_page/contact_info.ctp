@@ -59,7 +59,7 @@
 				<button class="btn" id="contact_owner" emailExists='<?php echo $email_exists; ?>'>CONTACT RENTAL OWNER</button>
 			</div>
 		</div>
-		<?php if (false) {//($listing['Listing']['available'] === true){ ?>
+		<?php if ($listing['Listing']['available'] === true){ ?>
 		<div class="row-fluid">
 			<div class="span12">
 				<button class="btn show_scheduling" >REQUEST TOUR NOW</button>

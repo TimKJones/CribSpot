@@ -7,7 +7,7 @@
 <?php if (array_key_exists('Rental', $listing)){ ?>
 			<li><a href="#amenities_content" data-toggle="tab">Amenities</a></li>
 <?php } ?>
-			<?php if (false) { //($listing['Listing']['available'] === true){ ?>
+			<?php if ($listing['Listing']['available'] === true){ ?>
 				<li><a id="scheduling_tour_tab" class="show_scheduling" href="#schedule_tour">Request My Tour</a></li>
 			<?php } ?>
 		</ul>

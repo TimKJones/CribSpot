@@ -24,7 +24,7 @@
 		<div class="property_manager clear_field">Investor's Property Management</div>
 		<div class="verified hide">VERIFIED</div>
 	</div>
-	<!-- <a href="#" class="schedule_tour"><div>Request a tour now</div></a> -->
+	<a href="#" class="schedule_tour"><div>Request a tour now</div></a>
 	<?php
 	if (intval($active_listing_type) === 0)
 	{ ?>
