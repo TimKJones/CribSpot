@@ -33,8 +33,6 @@ Parameters needed:
 		for ($i = 0; $i < count($markerIdList); $i++)
 			array_push($formattedIdList, $markerIdList[$i]['Listing']['listing_id']);
 
-		CakeLog::write('test', print_r($formattedIdList, true));
-
 		return json_encode($formattedIdList);
 	}
 
