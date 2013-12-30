@@ -230,7 +230,7 @@
       this.GetSidebarImagePathsDeferred = new $.Deferred();
       this.current_index = 0;
       if (listing_ids != null) {
-        this.listingObjects = this.GetListingObjects(listing_ids.slice(0, 25));
+        this.listingObjects = this.GetListingObjects(listing_ids);
         this.sidebar.addListings(this.listingObjects, 'ran', true);
         this.GetSidebarImagePaths(listing_ids);
         this.SetupListingItemEvents();

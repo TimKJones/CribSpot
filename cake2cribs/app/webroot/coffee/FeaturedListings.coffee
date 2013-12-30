@@ -176,7 +176,7 @@ class A2Cribs.FeaturedListings
         @current_index = 0
         if listing_ids?
             #fetch listing data for these listing_ids from the cache
-            @listingObjects = @GetListingObjects(listing_ids[0..24])
+            @listingObjects = @GetListingObjects(listing_ids)
             @sidebar.addListings @listingObjects, 'ran', true
 
             # Fetch primary image paths for all listings in sidebar
