@@ -157,10 +157,23 @@ class A2Cribs.FeaturedListings
 
         return sidebar_listing_ids
 
+    @SetupScrollEvents: ->
+        $(window).scroll ->
+            # console.log $(this).scrollTop(), $(this).innerHeight(), $('.featured-listings-wrapper').height()
+            if $(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()
+                console.log('end reached')
+
+    @LoadMoreListings: ->
+        if @current_index
+            @listingObjects = @GetListingObjects(listing_ids[@current_index..@current_index + 24])
+            @sidebar.addListings @listingObjects, 'ran'
+            @current_index += 25
+
     @UpdateSidebar: (listing_ids) ->
         # resolved after image paths have been loaded
         @GetSidebarImagePathsDeferred = new $.Deferred()
 
+        @current_index = 0
         if listing_ids?
             #fetch listing data for these listing_ids from the cache
             @listingObjects = @GetListingObjects(listing_ids[0..24])
@@ -189,6 +202,7 @@ class A2Cribs.FeaturedListings
 
         
         @sidebar = new Sidebar($('#fl-side-bar'))
+        @current_index = 0
     
         # get listing_ids for featured listings for today
         getFlIdsDeferred = @GetFlIds(university_id)
@@ -197,6 +211,7 @@ class A2Cribs.FeaturedListings
         @GetSidebarImagePathsDeferred = new $.Deferred()
 
         @SetupResizing()
+        @SetupScrollEvents()
 
         # We have the featured listing listing ids for the sidebar
         # Now get random listing ids from the basic data (already loaded) to fill out the sidebar
@@ -206,7 +221,7 @@ class A2Cribs.FeaturedListings
 
             if sidebar_listing_ids?
                 #fetch listing data for these listing_ids from the cache
-                @sidebar.addListings @GetListingObjects(sidebar_listing_ids), 'ran'
+                @sidebar.addListings @GetListingObjects(sidebar_listing_ids), 'ran', true
 
                 # Fetch primary image paths for all listings in sidebar
                 @GetSidebarImagePaths(sidebar_listing_ids)
@@ -220,6 +235,7 @@ class A2Cribs.FeaturedListings
                 if image? and image.Image?
                     img_element = $("#sb-img" + image.Image.listing_id)
                     img_element.attr('src', '/' + image.Image.image_path)
+
 
     # Fetch the primary images for listings in listing_ids
     @GetSidebarImagePaths: (listing_ids) =>

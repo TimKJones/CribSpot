@@ -210,6 +210,14 @@
       return sidebar_listing_ids;
     };
 
+    FeaturedListings.SetupScrollEvents = function() {
+      return $(window).scroll(function() {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()) {
+          return console.log('end reached');
+        }
+      });
+    };
+
     FeaturedListings.UpdateSidebar = function(listing_ids) {
       var _this = this;
       this.GetSidebarImagePathsDeferred = new $.Deferred();
@@ -250,6 +258,7 @@
       getFlIdsDeferred = this.GetFlIds(university_id);
       this.GetSidebarImagePathsDeferred = new $.Deferred();
       this.SetupResizing();
+      this.SetupScrollEvents();
       $.when(getFlIdsDeferred, basicDataCachedDeferred).then(function(flIds) {
         var sidebar_listing_ids;
         sidebar_listing_ids = _this.BuildListingIds(flIds);

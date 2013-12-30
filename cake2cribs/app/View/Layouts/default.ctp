@@ -140,7 +140,9 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 
 		/* Write buffer for JS in various element views */
 		echo $this->Js->writeBuffer();
-  echo '<meta name="viewport" content="initial-scale=1">';
+
+    /* Meta tag for responsive goodness */
+    echo '<meta name="viewport" content="initial-scale=1">';
 
 	echo '</head>';
 
