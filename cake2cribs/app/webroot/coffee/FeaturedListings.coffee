@@ -130,7 +130,7 @@ class A2Cribs.FeaturedListings
         return listings
 
     @BuildListingIds: (flIds) ->
-        NUM_RANDOM_LISTINGS = 25
+        NUM_RANDOM_LISTINGS = 2500
 
         listings = A2Cribs.UserCache.Get('listing')
         # get list of all listing_ids loaded...then get random set for sidebar
@@ -161,26 +161,29 @@ class A2Cribs.FeaturedListings
         $(window).scroll ->
             # console.log $(this).scrollTop(), $(this).innerHeight(), $('.featured-listings-wrapper').height()
             if $(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()
-                console.log('end reached')
+                A2Cribs.FeaturedListings.LoadMoreListings()
 
     @LoadMoreListings: ->
-        if @current_index
-            @listingObjects = @GetListingObjects(listing_ids[@current_index..@current_index + 24])
+        if @current_index? and @listing_ids?
+            @listingObjects = @GetListingObjects(@listing_ids[@current_index..@current_index + 24])
             @sidebar.addListings @listingObjects, 'ran'
             @current_index += 25
+        else
+            console.log 'warning: no listing ids or current index found.'
 
     @UpdateSidebar: (listing_ids) ->
         # resolved after image paths have been loaded
         @GetSidebarImagePathsDeferred = new $.Deferred()
+        @listing_ids = listing_ids
 
         @current_index = 0
-        if listing_ids?
+        if @listing_ids?
             #fetch listing data for these listing_ids from the cache
-            @listingObjects = @GetListingObjects(listing_ids)
+            @listingObjects = @GetListingObjects(@listing_ids[0..24])
             @sidebar.addListings @listingObjects, 'ran', true
 
             # Fetch primary image paths for all listings in sidebar
-            @GetSidebarImagePaths(listing_ids)
+            @GetSidebarImagePaths(@listing_ids[0..24])
 
             # Setup events related to individual listing items
             @SetupListingItemEvents()
@@ -221,14 +224,17 @@ class A2Cribs.FeaturedListings
 
             if sidebar_listing_ids?
                 #fetch listing data for these listing_ids from the cache
-                @sidebar.addListings @GetListingObjects(sidebar_listing_ids), 'ran', true
+                @sidebar.addListings @GetListingObjects(sidebar_listing_ids[0..24]), 'ran', true
+                @listing_ids = sidebar_listing_ids
 
                 # Fetch primary image paths for all listings in sidebar
-                @GetSidebarImagePaths(sidebar_listing_ids)
+                @GetSidebarImagePaths(sidebar_listing_ids[0..24])
 
                 # Setup events related to individual listing items
                 @SetupListingItemEvents()
-            
+            else
+                @listing_ids = []
+
         $.when(@GetSidebarImagePathsDeferred).then (images) =>
             images = JSON.parse images
             for image in images

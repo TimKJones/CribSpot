@@ -177,7 +177,7 @@
 
     FeaturedListings.BuildListingIds = function(flIds) {
       var NUM_RANDOM_LISTINGS, all_listing_ids, id, listing, listings, randomIds, sidebar_listing_ids, _i, _j, _k, _len, _len1, _len2;
-      NUM_RANDOM_LISTINGS = 25;
+      NUM_RANDOM_LISTINGS = 2500;
       listings = A2Cribs.UserCache.Get('listing');
       all_listing_ids = [];
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
@@ -212,27 +212,30 @@
     FeaturedListings.SetupScrollEvents = function() {
       return $(window).scroll(function() {
         if ($(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()) {
-          return console.log('end reached');
+          return A2Cribs.FeaturedListings.LoadMoreListings();
         }
       });
     };
 
     FeaturedListings.LoadMoreListings = function() {
-      if (this.current_index) {
-        this.listingObjects = this.GetListingObjects(listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
+      if ((this.current_index != null) && (this.listing_ids != null)) {
+        this.listingObjects = this.GetListingObjects(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
         this.sidebar.addListings(this.listingObjects, 'ran');
         return this.current_index += 25;
+      } else {
+        return console.log('warning: no listing ids or current index found.');
       }
     };
 
     FeaturedListings.UpdateSidebar = function(listing_ids) {
       var _this = this;
       this.GetSidebarImagePathsDeferred = new $.Deferred();
+      this.listing_ids = listing_ids;
       this.current_index = 0;
-      if (listing_ids != null) {
-        this.listingObjects = this.GetListingObjects(listing_ids);
+      if (this.listing_ids != null) {
+        this.listingObjects = this.GetListingObjects(this.listing_ids.slice(0, 25));
         this.sidebar.addListings(this.listingObjects, 'ran', true);
-        this.GetSidebarImagePaths(listing_ids);
+        this.GetSidebarImagePaths(this.listing_ids.slice(0, 25));
         this.SetupListingItemEvents();
       }
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
@@ -272,9 +275,12 @@
         var sidebar_listing_ids;
         sidebar_listing_ids = _this.BuildListingIds(flIds);
         if (sidebar_listing_ids != null) {
-          _this.sidebar.addListings(_this.GetListingObjects(sidebar_listing_ids), 'ran', true);
-          _this.GetSidebarImagePaths(sidebar_listing_ids);
+          _this.sidebar.addListings(_this.GetListingObjects(sidebar_listing_ids.slice(0, 25)), 'ran', true);
+          _this.listing_ids = sidebar_listing_ids;
+          _this.GetSidebarImagePaths(sidebar_listing_ids.slice(0, 25));
           return _this.SetupListingItemEvents();
+        } else {
+          return _this.listing_ids = [];
         }
       });
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
