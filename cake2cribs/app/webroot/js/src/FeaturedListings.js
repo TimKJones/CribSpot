@@ -105,6 +105,7 @@
       var $el,
         _this = this;
       $el = $('.fl-sb-item');
+      $el.unbind();
       $el.click(function(event) {
         var listing, listing_id, marker, markerPosition, marker_id;
         marker_id = parseInt($(event.currentTarget).attr('marker_id'));
@@ -116,7 +117,12 @@
         A2Cribs.MixPanel.Click(listing, 'sidebar listing');
         markerPosition = marker.GMarker.getPosition();
         A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
-        return $(event.currentTarget).toggleClass('expanded');
+        if ($(event.currentTarget).hasClass('expanded')) {
+          return $(event.currentTarget).removeClass('expanded');
+        } else {
+          $('.fl-sb-item.expanded').removeClass('expanded');
+          return $(event.currentTarget).addClass('expanded');
+        }
       });
       return $el.draggable({
         revert: true,
@@ -218,13 +224,31 @@
     };
 
     FeaturedListings.LoadMoreListings = function() {
+      var _this = this;
+      this.GetSidebarImagePathsDeferred = new $.Deferred();
       if ((this.current_index != null) && (this.listing_ids != null)) {
         this.listingObjects = this.GetListingObjects(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
+        this.GetSidebarImagePaths(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
         this.sidebar.addListings(this.listingObjects, 'ran');
-        return this.current_index += 25;
+        this.current_index += 25;
       } else {
-        return console.log('warning: no listing ids or current index found.');
+        console.log('warning: no listing ids or current index found.');
       }
+      this.SetupListingItemEvents();
+      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+        var image, _i, _len, _results;
+        images = JSON.parse(images);
+        _results = [];
+        for (_i = 0, _len = images.length; _i < _len; _i++) {
+          image = images[_i];
+          if ((image != null) && (image.Image != null)) {
+            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
     };
 
     FeaturedListings.UpdateSidebar = function(listing_ids) {
@@ -239,14 +263,13 @@
         this.SetupListingItemEvents();
       }
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
-        var image, img_element, _i, _len, _results;
+        var image, _i, _len, _results;
         images = JSON.parse(images);
         _results = [];
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            img_element = $("#sb-img" + image.Image.listing_id);
-            _results.push(img_element.attr('src', '/' + image.Image.image_path));
+            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
           } else {
             _results.push(void 0);
           }
@@ -284,14 +307,13 @@
         }
       });
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
-        var image, img_element, _i, _len, _results;
+        var image, _i, _len, _results;
         images = JSON.parse(images);
         _results = [];
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            img_element = $("#sb-img" + image.Image.listing_id);
-            _results.push(img_element.attr('src', '/' + image.Image.image_path));
+            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
           } else {
             _results.push(void 0);
           }

@@ -76,6 +76,7 @@ class A2Cribs.FeaturedListings
 
     @SetupListingItemEvents: ->
         $el = $('.fl-sb-item')
+        $el.unbind()
         $el.click (event) =>
             marker_id = parseInt($(event.currentTarget).attr('marker_id'))
             listing_id = parseInt($(event.currentTarget).attr('listing_id'))
@@ -86,7 +87,12 @@ class A2Cribs.FeaturedListings
             A2Cribs.MixPanel.Click listing, 'sidebar listing'
             markerPosition = marker.GMarker.getPosition()
             A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
-            $(event.currentTarget).toggleClass('expanded')
+
+            if $(event.currentTarget).hasClass('expanded')
+                $(event.currentTarget).removeClass('expanded')
+            else
+                $('.fl-sb-item.expanded').removeClass('expanded')
+                $(event.currentTarget).addClass('expanded')
 
         $el.draggable
           revert: true
@@ -164,12 +170,22 @@ class A2Cribs.FeaturedListings
                 A2Cribs.FeaturedListings.LoadMoreListings()
 
     @LoadMoreListings: ->
+        @GetSidebarImagePathsDeferred = new $.Deferred()
+        
         if @current_index? and @listing_ids?
             @listingObjects = @GetListingObjects(@listing_ids[@current_index..@current_index + 24])
+            @GetSidebarImagePaths(@listing_ids[@current_index..@current_index + 24])
             @sidebar.addListings @listingObjects, 'ran'
             @current_index += 25
         else
             console.log 'warning: no listing ids or current index found.'
+
+        @SetupListingItemEvents()
+        $.when(@GetSidebarImagePathsDeferred).then (images) =>
+            images = JSON.parse images
+            for image in images
+                if image? and image.Image?
+                    $("#fl-sb-item-#{image.Image.listing_id} .img-wrapper").css('background-image', "url(/#{image.Image.image_path})")
 
     @UpdateSidebar: (listing_ids) ->
         # resolved after image paths have been loaded
@@ -192,8 +208,7 @@ class A2Cribs.FeaturedListings
             images = JSON.parse images
             for image in images
                 if image? and image.Image?
-                    img_element = $("#sb-img" + image.Image.listing_id)
-                    img_element.attr('src', '/' + image.Image.image_path)
+                    $("#fl-sb-item-#{image.Image.listing_id} .img-wrapper").css('background-image', "url(/#{image.Image.image_path})")
 
 
     @InitializeSidebar:(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred)->
@@ -239,8 +254,7 @@ class A2Cribs.FeaturedListings
             images = JSON.parse images
             for image in images
                 if image? and image.Image?
-                    img_element = $("#sb-img" + image.Image.listing_id)
-                    img_element.attr('src', '/' + image.Image.image_path)
+                    $("#fl-sb-item-#{image.Image.listing_id} .img-wrapper").css('background-image', "url(/#{image.Image.image_path})")
 
 
     # Fetch the primary images for listings in listing_ids
