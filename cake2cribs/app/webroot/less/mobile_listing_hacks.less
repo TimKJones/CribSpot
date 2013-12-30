@@ -1,0 +1,75 @@
+@media (max-width: 979px) {
+  .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
+    // position: fixed !important;
+  }
+  #habla_window_div * { 
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .full_page {
+    padding-top: 0;
+
+    .large_image_container, .tab-pane {
+      min-height: 200px;
+    }
+  }
+
+  .amenities_title, .amenities_table {
+    display: none !important;
+  }
+
+  .info-bar {
+    margin-top: 15px;
+  }
+
+  .share_buttons {
+    display: none !important;
+  }
+
+  .info_card, .middle_content {
+    box-shadow: none !important;
+    margin-top: 3px;
+    margin-bottom: 8px !important;
+  }
+
+  .full_page .option_panel .navbar-inner li.active a {
+    box-shadow: none;
+  }
+
+  a:active {
+    background-color: rgba(100, 100, 100, 0.6);
+  }
+
+  .full_page .large_included_list {
+    margin-left: 0;
+
+    li {
+      width: (100% / 3);
+      box-sizing: border-box;
+    }
+  }
+}
+
+@media (max-width: 479px) {
+  .middle_content .option_panel .nav {
+    width: 100%;
+    li {
+      width: (100% / 3);
+      text-align: center;
+    }
+    li:first-child {
+      width: 100%;
+      display: block;
+      float: none;
+      text-align: center;
+      padding: 8px;
+    }
+  }
+}

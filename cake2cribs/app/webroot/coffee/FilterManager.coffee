@@ -2,6 +2,7 @@ class A2Cribs.FilterManager
 
 	@UpdateListings: (visibleListingIds) ->
 		visible_listings = JSON.parse visibleListingIds
+		sidebar_visible_listings = []
 
 		$("#map_region").trigger 'close_bubbles'
 
@@ -16,6 +17,7 @@ class A2Cribs.FilterManager
 			listing = A2Cribs.UserCache.Get "listing", listing_id
 			if listing?
 				listing.visible = true
+				sidebar_visible_listings.push(listing.listing_id)
 				visible_markers[+listing.marker_id] = true
 
 		# Set the markers to visible
@@ -26,6 +28,7 @@ class A2Cribs.FilterManager
 			else
 				marker.GMarker.setVisible false
 
+		A2Cribs.FeaturedListings.UpdateSidebar(sidebar_visible_listings)
 		A2Cribs.Map.Repaint()
 
 	###

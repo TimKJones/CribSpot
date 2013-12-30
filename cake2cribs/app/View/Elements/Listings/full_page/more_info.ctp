@@ -1,4 +1,4 @@
-<div class="row-fluid more_info">
+<div class="info_card more_info">
 	<div class="row-fluid detail_table">
 
 <?php if (array_key_exists('Rental', $listing)) { ?> 

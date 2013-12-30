@@ -1,6 +1,27 @@
-@media (max-width: 979px) {
+@media (max-width: 899px) {
+
+  .featured-listings-wrapper #listings-list.has_featured_pm {
+    bottom: 0 !important;
+  }
+
+  .featured_pm {
+    display: none;
+  }
+
+  .register_modal {
+    width: auto !important;
+    margin-left: 0 !important;
+  }
+
   #map_region {
     display: none;
+  }
+
+  #mobile_filter {
+    display: block;
+    position: fixed;
+    padding-top: 55px;
+    z-index:99;
   }
 
   #layoutsContainer {
@@ -17,10 +38,11 @@
 
   .featured-listings-wrapper {
     width: 100% !important;
-    overflow: visible;
+    overflow: scroll;
     position: static !important;
     height: auto !important;
     border: none !important;
+    padding-top: 0;
 
     .legal-bar {
       position: fixed !important;
@@ -31,7 +53,10 @@
       overflow-y: visible !important;
       background: white !important;
       height: auto !important;
-      margin-top: 90px;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      position: relative;
+      display: block;
     }
   }
 
@@ -41,7 +66,7 @@
   }
 
   #uni-name {
-    display: block;
+    display: none;
     position: fixed;
     margin-top: -37px;
     z-index: 40;
@@ -53,6 +78,10 @@
     position: fixed !important;
   }
 
+  .fl-sb-item .pull-right {
+    display: none;
+  }
+
 }
 
 @media (max-width: 767px) {
@@ -62,8 +91,12 @@
   }
 }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   #uni-name {
+    display: none;
+  }
+
+  #mobile_filter {
     display: none;
   }
 }
