@@ -691,8 +691,7 @@ class User extends AppModel {
 			return null;
 
 		$local_user = $this->find('first', array(
-			'conditions' => array('facebook_id' => $fb_id)
-				));
+            'conditions' => array('facebook_id' => $fb_id)
         ));
 		return $local_user;
 	}
