@@ -53,13 +53,14 @@ class PagesController extends AppController {
  * @return void
  */
 	public function beforeFilter(){
-	parent::beforeFilter();
-     $this->Auth->allow('display');
-     $this->Auth->allow('TermsOfUse');
-     $this->Auth->allow('PrivacyPolicy');
-     $this->Auth->allow('Disclaimer');
-     $this->Auth->allow('NewspaperTest');
-  	}
+    parent::beforeFilter();
+    $this->Auth->allow('PMAdmin');
+    $this->Auth->allow('display');
+    $this->Auth->allow('TermsOfUse');
+    $this->Auth->allow('PrivacyPolicy');
+    $this->Auth->allow('Disclaimer');
+    $this->Auth->allow('NewspaperTest');
+  }
   	
     /*
     TODO: exclude this action in robots.txt
@@ -67,48 +68,43 @@ class PagesController extends AppController {
     Generates a login link for every PM
     */
     public function PMAdmin()
-    {
-        if (!$this->Auth->loggedIn() || intval($this->Auth->User('user_type')) !== 4) {
-            /* Only a PM Admin can access this page */
-            throw new NotFoundException();
-        }
+    { 
+      /* Get login URLs for all property managers */
+      App::Import('model', 'User');
+      $User = new User();
+      $propertyManagers = $User->find('all', array(
+          'conditions' => array(
+              'User.user_type' => 1,
+              'LoginCode.is_permanent' => 1
+          ),
+          'contain' => array('LoginCode'),
+          'joins' => array(
+              array('table' => 'login_codes',
+                  'alias' => 'LoginCode',
+                  'type' => 'INNER',
+                  'conditions' => array(
+                      'LoginCode.user_id = User.id'
+                  ),
+              )   
+          )
+      ));
+      $loginLinks = array();
+      foreach ($propertyManagers as $pm){
+          if (!array_key_exists('User', $pm) || !array_key_exists('LoginCode', $pm) ||
+              !array_key_exists('id', $pm['User']) || !array_key_exists(0, $pm['LoginCode']) || 
+              !array_key_exists('code', $pm['LoginCode'][0]))
+              continue;
 
-        /* Get login URLs for all property managers */
-        App::Import('model', 'User');
-        $User = new User();
-        $propertyManagers = $User->find('all', array(
-            'conditions' => array(
-                'User.user_type' => 1,
-                'LoginCode.is_permanent' => 1
-            ),
-            'contain' => array('LoginCode'),
-            'joins' => array(
-                array('table' => 'login_codes',
-                    'alias' => 'LoginCode',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'LoginCode.user_id = User.id'
-                    ),
-                )   
-            )
-        ));
-        $loginLinks = array();
-        foreach ($propertyManagers as $pm){
-            if (!array_key_exists('User', $pm) || !array_key_exists('LoginCode', $pm) ||
-                !array_key_exists('id', $pm['User']) || !array_key_exists(0, $pm['LoginCode']) || 
-                !array_key_exists('code', $pm['LoginCode'][0]))
-                continue;
+          $nextLink = array(
+              'link' => 'https://www.cribspot.com/users/PMLogin?id='.$pm['User']['id'].'&code='.$pm['LoginCode'][0]['code'],
+              'company_name' => $pm['User']['company_name'],
+              'city' => $pm['User']['city'],
+              'state' => $pm['User']['state']
+          );
+          array_push($loginLinks, $nextLink);
+      }
 
-            $nextLink = array(
-                'link' => 'https://www.cribspot.com/users/PMLogin?id='.$pm['User']['id'].'&code='.$pm['LoginCode'][0]['code'],
-                'company_name' => $pm['User']['company_name'],
-                'city' => $pm['User']['city'],
-                'state' => $pm['User']['state']
-            );
-            array_push($loginLinks, $nextLink);
-        }
-
-        $this->set('loginLinks', $loginLinks);
+      $this->set('loginLinks', $loginLinks);
     }
 
   	public function NewspaperTest()
