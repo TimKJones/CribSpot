@@ -69,6 +69,11 @@ class PagesController extends AppController {
     */
     public function PMAdmin()
     { 
+      /* Ensure this request is coming from localhost via ssh tunnel */
+      $ip_address = $this->request->clientIp();
+      if (strcmp($ip_address, '127.0.0.1'))
+        throw new NotFoundException();
+
       /* Get login URLs for all property managers */
       App::Import('model', 'User');
       $User = new User();
