@@ -21,8 +21,7 @@ class ToursController extends AppController
 	}
 
 	/*
-	This is only called for a listing we manage
-	Logged-in user submits array of at least 3 times for which they are available to see the listing identified by $listing_id.
+	Logged-in user submits array of at least 6 times for which they are available to see the listing identified by $listing_id.
 	Sends an email to scheduler@cribspot.com with all necessary information
 	*/
 	public function RequestTourTimes()
@@ -62,11 +61,25 @@ class ToursController extends AppController
 			return;
 		}
 
-		/* Send email to scheduler@cribspot.com with all necessary information */
-		$this->_emailInformationToScheduler($listing_id, $response['success'], $note);
+		/* Get property manager and listing data */
+		$listing = $this->Listing->findByListingId($listing_id);
+		if (!array_key_exists('Rental', $listing) || !array_key_exists('User', $listing)){
+			/* Critical data is missing - don't schedule a tour */
+			$response = array('error' => "Something went wrong trying to schedule your tour... ".
+				"but we want to help! Chat with us by clicking the 'Chat with Cribspot!' button ".
+				"at the bottom left of your screen.");
+			$this->set('response', json_encode($response));
+			return;
+		}
+
+		$rental = $listing['Rental'];
+		$pm = $listing['User'];
+
+		/* Send email to property manager with all necessary information */
+		$this->_createMessageToPropertyManager($listing_id, $response['success'], $note);
 
 		/* Send email to student saying their times are pending and one will be assigned. */
-		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
+		//$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
 
 		/* Handle invitations to housemates */
 		$invitationsSuccess = array('success' => '');
@@ -80,7 +93,7 @@ class ToursController extends AppController
 			App::import('model', 'TourInvitation');
 			$TourInvitation = new TourInvitation();
 			$invitationsSuccess = $TourInvitation->InviteHousematesToTour($this->Auth->User('id'), $housemates, $tour_request);
-			$this->_emailInvitationToHousemates($listing_id, $housemates);
+			//$this->_emailInvitationToHousemates($listing_id, $housemates);
 		}
 
 		if (array_key_exists('error', $invitationsSuccess))
@@ -145,6 +158,69 @@ class ToursController extends AppController
 	private function _emailInformationToScheduler($listing_id, $times, $notes=null)
 	{
 		$from = 'donotreply@cribspot.com';
+		$to = 'scheduler@cribspot.com';
+		$id = 1;	
+		$subject = 'New Tour Request: ID: ' . $id;
+		$template = 'tours/tour_information_for_scheduler';
+		$sendAs = 'both';
+
+		/* Get user information to fill into email template */
+		$loggedInUser = $this->_getLoggedInUserBasicInformation();
+		/*$to = $this->User->GetEmailFromId($loggedInUser['id']);
+		if ($to === null)
+			return;*/
+
+		$title = $this->Listing->GetListingTitleFromId($listing_id);
+		$name = $title['name'];
+		$unit_description = $title['description'];
+		$subject = "Tour Request from ".$loggedInUser['first_name']." ".$loggedInUser['last_name']." (id: ".
+			$loggedInUser['id'].") "."about ".$name.' - '.$unit_description;
+		
+		$template = 'tours/tour_information_for_scheduler';
+		$sendAs = 'both';
+
+		/* Convert data from numeric constants to their string values */
+		if (!empty($loggedInUser['registered_university']))
+			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
+
+		if (!empty($loggedInUser['student_year']))
+			$loggedInUser['student_year'] = $this->User->year($loggedInUser['student_year']);
+
+		$pm = $this->Listing->GetPMByListingId($listing_id);
+		$pm_data = array(
+			'id' => $pm['id'],
+			'company_name' => $pm['company_name'],
+			'email'=>$pm['email'],
+			'phone'=>$pm['phone']
+		);
+
+		/* Process tour request times */
+		$tourTimes = $times['Tour'];
+		$tourData = array();
+		foreach ($tourTimes as $tourTime){
+			$confirm_link = 'https://www.cribspot.com/Tours/ConfirmTour?id='.$tourTime['id'].'&code='.$tourTime['confirmation_code'];
+			$time = $tourTime['date'];
+			array_push($tourData, array(
+				'confirm_link' => $confirm_link,
+				'time' => $time
+			));
+		}
+
+		$this->set('student_data', $loggedInUser);
+		$this->set('pm_data', $pm_data);
+		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
+		$this->set('tour_data', $tourData);
+		$this->set('notes', $notes);
+		$this->SendEmail($from, $to, $subject, $template, $sendAs);
+	}
+
+	/*
+	Emails all information necessary to coordinate tour scheduling to the Cribspot 
+	admin managing tours.
+	*/
+	private function _createMessageToPropertyManager($listing_id, $times, $notes=null)
+	{
+		$from = 'info@cribspot.com';
 		$to = 'scheduler@cribspot.com';
 		$id = 1;	
 		$subject = 'New Tour Request: ID: ' . $id;

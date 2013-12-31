@@ -311,7 +311,7 @@
         if($listing_id == null){
             $json = json_encode(array(
                 'success' => false,
-                'message' => "listing with id $listing_id does not exist",
+                'message' => "listing does not exist",
             ));
             $this->layout = 'ajax';
             $this->set('response', $json);
@@ -494,6 +494,13 @@
         $this->set('view_msg', $view_msg);
 
         $this->Email->send();
+    }
+
+    /*
+    Formulates the message text using the requested tour times and
+     */
+    public function emailPropertyManagerAboutTour($recipient, $from_user, $conversation)
+    {
 
     }
 }
