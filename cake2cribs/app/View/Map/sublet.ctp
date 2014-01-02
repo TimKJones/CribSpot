@@ -1,11 +1,13 @@
 <?php
 
 /* ----------------------- BOTH ----------------------------------- */
+if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/VerifyManager');
 	echo $this->Html->script('src/Rental');
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->script('src/Hotlist');
+}
 /* ------------------------ DIFFERENT --------------------------------------- */
 
 	echo $this->Html->css('DailyLogo');
