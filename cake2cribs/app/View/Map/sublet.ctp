@@ -5,6 +5,7 @@
 	echo $this->Html->script('src/Rental');
 	echo $this->Html->script('src/UserCache');
 	echo $this->Html->script('src/FeaturedListings');
+	echo $this->Html->script('src/Hotlist');
 /* ------------------------ DIFFERENT --------------------------------------- */
 
 	echo $this->Html->css('DailyLogo');
