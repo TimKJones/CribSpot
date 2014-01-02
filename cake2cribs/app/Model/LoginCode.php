@@ -5,20 +5,28 @@ class LoginCode extends AppModel {
 	public $primaryKey = 'id';
 	public $actsAs = array('Containable');
 
+	public $belongsTo = array(
+		'User' => array(
+            'className'    => 'User',
+            'foreignKey'   => 'user_id',
+            'dependent'    => true
+    ));
+
 	public $validate = array(
 		'id' => 'numeric',
 		'user_id' => 'numeric',
 		'code' => 'alphaNumeric',
+		'is_permanent' => 'boolean',
 		'created' => 'datetime',
 	);
 
-	public function Add($user_id, $code)
+	public function Add($user_id, $code, $is_permanent = 0)
 	{
-		CakeLog::write('addingcode', $user_id.' '.$code);
 		$this->save(array(
 			'LoginCode' => array(
 				'user_id' => $user_id,
-				'code' => $code
+				'code' => $code,
+				'is_permanent' => $is_permanent
 			)
 		));
 	}
@@ -40,14 +48,18 @@ class LoginCode extends AppModel {
 		if ($result === null || !array_key_exists('LoginCode', $result) || !array_key_exists('code', $result['LoginCode']))
 			return array('error' => '');
 
-		$now = date('Y-m-d G:i:s');
-		$created = strtotime($result['LoginCode']['created']);
-		$diff = abs(strtotime($now) - $created);
+		/* If this code is not permanent, make sure its created date is within 2 weeks of today */
+		if (!array_key_exists('is_permanent', $result['LoginCode']) || intval($result['LoginCode']['is_permanent']) !== 1){
+			/* login_code is date sensitive */
+			$now = date('Y-m-d G:i:s');
+			$created = strtotime($result['LoginCode']['created']);
+			$diff = abs(strtotime($now) - $created);
 
-		/* Invalidate code if older than 2 weeks */
-		if ($diff > (2 * 7 * 24 * 60 * 60)) {
-			$this->set('code', uniqid());
-			return array('error' => 'LOGIN_CODE_EXPIRED');
+			/* Invalidate code if older than 2 weeks */
+			if ($diff > (2 * 7 * 24 * 60 * 60)) {
+				$this->set('code', uniqid());
+				return array('error' => 'LOGIN_CODE_EXPIRED');
+			}
 		}
 
 		/* It's valid.*/

@@ -379,7 +379,7 @@ class UsersController extends AppController {
             return;
 
         $this->layout = 'ajax';
-        if(!$this->request->isPost()){
+        if(!$this->request->isPost()) {
             /* User cannot login without using a post request. Redirect to landing page */
             CakeLog::write('SECURITY', 'User called AjaxLogin without a post request');
             $this->set('response', '');
@@ -392,6 +392,7 @@ class UsersController extends AppController {
             CakeLog::write("LogInErrors", "Email was not given in AjaxLogin data.");
             $response = array('error' => 'Login failed. Contact help@cribspot.com if the error persists. Reference error code 38');
             $this->set('response', json_encode($response));
+            return;
         }
 
         if ($this->Auth->login()) {

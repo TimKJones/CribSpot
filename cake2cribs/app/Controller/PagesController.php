@@ -53,16 +53,65 @@ class PagesController extends AppController {
  * @return void
  */
 	public function beforeFilter(){
-	parent::beforeFilter();
-     $this->Auth->allow('display');
-     $this->Auth->allow('WelcomeEmail');
-     $this->Auth->allow('TermsOfUse');
-     $this->Auth->allow('PrivacyPolicy');
-     $this->Auth->allow('Disclaimer');
-     $this->Auth->allow('NewspaperTest');	
-     $this->Auth->allow('GetCribspotFeaturedListings');
-  	}
+    parent::beforeFilter();
+    $this->Auth->allow('PMAdmin');
+    $this->Auth->allow('display');
+    $this->Auth->allow('TermsOfUse');
+    $this->Auth->allow('PrivacyPolicy');
+    $this->Auth->allow('Disclaimer');
+    $this->Auth->allow('NewspaperTest');
+  }
   	
+    /*
+    TODO: exclude this action in robots.txt
+    PM Admin interface to login as any property manager.
+    Generates a login link for every PM
+    */
+    public function PMAdmin()
+    { 
+      /* Ensure this request is coming from localhost via ssh tunnel */
+      $ip_address = $this->request->clientIp();
+      if (strcmp($ip_address, '127.0.0.1'))
+        throw new NotFoundException();
+
+      /* Get login URLs for all property managers */
+      App::Import('model', 'User');
+      $User = new User();
+      $propertyManagers = $User->find('all', array(
+          'conditions' => array(
+              'User.user_type' => 1,
+              'LoginCode.is_permanent' => 1
+          ),
+          'contain' => array('LoginCode'),
+          'joins' => array(
+              array('table' => 'login_codes',
+                  'alias' => 'LoginCode',
+                  'type' => 'INNER',
+                  'conditions' => array(
+                      'LoginCode.user_id = User.id'
+                  ),
+              )   
+          )
+      ));
+      $loginLinks = array();
+      foreach ($propertyManagers as $pm){
+          if (!array_key_exists('User', $pm) || !array_key_exists('LoginCode', $pm) ||
+              !array_key_exists('id', $pm['User']) || !array_key_exists(0, $pm['LoginCode']) || 
+              !array_key_exists('code', $pm['LoginCode'][0]))
+              continue;
+
+          $nextLink = array(
+              'link' => 'https://www.cribspot.com/users/PMLogin?id='.$pm['User']['id'].'&code='.$pm['LoginCode'][0]['code'],
+              'company_name' => $pm['User']['company_name'],
+              'city' => $pm['User']['city'],
+              'state' => $pm['User']['state']
+          );
+          array_push($loginLinks, $nextLink);
+      }
+
+      $this->set('loginLinks', $loginLinks);
+    }
+
   	public function NewspaperTest()
   	{
   		
