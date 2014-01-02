@@ -85,12 +85,15 @@ class AppController extends Controller {
 
 	/* 
     Logs in a user given their local user object.
+    $viaAmdin tells whether this login is via a Cribspot admin as opposed to the user themself.
     */
-    protected function _login($user)
+    protected function _login($user, $viaAdmin=false)
     {
     	App::import('model', 'User');
     	$User = new User();
-        $User->UpdateLastLogin($user['User']['id']);
+    	if (!$viaAdmin)
+        	$User->UpdateLastLogin($user['User']['id']);
+
         $this->Auth->login($user['User']);
         return;
     }
