@@ -2,7 +2,8 @@
 class ToursController extends AppController 
 { 
 	public $helpers = array('Html');
-	public $uses = array('User', 'Listing', 'TourInvitation', 'Tour', 'UsersInTours', 'TourRequest', 'University');
+	public $uses = array('User', 'Listing', 'TourInvitation', 'Tour', 'UsersInTours', 'TourRequest', 'University', 
+		'Conversation', 'Message');
 	public $components= array('RequestHandler', 'Auth', 'Session', 'Cookie');
 
 	public function beforeFilter()
@@ -30,13 +31,14 @@ class ToursController extends AppController
 		if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
 			return;
 
-		if (!$this->Auth->loggedIn()){
+		if (!$this->Auth->loggedIn()) {
 			$response = array('error' => 'User not logged in');
 			$this->set('response', json_encode($response));
 			return;
 		}
 
-		$listing_id = $times = $note = null;
+		/* Extract GET parameters */
+		$listing_id = $times = $note = $housemates = null;
 		if ($this->request->data === null || !array_key_exists('listing_id', $this->request->data) ||
 			!array_key_exists('times', $this->request->data))
 			return;
@@ -46,9 +48,13 @@ class ToursController extends AppController
 		if (array_key_exists('notes', $this->request->data))
 			$note = $this->request->data['notes'];
 
+		if (array_key_exists('housemates', $this->request->data) && count($this->request->data['housemates']) > 0)
+			$housemates = $this->request->data['housemates'];
+
+
+		/* Request times in 30-minute blocks during the student's stated availablility window */
 		$processedTimes = array();
 		foreach ($times as &$time){
-			/* Request times in 30-minute blocks during the student's stated availablility window */
 			$date = strtotime($time['date']);
 			array_push($processedTimes, date('Y-m-d H:i:s', strtotime($time['date'])));
 			array_push($processedTimes, date('Y-m-d H:i:s',strtotime($time['date'])+30*60));
@@ -72,28 +78,25 @@ class ToursController extends AppController
 			return;
 		}
 
+		/* Send email to property manager with all necessary information */
 		$rental = $listing['Rental'];
 		$pm = $listing['User'];
-
-		/* Send email to property manager with all necessary information */
-		$this->_createMessageToPropertyManager($listing_id, $response['success'], $note);
+		$this->_createMessageToPropertyManager($housemates, $rental, $pm, $response['success'], $note);
 
 		/* Send email to student saying their times are pending and one will be assigned. */
-		//$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
+		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
 
 		/* Handle invitations to housemates */
 		$invitationsSuccess = array('success' => '');
-		if (array_key_exists('housemates', $this->request->data) && count($this->request->data['housemates']) > 0) {
-			$housemates = $this->request->data['housemates'];
+		if (!empty($housemates)) {
 			$tour_request = null;
-			CakeLog::write('tourrequestid', print_r($response, true));
 			if (array_key_exists('TourRequest', $response['success']))
 				$tour_request = $response['success']['TourRequest'];
 
 			App::import('model', 'TourInvitation');
 			$TourInvitation = new TourInvitation();
 			$invitationsSuccess = $TourInvitation->InviteHousematesToTour($this->Auth->User('id'), $housemates, $tour_request);
-			//$this->_emailInvitationToHousemates($listing_id, $housemates);
+			$this->_emailInvitationToHousemates($listing_id, $housemates);
 		}
 
 		if (array_key_exists('error', $invitationsSuccess))
@@ -102,25 +105,6 @@ class ToursController extends AppController
 			$response['success'] = '';
 
 		$this->set('response', json_encode($response));
-	}
-
-	/*
-	This is only called for a listing we don’t manage.
-	Logged-in user requests a tour for $listing_id, but doesn’t give any specific dates.
-	Emails property manager giving information about the student and the request, and gives instructions for how to respond to the student.
-	*/
-	public function RequestGenericTour($listing_id, $note=null)
-	{
-		$this->layout = 'ajax';
-		if(!$this->request->is('ajax') && !Configure::read('debug') > 0)
-			return;
-
-		$this->_emailGenericRequestToPM($listing_id, $note);
-
-		$response = array(
-			'SUCCESS' => true,
-		);
-		$this->set('response', $response);
 	}
 
 	/*
@@ -218,63 +202,32 @@ class ToursController extends AppController
 	Emails all information necessary to coordinate tour scheduling to the Cribspot 
 	admin managing tours.
 	*/
-	private function _createMessageToPropertyManager($listing_id, $times, $notes=null)
+	private function _createMessageToPropertyManager($housemates, $rental, $pm, $times, $notes=null)
 	{
-		$from = 'info@cribspot.com';
-		$to = 'scheduler@cribspot.com';
-		$id = 1;	
-		$subject = 'New Tour Request: ID: ' . $id;
-		$template = 'tours/tour_information_for_scheduler';
-		$sendAs = 'both';
-
-		/* Get user information to fill into email template */
+		/* Create message text from listing/tour request information */
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
-		/*$to = $this->User->GetEmailFromId($loggedInUser['id']);
-		if ($to === null)
-			return;*/
+		$messageBody = $this->_createTourRequestMessageText($rental, $loggedInUser);
 
-		$title = $this->Listing->GetListingTitleFromId($listing_id);
-		$name = $title['name'];
-		$unit_description = $title['description'];
-		$subject = "Tour Request from ".$loggedInUser['first_name']." ".$loggedInUser['last_name']." (id: ".
-			$loggedInUser['id'].") "."about ".$name.' - '.$unit_description;
-		
-		$template = 'tours/tour_information_for_scheduler';
-		$sendAs = 'both';
+		/* Get conversation ID (if exists; otherwise create one) */
+		CakeLog::write('_createMessageToPropertyManager', print_r($rental, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($loggedInUser, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($housemates, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($pm, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($times, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($notes, true));
+		CakeLog::write('_createMessageToPropertyManager', '------------------------------------');
 
-		/* Convert data from numeric constants to their string values */
-		if (!empty($loggedInUser['registered_university']))
-			$loggedInUser['registered_university'] = $this->University->getNameFromId($loggedInUser['registered_university']);
+		$conversation_id = $this->Conversation->GetConversationId($rental['listing_id'], $loggedInUser['id'], 
+			$pm['User']['id']);
 
-		if (!empty($loggedInUser['student_year']))
-			$loggedInUser['student_year'] = $this->User->year($loggedInUser['student_year']);
+		/* Create new row in messages table */
+		$this->Message->createMessage($messageBody, 
+                $conversation_id,
+                $loggedInUser
+        );
 
-		$pm = $this->Listing->GetPMByListingId($listing_id);
-		$pm_data = array(
-			'id' => $pm['id'],
-			'company_name' => $pm['company_name'],
-			'email'=>$pm['email'],
-			'phone'=>$pm['phone']
-		);
-
-		/* Process tour request times */
-		$tourTimes = $times['Tour'];
-		$tourData = array();
-		foreach ($tourTimes as $tourTime){
-			$confirm_link = 'https://www.cribspot.com/Tours/ConfirmTour?id='.$tourTime['id'].'&code='.$tourTime['confirmation_code'];
-			$time = $tourTime['date'];
-			array_push($tourData, array(
-				'confirm_link' => $confirm_link,
-				'time' => $time
-			));
-		}
-
-		$this->set('student_data', $loggedInUser);
-		$this->set('pm_data', $pm_data);
-		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
-		$this->set('tour_data', $tourData);
-		$this->set('notes', $notes);
-		$this->SendEmail($from, $to, $subject, $template, $sendAs);
+		/* Send email notification to property manager */
+		$this->_emailNotificationToPropertyManager($loggedInUser, $housemates, $messageBody, $pm);
 	}
 
 	/*
@@ -353,6 +306,18 @@ class ToursController extends AppController
 	}
 
 	/*
+	Sends email to property manager notifying them of tour request from student.
+	*/	
+	private function _emailNotificationToPropertyManager($student, $housemates, $messageBody, $pm)
+	{
+		CakeLog::write('_emailNotificationToPropertyManager', print_r($student, true));
+		CakeLog::write('_emailNotificationToPropertyManager', print_r($housemates, true));
+		CakeLog::write('_emailNotificationToPropertyManager', print_r($messageBody, true));
+		CakeLog::write('_emailNotificationToPropertyManager', print_r($pm, true));
+		CakeLog::write('_emailNotificationToPropertyManager', '-------------------');
+	}
+
+	/*
 	Emails PM telling them about the tour request.
 	$housemates is a list of objects of the form (name, email)
 	*/
@@ -402,7 +367,7 @@ class ToursController extends AppController
 			return;
 
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
-		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
+		$from = $loggedInUser['first_name'].' '.$loggedInUser['last_name'].'<info@cribspot.com>';
 		foreach ($housemates as $housemate){
 			if (!array_key_exists('email', $housemate))
 				continue;
@@ -438,9 +403,7 @@ class ToursController extends AppController
 		$recipients = $this->TourInvitation->GetPeopleForConfirmationEmail($tour_request['tour_request_id']);
 
 		/* add the user that initiated the request */
-		CakeLog::write('why', print_r($tour_request, true));
 		$tour_initiator = $this->User->get($tour_request['user_id']);
-		CakeLog::write('initatior', print_r($tour_initiator, true));
 		array_push($recipients, array(
 			'name' => $tour_initiator['User']['first_name'].' '.$tour_initiator['User']['last_name'],
 			'email' => $tour_initiator['User']['email']
@@ -488,11 +451,21 @@ class ToursController extends AppController
 			return null;
 
 		$user = $user['User'];
-CakeLog::write('usersdata', print_r($user, true));
 		$user['img_url'] = null;
 		if (!empty($user['facebook_id']))
 			$user['img_url'] = "https://graph.facebook.com/".$user['facebook_id']."/picture?width=80&height=80";
 		
 		return $user;
+	}
+
+	/*
+	Creates the message text for a tour request given a rental object and a user object
+	*/
+	private function _createTourRequestMessageText($rental, $student)
+	{
+		CakeLog::write('_createTourRequestMessageText', print_r($rental, true));
+		CakeLog::write('_createTourRequestMessageText', print_r($student, true));
+		CakeLog::write('_createTourRequestMessageText', '---------------------');
+		return 'I want to schedule a tour';
 	}
 }

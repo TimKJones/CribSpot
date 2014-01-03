@@ -160,6 +160,8 @@ class Conversation extends AppModel {
 
 	//Returns true/false whether the user is a participant in the conversation
 	public function isUserParticipant($conv_id, $user){
+		CakeLog::write('notparticipant', $conv_id);
+		CakeLog::write('notparticipant', print_r($user, true));;
 		$conditions = array(
 			'Conversation.conversation_id' => $conv_id,
 			"OR" => array(
@@ -168,6 +170,7 @@ class Conversation extends AppModel {
 			)
 		);
 		$count = $this->find('count', array('conditions'=>$conditions));
+		CakeLog::write('notparticipant', print_r($count, true));
 		return $count == 1;
 	}
 
@@ -224,7 +227,14 @@ class Conversation extends AppModel {
 		}
 	}
 
-
+	/*
+	Returns the conversation_id for conversation with given listing_id and participants.
+	If conversation doesn't exist, creates one and returns the id for the new conversation.
+	*/	
+	public function GetConversationId($listing_id, $participant1_id, $participant2_id)
+	{
+		return 5;
+	}
 }
 
 ?>
