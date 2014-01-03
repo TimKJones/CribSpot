@@ -7,7 +7,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 <div id="calendar_picker" class="schedule_page">
 	<h3>What are all the times you are able to visit?</h3>
-	<div id="at_least_three">(Choose at least 3)</div>
+	<div id="at_least_three">(Choose at least 6)</div>
 	<div class="date_selecter">
 		<div id="prev_date" class="date_changer disabled">
 			<i class="icon-chevron-sign-left"></i>
