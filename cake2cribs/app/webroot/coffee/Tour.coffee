@@ -3,7 +3,7 @@ Class is for scheduling and picking a time to tour
 ###
 class Tour
 	@DATE_RANGE_SIZE = 3
-	@current_offset = 1
+	@current_offset = 2
 	@MIN_DATES_SELECTED = 6
 
 	###
