@@ -437,7 +437,7 @@ class QuickRental
 				unit_description = "#{rental.beds}Br - #{rental.baths}Bath"
 			listing_row = """
 				<div class="rental_edit" data-listing-id="#{listing.GetId()}">
-					<span class="unit_description pull-left">#{unit_description}</span>
+					<a href="/listing/#{listing.GetId()}" target="_blank" class="unit_description pull-left">#{unit_description}</a>
 					<div class="btn-group pull-left" data-toggle="buttons-radio" data-object="listing" data-field="available" data-value="#{if listing.available then "1" else "0"}">
 						<button type="button" class="btn btn-available #{if listing.available then "active" else ""}" data-value="1">Available</button>
 						<button type="button" class="btn btn-leased #{if not listing.available then "active" else ""}" data-value="0">Leased</button>
