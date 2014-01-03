@@ -74,24 +74,27 @@
 
 
     SubletSave.SetupShareButtons = function() {
-      var _this = this;
+      var listing_id,
+        _this = this;
+      listing_id = this.div.find(".listing_id").val();
       this.div.find('.fb_sublet_share').click(function() {
         var images, marker, sublet;
-        sublet = A2Cribs.UserCache.Get("sublet", _this.div.find(".listing_id").val());
-        images = A2Cribs.UserCache.Get("image", _this.div.find(".listing_id").val());
+        sublet = A2Cribs.UserCache.Get("sublet", listing_id);
+        images = A2Cribs.UserCache.Get("image", listing_id);
         marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
         return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
       });
       this.div.find('.google_sublet_share').click(function() {
         var images, marker, sublet;
-        sublet = A2Cribs.UserCache.Get("sublet", _this.div.find(".listing_id").val());
-        images = A2Cribs.UserCache.Get("image", _this.div.find(".listing_id").val());
+        sublet = A2Cribs.UserCache.Get("sublet", listing_id);
+        images = A2Cribs.UserCache.Get("image", listing_id);
         marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
         return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
       });
-      return this.div.find('.twitter_sublet_share').click(function() {
-        return A2Cribs.ShareManager.ShareSubletOnTwitter(_this.div.find(".listing_id").val());
+      this.div.find('.twitter_sublet_share').click(function() {
+        return A2Cribs.ShareManager.ShareSubletOnTwitter(listing_id);
       });
+      return this.div.find('.sublet_link').attr("href", "/listing/" + listing_id);
     };
 
     /*
@@ -289,6 +292,7 @@
               });
               A2Cribs.UserCache.CacheData(response.listing);
               _this.div.find(".listing_id").val(response.listing.Listing.listing_id);
+              _this.SetupShareButtons();
               return A2Cribs.UIManager.Success("Your listing has been saved!");
             }
           }

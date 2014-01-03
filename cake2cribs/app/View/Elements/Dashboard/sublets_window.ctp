@@ -204,7 +204,7 @@
 		<div class="row-fluid">
 			<i class="icon-ok-sign pull-left"></i>
 			<h1 class="pull-left">Almost Done...</h1>
-			<h3 class="pull-left">You sublet has been successfully posted. Share it with your peers.</h3>
+			<h3 class="pull-left">You sublet has been successfully posted. Share it with your peers. <a href="#" class="sublet_link">View your listing on Cribspot</a></h3>
 		</div>
 
 		<div class="row-fluid">

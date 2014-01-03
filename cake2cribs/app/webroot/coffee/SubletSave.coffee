@@ -67,20 +67,23 @@ class SubletSave
 	when a sublet is posted
 	###
 	@SetupShareButtons: ->
+		listing_id = @div.find(".listing_id").val()
 		@div.find('.fb_sublet_share').click =>
-			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
-			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			sublet = A2Cribs.UserCache.Get "sublet", listing_id
+			images = A2Cribs.UserCache.Get "image", listing_id
 			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
 			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
 
 		@div.find('.google_sublet_share').click =>
-			sublet = A2Cribs.UserCache.Get "sublet", @div.find(".listing_id").val()
-			images = A2Cribs.UserCache.Get "image", @div.find(".listing_id").val()
+			sublet = A2Cribs.UserCache.Get "sublet", listing_id
+			images = A2Cribs.UserCache.Get "image", listing_id
 			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
 			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
 
 		@div.find('.twitter_sublet_share').click =>
-			A2Cribs.ShareManager.ShareSubletOnTwitter(@div.find(".listing_id").val())
+			A2Cribs.ShareManager.ShareSubletOnTwitter listing_id
+
+		@div.find('.sublet_link').attr "href", "/listing/#{listing_id}"
 
 	###
 	Photo Added
@@ -121,7 +124,7 @@ class SubletSave
 
 		# Check each btn-group for a value
 		@div.find(".btn-group").each (index, value) ->
-			if isValid and $(value).find(".active").size() is 0 
+			if isValid and $(value).find(".active").size() is 0
 				isValid = no
 				A2Cribs.UIManager.Error $(value).data("error-message")
 
@@ -279,6 +282,7 @@ class SubletSave
 
 						A2Cribs.UserCache.CacheData response.listing
 						@div.find(".listing_id").val response.listing.Listing.listing_id
+						@SetupShareButtons()
 						A2Cribs.UIManager.Success "Your listing has been saved!"
 		else
 			return new $.Deferred().reject()
