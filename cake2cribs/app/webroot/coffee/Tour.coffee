@@ -3,7 +3,8 @@ Class is for scheduling and picking a time to tour
 ###
 class Tour
 	@DATE_RANGE_SIZE = 3
-	@current_offset = 1
+	@current_offset = 2
+	@MIN_DATES_SELECTED = 6
 
 	###
 	Object map that contains the selected timeslots
@@ -106,16 +107,16 @@ class Tour
 					$("#prev_date").addClass "disabled"
 
 		$("#request_times_btn").click () =>
-			# Validate that there are at least three time slots
+			# Validate that there are at least @MIN_DATES_SELECTED time slots
 			# selected
-			if @TimeSlotCount() >= 3
+			if @TimeSlotCount() >= @MIN_DATES_SELECTED
 				$("#calendar_picker").hide()
 				$("#schedule_info").show()
 				A2Cribs.MixPanel.Event "Request My Times",
 					success: true
 			else
 				A2Cribs.UIManager.CloseLogs()
-				A2Cribs.UIManager.Error "Please select at least three time slots that work for you!"
+				A2Cribs.UIManager.Error "Please select at least #{@MIN_DATES_SELECTED} time slots that work for you!"
 				A2Cribs.MixPanel.Event "Request My Times",
 					success: false
 
@@ -128,7 +129,7 @@ class Tour
 				re = /\S+@\S+\.\S+/
 				if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()
 					$(event.currentTarget.parentElement).addClass "completed_roommate"
-					return 
+					return
 			$(event.currentTarget.parentElement).removeClass "completed_roommate"
 
 		$("#back_to_timeslots").click ->
@@ -164,7 +165,7 @@ class Tour
 			$.ajax
 				url: myBaseUrl + "Users/SendPhoneVerificationCode"
 				type: 'POST'
-				data: 
+				data:
 					phone: phone
 				success: ->
 					A2Cribs.MixPanel.Event "Send Verify Text",
@@ -260,7 +261,7 @@ class Tour
 	###
 	Add Time Slot
 	Adds timeslot to selected timeslot map
-	###					
+	###
 	@AddTimeSlot: (offset_date, time_slot) ->
 		hash = "#{offset_date}-#{time_slot}"
 		today = new Date()
@@ -346,9 +347,9 @@ class Tour
 
 	###
 	Set Dates
-	Load the set of three days
+	Load the set of @DATE_RANGE_SIZE days
 	###
-	@SetDates: (offset_date = 0) ->
+	@SetDates: (offset_date = 1) ->
 		date_range_array = []
 		calendar_table_dates_html = "<td></td>"
 		for i in [0..@DATE_RANGE_SIZE - 1]

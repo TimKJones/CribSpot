@@ -15,7 +15,9 @@ Class is for scheduling and picking a time to tour
 
     Tour.DATE_RANGE_SIZE = 3;
 
-    Tour.current_offset = 1;
+    Tour.current_offset = 2;
+
+    Tour.MIN_DATES_SELECTED = 6;
 
     /*
     	Object map that contains the selected timeslots
@@ -131,7 +133,7 @@ Class is for scheduling and picking a time to tour
         }
       });
       return $("#request_times_btn").click(function() {
-        if (_this.TimeSlotCount() >= 3) {
+        if (_this.TimeSlotCount() >= _this.MIN_DATES_SELECTED) {
           $("#calendar_picker").hide();
           $("#schedule_info").show();
           return A2Cribs.MixPanel.Event("Request My Times", {
@@ -139,7 +141,7 @@ Class is for scheduling and picking a time to tour
           });
         } else {
           A2Cribs.UIManager.CloseLogs();
-          A2Cribs.UIManager.Error("Please select at least three time slots that work for you!");
+          A2Cribs.UIManager.Error("Please select at least " + _this.MIN_DATES_SELECTED + " time slots that work for you!");
           return A2Cribs.MixPanel.Event("Request My Times", {
             success: false
           });
@@ -428,14 +430,14 @@ Class is for scheduling and picking a time to tour
 
     /*
     	Set Dates
-    	Load the set of three days
+    	Load the set of @DATE_RANGE_SIZE days
     */
 
 
     Tour.SetDates = function(offset_date) {
       var calendar_table_dates_html, date_range_array, date_range_string, i, _i, _ref;
       if (offset_date == null) {
-        offset_date = 0;
+        offset_date = 1;
       }
       date_range_array = [];
       calendar_table_dates_html = "<td></td>";
