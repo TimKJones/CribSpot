@@ -471,6 +471,13 @@ class ToursController extends AppController
 		CakeLog::write('_createTourRequestMessageText', print_r($rental, true));
 		CakeLog::write('_createTourRequestMessageText', print_r($student, true));
 		CakeLog::write('_createTourRequestMessageText', '---------------------');
+/*
+I'm interested in scheduling a tour for your property.
+
+I'm available the following times:
+
+You can contact me by calling me at [phone_number], or by clicking here to send me a message on Cribspot.
+*/
 		return 'I want to schedule a tour';
 	}
 }
