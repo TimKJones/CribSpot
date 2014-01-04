@@ -452,6 +452,16 @@
         $set_available_url = $availability_base_url.'1';
         $set_unavailable_url = $availability_base_url.'0';
 
+        /* If this is a rental, find beds and baths and set them for email */
+        $beds = $baths = null;
+        if (array_key_exists('Rental', $listing)){
+            if (!empty($listing['Rental']['baths'])
+                $baths = $listing['Rental']['baths'];
+
+            if (!empty($listing['Rental']['beds'])
+                $beds = $listing['Rental']['beds'];
+        }
+
         $this->set('to_property_manager', $is_property_manager);
         $this->set('from_name', $from_name);
         $this->set('from_university', $from_university);
@@ -463,6 +473,9 @@
         $this->set('message_text', $message_text);
         $this->set('conv_id', $conversation['Conversation']['conversation_id']);
         $this->set('listing_url', 'https://www.cribspot.com/listing/'.$conversation['Conversation']['listing_id']);
+        $this->set('listing_id', $conversation['Conversation']['listing_id']);
+        $this->set('beds', $beds);
+        $this->set('baths', $baths);
         $unit_description = null;
         if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']) && 
             array_key_exists('unit_style_description', $listing['Rental']) && !empty($listing['Rental']['unit_style_options']) &&
