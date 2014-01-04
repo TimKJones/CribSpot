@@ -392,7 +392,7 @@ LargeBubble class
     LargeBubble.setFullPageSchedule = function(div_name, listing_id) {
       var listing;
       listing = A2Cribs.UserCache.Get("listing", listing_id);
-      if ((listing != null ? listing.available : void 0) === true) {
+      if ((listing != null ? listing.available : void 0) === true && listing.GetListingType() === "Rental") {
         $("." + div_name).show();
       } else {
         $("." + div_name).hide();
