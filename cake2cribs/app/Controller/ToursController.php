@@ -69,7 +69,8 @@ class ToursController extends AppController
 
 		/* Get property manager and listing data */
 		$listing = $this->Listing->findByListingId($listing_id);
-		if (!array_key_exists('Rental', $listing) || !array_key_exists('User', $listing)){
+		if (!array_key_exists('Rental', $listing) || !array_key_exists('User', $listing) ||
+			!array_key_exists('Marker', $listing)) {
 			/* Critical data is missing - don't schedule a tour */
 			$response = array('error' => "Something went wrong trying to schedule your tour... ".
 				"but we want to help! Chat with us by clicking the 'Chat with Cribspot!' button ".
@@ -79,12 +80,11 @@ class ToursController extends AppController
 		}
 
 		/* Send email to property manager with all necessary information */
-		$rental = $listing['Rental'];
 		$pm = $listing['User'];
-		$this->_createMessageToPropertyManager($housemates, $rental, $pm, $response['success'], $note);
+		$this->_createMessageToPropertyManager($housemates, $listing, $pm, $response['success'], $note);
 
 		/* Send email to student saying their times are pending and one will be assigned. */
-		$this->_emailStudentConfirmation($listing_id, $response['success'], $note);
+		$this->_emailStudentConfirmation($listing_id, $response['success'], $pm, $note);
 
 		/* Handle invitations to housemates */
 		$invitationsSuccess = array('success' => '');
@@ -202,14 +202,14 @@ class ToursController extends AppController
 	Emails all information necessary to coordinate tour scheduling to the Cribspot 
 	admin managing tours.
 	*/
-	private function _createMessageToPropertyManager($housemates, $rental, $pm, $times, $notes=null)
+	private function _createMessageToPropertyManager($housemates, $listing, $pm, $times, $notes=null)
 	{
 		/* Create message text from listing/tour request information */
 		$loggedInUser = $this->_getLoggedInUserBasicInformation();
 		$messageBody = $this->_createTourRequestMessageText($rental, $loggedInUser);
 
 		/* Get conversation ID (if exists; otherwise create one) */
-		CakeLog::write('_createMessageToPropertyManager', print_r($rental, true));
+		CakeLog::write('_createMessageToPropertyManager', print_r($listing, true));
 		CakeLog::write('_createMessageToPropertyManager', print_r($loggedInUser, true));
 		CakeLog::write('_createMessageToPropertyManager', print_r($housemates, true));
 		CakeLog::write('_createMessageToPropertyManager', print_r($pm, true));
@@ -217,8 +217,12 @@ class ToursController extends AppController
 		CakeLog::write('_createMessageToPropertyManager', print_r($notes, true));
 		CakeLog::write('_createMessageToPropertyManager', '------------------------------------');
 
-		$conversation_id = $this->Conversation->GetConversationId($rental['listing_id'], $loggedInUser['id'], 
-			$pm['User']['id']);
+		$title = $listing['Marker']['street_address'];
+		if (!empty($listing['Marker']['alternate_name']))
+			$title = $listing['Marker']['alternate_name'];
+
+		$conversation_id = $this->Conversation->GetConversationId($title, $listing['Rental']['listing_id'], $loggedInUser['id'], 
+			$pm['id']);
 
 		/* Create new row in messages table */
 		$this->Message->createMessage($messageBody, 
@@ -233,12 +237,12 @@ class ToursController extends AppController
 	/*
 	Emails student with information about their submitted request and next steps to expect.
 	*/
-	private function _emailStudentConfirmation($listing_id, $times, $notes=null)
+	private function _emailStudentConfirmation($listing_id, $times, $pm, $notes=null)
 	{
 		if (!$this->Auth->loggedIn() || $listing_id === null || $times === null)
 			return;
 
-		$from = 'Cribspot Tour Requests<scheduler@cribspot.com>';
+		$from = 'Cribspot Tour Requests<info@cribspot.com>';
 		$to = $this->User->GetEmailFromId($this->Auth->User('id'));
 		if ($to === null)
 			return;
@@ -297,6 +301,7 @@ class ToursController extends AppController
 		}
 
 		$this->set('student_data', $loggedInUser);
+		$this->set('propertyManager', $pm);
 		$this->set('listing_url', 'https://www.cribspot.com/listing/'.$listing_id);
 		$this->set('tour_data', $tourData);
 		$this->set('building_name', $title['name']);

@@ -477,7 +477,7 @@
 <span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;">Hi <?php echo $student_data['first_name']; ?>,</span><br>
 <br>
 <div>
-	<font face="arial, helvetica neue, helvetica, sans-serif"><span style="font-size: 14px;">We've received your request to schedule a tour for <?php echo $building_name;?>. We'll be in touch with you shortly after confirming the time with the property manager. Here is a list of the times you've marked as available:</span></font><br>
+	<font face="arial, helvetica neue, helvetica, sans-serif"><span style="font-size: 14px;">We've sent your request to schedule a tour for <?php echo $building_name;?> to the property manager, <?= $propertyManager['company_name'] ?>. They should contact you within 24-48 hours. Here is a list of the times you've marked as available:</span></font><br>
 	<br>
 	<?php
 	foreach ($tour_data as $tour){ ?>

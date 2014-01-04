@@ -23,17 +23,13 @@ class Message extends AppModel {
 	);
 
 	public function createMessage($body, $conv_id, $user){
-		CakeLog::write("createmessage", print_r($body, true));
-		CakeLog::write("createmessage", print_r($conv_id, true));
-		CakeLog::write("createmessage", print_r($user, true));
-		CakeLog::write("createmessage", '------------------------------');
-CakeLog::write("debug", '0');
 		//See if the user is actually a participant in the conversation
+CakeLog::write('createmessage', print_r($conv_id, true));
+CakeLog::write('createmessage', print_r($user, true));
 		if(!$this->Conversation->isUserParticipant($conv_id, $user)){
 			echo "User not a participant";
 			return -1;
 		}
-CakeLog::write("debug", '1');
 		$message_data = array(
 			'Message' => array(
 				'conversation_id' => $conv_id,
@@ -41,26 +37,25 @@ CakeLog::write("debug", '1');
 				'body' => $body
 			)
 		);
-CakeLog::write("debug", '2');
+CakeLog::write('createmessage', '2');
 		if(!$this->save($message_data)){
 			$this->logError($user['id'], 56, $message_data);
 			die(debug($this->validationErrors));
 		}
 		//Get the full data for the message
 		$message = $this->read();
+CakeLog::write('createmessage', '3');
 		// Update the conversation with the last message id
 		$conversation = $this->Conversation->find('first',  array(
 		    'conditions' => array('Conversation.conversation_id' => $conv_id)
 		    )
 		);
+CakeLog::write('createmessage', '4');
 		$this->Conversation->addNewMessage($conversation['Conversation'], $this->id);
-CakeLog::write("debug", '3');
 		//Create an unread message notification for this message
 		$target_user = $this->Conversation->getOtherParticipant($conversation, $user);
-CakeLog::write("debug", '4');
 		$unreadmessages = ClassRegistry::init('UnreadMessage');
 		$unreadmessages->add($message, $target_user);
-CakeLog::write("debug", '5');
 		return $this->id;
 	}
 

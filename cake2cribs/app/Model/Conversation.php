@@ -160,8 +160,6 @@ class Conversation extends AppModel {
 
 	//Returns true/false whether the user is a participant in the conversation
 	public function isUserParticipant($conv_id, $user){
-		CakeLog::write('notparticipant', $conv_id);
-		CakeLog::write('notparticipant', print_r($user, true));;
 		$conditions = array(
 			'Conversation.conversation_id' => $conv_id,
 			"OR" => array(
@@ -170,7 +168,6 @@ class Conversation extends AppModel {
 			)
 		);
 		$count = $this->find('count', array('conditions'=>$conditions));
-		CakeLog::write('notparticipant', print_r($count, true));
 		return $count == 1;
 	}
 
@@ -231,9 +228,29 @@ class Conversation extends AppModel {
 	Returns the conversation_id for conversation with given listing_id and participants.
 	If conversation doesn't exist, creates one and returns the id for the new conversation.
 	*/	
-	public function GetConversationId($listing_id, $participant1_id, $participant2_id)
+	public function GetConversationId($title, $listing_id, $participant1_id, $participant2_id)
 	{
-		return 5;
+		/* Look for an existing conversation about $listing_id between these participants */
+        $conversation = $this->find('first', array( 
+        	'conditions' => array(
+        		'Conversation.listing_id'=>$listing_id,
+	            'Conversation.participant1_id'=>$participant1_id,
+	            'Conversation.participant2_id'=>$participant2_id
+        	),
+        	'contain' => array()
+        ));
+        if(array_key_exists('Conversation', $conversation) && array_key_exists('conversation_id', $conversation['Conversation']))
+        	return $conversation['Conversation']['conversation_id'];
+        else {
+            // Conversation doesn't exist so we need to create it.
+			$newConversation = array();
+            $newConversation['listing_id'] = $listing_id;
+            $newConversation['participant1_id'] = $participant1_id;
+            $newConversation['participant2_id'] = $participant2_id;
+            $newConversation['title'] = $title;
+            $conversation_id = $this->createConversation($newConversation);
+            return $conversation_id;
+        }
 	}
 }
 
