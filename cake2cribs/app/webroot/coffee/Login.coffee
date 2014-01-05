@@ -110,6 +110,8 @@ class A2Cribs.Login
 					$(".modal").modal('hide')
 					@logged_in = true
 
+					$(document).trigger "track_event", ["Login", "Logged in", "facebook", data.success]
+
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
@@ -381,8 +383,7 @@ class A2Cribs.Login
 						A2Cribs.UIManager.Error data.error
 					return @_login_deferred.reject()
 				else
-					A2Cribs.MixPanel.AuthEvent 'login',
-						'source':'cribspot'
+					$(document).trigger "track_event", ["Login", "Logged in", "email", data.success]
 					$(".modal").modal('hide')
 					@PopulateHeader data.data
 					@PopulateFavorites data.data?.favorites
@@ -397,7 +398,7 @@ class A2Cribs.Login
 		if canceled
 			return
 			
-		$.ajax 
+		$.ajax
 			url: myBaseUrl + "users/ResendConfirmationEmail"
 			type:"POST"
 			success:(response) ->
@@ -464,17 +465,8 @@ class A2Cribs.Login
 						email = $("#student_email").val()
 					else
 						email = $("#pm_email").val()
-					A2Cribs.MixPanel.AuthEvent 'signup',
-						'user_id':response.success
-						'user_type': user_type
-						'email':email
-						'source':'cribspot'
-						'user_data':request_data
-					mixpanel.people.set
-						'user_id':response.success
-						'user_type': user_type
-						'email':email
-						'user_data':request_data
+					$(document).trigger "track_event", ["Login", "Logged in", "email", response.success]
+
 					@PopulateHeader data.data
 					@PopulateFavorites data.data?.favorites
 					@logged_in = yes

@@ -9,14 +9,10 @@ class A2Cribs.FullListing
 					$("#scheduling_tour_tab").click()
 				else
 					$(event.currentTarget).tab('show')
-					A2Cribs.MixPanel.Event "Listing Click", 
-						"display type": "full page schedule tour"
-						"listing_id": listing_id
+					$(document).trigger "track_event", ["Full Page", "Schedule Tour Clicked", "", listing_id]
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to schedule a tour."
-				A2Cribs.MixPanel.Event "login required",
-						"listing_id": @listing_id
-						action: "full page schedule tour"
+				$(document).trigger "track_event", ["Login", "Login required", "Schedule Tour", listing_id]
 			event.preventDefault()
 
 		@div.find(".image_preview").click (event) =>
@@ -42,16 +38,12 @@ class A2Cribs.FullListing
 
 		@div.find("#contact_owner").click () =>
 			if A2Cribs.Login?.logged_in is yes
-				A2Cribs.MixPanel.Event "Listing Click", 
-					"display type": "full page contact user"
-					"listing_id": listing_id
+				$(document).trigger "track_event", ["Full Page", "Contact Owner Clicked", "", listing_id]
 				@div.find("#contact_owner").hide()
 				@div.find("#contact_message").slideDown()
 			else
 				$("#signup_modal").modal("show").find(".signup_message").text "Please sign in to contact the owner."
-				A2Cribs.MixPanel.Event "login required",
-						"listing_id": @listing_id
-						action: "full page contact user"
+				$(document).trigger "track_event", ["Login", "Login required", "Contact Owner", listing_id]
 
 		@div.find("#message_cancel").click () =>
 			@div.find("#contact_message").slideUp 'fast', () =>
@@ -59,6 +51,7 @@ class A2Cribs.FullListing
 
 		@div.find("#message_send").click () =>
 			$("#message_send").button("loading")
+			$(document).trigger "track_event", ["Message", "Sending Message", "", listing_id]
 			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "Messages/messageSublet"
@@ -72,13 +65,13 @@ class A2Cribs.FullListing
 					if data.success
 						$("#message_area").val ""
 						A2Cribs.UIManager.Success "Message Sent!"
-						A2Cribs.MixPanel.Event "message sent",
-							"listing_id": @listing_id
+						$(document).trigger "track_event", ["Message", "Message Sent", "", listing_id]
 					else
 						if data.message?
 							A2Cribs.UIManager.Error data.message
 						else
 							A2Cribs.UIManager.Error "Message Failed! Please Try Again."
+						$(document).trigger "track_event", ["Message", "Message Failed", "", listing_id]
 					$("#message_send").button "reset"
 
 				complete: ->
