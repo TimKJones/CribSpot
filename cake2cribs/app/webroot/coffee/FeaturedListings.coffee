@@ -4,7 +4,6 @@ class A2Cribs.FeaturedListings
 
     @resizeHandler: ->
         h = $(window).height() - $('#listings-list').offset().top - $('.legal-bar').height()
-        # console.log $(window).height(), $('#listings-list').offset().top, $('.legal-bar').height(), h
         $('#listings-list').height(h)
 
         w = $(window).width()
@@ -113,10 +112,6 @@ class A2Cribs.FeaturedListings
                 listingObject.Marker = marker
                 listingObject.ListingObject = listing_object
                 listings.push listingObject
-            else
-                console.log listing
-                console.log marker
-                console.log listing_object
         return listings
 
     @BuildListingIds: (flIds) ->
@@ -412,7 +407,6 @@ class A2Cribs.FeaturedListings
                     title: 'Share this listing'
                 .click (e) -> 
                     e.preventDefault()
-                    console.log('listing_item share click!')
                     $(this).popover('show')
                     # $('.popover input').typeahead(A2Cribs.HotlistObj.sources)
                     $('.popover a').on 'click', =>
