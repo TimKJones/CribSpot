@@ -61,6 +61,21 @@
   .full_page {
     margin-top: 60px;
   }
+  #return-list {
+    display: none;
+  }
+  #return-map {
+    display: inherit;
+  }
+}
+
+@media (max-width: 979px) {
+  #return-map {
+    display: none;
+  }
+  #return-list {
+    display: inherit;
+  }
 }
 
 @media (max-width: 479px) {
@@ -70,7 +85,7 @@
       width: (100% / 3);
       text-align: center;
     }
-    li:first-child {
+    li#return-list {
       width: 100%;
       display: block;
       float: none;

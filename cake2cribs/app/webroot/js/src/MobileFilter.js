@@ -28,7 +28,7 @@
         school_name = _this.div.data('university-name');
         switch ($(e.target).val()) {
           case "Rentals":
-            return window.location.href = "/rentals/" + school_name;
+            return window.location.href = "/rental/" + school_name;
           case "Sublets":
             return window.location.href = "/sublet/" + school_name;
         }

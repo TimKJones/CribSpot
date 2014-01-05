@@ -12,7 +12,7 @@ class A2Cribs.MobileFilter extends A2Cribs.FilterManager
 			school_name = @div.data('university-name')
 			switch $(e.target).val()
 				when "Rentals"
-					window.location.href = "/rentals/#{school_name}"
+					window.location.href = "/rental/#{school_name}"
 				when "Sublets"
 					window.location.href = "/sublet/#{school_name}"
 

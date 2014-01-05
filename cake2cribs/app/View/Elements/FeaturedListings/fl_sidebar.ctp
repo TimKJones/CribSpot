@@ -18,6 +18,7 @@ echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline'
             <div id = 'listings-list' class = '<?= (strpos($university['name'], 'Ann') !== false || strpos($university['name'], 'Bloom') !== false) ? 'has_featured_pm' : '' ;?>'>
                 <div id='featured-listings'></div>
                 <div id='ran-listings'></div>
+                <div id='loading-spinner'><img src="/img/loading.gif"></img></div>
             </div>
         </div>
         <?php if (strpos($university['name'], 'Ann') !== false) { ?>

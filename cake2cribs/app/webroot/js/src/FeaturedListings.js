@@ -102,28 +102,9 @@
     };
 
     FeaturedListings.SetupListingItemEvents = function() {
-      var $el,
-        _this = this;
+      var $el;
       $el = $('.fl-sb-item');
       $el.unbind();
-      $el.click(function(event) {
-        var listing, listing_id, marker, markerPosition, marker_id;
-        marker_id = parseInt($(event.currentTarget).attr('marker_id'));
-        listing_id = parseInt($(event.currentTarget).attr('listing_id'));
-        marker = A2Cribs.UserCache.Get('marker', marker_id);
-        listing = A2Cribs.UserCache.Get('listing', listing_id);
-        A2Cribs.Map.GMap.setZoom(16);
-        $("#map_region").trigger("marker_clicked", [marker]);
-        A2Cribs.MixPanel.Click(listing, 'sidebar listing');
-        markerPosition = marker.GMarker.getPosition();
-        A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
-        if ($(event.currentTarget).hasClass('expanded')) {
-          return $(event.currentTarget).removeClass('expanded');
-        } else {
-          $('.fl-sb-item.expanded').removeClass('expanded');
-          return $(event.currentTarget).addClass('expanded');
-        }
-      });
       return $el.draggable({
         revert: true,
         opacity: 0.7,
@@ -216,9 +197,18 @@
     };
 
     FeaturedListings.SetupScrollEvents = function() {
-      return $(window).scroll(function() {
-        if ($(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()) {
-          return A2Cribs.FeaturedListings.LoadMoreListings();
+      $(window).scroll(function() {
+        if (!$('.fl-sb-item').hasClass('no-listings')) {
+          if ($(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()) {
+            return A2Cribs.FeaturedListings.LoadMoreListings();
+          }
+        }
+      });
+      return $('#listings-list').scroll(function() {
+        if (!$('.fl-sb-item').hasClass('no-listings')) {
+          if ($(this).scrollTop() + $(this).innerHeight() >= $('#ran-listings').height()) {
+            return A2Cribs.FeaturedListings.LoadMoreListings();
+          }
         }
       });
     };
@@ -226,6 +216,7 @@
     FeaturedListings.LoadMoreListings = function() {
       var _this = this;
       this.GetSidebarImagePathsDeferred = new $.Deferred();
+      $('#loading-spinner').show();
       if ((this.current_index != null) && (this.listing_ids != null)) {
         this.listingObjects = this.GetListingObjects(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
         this.GetSidebarImagePaths(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
@@ -236,18 +227,15 @@
       }
       this.SetupListingItemEvents();
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
-        var image, _i, _len, _results;
+        var image, _i, _len;
         images = JSON.parse(images);
-        _results = [];
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
-          } else {
-            _results.push(void 0);
+            $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
           }
         }
-        return _results;
+        return $('#loading-spinner').hide();
       });
     };
 
@@ -263,18 +251,15 @@
         this.SetupListingItemEvents();
       }
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
-        var image, _i, _len, _results;
+        var image, _i, _len;
         images = JSON.parse(images);
-        _results = [];
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
-          } else {
-            _results.push(void 0);
+            $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
           }
         }
-        return _results;
+        return $('#loading-spinner').hide();
       });
     };
 
@@ -301,12 +286,35 @@
           _this.sidebar.addListings(_this.GetListingObjects(sidebar_listing_ids.slice(0, 25)), 'ran', true);
           _this.listing_ids = sidebar_listing_ids;
           _this.GetSidebarImagePaths(sidebar_listing_ids.slice(0, 25));
-          return _this.SetupListingItemEvents();
+          _this.SetupListingItemEvents();
+          return $('#listings-list').on('click', '.fl-sb-item', function(event) {
+            var $map, listing, listing_id, marker, markerPosition, marker_id;
+            $map = $('#map_region');
+            if ($map.is(':visible')) {
+              marker_id = parseInt($(this).attr('marker_id'));
+              listing_id = parseInt($(this).attr('listing_id'));
+              marker = A2Cribs.UserCache.Get('marker', marker_id);
+              listing = A2Cribs.UserCache.Get('listing', listing_id);
+              markerPosition = marker.GMarker.getPosition();
+              A2Cribs.Map.GMap.setZoom(16);
+              A2Cribs.MixPanel.Click(listing, 'sidebar listing');
+              A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
+              $map.trigger("marker_clicked", [marker]);
+            }
+            if ($(this).hasClass('expanded')) {
+              return $(this).removeClass('expanded');
+            } else {
+              $(this).addClass('expanded');
+              return setTimeout(function() {
+                return $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded');
+              }, 200);
+            }
+          });
         } else {
           return _this.listing_ids = [];
         }
       });
-      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+      $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
         var image, _i, _len, _results;
         images = JSON.parse(images);
         _results = [];
@@ -320,6 +328,7 @@
         }
         return _results;
       });
+      return $('#loading-spinner').hide();
     };
 
     FeaturedListings.GetSidebarImagePaths = function(listing_ids) {
@@ -368,6 +377,7 @@
       function Sidebar(SidebarUI) {
         this.SidebarUI = SidebarUI;
         this.ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML);
+        this.EmptyListingsTemplate = _.template(A2Cribs.FeaturedListings.EmptyListingsHTML);
       }
 
       Sidebar.prototype.addListings = function(listings, list, clear) {
@@ -375,10 +385,13 @@
         if (clear == null) {
           clear = false;
         }
-        if (listings === null) {
-          return;
+        if (listings === null || listings.length === 0) {
+          list_html = $(this.EmptyListingsTemplate({
+            clear: clear
+          }));
+        } else {
+          list_html = this.getListHtml(listings);
         }
-        list_html = this.getListHtml(listings);
         if (clear) {
           return this.SidebarUI.find("#" + list + "-listings").html(list_html);
         } else {
@@ -455,7 +468,17 @@
             name: name,
             img: primary_image_path,
             listing_id: listing.Listing.listing_id,
-            marker_id: listing.Marker.marker_id
+            marker_id: listing.Marker.marker_id,
+            available: (function() {
+              if (typeof listing.Listing.available === 'undefined') {
+                return 'unknown';
+              }
+              if (listing.Listing.available) {
+                return 'available';
+              } else {
+                return 'unavailable';
+              }
+            })()
           };
           listing_item = $(this.ListItemTemplate(data));
           A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
@@ -492,7 +515,9 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <div class='listing-content'>\n        <div class = 'img-wrapper' style='background-image:url(\"<%=img%>\")'> </div>\n        <div class = 'info-wrapper'>\n            <div class = 'info-row'>\n                <span class = 'rent price-text'><%= \"$\" + rent %></span>\n                <span class = 'divider'>|</span>\n                <span class = 'beds'><%= beds %> </span>\n                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n                <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n            </div>\n            <div class = 'info-row'>\n                <span class = 'building-type'><%= building_type %></span>\n                <span class = 'divider'>|</span>\n                <% if (typeof(end_date) != \"undefined\") { %>\n                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n                <% } else { %>\n                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n                <% } %>\n            </div>\n            <div class = 'info-row'>\n                <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n            </div>\n        </div>   \n    </div>\n    <div class='listing-actions'>\n        <ul class='action-row'>\n            <li class='hotlist-share'><a href='#'><i class=\"action-icon icon-heart favorite_listing\" data-listing-id='<%=listing_id%>'></i></a></li>\n            <li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class=\"action-icon icon-share\"></i></a></li>\n        </ul>\n    </div>\n</div>";
+    FeaturedListings.EmptyListingsHTML = "<div class='fl-sb-item no-listings'>\n    <% if (clear) { %>\n        <span class='no-listings-text'>No listings found for these filter settings. Try adjusting the filter for more results.</span>\n    <% } else { %>\n        <span class='no-listings-text'>No more listings found for these filter settings.</span>\n    <% } %>\n</div>";
+
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <div class='listing-content'>\n        <div class = 'img-wrapper' style='background-image:url(\"<%=img%>\")'> </div>\n        <div class = 'info-wrapper'>\n            <div class = 'info-row'>\n                <span class = 'rent price-text'><%= \"$\" + rent %></span>\n                <span class = 'divider'>|</span>\n                <span class = 'beds'><%= beds %> </span>\n                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n                <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n            </div>\n            <div class = 'info-row'>\n                <span class = 'building-type'><%= building_type %></span>\n                <span class = 'divider'>|</span>\n                <% if (typeof(end_date) != \"undefined\") { %>\n                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n                <% } else { %>\n                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> mo.</span>\n                <% } %>\n            </div>\n            <div class = 'info-row'>\n                <i class = 'icon-map-marker <%= available %>'></i><span class = 'name'><%=name%></span>\n            </div>\n        </div>   \n    </div>\n    <div class='listing-actions'>\n        <ul class='action-row'>\n            <li class='hotlist-share'><a href='#'><i class=\"action-icon icon-heart favorite_listing\" data-listing-id='<%=listing_id%>'></i></a></li>\n            <li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class=\"action-icon icon-share\"></i></a></li>\n        </ul>\n    </div>\n</div>";
 
     return FeaturedListings;
 

@@ -3,8 +3,6 @@
     width: 100%;
 }
 
-.hotlist
-
 #FLDash{
     position: relative;
     overflow: auto;
@@ -579,6 +577,13 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     }
 }
 
+#loading-spinner {
+    img {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
 .fl-sb-item{
 
     // width: 327px;
@@ -598,8 +603,27 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     box-sizing: border-box;
     height: 80px;
 
+    &.no-listings {
+        text-align: center;
+        padding: 10px;
+        background: transparent;
+        span {
+            font-size: 18px;
+        }
+    }
+
     &.ui-state-disabled {
         opacity: 1 !important;
+    }
+
+    .icon-map-marker {
+        font-size: 16px; 
+        &.available {
+            color: #9FC66E;
+        }
+        &.unavailable {
+            color: #CF7977;
+        }
     }
 
     .listing-content {
