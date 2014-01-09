@@ -122,6 +122,7 @@
           } else if (response.success === "LOGGED_IN") {
             $(".modal").modal('hide');
             _this.logged_in = true;
+            $(document).trigger("track_event", ["Login", "Logged in", "facebook", data.success]);
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
             if (response.account_exists === false) {
@@ -391,9 +392,7 @@
             }
             return _this._login_deferred.reject();
           } else {
-            A2Cribs.MixPanel.AuthEvent('login', {
-              'source': 'cribspot'
-            });
+            $(document).trigger("track_event", ["Login", "Logged in", "email", data.success]);
             $(".modal").modal('hide');
             _this.PopulateHeader(data.data);
             _this.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
@@ -491,19 +490,7 @@
             } else {
               email = $("#pm_email").val();
             }
-            A2Cribs.MixPanel.AuthEvent('signup', {
-              'user_id': response.success,
-              'user_type': user_type,
-              'email': email,
-              'source': 'cribspot',
-              'user_data': request_data
-            });
-            mixpanel.people.set({
-              'user_id': response.success,
-              'user_type': user_type,
-              'email': email,
-              'user_data': request_data
-            });
+            $(document).trigger("track_event", ["Login", "Logged in", "email", response.success]);
             Login.PopulateHeader(data.data);
             Login.PopulateFavorites((_ref = data.data) != null ? _ref.favorites : void 0);
             Login.logged_in = true;

@@ -8,9 +8,8 @@ class A2Cribs.FacebookManager
 		url += 'client_id=450938858319396'
 		url += '&redirect_uri=https://www.cribspot.com/login'
 		url += '&scope=email'
-		A2Cribs.MixPanel.AuthEvent 'login',
-			'source':'facebook'
-		window.location.href = url 
+		$(document).trigger "track_event", ["Login", "Logged in"]
+		window.location.href = url
 
 	@FacebookJSLogin: () ->
 		FB.getLoginStatus (response) ->

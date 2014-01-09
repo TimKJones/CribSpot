@@ -3,19 +3,92 @@
 Class Analytics
 Wrapper class to handle the interactions
 with google analytics event tracking
+
+**************************
+Cribspot Events:
+- Login
+	- Logged in
+	- Signed up
+	- Login Required
+- Filter
+	- Changed
+- Listing
+	- Popup Opened
+	- Go to website
+	- View full page
+	- Sidebar Click
+- Full Page
+	- Schedule Tour Clicked
+	- Contact Owner Clicked
+- Message
+	- Sending Message
+	- Message Sent
+	- Message Failed
+- Marker
+	- Popup Opened
+	- Save
+	- Save Completed
+- Share
+	- URL Copied 
+	- Listing on FB
+		- Completed Sublet
+	- Listing on FB Completed
+		- Completed Sublet
+	- Website on FB
+		- Header Button
+		- Wisconsin Sunglasses
+	- Website on FB Completed
+		- Header Button
+		- Wisconsin Sunglasses
+	- Listing on Twitter
+	- Invite Friends
+	- Invite Friends Completed
+- Advertising
+	- Featured PM
+- Photo Editor
+- Tour
+- Post Rental
+- Post Sublet
+**************************
 */
 
 
 (function() {
   A2Cribs.Analytics = (function() {
-    var _this = this;
+    /*
+    	Private Event Method
+    	Wrapper for the _trackEvent for google analytics
+    */
+
+    var event,
+      _this = this;
 
     function Analytics() {}
 
-    $(document).on("logged_in", function(event, user) {
-      return Analytics.Event("Logged In", {
-        "name": user != null ? user.name : void 0,
-        "email": user != null ? user.email : void 0
+    event = function(category, action, label, value) {
+      if (label == null) {
+        label = null;
+      }
+      if (value == null) {
+        value = null;
+      }
+      return _gaq.push(['_trackEvent', category, action, label, value]);
+    };
+
+    /*
+    	Document Ready
+    */
+
+
+    $(document).ready(function() {
+      return $(document).on("track_event", function(event, category, action, label, value) {
+        if (label == null) {
+          label = null;
+        }
+        if (value == null) {
+          value = null;
+        }
+        return event(category, action, label, value);
       });
     });
 

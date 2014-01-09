@@ -80,7 +80,7 @@
           latitude: latLng['latitude'],
           longitude: latLng['longitude']
         };
-        A2Cribs.MixPanel.PostListing("Marker Save", marker_object);
+        $(document).trigger("track_event", ["Marker", "Save", "", marker_id]);
         if ((marker_id != null ? marker_id.length : void 0) !== 0) {
           marker_object.marker_id = marker_id;
         }
@@ -94,9 +94,7 @@
             } else {
               _this.modal.modal("hide");
               marker_object.marker_id = response;
-              A2Cribs.MixPanel.PostListing("Marker Save Complete", {
-                "marker id": marker_object.marker_id
-              });
+              $(document).trigger("track_event", ["Marker", "Save Completed", "", marker_object.marker_id]);
               A2Cribs.UserCache.Set(new A2Cribs.Marker(marker_object));
               return trigger(marker_object.marker_id);
             }
@@ -116,10 +114,6 @@
       this.modal.find("#place_map_button").click(function() {
         var marker_selected;
         marker_selected = _this.modal.find("#marker_select").val();
-        A2Cribs.MixPanel.PostListing("Marker Selected", {
-          "new marker": false,
-          "marker_id": marker_selected
-        });
         return _this.FindAddress(_this.modal);
       });
       this.modal.find("#marker_select").change(function() {
@@ -141,20 +135,9 @@
         var marker, marker_selected;
         marker_selected = _this.modal.find("#marker_select").val();
         if (marker_selected === "new_marker") {
-          A2Cribs.MixPanel.PostListing("Marker Selected", {
-            "new marker": true
-          });
           return _this.Save();
         } else if (marker_selected !== "0") {
           marker = A2Cribs.UserCache.Get("marker", marker_selected);
-          A2Cribs.MixPanel.PostListing("Marker Selected", {
-            "new marker": false,
-            "marker id": marker_selected,
-            "marker name": marker != null ? marker.GetName() : void 0,
-            "marker address": marker != null ? marker.street_address : void 0,
-            "marker city": marker != null ? marker.city : void 0,
-            "marker state": marker != null ? marker.state : void 0
-          });
           _this.modal.modal("hide");
           return _this.TriggerMarkerAdded(marker_selected);
         }

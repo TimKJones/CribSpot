@@ -9,8 +9,7 @@ class A2Cribs.ShareManager
 		street_address = street_address.split(' ').join('-')
 		city = city.split(' ').join('-')
 		url = 'https://cribspot.com/listing/' + listing_id
-		A2Cribs.MixPanel.Event "Share",
-			type: "copy listing url"
+		$(document).trigger "track_event", ["Share", "URL Copied", "", listing_id]
 		return url
 
 	###
@@ -25,10 +24,9 @@ class A2Cribs.ShareManager
 		else
 			caption = street_address
 
-		A2Cribs.MixPanel.Event "Share",
-			type: "listing on fb"
+		$(document).trigger "track_event", ["Share", "Listing on FB", "", listing_id]
 
-		fbObj = 
+		fbObj =
 			method: 'feed'
 			link: url
 			picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
@@ -45,17 +43,14 @@ class A2Cribs.ShareManager
 	###
 	@ShareSubletOnFB: (marker, sublet, images) ->
 		url = 'https://cribspot.com/listing/' + sublet.listing_id
-		A2Cribs.MixPanel.Event "Social share",
-			type: "facebook"
-			element: "sublet"
-			promotion: "completed sublet"
+		$(document).trigger "track_event", ["Share", "Listing on FB", "Completed Sublet", sublet.listing_id]
 
 		primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
 		# if images?
 		# 	primary_image = images.GetPrimary()
 
 
-		fbObj = 
+		fbObj =
 			method: 'feed'
 			link: url
 			picture: primary_image
@@ -66,24 +61,16 @@ class A2Cribs.ShareManager
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
-				A2Cribs.MixPanel.Event "Social share complete",
-					type: "facebook"
-					element: "sublet"
-					promotion: "completed sublet"
-					post_id: response.post_id
-
+				$(document).trigger "track_event", ["Share", "Listing on FB Completed", "Completed Sublet", sublet.listing_id]
 
 	###
 	Shares the school page on facebook
 	###
 	@ShareOnFacebook: ->
 
-		A2Cribs.MixPanel.Event "Social share",
-			type: "facebook"
-			element: "header"
-			promotion: "tell my friends"
-
-		fbObj = 
+		$(document).trigger "track_event", ["Share", "Website on FB", "Header Button"]
+		
+		fbObj =
 			method: 'feed'
 			link: "https://cribspot.com/"
 			picture: 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png'
@@ -94,19 +81,12 @@ class A2Cribs.ShareManager
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
-				A2Cribs.MixPanel.Event "Social share complete",
-					type: "facebook"
-					element: "header"
-					promotion: "tell my friends"
-					post_id: response.post_id
+				$(document).trigger "track_event", ["Share", "Website on FB Completed", "Header Button"]
 
 	@FBPromotion: ->
-		A2Cribs.MixPanel.Event "Social share",
-			type: "facebook"
-			element: "header"
-			promotion: "wisconsin sunglasses"
+		$(document).trigger "track_event", ["Share", "Website on FB", "Wisconsin Sunglasses"]
 
-		fbObj = 
+		fbObj =
 			method: 'feed'
 			link: "https://cribspot.com/"
 			picture: 'https://lh4.googleusercontent.com/-JCwU1KBqw1I/UnAMzgSnPeI/AAAAAAAAAIA/ySQHQfwYGFA/w726-h545-no/sunglasses.jpg'
@@ -116,12 +96,7 @@ class A2Cribs.ShareManager
 
 		FB.ui fbObj, (response) ->
 			if response?.post_id
-				A2Cribs.MixPanel.Event "Social share complete",
-					type: "facebook"
-					element: "header"
-					promotion: "wisconsin sunglasses"
-					post_id: response.post_id
-
+				$(document).trigger "track_event", ["Share", "Website on FB Completed", "Wisconsin Sunglasses"]
 
 	@CopyListingUrl: (listing_id, street_address, city, state, zip) ->
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
@@ -129,10 +104,7 @@ class A2Cribs.ShareManager
 
 	@ShareSubletOnTwitter: (listing_id) ->
 		url = @GetTwitterShareUrl listing_id
-		A2Cribs.MixPanel.Event "Social share",
-			type: "twitter"
-			element: "sublet"
-			promotion: "completed sublet"
+		$(document).trigger "track_event", ["Share", "Listing on Twitter", "Completed Sublet", listing_id]
 
 		# Center popup based on the screen size
 		x = screen.width / 2 - 600 / 2
@@ -141,8 +113,7 @@ class A2Cribs.ShareManager
 
 	@ShareListingOnTwitter: (listing_id, street_address, city, state, zip) ->
 		url = @GetTwitterShareUrl listing_id
-		A2Cribs.MixPanel.Event "Share",
-			type: "listing on twitter"
+		$(document).trigger "track_event", ["Share", "Listing on Twitter", "", listing_id]
 
 		# Center popup based on the screen size
 		x = screen.width / 2 - 600 / 2
@@ -159,21 +130,21 @@ class A2Cribs.ShareManager
 			return null
 
 		url = @GetShareUrl(listing_id, street_address, city, state, zip)
-		$('#twitterDiv iframe').remove();
+		$('#twitterDiv iframe').remove()
 		tweetBtn = $('<a></a>').addClass('twitter-share-button')
 		.attr('href', 'https://twitter.com/share')
 		.attr('data-url', url)
 		.attr('data-text','Check out this awesome property on Cribspot.com! ' + url)
 		.attr('data-via', 'TheCribspot')
-		$('#twitterDiv').append(tweetBtn);
+		$('#twitterDiv').append(tweetBtn)
 
-		twttr.widgets.load();
+		twttr.widgets.load()
 
 	@EmailInvite: (email_list) ->
 		return $.ajax
 			url: myBaseUrl + "Invitations/InviteFriends"
 			type: 'POST'
-			data: 
+			data:
 				emails: email_list
 
 	###
@@ -181,10 +152,10 @@ class A2Cribs.ShareManager
 	Will show the email or fb modal dependent on whether
 	###
 	@ShowShareModal: (subject, message, type) ->
-		A2Cribs.MixPanel.Event "Invite Friends started", null
 
 		FB?.getLoginStatus (response) =>
 			if response.status == 'unknown'
+				$(document).trigger "track_event", ["Share", "Invite Friends", "Email Invite"]
 				$("#email_invite")
 					.modal("show")
 				$("#email_invite")
@@ -201,20 +172,15 @@ class A2Cribs.ShareManager
 					.always ->
 						$("#email_invite").modal "hide"
 						$("#send_email_invite").button "reset"
-					A2Cribs.MixPanel.Event "Invite Friends completed",
-						"number of people": emails?.length
-						"action": type
-						"type": "email"
+					
+					$(document).trigger "track_event", ["Share", "Invite Friends Completed", "Email Invite", emails?.length]
 			else
+				$(document).trigger "track_event", ["Share", "Invite Friends", "FB Invite"]
 				FB.ui
 					method: 'apprequests',
 					message: message
 				, (response) ->
-					A2Cribs.MixPanel.Event "Invite Friends completed",
-						"number of people": response.to?.length
-						"action": type
-						"type": "facebook"
-						"fb_ids": JSON.stringify response.to
+					$(document).trigger "track_event", ["Share", "Invite Friends", "FB Invite", response.to?.length]
 	
 	$("#header").ready =>
 		$(".share_on_fb").click =>
@@ -228,7 +194,7 @@ class A2Cribs.ShareManager
 			re = /\S+@\S+\.\S+/
 			if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()
 				$(event.currentTarget.parentElement).addClass "completed_roommate"
-				return 
+				return
 			$(event.currentTarget.parentElement).removeClass "completed_roommate"
 
 		$(".add_roommate").click =>

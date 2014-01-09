@@ -28,7 +28,7 @@ class A2Cribs.FeaturedListings
         # Need closure
         listing_id = id
         listing_type = type
-        $.ajax 
+        $.ajax
             url: myBaseUrl + "Listings/GetListing/" + listing_id
             type:"GET"
             success: (data) =>
@@ -151,12 +151,13 @@ class A2Cribs.FeaturedListings
                 marker_id = parseInt($(event.currentTarget).attr('marker_id'))
                 listing_id = parseInt($(event.currentTarget).attr('listing_id'))
                 marker = A2Cribs.UserCache.Get('marker', marker_id)
-                listing = A2Cribs.UserCache.Get('listing', listing_id)  
+                listing = A2Cribs.UserCache.Get('listing', listing_id)
                 A2Cribs.Map.GMap.setZoom 16
                 $("#map_region").trigger "marker_clicked", [marker]
-                A2Cribs.MixPanel.Click listing, 'sidebar listing'
-                markerPosition = marker.GMarker.getPosition()
-                A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
+								featured_text = if listing.IsFeatured() then "Featured Listing" else "Normal Listing"
+								$(document).trigger "track_event", ["Listing", "Sidebar Click", featured_text, listing_id]
+								markerPosition = marker.GMarker.getPosition()
+								A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
             .draggable
               revert: true
               opacity: 0.7
@@ -184,7 +185,7 @@ class A2Cribs.FeaturedListings
 
     # Fetch the primary images for listings in listing_ids
     @GetSidebarImagePaths: (listing_ids) =>
-        $.ajax 
+        $.ajax
             url: myBaseUrl + "Images/GetPrimaryImages/" + JSON.stringify listing_ids
             type:"GET"
             success: (data) =>
@@ -193,7 +194,7 @@ class A2Cribs.FeaturedListings
                 @GetSidebarImagePathsDeferred.resolve(null)
 
     @LoadFeaturedPMListings: () =>
-        $.ajax 
+        $.ajax
             url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId
             type:"GET"
             success: (data) =>
@@ -208,8 +209,7 @@ class A2Cribs.FeaturedListings
                         else
                             A2Cribs.Map.IsCluster no
                             $(event.delegateTarget).addClass "active"
-                            A2Cribs.MixPanel.Event 'Sidebar Featured PM', 
-                                pm_id: user_id
+														$(document).trigger "track_event", ["Advertising", "Featured PM", "", user_id]
 
             error: ()=>
                 @FeaturedPMIdToListingIdsMap = []
@@ -242,17 +242,17 @@ class A2Cribs.FeaturedListings
             for listing in listings
                 rent = name = beds = lease_length = start_date = null
 
-                if listing.ListingObject.rent? 
+                if listing.ListingObject.rent?
                     rent = parseFloat(listing.ListingObject.rent).toFixed(0)
                 else
                     rent = ' --'
 
-                if listing.Marker.alternate_name? 
+                if listing.Marker.alternate_name?
                     name = listing.Marker.alternate_name
                 else
                     name = listing.Marker.street_address
 
-                if listing.ListingObject.lease_length? 
+                if listing.ListingObject.lease_length?
                     lease_length = listing.ListingObject.lease_length
                 else
                     lease_length = '-- '

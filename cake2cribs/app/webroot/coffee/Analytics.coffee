@@ -15,6 +15,7 @@ Cribspot Events:
 	- Popup Opened
 	- Go to website
 	- View full page
+	- Sidebar Click
 - Full Page
 	- Schedule Tour Clicked
 	- Contact Owner Clicked
@@ -24,9 +25,26 @@ Cribspot Events:
 	- Message Failed
 - Marker
 	- Popup Opened
+	- Save
+	- Save Completed
 - Share
 	- URL Copied 
 	- Listing on FB
+		- Completed Sublet
+	- Listing on FB Completed
+		- Completed Sublet
+	- Website on FB
+		- Header Button
+		- Wisconsin Sunglasses
+	- Website on FB Completed
+		- Header Button
+		- Wisconsin Sunglasses
+	- Listing on Twitter
+	- Invite Friends
+	- Invite Friends Completed
+- Advertising
+	- Featured PM
+- Photo Editor
 - Tour
 - Post Rental
 - Post Sublet

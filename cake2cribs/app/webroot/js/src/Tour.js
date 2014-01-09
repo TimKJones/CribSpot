@@ -133,16 +133,10 @@ Class is for scheduling and picking a time to tour
       return $("#request_times_btn").click(function() {
         if (_this.TimeSlotCount() >= 3) {
           $("#calendar_picker").hide();
-          $("#schedule_info").show();
-          return A2Cribs.MixPanel.Event("Request My Times", {
-            success: true
-          });
+          return $("#schedule_info").show();
         } else {
           A2Cribs.UIManager.CloseLogs();
-          A2Cribs.UIManager.Error("Please select at least three time slots that work for you!");
-          return A2Cribs.MixPanel.Event("Request My Times", {
-            success: false
-          });
+          return A2Cribs.UIManager.Error("Please select at least three time slots that work for you!");
         }
       });
     };
@@ -197,16 +191,6 @@ Class is for scheduling and picking a time to tour
           type: 'POST',
           data: {
             phone: phone
-          },
-          success: function() {
-            return A2Cribs.MixPanel.Event("Send Verify Text", {
-              success: true
-            });
-          },
-          error: function() {
-            return A2Cribs.MixPanel.Event("Send Verify Text", {
-              success: false
-            });
           }
         });
         return $("#verify_phone").modal('show');
@@ -228,18 +212,12 @@ Class is for scheduling and picking a time to tour
           success: function(response) {
             response = JSON.parse(response);
             if (response.error != null) {
-              A2Cribs.UIManager.Error(response.error);
-              return A2Cribs.MixPanel.Event("Phone verify completed", {
-                success: false
-              });
+              return A2Cribs.UIManager.Error(response.error);
             } else {
               A2Cribs.UIManager.Success("Phone Number Verified!");
               $("#verify_phone").modal('hide');
               $("#phone_verified").val($("#verify_phone_number").val());
-              $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
-              return A2Cribs.MixPanel.Event("Phone verify completed", {
-                success: true
-              });
+              return $("#verify_phone_btn").addClass("verified").text("Verified").prop("disabled", true);
             }
           },
           error: function() {
@@ -269,16 +247,10 @@ Class is for scheduling and picking a time to tour
           }
           $(".schedule_page").hide();
           $("#schedule_completed").show();
-          A2Cribs.UIManager.Success("Your tour times have been received");
-          return A2Cribs.MixPanel.Event("Finished Tour", {
-            success: true
-          });
+          return A2Cribs.UIManager.Success("Your tour times have been received");
         }).fail(function() {
           A2Cribs.UIManager.CloseLogs();
-          A2Cribs.UIManager.Error("Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue");
-          return A2Cribs.MixPanel.Event("Finished Tour", {
-            success: false
-          });
+          return A2Cribs.UIManager.Error("Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue");
         }).always(function() {
           return $("#complete_tour_request").button('reset');
         });

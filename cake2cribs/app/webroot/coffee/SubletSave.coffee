@@ -38,7 +38,7 @@ class SubletSave
 		$(".create-listing").find("a").click (event) =>
 			listing_type = $(event.currentTarget).data "listing-type"
 			if listing_type is "sublet"
-				A2Cribs.MixPanel.Event "Sublet Post", { 'stage': 'started'}
+				$(document).trigger "track_event", ["Post Sublet", "Create"]
 				@Open()
 
 		$("#sublet_list_content").on "marker_updated", (event, marker_id) =>
@@ -261,6 +261,7 @@ class SubletSave
 	@Save: ->
 		if @Validate()
 			sublet_object = @GetSubletObject()
+			$(document).trigger "track_event", ["Post Sublet", "Save"]
 			return $.ajax
 				url: myBaseUrl + "listings/Save/"
 				type: "POST"
@@ -278,7 +279,7 @@ class SubletSave
 						@div.find(".sublet_section").fadeOut 'slow', () =>
 							@div.find(".done_section").fadeIn()
 
-						A2Cribs.MixPanel.Event "Sublet Post", { 'stage': 'finish' }
+						$(document).trigger "track_event", ["Post Sublet", "Save Completed", "", response.listing.Listing.listing_id]
 
 						A2Cribs.UserCache.CacheData response.listing
 						@div.find(".listing_id").val response.listing.Listing.listing_id
