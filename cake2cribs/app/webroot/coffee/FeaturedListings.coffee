@@ -249,14 +249,14 @@ class A2Cribs.FeaturedListings
                         A2Cribs.Map.CenterMap markerPosition.lat(), markerPosition.lng()
 
                         $map.trigger "marker_clicked", [marker]
-
-                    if $(this).hasClass('expanded')
-                        $(this).removeClass('expanded')
                     else
-                        $(this).addClass('expanded')
-                        setTimeout ->
-                            $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded')
-                        , 200
+                        if $(this).hasClass('expanded')
+                            $(this).removeClass('expanded')
+                        else
+                            $(this).addClass('expanded')
+                            setTimeout ->
+                                $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded')
+                            , 200
             else
                 @listing_ids = []
 

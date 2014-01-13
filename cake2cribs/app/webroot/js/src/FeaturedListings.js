@@ -153,10 +153,6 @@
           listingObject.Marker = marker;
           listingObject.ListingObject = listing_object;
           listings.push(listingObject);
-        } else {
-          console.log(listing);
-          console.log(marker);
-          console.log(listing_object);
         }
       }
       return listings;
@@ -299,15 +295,16 @@
               A2Cribs.Map.GMap.setZoom(16);
               A2Cribs.MixPanel.Click(listing, 'sidebar listing');
               A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
-              $map.trigger("marker_clicked", [marker]);
-            }
-            if ($(this).hasClass('expanded')) {
-              return $(this).removeClass('expanded');
+              return $map.trigger("marker_clicked", [marker]);
             } else {
-              $(this).addClass('expanded');
-              return setTimeout(function() {
-                return $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded');
-              }, 200);
+              if ($(this).hasClass('expanded')) {
+                return $(this).removeClass('expanded');
+              } else {
+                $(this).addClass('expanded');
+                return setTimeout(function() {
+                  return $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded');
+                }, 200);
+              }
             }
           });
         } else {
@@ -494,7 +491,6 @@
           }).click(function(e) {
             var _this = this;
             e.preventDefault();
-            console.log('listing_item share click!');
             $(this).popover('show');
             return $('.popover a').on('click', function() {
               $('.popover').popover('hide').hide();
