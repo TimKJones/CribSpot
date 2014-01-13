@@ -494,13 +494,13 @@
 
     </span></span><br>
     <span style="color:#3366cc;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif;">
-
+    <a href='https://www.cribspot.com/listing/<?= $listing_id?>'>
         <?php
             echo $street_address;
             if (!empty($unit_description))
                 echo " - " . $unit_description;
         ?>
-
+    </a>
     </span></span></h3>
 <br>
 <span style="color: #000000;"><span style="font-family: arial, 'helvetica neue', helvetica, sans-serif; font-size: 14px;"><strong><?= $from_name ?>:&nbsp;</strong></span><br>
