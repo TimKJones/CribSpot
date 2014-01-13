@@ -5,12 +5,13 @@ with google analytics event tracking
 
 **************************
 Cribspot Events:
+- TODO: ADD DASHBOARD EVENTS!!!!
 - Login
 	- Logged in
 	- Signed up
-	- Login Required
+	- Login required
 - Filter
-	- Changed
+	- TODO: Changed
 - Listing
 	- Popup Opened
 	- Go to website
@@ -19,7 +20,7 @@ Cribspot Events:
 - Full Page
 	- Schedule Tour Clicked
 	- Contact Owner Clicked
-- Message
+- TODO: ONLY ON FULL PAGE Message
 	- Sending Message
 	- Message Sent
 	- Message Failed
@@ -27,6 +28,7 @@ Cribspot Events:
 	- Popup Opened
 	- Save
 	- Save Completed
+	- Marker Clicked
 - Share
 	- URL Copied 
 	- Listing on FB
@@ -45,9 +47,18 @@ Cribspot Events:
 - Advertising
 	- Featured PM
 - Photo Editor
+	- Load Images
+	- Save Images
 - Tour
 - Post Rental
+	- Open Marker
+	- Tab Change
+	- Save
+	- Add Unit
 - Post Sublet
+	- Create
+	- Save
+	- Save Completed
 **************************
 ###
 

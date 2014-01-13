@@ -161,6 +161,8 @@ class QuickRental
 			listing_id = $(event.currentTarget).data("listing-id")
 			# Retrieve object from the cache
 			a2_object = A2Cribs.UserCache.Get input.data("object"), listing_id
+			# Track whether listing is Rental or Sublet
+			$(document).trigger "track_event", ["Post #{a2_object.GetListingType()}", "Save", "Quick Dashboard", listing_id]
 			# Updates the cached object
 			a2_object[input.data("field")] = input.data("value")
 			$(event.currentTarget).find(".save-note").hide()
