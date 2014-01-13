@@ -25,6 +25,19 @@
 
 <div id="landing_page">
 	<div class="fb-like" data-href="https://www.facebook.com/Cribspot" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
+	<div id="mobile-div" class="text-center float">
+		<img src="/img/landing/logo.png" alt="Cribspot">
+		<select id="" class="mobile_selector selector">
+			<option value="">Select your University</option>
+			<?php
+			foreach ($locations as $university) {
+				$school_name = str_replace(" ", "_", $university['University']['name']);
+				echo "<option value='" . $university['University']['id'] . "'>" . $university['University']['name'] . "</option>";
+			}
+
+			?>	
+		</select>
+	</div>
 	<div class="float" id="search-div">
 		<img src="/img/landing/logo.png" height="200px" width="400px">
 		<div id="slogan" class="text-center">
@@ -35,7 +48,7 @@
 			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
 			<!-- School Logo's go here -->
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
-			<select id="school_selector" name="">
+			<select id="school_selector" class="selector" name="">
 				<option value="">Select your University</option>
 			<?php
 			foreach ($locations as $university) {

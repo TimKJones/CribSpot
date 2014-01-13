@@ -51,13 +51,21 @@ class A2Cribs.Landing
 			random_school = Math.floor((Math.random() * @locations.length))
 			set_school @locations[random_school]
 
+		$(".mobile_selector").change (event) =>
+			university_id = $(event.currentTarget).val()
+			for university in @locations
+				if university['University']['id'] is university_id
+					url_name = university['University']['name'].split(" ").join("_")
+					window.location.href = "/rental/#{url_name}"
+
 		$("#school_selector").change (event) =>
 			university_id = $(event.currentTarget).val()
 			for university in @locations
 				if university['University']['id'] is university_id
+					temp_school = university
 					@Current_University = university
 					break
-			if @Current_University?
+			if temp_school?
 				set_school @Current_University
 
 			$('html, body').animate
