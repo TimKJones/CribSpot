@@ -455,10 +455,10 @@
         /* If this is a rental, find beds and baths and set them for email */
         $beds = $baths = null;
         if (array_key_exists('Rental', $listing)){
-            if (!empty($listing['Rental']['baths'])
+            if (!empty($listing['Rental']['baths']))
                 $baths = $listing['Rental']['baths'];
 
-            if (!empty($listing['Rental']['beds'])
+            if (!empty($listing['Rental']['beds']))
                 $beds = $listing['Rental']['beds'];
         }
 

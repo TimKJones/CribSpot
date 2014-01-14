@@ -337,10 +337,13 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		/* Convert unit_style_options to its string value */
 		foreach ($listings as &$listing){
 			if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']))
-			$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+				$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+
+			/* HACK TO FIX FEATURED LISTINGS DASH */
+			if (array_key_exists('Marker', $listing) && array_key_exists('coordinates', $listing['Marker']))
+				unset($listing['Marker']['coordinates']);
 		}
 		
-		CakeLog::write("gettinglisting", print_r($listings, true));
 		$this->set('response', json_encode($listings));
 	}
 
