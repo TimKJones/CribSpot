@@ -1,5 +1,5 @@
 <?php 
-	echo $this->Html->css('/less/Listing/full_page.less?v=5','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/Listing/full_page.less?v=6','stylesheet/less', array('inline' => false));
 	echo $this->Html->css('/less/mobile_listing_hacks.less?v=4','stylesheet/less', array('inline' => false));
 ?>
 <?php 
