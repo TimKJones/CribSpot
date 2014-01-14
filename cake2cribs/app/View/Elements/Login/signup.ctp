@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/signup_modal.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/signup_modal.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <div class="modal register_modal hide fade" id="signup_modal" data-backdrop="static">
 	<div class="modal-header">

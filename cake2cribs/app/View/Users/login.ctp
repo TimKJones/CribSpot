@@ -1,5 +1,5 @@
-<?php echo $this->Html->css('/less/header.less?','stylesheet/less', array('inline' => false)); ?>
-<?php echo $this->Html->css('/less/User/login.less?','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/header.less?v=76','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/User/login.less?v=2','stylesheet/less', array('inline' => false)); ?>
 
 <?php
 if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){

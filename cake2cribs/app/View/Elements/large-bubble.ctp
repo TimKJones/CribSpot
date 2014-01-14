@@ -1,4 +1,4 @@
-<?= $this->Html->css('/less/large-bubble.less?v=3','stylesheet/less', array('inline' => false)); ?>
+<?= $this->Html->css('/less/large-bubble.less?v=4','stylesheet/less', array('inline' => false)); ?>
 
 <div class="large-bubble hide">
 	<div class="click_header"><div class="building_name clear_field">10202  West Chester Rd.</div><div class='share-handle grab'><i class='icon-reorder'></i></div><div class="close_button">&times;</div></div>
