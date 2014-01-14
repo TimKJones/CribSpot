@@ -17,17 +17,24 @@
 
 	.fb-like
 	{
-		padding: 30px;
+		padding: 10px;
 	}
-	#school_selector
+	.selector
 	{
 		background-color: rgba(0,0,0,0.5);
 		color: white;
 		font-size: 20px;
-		width: 50%;
 		height: 40px;
 		border-color: rgba(0,0,0,0);
 		margin: 20px;
+	}
+	#school_selector
+	{
+		width: 50%;
+	}
+	.mobile_selector
+	{
+		width: 240px;
 	}
 }
 
@@ -490,7 +497,30 @@ table
 		}
 	}
 }
+@media (min-width: 800px)
+{
+	#mobile-div
+	{
+		display: none;
+	}
+}
 
+@media (max-width: 800px) {
+	#search-div, #school_page, #mixpanel_link
+	{
+		display: none;
+	}
+	body
+	{
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+#mobile-div
+{
+	padding: 30px;
+}
 
 #search-div
 {

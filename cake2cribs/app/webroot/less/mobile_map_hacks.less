@@ -1,6 +1,30 @@
 @media (max-width: 979px) {
+  .personal_buttons {
+    display: none !important;
+  }
+
+  .featured-listings-wrapper #listings-list.has_featured_pm {
+    bottom: 0 !important;
+  }
+
+  .featured_banner, .featured_pm {
+    display: none;
+  }
+
+  .register_modal {
+    width: auto !important;
+    margin-left: 0 !important;
+  }
+
   #map_region {
     display: none;
+  }
+
+  #mobile_filter {
+    display: block;
+    position: fixed;
+    padding-top: 55px;
+    z-index:99;
   }
 
   #layoutsContainer {
@@ -17,10 +41,11 @@
 
   .featured-listings-wrapper {
     width: 100% !important;
-    overflow: visible;
+    overflow: scroll;
     position: static !important;
     height: auto !important;
     border: none !important;
+    padding-top: 0;
 
     .legal-bar {
       position: fixed !important;
@@ -31,7 +56,10 @@
       overflow-y: visible !important;
       background: white !important;
       height: auto !important;
-      margin-top: 90px;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      position: relative;
+      display: block;
     }
   }
 
@@ -41,7 +69,7 @@
   }
 
   #uni-name {
-    display: block;
+    display: none;
     position: fixed;
     margin-top: -37px;
     z-index: 40;
@@ -51,6 +79,10 @@
 
   .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
     position: fixed !important;
+  }
+
+  .fl-sb-item .pull-right {
+    display: none;
   }
 
 }
@@ -64,6 +96,10 @@
 
 @media (min-width: 980px) {
   #uni-name {
+    display: none;
+  }
+
+  #mobile_filter {
     display: none;
   }
 }

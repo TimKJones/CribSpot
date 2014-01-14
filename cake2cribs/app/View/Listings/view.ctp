@@ -1,4 +1,7 @@
-<?php echo $this->Html->css('/less/Listing/full_page.less?v=5','stylesheet/less', array('inline' => false)); ?>
+<?php 
+	echo $this->Html->css('/less/Listing/full_page.less?v=6','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/mobile_listing_hacks.less?v=4','stylesheet/less', array('inline' => false));
+?>
 <?php 
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/FullListing.js', array('inline' => false));
@@ -31,16 +34,20 @@
 <?php echo $this->element('header', array('show_filter' => false, 'show_user' => true)); ?>
 <input id="listing-data" type="hidden" data-listing-id="<?= $listing["Listing"]["listing_id"]; ?>">
 
-<div class="row-fluid full_page">
-	<!-- Listing View side bar -->
-	<div class="span3 offset1">
-		<?= $this->element('Listings/full_page/basic_info'); ?>
-		<?= $this->element('Listings/full_page/more_info'); ?>
-		<?= $this->element('Listings/full_page/contact_info'); ?>
-		<?= $this->element('Listings/full_page/listing_correction', array('listing_id' => $listing["Listing"]["listing_id"])); ?>
+<div class="container">
+	<div class="row full_page">
+		<!-- Listing View side bar -->
+		<div class="span9 middle_content tabbable pull-right">
+			<?= $this->element('Listings/full_page/main_content', array('listing' => $listing)); ?>
+		</div>
+		<div class="span3 pull-left info-bar">
+			<?= $this->element('Listings/full_page/basic_info'); ?>
+			<?= $this->element('Listings/full_page/more_info'); ?>
+			<?= $this->element('Listings/full_page/contact_info'); ?>
+			<?= $this->element('Listings/full_page/listing_correction', array('listing_id' => $listing["Listing"]["listing_id"])); ?>
+		</div>
+
 	</div>
-	<?= $this->element('Listings/full_page/main_content', array('listing' => $listing)); ?>
-	
 </div>
 
 <?php 

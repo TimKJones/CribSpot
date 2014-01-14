@@ -10,9 +10,15 @@
     FeaturedListings.FeaturedPMListingsVisible = false;
 
     FeaturedListings.resizeHandler = function() {
-      var h;
+      var h, w;
       h = $(window).height() - $('#listings-list').offset().top - $('.legal-bar').height();
-      return $('#listings-list').height(h);
+      $('#listings-list').height(h);
+      w = $(window).width();
+      if (w < 900) {
+        return $('.fl-sb-item').draggable('disable');
+      } else {
+        return $('.fl-sb-item').draggable('enable');
+      }
     };
 
     FeaturedListings.SetupResizing = function() {
@@ -95,8 +101,166 @@
       return sliced;
     };
 
+    FeaturedListings.SetupListingItemEvents = function() {
+      var $el;
+      $el = $('.fl-sb-item');
+      $el.unbind();
+      return $el.draggable({
+        revert: true,
+        opacity: 0.7,
+        cursorAt: {
+          top: -12,
+          right: -20
+        },
+        helper: function(event) {
+          var name;
+          name = $(this).find('.name').html() || "this listing";
+          return $("<div class='listing-drag-helper'>Share " + name + "</div>");
+        },
+        start: function(event) {
+          var _ref;
+          if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+            $('ul.friends, #hotlist').addClass('dragging');
+            return A2Cribs.HotlistObj.startedDragging();
+          }
+        },
+        stop: function(event) {
+          $('ul.friends, #hotlist').removeClass('dragging');
+          return A2Cribs.HotlistObj.stoppedDragging();
+        },
+        appendTo: 'body'
+      });
+    };
+
+    FeaturedListings.GetListingObjects = function(listing_ids) {
+      var id, listing, listingObject, listing_object, listings, marker, _i, _len;
+      listings = [];
+      for (_i = 0, _len = listing_ids.length; _i < _len; _i++) {
+        id = listing_ids[_i];
+        listingObject = {};
+        listing = A2Cribs.UserCache.Get('listing', id);
+        marker = listing_object = null;
+        if (listing != null) {
+          listing.InSidebar(true);
+          marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
+          listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id);
+          if (listing_object[0] != null) {
+            listing_object = listing_object[0];
+          }
+        }
+        if ((listing != null) && (marker != null) && (listing_object != null)) {
+          listingObject.Listing = listing;
+          listingObject.Marker = marker;
+          listingObject.ListingObject = listing_object;
+          listings.push(listingObject);
+        }
+      }
+      return listings;
+    };
+
+    FeaturedListings.BuildListingIds = function(flIds) {
+      var NUM_RANDOM_LISTINGS, all_listing_ids, id, listing, listings, randomIds, sidebar_listing_ids, _i, _j, _k, _len, _len1, _len2;
+      NUM_RANDOM_LISTINGS = 2500;
+      listings = A2Cribs.UserCache.Get('listing');
+      all_listing_ids = [];
+      for (_i = 0, _len = listings.length; _i < _len; _i++) {
+        listing = listings[_i];
+        if ((listing != null) && listing.listing_id) {
+          all_listing_ids.push(parseInt(listing.listing_id));
+        }
+      }
+      randomIds = null;
+      if (all_listing_ids.length > 0) {
+        randomIds = this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids);
+      }
+      if ((flIds == null) && (randomIds == null)) {
+        return null;
+      }
+      sidebar_listing_ids = [];
+      for (_j = 0, _len1 = flIds.length; _j < _len1; _j++) {
+        id = flIds[_j];
+        id = parseInt(id);
+        this.FLListingIds.push(id);
+        sidebar_listing_ids.push(id);
+      }
+      if (randomIds != null) {
+        for (_k = 0, _len2 = randomIds.length; _k < _len2; _k++) {
+          id = randomIds[_k];
+          sidebar_listing_ids.push(id);
+        }
+      }
+      return sidebar_listing_ids;
+    };
+
+    FeaturedListings.SetupScrollEvents = function() {
+      $(window).scroll(function() {
+        if (!$('.fl-sb-item').hasClass('no-listings')) {
+          if ($(this).scrollTop() + $(this).innerHeight() >= $('.featured-listings-wrapper').height()) {
+            return A2Cribs.FeaturedListings.LoadMoreListings();
+          }
+        }
+      });
+      return $('#listings-list').scroll(function() {
+        if (!$('.fl-sb-item').hasClass('no-listings')) {
+          if ($(this).scrollTop() + $(this).innerHeight() >= $('#ran-listings').height()) {
+            return A2Cribs.FeaturedListings.LoadMoreListings();
+          }
+        }
+      });
+    };
+
+    FeaturedListings.LoadMoreListings = function() {
+      var _this = this;
+      this.GetSidebarImagePathsDeferred = new $.Deferred();
+      $('#loading-spinner').show();
+      if ((this.current_index != null) && (this.listing_ids != null)) {
+        this.listingObjects = this.GetListingObjects(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
+        this.GetSidebarImagePaths(this.listing_ids.slice(this.current_index, +(this.current_index + 24) + 1 || 9e9));
+        this.sidebar.addListings(this.listingObjects, 'ran');
+        this.current_index += 25;
+      } else {
+        console.log('warning: no listing ids or current index found.');
+      }
+      this.SetupListingItemEvents();
+      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+        var image, _i, _len;
+        images = JSON.parse(images);
+        for (_i = 0, _len = images.length; _i < _len; _i++) {
+          image = images[_i];
+          if ((image != null) && (image.Image != null)) {
+            $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
+          }
+        }
+        return $('#loading-spinner').hide();
+      });
+    };
+
+    FeaturedListings.UpdateSidebar = function(listing_ids) {
+      var _this = this;
+      this.GetSidebarImagePathsDeferred = new $.Deferred();
+      this.listing_ids = listing_ids;
+      this.current_index = 0;
+      if (this.listing_ids != null) {
+        this.listingObjects = this.GetListingObjects(this.listing_ids.slice(0, 25));
+        this.sidebar.addListings(this.listingObjects, 'ran', true);
+        this.GetSidebarImagePaths(this.listing_ids.slice(0, 25));
+        this.SetupListingItemEvents();
+      }
+      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+        var image, _i, _len;
+        images = JSON.parse(images);
+        for (_i = 0, _len = images.length; _i < _len; _i++) {
+          image = images[_i];
+          if ((image != null) && (image.Image != null)) {
+            $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
+          }
+        }
+        return $('#loading-spinner').hide();
+      });
+    };
+
     FeaturedListings.InitializeSidebar = function(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred) {
-      var NUM_RANDOM_LISTINGS, alt, getFlIdsDeferred, sidebar,
+      var alt, getFlIdsDeferred,
         _this = this;
       alt = active_listing_type;
       if (this.SidebarListingCache == null) {
@@ -105,120 +269,63 @@
       if (this.FLListingIds == null) {
         this.FLListingIds = [];
       }
-      NUM_RANDOM_LISTINGS = 25;
-      sidebar = new Sidebar($('#fl-side-bar'));
+      this.sidebar = new Sidebar($('#fl-side-bar'));
+      this.current_index = 0;
       getFlIdsDeferred = this.GetFlIds(university_id);
       this.GetSidebarImagePathsDeferred = new $.Deferred();
       this.SetupResizing();
+      this.SetupScrollEvents();
       $.when(getFlIdsDeferred, basicDataCachedDeferred).then(function(flIds) {
-        var all_listing_ids, id, listing, listingObject, listing_object, listings, marker, randomIds, sidebar_listing_ids, _i, _j, _k, _l, _len, _len1, _len2, _len3;
-        listings = A2Cribs.UserCache.Get('listing');
-        all_listing_ids = [];
-        for (_i = 0, _len = listings.length; _i < _len; _i++) {
-          listing = listings[_i];
-          if ((listing != null) && listing.listing_id) {
-            all_listing_ids.push(parseInt(listing.listing_id));
-          }
-        }
-        randomIds = null;
-        if (all_listing_ids.length > 0) {
-          randomIds = _this.GetRandomListingsFromMap(NUM_RANDOM_LISTINGS, all_listing_ids);
-        }
-        if ((flIds == null) && (randomIds == null)) {
-          return;
-        }
-        sidebar_listing_ids = [];
-        for (_j = 0, _len1 = flIds.length; _j < _len1; _j++) {
-          id = flIds[_j];
-          id = parseInt(id);
-          _this.FLListingIds.push(id);
-          sidebar_listing_ids.push(id);
-        }
-        if (randomIds != null) {
-          for (_k = 0, _len2 = randomIds.length; _k < _len2; _k++) {
-            id = randomIds[_k];
-            sidebar_listing_ids.push(id);
-          }
-        }
-        listings = [];
-        for (_l = 0, _len3 = sidebar_listing_ids.length; _l < _len3; _l++) {
-          id = sidebar_listing_ids[_l];
-          listingObject = {};
-          listing = A2Cribs.UserCache.Get('listing', id);
-          marker = listing_object = null;
-          if (listing != null) {
-            listing.InSidebar(true);
-            marker = A2Cribs.UserCache.Get('marker', listing.marker_id);
-            listing_object = A2Cribs.UserCache.Get(A2Cribs.Map.ACTIVE_LISTING_TYPE, id);
-            if (listing_object[0] != null) {
-              listing_object = listing_object[0];
+        var sidebar_listing_ids;
+        sidebar_listing_ids = _this.BuildListingIds(flIds);
+        if (sidebar_listing_ids != null) {
+          _this.sidebar.addListings(_this.GetListingObjects(sidebar_listing_ids.slice(0, 25)), 'ran', true);
+          _this.listing_ids = sidebar_listing_ids;
+          _this.GetSidebarImagePaths(sidebar_listing_ids.slice(0, 25));
+          _this.SetupListingItemEvents();
+          return $('#listings-list').on('click', '.fl-sb-item', function(event) {
+            var $map, listing, listing_id, marker, markerPosition, marker_id;
+            $map = $('#map_region');
+            if ($map.is(':visible')) {
+              marker_id = parseInt($(this).attr('marker_id'));
+              listing_id = parseInt($(this).attr('listing_id'));
+              marker = A2Cribs.UserCache.Get('marker', marker_id);
+              listing = A2Cribs.UserCache.Get('listing', listing_id);
+              markerPosition = marker.GMarker.getPosition();
+              A2Cribs.Map.GMap.setZoom(16);
+              A2Cribs.MixPanel.Click(listing, 'sidebar listing');
+              A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
+              return $map.trigger("marker_clicked", [marker]);
+            } else {
+              if ($(this).hasClass('expanded')) {
+                return $(this).removeClass('expanded');
+              } else {
+                $(this).addClass('expanded');
+                return setTimeout(function() {
+                  return $('.fl-sb-item.expanded').not(event.currentTarget).removeClass('expanded');
+                }, 200);
+              }
             }
-          }
-          if ((listing != null) && (marker != null) && (listing_object != null)) {
-            listingObject.Listing = listing;
-            listingObject.Marker = marker;
-            listingObject.ListingObject = listing_object;
-            listings.push(listingObject);
-          } else {
-            console.log(listing);
-            console.log(marker);
-            console.log(listing_object);
-          }
+          });
+        } else {
+          return _this.listing_ids = [];
         }
-        sidebar.addListings(listings, 'ran');
-        _this.GetSidebarImagePaths(sidebar_listing_ids);
-        return $(".fl-sb-item").click(function(event) {
-          var listing_id, markerPosition, marker_id;
-          marker_id = parseInt($(event.currentTarget).attr('marker_id'));
-          listing_id = parseInt($(event.currentTarget).attr('listing_id'));
-          marker = A2Cribs.UserCache.Get('marker', marker_id);
-          listing = A2Cribs.UserCache.Get('listing', listing_id);
-          A2Cribs.Map.GMap.setZoom(16);
-          $("#map_region").trigger("marker_clicked", [marker]);
-          A2Cribs.MixPanel.Click(listing, 'sidebar listing');
-          markerPosition = marker.GMarker.getPosition();
-          return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
-        }).draggable({
-          revert: true,
-          opacity: 0.7,
-          cursorAt: {
-            top: -12,
-            right: -20
-          },
-          helper: function(event) {
-            var name;
-            name = $(this).find('.name').html() || "this listing";
-            return $("<div class='listing-drag-helper'>Share " + name + "</div>");
-          },
-          start: function(event) {
-            var _ref;
-            if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
-              $('ul.friends, #hotlist').addClass('dragging');
-              return A2Cribs.HotlistObj.startedDragging();
-            }
-          },
-          stop: function(event) {
-            $('ul.friends, #hotlist').removeClass('dragging');
-            return A2Cribs.HotlistObj.stoppedDragging();
-          },
-          appendTo: 'body'
-        });
       });
-      return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
-        var image, img_element, _i, _len, _results;
+      $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
+        var image, _i, _len, _results;
         images = JSON.parse(images);
         _results = [];
         for (_i = 0, _len = images.length; _i < _len; _i++) {
           image = images[_i];
           if ((image != null) && (image.Image != null)) {
-            img_element = $("#sb-img" + image.Image.listing_id);
-            _results.push(img_element.attr('src', '/' + image.Image.image_path));
+            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
           } else {
             _results.push(void 0);
           }
         }
         return _results;
       });
+      return $('#loading-spinner').hide();
     };
 
     FeaturedListings.GetSidebarImagePaths = function(listing_ids) {
@@ -267,19 +374,23 @@
       function Sidebar(SidebarUI) {
         this.SidebarUI = SidebarUI;
         this.ListItemTemplate = _.template(A2Cribs.FeaturedListings.ListItemHTML);
+        this.EmptyListingsTemplate = _.template(A2Cribs.FeaturedListings.EmptyListingsHTML);
       }
 
       Sidebar.prototype.addListings = function(listings, list, clear) {
         var list_html;
         if (clear == null) {
-          clear = true;
+          clear = false;
         }
-        if (listings === null) {
-          return;
+        if (listings === null || listings.length === 0) {
+          list_html = $(this.EmptyListingsTemplate({
+            clear: clear
+          }));
+        } else {
+          list_html = this.getListHtml(listings);
         }
-        list_html = this.getListHtml(listings);
         if (clear) {
-          return this.SidebarUI.find("#" + list + "-listings").append(list_html);
+          return this.SidebarUI.find("#" + list + "-listings").html(list_html);
         } else {
           return this.SidebarUI.find("#" + list + "-listings").append(list_html);
         }
@@ -354,7 +465,17 @@
             name: name,
             img: primary_image_path,
             listing_id: listing.Listing.listing_id,
-            marker_id: listing.Marker.marker_id
+            marker_id: listing.Marker.marker_id,
+            available: (function() {
+              if (typeof listing.Listing.available === 'undefined') {
+                return 'unknown';
+              }
+              if (listing.Listing.available) {
+                return 'available';
+              } else {
+                return 'unavailable';
+              }
+            })()
           };
           listing_item = $(this.ListItemTemplate(data));
           A2Cribs.FavoritesManager.setFavoriteButton(listing_item.find(".favorite"), listing.Listing.listing_id, A2Cribs.FavoritesManager.FavoritesListingIds);
@@ -370,7 +491,6 @@
           }).click(function(e) {
             var _this = this;
             e.preventDefault();
-            console.log('listing_item share click!');
             $(this).popover('show');
             return $('.popover a').on('click', function() {
               $('.popover').popover('hide').hide();
@@ -391,7 +511,9 @@
 
     })();
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <span class = 'img-wrapper'>\n        <img id='sb-img<%=listing_id %>' src = '<%=img%>'></img>\n    </span>\n    <span class = 'vert-line'></span>\n    <span class = 'info-wrapper'>\n        <div class = 'info-row'>\n            <span class = 'rent price-text'><%= \"$\" + rent %></span>\n            <span class = 'divider'>|</span>\n            <span class = 'beds'><%= beds %> </span>\n            <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n            <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n            <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <span class = 'building-type'><%= building_type %></span>\n            <span class = 'divider'>|</span>\n            <% if (typeof(end_date) != \"undefined\") { %>\n            <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n            <% } else { %>\n            <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> months</span>\n            <% } %>\n        </div>\n        <div class = 'row-div'></div>\n        <div class = 'info-row'>\n            <i class = 'icon-map-marker'></i><span class = 'name'><%=name%></span>\n        </div>\n    </span>   \n</div>";
+    FeaturedListings.EmptyListingsHTML = "<div class='fl-sb-item no-listings'>\n    <% if (clear) { %>\n        <span class='no-listings-text'>No listings found for these filter settings. Try adjusting the filter for more results.</span>\n    <% } else { %>\n        <span class='no-listings-text'>No more listings found for these filter settings.</span>\n    <% } %>\n</div>";
+
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <div class='listing-content'>\n        <div class = 'img-wrapper' style='background-image:url(\"<%=img%>\")'> </div>\n        <div class = 'info-wrapper'>\n            <div class = 'info-row'>\n                <span class = 'rent price-text'><%= \"$\" + rent %></span>\n                <span class = 'divider'>|</span>\n                <span class = 'beds'><%= beds %> </span>\n                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n                <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n            </div>\n            <div class = 'info-row'>\n                <span class = 'building-type'><%= building_type %></span>\n                <span class = 'divider'>|</span>\n                <% if (typeof(end_date) != \"undefined\") { %>\n                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n                <% } else { %>\n                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> mo.</span>\n                <% } %>\n            </div>\n            <div class = 'info-row'>\n                <i class = 'icon-map-marker <%= available %>'></i><span class = 'name'><%=name%></span>\n            </div>\n        </div>   \n    </div>\n    <div class='listing-actions'>\n        <ul class='action-row'>\n            <li class='hotlist-share'><a href='#'><i class=\"action-icon icon-heart favorite_listing\" data-listing-id='<%=listing_id%>'></i></a></li>\n            <li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class=\"action-icon icon-share\"></i></a></li>\n        </ul>\n    </div>\n</div>";
 
     return FeaturedListings;
 

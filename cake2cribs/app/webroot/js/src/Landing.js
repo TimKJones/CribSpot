@@ -61,18 +61,35 @@
         random_school = Math.floor(Math.random() * this.locations.length);
         set_school(this.locations[random_school]);
       }
+      $(".mobile_selector").change(function(event) {
+        var university, university_id, url_name, _i, _len, _ref1, _results;
+        university_id = $(event.currentTarget).val();
+        _ref1 = _this.locations;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          university = _ref1[_i];
+          if (university['University']['id'] === university_id) {
+            url_name = university['University']['name'].split(" ").join("_");
+            _results.push(window.location.href = "/rental/" + url_name);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      });
       return $("#school_selector").change(function(event) {
-        var university, university_id, _i, _len, _ref1;
+        var temp_school, university, university_id, _i, _len, _ref1;
         university_id = $(event.currentTarget).val();
         _ref1 = _this.locations;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           university = _ref1[_i];
           if (university['University']['id'] === university_id) {
+            temp_school = university;
             _this.Current_University = university;
             break;
           }
         }
-        if (_this.Current_University != null) {
+        if (temp_school != null) {
           set_school(_this.Current_University);
         }
         return $('html, body').animate({

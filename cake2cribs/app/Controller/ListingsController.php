@@ -77,7 +77,7 @@ class ListingsController extends AppController {
 
 
 
-		$listing['Marker']['building_type_id'] = Rental::building_type($listing['Marker']['building_type_id']);
+		$listing['Marker']['building_type_id'] = $this->Rental->building_type($listing['Marker']['building_type_id']);
 
 		/* set whether or not this is a favorited property */
 		$listing['Favorite'] = false;
