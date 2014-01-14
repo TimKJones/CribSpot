@@ -8,9 +8,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->script('src/FeaturedListings');
 	echo $this->Html->script('src/Hotlist');
 }
+	
+	echo $this->Html->css('DailyLogo');
+	echo $this->Html->css('/less/mobile_map_hacks.less?v=4','stylesheet/less', array('inline' => false));
 /* ------------------------ DIFFERENT --------------------------------------- */
 
-	echo $this->Html->css('DailyLogo');
+
 	$this->set('title_for_layout', $university["name"] . ' Sublets');
 	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "_", $school_name);
 	$description = "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many subleases Cribspot has to offer.";

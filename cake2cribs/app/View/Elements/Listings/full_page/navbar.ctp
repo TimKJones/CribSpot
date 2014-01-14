@@ -1,7 +1,8 @@
 <div class="navbar option_panel">
 	<div class="navbar-inner">
 		<ul class="nav">
-			<li><a href="/map">Return to Map</a></li>
+			<li id="return-map"><a href="/map">Return to Map</a></li>
+			<li id="return-list"><a href="/map">Return to List</a></li>
 			<li class="active"><a href="#photo_content" data-toggle="tab">Photos</a></li>
 			<li><a href="#details_content" data-toggle="tab">Details</a></li>
 <?php if (array_key_exists('Rental', $listing)){ ?>

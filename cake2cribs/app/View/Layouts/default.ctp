@@ -96,6 +96,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 		/* CSS Data */
 		echo('<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">');
+    echo('<link href="/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.core.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/alertify.default.css">');
 		echo('<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">');
@@ -139,6 +140,9 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 
 		/* Write buffer for JS in various element views */
 		echo $this->Js->writeBuffer();
+
+    /* Meta tag for responsive goodness */
+    echo '<meta name="viewport" content="initial-scale=1">';
 
 	echo '</head>';
 

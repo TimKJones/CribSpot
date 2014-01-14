@@ -1,5 +1,5 @@
 <div id="amenities_content" class="tab-pane">
-	<div class="row-fluid">
+	<div class="row-fluid amenities_title">
 		<div class="span12 info_label">
 			Included:
 		</div>

@@ -2,6 +2,7 @@
 @stop-color: #27282b; //#207ce5;
 @compact-width: 800px;
 @btn-contains-height: 22px;
+@navbar-color: #383838;
 body
 {
 	padding: 0;
@@ -9,14 +10,19 @@ body
 
 #header
 {
-	.navbar-inner
-	{
-		background-color: #383838;
-		background-image: url(/img/header/header_bg.png);
+	// position: relative;
+
+	&.navbar-inverse {
+		.navbar-inner {
+		// background-image: url(/img/header/header_bg.png);
+
+			background-color: @navbar-color;
+			background-image: linear-gradient(to bottom,@navbar-color,darken(@navbar-color, 3%));
+		}
 	}
 	.header_logo
 	{
-		padding: 18px 15px;
+		padding: 0 25px;
 		border-right: solid 1px black;
 		img
 		{
@@ -57,6 +63,7 @@ body
 	}
 	.review_btn
 	{
+		float: left;
 		margin-top: 9px;
 		margin-right: 5px;
 	}
@@ -231,5 +238,19 @@ body
 	margin: 0 15px;
 	background-image: url(/img/header/logo.png);
 	background-size: 100%;
+}
+
+
+@media (max-width: 979px) {
+	.navbar-fixed-top {
+		margin-bottom: 3px;
+	}
+
+	#header {
+		.review_btn {
+			display: block;
+			float: none;
+		}
+	}
 }
 

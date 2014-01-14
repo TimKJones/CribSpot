@@ -2,6 +2,8 @@
 	echo '<div id="container">';
 		echo $this->element('header');
 		echo $this->element('map');
+		echo $this->element('sublet_introduction');
+		?><!-- hello !> <?
 		echo $this->element('sidebar');
 		echo $this->element('login');
 		echo $this->element('register');
