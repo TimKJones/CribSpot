@@ -248,6 +248,7 @@
       $.post(url, message_data, function(data) {
         var response;
         _this.refreshMessages();
+        _this.refreshConversations();
         $('#message_text textarea').val('');
         response = JSON.parse(data);
         if ((data != null ? data.success : void 0) === false) {

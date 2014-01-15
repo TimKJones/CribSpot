@@ -218,7 +218,7 @@ class A2Cribs.Messages
 			@DeferredLoadMessages.resolve()
 
 		.fail =>
-			@NumMessagePages = 0;
+			@NumMessagePages = 0
 
 		return @DeferredLoadMessages.promise()
 		
@@ -243,25 +243,25 @@ class A2Cribs.Messages
 	
 	@sendReply:(event)->
 		# Gather the data to send to the server
-		message_text = $('#message_text textarea').val()	
+		message_text = $('#message_text textarea').val()
 		if message_text.length == 0
 			A2Cribs.UIManager.Error "Message can not be empty"
 			return false
 		# Disable the submit button
 		$('#send_reply').button('loading')
-		message_text = $('#message_text textarea').val()	
+		message_text = $('#message_text textarea').val()
 		# Build the data object that we'll send to the server
-		message_data = 
+		message_data =
 			'message_text': message_text
 			'conversation_id': @CurrentConversation
 		
 		url = myBaseUrl + "messages/newMessage/"
 
-		$.post url, message_data, (data)=>			
+		$.post url, message_data, (data)=>
 			@refreshMessages()
-			#@refreshConversations()			
+			@refreshConversations()
 			$('#message_text textarea').val('') # Clear the reply text field
-			response = JSON.parse(data);
+			response = JSON.parse(data)
 			if data?.success == false
 				A2Cribs.UIManager.Error "Something went wrong while sending a reply, please refresh the page and try again"
 		.always ()=>
@@ -274,7 +274,7 @@ class A2Cribs.Messages
 			'conv_id': @CurrentConversation
 		}
 
-		$.post url, request_data, (response)=>			
+		$.post url, request_data, (response)=>
 			try
 				data = JSON.parse response
 			catch e
