@@ -67,24 +67,22 @@
         _this = this;
       url = myBaseUrl + "messages/getConversations";
       return $.get(url, function(data) {
-        var conversations, convo, list_item, message_count_box, _i, _len, _results;
+        var conversations, convo, item_html, list_item, participant_name, _i, _len, _ref, _results;
         $("#messages_list_content").empty();
         conversations = JSON.parse(data);
         _results = [];
         for (_i = 0, _len = conversations.length; _i < _len; _i++) {
           convo = conversations[_i];
-          message_count_box = $("<div />", {
-            "class": "notification_count pull-right",
-            text: convo.Conversation.unread_message_count
-          });
+          participant_name = ((_ref = convo.Participant.first_name) != null ? _ref.length : void 0) ? convo.Participant.first_name : convo.Participant.company_name;
+          item_html = "<div class=\"message_title\">" + convo.Conversation.title + "</div>\n<div class=\"message_desc\">\n	" + (convo.Last_Message.user_id === convo.Participant.id ? participant_name : "Me") + ": " + convo.Last_Message.body + "\n</div>";
           list_item = $("<li />", {
-            text: convo.Conversation.title,
+            html: item_html,
             "class": "messages_list_item",
             id: convo.Conversation.conversation_id,
             "data-participant": convo.Participant.id,
             "data-listing": convo.Conversation.listing_id,
             "data-title": convo.Conversation.title
-          }).append(message_count_box);
+          });
           if (parseInt(convo.Conversation.unread_message_count, 10) > 0) {
             list_item.addClass("unread");
           }

@@ -107,6 +107,38 @@
 				color: #009966;
 			}
 		}
+		.messages_list_item
+		{
+			height: auto;
+			line-height: 20px;
+			padding: 5px !important;
+			font-weight: normal;
+
+			div
+			{
+				width: 100%;
+			}
+			.message_title
+			{
+				line-height: 20px;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+			.message_desc
+			{
+				line-height: 12px;
+				font-size: 12px;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+				padding-bottom: 3px;
+			}
+			&.unread
+			{
+				font-weight: bold;
+			}
+		}
 	}
 
 	.dropdowns_container

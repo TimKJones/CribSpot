@@ -62,7 +62,7 @@ class A2Cribs.Messages
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
 			response_data = JSON.parse data
-			$('#message_count').html response_data.unread_messages 
+			$('#message_count').html response_data.unread_messages
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
@@ -70,18 +70,21 @@ class A2Cribs.Messages
 			$("#messages_list_content").empty()
 			conversations = JSON.parse data
 			for convo in conversations
-				message_count_box = $ "<div />",
-					class: "notification_count pull-right"
-					text: convo.Conversation.unread_message_count
+				participant_name = if convo.Participant.first_name?.length then convo.Participant.first_name else convo.Participant.company_name
+				item_html = """
+					<div class="message_title">#{convo.Conversation.title}</div>
+					<div class="message_desc">
+						#{if convo.Last_Message.user_id is convo.Participant.id then participant_name else "Me"}: #{convo.Last_Message.body}
+					</div>
+				"""
 				
 				list_item = $ "<li />",
-					text: convo.Conversation.title
+					html: item_html
 					class: "messages_list_item"
 					id: convo.Conversation.conversation_id
 					"data-participant": convo.Participant.id
 					"data-listing": convo.Conversation.listing_id
 					"data-title": convo.Conversation.title
-				.append message_count_box
 
 				if parseInt(convo.Conversation.unread_message_count, 10) > 0
 					list_item.addClass "unread"

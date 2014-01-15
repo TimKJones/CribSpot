@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=2','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=3','stylesheet/less', array('inline' => false)); ?>
 
 <ul id="navigation-bar" class="nav nav-list">
 	<?php
