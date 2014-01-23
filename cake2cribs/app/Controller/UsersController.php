@@ -819,7 +819,7 @@ class UsersController extends AppController {
               continue;
 
           $nextLink = array(
-              'link' => 'https://www.cribspot.com/users/PMLogin?id='.$pm['User']['id'].'&code='.$pm['LoginCode'][0]['code'],
+              'link' => 'https://www.cribspot.com/users/PMLogin?id='.$pm['User']['id'].'&code='.$pm['LoginCode'][0]['code'].'&admin=true',
               'company_name' => $pm['User']['company_name'],
               'city' => $pm['User']['city'],
               'state' => $pm['User']['state']
@@ -857,9 +857,14 @@ class UsersController extends AppController {
         credentials were correct - log the user in. 
         If conversation id present, redirect user to that conversation
         */
-        $user = $this->User->get($id);
-        $this->User->VerifyEmail($id);
-        $this->_login($user, true);
+				$user = $this->User->get($id);
+
+				/* Determine if this user is a Cribspot admin rather than the user themself */
+				$is_admin = array_key_exists('admin', $this->request->query);
+				if (!$is_admin)
+					$this->User->VerifyEmail($id);
+
+        $this->_login($user, $is_admin);
         $this->LoginCode->InvalidateCode($id);
         if (array_key_exists('convid', $this->request->query)){
             $conv_id = $this->request->query['convid'];
