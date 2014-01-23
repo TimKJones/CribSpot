@@ -62,7 +62,7 @@ class A2Cribs.Messages
 		url = myBaseUrl + "messages/getUnreadCount"
 		$.get url, (data)=>
 			response_data = JSON.parse data
-			$('#message_count').html response_data.unread_messages 
+			$('#message_count').html response_data.unread_messages
 
 	@refreshConversations:()->
 		url = myBaseUrl + "messages/getConversations"
@@ -70,18 +70,21 @@ class A2Cribs.Messages
 			$("#messages_list_content").empty()
 			conversations = JSON.parse data
 			for convo in conversations
-				message_count_box = $ "<div />",
-					class: "notification_count pull-right"
-					text: convo.Conversation.unread_message_count
+				participant_name = if convo.Participant.first_name?.length then convo.Participant.first_name else convo.Participant.company_name
+				item_html = """
+					<div class="message_title">#{convo.Conversation.title}</div>
+					<div class="message_desc">
+						#{if convo.Last_Message.user_id is convo.Participant.id then participant_name else "Me"}: #{convo.Last_Message.body}
+					</div>
+				"""
 				
 				list_item = $ "<li />",
-					text: convo.Conversation.title
+					html: item_html
 					class: "messages_list_item"
 					id: convo.Conversation.conversation_id
 					"data-participant": convo.Participant.id
 					"data-listing": convo.Conversation.listing_id
 					"data-title": convo.Conversation.title
-				.append message_count_box
 
 				if parseInt(convo.Conversation.unread_message_count, 10) > 0
 					list_item.addClass "unread"
@@ -215,7 +218,7 @@ class A2Cribs.Messages
 			@DeferredLoadMessages.resolve()
 
 		.fail =>
-			@NumMessagePages = 0;
+			@NumMessagePages = 0
 
 		return @DeferredLoadMessages.promise()
 		
@@ -240,25 +243,25 @@ class A2Cribs.Messages
 	
 	@sendReply:(event)->
 		# Gather the data to send to the server
-		message_text = $('#message_text textarea').val()	
+		message_text = $('#message_text textarea').val()
 		if message_text.length == 0
 			A2Cribs.UIManager.Error "Message can not be empty"
 			return false
 		# Disable the submit button
 		$('#send_reply').button('loading')
-		message_text = $('#message_text textarea').val()	
+		message_text = $('#message_text textarea').val()
 		# Build the data object that we'll send to the server
-		message_data = 
+		message_data =
 			'message_text': message_text
 			'conversation_id': @CurrentConversation
 		
 		url = myBaseUrl + "messages/newMessage/"
 
-		$.post url, message_data, (data)=>			
+		$.post url, message_data, (data)=>
 			@refreshMessages()
-			#@refreshConversations()			
+			@refreshConversations()
 			$('#message_text textarea').val('') # Clear the reply text field
-			response = JSON.parse(data);
+			response = JSON.parse(data)
 			if data?.success == false
 				A2Cribs.UIManager.Error "Something went wrong while sending a reply, please refresh the page and try again"
 		.always ()=>
@@ -271,7 +274,7 @@ class A2Cribs.Messages
 			'conv_id': @CurrentConversation
 		}
 
-		$.post url, request_data, (response)=>			
+		$.post url, request_data, (response)=>
 			try
 				data = JSON.parse response
 			catch e

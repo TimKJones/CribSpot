@@ -342,8 +342,28 @@
             $data['participant2_id'] = $listing['User']['id'];
             // We need to get the street address of the marker the sublet
             // Corresponds to since that will be the title of the conversation
-            $data['title'] = $listing['Marker']['street_address'];
+						$title = (!empty($listing['Marker']['alternative_name'])) ? $listing['Marker']['alternative_name'] : $listing['Marker']['street_address'];
+	
+						$unit_array = array('Unit', 'Layout', 'Entire House');
+						if ($listing['Listing']['listing_type'] == 0 && isset($listing['Rental']['unit_style_options'])) // This is a rental
+						{
+							if ($listing['Rental']['unit_style_options'] == 2)
+								$title .= ' - Entire House';
+							else if (!empty($listing['Rental']['unit_style_description']))
+								$title .= ' - ' . $unit_array[$listing['Rental']['unit_style_options']] . ' ' . $listing['Rental']['unit_style_description'];
+							else
+								$title .= ' - ' . $listing['Rental']['beds'] . ' Br ' . $listing['Rental']['baths'] . ' Bath';
+						}
+						else if ($listing['Listing']['listing_type'] == 0)
+						{
+							$title .= ' - ' . $listing['Rental']['beds'] . ' Br ' . $listing['Rental']['baths'] . ' Bath';
+						}
+						else
+						{
+							$title .= ' - ' . $listing['Sublet']['beds'] . ' Br ' . $listing['Sublet']['baths'] . ' Bath';
+						}
 
+						$data['title'] = $title;
             $this->Conversation->createConversation($data);
             $conversation = $this->Conversation->read();
             $this->Message->createMessage($message_body, 
