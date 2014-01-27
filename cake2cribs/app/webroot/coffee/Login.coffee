@@ -88,11 +88,6 @@ class A2Cribs.Login
 		$("#signup_modal").find("form").submit (event) =>
 			$("#signup_modal").find(".signup-button").button 'loading'
 			@CreateStudent(event.delegateTarget)
-			.done ->
-				A2Cribs.ShareManager.ShowShareModal("Almost done!",
-				"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
-				"after signup"
-				)
 			.always () =>
 				$("#signup_modal").find(".signup-button").button 'reset'
 			return false
@@ -113,11 +108,6 @@ class A2Cribs.Login
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
-					if response.account_exists is no
-						A2Cribs.ShareManager.ShowShareModal("Almost done!",
-						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
-						"after signup"
-						)
 					$(document).trigger("logged_in", [response.data])
 
 			.always () =>
@@ -162,11 +152,6 @@ class A2Cribs.Login
 					# Populate the header
 					@PopulateHeader response.data
 					@PopulateFavorites response.data?.favorites
-					if response.account_exists is no
-						A2Cribs.ShareManager.ShowShareModal("Almost done!",
-						"You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.",
-						"after signup"
-						)
 					$(document).trigger("logged_in", [response.data])
 			.always () =>
 				$(".fb-login").button('reset')

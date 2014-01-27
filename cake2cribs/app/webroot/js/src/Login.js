@@ -106,9 +106,7 @@
       });
       $("#signup_modal").find("form").submit(function(event) {
         $("#signup_modal").find(".signup-button").button('loading');
-        _this.CreateStudent(event.delegateTarget).done(function() {
-          return A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
-        }).always(function() {
+        _this.CreateStudent(event.delegateTarget).always(function() {
           return $("#signup_modal").find(".signup-button").button('reset');
         });
         return false;
@@ -124,9 +122,6 @@
             _this.logged_in = true;
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
-            if (response.account_exists === false) {
-              A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
-            }
             return $(document).trigger("logged_in", [response.data]);
           }
         }).always(function() {
@@ -168,9 +163,6 @@
             _this.logged_in = true;
             _this.PopulateHeader(response.data);
             _this.PopulateFavorites((_ref = response.data) != null ? _ref.favorites : void 0);
-            if (response.account_exists === false) {
-              A2Cribs.ShareManager.ShowShareModal("Almost done!", "You'll need to invite your housing group to take advantage of all the features Cribspot has to offer.", "after signup");
-            }
             return $(document).trigger("logged_in", [response.data]);
           }
         }).always(function() {
