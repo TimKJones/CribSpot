@@ -631,6 +631,9 @@ table.ui-datepicker-calendar {border-collapse: separate;}
         border-radius: 3px;
         height: 80px;
         overflow:hidden;
+				-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+				-moz-box-sizing: border-box; 
+        box-sizing: border-box;
         &:after {
           visibility: hidden;
           display: block;
@@ -645,6 +648,8 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     .img-wrapper, .info-wrapper {
         display: block;
         float: left;
+				-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+				-moz-box-sizing: border-box; 
         box-sizing: border-box;
     }
 
@@ -734,7 +739,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
     .listing-actions {
 
         position: absolute;
-        bottom: 0;
+        bottom: 2px;
         width: 100%;
 
         z-index: 9; 
@@ -782,7 +787,9 @@ table.ui-datepicker-calendar {border-collapse: separate;}
                     width: 100%;
                     background: #7AA3E1;
                     padding: 10px;
-                    box-sizing: border-box;
+										-moz-box-sizing: border-box;
+										-webkit-box-sizing: border-box;
+										box-sizing: border-box;
 
                     i {
                         font-size: 20px;
