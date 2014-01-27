@@ -100,8 +100,9 @@ class ListingsController extends AppController {
 
  		$this->_refactorMoneyFields($listing, $listing_type);
 		$this->_refactorTextFields($listing, $listing_type);
+		$this->_refactorAmenities($listing, $listing_type);
+		CakeLog::write('Amenities', print_r($listing, true));
 		$this->_setPrimaryImage($listing);
-		$this->_refactorBooleanAmenities($listing, $listing_type);
 		$this->_refactorDates($listing, $listing_type);
 		if (array_key_exists('Image', $listing)){
 			$this->_setImagePathsForFullPageView($listing['Image']);
@@ -597,24 +598,26 @@ Returns a list of marker_ids that will be visible based on the current filter se
 	/*
 	Convert numeric values or null into their corresponding string values
 	*/
-	private function _refactorAmenities(&$listing)
+	private function _refactorAmenities(&$listing, $listing_type)
 	{
-		$this->_refactorBooleanAmenities($listing);
+		$this->_refactorBooleanAmenities($listing, $listing_type);
 
-		$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
+		$amenities = array();
+		if (!strcmp($listing_type, 'Rental'))
+			$amenities = array('furnished_type', 'washer_dryer', 'parking_type', 'parking_spots', 'pets_type');
 		foreach ($amenities as $field){
-			if (empty($listing[$field]))
-				$listing[$field] = '-';
+			if (empty($listing[$listing_type][$field]))
+				$listing[$listing_type][$field] = '-';
 		}
 
 		if ($listing['furnished_type'] !== '-')
-			$listing['furnished_type'] = Rental::furnished($listing['furnished_type']);
+			$listing[$listing_type]['furnished_type'] = Rental::furnished($listing[$listing_type]['furnished_type']);
 
-		if ($listing['washer_dryer'] !== '-')
-			$listing['washer_dryer'] = Rental::washer_dryer($listing['washer_dryer']);
+		if ($listing[$listing_type]['washer_dryer'] !== '-')
+			$listing[$listing_type]['washer_dryer'] = Rental::washer_dryer($listing[$listing_type]['washer_dryer']);
 
-		if ($listing['parking_type'] !== '-')
-			$listing['parking_type'] = Rental::parking($listing['parking_type']);	
+		if ($listing[$listing_type]['parking_type'] !== '-')
+			$listing[$listing_type]['parking_type'] = Rental::parking($listing[$listing_type]['parking_type']);	
 	}
 
 	private function _refactorBooleanAmenities(&$listing, $listing_type)
