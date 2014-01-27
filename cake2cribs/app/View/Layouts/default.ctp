@@ -121,7 +121,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->fetch('css');
 
 if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=115');
+	echo $this->Html->script('src/program.js?v=116');
 }
 
 		if (!isset($canonical_url))
