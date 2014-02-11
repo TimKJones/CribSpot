@@ -16,13 +16,14 @@ class ImportController extends AppController {
 		'elevator');
 
 	public function beforeFilter(){
-		parent::beforeFilter();		
-		$this->Auth->allow('SaveMultipleImageCopies');
+		parent::beforeFilter();	
+		throw new NotFoundException();	
+	/*	$this->Auth->allow('SaveMultipleImageCopies');
 		$this->Auth->allow('GetListings');
 		$this->Auth->allow('SaveListings');
 		$this->Auth->allow('TestGeocoderFunctionality');
 		$this->Auth->allow('index');
-		$this->Auth->allow('ImportImages');
+		$this->Auth->allow('ImportImages');*/
   	}
 
   	public function index()
@@ -35,7 +36,7 @@ Returns json_encoded array of listings
 if $fileName is null, processes all files in app/webroot/listings/
 otherwise, processes only app/webroot/listings/$fileName
 */
-	public function GetListings($fileName='cinci.csv')
+	public function GetListings($fileName='finders_fee.csv')
 	{
 		ini_set('auto_detect_line_endings',true);
 		$this->layout = 'ajax';
