@@ -94,13 +94,13 @@ class LargeBubble
 	@Open: (listing_id) ->
 		@IsOpen = true
 		$("#map_canvas").trigger "click_bubble_open", [listing_id]
+		$(document).trigger "track_event", ["Listing", "Popup Opened", "", listing_id]
 		openDeferred = new $.Deferred()
 
 		if listing_id?
 			$("#loader").show()
 			A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id)
 			.done (listing) =>
-				A2Cribs.MixPanel.Click listing, "large popup"
 				@SetContent listing.GetObject()
 				@Show listing_id
 				openDeferred.resolve listing_id
@@ -222,21 +222,14 @@ class LargeBubble
 			@div.find(".#{div_name}").addClass "leased"
 
 	@linkWebsite: (div_name, link, listing_id) ->
-		mix_object = A2Cribs.UserCache.Get("listing", listing_id)
-		if not mix_object?
-			mix_object = {}
-		mix_object["logged_in"] = A2Cribs.Login?.logged_in
-
 		if link?
 			@div.find(div_name).unbind("click").click () =>
 				if A2Cribs.Login?.logged_in is yes
-					A2Cribs.MixPanel.Click mix_object, "go to realtor's website"
+					$(document).trigger "track_event", ["Listing", "Go to website", "", listing_id]
 					window.open "/listings/website/#{listing_id}", '_blank'
-				else 
+				else
 					$("#signup_modal").modal("show").find(".signup_message").text "Please signup to view this website"
-					A2Cribs.MixPanel.Event "login required",
-						"listing_id": listing_id
-						action: "go to realtor's website"
+					$(document).trigger "track_event", ["Login", "Login required", "Go to website", listing_id]
 		else
 			@div.find(div_name).unbind("click").click () => A2Cribs.UIManager.Error('This owner does not have a website for this listing')
 
@@ -289,7 +282,7 @@ class LargeBubble
 	@setFullPage: (div_name, listing_id) ->
 		$(".#{div_name}").unbind "click"
 		$(".#{div_name}").click () ->
-			A2Cribs.MixPanel.Click A2Cribs.UserCache.Get("listing", listing_id), "full page"
+			$(document).trigger "track_event", ["Listing", "View full page", "", listing_id]
 			link = "/listings/view/#{listing_id}"
 			win = window.open link, '_blank'
 			win.focus()

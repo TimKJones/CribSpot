@@ -260,7 +260,7 @@
     };
 
     FeaturedListings.InitializeSidebar = function(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred) {
-      var alt, getFlIdsDeferred,
+      var alt, featured_text, getFlIdsDeferred, markerPosition,
         _this = this;
       alt = active_listing_type;
       if (this.SidebarListingCache == null) {
@@ -283,7 +283,7 @@
           _this.listing_ids = sidebar_listing_ids;
           _this.GetSidebarImagePaths(sidebar_listing_ids.slice(0, 25));
           _this.SetupListingItemEvents();
-          return $('#listings-list').on('click', '.fl-sb-item', function(event) {
+          $('#listings-list').on('click', '.fl-sb-item', function(event) {
             var $map, listing, listing_id, marker, markerPosition, marker_id;
             $map = $('#map_region');
             if ($map.is(':visible')) {
@@ -308,9 +308,47 @@
             }
           });
         } else {
-          return _this.listing_ids = [];
+          _this.listing_ids = [];
         }
+        _this.GetSidebarImagePaths(sidebar_listing_ids);
+        return $(".fl-sb-item").click(function(event) {
+          var listing, listing_id, marker, marker_id;
+          marker_id = parseInt($(event.currentTarget).attr('marker_id'));
+          listing_id = parseInt($(event.currentTarget).attr('listing_id'));
+          marker = A2Cribs.UserCache.Get('marker', marker_id);
+          listing = A2Cribs.UserCache.Get('listing', listing_id);
+          A2Cribs.Map.GMap.setZoom(16);
+          return $("#map_region").trigger("marker_clicked", [marker]);
+        });
       });
+      featured_text = listing.IsFeatured() ? "Featured Listing" : "Normal Listing";
+      $(document).trigger("track_event", ["Listing", "Sidebar Click", featured_text, listing_id]);
+      markerPosition = marker.GMarker.getPosition();
+      A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng().draggable({
+        revert: true,
+        opacity: 0.7,
+        cursorAt: {
+          top: -12,
+          right: -20
+        },
+        helper: function(event) {
+          var name;
+          name = $(this).find('.name').html() || "this listing";
+          return $("<div class='listing-drag-helper'>Share " + name + "</div>");
+        },
+        start: function(event) {
+          var _ref;
+          if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+            $('ul.friends, #hotlist').addClass('dragging');
+            return A2Cribs.HotlistObj.startedDragging();
+          }
+        },
+        stop: function(event) {
+          $('ul.friends, #hotlist').removeClass('dragging');
+          return A2Cribs.HotlistObj.stoppedDragging();
+        },
+        appendTo: 'body'
+      }));
       $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
         var image, _i, _len, _results;
         images = JSON.parse(images);
@@ -342,7 +380,7 @@
     };
 
     FeaturedListings.LoadFeaturedPMListings = function() {
-      return $.ajax({
+      $.ajax({
         url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId,
         type: "GET",
         success: function(data) {
@@ -356,18 +394,17 @@
                 return A2Cribs.Map.IsCluster(true);
               } else {
                 A2Cribs.Map.IsCluster(false);
-                $(event.delegateTarget).addClass("active");
-                return A2Cribs.MixPanel.Event('Sidebar Featured PM', {
-                  pm_id: user_id
-                });
+                return $(event.delegateTarget).addClass("active");
               }
             }
           });
-        },
+        }
+      }, $(document).trigger("track_event", ["Advertising", "Featured PM", "", user_id]));
+      return {
         error: function() {
           return FeaturedListings.FeaturedPMIdToListingIdsMap = [];
         }
-      });
+      };
     };
 
     Sidebar = (function() {

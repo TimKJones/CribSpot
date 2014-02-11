@@ -90,8 +90,8 @@
     };
 
     Marker.prototype.MarkerClicked = function(event) {
-      A2Cribs.MixPanel.Click(this, 'small popup');
-      return $("#map_region").trigger("marker_clicked", [this]);
+      $("#map_region").trigger("marker_clicked", [this]);
+      return $(document).trigger("track_event", ["Marker", "Marker Clicked", "", this.GetId()]);
     };
 
     /*

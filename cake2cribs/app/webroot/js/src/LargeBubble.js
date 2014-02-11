@@ -134,11 +134,11 @@ LargeBubble class
         _this = this;
       this.IsOpen = true;
       $("#map_canvas").trigger("click_bubble_open", [listing_id]);
+      $(document).trigger("track_event", ["Listing", "Popup Opened", "", listing_id]);
       openDeferred = new $.Deferred();
       if (listing_id != null) {
         $("#loader").show();
         A2Cribs.UserCache.GetListing(A2Cribs.Map.ACTIVE_LISTING_TYPE, listing_id).done(function(listing) {
-          A2Cribs.MixPanel.Click(listing, "large popup");
           _this.SetContent(listing.GetObject());
           _this.Show(listing_id);
           return openDeferred.resolve(listing_id);
@@ -281,25 +281,16 @@ LargeBubble class
     };
 
     LargeBubble.linkWebsite = function(div_name, link, listing_id) {
-      var mix_object, _ref,
-        _this = this;
-      mix_object = A2Cribs.UserCache.Get("listing", listing_id);
-      if (mix_object == null) {
-        mix_object = {};
-      }
-      mix_object["logged_in"] = (_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0;
+      var _this = this;
       if (link != null) {
         return this.div.find(div_name).unbind("click").click(function() {
-          var _ref1;
-          if (((_ref1 = A2Cribs.Login) != null ? _ref1.logged_in : void 0) === true) {
-            A2Cribs.MixPanel.Click(mix_object, "go to realtor's website");
+          var _ref;
+          if (((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) === true) {
+            $(document).trigger("track_event", ["Listing", "Go to website", "", listing_id]);
             return window.open("/listings/website/" + listing_id, '_blank');
           } else {
             $("#signup_modal").modal("show").find(".signup_message").text("Please signup to view this website");
-            return A2Cribs.MixPanel.Event("login required", {
-              "listing_id": listing_id,
-              action: "go to realtor's website"
-            });
+            return $(document).trigger("track_event", ["Login", "Login required", "Go to website", listing_id]);
           }
         });
       } else {
@@ -372,7 +363,7 @@ LargeBubble class
       $("." + div_name).unbind("click");
       return $("." + div_name).click(function() {
         var link, win;
-        A2Cribs.MixPanel.Click(A2Cribs.UserCache.Get("listing", listing_id), "full page");
+        $(document).trigger("track_event", ["Listing", "View full page", "", listing_id]);
         link = "/listings/view/" + listing_id;
         win = window.open(link, '_blank');
         return win.focus();
