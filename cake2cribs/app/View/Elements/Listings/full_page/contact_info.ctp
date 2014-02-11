@@ -55,7 +55,7 @@
 	</div>
 	<div class="row-fluid">
 		<div class="span12">
-			<button class="btn" id="contact_owner" emailExists='<?php echo $email_exists; ?>'>CONTACT RENTAL OWNER</button>
+			<button class="btn" id="contact_owner" emailExists='<?php echo $email_exists; ?>'>CONTACT</button>
 		</div>
 	</div>
 	<?php if (false) {//($listing['Listing']['available'] === true){ ?>
