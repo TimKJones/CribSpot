@@ -68,7 +68,7 @@ class Analytics
 	Private Event Method
 	Wrapper for the _trackEvent for google analytics
 	###
-	event = (category, action, label = null, value = null) ->
+	push_event = (category, action, label = null, value = null) ->
 		_gaq.push ['_trackEvent', category, action, label, value]
 
 	###
@@ -76,5 +76,5 @@ class Analytics
 	###
 	$(document).ready =>
 		$(document).on "track_event", (event, category, action, label = null, value = null) =>
-			event category, action, label, value
+			push_event category, action, label, value
 

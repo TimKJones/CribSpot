@@ -60,9 +60,6 @@
     Map.Init = function(school_id, latitude, longitude, city, state, school_name, active_listing_type_id) {
       var imageStyles, mcOptions, zoom;
       this.CurentSchoolId = school_id;
-      mixpanel.register({
-        'preferred_university': school_id
-      });
       A2Cribs.FilterManager.CurrentCity = city;
       A2Cribs.FilterManager.CurrentState = state;
       A2Cribs.FilterManager.CurrentSchool = school_name;

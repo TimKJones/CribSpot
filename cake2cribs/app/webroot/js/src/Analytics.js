@@ -21,7 +21,7 @@ Cribspot Events:
 - Full Page
 	- Schedule Tour Clicked
 	- Contact Owner Clicked
-- TODO: ONLY ON FULL PAGE Message
+- Message
 	- Sending Message
 	- Message Sent
 	- Message Failed
@@ -65,7 +65,9 @@ Cribspot Events:
 
 
 (function() {
-  A2Cribs.Analytics = (function() {
+  var Analytics;
+
+  Analytics = (function() {
     /*
     	Private Event Method
     	Wrapper for the _trackEvent for google analytics

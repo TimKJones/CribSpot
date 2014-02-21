@@ -249,10 +249,12 @@
       return $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
         var image, _i, _len;
         images = JSON.parse(images);
-        for (_i = 0, _len = images.length; _i < _len; _i++) {
-          image = images[_i];
-          if ((image != null) && (image.Image != null)) {
-            $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
+        if (images != null) {
+          for (_i = 0, _len = images.length; _i < _len; _i++) {
+            image = images[_i];
+            if ((image != null) && (image.Image != null)) {
+              $("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")");
+            }
           }
         }
         return $('#loading-spinner').hide();
@@ -260,7 +262,7 @@
     };
 
     FeaturedListings.InitializeSidebar = function(university_id, active_listing_type, basicDataDeferred, basicDataCachedDeferred) {
-      var alt, featured_text, getFlIdsDeferred, markerPosition,
+      var alt, getFlIdsDeferred,
         _this = this;
       alt = active_listing_type;
       if (this.SidebarListingCache == null) {
@@ -293,7 +295,6 @@
               listing = A2Cribs.UserCache.Get('listing', listing_id);
               markerPosition = marker.GMarker.getPosition();
               A2Cribs.Map.GMap.setZoom(16);
-              A2Cribs.MixPanel.Click(listing, 'sidebar listing');
               A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
               return $map.trigger("marker_clicked", [marker]);
             } else {
@@ -312,56 +313,58 @@
         }
         _this.GetSidebarImagePaths(sidebar_listing_ids);
         return $(".fl-sb-item").click(function(event) {
-          var listing, listing_id, marker, marker_id;
+          var featured_text, listing, listing_id, marker, markerPosition, marker_id;
           marker_id = parseInt($(event.currentTarget).attr('marker_id'));
           listing_id = parseInt($(event.currentTarget).attr('listing_id'));
           marker = A2Cribs.UserCache.Get('marker', marker_id);
           listing = A2Cribs.UserCache.Get('listing', listing_id);
           A2Cribs.Map.GMap.setZoom(16);
-          return $("#map_region").trigger("marker_clicked", [marker]);
+          $("#map_region").trigger("marker_clicked", [marker]);
+          featured_text = listing.IsFeatured() ? "Featured Listing" : "Normal Listing";
+          $(document).trigger("track_event", ["Listing", "Sidebar Click", featured_text, listing_id]);
+          markerPosition = marker.GMarker.getPosition();
+          return A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng());
+        }).draggable({
+          revert: true,
+          opacity: 0.7,
+          cursorAt: {
+            top: -12,
+            right: -20
+          },
+          helper: function(event) {
+            var name;
+            name = $(this).find('.name').html() || "this listing";
+            return $("<div class='listing-drag-helper'>Share " + name + "</div>");
+          },
+          start: function(event) {
+            var _ref;
+            if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
+              $('ul.friends, #hotlist').addClass('dragging');
+              return A2Cribs.HotlistObj.startedDragging();
+            }
+          },
+          stop: function(event) {
+            $('ul.friends, #hotlist').removeClass('dragging');
+            return A2Cribs.HotlistObj.stoppedDragging();
+          },
+          appendTo: 'body'
         });
       });
-      featured_text = listing.IsFeatured() ? "Featured Listing" : "Normal Listing";
-      $(document).trigger("track_event", ["Listing", "Sidebar Click", featured_text, listing_id]);
-      markerPosition = marker.GMarker.getPosition();
-      A2Cribs.Map.CenterMap(markerPosition.lat(), markerPosition.lng().draggable({
-        revert: true,
-        opacity: 0.7,
-        cursorAt: {
-          top: -12,
-          right: -20
-        },
-        helper: function(event) {
-          var name;
-          name = $(this).find('.name').html() || "this listing";
-          return $("<div class='listing-drag-helper'>Share " + name + "</div>");
-        },
-        start: function(event) {
-          var _ref;
-          if ((_ref = A2Cribs.Login) != null ? _ref.logged_in : void 0) {
-            $('ul.friends, #hotlist').addClass('dragging');
-            return A2Cribs.HotlistObj.startedDragging();
-          }
-        },
-        stop: function(event) {
-          $('ul.friends, #hotlist').removeClass('dragging');
-          return A2Cribs.HotlistObj.stoppedDragging();
-        },
-        appendTo: 'body'
-      }));
       $.when(this.GetSidebarImagePathsDeferred).then(function(images) {
         var image, _i, _len, _results;
         images = JSON.parse(images);
-        _results = [];
-        for (_i = 0, _len = images.length; _i < _len; _i++) {
-          image = images[_i];
-          if ((image != null) && (image.Image != null)) {
-            _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
-          } else {
-            _results.push(void 0);
+        if (images != null) {
+          _results = [];
+          for (_i = 0, _len = images.length; _i < _len; _i++) {
+            image = images[_i];
+            if ((image != null) && (image.Image != null)) {
+              _results.push($("#fl-sb-item-" + image.Image.listing_id + " .img-wrapper").css('background-image', "url(/" + image.Image.image_path + ")"));
+            } else {
+              _results.push(void 0);
+            }
           }
+          return _results;
         }
-        return _results;
       });
       return $('#loading-spinner').hide();
     };
@@ -380,7 +383,7 @@
     };
 
     FeaturedListings.LoadFeaturedPMListings = function() {
-      $.ajax({
+      return $.ajax({
         url: myBaseUrl + "Listings/GetFeaturedPMListings/" + A2Cribs.Map.CurentSchoolId,
         type: "GET",
         success: function(data) {
@@ -394,17 +397,16 @@
                 return A2Cribs.Map.IsCluster(true);
               } else {
                 A2Cribs.Map.IsCluster(false);
-                return $(event.delegateTarget).addClass("active");
+                $(event.delegateTarget).addClass("active");
+                return $(document).trigger("track_event", ["Advertising", "Featured PM", "", user_id]);
               }
             }
           });
-        }
-      }, $(document).trigger("track_event", ["Advertising", "Featured PM", "", user_id]));
-      return {
+        },
         error: function() {
           return FeaturedListings.FeaturedPMIdToListingIdsMap = [];
         }
-      };
+      });
     };
 
     Sidebar = (function() {
@@ -548,9 +550,9 @@
 
     })();
 
-    FeaturedListings.EmptyListingsHTML = "<div class='fl-sb-item no-listings'>\n    <% if (clear) { %>\n        <span class='no-listings-text'>No listings found for these filter settings. Try adjusting the filter for more results.</span>\n    <% } else { %>\n        <span class='no-listings-text'>No more listings found for these filter settings.</span>\n    <% } %>\n</div>";
+    FeaturedListings.EmptyListingsHTML = "<div class='fl-sb-item no-listings'>\n	<% if (clear) { %>\n		<span class='no-listings-text'>No listings found for these filter settings. Try adjusting the filter for more results.</span>\n	<% } else { %>\n		<span class='no-listings-text'>No more listings found for these filter settings.</span>\n	<% } %>\n</div>";
 
-    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n    <div class='listing-content'>\n        <div class = 'img-wrapper' style='background-image:url(\"<%=img%>\")'> </div>\n        <div class = 'info-wrapper'>\n            <div class = 'info-row'>\n                <span class = 'rent price-text'><%= \"$\" + rent %></span>\n                <span class = 'divider'>|</span>\n                <span class = 'beds'><%= beds %> </span>\n                <span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>    \n                <span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n                <span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n            </div>\n            <div class = 'info-row'>\n                <span class = 'building-type'><%= building_type %></span>\n                <span class = 'divider'>|</span>\n                <% if (typeof(end_date) != \"undefined\") { %>\n                <span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n                <% } else { %>\n                <span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> mo.</span>\n                <% } %>\n            </div>\n            <div class = 'info-row'>\n                <i class = 'icon-map-marker <%= available %>'></i><span class = 'name'><%=name%></span>\n            </div>\n        </div>   \n    </div>\n    <div class='listing-actions'>\n        <ul class='action-row'>\n            <li class='hotlist-share'><a href='#'><i class=\"action-icon icon-heart favorite_listing\" data-listing-id='<%=listing_id%>'></i></a></li>\n            <li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class=\"action-icon icon-share\"></i></a></li>\n        </ul>\n    </div>\n</div>";
+    FeaturedListings.ListItemHTML = "<div id = 'fl-sb-item-<%= listing_id %>' class = 'fl-sb-item' listing_id=<%= listing_id %> marker_id=<%= marker_id %>>\n	<div class='listing-content'>\n		<div class = 'img-wrapper' style='background-image:url(\"<%=img%>\")'> </div>\n		<div class = 'info-wrapper'>\n			<div class = 'info-row'>\n				<span class = 'rent price-text'><%= \"$\" + rent %></span>\n				<span class = 'divider'>|</span>\n				<span class = 'beds'><%= beds %> </span>\n				<span class = 'favorite pull-right'><i class = 'icon-heart fav-icon share_btn favorite_listing' id='<%= listing_id %>' data-listing-id='<%= listing_id %>'></i></span>	\n				<span class = 'hotlist_share pull-right'><a href='#' data-listing=\"<%=listing_id%>\"><i class='fav-icon icon-user'></i></a></span>\n				<span class = 'hotlist-share-grab grab pull-right'><i class='icon-reorder'></i><i class='icon-reorder'></i><i class=\"icon-reorder\"></i></span>\n			</div>\n			<div class = 'info-row'>\n				<span class = 'building-type'><%= building_type %></span>\n				<span class = 'divider'>|</span>\n				<% if (typeof(end_date) != \"undefined\") { %>\n				<span class = 'lease-start'><%= start_date %></span> - <span class = 'lease_length'><%= end_date %></span>\n				<% } else { %>\n				<span class = 'lease-start'><%= start_date %></span> | <span class = 'lease_length'><%= lease_length %> mo.</span>\n				<% } %>\n			</div>\n			<div class = 'info-row'>\n				<i class = 'icon-map-marker <%= available %>'></i><span class = 'name'><%=name%></span>\n			</div>\n		</div>   \n	</div>\n	<div class='listing-actions'>\n		<ul class='action-row'>\n			<li class='hotlist-share'><a href='#'><i class=\"action-icon icon-heart favorite_listing\" data-listing-id='<%=listing_id%>'></i></a></li>\n			<li class='hotlist-share'><a href='/listing/<%=listing_id%>'><i class=\"action-icon icon-share\"></i></a></li>\n		</ul>\n	</div>\n</div>";
 
     return FeaturedListings;
 
