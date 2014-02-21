@@ -20,7 +20,7 @@ Cribspot Events:
 - Full Page
 	- Schedule Tour Clicked
 	- Contact Owner Clicked
-- TODO: ONLY ON FULL PAGE Message
+- Message
 	- Sending Message
 	- Message Sent
 	- Message Failed
