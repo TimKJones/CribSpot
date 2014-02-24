@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/University/schoolpage.less?v=77','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/University/schoolpage.less?v=79','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -84,16 +84,7 @@
 		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email"><?= $university['founder_email']; ?></i></p>
 	</div>
 	<? } ?>
-	<?php
-	if (strpos($university["name"], 'Detroit') === false)
-	{
-		echo '<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">';
-	}
-	else
-	{
-		echo '<img class="cribspot_logo" src="/img/landing/quicken_logo.png" height="50px" width="300px">';
-	}
-	?>
+	
 	<a href="<?= $university['background_source']; ?>" class="background_source"><?= $university['background_source']; ?></a>
 </div>
 
