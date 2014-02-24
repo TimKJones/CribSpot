@@ -23,7 +23,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				<i class="icon-reorder"></i>
       </a>
 
-			<a class="header_logo brand" href="/"><img src="/img/header/header_logo.png"></a>
+			<a class="header_logo brand" href="/"><img src="/img/header/header_logo.png" alt="Cribspot Off-Campus Housing"></a>
 
 			<div class="nav-collapse collapse">
 
@@ -86,7 +86,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 						<li class="personal_menu personal_menu_0 dropdown <?= ($user_type == 0) ? '' : 'hide' ; ?>">
 							<a href="#" id="personal_dropdown_0" role="button" class="dropdown-toggle" data-toggle="dropdown">
 								<?php
-								echo "<img src='" . $pic_url . "' >";
+								echo "<img src='" . $pic_url . "' alt='Cribspot Profile Default' >";
 								echo "<div class='user_name'>" . $name . "</div>";
 								?>
 								 <b class="caret"></b>

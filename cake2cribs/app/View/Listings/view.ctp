@@ -19,10 +19,6 @@
 	$this->set('canonical_url', $url);
 	$this->set('meta_description', $listing[$listing_type]['description']);
 
-	$this->Html->meta('keywords', 
-			$listing["Marker"]["alternate_name"] . ", " . $listing["Marker"]["street_address"] . ", off campus housing, student housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
-		);
-
 	$this->Html->meta('description', $listing[$listing_type]["description"], array('inline' => false));
 
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));

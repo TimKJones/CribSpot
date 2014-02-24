@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/University/schoolpage.less?v=76','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/University/schoolpage.less?v=77','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
@@ -11,7 +11,7 @@
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
 
 	if (strpos($university["name"], 'Detroit') === false)
-		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing - Cribspot');
+		$this->set('title_for_layout', 'Off-Campus Housing | ' . $university["name"] . ' | Cribspot');
 	else
 		$this->set('title_for_layout', 'Detroit Rentals Presented by Quicken Loans');
 	$this->set('canonical_url', $url);
@@ -33,11 +33,11 @@
 		}
 		if (strpos($university["name"], 'Detroit') === false)
 		{ ?>
-		<div class="name"><?= $university['name']; ?></div>
+		<h1 class="name"><?= $university['name']; ?></h1>
 		<?php
 		} else {
 		?>
-		<div class="name detroit"><?= $university['name']; ?></div>
+		<h1 class="name detroit"><?= $university['name']; ?></h1>
 		<?php } ?>
 	</div>
 	
@@ -45,7 +45,7 @@
 	if (strpos($university["name"], 'Detroit') === false)
 	{ ?>
 	<div class="school_info">
-		<div class="welcome_message"><?= $university['welcome_message']; ?></div>
+		<h2 class="welcome_message"><?= $university['welcome_message']; ?></h2>
 		<div class="description"><?= $university['description']; ?></div>
 		<div class="separator"></div>
 		<div class="school_facts">
