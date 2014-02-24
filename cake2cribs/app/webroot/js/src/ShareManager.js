@@ -18,9 +18,7 @@
       street_address = street_address.split(' ').join('-');
       city = city.split(' ').join('-');
       url = 'https://cribspot.com/listing/' + listing_id;
-      A2Cribs.MixPanel.Event("Share", {
-        type: "copy listing url"
-      });
+      $(document).trigger("track_event", ["Share", "URL Copied", "", listing_id]);
       return url;
     };
 
@@ -44,9 +42,7 @@
       } else {
         caption = street_address;
       }
-      A2Cribs.MixPanel.Event("Share", {
-        type: "listing on fb"
-      });
+      $(document).trigger("track_event", ["Share", "Listing on FB", "", listing_id]);
       fbObj = {
         method: 'feed',
         link: url,
@@ -68,11 +64,7 @@
     ShareManager.ShareSubletOnFB = function(marker, sublet, images) {
       var fbObj, primary_image, url;
       url = 'https://cribspot.com/listing/' + sublet.listing_id;
-      A2Cribs.MixPanel.Event("Social share", {
-        type: "facebook",
-        element: "sublet",
-        promotion: "completed sublet"
-      });
+      $(document).trigger("track_event", ["Share", "Listing on FB", "Completed Sublet", sublet.listing_id]);
       primary_image = 'https://s3-us-west-2.amazonaws.com/cribspot-img/upright_logo.png';
       fbObj = {
         method: 'feed',
@@ -84,12 +76,7 @@
       };
       return FB.ui(fbObj, function(response) {
         if (response != null ? response.post_id : void 0) {
-          return A2Cribs.MixPanel.Event("Social share complete", {
-            type: "facebook",
-            element: "sublet",
-            promotion: "completed sublet",
-            post_id: response.post_id
-          });
+          return $(document).trigger("track_event", ["Share", "Listing on FB Completed", "Completed Sublet", sublet.listing_id]);
         }
       });
     };
@@ -101,11 +88,7 @@
 
     ShareManager.ShareOnFacebook = function() {
       var fbObj;
-      A2Cribs.MixPanel.Event("Social share", {
-        type: "facebook",
-        element: "header",
-        promotion: "tell my friends"
-      });
+      $(document).trigger("track_event", ["Share", "Website on FB", "Header Button"]);
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
@@ -116,23 +99,14 @@
       };
       return FB.ui(fbObj, function(response) {
         if (response != null ? response.post_id : void 0) {
-          return A2Cribs.MixPanel.Event("Social share complete", {
-            type: "facebook",
-            element: "header",
-            promotion: "tell my friends",
-            post_id: response.post_id
-          });
+          return $(document).trigger("track_event", ["Share", "Website on FB Completed", "Header Button"]);
         }
       });
     };
 
     ShareManager.FBPromotion = function() {
       var fbObj;
-      A2Cribs.MixPanel.Event("Social share", {
-        type: "facebook",
-        element: "header",
-        promotion: "wisconsin sunglasses"
-      });
+      $(document).trigger("track_event", ["Share", "Website on FB", "Wisconsin Sunglasses"]);
       fbObj = {
         method: 'feed',
         link: "https://cribspot.com/",
@@ -143,12 +117,7 @@
       };
       return FB.ui(fbObj, function(response) {
         if (response != null ? response.post_id : void 0) {
-          return A2Cribs.MixPanel.Event("Social share complete", {
-            type: "facebook",
-            element: "header",
-            promotion: "wisconsin sunglasses",
-            post_id: response.post_id
-          });
+          return $(document).trigger("track_event", ["Share", "Website on FB Completed", "Wisconsin Sunglasses"]);
         }
       });
     };
@@ -162,11 +131,7 @@
     ShareManager.ShareSubletOnTwitter = function(listing_id) {
       var url, x, y;
       url = this.GetTwitterShareUrl(listing_id);
-      A2Cribs.MixPanel.Event("Social share", {
-        type: "twitter",
-        element: "sublet",
-        promotion: "completed sublet"
-      });
+      $(document).trigger("track_event", ["Share", "Listing on Twitter", "Completed Sublet", listing_id]);
       x = screen.width / 2 - 600 / 2;
       y = screen.height / 2 - 350 / 2;
       return window.open(url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=" + y + ",left=" + x);
@@ -175,9 +140,7 @@
     ShareManager.ShareListingOnTwitter = function(listing_id, street_address, city, state, zip) {
       var url, x, y;
       url = this.GetTwitterShareUrl(listing_id);
-      A2Cribs.MixPanel.Event("Share", {
-        type: "listing on twitter"
-      });
+      $(document).trigger("track_event", ["Share", "Listing on Twitter", "", listing_id]);
       x = screen.width / 2 - 600 / 2;
       y = screen.height / 2 - 350 / 2;
       return window.open(url, 'winname', "directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=600,height=350,top=" + y + ",left=" + x);
@@ -219,9 +182,9 @@
 
     ShareManager.ShowShareModal = function(subject, message, type) {
       var _this = this;
-      A2Cribs.MixPanel.Event("Invite Friends started", null);
       return typeof FB !== "undefined" && FB !== null ? FB.getLoginStatus(function(response) {
         if (response.status === 'unknown') {
+          $(document).trigger("track_event", ["Share", "Invite Friends", "Email Invite"]);
           $("#email_invite").modal("show");
           $("#email_invite").find(".modal_subject").text(subject);
           $("#email_invite").find(".modal_message").text(message);
@@ -236,24 +199,16 @@
               $("#email_invite").modal("hide");
               return $("#send_email_invite").button("reset");
             });
-            return A2Cribs.MixPanel.Event("Invite Friends completed", {
-              "number of people": emails != null ? emails.length : void 0,
-              "action": type,
-              "type": "email"
-            });
+            return $(document).trigger("track_event", ["Share", "Invite Friends Completed", "Email Invite", emails != null ? emails.length : void 0]);
           });
         } else {
+          $(document).trigger("track_event", ["Share", "Invite Friends", "FB Invite"]);
           return FB.ui({
             method: 'apprequests',
             message: message
           }, function(response) {
             var _ref;
-            return A2Cribs.MixPanel.Event("Invite Friends completed", {
-              "number of people": (_ref = response.to) != null ? _ref.length : void 0,
-              "action": type,
-              "type": "facebook",
-              "fb_ids": JSON.stringify(response.to)
-            });
+            return $(document).trigger("track_event", ["Share", "Invite Friends", "FB Invite", (_ref = response.to) != null ? _ref.length : void 0]);
           });
         }
       }) : void 0;

@@ -14,11 +14,7 @@
         if (this._clickbubble_count > this._increments[this._increment_index]) {
           this._increment_index += 1;
           $("#signup_modal").modal("show").find(".signup_message").text("Join the party! Sign up for Cribspot today.");
-          return A2Cribs.MixPanel.Event("login required", {
-            "listing_id": listing_id,
-            action: "click limit",
-            "click count": this._clickbubble_count
-          });
+          return $(document).trigger("track_event", ["Login", "Login Required", "", listing_id]);
         }
       }
     };

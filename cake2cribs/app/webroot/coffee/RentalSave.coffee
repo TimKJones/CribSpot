@@ -49,7 +49,7 @@ class A2Cribs.RentalSave
 				@Open event.target.id
 
 		@div.find(".edit_marker").click () =>
-			A2Cribs.MixPanel.PostListing "Started", {}
+			$(document).trigger "track_event", ["Post Rental", "Open Marker", "", @CurrentMarker]
 			A2Cribs.MarkerModal.Open "rental"
 			A2Cribs.MarkerModal.LoadMarker @CurrentMarker
 
@@ -87,8 +87,7 @@ class A2Cribs.RentalSave
 			if @CommitSlickgridChanges()
 				selected = @GridMap[@VisibleGrid].getSelectedRows()
 				@VisibleGrid = $(event.target).attr("data-target").substring(1)
-				A2Cribs.MixPanel.PostListing "#{@VisibleGrid} selected",
-					"marker id": @CurrentMarker
+				$(document).trigger "track_event", ["Post Rental", "Tab Change", "#{@VisibleGrid}", @CurrentMarker]
 				@GridMap[@VisibleGrid].setSelectedRows selected
 				for row in @EditableRows
 					@Validate row
@@ -240,10 +239,8 @@ class A2Cribs.RentalSave
 	Save: (row) ->
 		if @Validate row
 			rental_object = @GetObjectByRow row
-			A2Cribs.MixPanel.PostListing "Listing Save",
-				"save type": if rental_object.listing_id? then "edit" else "save"
-				"marker id": @CurrentMarker
-				"listing id": rental_object.listing_id
+			save_type = if rental_object.listing_id? then "Edit" else "Save"
+			save_$(document).trigger "track_event", ["Post Rental", "Save", save_type, rental_object.listing_id]
 			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "listings/Save/"
@@ -252,9 +249,7 @@ class A2Cribs.RentalSave
 				success: (response) =>
 					response = JSON.parse response
 					if response.listing_id?
-						A2Cribs.MixPanel.PostListing "Listing Save Completed",
-							"listing id": response.listing_id
-							"marker id": @CurrentMarker
+						$(document).trigger "track_event", ["Post Rental", "Save Completed", "", rental_object.listing_id]
 						A2Cribs.UIManager.Success "Save successful!"
 						rental_object.Listing.listing_id = response.listing_id
 						rental_object.Rental.listing_id = response.listing_id
@@ -343,9 +338,7 @@ class A2Cribs.RentalSave
 		else
 			image_array = data.Image
 
-		A2Cribs.MixPanel.PostListing "Start Photo Editing",
-			"marker id": @CurrentMarker
-			"number of images": image_array?.length
+		$(document).trigger "track_event", ["Photo Editor", "Load Images", "", data.listing_id]
 
 		A2Cribs.PhotoPicker.Open(image_array)
 		.done (photos) =>
@@ -356,6 +349,7 @@ class A2Cribs.RentalSave
 	###
 	SaveImages: (images, row) =>
 		data = @GridMap[@VisibleGrid].getDataItem row
+		$(document).trigger "track_event", ["Photo Editor", "Save Images", "", data.listing_id]
 		if data.listing_id? # If the listing has been saved already cache it
 			for image in images
 				image.listing_id = data.listing_id
@@ -372,15 +366,14 @@ class A2Cribs.RentalSave
 	###
 	AddNewUnit: ->
 		# Create newline on grid
-		A2Cribs.MixPanel.PostListing "Add New Unit",
-			"marker id": @CurrentMarker
+		$(document).trigger "track_event", ["Post Rental", "Add Unit", "", @CurrentMarker]
 
 		data = @GridMap[@VisibleGrid].getData()
 
 		row_number = data.length
 		@EditableRows.push row_number
-		data.push { 
-			editable: true 
+		data.push {
+			editable: true
 			contact_email: @user_email
 			contact_phone: @user_phone
 			unit_style_description: row_number + 1

@@ -40,8 +40,7 @@
 			<textarea id="message_area" class="span12" rows="4">Hello, I found your listing on Cribspot and would like to find out more about this property. Please let me know when you are available for a viewing. Thank you.</textarea>
 		</div>
 		<div class="row-fluid">
-			<button id="message_cancel" class="btn span5">Cancel</button>
-			<button id="message_send" class="btn span7" type="button" data-loading-text="Sending...">Send Message</button>
+			<button id="message_send" class="btn span7 pull-right" type="button" data-loading-text="Sending...">Send Message</button>
 		</div>
 		<div class="row-fluid">
 			<div class="info_message">Responses will be sent to you current email, <strong class="user_email"></strong>. If this is incorrect, click <?php echo $this->Html->link('here', array('controller' => 'users', 'action' => 'accountinfo')); ?> to set your email</div>

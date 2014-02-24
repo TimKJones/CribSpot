@@ -87,7 +87,7 @@ $listing_types = array('Rental', 'Sublet', 'Parking');
 				<?php
 					$currentYear = intval(date("Y"));
 					for ($i=0; $i < 3; $i++) { 
-						if ($i == 1)
+						if ($i == 0)
 							echo "<option selected='selected' value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";
 						else
 							echo "<option value='" . substr($currentYear, -2) . "'>" . $currentYear++ . "</option>";

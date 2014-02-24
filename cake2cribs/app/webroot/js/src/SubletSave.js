@@ -41,9 +41,7 @@
         var listing_type;
         listing_type = $(event.currentTarget).data("listing-type");
         if (listing_type === "sublet") {
-          A2Cribs.MixPanel.Event("Sublet Post", {
-            'stage': 'started'
-          });
+          $(document).trigger("track_event", ["Post Sublet", "Create"]);
           return _this.Open();
         }
       });
@@ -271,6 +269,7 @@
         _this = this;
       if (this.Validate()) {
         sublet_object = this.GetSubletObject();
+        $(document).trigger("track_event", ["Post Sublet", "Save"]);
         return $.ajax({
           url: myBaseUrl + "listings/Save/",
           type: "POST",
@@ -287,9 +286,7 @@
               _this.div.find(".sublet_section").fadeOut('slow', function() {
                 return _this.div.find(".done_section").fadeIn();
               });
-              A2Cribs.MixPanel.Event("Sublet Post", {
-                'stage': 'finish'
-              });
+              $(document).trigger("track_event", ["Post Sublet", "Save Completed", "", response.listing.Listing.listing_id]);
               A2Cribs.UserCache.CacheData(response.listing);
               _this.div.find(".listing_id").val(response.listing.Listing.listing_id);
               _this.SetupShareButtons();

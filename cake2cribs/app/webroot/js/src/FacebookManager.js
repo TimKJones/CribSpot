@@ -14,9 +14,7 @@ Manager class for all social networking functionality
       url += 'client_id=450938858319396';
       url += '&redirect_uri=https://www.cribspot.com/login';
       url += '&scope=email';
-      A2Cribs.MixPanel.AuthEvent('login', {
-        'source': 'facebook'
-      });
+      $(document).trigger("track_event", ["Login", "Logged in"]);
       return window.location.href = url;
     };
 

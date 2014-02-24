@@ -48,18 +48,18 @@ class A2Cribs.Marker extends  A2Cribs.Object
 		return return_val
 
 	MarkerClicked: (event) =>
-		A2Cribs.MixPanel.Click this, 'small popup'
 		$("#map_region").trigger "marker_clicked", [this]
+		$(document).trigger "track_event", ["Marker", "Marker Clicked", "", @GetId()]
 
 
 	###
 	Filters the listing_ids at the current marker according to the user's current filter settings.
 	Returns list of listing_ids that should be visible in marker tooltip.
 	###
-	FilterVisibleListings = (subletIdList) ->	
-		if subletIdList == undefined	
+	FilterVisibleListings = (subletIdList) ->
+		if subletIdList == undefined
 			return null
-		house = $("#houseCheck").is(':checked')	
+		house = $("#houseCheck").is(':checked')
 		apt = $("#aptCheck").is(':checked')
 		other = $("#otherCheck").is(':checked')
 		male = $("#maleCheck").is(':checked')

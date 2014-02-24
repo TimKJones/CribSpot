@@ -111,13 +111,9 @@ class Tour
 			if @TimeSlotCount() >= 3
 				$("#calendar_picker").hide()
 				$("#schedule_info").show()
-				A2Cribs.MixPanel.Event "Request My Times",
-					success: true
 			else
 				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Please select at least three time slots that work for you!"
-				A2Cribs.MixPanel.Event "Request My Times",
-					success: false
 
 	###
 	Setup My Info UI
@@ -128,7 +124,7 @@ class Tour
 				re = /\S+@\S+\.\S+/
 				if re.test $(event.currentTarget.parentElement).find(".roommate_email").val()
 					$(event.currentTarget.parentElement).addClass "completed_roommate"
-					return 
+					return
 			$(event.currentTarget.parentElement).removeClass "completed_roommate"
 
 		$("#back_to_timeslots").click ->
@@ -164,17 +160,8 @@ class Tour
 			$.ajax
 				url: myBaseUrl + "Users/SendPhoneVerificationCode"
 				type: 'POST'
-				data: 
+				data:
 					phone: phone
-				success: ->
-					A2Cribs.MixPanel.Event "Send Verify Text",
-						success: true
-				error: ->
-					#Failed to send message
-					A2Cribs.MixPanel.Event "Send Verify Text",
-						success: false
-			
-
 			$("#verify_phone").modal 'show'
 
 		# Confirm Valiation Code
@@ -191,22 +178,18 @@ class Tour
 			$.ajax
 				url: myBaseUrl + "Users/ConfirmPhoneVerificationCode"
 				type: 'POST'
-				data: 
+				data:
 					code: code
 
 				success: (response) ->
 					response = JSON.parse response
 					if response.error?
 						A2Cribs.UIManager.Error response.error
-						A2Cribs.MixPanel.Event "Phone verify completed",
-							success: false
 					else
 						A2Cribs.UIManager.Success "Phone Number Verified!"
 						$("#verify_phone").modal 'hide'
 						$("#phone_verified").val $("#verify_phone_number").val()
 						$("#verify_phone_btn").addClass("verified").text("Verified").prop "disabled", true
-						A2Cribs.MixPanel.Event "Phone verify completed",
-							success: true
 
 				error: ->
 					A2Cribs.UIManager.CloseLogs()
@@ -235,13 +218,9 @@ class Tour
 				$(".schedule_page").hide()
 				$("#schedule_completed").show()
 				A2Cribs.UIManager.Success "Your tour times have been received"
-				A2Cribs.MixPanel.Event "Finished Tour",
-					success: true
 			.fail ->
 				A2Cribs.UIManager.CloseLogs()
 				A2Cribs.UIManager.Error "Failed to request tour times. Sorry. Please contact help@cribspot.com if this continues to be an issue"
-				A2Cribs.MixPanel.Event "Finished Tour",
-					success: false
 			.always ->
 				$("#complete_tour_request").button 'reset'
 
@@ -260,7 +239,7 @@ class Tour
 	###
 	Add Time Slot
 	Adds timeslot to selected timeslot map
-	###					
+	###
 	@AddTimeSlot: (offset_date, time_slot) ->
 		hash = "#{offset_date}-#{time_slot}"
 		today = new Date()

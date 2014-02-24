@@ -187,11 +187,10 @@
 
 <script type="text/javascript">
 	$("#friends_invite").click(function() {
-		A2Cribs.MixPanel.Event("Invite Friends", null);
-		FB.ui({
-			method: 'apprequests',
-			message: 'Join the Movement. All the College Rentals. All in One Spot.'
-		});
+		A2Cribs.ShareManager.ShowShareModal("",
+		"College housing sucks! Tell your friends how easy finding the perfect house can be. Share Cribspot!",
+		"landing page share"
+		);
 	});
 </script>
 
