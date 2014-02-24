@@ -1,20 +1,15 @@
 <?php
-	echo $this->Html->css('/less/landing.less?v=76','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/landing.less?v=77','stylesheet/less', array('inline' => false));
 	
 	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 		echo $this->Html->script('src/Login', array('inline' => false));
 		echo $this->Html->script('src/Landing', array('inline' => false));
 	}
-	$this->set('title_for_layout', 'Cribspot - College Off-Campus Housing & Apartments.');
+	$this->set('title_for_layout', 'Off-Campus Housing & Apartments for College Students | Cribspot');
 	$url = "https://cribspot.com";
-	$description = "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.";
+	$description = "College housing can be messy. Cribspot is cleaning it up. We’ve mapped thousands of off-campus rentals so you can stop stressing and get back to “studying.”";
 	$this->set('meta_description', $description);
 	$this->set('canonical_url', $url);
-
-
-	$this->Html->meta('keywords', 
-			"off campus housing, student housing, campus apartments, college apartments, college housing, college rental, college sublet, college parking, college sublease", array('inline' => false)
-		);
 
 	$this->Html->meta('description', $description, array('inline' => false));
 
@@ -26,7 +21,7 @@
 <div id="landing_page">
 	<div class="fb-like" data-href="https://www.facebook.com/Cribspot" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
 	<div id="mobile-div" class="text-center float">
-		<img src="/img/landing/logo.png" alt="Cribspot">
+		<img src="/img/landing/logo.png" alt="Cribspot Off-Campus Housing">
 		<select id="" class="mobile_selector selector">
 			<option value="">Select your University</option>
 			<?php
@@ -40,13 +35,14 @@
 	</div>
 	<div class="float" id="search-div">
 		<img src="/img/landing/logo.png" height="200px" width="400px">
-		<div id="slogan" class="text-center">
-			<i class="small_font">All the </i><i class="large_font">College Rentals.</i><br/>
+		<h1 id="slogan" class="text-center">
+			<i class="large_font">Thousands</i>
+			<i class="small_font"> of College </i><i class="large_font">Rentals.</i><br/>
 			<i class="small_font">All in </i><i class="large_font">One Spot.</i>
-		</div>
+		</h1>
 		<div id="logo_zone" class="text-center">
-			<div id="where_to_school">Join the Movement! Start by Selecting your University:</div>
-			<!-- School Logo's go here -->
+			<h2 id="where_to_school">Stuck in your off-campus housing search? Join the movement!</h2>
+			<h3>Start by selecting your University:</h3>
 			<?php // will need to figure out how to redesign for sublets and parking! ?>
 			<select id="school_selector" class="selector" name="">
 				<option value="">Select your University</option>
@@ -66,13 +62,13 @@
 <div id="school_page">
 	<?php
 		foreach ($locations as $university) {
-			echo '<img data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
+			echo '<img alt="' . $university['University']['name'] . '" data-university="' . $university['University']['id'] . '" class="school_background" src="' . $university['University']['background_image'] . '">';
 		}
 	?>
 	<div class="school_header">
 		<div class="school_logo"></div>
 		<div class="name">College Housing made easy.</div>
-		<img class="cribspot_logo" src="/img/landing/logo.png" height="50px" width="100px">
+		<img class="cribspot_logo" src="/img/landing/logo.png" alt="Cribspot Logo" height="50px" width="100px">
 	</div>
 	
 	<div class="school_info">
@@ -91,7 +87,7 @@
 		<a href="/login" class="btn">Login or Sign Up</a>
 	</div>
 	<div id="founder_box">
-		<img class="founder_photo" src="/img/founders/michigan.png">
+		<img class="founder_photo" src="/img/founders/michigan.png" alt="Cribspot Founder">
 		<p><i class="founder_name">Evan Dancer</i><br><i class="founder_title">University of Michigan Founder</i><br><i class="founder_description">Class of 2013</i><br>
 		Need help or a recommendation?<br>Chat with us below or email me at <i class="founder_email">evan@cribspot.com</i></p>
 	</div>
@@ -125,7 +121,7 @@
 				<li class="personal_menu personal_menu_0 dropdown <?= ($user_type == 0) ? '' : 'hide' ; ?>">
 					<a href="#" id="personal_dropdown_0" role="button" class="dropdown-toggle nav-btn" data-toggle="dropdown">
 						<?php
-						echo "<img src='" . $pic_url . "' >";
+						echo "<img src='" . $pic_url . "' alt='Cribspot Profile Default'>";
 						echo "<div class='user_name'>" . $name . "</div>";
 						?>
 						 <b class="caret"></b>
@@ -185,7 +181,7 @@
 	</div>
 </div>
 
-<a href="https://mixpanel.com/f/partner" id="mixpanel_link"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
+<a href="https://mixpanel.com/f/partner" id="mixpanel_link"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mixpanel Mobile Analytics" /></a>
 <?php 
 
 	echo $this->element('Login/login');

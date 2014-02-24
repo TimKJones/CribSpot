@@ -2,9 +2,6 @@
 
     $this->set('title_for_layout', "Indiana University - Bloomington Rent Price Heat Map - Cribspot");
 
-    $this->Html->meta('keywords', 'indiana heat map, rental heatmap, rental heat map, Bloomington heat map', array('inline' => false)
-    );
-
     $this->Html->meta('description', "Check out this heat map of Indiana University's rent prices. Bloomington can be an expensive place if you don't know the area. Find the cheapest apartments in B-town. How does your place compare? Have the ideal location for next year? Find your perfect college apartment at Cribspot.", array('inline' => false));
 
     echo $this->element('header', 

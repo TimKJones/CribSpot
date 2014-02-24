@@ -90,21 +90,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 		echo '<title>' . $title_for_layout . '</title>';
 
-		/* Meta Data */
-/*		echo $this->Html->meta('keywords',
-			'ann arbor housing, ann arbor apartments, student housing, university of michigan housing, umich housing, ann arbor rentals, ann arbor subleases, UM housing, cribspot, a2cribs, off-campus housing'
-		);
-*/
-
 		echo $this->Html->meta('favicon.icon', '/favicon.ico?v=44', array('type' => 'icon'));
 
 		/* Fetch data */
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 
-if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
-	echo $this->Html->script('src/program.js?v=118');
-}
 
 		if (!isset($canonical_url))
 			$canonical_url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -113,15 +104,12 @@ if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
 		if (!isset($meta_description))
 			$meta_description = "Cribspot takes the pain out of finding off-campus housing on college campuses.  We display thousands of listings on a map so you can stop stressing and get back to ...studying.";
 
-		echo $this->fetch('script');
 		echo $this->Html->script('less');
 
 		echo $this->Html->scriptBlock('var jsVars = '.$this->Js->object($jsVars).';');
 
 		echo $this->element('SEO/facebook_meta_tag', array('title' => $title_for_layout, 'url' => $canonical_url, 'image_path' => $meta_image, 'description' => $meta_description));
 
-		/* Write buffer for JS in various element views */
-		echo $this->Js->writeBuffer();
 
     /* Meta tag for responsive goodness */
     echo '<meta name="viewport" content="initial-scale=1">';
@@ -153,7 +141,6 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
 <!-- end olark code -->
 
 <?php
-
 	/* FB API for Like Button */
 	echo '<div id="fb-root"></div>';
 
@@ -194,6 +181,14 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
    }(document, 'script', 'facebook-jssdk'));
 </script>
 <?php
+	echo $this->fetch('script');
+
+	/* Write buffer for JS in various element views */
+	echo $this->Js->writeBuffer();
+
+	if (Configure::read("CURRENT_ENVIRONMENT") === "ENVIRONMENT_PRODUCTION"){
+		echo $this->Html->script('src/program.js?v=119');
+	}
 
 	echo '</body>';
 	echo '</html>';

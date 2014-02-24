@@ -12,17 +12,14 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->Html->css('/less/mobile_map_hacks.less?v=4','stylesheet/less', array('inline' => false));
 
 	if (strpos($university["name"], 'Detroit') === false)
-		$this->set('title_for_layout', $university["name"] . ' Off-Campus Housing');
+		$this->set('title_for_layout', 'Off-Campus Rental Map | ' . $university["name"] . ' | Cribspot');
 	else
 		$this->set('title_for_layout', 'Detroit Rentals Presented by Quicken Loans');
 	$url = 'https://cribspot.com/rental/' . str_replace(" ", "_", $school_name);
-	$description = "Welcome to Cribspot for " . $university["name"]  . "! Looking for off campus housing in " . $university["city"] . "? Browse the many full year listings Cribspot has to offer.";
+	$description = "Find off-campus housing at " . $university["name"] . ". Cribspot’s rental map displays thousands of apartments & houses for college students in ". $university['city'] . ".";
 	$this->set('meta_description', $description);
 	$this->set('canonical_url', $url);
 
-	$this->Html->meta('keywords', 
-		$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
-	);
 	$this->Html->meta('description', $description, array('inline' => false));
 
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));

@@ -2,9 +2,6 @@
 
 	$this->set('title_for_layout', "Ann Arbor Rent Price Heat Map - Cribspot");
 
-	$this->Html->meta('keywords', 'Ann arbor heat map, rental heatmap, rental heat map, umich heat map', array('inline' => false)
-	);
-
 	$this->Html->meta('description', "Check out this heat map of Ann Arbor's rent prices. Is your place the most expensive in University of Michigan? Look on the map.", array('inline' => false));
 
 	echo $this->element('header', 

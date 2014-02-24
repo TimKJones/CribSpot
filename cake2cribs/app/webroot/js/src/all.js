@@ -6851,7 +6851,7 @@
       _ref1 = university['University'];
       for (key in _ref1) {
         val = _ref1[key];
-        $("#school_page").find("." + key).hide().text(val).fadeIn();
+        $("#school_page").find("." + key).hide().html(val).fadeIn();
       }
       swap_backgrounds(university['University']['id']);
       url_name = university['University']['name'].split(" ").join("_");

@@ -13,7 +13,7 @@ class A2Cribs.Landing
 
 	set_school = (university) ->
 		for key,val of university['University']
-			$("#school_page").find(".#{key}").hide().text(val).fadeIn()
+			$("#school_page").find(".#{key}").hide().html(val).fadeIn()
 
 		swap_backgrounds university['University']['id']
 

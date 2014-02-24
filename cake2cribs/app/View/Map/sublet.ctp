@@ -14,20 +14,12 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 /* ------------------------ DIFFERENT --------------------------------------- */
 
 
-	$this->set('title_for_layout', $university["name"] . ' Sublets');
-	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "_", $school_name);
-	$description = "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many subleases Cribspot has to offer.";
+	$this->set('title_for_layout', "College Student Sublets | " . $university["name"] . " | Cribspot");
+	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "-", $school_name);
+	$description = "Find & advertise sublets at " . $university['name'] . " on Cribspot’s temporary housing map. Sublease your off-campus apartment / house to students in " . $university['city'] . ".";
 
 	$this->set('meta_description', $description);
 	$this->set('canonical_url', $url);
-
-
-	$this->Html->meta('keywords', 
-		$university["name"] . " sublets, " . $university["name"] . " subleases, " . $university["name"] . " temporary housing, " .$university["name"] . " off campus housing, " . $university["name"] . " student housing, " . $university["city"] . " campus apartments, " . $university["city"] . " college apartments, " . $university["city"] . " college housing, " . $university["state"] . " college housing", array('inline' => false)
-	);
-
-	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "_", $school_name);
-	$description = "Welcome to Cribspot for " . $university["name"]  . "! Looking for sublets in " . $university["city"] . "? Browse the many subleases Cribspot has to offer.";
 
 	echo $this->Html->meta('description', $description, array('inline' => false));
 	echo $this->Html->meta('canonical', $url, array('rel'=>'canonical', 'type'=>null, 'title'=>null, 'inline' => false));
@@ -36,7 +28,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->element('header', 
 		array(
 			'page' => 'sublet',
-			'school_name' => str_replace(" ", "_", $school_name),
+			'school_name' => str_replace(" ", "-", $school_name),
 			'sublets_launch_date' => $university['sublets_launch_date'],
 			'show_filter' => false,
 			'show_user' => true,
