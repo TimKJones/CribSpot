@@ -67,35 +67,11 @@ echo $this->Html->script('underscore');
 		</div>
 	</div>
 </div>
+<input type="hidden" name="" id="user_info_json" value="<?= htmlspecialchars($user_json) ?>" />
 
 <script>
 
- 	A2Cribs.VerifyManager.init(<?php echo $user_json;?>);
-	A2Cribs.Dashboard.SetupUI();
-	A2Cribs.Account.setupUI();
-	var a = A2Cribs.Messages
-
 	var directive = <?php echo $directive;?>;
-	if(directive.classname != null){
-		A2Cribs.Dashboard.Direct(directive);
-		A2Cribs.Messages.Direct(directive);
-		A2Cribs.Account.Direct(directive);
-		// A2Cribs.Sublets.Direct(directive);
-		// A2Cribs.MyListings.Direct(directive); for the listings section
-	}else{
-
-	}
-
-	a.init(<?php echo $user_json;?>);
-	a.setupUI();
-	
-
-// check for url parameter to init post action
-if (document.URL.indexOf("post_redirect") != -1)
-    A2Cribs.SubletAdd.InitPostingProcess();
-else if (document.URL.indexOf("university_verified") != -1)
-    A2Cribs.UIManager.Alert("You have successfully been verified with a university!");
-
 
 </script>
 	

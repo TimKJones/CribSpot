@@ -1,1 +1,2 @@
-window.A2Cribs = {}
+unless window.A2Cribs?
+	window.A2Cribs = {}
