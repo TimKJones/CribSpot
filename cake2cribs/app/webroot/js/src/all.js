@@ -8490,18 +8490,20 @@
 
   $("body").ready(function() {
     var _ref1;
-    A2Cribs.VerifyManager.init(JSON.parse($("#user_info_json").val()));
-    A2Cribs.Dashboard.SetupUI();
-    A2Cribs.Account.setupUI();
-    if (((_ref1 = window.directive) != null ? _ref1.classname : void 0) != null) {
-      A2Cribs.Dashboard.Direct(window.directive);
-      A2Cribs.Messages.Direct(window.directive);
-      A2Cribs.Account.Direct(window.directive);
-    }
-    A2Cribs.Messages.init(JSON.parse($("#user_info_json").val()));
-    A2Cribs.Messages.setupUI();
-    if (document.URL.indexOf("university_verified") !== -1) {
-      return A2Cribs.UIManager.Alert("You have successfully been verified with a university!");
+    if ($("#main_content").length) {
+      A2Cribs.VerifyManager.init(JSON.parse($("#user_info_json").val()));
+      A2Cribs.Dashboard.SetupUI();
+      A2Cribs.Account.setupUI();
+      if (((_ref1 = window.directive) != null ? _ref1.classname : void 0) != null) {
+        A2Cribs.Dashboard.Direct(window.directive);
+        A2Cribs.Messages.Direct(window.directive);
+        A2Cribs.Account.Direct(window.directive);
+      }
+      A2Cribs.Messages.init(JSON.parse($("#user_info_json").val()));
+      A2Cribs.Messages.setupUI();
+      if (document.URL.indexOf("university_verified") !== -1) {
+        return A2Cribs.UIManager.Alert("You have successfully been verified with a university!");
+      }
     }
   });
 
