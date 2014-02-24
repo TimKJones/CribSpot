@@ -51,9 +51,8 @@
 	}
 	.cribspot_logo
 	{
-		position: absolute;
-		bottom: 30px;
-		right: 30px;
+		float: right;
+		padding: 34px;
 	}
 	.school_info
 	{
@@ -62,11 +61,12 @@
 		color: white;
 		font-family: 'Montserrat-Bold';
 		text-shadow: 1px 1px 5px black;
+		float: left;
 		.welcome_message
 		{
 			font-family: 'BorisBlackBloxx';
-			font-size: 30px;
-			line-height: 30px;
+			font-size: 24px;
+			line-height: 24px;
 			margin-bottom: 20px;
 		}
 	}
@@ -129,9 +129,16 @@
 			border-color: #0B2E51;
 		}
 	}
+	@media (max-width: 900px) {
+		#founder_box
+		{
+			margin-right: 0px;
+		}
+	}
 	#founder_box
 	{
-		position: absolute;
+		float: right;
+		margin-right: 25px;
 		.founder_photo
 		{
 			width: 150px;
