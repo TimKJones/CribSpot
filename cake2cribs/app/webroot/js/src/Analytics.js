@@ -73,12 +73,12 @@ Cribspot Events:
     	Wrapper for the _trackEvent for google analytics
     */
 
-    var event,
+    var push_event,
       _this = this;
 
     function Analytics() {}
 
-    event = function(category, action, label, value) {
+    push_event = function(category, action, label, value) {
       if (label == null) {
         label = null;
       }
@@ -101,7 +101,7 @@ Cribspot Events:
         if (value == null) {
           value = null;
         }
-        return event(category, action, label, value);
+        return push_event(category, action, label, value);
       });
     });
 

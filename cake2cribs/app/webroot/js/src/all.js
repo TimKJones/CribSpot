@@ -7,7 +7,9 @@
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
     _this = this;
 
-  window.A2Cribs = {};
+  if (window.A2Cribs == null) {
+    window.A2Cribs = {};
+  }
 
   A2Cribs.Object = (function() {
     function Object(class_name, a2_object) {
@@ -8485,6 +8487,23 @@
     return Dashboard;
 
   }).call(this);
+
+  $("body").ready(function() {
+    var _ref1;
+    A2Cribs.VerifyManager.init(JSON.parse($("#user_info_json").val()));
+    A2Cribs.Dashboard.SetupUI();
+    A2Cribs.Account.setupUI();
+    if (((_ref1 = window.directive) != null ? _ref1.classname : void 0) != null) {
+      A2Cribs.Dashboard.Direct(window.directive);
+      A2Cribs.Messages.Direct(window.directive);
+      A2Cribs.Account.Direct(window.directive);
+    }
+    A2Cribs.Messages.init(JSON.parse($("#user_info_json").val()));
+    A2Cribs.Messages.setupUI();
+    if (document.URL.indexOf("university_verified") !== -1) {
+      return A2Cribs.UIManager.Alert("You have successfully been verified with a university!");
+    }
+  });
 
   A2Cribs.Account = (function() {
     function Account() {}
