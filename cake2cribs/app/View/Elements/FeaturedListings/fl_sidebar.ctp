@@ -31,6 +31,10 @@ echo $this->Html->css('/less/hotlist.less?v=4','stylesheet/less', array('inline'
             <div class='featured_banner'>
                 <a href="http://iusa.indiana.edu/" target="_blank"><img src="/img/sidebar/IUSA_logo.jpg"></a>
             </div>
+        <? } else if (strpos($university['name'], 'Ohio') !== false) { ?>
+            <div class='featured_banner'>
+                <a href="http://www.marketosu.com/" target="_blank"><img src="/img/sidebar/MarketOSU.jpg"></a>
+            </div>
         <? } ?>
         <div class='legal-bar'>
             <span>Cribspot, LLC. | <a href='/TermsOfUse'>Terms</a> | <a href='/PrivacyPolicy'>Privacy</a> | <a href='/Disclaimer'>Disclaimer</a></span>
