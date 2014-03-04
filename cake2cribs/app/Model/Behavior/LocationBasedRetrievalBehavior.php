@@ -63,7 +63,7 @@ Basic data fields are defined in the listing model as BASIC_DATA_FIELDS, and var
 			FROM markers Marker
 			inner join listings Listing on Listing.marker_id = Marker.marker_id ".
 			$listing_type_inner_join .
-			" order by distance";
+			" where Listing.visible = true order by distance";
         $basicData = $model->query($queryString);
         /* Filter for only the listings within $radius of the $target_lat_long */
         $filteredBasicData = $this->_filterQueryResultsByDistance($basicData, $radius);
