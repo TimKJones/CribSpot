@@ -52,7 +52,7 @@ class ListingsController extends AppController {
 		
 		$listing = $this->Listing->GetListing($listing_id);
 		
-		if (!array_key_exists(0, $listing) || $listing === null)
+		if (!array_key_exists(0, $listing) || $listing === null || !array_key_exists("Listing", $listing[0]) || empty($listing[0]["Listing"]["visible"]))
 		{
 			$flash_message['method'] = "Error";
 			$flash_message['message'] = "Sorry - That listing no longer exists!";

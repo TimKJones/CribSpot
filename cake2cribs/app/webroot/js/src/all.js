@@ -1861,7 +1861,7 @@
           bed_count = listing_info.beds;
           bed_desc = "Beds";
           if (listing_info["beds"] == null) {
-            bed_count = "??";
+            bed_count = "?";
           } else if (parseInt(listing_info["beds"], 10) === 0) {
             bed_count = "Studio";
             bed_desc = "";
