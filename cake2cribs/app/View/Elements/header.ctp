@@ -37,7 +37,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 				} elseif (strcmp($page, "rental") == 0)
 				{
 				?>
-					<a class="review_btn btn" href="/sublet/<?= $school_name ?>" target="_blank">View Sublets</a>
+					<a class="review_btn btn" href="/sublet/<?= $school_name ?>" >View Sublets</a>
 				<?php } elseif (strcmp($page, "sublet") == 0) { ?>
 					<a class="review_btn btn" href="/rental/<?= $school_name ?>">View Rentals</a>
 			<?php
