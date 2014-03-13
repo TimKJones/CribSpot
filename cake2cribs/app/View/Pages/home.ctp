@@ -1,6 +1,7 @@
 <?php
 	echo $this->Html->css('/less/Expert/expert_page.less?v=3','stylesheet/less', array('inline' => false));
 	echo $this->element('popups');
+	$this->set('title_for_layout', 'Local Experts | Cribspot');
 ?>
 
 <div id="expert_page">
