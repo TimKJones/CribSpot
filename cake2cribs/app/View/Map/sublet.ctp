@@ -15,7 +15,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 
 
 	$this->set('title_for_layout', "College Student Sublets | " . $university["name"] . " | Cribspot");
-	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "-", $school_name);
+	$url = 'https://cribspot.com/sublet/' . str_replace(" ", "_", $school_name);
 	$description = "Find & advertise sublets at " . $university['name'] . " on Cribspot’s temporary housing map. Sublease your off-campus apartment / house to students in " . $university['city'] . ".";
 
 	$this->set('meta_description', $description);
@@ -28,7 +28,7 @@ if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
 	echo $this->element('header', 
 		array(
 			'page' => 'sublet',
-			'school_name' => str_replace(" ", "-", $school_name),
+			'school_name' => str_replace(" ", "_", $school_name),
 			'sublets_launch_date' => $university['sublets_launch_date'],
 			'show_filter' => false,
 			'show_user' => true,

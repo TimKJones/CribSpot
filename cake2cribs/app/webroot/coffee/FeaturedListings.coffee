@@ -261,9 +261,6 @@ class A2Cribs.FeaturedListings
 				@listing_ids = []
 
 
-			# Fetch primary image paths for all listings in sidebar
-			@GetSidebarImagePaths(sidebar_listing_ids)
-
 			# Set favorite add/delete event handlers for sidebar
 			#for listing in listings
 			#	if listing.Listing?
