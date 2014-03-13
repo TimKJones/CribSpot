@@ -274,6 +274,8 @@
 				</div>
 			</div>
 		</section>
+		<section id="gap">
+		</section>
 	</div>
 	<?= $this->element('expert_contact'); ?>
 	<?= $this->element('expert_signup'); ?>
