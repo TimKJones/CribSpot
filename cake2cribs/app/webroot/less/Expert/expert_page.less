@@ -16,7 +16,7 @@ body
 		text-decoration: none;
 		border: solid white;
 		border-radius: 12px;
-		font-size: 22px;
+		.f20;
 		padding: 15px;
 		display: inline-block;
 		margin: 10px 0;
@@ -28,6 +28,10 @@ body
 			background-color: rgba(67, 121, 172, 0.9);
 			color: white;
 			margin: 0 30px;
+		}
+		&:hover
+		{
+			background-color: #4379ac;
 		}
 	}
 
@@ -47,6 +51,11 @@ body
 	.f14
 	{
 		.fontsize(14px);
+	}
+	.f15
+	{
+		.fontsize(15px);
+		line-height: 20px;
 	}
 	.f16
 	{
@@ -142,8 +151,8 @@ body
 			{
 				a
 				{
-					font-family: "Gotham-Medium";
-					font-size: 16px;
+					.gotham-bold;
+					.f15;
 					color: #d8d8d8;
 					text-shadow: none !important;
 				}
@@ -371,10 +380,9 @@ body
 		}
 		.feature
 		{
-			@height: 110px;
+			@height: 100px;
 			font-family: Gotham-Light;
 			margin-right: 10%;
-			height: @height;
 			img
 			{
 				width: @height;
@@ -404,10 +412,9 @@ body
 		}
 		@media (max-height: 900px)
 		{
-			@height: 80px;
+			@height: 70px;
 			.feature
 			{
-				height: @height;
 				img
 				{
 					width: @height;

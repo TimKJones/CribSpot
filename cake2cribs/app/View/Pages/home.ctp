@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/Expert/expert_page.less?v=3','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/Expert/expert_page.less?v=4','stylesheet/less', array('inline' => false));
 	echo $this->element('popups');
 	$this->set('title_for_layout', 'Local Experts | Cribspot');
 ?>
@@ -52,7 +52,7 @@
 						<img src="/img/founders/indiana.png" alt="Campus Expert" />
 						<p class="name">Alex Gross</p>
 						<p class="description">Hill Street Area Expert</p>
-						<p class="message">See what an expert can help you with</p>
+						<p class="message f18">See what an expert can help you with</p>
 						<a class="expert_info_btn" href="#expert_info"><i class="icon-chevron-down"></i></a>
 					</div>
 				</div>
@@ -90,7 +90,7 @@
 							<img src="/img/expert/video.png" alt="Video Tours" />
 							<div>
 								<p class="title">SEE PHOTOS, VIDEO TOURS &amp; REVIEWS</p>
-								<p>We've got premium content so you'll know exactly what your're getting into.</p>
+								<p>We've got premium content so you'll know exactly what you're getting into.</p>
 							</div>
 						</div>
 					</div>
@@ -221,7 +221,7 @@
 				<div class="span4">
 					<div class="feature_img">
 						<img src="/img/expert/featured_listing_2.jpg" alt="Ann Arbor City Apartments" />
-						<div class="hover_div text-center"><a class="button help" href="/listing/12801">I'M INTERESTED</a></div>
+						<div class="hover_div text-center"><a class="button help" href="/listing/12815">I'M INTERESTED</a></div>
 					</div>
 					<div class="featured_description">
 						<table>
@@ -248,7 +248,7 @@
 				<div class="span4">
 					<div class="feature_img">
 						<img src="/img/listings/lrg_52f052459d813.jpg" alt="Signature Club Apartments" />
-						<div class="hover_div text-center"><a class="button help" href="/listing/12815/">I'M INTERESTED</a></div>
+						<div class="hover_div text-center"><a class="button help" href="/listing/12801/">I'M INTERESTED</a></div>
 					</div>
 					<div class="featured_description">
 						<table>
