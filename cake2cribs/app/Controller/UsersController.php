@@ -28,6 +28,18 @@ class UsersController extends AppController {
         $this->Auth->allow('PMAdmin');
     }
 
+		public function interestedInAgent()
+		{
+			if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
+							return;
+
+      $email = $this->request->data['email'];
+      $phone = $this->request->data['phone'];
+			$this->set('email', $email);
+			$this->set('phone', $phone);
+      $this->SendEmail('noreply@cribspot.com', 'alex@cribspot.com', 'A user wants your D Alex', 'interested_in_agent', 'both');
+		}
+
     /* 
     Share a listing with another user.
     this function is called by dragging a listing to the user's hotlist.
