@@ -17,7 +17,7 @@
 		console.log($(this).serialize());
 		$.ajax({
 			type: 'POST',
-			url: '/',
+			url: '/users/interestedInAgent',
 			data: $(this).serialize()
 		})
 		$("#expert-contact").modal("hide");
