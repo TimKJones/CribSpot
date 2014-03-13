@@ -26,18 +26,22 @@ class UsersController extends AppController {
         $this->Auth->allow('welcome');
         $this->Auth->allow('sublet');
         $this->Auth->allow('PMAdmin');
+        $this->Auth->allow('interestedInAgent');
     }
 
 		public function interestedInAgent()
 		{
 			if( !$this->request->is('ajax') && !Configure::read('debug') > 0)
-							return;
+				return;
+			if(!$this->request->isPost())
+				return;
 
       $email = $this->request->data['email'];
       $phone = $this->request->data['phone'];
 			$this->set('email', $email);
 			$this->set('phone', $phone);
       $this->SendEmail('noreply@cribspot.com', 'alex@cribspot.com', 'A user wants your D Alex', 'interested_in_agent', 'both');
+      $this->set('response', json_encode(array()));
 		}
 
     /* 

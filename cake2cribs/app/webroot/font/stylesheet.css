@@ -69,3 +69,27 @@
     font-family: 'BorisBlackBloxx';
     src: url('BorisBlackBloxx.ttf') format("truetype");
 }
+@font-face {
+    font-family: 'Gotham-Thin';
+		src: url('Gotham-Thin.otf'),
+        url('Gotham-Thin.woff') format('woff');
+}
+@font-face {
+    font-family: 'Gotham-Light';
+		src: url('Gotham-Light.otf'),
+        url('Gotham-Light.woff') format('woff');
+}
+@font-face {
+    font-family: 'Gotham-Medium';
+		src: url('Gotham-Medium.otf'),
+        url('Gotham-Medium.woff') format('woff');
+}
+@font-face {
+    font-family: 'Gotham-Bold';
+		src: url('Gotham-Bold.otf'),
+        url('Gotham-Bold.woff') format('woff');
+}
+@font-face {
+    font-family: 'Mission-Script';
+		src: url('Mission-Script.otf');
+}
