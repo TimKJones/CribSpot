@@ -1,5 +1,5 @@
 <?php
-	echo $this->Html->css('/less/Expert/expert_page.less?v=1','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/Expert/expert_page.less?v=2','stylesheet/less', array('inline' => false));
 	echo $this->element('popups');
 ?>
 
@@ -200,46 +200,19 @@
 							<tr>
 								<td>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,700+</span>
+										<span class="pull-right dark-gray"><span class="f20">1</span><span class="f18"> bed</span></span>
 									</div>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,485+</span>
+										<span class="pull-right dark-gray"><span class="f20">2</span><span class="f18"> bed</span></span>
 									</div>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,045+</span>
+										<span class="pull-right dark-gray"><span class="f20">4</span><span class="f18"> bed</span></span>
 									</div>
 								</td>
-								<td class="gotham-thin f14">Luxury Apt. Parking &amp; Furniture Included. Suana, Pool, Tanning, Bed, Study, Balcony</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class="span4">
-					<div class="feature_img">
-						<img src="/img/listings/lrg_52f052459d813.jpg" alt="Signature Club Apartments" />
-						<div class="hover_div text-center"><a class="button help" href="/listing/12801">I'M INTERESTED</a></div>
-					</div>
-					<div class="featured_description">
-						<table>
-							<tr>
-								<td>
-									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
-									</div>
-									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
-									</div>
-									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
-									</div>
-								</td>
-								<td class="gotham-thin f14">Luxury Apt. Parking &amp; Furniture Included. Suana, Pool, Tanning, Bed, Study, Balcony</td>
+								<td class="gotham-thin f14">Luxury apartments with great location, fitness center, rooftop sky lounge, all utilities, and much more.</td>
 							</tr>
 						</table>
 					</div>
@@ -247,6 +220,33 @@
 				<div class="span4">
 					<div class="feature_img">
 						<img src="/img/expert/featured_listing_2.jpg" alt="Ann Arbor City Apartments" />
+						<div class="hover_div text-center"><a class="button help" href="/listing/12801">I'M INTERESTED</a></div>
+					</div>
+					<div class="featured_description">
+						<table>
+							<tr>
+								<td>
+									<div class="listing">
+										<span class="pull-left green f20">$1,390+</span>
+										<span class="pull-right dark-gray"><span class="f20"></span><span class="f18">Studio</span></span>
+									</div>
+									<div class="listing">
+										<span class="pull-left green f20">$1,525+</span>
+										<span class="pull-right dark-gray"><span class="f20">1</span><span class="f18"> bed</span></span>
+									</div>
+									<div class="listing">
+										<span class="pull-left green f20">$1,880+</span>
+										<span class="pull-right dark-gray"><span class="f20">2</span><span class="f18"> bed</span></span>
+									</div>
+								</td>
+								<td class="gotham-thin f14">An extraordinary experience. Enjoy the Sky Park, large Clubroom, and superb location among many great features.</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="span4">
+					<div class="feature_img">
+						<img src="/img/listings/lrg_52f052459d813.jpg" alt="Signature Club Apartments" />
 						<div class="hover_div text-center"><a class="button help" href="/listing/12815/">I'M INTERESTED</a></div>
 					</div>
 					<div class="featured_description">
@@ -254,19 +254,19 @@
 							<tr>
 								<td>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,073</span>
+										<span class="pull-right dark-gray"><span class="f20">1</span><span class="f18"> bed</span></span>
 									</div>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,173</span>
+										<span class="pull-right dark-gray"><span class="f20">2</span><span class="f18"> bed</span></span>
 									</div>
 									<div class="listing">
-										<span class="pull-left green f20">$1,400</span>
-										<span class="pull-right dark-gray"><span class="f20">3</span><span class="f18"> bed</span></span>
+										<span class="pull-left green f20">$1,351</span>
+										<span class="pull-right dark-gray"><span class="f20">2</span><span class="f18"> bed</span></span>
 									</div>
 								</td>
-								<td class="gotham-thin f14">Luxury Apt. Parking &amp; Furniture Included. Suana, Pool, Tanning, Bed, Study, Balcony</td>
+								<td class="gotham-thin f14">Clean, pleasant feeling apartments with pool, fitness center, large rooms, serene surroundings, pet friendly</td>
 							</tr>
 						</table>
 					</div>
