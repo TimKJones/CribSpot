@@ -1,0 +1,700 @@
+body
+{
+	padding: 0 !important;
+}
+#expert_page
+{
+	background-color: white;
+	.fontsize (@font-size: 30px) {
+		font-size: @font-size;
+		line-height: @font-size;
+	}
+	.button
+	{
+		font-family: Gotham-Bold;
+		color: white;
+		text-decoration: none;
+		border: solid white;
+		border-radius: 12px;
+		font-size: 22px;
+		padding: 15px;
+		display: inline-block;
+		margin: 10px 0;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+
+		&.help
+		{
+			background-color: rgba(67, 121, 172, 0.9);
+			color: white;
+			margin: 0 30px;
+		}
+	}
+
+	.relative
+	{
+		position: relative;
+	}
+
+	.f70
+	{
+		.fontsize(70px);
+	}
+	.f12
+	{
+		.fontsize(12px);
+	}
+	.f14
+	{
+		.fontsize(14px);
+	}
+	.f16
+	{
+		.fontsize(16px);
+		line-height: 20px;
+	}
+	.f18
+	{
+		.fontsize(18px);
+	}
+	.f20
+	{
+		.fontsize(20px);
+	}
+	.f24
+	{
+		.fontsize(24px);
+	}
+	.f30
+	{
+		.fontsize(30px);
+	}
+	.f40
+	{
+		.fontsize(40px);
+	}
+	.f45
+	{
+		.fontsize(45px);
+	}
+	.gotham-thin
+	{
+		font-family: "Gotham-Thin";
+	}
+	.gotham-bold
+	{
+		font-family: "Gotham-Medium";
+	}
+	.mission
+	{
+		font-family: "Mission-Script";
+	}
+	.white
+	{
+		color: white;
+	}
+	.orange
+	{
+		color: #e45629;
+	}
+	.yellow
+	{
+		color: #f6e077 !important;
+	}
+	.green
+	{
+		color: #4f8e45;
+	}
+	.red
+	{
+		color: #c33636;
+	}
+	.black
+	{
+		color: #4b4b4b;
+	}
+	.dark-gray
+	{
+		color: #3b3b3b;
+	}
+	.gray
+	{
+		color: #706d6d;
+	}
+	.light-gray
+	{
+		color: #8b8b8b;
+	}
+	.navbar
+	{
+		position: absolute;
+		width: 100%;
+		z-index: 1;
+
+		.navbar-inner
+		{
+			padding: 30px 50px;
+			background-color: transparent !important;
+			background-image: none !important;
+			border: none !important;
+
+			li
+			{
+				a
+				{
+					font-family: "Gotham-Medium";
+					font-size: 16px;
+					color: #d8d8d8;
+					text-shadow: none !important;
+				}
+			}
+			@media (max-width: 979px)
+			{
+				.nav-collapse
+				{
+					a:hover
+					{
+						background-color: #2473b6;
+					}
+				}
+				.nav
+				{
+					background-color: rgba(0,0,0,0.8);
+				}
+			}
+		}
+
+		.brand
+		{
+			img
+			{
+				width: 200px;
+			}
+		}
+		.nav
+		{
+			img
+			{
+				width: 20px;
+				margin-right: 10px;
+			}
+		}
+			
+	}
+	._fullscreen
+	{
+		min-height: 100vh;
+	}
+
+	#page_1
+	{
+		background-image: url(/img/expert/bg.jpg);
+		background-size: cover;
+		height: 100vh;
+		min-height: 550px !important;
+
+		.row-fluid, .span
+		{
+			position: relative;
+		}
+
+		.banner
+		{
+			position: absolute;
+			bottom: 10px;
+			margin-left: 5%;
+		}
+
+		.span
+		{
+			height: 100%;
+		}
+
+		.half_height
+		{
+			height: 50%;
+		}
+
+		.expert_info_btn
+		{
+			padding: 9px;
+			border: solid white;
+			border-radius: 26px;
+			color: white;
+			display: inline-block;
+			text-decoration: none;
+
+			&:hover
+			{
+				color: #4379ac;
+				border-color: #4379ac;
+			}
+		}
+
+		h1
+		{
+			font-family: Gotham-Thin;
+			font-size: 30px;
+			color: white;
+			font-weight: normal;
+			.bold
+			{
+				font-family: Gotham-Medium;
+				font-size: 38px;
+				font-style: normal;
+			}
+		}
+		.welcome_buttons
+		{
+			text-align: right;
+		}
+		.button
+		{
+			font-family: Gotham-Bold;
+			color: white;
+			text-decoration: none;
+			border: solid white;
+			border-radius: 12px;
+			font-size: 22px;
+			padding: 15px;
+			display: inline-block;
+			margin: 10px 0;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+
+			&.help
+			{
+				margin-right: 30px;
+			}
+		}
+
+		@media (max-width: 979px)
+		{
+			.welcome_buttons
+			{
+				width: 100%;
+				text-align: center;
+			}
+		}
+		@media (max-width: 650px)
+		{
+			.button
+			{
+				width: 100%;
+				&.help
+				{
+					margin-right: 0;
+				}
+			}
+		}
+		.hero-region
+		{
+			position: absolute;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			top: 0;
+			margin: auto;
+			height: 150px;
+		}
+
+		.expert-region
+		{
+			position: absolute;
+			right: 0;
+			left: 0;
+			bottom: 10px;
+			color: white;
+			font-family: Gotham-Medium;
+			font-size: 22px;
+
+			.name
+			{
+				font-family: Gotham-Bold;
+				margin: 0;
+			}
+			.description
+			{
+				font-size: 16px;
+			}
+			.message
+			{
+				color: #e1c545;
+			}
+		}
+	}
+	#expert_info
+	{
+		position: relative;
+		.brand
+		{
+			display: inline-block;
+			padding: 50px 0 50px 50px;
+
+			img
+			{
+				width: 200px;
+			}
+		}
+		.rental_bubble
+		{
+			display: inline-block;
+			background-color: #f1f8fe;
+			padding: 30px;
+			font-family: Gotham-Light;
+			margin: 0;
+			font-size: 20px;
+			color: #1874b3;
+			position: relative;
+			margin-top: 15px;
+
+			.bold
+			{
+				font-family: Gotham-Medium;
+				margin: 0;
+				font-size: 32px;
+				line-height: 32px;
+			}
+			.arrow-down
+			{
+				width: 0;
+				height: 0;
+				border-left: 70px solid transparent;
+				border-right: 2px solid transparent;
+				border-top: 14px solid #f1f8fe;
+				position: absolute;
+				bottom: -14px;
+				left: 0;
+				right: 0;
+				margin: auto;
+			}
+		}
+		.feature
+		{
+			@height: 110px;
+			font-family: Gotham-Light;
+			margin-right: 10%;
+			height: @height;
+			img
+			{
+				width: @height;
+				float: left;
+			}
+			div
+			{
+				margin-top: @height / 4;
+				margin-left: 140px;
+				padding-top: @height / 4;
+			}
+			.title
+			{
+				.f18;
+				font-family: Gotham-Medium;
+				.gray;
+			}
+			.description
+			{
+				.f16;
+				color: #6a6666;
+			}
+		}
+		.last-feature
+		{
+			margin-bottom: 80px;
+		}
+		@media (max-height: 900px)
+		{
+			@height: 80px;
+			.feature
+			{
+				height: @height;
+				img
+				{
+					width: @height;
+				}
+				.title
+				{
+					.f16;
+				}
+				div
+				{
+					margin-top: @height / 4;
+					margin-left: 120px;
+					padding-top: 0;
+				}
+			}
+		}
+		@media (max-width: 979px)
+		{
+			.features
+			{
+				width: 100%;
+			}
+		}
+		.blue-top
+		{
+			background-color: #abc9e1;
+			height: 20px;
+		}
+		.see_top_rentals
+		{
+			font-family: Gotham-Bold;
+			background-color: #fec775;
+			position: absolute;
+			padding: 25px;
+			bottom: 0;
+			left: 20%;
+			.dark-gray;
+			text-decoration: none;
+		}
+		.arrow-down
+		{
+			width: 0; 
+			height: 0; 
+			border-left: 20px solid transparent;
+			border-right: 20px solid transparent;
+			border-top: 14px solid #fec775;
+			position: absolute;
+			bottom: -14px;
+			left: 0;
+			right: 0;
+			margin: auto;
+		}
+		.local-expert-container
+		{
+			padding: 5px;
+			width: 128px;
+			display: inline-block;
+			.local-expert
+			{
+				box-shadow: 0 0 10px #C0C0C0;
+				padding: 4px;
+
+				.expert-description
+				{
+					padding: 4px 0 0 4px;
+				}
+			}
+			
+		}
+		@media (min-height: 940px) and (min-width: 1400px)
+		{
+			.local-expert-container
+			{
+				width: 200px;
+			}
+		}
+	}
+	#top_rentals
+	{
+		background-color: #fcb036;
+		margin-bottom: 233px;
+		.feature_img
+		{
+			@padding_width: 4px;
+			background-color: white;
+			padding: 4px;
+			border-radius: 2px;
+			position: relative;
+			box-shadow: 0 0 10px gray;
+
+			.hover_div
+			{
+				display: none;
+				position: absolute;
+				top: @padding_width;
+				bottom: @padding_width;
+				right: @padding_width;
+				left: @padding_width;
+				background-color: rgba(0,0,0,0.5);
+				.button
+				{
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					right: 0;
+					left: 0;
+					height: 20px;
+					width: 200px;
+					margin: auto;
+					box-sizing: content-box;
+					-moz-box-sizing: content-box;
+				}
+			}
+			&:hover
+			{
+				.hover_div
+				{
+					display: block;
+				}
+			}
+
+		}
+		.row-fluid:first-child
+		{
+			padding: 30px 0 10px;
+			p
+			{
+				margin-bottom: 0;
+			}
+		}
+
+		.house_separator
+		{
+			width: 50%;
+			height: 60px;
+			background-color: white;
+			float: left;
+			padding: 28px 60px;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			background-clip: content-box;
+			-moz-background-clip: content-box;
+			margin-bottom: 10px;
+		}
+
+		#house_symbol
+		{
+			position: absolute;
+			margin: auto auto 10px auto;
+			width: 60px;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+		}
+
+		.listings_row
+		{
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			padding: 0 5%;
+			.span4
+			{
+				margin-bottom: 15px;
+			}
+		}
+		@media (min-width: 768px) and (max-width: 1100px)
+		{
+			.span4
+			{
+				width: 48.6%;
+			}
+			.span4:last-child
+			{
+				display: none;
+			}
+		}
+
+		.featured_description
+		{
+			padding: 0 10px;
+			overflow: auto;
+			table
+			{
+				width: 100%;
+				table-layout: fixed;
+				background-color: #f9f9f9;
+				.gotham-bold;
+				td
+				{
+					padding: 5px 3%;
+				}
+				td:first-child
+				{
+					border-right: solid 1px #e0e0e0;
+				}
+			}
+			.listings
+			{
+				background-color: #f9f9f9;
+				width: 50%;
+				display: inline-block;
+				float: left;
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				padding: 5px 10px;
+			}
+			.listing
+			{
+				padding: 5px 0;
+				.gotham-bold;
+				overflow: auto;
+			}
+		}
+	}
+	footer
+	{
+		background-color: #373944;
+		padding: 5%;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: -1;
+		p
+		{
+			.gotham-thin;
+			.fontsize(25px);
+			.white;
+			span
+			{
+				.gotham-bold;
+			}
+		}
+	}
+
+	.modal
+	{
+		width: 320px;
+		padding: 40px;
+		border: solid 5px rgba(248, 248, 248, 0.3);
+		margin-left: -160px;
+	}
+
+	#expert-contact
+	{
+		padding-top: 100px;
+		img
+		{
+			position: absolute;
+			width: 180px;
+			top: -90px;
+			right: 0;
+			left: 0;
+			margin: auto;
+		}
+		input
+		{
+			border-color: #DEDEDE;
+			border-width: 2px;
+			background-image: none;
+			box-shadow: none;
+			color: #BDBDBD;
+			padding: 20px;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			float: left;
+		}
+		.email
+		{
+			width: 100%;
+		}
+		.phone
+		{
+			width: 80%;
+		}
+		button
+		{
+			.gotham-bold;
+			background: #EBEBEB;
+			border: solid 2px #B8B8B8;
+			border-radius: 4px;
+			padding: 10px;
+			float: left;
+			color: #989898;
+			margin-left: 9px;
+			.f18;
+		}
+	}
+}
