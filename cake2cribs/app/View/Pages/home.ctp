@@ -37,7 +37,7 @@
 		<section id="page_1" class="_fullscreen">
 			<div class="row-fluid half_height">
 				<div class="banner">
-					<h1>&nbsp;&nbsp;A housing site built by <em class="bold">THOUSANDS</em> of renters.<br>Get free advice from a local renter expert now.</h1>
+					<h1 class="hidden-phone">&nbsp;&nbsp;A housing site built by <em class="bold">THOUSANDS</em> of renters.<br>Get free advice from a local renter expert now.</h1>
 				</div>
 			</div>
 			<div class="row-fluid half_height">
