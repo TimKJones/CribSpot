@@ -322,7 +322,7 @@
       if (this.Validate(row)) {
         rental_object = this.GetObjectByRow(row);
         save_type = rental_object.listing_id != null ? "Edit" : "Save";
-        save_$(document).trigger("track_event", ["Post Rental", "Save", save_type, rental_object.listing_id]);
+        $(document).trigger("track_event", ["Post Rental", "Save", save_type, rental_object.listing_id]);
         $("#loader").show();
         return $.ajax({
           url: myBaseUrl + "listings/Save/",

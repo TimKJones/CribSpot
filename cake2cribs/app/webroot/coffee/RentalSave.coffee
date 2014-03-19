@@ -240,7 +240,7 @@ class A2Cribs.RentalSave
 		if @Validate row
 			rental_object = @GetObjectByRow row
 			save_type = if rental_object.listing_id? then "Edit" else "Save"
-			save_$(document).trigger "track_event", ["Post Rental", "Save", save_type, rental_object.listing_id]
+			$(document).trigger "track_event", ["Post Rental", "Save", save_type, rental_object.listing_id]
 			$("#loader").show()
 			$.ajax
 				url: myBaseUrl + "listings/Save/"
