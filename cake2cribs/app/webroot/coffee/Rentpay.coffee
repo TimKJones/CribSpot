@@ -5,6 +5,10 @@ class A2Cribs.Rentpay
 			
 
 	@EncryptFormCallback : (event) ->
+		$.post '/Rentpays/CreateTransaction', $("#braintree-payment-form").serialize(), () =>
+			console.log 'posted'
+
+		$("#paymentSubmit").attr("disabled", "disabled")
 		return false
 
 

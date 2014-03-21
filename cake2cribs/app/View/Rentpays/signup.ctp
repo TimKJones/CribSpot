@@ -9,6 +9,10 @@
 		<div>
 			<form id="braintree-payment-form">
 				<p>
+					<label>Amount</label>
+					$<input type="text" size="20" autocomplete="off" data-encrypted-name="amount" />
+				</p>
+				<p>
 					<label>Card Number</label>
 					<input type="text" size="20" autocomplete="off" data-encrypted-name="number" />
 				</p>
@@ -20,7 +24,7 @@
 					<label>Expiration (MM/YYYY)</label>
 					<input type="text" size="2" data-encrypted-name="month" /> / <input type="text" size="4" data-encrypted-name="year" />
 				</p>
-				<input type="submit" id="submit" />
+				<input type="submit" id="paymentSubmit" />
 			</form>
 		</div>
 

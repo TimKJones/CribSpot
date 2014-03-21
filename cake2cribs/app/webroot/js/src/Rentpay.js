@@ -9,7 +9,12 @@
       return this.braintree.onSubmitEncryptForm('braintree-payment-form', this.EncryptFormCallback);
     };
 
-    Rentpay.EncryptFormCallback = function(param1, param2, param3) {
+    Rentpay.EncryptFormCallback = function(event) {
+      var _this = this;
+      $.post('/Rentpays/CreateTransaction', $("#braintree-payment-form").serialize(), function() {
+        return console.log('posted');
+      });
+      $("#paymentSubmit").attr("disabled", "disabled");
       return false;
     };
 

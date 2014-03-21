@@ -14,12 +14,13 @@ class RentpaysController extends AppController {
 		}
 
 		public function CreateTransaction() {
-			if (!$this->request->is('ajax') && !Configure::read('debug') > 0)
+			if ((!$this->request->is('ajax') && !Configure::read('debug') > 0) || !$this->request->isPost())
 				return;
 
 			$this->layout = 'ajax';
 
-
+			CakeLog::write('braintree_params', print_r($this->request->data, true));
+			$params = $this->request->data;
 
 			/* Initialize Braintree library */
 			App::Import('Vendor', 'braintree/lib/Braintree');
@@ -30,11 +31,11 @@ class RentpaysController extends AppController {
 
 			/* Create transaction using user payment info */
 			$result = Braintree_Transaction::sale(array(
-				'amount' => '1.00',
+				'amount' => $params['amount'],
 				'creditCard' => array(
-					'number' => '4111111111111111',
-					'expirationMonth' => '05',
-					'expirationYear' => '15'
+					'number' => $params['number'],
+					'expirationMonth' => $params['month'],
+					'expirationYear' => $params['year']
 				)
 			));
 
