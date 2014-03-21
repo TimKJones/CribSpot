@@ -19,9 +19,6 @@ class RentpaysController extends AppController {
 
 			$this->layout = 'ajax';
 
-			CakeLog::write('braintree_params', print_r($this->request->data, true));
-			$params = $this->request->data;
-
 			/* Initialize Braintree library */
 			App::Import('Vendor', 'braintree/lib/Braintree');
 			Braintree_Configuration::environment(Configure::read('BRAINTREE_ENVIRONMENT'));
@@ -29,18 +26,47 @@ class RentpaysController extends AppController {
 			Braintree_Configuration::publicKey(Configure::read('BRAINTREE_PUBLIC_KEY'));
 			Braintree_Configuration::privateKey(Configure::read('BRAINTREE_PRIVATE_KEY'));
 
+			CakeLog::write('braintree_params', print_r($this->request->data, true));
+			$params = $this->request->data;
+			/* Set local variables for params */
+			$first_name = $params['first_name'];
+			$last_name = $params['last_name'];
+			$email = $params['email'];
+			$amount = $params['amount'];
+			$number = $params['number'];
+			$cvv = $params['cvv'];
+			$expirationMonth = $params['month'];
+			$expirationYear = $params['year'];
+
+			$result = Braintree_Customer::create(array(
+				'firstName' => $first_name,
+				'lastName' => $last_name,
+				'email' => $email,
+				'creditCard' => array(
+					'number' => $number,
+					'expirationMonth' => $expirationMonth,
+					'expirationYear' => $expirationYear,
+					'cvv' => $cvv,
+					'billingAddress' => array(
+						'streetAddress' => '1 E Main St',
+						'extendedAddress' => 'Suite 101',
+						'region' => 'IL'
+					)
+				)
+			));
+
 			/* Create transaction using user payment info */
-			$result = Braintree_Transaction::sale(array(
+			/*$result = Braintree_Transaction::sale(array(
 				'amount' => $params['amount'],
 				'creditCard' => array(
 					'number' => $params['number'],
 					'expirationMonth' => $params['month'],
 					'expirationYear' => $params['year']
 				)
-			));
+			));*/
 
 			if ($result->success) {
-				CakeLog::write('braintree',"success!: " . $result->transaction->id);
+				CakeLog::write('braintree',print_r($result, true));
 			} else if ($result->transaction) {
 				CakeLog::write('braintree',"Error processing transaction:");
 				CakeLog::write('braintree',"\n  message: " . $result->message);
