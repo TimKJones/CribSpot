@@ -1,0 +1,5 @@
+/vendor
+/docs
+/tags
+composer.lock
+*.tgz
