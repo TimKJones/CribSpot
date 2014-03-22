@@ -42,16 +42,16 @@ class RentpaysController extends AppController {
 				'firstName' => $first_name,
 				'lastName' => $last_name,
 				'email' => $email,
+				'customFields' => array(
+					"street_address" => "808 Brown St",
+					'pm_name' => 'PMSI',
+					'building_name' => 'Zaragon'
+				),
 				'creditCard' => array(
 					'number' => $number,
 					'expirationMonth' => $expirationMonth,
 					'expirationYear' => $expirationYear,
-					'cvv' => $cvv,
-					'billingAddress' => array(
-						'streetAddress' => '1 E Main St',
-						'extendedAddress' => 'Suite 101',
-						'region' => 'IL'
-					)
+					'cvv' => $cvv
 				)
 			));
 
