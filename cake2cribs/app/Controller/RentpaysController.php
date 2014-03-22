@@ -29,9 +29,15 @@ class RentpaysController extends AppController {
 			CakeLog::write('braintree_params', print_r($this->request->data, true));
 			$params = $this->request->data;
 			/* Set local variables for params */
+			/* User information */
 			$first_name = $params['first_name'];
 			$last_name = $params['last_name'];
 			$email = $params['email'];
+			$pm_name = 'PMSI';
+			$street_address = '808 Brown St';
+			$building_name = 'Zaragon';
+
+			/* Payment information */
 			$amount = $params['amount'];
 			$number = $params['number'];
 			$cvv = $params['cvv'];
@@ -43,9 +49,9 @@ class RentpaysController extends AppController {
 				'lastName' => $last_name,
 				'email' => $email,
 				'customFields' => array(
-					"street_address" => "808 Brown St",
-					'pm_name' => 'PMSI',
-					'building_name' => 'Zaragon'
+					"street_address" => $street_address,
+					'pm_name' => $pm_name,
+					'building_name' => $building_name
 				),
 				'creditCard' => array(
 					'number' => $number,
@@ -54,6 +60,8 @@ class RentpaysController extends AppController {
 					'cvv' => $cvv
 				)
 			));
+
+			$this->InviteHousemates();
 
 			/* Create transaction using user payment info */
 			/*$result = Braintree_Transaction::sale(array(
@@ -78,4 +86,39 @@ class RentpaysController extends AppController {
 				CakeLog::write('braintree',$result->errors->deepAll());
 			}
 		}
+
+    public function InviteHousemates()
+    {
+			//$this->layout = 'ajax';
+
+/*			if (!$this->request->is('ajax') && !Configure::read('debug') > 0)
+					return;
+
+			if ($this->request->data === null || !array_key_exists('emails', $this->request->data))
+				return;*/
+
+			$first_name = 'Tim';
+			$last_name = 'Jones';
+			$building_name = 'Zaragon';
+			$street_address = '808 Brown St';
+			$pm_name = 'PMSI';
+
+			$emails = array('tim@cribspot.com');
+			CakeLog::write('emails', print_r($emails, true));
+
+			$response = null;
+			
+			foreach ($emails as $email){
+					$subject = 'Your rent is due! Join me in paying online with Cribspot';
+					$template = 'rentpay_invitation';
+					$this->set('inviter_first_name', $first_name);
+					$this->set('inviter_last_name', $last_name);
+					$this->set('rentpay_url', 'localhost/Rentpays/signup?building_name='.$building_name.'&street_address='.$street_address.'&pm_name='.$pm_name);
+          $from = $first_name.' '.$last_name.'<info@cribspot.com>';
+					$to = $email;    
+					$sendAs = 'both';
+					$this->SendEmail($from, $to, $subject, $template, $sendAs);
+			}
+    }
+
 }
