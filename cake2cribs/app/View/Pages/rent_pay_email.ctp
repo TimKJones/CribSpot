@@ -1,4 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php 
+$inviter_full_name = 'Alex Gross';
+$rentpay_url = 'http://localhost/RentPays/Signup';
+$rent_amount = '634';
+?>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -329,11 +335,11 @@
                                                         <td align="center" valign="top" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
                                                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
                                                                 <tr>
-                                                                    <td valign="top" class="bodyContent" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #202020;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;"><h1 style="text-align: center;color: #3F3F38;display: block;font-family: Helvetica;font-size: 24px;font-weight: bold;line-height: 100%;letter-spacing: normal;margin-top: 0;margin-right: 0;margin-bottom: 10px;margin-left: 0;"><span style="font-family:georgia,times,times new roman,serif"><span style="color:#333333">Alex Gross Requests<br>
+																																<td valign="top" class="bodyContent" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #202020;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;"><h1 style="text-align: center;color: #3F3F38;display: block;font-family: Helvetica;font-size: 24px;font-weight: bold;line-height: 100%;letter-spacing: normal;margin-top: 0;margin-right: 0;margin-bottom: 10px;margin-left: 0;"><span style="font-family:georgia,times,times new roman,serif"><span style="color:#333333"><?php echo $inviter_full_name ?>  Requests<br>
 <span style="font-size:14px">that you pay your rent via&nbsp;Cribspot.&nbsp;</span></span></span></h1>
 
 <div style="text-align: center;"><br>
-<span style="font-family:georgia,times,times new roman,serif"><span style="color:rgb(51, 153, 51)"><span style="font-size:64px"><strong>$688</strong></span></span></span><br>
+<span style="font-family:georgia,times,times new roman,serif"><span style="color:rgb(51, 153, 51)"><span style="font-size:64px"><strong>$<?php echo $rent_amount ?></strong></span></span></span><br>
 <br>
 <strong style="color:rgb(153, 0, 0); font-family:arial,helvetica neue,helvetica,sans-serif; font-size:14px; text-align:center">Must&nbsp;Pay&nbsp;By&nbsp;March&nbsp;27th @ 4&nbsp;PM EST</strong><br>
 <br>
@@ -346,7 +352,7 @@ debit card,&nbsp;bank account, or Venmo.&nbsp;</span></span></span></span><br>
                                                                 	<td align="center" valign="top" style="padding-top: 20px;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;">
                                                                         <table border="0" cellpadding="20" cellspacing="0" width="100%" class="templateButton" mc:hideable="hideable_1" mchideable="hideable_1" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-moz-border-radius: 3px;-webkit-border-radius: 3px;background-color: #64a864;border-radius: 3px;">
                                                                         	<tr>
-                                                                            	<td align="center" valign="middle" class="templateButtonContent" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 12px;font-weight: bold;line-height: 100%;text-align: center;text-decoration: none;"><a href="http://www.cribspot.com" target="_blank" style="color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 12px;font-weight: bold;line-height: 100%;text-align: center;text-decoration: none;background: none !important;border-bottom: none !important;"><span style="font-size: 22px;background: none !important;border-bottom: none !important;"><span style="font-family: arial,helvetica neue,helvetica,sans-serif;background: none !important;border-bottom: none !important;">PAY MY RENT</span></span></a></td>
+																																					<td align="center" valign="middle" class="templateButtonContent" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 12px;font-weight: bold;line-height: 100%;text-align: center;text-decoration: none;"><a href='<?php echo $rentpay_url ?>' target="_blank" style="color: #FFFFFF;font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size: 12px;font-weight: bold;line-height: 100%;text-align: center;text-decoration: none;background: none !important;border-bottom: none !important;"><span style="font-size: 22px;background: none !important;border-bottom: none !important;"><span style="font-family: arial,helvetica neue,helvetica,sans-serif;background: none !important;border-bottom: none !important;">PAY MY RENT</span></span></a></td>
                                                                             </tr>
                                                                         </table>
                                                                     </td>
