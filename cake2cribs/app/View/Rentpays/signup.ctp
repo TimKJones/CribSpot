@@ -54,6 +54,7 @@
 	</div>
 	
 <?= $this->element('Rentpay/rentpay-signup'); ?>
+<?= $this->element('Rentpay/password-protect'); ?>
 </div>
 <script type="text/javascript" charset="utf-8">
 	window.onload = function()
