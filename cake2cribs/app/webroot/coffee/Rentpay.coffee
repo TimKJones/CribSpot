@@ -2,7 +2,7 @@ class A2Cribs.Rentpay
 	@init: () ->
 		@report_credit = yes
 		@is_venmo = "no"
-		@braintree = Braintree.create("MIIBCgKCAQEAoae5cN5m4spsJAXDUy7MxIH8hH3PcCO/M4PhXEZI51y5LAk6aT4zsNMzdA0G/+nJyhDnPitc3L3PCzNn+JJjeuKNwP5Il59JAmojqw5y6REzDIpFjCWHZId2qocQTbB56SGpfNd/OJIcBL+xv7ndJhM8uqX5byEpTuWXWOf+Sj83GszqfpQQtNDEWrW1a79ayl+Eg7PtGA/BHKEftlxtKJ1GVkOOdek8P4B2jHqnvfchMN2dMTetZiOWeIkcquCGn55k4cRgDj0i4v2CIQ7BFI+XTmqoaW6zcZHPkZKEWg0tWBhBXTB8JvttF9hZPqJkXR+eaHwJ2OCi6l44GTQHdwIDAQAB")
+		@braintree = Braintree.create('MIIBCgKCAQEAvxM/Oy1nPH0H/N/kya9jT84pJ78pR5UglboAxJH3yktxWjNNFQ85uNsjd5fKd+XFgEGYyfEqwUuHej1MafyO0Wu2W4HJoau3OmYC3EQRMr5yZR9mR1/3pRmi4JBi/wd3NBXdUZ5ZIjSO2bkaYJSTVcguGKtocKVseBYlHsHtS6tseWOi813cqHz15877F/iOZzdcS84JVGwPdVIdzBqQCpAoiUnPjzNAGeFBk+Rm9y6CtzWGGn6Z7zOxzUf5VJPycoz94Yr7EDIjTy8vF42IHsyOhreWGX/+p9nQGxiey+sslhTlKue7jRkC8IHwAHaXLYH37lrRoriN6emASj7shQIDAQAB');
 		@braintree.onSubmitEncryptForm 'braintree-payment-form', @EncryptFormCallback
 
 		@div.find(".back").click (event) =>
