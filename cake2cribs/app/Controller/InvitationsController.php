@@ -11,7 +11,6 @@ class InvitationsController extends AppController {
     public function InviteFriends()
     {
         $this->layout = 'ajax';
-        CakeLog::write('emails', 'hello');
 
         if (!$this->request->is('ajax') && !Configure::read('debug') > 0)
             return;

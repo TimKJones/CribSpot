@@ -4,7 +4,20 @@ body
 }
 #expert_page
 {
+	@lightest-gray: #b0b0b0;
 	background-color: white;
+	::-webkit-input-placeholder { 
+		color:    @lightest-gray;
+	}
+	:-moz-placeholder { 
+		color:    @lightest-gray;
+	}
+	::-moz-placeholder { 
+		color:    @lightest-gray;
+	}
+	:-ms-input-placeholder { 
+		color:    @lightest-gray;
+	}
 	.fontsize (@font-size: 30px) {
 		font-size: @font-size;
 		line-height: @font-size;
@@ -39,10 +52,37 @@ body
 			background-color: #4379ac;
 		}
 	}
+	.background
+	{
+		overflow: auto;
+		padding: 10px;
+		position: relative;
+		&.green
+		{
+			background-color: #7aba69;
+		}
+		&.orange
+		{
+			background-color: #e0963f;
+		}
+		&.blue
+		{
+			background-color: #68abd6;
+		}
+	}
 
 	.relative
 	{
 		position: relative;
+	}
+
+	.m20
+	{
+		margin: 20px 0;
+	}
+	.m10
+	{
+		margin: 10px 0;
 	}
 
 	.f70
@@ -52,6 +92,10 @@ body
 	.f12
 	{
 		.fontsize(12px);
+	}
+	.f13
+	{
+		.fontsize(13px);
 	}
 	.f14
 	{
@@ -138,6 +182,10 @@ body
 	.light-gray
 	{
 		color: #8b8b8b;
+	}
+	.blue
+	{
+		color: #547bbd;
 	}
 	.navbar
 	{
@@ -728,6 +776,223 @@ body
 			color: #989898;
 			margin-left: 9px;
 			.f18;
+		}
+	}
+
+	#rentpay-signup
+	{
+		padding: 10px;
+
+		#rent-amount
+		{
+			height: 50px;
+			width: 135px;
+		}
+		#email, #full_name
+		{
+			margin-bottom: 0;
+		}
+		#guarantee
+		{
+			line-height: 50px;
+			img
+			{
+				width: 20px;
+			}
+		}
+		#setup_rental
+		{
+			margin-bottom: 20px;
+		}
+		.footer
+		{
+			margin: 0 -10px -10px;
+			border-top: 1px solid #dfdfdf;
+			position: relative;
+			height: 55px;
+			padding-top: 5px;
+
+			.text
+			{
+				position: absolute;
+				left: 50px;
+				top: 10px;
+				width: 200px;
+				text-align: left;
+			}
+			.small-text
+			{
+				top: 23px;
+			}
+			#secure
+			{
+				position: absolute;
+				right: 10px;
+				top: 0;
+				bottom: 0;
+				margin: auto;
+				height: 20px;
+			}
+		}
+		input
+		{
+			border-radius: 2px;
+			border: none;
+			box-shadow: none;
+			padding: 10px;
+		}
+		.personal-info, .card-info, .email-info
+		{
+			@total-width: 300px;
+			input
+			{
+				width: @total-width - 2 * 10px;
+			}
+			.input50
+			{
+				float: left;
+				width: @total-width / 2 - 2 * 10px;
+				border-radius: 0;
+			}
+			.input75
+			{
+				width: 3 * @total-width / 4 - 2 * 10px;
+				border-radius: 0;
+				float: left;
+			}
+			.input25
+			{
+				width: @total-width / 4 - 2 * 10px;
+				border-radius: 0;
+			}
+
+		}
+		.next-step
+		{
+			color: #4c4c4c;
+			text-shadow: none;
+			background-color: #efc454;
+			background-image: none;
+			border: none;
+			border-radius: 2px;
+			padding: 8px 15px;
+		}
+
+		.pay-options
+		{
+			height: 106px;
+			.pay-option:not(:first-child)
+			{
+				border-left: 1px solid #639e87;
+			}
+			.pay-option
+			{
+				float: left;
+				width: 33%;
+				margin: 0;
+				background-color: #76c7a8;
+				display: inline-block;
+				position: relative;
+				cursor: pointer;
+				&.active
+				{
+					background-color: #4AB58C;
+				}
+				img
+				{
+					height: 60px;
+					width: 60px;
+					margin-top: 10px;
+				}
+			}
+
+		}
+		.back
+		{
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			text-decoration: none;
+		}
+		.coming-soon
+		{
+			.gotham-bold;
+			position: absolute;
+			font-size: 10px;
+			color: #2d916b;
+			background-color: #bceedb;
+			padding: 0px 5px;
+			top: -10px;
+			right: 5px;
+			left: 5px;
+		}
+		.white-cover
+		{
+			position: absolute;
+			top: 0;
+			right: 0;
+			left:0;
+			bottom: 0;
+			background-color: rgba(255,255,255, 0.7);
+			z-index: 1;
+		}
+		#thumbs-up
+		{
+			width: 120px;
+			margin: 10px;
+		}
+		.email-info
+		{
+			margin: 15px 0;
+		}
+		.add_roommate
+		{
+			text-decoration: none;
+			color: #5bb852;
+			display: block;
+			text-align: left;
+		}
+		.housemate
+		{
+			input
+			{
+				margin-bottom: 0;
+			}
+
+		}
+		.report-rent
+		{
+			cursor: pointer;
+			img
+			{
+				width: 20px;
+				margin-top: -10px;
+			}
+		}
+	}
+	#password-protect
+	{
+		padding: 10px;
+		input
+		{
+			border-radius: 2px;
+			border: none;
+			box-shadow: none;
+			padding: 10px;
+			
+		}
+		.next-step
+		{
+			color: #4c4c4c;
+			text-shadow: none;
+			background-color: #efc454;
+			background-image: none;
+			border: none;
+			border-radius: 2px;
+			padding: 8px 15px;
+			width: 100%;
+			.gotham-bold;
+			.dark-gray;
 		}
 	}
 }
