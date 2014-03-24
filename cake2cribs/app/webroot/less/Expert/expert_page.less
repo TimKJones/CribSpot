@@ -41,10 +41,16 @@ body
 	}
 	.background
 	{
+		overflow: auto;
 		padding: 10px;
+		position: relative;
 		&.green
 		{
 			background-color: #7aba69;
+		}
+		&.orange
+		{
+			background-color: #e0963f;
 		}
 		&.blue
 		{
@@ -57,6 +63,11 @@ body
 		position: relative;
 	}
 
+	.m10
+	{
+		margin: 10px 0;
+	}
+
 	.f70
 	{
 		.fontsize(70px);
@@ -64,6 +75,10 @@ body
 	.f12
 	{
 		.fontsize(12px);
+	}
+	.f13
+	{
+		.fontsize(13px);
 	}
 	.f14
 	{
@@ -756,6 +771,48 @@ body
 			height: 50px;
 			width: 135px;
 		}
+		#email, #full_name
+		{
+			margin-bottom: 0;
+		}
+		#guarantee
+		{
+			line-height: 50px;
+		}
+		#setup_rental
+		{
+			margin-bottom: 20px;
+		}
+		.footer
+		{
+			margin: 0 -10px -10px;
+			border-top: 1px solid #dfdfdf;
+			position: relative;
+			height: 55px;
+			padding-top: 5px;
+
+			.text
+			{
+				position: absolute;
+				left: 50px;
+				top: 10px;
+				width: 200px;
+				text-align: left;
+			}
+			.small-text
+			{
+				top: 23px;
+			}
+			#secure
+			{
+				position: absolute;
+				right: 10px;
+				top: 0;
+				bottom: 0;
+				margin: auto;
+				height: 20px;
+			}
+		}
 		input
 		{
 			border-radius: 2px;
@@ -763,7 +820,7 @@ body
 			box-shadow: none;
 			padding: 10px;
 		}
-		.personal-info
+		.personal-info, .card-info, .email-info
 		{
 			@total-width: 300px;
 			input
@@ -774,6 +831,17 @@ body
 			{
 				float: left;
 				width: @total-width / 2 - 2 * 10px;
+				border-radius: 0;
+			}
+			.input75
+			{
+				width: 3 * @total-width / 4 - 2 * 10px;
+				border-radius: 0;
+				float: left;
+			}
+			.input25
+			{
+				width: @total-width / 4 - 2 * 10px;
 				border-radius: 0;
 			}
 
@@ -791,7 +859,10 @@ body
 
 		.pay-options
 		{
-			overflow: auto;
+			.pay-option:not(:first-child)
+			{
+				border-left: 1px solid #639e87;
+			}
 			.pay-option
 			{
 				float: left;
@@ -799,8 +870,49 @@ body
 				margin: 0;
 				background-color: #76c7a8;
 				display: inline-block;
+				position: relative;
+				cursor: pointer;
+				&.active
+				{
+					background-color: #4AB58C;
+				}
+				img
+				{
+					height: 60px;
+					width: 60px;
+					margin-top: 10px;
+				}
 			}
 
+		}
+		.back
+		{
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			text-decoration: none;
+		}
+		.coming-soon
+		{
+			.gotham-bold;
+			position: absolute;
+			font-size: 10px;
+			color: #2d916b;
+			background-color: #bceedb;
+			padding: 0px 5px;
+			top: -10px;
+			right: 5px;
+			left: 5px;
+		}
+		.white-cover
+		{
+			position: absolute;
+			top: 0;
+			right: 0;
+			left:0;
+			bottom: 0;
+			background-color: rgba(255,255,255, 0.7);
+			z-index: 1;
 		}
 	}
 }
