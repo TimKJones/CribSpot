@@ -41,7 +41,6 @@ class RentpaysController extends AppController {
 			$is_venmo = $params['venmo'];
 			$expirationMonth = $params['month'];
 			$expirationYear = $params['year'];
-			$is_venmo = $params['venmo'];
 			$housemates = array(
 				array('email' => 'tim@cribspot.com', 'rent' => 1541),	
 				array('email' => 'evan@cribspot.com', 'rent' => 1400)
@@ -57,7 +56,7 @@ class RentpaysController extends AppController {
 				$housemateString .= ', ';
 			}
 
-			$result = Braintree_Customer::create(array(
+			$customer = array(
 				'firstName' => $full_name,
 				'email' => $email,
 				'customFields' => array(
@@ -66,14 +65,17 @@ class RentpaysController extends AppController {
 					'pm_name' => $pm_name,
 					'is_venmo' => $is_venmo,
 					'housemates' => $housemateString
-				),
-				'creditCard' => array(
+				)
+			);
+
+			if (strcmp($is_venmo, 'true'))
+				$customer['creditCard'] = array(
 					'number' => $number,
 					'expirationMonth' => $expirationMonth,
 					'expirationYear' => $expirationYear,
 					'cvv' => $cvv
-				)
-			));
+				);
+			$result = Braintree_Customer::create($customer);
 
 			$this->InviteHousemates($full_name, $street_address, $pm_name, $housemates);
 
