@@ -48,11 +48,7 @@ class RentpaysController extends AppController {
 
 			$build_credit = $params['build_credit'];
 
-			/* TODO: MAKE HOUSEMATES GET SENT TO SERVER LIKE THIS */
-			$housemates = array(
-				array('email' => 'tim@cribspot.com', 'rent' => $amount),	
-				array('email' => 'evan@cribspot.com', 'rent' => 1400)
-			);
+			$housemates = $params['housemates'];
 			$housemateString = '';
 			foreach ($housemates as $housemate){
 				$housemateString .= $housemate['email'].'-';
