@@ -2,7 +2,6 @@
 class RentpaysController extends AppController {
     public $helpers = array('Html');
     public $components = array('Auth');
-    public $uses = array('RentpayUser');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -30,38 +29,55 @@ class RentpaysController extends AppController {
 			$params = $this->request->data;
 			/* Set local variables for params */
 			/* User information */
-			$first_name = $params['first_name'];
-			$last_name = $params['last_name'];
+			$full_name = $params['full_name'];
 			$email = $params['email'];
-			$pm_name = 'PMSI';
-			$street_address = '808 Brown St';
-			$building_name = 'Zaragon';
+			$pm_name = $params['property_manager'];
+			$street_address = $params['address'];
 
 			/* Payment information */
 			$amount = $params['amount'];
 			$number = $params['number'];
 			$cvv = $params['cvv'];
+			$is_venmo = $params['venmo'];
 			$expirationMonth = $params['month'];
 			$expirationYear = $params['year'];
+			$housemates = array(
+				array('email' => 'tim@cribspot.com', 'rent' => 1541),	
+				array('email' => 'evan@cribspot.com', 'rent' => 1400)
+			);
+			$housemateString = '';
+			foreach ($housemates as $housemate){
+				$housemateString .= $housemate['email'].'-';
+				if (array_key_exists('rent', $housemate))
+					$housemateString .= "$".$housemate['rent'];
+				else
+					$housemateString .= '$NA';
 
-			$result = Braintree_Customer::create(array(
-				'firstName' => $first_name,
-				'lastName' => $last_name,
+				$housemateString .= ', ';
+			}
+
+			$customer = array(
+				'firstName' => $full_name,
 				'email' => $email,
 				'customFields' => array(
-					"street_address" => $street_address,
+					'rent_amount' => $amount,
+					'street_address' => $street_address,
 					'pm_name' => $pm_name,
-					'building_name' => $building_name
-				),
-				'creditCard' => array(
+					'is_venmo' => $is_venmo,
+					'housemates' => $housemateString
+				)
+			);
+
+			if (strcmp($is_venmo, 'true'))
+				$customer['creditCard'] = array(
 					'number' => $number,
 					'expirationMonth' => $expirationMonth,
 					'expirationYear' => $expirationYear,
 					'cvv' => $cvv
-				)
-			));
+				);
+			$result = Braintree_Customer::create($customer);
 
-			$this->InviteHousemates();
+			$this->InviteHousemates($full_name, $street_address, $pm_name, $housemates);
 
 			/* Create transaction using user payment info */
 			/*$result = Braintree_Transaction::sale(array(
@@ -87,35 +103,19 @@ class RentpaysController extends AppController {
 			}
 		}
 
-    public function InviteHousemates()
+    public function InviteHousemates($full_name, $street_address, $pm_name, $housemates)
     {
-			//$this->layout = 'ajax';
+			foreach ($housemates as $housemate){
+					if (!array_key_exists('email', $housemate))
+						continue;
 
-/*			if (!$this->request->is('ajax') && !Configure::read('debug') > 0)
-					return;
-
-			if ($this->request->data === null || !array_key_exists('emails', $this->request->data))
-				return;*/
-
-			$first_name = 'Tim';
-			$last_name = 'Jones';
-			$building_name = 'Zaragon';
-			$street_address = '808 Brown St';
-			$pm_name = 'PMSI';
-
-			$emails = array('tim@cribspot.com');
-			CakeLog::write('emails', print_r($emails, true));
-
-			$response = null;
-			
-			foreach ($emails as $email){
 					$subject = 'Your rent is due! Join me in paying online with Cribspot';
 					$template = 'rentpay_invitation';
-					$this->set('inviter_first_name', $first_name);
-					$this->set('inviter_last_name', $last_name);
-					$this->set('rentpay_url', 'localhost/Rentpays/signup?building_name='.$building_name.'&street_address='.$street_address.'&pm_name='.$pm_name);
-          $from = $first_name.' '.$last_name.'<info@cribspot.com>';
-					$to = $email;    
+					$this->set('inviter_full_name', $full_name);
+					$this->set('rentpay_url', 'localhost/Rentpays/signup?street_address='.$street_address.'&pm_name='.$pm_name.'&rent='.$housemate['rent']);
+					$this->set('rent_amount', $housemate['rent']);
+          $from = $full_name.'<info@cribspot.com>';
+					$to = $housemate['email'];    
 					$sendAs = 'both';
 					$this->SendEmail($from, $to, $subject, $template, $sendAs);
 			}

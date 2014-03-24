@@ -59,8 +59,13 @@ class PagesController extends AppController {
     $this->Auth->allow('PrivacyPolicy');
     $this->Auth->allow('Disclaimer');
     $this->Auth->allow('NewspaperTest');
+    $this->Auth->allow('RentPayEmail');
   }
   	
+	public function RentPayEmail()
+	{
+	}
+
     /*
     TODO: exclude this action in robots.txt
     PM Admin interface to login as any property manager.
