@@ -36,13 +36,21 @@ class RentpaysController extends AppController {
 
 			/* Payment information */
 			$amount = $params['amount'];
+			/* Remove dollar sign if present */
+			if ($amount && $amount[0] == '$')
+				$amount = substr($amount, 1);
+
 			$number = $params['number'];
 			$cvv = $params['cvv'];
 			$is_venmo = $params['venmo'];
 			$expirationMonth = $params['month'];
 			$expirationYear = $params['year'];
+
+			$build_credit = $params['build_credit'];
+
+			/* TODO: MAKE HOUSEMATES GET SENT TO SERVER LIKE THIS */
 			$housemates = array(
-				array('email' => 'tim@cribspot.com', 'rent' => 1541),	
+				array('email' => 'tim@cribspot.com', 'rent' => $amount),	
 				array('email' => 'evan@cribspot.com', 'rent' => 1400)
 			);
 			$housemateString = '';
@@ -60,6 +68,7 @@ class RentpaysController extends AppController {
 				'firstName' => $full_name,
 				'email' => $email,
 				'customFields' => array(
+					'build_credit' => $build_credit,
 					'rent_amount' => $amount,
 					'street_address' => $street_address,
 					'pm_name' => $pm_name,
@@ -68,28 +77,19 @@ class RentpaysController extends AppController {
 				)
 			);
 
-			if (strcmp($is_venmo, 'true'))
+			if (!strcmp($is_venmo, 'no'))
 				$customer['creditCard'] = array(
 					'number' => $number,
 					'expirationMonth' => $expirationMonth,
 					'expirationYear' => $expirationYear,
 					'cvv' => $cvv
 				);
+
+			CakeLog::write('bt_customer', print_r($customer, true));
 			$result = Braintree_Customer::create($customer);
 
-			$this->InviteHousemates($full_name, $street_address, $pm_name, $housemates);
-
-			/* Create transaction using user payment info */
-			/*$result = Braintree_Transaction::sale(array(
-				'amount' => $params['amount'],
-				'creditCard' => array(
-					'number' => $params['number'],
-					'expirationMonth' => $params['month'],
-					'expirationYear' => $params['year']
-				)
-			));*/
-
 			if ($result->success) {
+				$this->InviteHousemates($full_name, $street_address, $pm_name, $housemates);
 				CakeLog::write('braintree',print_r($result, true));
 			} else if ($result->transaction) {
 				CakeLog::write('braintree',"Error processing transaction:");
@@ -112,7 +112,7 @@ class RentpaysController extends AppController {
 					$subject = 'Your rent is due! Join me in paying online with Cribspot';
 					$template = 'rentpay_invitation';
 					$this->set('inviter_full_name', $full_name);
-					$this->set('rentpay_url', 'localhost/Rentpays/signup?street_address='.$street_address.'&pm_name='.$pm_name.'&rent='.$housemate['rent']);
+					$this->set('rentpay_url', 'https://www.cribspot.com/rentpay?street_address='.$street_address.'&pm_name='.$pm_name.'&rent='.$housemate['rent']);
 					$this->set('rent_amount', $housemate['rent']);
           $from = $full_name.'<info@cribspot.com>';
 					$to = $housemate['email'];    
