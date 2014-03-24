@@ -4,7 +4,7 @@
 		echo $this->Html->script('src/Rentpay');
 	}
 	echo $this->Html->script('https://js.braintreegateway.com/v1/braintree.js');
-	echo $this->Html->css('/less/Expert/expert_page.less?v=6','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/Expert/expert_page.less?v=7','stylesheet/less', array('inline' => false));
 	echo $this->element('popups');
 	$this->set('title_for_layout', 'Pay Rent | Cribspot');
 ?>
@@ -22,7 +22,7 @@
 				</a>
 
 				<!-- Be sure to leave the brand out there if you want it shown -->
-				<a class="brand" href="/"><img src="/img/expert/logo.png" alt="Cribspot"></a>
+				<a class="brand" href="/"><img src="/img/rentpay/logo.png" alt="Cribspot"></a>
 
 				<!-- Everything you want hidden at 940px or less, place within here -->
 				<div class="nav-collapse collapse">

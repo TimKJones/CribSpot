@@ -8,6 +8,7 @@
     Rentpay.init = function() {
       var _this = this;
       this.report_credit = true;
+      this.is_venmo = "no";
       this.braintree = Braintree.create("MIIBCgKCAQEAoae5cN5m4spsJAXDUy7MxIH8hH3PcCO/M4PhXEZI51y5LAk6aT4zsNMzdA0G/+nJyhDnPitc3L3PCzNn+JJjeuKNwP5Il59JAmojqw5y6REzDIpFjCWHZId2qocQTbB56SGpfNd/OJIcBL+xv7ndJhM8uqX5byEpTuWXWOf+Sj83GszqfpQQtNDEWrW1a79ayl+Eg7PtGA/BHKEftlxtKJ1GVkOOdek8P4B2jHqnvfchMN2dMTetZiOWeIkcquCGn55k4cRgDj0i4v2CIQ7BFI+XTmqoaW6zcZHPkZKEWg0tWBhBXTB8JvttF9hZPqJkXR+eaHwJ2OCi6l44GTQHdwIDAQAB");
       this.braintree.onSubmitEncryptForm('braintree-payment-form', this.EncryptFormCallback);
       this.div.find(".back").click(function(event) {
@@ -15,14 +16,18 @@
         return _this.div.find("." + $(event.currentTarget).data('back')).show();
       });
       this.div.find(".next-step").click(function(event) {
-        if ($(event.currentTarget).hasClass("finish-rentpay")) {
-          $("#rentpay-signup").modal("hide");
+        if (_this.validate_inputs(event.currentTarget)) {
+          if ($(event.currentTarget).hasClass("finish-rentpay")) {
+            $("#rentpay-signup").modal("hide");
+            _this.div.find(".rentpay-step").hide();
+            _this.div.find(".part-one").show();
+            return;
+          }
           _this.div.find(".rentpay-step").hide();
-          _this.div.find(".part-one").show();
-          return;
+          return _this.div.find("." + $(event.currentTarget).data('next-step')).show();
+        } else {
+          return A2Cribs.UIManager.Error("Please complete all fields!");
         }
-        _this.div.find(".rentpay-step").hide();
-        return _this.div.find("." + $(event.currentTarget).data('next-step')).show();
       });
       this.div.find(".pay-option").click(function(event) {
         if (!$(event.currentTarget).hasClass("inactive")) {
@@ -30,10 +35,12 @@
           $(event.currentTarget).addClass("active");
           if ($(event.currentTarget).hasClass("show-card")) {
             _this.div.find(".white-cover").hide();
-            return $("#braintree-payment-form").find("[name=venmo]").val("no");
+            $("#braintree-payment-form").find("[name=venmo]").val("no");
+            return _this.is_venmo = "no";
           } else {
             _this.div.find(".white-cover").show();
-            return $("#braintree-payment-form").find("[name=venmo]").val("yes");
+            $("#braintree-payment-form").find("[name=venmo]").val("yes");
+            return _this.is_venmo = "yes";
           }
         }
       });
@@ -54,6 +61,23 @@
       });
     };
 
+    Rentpay.validate_inputs = function(target) {
+      var retVal;
+      retVal = true;
+      if ($(target).closest(".rentpay-step").hasClass("part-three")) {
+        return true;
+      }
+      if ($(target).closest(".rentpay-step").hasClass("part-two") && Rentpay.is_venmo === "yes") {
+        return true;
+      }
+      $(target).closest(".rentpay-step").find("input").each(function(index, value) {
+        if (!$(value).val().length) {
+          return retVal = false;
+        }
+      });
+      return retVal;
+    };
+
     Rentpay.EncryptFormCallback = function(event) {
       var data, housemates,
         _this = this;
@@ -71,8 +95,10 @@
       });
       data = $("#braintree-payment-form").serializeObject();
       data.housemates = housemates;
-      data.report_credit = this.report_credit;
+      data.build_credit = this.report_credit;
       $.post('/Rentpays/CreateTransaction', data, function() {
+        A2Cribs.UIManager.CloseLogs();
+        A2Cribs.UIManager.Success("Thanks for signing up! Your payment has been recorded!");
         return console.log('posted');
       });
       return false;
@@ -88,6 +114,9 @@
         password_modal.find(".password_protected").submit(function() {
           if (password_modal.find("input").val() === "GOBLUE") {
             password_modal.modal("hide");
+          } else {
+            A2Cribs.UIManager.CloseLogs();
+            A2Cribs.UIManager.Error("Password was incorrect");
           }
           return false;
         });
