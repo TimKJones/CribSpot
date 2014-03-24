@@ -95,7 +95,7 @@ class RentpaysController extends AppController {
 			} else {
 				CakeLog::write('braintree',"Message: " . $result->message);
 				CakeLog::write('braintree',"\nValidation errors: \n");
-				CakeLog::write('braintree',$result->errors->deepAll());
+				CakeLog::write('braintree',print_r($result->errors->deepAll(), true));
 			}
 		}
 
