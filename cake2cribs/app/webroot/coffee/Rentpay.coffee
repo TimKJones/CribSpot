@@ -71,7 +71,7 @@ class A2Cribs.Rentpay
 
 		return retVal
 			
-	@EncryptFormCallback : (event) ->
+	@EncryptFormCallback : (event) =>
 		housemates = []
 		$(".housemate").each (index, value) ->
 			email = $(value).find(".email").val()
