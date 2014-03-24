@@ -2,7 +2,6 @@
 class RentpaysController extends AppController {
     public $helpers = array('Html');
     public $components = array('Auth');
-    public $uses = array('RentpayUser');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -35,7 +34,6 @@ class RentpaysController extends AppController {
 			$email = $params['email'];
 			$pm_name = 'PMSI';
 			$street_address = '808 Brown St';
-			$building_name = 'Zaragon';
 
 			/* Payment information */
 			$amount = $params['amount'];
@@ -43,6 +41,21 @@ class RentpaysController extends AppController {
 			$cvv = $params['cvv'];
 			$expirationMonth = $params['month'];
 			$expirationYear = $params['year'];
+			$is_venmo = 'true';
+			$housemates = array(
+				array('email' => 'tim@cribspot.com', 'rent' => 1541),	
+				array('email' => 'evan@cribspot.com', 'rent' => 1400)
+			);
+			$housemateString = '';
+			foreach ($housemates as $housemate){
+				$housemateString .= $housemate['email'].'-';
+				if (array_key_exists('rent', $housemate))
+					$housemateString .= "$".$housemate['rent'];
+				else
+					$housemateString .= '$NA';
+
+				$housemateString .= ', ';
+			}
 
 			$result = Braintree_Customer::create(array(
 				'firstName' => $first_name,
@@ -51,7 +64,8 @@ class RentpaysController extends AppController {
 				'customFields' => array(
 					"street_address" => $street_address,
 					'pm_name' => $pm_name,
-					'building_name' => $building_name
+					'is_venmo' => $is_venmo,
+					'housemates' => $housemateString
 				),
 				'creditCard' => array(
 					'number' => $number,
@@ -61,7 +75,7 @@ class RentpaysController extends AppController {
 				)
 			));
 
-			$this->InviteHousemates();
+			$this->InviteHousemates($first_name, $last_name, $street_address, $pm_name, $housemates);
 
 			/* Create transaction using user payment info */
 			/*$result = Braintree_Transaction::sale(array(
@@ -87,35 +101,20 @@ class RentpaysController extends AppController {
 			}
 		}
 
-    public function InviteHousemates()
+    public function InviteHousemates($first_name, $last_name, $street_address, $pm_name, $housemates)
     {
-			//$this->layout = 'ajax';
+			foreach ($housemates as $housemate){
+					if (!array_key_exists('email', $housemate))
+						continue;
 
-/*			if (!$this->request->is('ajax') && !Configure::read('debug') > 0)
-					return;
-
-			if ($this->request->data === null || !array_key_exists('emails', $this->request->data))
-				return;*/
-
-			$first_name = 'Tim';
-			$last_name = 'Jones';
-			$building_name = 'Zaragon';
-			$street_address = '808 Brown St';
-			$pm_name = 'PMSI';
-
-			$emails = array('tim@cribspot.com');
-			CakeLog::write('emails', print_r($emails, true));
-
-			$response = null;
-			
-			foreach ($emails as $email){
 					$subject = 'Your rent is due! Join me in paying online with Cribspot';
 					$template = 'rentpay_invitation';
 					$this->set('inviter_first_name', $first_name);
 					$this->set('inviter_last_name', $last_name);
 					$this->set('rentpay_url', 'localhost/Rentpays/signup?building_name='.$building_name.'&street_address='.$street_address.'&pm_name='.$pm_name);
+					$this->set('rent_amount', $housemate['rent']);
           $from = $first_name.' '.$last_name.'<info@cribspot.com>';
-					$to = $email;    
+					$to = $housemate['email'];    
 					$sendAs = 'both';
 					$this->SendEmail($from, $to, $subject, $template, $sendAs);
 			}
