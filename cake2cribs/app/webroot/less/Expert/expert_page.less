@@ -4,7 +4,20 @@ body
 }
 #expert_page
 {
+	@lightest-gray: #b0b0b0;
 	background-color: white;
+	::-webkit-input-placeholder { 
+		color:    @lightest-gray;
+	}
+	:-moz-placeholder { 
+		color:    @lightest-gray;
+	}
+	::-moz-placeholder { 
+		color:    @lightest-gray;
+	}
+	:-ms-input-placeholder { 
+		color:    @lightest-gray;
+	}
 	.fontsize (@font-size: 30px) {
 		font-size: @font-size;
 		line-height: @font-size;
@@ -63,6 +76,10 @@ body
 		position: relative;
 	}
 
+	.m20
+	{
+		margin: 20px 0;
+	}
 	.m10
 	{
 		margin: 10px 0;
@@ -778,6 +795,10 @@ body
 		#guarantee
 		{
 			line-height: 50px;
+			img
+			{
+				width: 20px;
+			}
 		}
 		#setup_rental
 		{
@@ -859,6 +880,7 @@ body
 
 		.pay-options
 		{
+			height: 106px;
 			.pay-option:not(:first-child)
 			{
 				border-left: 1px solid #639e87;
@@ -913,6 +935,64 @@ body
 			bottom: 0;
 			background-color: rgba(255,255,255, 0.7);
 			z-index: 1;
+		}
+		#thumbs-up
+		{
+			width: 120px;
+			margin: 10px;
+		}
+		.email-info
+		{
+			margin: 15px 0;
+		}
+		.add_roommate
+		{
+			text-decoration: none;
+			color: #5bb852;
+			display: block;
+			text-align: left;
+		}
+		.housemate
+		{
+			input
+			{
+				margin-bottom: 0;
+			}
+
+		}
+		.report-rent
+		{
+			cursor: pointer;
+			img
+			{
+				width: 20px;
+				margin-top: -10px;
+			}
+		}
+	}
+	#password-protect
+	{
+		padding: 10px;
+		input
+		{
+			border-radius: 2px;
+			border: none;
+			box-shadow: none;
+			padding: 10px;
+			
+		}
+		.next-step
+		{
+			color: #4c4c4c;
+			text-shadow: none;
+			background-color: #efc454;
+			background-image: none;
+			border: none;
+			border-radius: 2px;
+			padding: 8px 15px;
+			width: 100%;
+			.gotham-bold;
+			.dark-gray;
 		}
 	}
 }
