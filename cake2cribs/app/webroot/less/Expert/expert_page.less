@@ -39,6 +39,18 @@ body
 			background-color: #4379ac;
 		}
 	}
+	.background
+	{
+		padding: 10px;
+		&.green
+		{
+			background-color: #7aba69;
+		}
+		&.blue
+		{
+			background-color: #68abd6;
+		}
+	}
 
 	.relative
 	{
@@ -138,6 +150,10 @@ body
 	.light-gray
 	{
 		color: #8b8b8b;
+	}
+	.blue
+	{
+		color: #547bbd;
 	}
 	.navbar
 	{
@@ -728,6 +744,63 @@ body
 			color: #989898;
 			margin-left: 9px;
 			.f18;
+		}
+	}
+
+	#rentpay-signup
+	{
+		padding: 10px;
+
+		#rent-amount
+		{
+			height: 50px;
+			width: 135px;
+		}
+		input
+		{
+			border-radius: 2px;
+			border: none;
+			box-shadow: none;
+			padding: 10px;
+		}
+		.personal-info
+		{
+			@total-width: 300px;
+			input
+			{
+				width: @total-width - 2 * 10px;
+			}
+			.input50
+			{
+				float: left;
+				width: @total-width / 2 - 2 * 10px;
+				border-radius: 0;
+			}
+
+		}
+		.next-step
+		{
+			color: #4c4c4c;
+			text-shadow: none;
+			background-color: #efc454;
+			background-image: none;
+			border: none;
+			border-radius: 2px;
+			padding: 8px 15px;
+		}
+
+		.pay-options
+		{
+			overflow: auto;
+			.pay-option
+			{
+				float: left;
+				width: 33%;
+				margin: 0;
+				background-color: #76c7a8;
+				display: inline-block;
+			}
+
 		}
 	}
 }

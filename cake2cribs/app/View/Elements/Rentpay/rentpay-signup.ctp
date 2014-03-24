@@ -1,22 +1,24 @@
-<div id="rentpay-signup" class="modal hide fade text-center">
+<div id="rentpay-signup" class="modal text-center">
 	<div class="part-one rentpay-step">
 		<div class="background green">
-			<span>Your Monthly Rent:</span>
-			<input class="form-field" data-field-name="amount" type="text" autocomplete="off" value="$0" />
-			<input class="form-field" data-field-name="full_name" type="text" autocomplete="off" placeholder="Full Name" />
-			<input class="form-field" data-field-name="email" type="email" autocomplete="off" placeholder="Email" />
-			<input class="form-field" data-field-name="address" type="text" autocomplete="off" placeholder="Your Street Address or Building Name" />
-			<input class="form-field" data-field-name="property_manager" type="text" autocomplete="off" placeholder="Property Manager Name" />
+			<div class="white f14 gotham-bold">Your Monthly Rent:</div>
+			<input class="form-field f40 gotham-bold" id="rent-amount" data-field-name="amount" type="text" autocomplete="off" value="$0" />
+			<div class="personal-info">
+				<input class="input50 form-field gotham-bold" data-field-name="full_name" type="text" autocomplete="off" placeholder="Full Name" />
+				<input class="input50 form-field gotham-bold" data-field-name="email" type="email" autocomplete="off" placeholder="Email" />
+				<input class="form-field gotham-bold" data-field-name="address" type="text" autocomplete="off" placeholder="Your Street Address or Building Name" />
+				<input class="form-field gotham-bold" data-field-name="property_manager" type="text" autocomplete="off" placeholder="Property Manager Name" />
+			</div>
 		</div>
 
-		<span>Guaranteed On-Time</span>
+		<div class="f14 light-gray gotham-bold">Guaranteed On-Time</div>
 
-		<button class="next-step" data-next-step="part-two">Set Up Rental Payment</button>
+		<button class="next-step gotham-bold btn" data-next-step="part-two">Set Up Rental Payment</button>
 
 		<div class="footer">
-			<img class="pull-left" src="/img/founders/indiana.png" alt="Alex" />
-			<span class="pull-left">Questions</span>
-			<span class="pull-left">Alex is your personal rent payment rep.</span>
+			<img class="pull-left" height="50px" width="50px" src="/img/founders/indiana.png" alt="Alex" />
+			<div class="pull-left f14 gotham-bold blue">Questions</div>
+			<div class="pull-left f12 gotham-bold">Alex is your personal rent payment rep.</div>
 
 			<span class="pull-right">Secure</span>
 
@@ -26,20 +28,20 @@
 
 	<div class="part-two hide rentpay-step">
 		<a href="#">Back</a>
-		<span>Set up rent pay with:</span>
+		<div class="f15 dark-gray gotham-bold">Set up rent pay with:</div>
 		<div class="pay-options">
 			<div class="pay-option">
 				<img src="" alt="Card Logo">
-				<span>Card</span>
+				<div class="white f14">Card</div>
 			</div>
 			<div class="pay-option">
 				<img src="" alt="Venmo Logo">
-				<span>Venmo</span>
+				<div class="white f14">Venmo</div>
 			</div>
 			<div class="pay-option">
 				<div class="coming-soon">COMING SOON</div>
 				<img src="" alt="Bank Logo">
-				<span>Bank</span>
+				<div class="white f14">Bank</div>
 			</div>
 		</div>
 		<div class="background blue">
@@ -72,7 +74,7 @@
 <form id="braintree-payment-form" class="hide">
 	<input type="text" size="20" autocomplete="off" name="full_name" />
 	<input type="text" size="20" autocomplete="off" name="email" />
-	<input type="text" size="20" autocomplete="off" name="street_address" />
+	<input type="text" size="20" autocomplete="off" name="address" />
 	<input type="text" size="20" autocomplete="off" name="property_manager" />
 	<input type="text" size="20" autocomplete="off" name="venmo" />
 	<input type="text" size="20" autocomplete="off" data-encrypted-name="amount"  name="amount"/>
