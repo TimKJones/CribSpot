@@ -1,9 +1,12 @@
 <?php
-	echo $this->Html->script('src/Rentpay');
+
+	if (Configure::read('CURRENT_ENVIRONMENT') !== 'ENVIRONMENT_PRODUCTION'){
+		echo $this->Html->script('src/Rentpay');
+	}
 	echo $this->Html->script('https://js.braintreegateway.com/v1/braintree.js');
-	echo $this->Html->css('/less/Expert/expert_page.less?v=5','stylesheet/less', array('inline' => false));
+	echo $this->Html->css('/less/Expert/expert_page.less?v=6','stylesheet/less', array('inline' => false));
 	echo $this->element('popups');
-	$this->set('title_for_layout', 'Local Experts | Cribspot');
+	$this->set('title_for_layout', 'Pay Rent | Cribspot');
 ?>
 
 <div id="expert_page">
