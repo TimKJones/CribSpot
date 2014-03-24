@@ -50,7 +50,7 @@
 		<div class="background blue card-info">
 			<div class="white-cover hide"></div>
 			<div class="white f14 gotham-bold m10">Enter debit card information:</div>
-			<input class="gotham-bold form-field" data-field-name="number" type="text" name="card_number" placeholder="Card Number">
+			<input id="card_number" class="gotham-bold form-field" data-field-name="number" type="text" name="card_number" placeholder="Card Number">
 			<input class="gotham-bold pull-left input25 form-field" data-field-name="month" type="text" name="month" placeholder="MM">
 			<input class="gotham-bold pull-left input25 form-field" data-field-name="year" type="text" name="year" placeholder="YYYY">
 			<input class="gotham-bold pull-right input25 form-field" data-field-name="cvv" type="text" name="cvc" placeholder="CVC">

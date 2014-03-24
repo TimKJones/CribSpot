@@ -70,6 +70,12 @@
       if ($(target).closest(".rentpay-step").hasClass("part-two") && Rentpay.is_venmo === "yes") {
         return true;
       }
+      if ($(target).closest(".rentpay-step").hasClass("part-two") && Rentpay.is_venmo === "no") {
+        if ($("#card_number").val().length !== 16) {
+          A2Cribs.UIManager.Error("Please type a valid card number");
+          return false;
+        }
+      }
       $(target).closest(".rentpay-step").find("input").each(function(index, value) {
         if (!$(value).val().length) {
           return retVal = false;
@@ -79,8 +85,7 @@
     };
 
     Rentpay.EncryptFormCallback = function(event) {
-      var data, housemates,
-        _this = this;
+      var data, housemates;
       housemates = [];
       $(".housemate").each(function(index, value) {
         var email, rent;
@@ -96,10 +101,18 @@
       data = $("#braintree-payment-form").serializeObject();
       data.housemates = housemates;
       data.build_credit = this.report_credit;
-      $.post('/Rentpays/CreateTransaction', data, function() {
-        A2Cribs.UIManager.CloseLogs();
-        A2Cribs.UIManager.Success("Thanks for signing up! Your payment has been recorded!");
-        return console.log('posted');
+      $.ajax({
+        type: 'POST',
+        url: '/Rentpays/CreateTransaction',
+        data: data,
+        success: function() {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Success("Thanks for signing up! Your payment has been recorded!");
+        },
+        error: function() {
+          A2Cribs.UIManager.CloseLogs();
+          return A2Cribs.UIManager.Error("There has been an error setting up your account. Please chat us in the bottom-left corner for help!");
+        }
       });
       return false;
     };

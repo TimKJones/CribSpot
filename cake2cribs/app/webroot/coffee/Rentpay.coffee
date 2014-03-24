@@ -61,6 +61,10 @@ class A2Cribs.Rentpay
 			return true
 		if $(target).closest(".rentpay-step").hasClass("part-two") and @is_venmo is "yes"
 			return true
+		if $(target).closest(".rentpay-step").hasClass("part-two") and @is_venmo is "no"
+			unless $("#card_number").val().length is 16
+				A2Cribs.UIManager.Error "Please type a valid card number"
+				return false
 		$(target).closest(".rentpay-step").find("input").each (index, value) ->
 			unless $(value).val().length
 				retVal = false
@@ -81,10 +85,16 @@ class A2Cribs.Rentpay
 		data.housemates = housemates
 		data.build_credit = @report_credit
 
-		$.post '/Rentpays/CreateTransaction', data, () =>
-			A2Cribs.UIManager.CloseLogs()
-			A2Cribs.UIManager.Success "Thanks for signing up! Your payment has been recorded!"
-			console.log 'posted'
+		$.ajax
+			type: 'POST'
+			url: '/Rentpays/CreateTransaction'
+			data: data
+			success: ->
+				A2Cribs.UIManager.CloseLogs()
+				A2Cribs.UIManager.Success "Thanks for signing up! Your payment has been recorded!"
+			error: ->
+				A2Cribs.UIManager.CloseLogs()
+				A2Cribs.UIManager.Error "There has been an error setting up your account. Please chat us in the bottom-left corner for help!"
 
 		return false
 
