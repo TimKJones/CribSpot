@@ -164,10 +164,9 @@ olark.identify('9961-903-10-7290');/*]]>*/</script><noscript><a href="https://ww
       frictionlessRequests : true
     });
 
-    FB.getLoginStatus(function (response) {
+		FB.Event.subscribe('auth.statusChange', function() {
     	window.fbInit.resolve();
-	    // window.dispatchEvent(new CustomEvent("fbDidFinishLoading", FB));
-    } );
+		});
 
   };
 
