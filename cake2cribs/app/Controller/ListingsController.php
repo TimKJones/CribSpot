@@ -338,7 +338,7 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		/* Convert unit_style_options to its string value */
 		foreach ($listings as &$listing){
 			if (array_key_exists('Rental', $listing) && array_key_exists('unit_style_options', $listing['Rental']))
-				$listing['Rental']['unit_style_options'] = Rental::unit_style_options($listing['Rental']['unit_style_options']);
+				$listing['Rental']['unit_style_options'] = $this->Rental->unit_style_options($listing['Rental']['unit_style_options']);
 
 			/* HACK TO FIX FEATURED LISTINGS DASH */
 			if (array_key_exists('Marker', $listing) && array_key_exists('coordinates', $listing['Marker']))
@@ -527,8 +527,8 @@ Returns a list of marker_ids that will be visible based on the current filter se
 			$listing['Sublet']['bathroom_type'] = 'Yes';
 
 		$fields = array('furnished_type', 'washer_dryer');
-		$listing['Sublet']['furnished_type'] = Rental::furnished($listing['Sublet']['furnished_type']);
-		$listing['Sublet']['washer_dryer'] = Rental::washer_dryer($listing['Sublet']['washer_dryer']);
+		$listing['Sublet']['furnished_type'] = $this->Rental->furnished($listing['Sublet']['furnished_type']);
+		$listing['Sublet']['washer_dryer'] = $this->Rental->washer_dryer($listing['Sublet']['washer_dryer']);
 
 		/* Format the parking and utilities descriptions */
 		$fields_to_descriptions_map = array(
@@ -611,13 +611,13 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		}
 
 		if ($listing['furnished_type'] !== '-')
-			$listing[$listing_type]['furnished_type'] = Rental::furnished($listing[$listing_type]['furnished_type']);
+			$listing[$listing_type]['furnished_type'] = $this->Rental->furnished($listing[$listing_type]['furnished_type']);
 
 		if ($listing[$listing_type]['washer_dryer'] !== '-')
-			$listing[$listing_type]['washer_dryer'] = Rental::washer_dryer($listing[$listing_type]['washer_dryer']);
+			$listing[$listing_type]['washer_dryer'] = $this->Rental->washer_dryer($listing[$listing_type]['washer_dryer']);
 
 		if ($listing[$listing_type]['parking_type'] !== '-')
-			$listing[$listing_type]['parking_type'] = Rental::parking($listing[$listing_type]['parking_type']);	
+			$listing[$listing_type]['parking_type'] = $this->Rental->parking($listing[$listing_type]['parking_type']);	
 	}
 
 	private function _refactorBooleanAmenities(&$listing, $listing_type)
