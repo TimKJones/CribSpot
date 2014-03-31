@@ -6,8 +6,7 @@
     function Dashboard() {}
 
     Dashboard.SetupUI = function() {
-      var list_content_height,
-        _this = this;
+      var _this = this;
       $(window).resize(function() {
         return _this.SizeContent();
       });
@@ -45,8 +44,6 @@
       $("body").on('click', '.messages_list_item', function(event) {
         return _this.ShowContent($('.messages-content'));
       });
-      list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 68;
-      $(".list_content").css("height", list_content_height + "px");
       /*
       		Search listener
       */
@@ -242,7 +239,11 @@
       return _results;
     };
 
-    Dashboard.SizeContent = function() {};
+    Dashboard.SizeContent = function() {
+      var list_content_height;
+      list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 44 - 68;
+      return $(".list_content").css("height", list_content_height + "px");
+    };
 
     Dashboard.SlideDropDown = function(content_header, show_content) {
       var dropdown, toggle_icon;
