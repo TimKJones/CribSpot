@@ -1,7 +1,7 @@
 <?php
 
 class ListingsController extends AppController {
-	public $uses = array('Listing', 'Rental', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin',
+	public $uses = array('Listing', 'Rental', 'Sublet', 'Image', 'Favorite', 'University', 'NewspaperAdmin', 'UniversityAdmin',
 		'FeaturedPM', 'User', 'LoginCode');
 
 	public $components= array('Session', 'Cookie');
