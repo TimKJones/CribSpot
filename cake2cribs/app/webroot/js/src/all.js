@@ -465,7 +465,8 @@
     Marker.TYPE = {
       UNKNOWN: 0,
       LEASED: 1,
-      AVAILABLE: 2
+      AVAILABLE: 2,
+      SCHEDULE: 3
     };
 
     function Marker(marker) {
@@ -504,6 +505,9 @@
           break;
         case A2Cribs.Marker.TYPE.AVAILABLE:
           marker_dot = "available";
+          break;
+        case A2Cribs.Marker.TYPE.SCHEDULE:
+          marker_dot = "schedule";
       }
       return (_ref = this.GMarker) != null ? _ref.setIcon("/img/dots/dot_" + marker_dot + ".png") : void 0;
     };
@@ -4171,7 +4175,13 @@
           if ((listing.available == null) && marker.GetType() === A2Cribs.Marker.TYPE.LEASED) {
             _results.push(marker.SetType(A2Cribs.Marker.TYPE.UNKNOWN));
           } else if ((listing.available != null) && listing.available === true) {
-            _results.push(marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE));
+            if ((listing.scheduling != null) && listing.scheduling === true) {
+              _results.push(marker.SetType(A2Cribs.Marker.TYPE.SCHEDULE));
+            } else if (marker.GetType() !== A2Cribs.Marker.TYPE.SCHEDULE) {
+              _results.push(marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE));
+            } else {
+              _results.push(void 0);
+            }
           } else {
             _results.push(void 0);
           }

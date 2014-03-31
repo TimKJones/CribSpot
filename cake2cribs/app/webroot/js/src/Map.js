@@ -185,7 +185,13 @@
           if ((listing.available == null) && marker.GetType() === A2Cribs.Marker.TYPE.LEASED) {
             _results.push(marker.SetType(A2Cribs.Marker.TYPE.UNKNOWN));
           } else if ((listing.available != null) && listing.available === true) {
-            _results.push(marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE));
+            if ((listing.scheduling != null) && listing.scheduling === true) {
+              _results.push(marker.SetType(A2Cribs.Marker.TYPE.SCHEDULE));
+            } else if (marker.GetType() !== A2Cribs.Marker.TYPE.SCHEDULE) {
+              _results.push(marker.SetType(A2Cribs.Marker.TYPE.AVAILABLE));
+            } else {
+              _results.push(void 0);
+            }
           } else {
             _results.push(void 0);
           }
