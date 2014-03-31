@@ -156,7 +156,10 @@ class A2Cribs.Map
 				if not listing.available? and marker.GetType() is A2Cribs.Marker.TYPE.LEASED
 					marker.SetType A2Cribs.Marker.TYPE.UNKNOWN # Set to unknown
 				else if listing.available? and listing.available is yes
-					marker.SetType A2Cribs.Marker.TYPE.AVAILABLE # Set to true
+					if listing.scheduling? and listing.scheduling is yes
+						marker.SetType A2Cribs.Marker.TYPE.SCHEDULE # Set to true
+					else if marker.GetType() isnt A2Cribs.Marker.TYPE.SCHEDULE
+						marker.SetType A2Cribs.Marker.TYPE.AVAILABLE # Set to true
 
 
 	###

@@ -1,9 +1,10 @@
 class A2Cribs.Marker extends  A2Cribs.Object
 	@BuildingType = ['House','Apartment','Duplex','Condo','Townhouse','Co-Op','Dorm','Greek','Other']
-	@TYPE = 
+	@TYPE =
 		UNKNOWN: 0
 		LEASED: 1
 		AVAILABLE: 2
+		SCHEDULE: 3
 
 	constructor: (marker) ->
 		super "marker", marker
@@ -24,6 +25,7 @@ class A2Cribs.Marker extends  A2Cribs.Object
 			when A2Cribs.Marker.TYPE.UNKNOWN then marker_dot = "unknown"
 			when A2Cribs.Marker.TYPE.LEASED then marker_dot = "leased"
 			when A2Cribs.Marker.TYPE.AVAILABLE then marker_dot = "available"
+			when A2Cribs.Marker.TYPE.SCHEDULE then marker_dot = "schedule"
 		@GMarker?.setIcon "/img/dots/dot_#{marker_dot}.png"
 
 	IsVisible: (visible = null) ->
