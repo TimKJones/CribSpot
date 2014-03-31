@@ -1,4 +1,4 @@
-<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=4','stylesheet/less', array('inline' => false)); ?>
+<?php echo $this->Html->css('/less/Dashboard/navigation-bar.less?v=5','stylesheet/less', array('inline' => false)); ?>
 
 <ul id="navigation-bar" class="nav nav-list">
 	<?php
@@ -100,6 +100,7 @@
 		</a>
 	</li>
 	<?php } ?>
+</ul>
 
 <div class="row-fluid dropdowns_container">
 	<?php $user_type = intval($AuthUser['user_type']);
@@ -148,5 +149,4 @@
 		</li>
 		<ul id = "sublet_list_content" class="list_content" data-listing-type="sublet">
 		</ul>
-	</ul>
 </div>

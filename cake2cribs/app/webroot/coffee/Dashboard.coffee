@@ -34,8 +34,6 @@ class A2Cribs.Dashboard
 		$("body").on 'click', '.messages_list_item', (event) =>
 			@ShowContent $('.messages-content')
 
-		list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 68
-		$(".list_content").css "height", list_content_height + "px"
 
 		###
 		Search listener
@@ -190,6 +188,8 @@ class A2Cribs.Dashboard
 				$("##{type}_list_content").append list_item
 
 	@SizeContent:()->
+		list_content_height = $("#navigation-bar").parent().height() - $("#navigation-bar").height() - 44 - 68
+		$(".list_content").css "height", list_content_height + "px"
 		# Strech the widget to the bottom of the window
 		# main_content = $('#main_content')
 		# middle_content = $('#middle_content')
