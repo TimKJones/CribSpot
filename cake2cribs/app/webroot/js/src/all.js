@@ -5346,7 +5346,6 @@
         var a2_object, listing_id;
         listing_id = $(event.currentTarget).data("listing-id");
         a2_object = A2Cribs.UserCache.Get(input.data("object"), listing_id);
-        $(document).trigger("track_event", ["Post " + (a2_object.GetListingType()), "Save", "Quick Dashboard", listing_id]);
         a2_object[input.data("field")] = input.data("value");
         $(event.currentTarget).find(".save-note").hide();
         $(event.currentTarget).find(".not-saved").show();
