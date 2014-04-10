@@ -75,21 +75,21 @@
       var listing_id,
         _this = this;
       listing_id = this.div.find(".listing_id").val();
-      this.div.find('.fb_sublet_share').click(function() {
+      this.div.find('.fb_sublet_share').unbind('click').click(function() {
         var images, marker, sublet;
         sublet = A2Cribs.UserCache.Get("sublet", listing_id);
         images = A2Cribs.UserCache.Get("image", listing_id);
         marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
         return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
       });
-      this.div.find('.google_sublet_share').click(function() {
+      this.div.find('.google_sublet_share').unbind('click').click(function() {
         var images, marker, sublet;
         sublet = A2Cribs.UserCache.Get("sublet", listing_id);
         images = A2Cribs.UserCache.Get("image", listing_id);
         marker = A2Cribs.UserCache.Get("marker", _this.div.find(".marker_id").val());
         return A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images);
       });
-      this.div.find('.twitter_sublet_share').click(function() {
+      this.div.find('.twitter_sublet_share').unbind('click').click(function() {
         return A2Cribs.ShareManager.ShareSubletOnTwitter(listing_id);
       });
       return this.div.find('.sublet_link').attr("href", "/listing/" + listing_id);

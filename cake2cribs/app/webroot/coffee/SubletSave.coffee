@@ -68,19 +68,19 @@ class SubletSave
 	###
 	@SetupShareButtons: ->
 		listing_id = @div.find(".listing_id").val()
-		@div.find('.fb_sublet_share').click =>
+		@div.find('.fb_sublet_share').unbind('click').click =>
 			sublet = A2Cribs.UserCache.Get "sublet", listing_id
 			images = A2Cribs.UserCache.Get "image", listing_id
 			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
 			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
 
-		@div.find('.google_sublet_share').click =>
+		@div.find('.google_sublet_share').unbind('click').click =>
 			sublet = A2Cribs.UserCache.Get "sublet", listing_id
 			images = A2Cribs.UserCache.Get "image", listing_id
 			marker = A2Cribs.UserCache.Get "marker", @div.find(".marker_id").val()
 			A2Cribs.ShareManager.ShareSubletOnFB(marker, sublet, images)
 
-		@div.find('.twitter_sublet_share').click =>
+		@div.find('.twitter_sublet_share').unbind('click').click =>
 			A2Cribs.ShareManager.ShareSubletOnTwitter listing_id
 
 		@div.find('.sublet_link').attr "href", "/listing/#{listing_id}"
