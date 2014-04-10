@@ -521,9 +521,9 @@ Returns a list of marker_ids that will be visible based on the current filter se
 		$email_exists = true;
 		$this->set('email_exists', 1 * $email_exists);
 		$this->set('messaging_enabled', true);
-		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_SHARED)
+		if (intval($listing['Sublet']['bathroom_type']) === $this->Sublet->BATHROOM_TYPE_SHARED)
 			$listing['Sublet']['bathroom_type'] = 'No';
-		if (intval($listing['Sublet']['bathroom_type']) === Sublet::BATHROOM_TYPE_PRIVATE)
+		if (intval($listing['Sublet']['bathroom_type']) === $this->Sublet->BATHROOM_TYPE_PRIVATE)
 			$listing['Sublet']['bathroom_type'] = 'Yes';
 
 		$fields = array('furnished_type', 'washer_dryer');

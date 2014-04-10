@@ -389,7 +389,7 @@
           'timeout'=>'30',
           'host' => 'smtp.sendgrid.net',
           'username'=>'cribsadmin',
-          'password'=>'lancPA*travMInj',
+          'password'=>'lanc*Cribs&Ribs',
           'client' => 'a2cribs.com'
         );  
 
