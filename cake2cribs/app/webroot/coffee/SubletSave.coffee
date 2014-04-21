@@ -158,26 +158,25 @@ class SubletSave
 	Opens up an existing sublet from a marker_id if marker_id
 	is defined. Otherwise will start a new sublet
 	###
-	@Open: (marker_id = null) ->
+	@Open: (listing_id = null) ->
 		@div.find(".done_section").fadeOut 'fast', () =>
 			@div.find(".sublet_section").fadeIn()
 
-		if marker_id?
-			# Find all cached listings with marker_id
-			# Should only be users cached because it is only in the dashboard
-			listings = A2Cribs.UserCache.GetAllAssociatedObjects "listing", "marker",  marker_id
+		if listing_id?
+			# Grab the listing from the cache
+			listing = A2Cribs.UserCache.Get("listing", listing_id)
 
 			# Fetch the sublet object from the cache
-			A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id)
+			A2Cribs.UserCache.GetListing("sublet", listing_id)
 			.done (sublet) =>
 				# Reset the sublet form first
 				@Reset()
 
 				# Set the hidden field for listing id
-				@div.find(".listing_id").val listings[0].listing_id
+				@div.find(".listing_id").val listing_id
 		
 				# Populate the marker fields
-				@PopulateMarker A2Cribs.UserCache.Get "marker", marker_id
+				@PopulateMarker A2Cribs.UserCache.Get "marker", listing.marker_id
 				# Populate based on the retrieved sublet
 				@Populate sublet
 		else

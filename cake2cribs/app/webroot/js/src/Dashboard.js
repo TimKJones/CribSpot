@@ -148,11 +148,11 @@
       for (_i = 0, _len = listings.length; _i < _len; _i++) {
         listing = listings[_i];
         marker = A2Cribs.UserCache.Get("marker", listing.marker_id);
-        if ($("#" + listing_types[listing.listing_type] + "_list_content").find("#" + (marker.GetId())).length === 0) {
+        if (listing_types[listing.listing_type] === "sublet" || $("#" + listing_types[listing.listing_type] + "_list_content").find("#" + (marker.GetId())).length === 0) {
           list_item = $("<li />", {
             text: marker.GetName(),
             "class": "" + listing_types[listing.listing_type] + "_list_item",
-            id: marker.GetId()
+            id: listing_types[listing.listing_type] === "sublet" ? listing.GetId() : marker.GetId()
           });
         }
         $("#" + listing_types[listing.listing_type] + "_list_content").append(list_item);

@@ -176,21 +176,21 @@
     */
 
 
-    SubletSave.Open = function(marker_id) {
-      var listings,
+    SubletSave.Open = function(listing_id) {
+      var listing,
         _this = this;
-      if (marker_id == null) {
-        marker_id = null;
+      if (listing_id == null) {
+        listing_id = null;
       }
       this.div.find(".done_section").fadeOut('fast', function() {
         return _this.div.find(".sublet_section").fadeIn();
       });
-      if (marker_id != null) {
-        listings = A2Cribs.UserCache.GetAllAssociatedObjects("listing", "marker", marker_id);
-        A2Cribs.UserCache.GetListing("sublet", listings[0].listing_id).done(function(sublet) {
+      if (listing_id != null) {
+        listing = A2Cribs.UserCache.Get("listing", listing_id);
+        A2Cribs.UserCache.GetListing("sublet", listing_id).done(function(sublet) {
           _this.Reset();
-          _this.div.find(".listing_id").val(listings[0].listing_id);
-          _this.PopulateMarker(A2Cribs.UserCache.Get("marker", marker_id));
+          _this.div.find(".listing_id").val(listing_id);
+          _this.PopulateMarker(A2Cribs.UserCache.Get("marker", listing.marker_id));
           return _this.Populate(sublet);
         });
       } else {
