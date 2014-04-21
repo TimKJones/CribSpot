@@ -121,7 +121,7 @@ class A2Cribs.Dashboard
 
 		for listing in listings
 			marker = A2Cribs.UserCache.Get "marker", listing.marker_id
-			if $("##{listing_types[listing.listing_type]}_list_content").find("##{marker.GetId()}").length is 0
+			if listing_types[listing.listing_type] is "sublet" or $("##{listing_types[listing.listing_type]}_list_content").find("##{marker.GetId()}").length is 0
 				list_item = $ "<li />", {
 					text: marker.GetName()
 					class: "#{listing_types[listing.listing_type]}_list_item"
