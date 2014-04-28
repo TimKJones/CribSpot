@@ -1,3 +1,13 @@
+## 2.27.1
+
+* Updated secureCompare to correctly compare strings in consistent time
+* Add better error messages around webhook verification
+
+## 2.27.0
+
+* Include Dispute information on Transaction
+* Search for Transactions disputed on a certain date
+
 ## 2.26.0
 
 * Disbursement Webhooks

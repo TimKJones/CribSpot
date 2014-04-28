@@ -115,7 +115,7 @@ class Braintree_Configuration extends Braintree
         if (isset(self::$_cache[$key]) &&
            (empty(self::$_cache[$key]))) {
             throw new Braintree_Exception_Configuration(
-                      $key.' needs to be set'
+                      $key.' needs to be set.'
                       );
         }
 
@@ -288,6 +288,27 @@ class Braintree_Configuration extends Braintree
          case 'development':
          default:
              $serverName = 'localhost';
+             break;
+        }
+
+        return $serverName;
+    }
+
+    public static function authUrl()
+    {
+        switch(self::environment()) {
+         case 'production':
+             $serverName = 'https://auth.venmo.com';
+             break;
+         case 'qa':
+             $serverName = 'https://auth.qa.venmo.com';
+             break;
+         case 'sandbox':
+             $serverName = 'https://auth.sandbox.venmo.com';
+             break;
+         case 'development':
+         default:
+             $serverName = 'http://auth.venmo.dev:9292';
              break;
         }
 

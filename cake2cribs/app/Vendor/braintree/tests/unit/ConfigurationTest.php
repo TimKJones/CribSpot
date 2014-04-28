@@ -25,7 +25,7 @@ class Braintree_ConfigurationTest extends PHPUnit_Framework_TestCase
 
      /**
      * @expectedException Braintree_Exception_Configuration
-     * @expectedExceptionMessage environment needs to be set
+     * @expectedExceptionMessage "invalid" is not a valid environment.
      */
     function testSetInvalidEnvironment()
     {
@@ -123,6 +123,27 @@ class Braintree_ConfigurationTest extends PHPUnit_Framework_TestCase
         Braintree_Configuration::environment('production');
         $sn = Braintree_Configuration::serverName();
         $this->assertEquals('api.braintreegateway.com', $sn);
+
+        Braintree_Configuration::reset();
+    }
+
+    function testAuthUrl()
+    {
+        Braintree_Configuration::environment('development');
+        $authUrl = Braintree_Configuration::authUrl();
+        $this->assertEquals('http://auth.venmo.dev:9292', $authUrl);
+
+        Braintree_Configuration::environment('qa');
+        $authUrl = Braintree_Configuration::authUrl();
+        $this->assertEquals('https://auth.qa.venmo.com', $authUrl);
+
+        Braintree_Configuration::environment('sandbox');
+        $authUrl = Braintree_Configuration::authUrl();
+        $this->assertEquals('https://auth.sandbox.venmo.com', $authUrl);
+
+        Braintree_Configuration::environment('production');
+        $authUrl = Braintree_Configuration::authUrl();
+        $this->assertEquals('https://auth.venmo.com', $authUrl);
 
         Braintree_Configuration::reset();
     }
